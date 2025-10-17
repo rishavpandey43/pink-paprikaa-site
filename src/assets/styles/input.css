@@ -1,0 +1,37 @@
+@import "tailwindcss";
+@source "../../**/*.html";
+@source "../scripts/**/*.js";
+
+/* ============ Theme Extension ============ */
+@theme {
+  --color-paprika: #ee2c68;
+  --color-leaf: #1c6058;
+  --color-blush: #ffdbe8;
+
+  --font-display: Inter, ui-sans-serif, system-ui;
+  --font-body: Inter, ui-sans-serif, system-ui;
+
+  --shadow-soft: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* ============ Base Styles ============ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white text-gray-800 font-body;
+  }
+}
+
+/* ============ Components ============ */
+@layer components {
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-lg px-4 py-2 font-medium
+      transition duration-300 ease-out bg-[--color-paprika] text-white hover:opacity-90;
+  }
+  .btn-outline {
+    @apply border border-[--color-paprika] text-[--color-paprika]
+      hover:bg-[--color-paprika] hover:text-white;
+  }
+}
