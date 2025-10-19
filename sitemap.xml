@@ -19,9 +19,9 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- Gallery -->
+  <!-- Menu -->
   <url>
-    <loc>https://pinkpaprikaa.com/gallery.html</loc>
+    <loc>https://pinkpaprikaa.com/menu.html</loc>
     <lastmod>2025-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

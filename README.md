@@ -13,7 +13,7 @@ pink-paprikaa-site/
 │   ├── index.html
 │   ├── about.html
 │   ├── contact.html
-│   ├── gallery.html
+│   ├── menu.html
 │   ├── policies.html
 │   │
 │   ├── assets/

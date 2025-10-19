@@ -224,6 +224,9 @@
   .relative {
     position: relative;
   }
+  .static {
+    position: static;
+  }
   .sticky {
     position: sticky;
   }
@@ -344,9 +347,6 @@
   .mt-16 {
     margin-top: calc(var(--spacing) * 16);
   }
-  .mt-20 {
-    margin-top: calc(var(--spacing) * 20);
-  }
   .mb-1 {
     margin-bottom: calc(var(--spacing) * 1);
   }
@@ -445,9 +445,6 @@
   }
   .h-\[500px\] {
     height: 500px;
-  }
-  .h-\[700px\] {
-    height: 700px;
   }
   .h-full {
     height: 100%;
@@ -657,9 +654,6 @@
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--color-white) 10%, transparent);
     }
-  }
-  .bg-\[\#fde7ef\] {
-    background-color: #fde7ef;
   }
   .bg-black\/20 {
     background-color: color-mix(in srgb, #000 20%, transparent);
@@ -1240,6 +1234,13 @@
         @supports (color: color-mix(in lab, red, red)) {
           background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
         }
+      }
+    }
+  }
+  .hover\:text-blush {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-blush);
       }
     }
   }
