@@ -2,6 +2,17 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": [],
+  "include": ["vitest.config.ts"],
+  "references": [
+    {
+      "path": "./packages/utils"
+    },
+    {
+      "path": "./packages/content"
+    },
+    {
+      "path": "./packages/seo"
+    }
+  ],
   "compilerOptions": {}
 }
