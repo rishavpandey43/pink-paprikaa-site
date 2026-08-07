@@ -63,3 +63,6 @@ test-output
 
 # Playwright scratch dir for serving a basePath-mounted static export
 apps/blog-e2e/.serve
+
+# Lighthouse CI local run artifacts
+.lighthouseci
