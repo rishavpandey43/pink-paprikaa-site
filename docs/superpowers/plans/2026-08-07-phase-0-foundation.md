@@ -10,13 +10,13 @@
 
 **Architecture:** Nx 23 integrated monorepo (pnpm workspaces, inferred tasks only). Two
 static-export Next.js 16 apps + Playwright e2e apps; five `packages/*` libraries; three `tools/*`
-packages. Style Dictionary builds DTCG tokens into a Tailwind v4 `@theme` stylesheet. Everything is
-wired empty-but-working: one reference component (`Button`) proves token → variant → story → test
-end to end.
+packages. Style Dictionary builds DTCG seed tokens into a Tailwind v4 `@theme` stylesheet.
+**Boilerplate only:** every project is empty-but-wired — generator stubs, configuration, and
+pipelines; no design-system components, no product code, no content (Global Constraint 15).
 
 **Tech Stack:** Nx 23.1.1 · pnpm 10 · TypeScript 6.0.3 · Next.js 16 · React 19 · Tailwind v4 ·
-tailwind-variants · Radix UI · Style Dictionary 5 · Vitest 4 · Playwright · Storybook 10 ·
-ESLint 10 flat config · husky 9 + commitlint + Commitizen · sharp · Zod 4 · schema-dts.
+Style Dictionary 5 · Vitest 4 · Playwright · Storybook 10 · ESLint 10 flat config ·
+husky 9 + commitlint + Commitizen · sharp · Content Collections.
 
 ## Global Constraints
 
@@ -54,7 +54,14 @@ Every task's requirements implicitly include all of these.
 14. **Generated output is a starting point** (spec §18): after any generator runs, diff every
     file it wrote against this plan and the spec, and correct disagreements (quote style, npm
     commands, Nx Cloud references, single-quote Prettier output).
-15. **The Nx way, always (user directive 2026-08-07).** Set up every capability through Nx:
+15. **Boilerplate only (user directive 2026-08-07).** This plan delivers architectural setup —
+    workspace, tooling, configuration, CI, and empty-but-wired projects. No product code, no
+    design-system components, no content: apps and packages keep their **generator-produced
+    stubs** (corrected for config compliance), placeholders exist only where required to prove
+    the setup runs, and anything visual or content-shaped waits for Phases 1–2. Tooling
+    implementations the spec's §15 lists as Phase 0 setup (lint rules, image-pipeline tool, CI
+    guard scripts, token pipeline seeds) are in scope.
+16. **The Nx way, always (user directive 2026-08-07).** Set up every capability through Nx:
     `pnpm nx add <plugin>` / `pnpm nx g <generator>` first, hand-authoring only where no
     generator covers it. Build on what Nx generates and exports (e.g. compose ESLint configs
     from `@nx/eslint-plugin`'s flat presets rather than reinventing them) instead of replacing
@@ -772,28 +779,23 @@ git commit -m "feat(tokens): DTCG token source with Style Dictionary theme.css/t
 
 ---
 
-### Task 5: `packages/utils`, `packages/content`, `packages/seo` — wired libraries with Vitest
+### Task 5: `packages/utils`, `packages/content`, `packages/seo` — empty-but-wired libraries with Vitest
 
 **Files:**
 
 - Create (via generator): `packages/utils`, `packages/content`, `packages/seo` — each with
-  `src/index.ts`, `vite.config.ts` (or `vitest.config.ts`), `tsconfig*.json`, `package.json`
-- Create: `packages/utils/src/format-inr.ts` + `src/format-inr.test.ts`
-- Create: `packages/content/src/schemas.ts` + `src/schemas.test.ts` + `src/data/site.json`
-- Create: `packages/seo/src/restaurant.ts` + `src/restaurant.test.ts`
+  `src/index.ts` + generated stub + generated test, `vite.config.ts` (or `vitest.config.ts`),
+  `tsconfig*.json`, `package.json`
 
 **Interfaces:**
 
 - Consumes: `@pink-paprikaa-web/typescript-config/base.json` (Task 1) if the generated tsconfig
   is replaced; generated tsconfigs extending the root base are also acceptable — do not fight
   the generator, just ensure the §6 strict flags are in force either way.
-- Produces:
-  - `@pink-paprikaa-web/utils`: `formatInr(amount: number): string` — `formatInr(310)` → `"₹310"`.
-  - `@pink-paprikaa-web/content`: Zod schemas `imageRefSchema`, `menuSchema`, `offerSchema`,
-    `galleryItemSchema`, `siteSchema`; types `Menu`, `MenuItem`, `Offer`, `GalleryItem`, `Site`
-    (inferred via `z.infer`); `site` (the parsed, typed content of `data/site.json`).
-  - `@pink-paprikaa-web/seo`: `restaurantJsonLd(site: Site): WithContext<Restaurant>`.
-  - Tasks 8 and 12 import these names exactly.
+- Produces: three registered Nx projects with working `typecheck`, `lint`, `test` targets and
+  importPaths `@pink-paprikaa-web/utils` / `content` / `seo`. **Empty-but-wired (Global
+  Constraint 15):** the generator's stub export and stub test are kept as-is — no schemas, no
+  helpers, no builders. Real implementations arrive in Phase 2.
 
 - [ ] **Step 1: Generate the three libraries**
 
@@ -812,311 +814,42 @@ config into the `nx` field of the package's `package.json`. Verify each generate
 `import base from "@pink-paprikaa-web/eslint-config/base"; export default [...base];`).
 
 After generation: per spec §18 review every generated file; run `pnpm nx sync` to fix TS project
-references; delete generated placeholder code (`libs-utils.ts` style stubs).
+references. **Keep the generator's stub source and stub test in each package** — they are the
+"empty-but-wired" placeholder (Global Constraint 15). Do not write schemas, helpers, builders,
+or any product code; do not install zod or schema-dts (they arrive with real content in
+Phase 2).
 
-- [ ] **Step 2: utils — failing test, then implementation**
+- [ ] **Step 2: Verify all three packages are wired**
 
-`packages/utils/src/format-inr.test.ts`:
+Run: `pnpm nx run-many -t typecheck lint test -p utils content seo` (adjust to the registered
+project names from `pnpm nx show projects`).
+Expected: all targets green using the generated stub tests; `pnpm nx graph --print` (or
+`show project`) lists all three projects.
 
-```ts
-import { describe, expect, it } from "vitest";
-import { formatInr } from "./format-inr.js";
-
-describe("formatInr", () => {
-  it("formats a plain rupee amount with the ₹ sign and no decimals", () => {
-    expect(formatInr(310)).toBe("₹310");
-  });
-  it("groups thousands in the Indian style", () => {
-    expect(formatInr(150000)).toBe("₹1,50,000");
-  });
-});
-```
-
-Run `pnpm nx test utils` → FAIL (module not found). Then `packages/utils/src/format-inr.ts`:
-
-```ts
-const inr = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
-
-/** Product-spec copy rule: rupee amounts written plainly — "₹310", never "₹310/-". */
-export function formatInr(amount: number): string {
-  return `₹${inr.format(amount)}`;
-}
-```
-
-Export from `src/index.ts`: `export { formatInr } from "./format-inr.js";`
-Run `pnpm nx test utils` → PASS.
-
-- [ ] **Step 3: content — schemas from the product spec §6 data model, verbatim shapes**
-
-```bash
-pnpm add zod
-```
-
-(`pnpm add` at the root then move the dependency: run the add **inside** `packages/content` —
-`pnpm --filter @pink-paprikaa-web/content add zod` — so the dependency lands in the right
-package.json.)
-
-`packages/content/src/schemas.ts`:
-
-```ts
-import { z } from "zod";
-
-export const imageRefSchema = z.object({
-  src: z.string().min(1),
-  width: z.number().int().positive(),
-  height: z.number().int().positive(),
-  blurHash: z.string().optional(),
-});
-
-export const menuItemSchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1),
-  description: z.string(),
-  price: z.number().positive().nullable(),
-  variations: z.array(z.object({ label: z.string(), price: z.number().positive() })).optional(),
-  tags: z.array(z.enum(["bestseller", "chef-special", "spicy"])),
-  image: imageRefSchema.optional(),
-  available: z.boolean(),
-});
-
-export const subCategorySchema = z.object({
-  name: z.string().min(1),
-  items: z.array(menuItemSchema),
-});
-
-export const categorySchema = z.object({
-  slug: z.string().regex(/^[a-z0-9-]+$/),
-  name: z.string().min(1),
-  intro: z.string(),
-  image: imageRefSchema,
-  subCategories: z.array(subCategorySchema),
-});
-
-export const menuSchema = z.object({
-  updatedAt: z.string().date(),
-  priceNote: z.string(),
-  categories: z.array(categorySchema),
-});
-
-export const offerSchema = z.object({
-  id: z.string().min(1),
-  title: z.string().min(1),
-  terms: z.string(),
-  validFrom: z.string().date(),
-  validTo: z.string().date(),
-  channels: z.array(z.enum(["dine-in", "takeaway", "delivery"])),
-  timeWindow: z.object({ from: z.string(), to: z.string() }).optional(),
-  image: imageRefSchema.optional(),
-  featured: z.boolean(),
-});
-
-export const galleryItemSchema = z.object({
-  id: z.string().min(1),
-  src: imageRefSchema,
-  alt: z.string().min(1), // required — build fails if empty (product spec §6.3)
-  category: z.enum(["food", "dine-in", "catering", "events", "kitchen", "moments"]),
-});
-
-export const siteSchema = z.object({
-  brand: z.literal("Pink Paprikaa"),
-  legalName: z.literal("Paprikaa Culinary Ventures Private Limited"),
-  domain: z.string().url(),
-  orderUrl: z.string().url(),
-  email: z.string().email(),
-  gstin: z.string().length(15),
-  fssai: z.string().length(14),
-  addressLocality: z.string().min(1),
-  addressRegion: z.string().min(1),
-});
-
-export type ImageRef = z.infer<typeof imageRefSchema>;
-export type MenuItem = z.infer<typeof menuItemSchema>;
-export type Menu = z.infer<typeof menuSchema>;
-export type Offer = z.infer<typeof offerSchema>;
-export type GalleryItem = z.infer<typeof galleryItemSchema>;
-export type Site = z.infer<typeof siteSchema>;
-```
-
-`packages/content/src/data/site.json` — single source of NAP truth (values from the product
-spec §4.3; do NOT invent data not in the spec):
-
-```json
-{
-  "brand": "Pink Paprikaa",
-  "legalName": "Paprikaa Culinary Ventures Private Limited",
-  "domain": "https://pinkpaprikaa.com",
-  "orderUrl": "https://order.pinkpaprikaa.com",
-  "email": "business@pinkpaprikaa.com",
-  "gstin": "06AAPCP9130L1ZW",
-  "fssai": "10825005001702",
-  "addressLocality": "MKM Market, Sector 57, Gurgaon",
-  "addressRegion": "Haryana"
-}
-```
-
-`packages/content/src/index.ts`:
-
-```ts
-import rawSite from "./data/site.json";
-import { siteSchema } from "./schemas.js";
-
-export * from "./schemas.js";
-/** Parsed at import time — a schema violation in site.json fails every consumer's build. */
-export const site = siteSchema.parse(rawSite);
-```
-
-(`resolveJsonModule: true` may be needed in the package tsconfig — add it there, not to the
-root base.)
-
-`packages/content/src/schemas.test.ts`:
-
-```ts
-import { describe, expect, it } from "vitest";
-import { site } from "./index.js";
-import { galleryItemSchema, menuItemSchema } from "./schemas.js";
-
-describe("site.json", () => {
-  it("parses against siteSchema with the correct brand spelling", () => {
-    expect(site.brand).toBe("Pink Paprikaa");
-    expect(site.gstin).toBe("06AAPCP9130L1ZW");
-  });
-});
-
-describe("menuItemSchema", () => {
-  it("accepts a null price only alongside no constraint violation", () => {
-    expect(
-      menuItemSchema.safeParse({
-        id: "momo-1",
-        name: "Veg Momo",
-        description: "Steamed",
-        price: null,
-        variations: [{ label: "Half", price: 155 }],
-        tags: ["bestseller"],
-        available: true,
-      }).success
-    ).toBe(true);
-  });
-  it("rejects an unknown tag", () => {
-    expect(
-      menuItemSchema.safeParse({
-        id: "x",
-        name: "X",
-        description: "",
-        price: 100,
-        tags: ["new"],
-        available: true,
-      }).success
-    ).toBe(false);
-  });
-});
-
-describe("galleryItemSchema", () => {
-  it("rejects empty alt text", () => {
-    expect(
-      galleryItemSchema.safeParse({
-        id: "g1",
-        src: { src: "/img/a.avif", width: 800, height: 600 },
-        alt: "",
-        category: "food",
-      }).success
-    ).toBe(false);
-  });
-});
-```
-
-Run `pnpm nx test content` → PASS.
-
-- [ ] **Step 4: seo — JSON-LD builder typed with schema-dts**
-
-```bash
-pnpm --filter @pink-paprikaa-web/seo add -D schema-dts
-pnpm --filter @pink-paprikaa-web/seo add @pink-paprikaa-web/content@workspace:*
-```
-
-`packages/seo/src/restaurant.ts`:
-
-```ts
-import type { Site } from "@pink-paprikaa-web/content";
-import type { Restaurant, WithContext } from "schema-dts";
-
-/** Builders take content types as input so structured data cannot drift from displayed content. */
-export function restaurantJsonLd(site: Site): WithContext<Restaurant> {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Restaurant",
-    name: site.brand,
-    url: site.domain,
-    email: site.email,
-    servesCuisine: ["North Indian", "Chinese"],
-    priceRange: "₹₹",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: site.addressLocality,
-      addressRegion: site.addressRegion,
-      addressCountry: "IN",
-    },
-  };
-}
-```
-
-`packages/seo/src/restaurant.test.ts`:
-
-```ts
-import { site } from "@pink-paprikaa-web/content";
-import { describe, expect, it } from "vitest";
-import { restaurantJsonLd } from "./restaurant.js";
-
-describe("restaurantJsonLd", () => {
-  it("builds Restaurant JSON-LD from the site content", () => {
-    const ld = restaurantJsonLd(site);
-    expect(ld["@type"]).toBe("Restaurant");
-    expect(ld.name).toBe("Pink Paprikaa");
-    expect(JSON.stringify(ld)).not.toMatch(/rishav|pandey|anand/i);
-  });
-});
-```
-
-Export from `src/index.ts`. Run `pnpm nx test seo` → PASS.
-
-- [ ] **Step 5: Exit gate + commit**
-
-`pnpm nx run-many -t typecheck lint test build` for the three projects, then full exit gate.
+- [ ] **Step 3: Exit gate + commit**
 
 ```bash
 git add -A
-git commit -m "feat(content): utils, content and seo packages wired with Vitest"
+git commit -m "feat(content): scaffold empty-but-wired utils, content and seo packages"
 ```
-
-(One commit is fine; if you prefer three scoped commits — `feat(utils):`, `feat(content):`,
-`feat(seo):` — that is also acceptable.)
 
 ---
 
-### Task 6: `packages/ui` — React library, tailwind-variants, reference `Button`
+### Task 6: `packages/ui` — empty-but-wired React library with atomic layer scaffold
 
 **Files:**
 
-- Create (via generator): `packages/ui` React library with Vitest
-- Create: `packages/ui/src/atoms/button/button.tsx`, `button.test.tsx`
-- Create: `packages/ui/src/{molecules,organisms,templates}/.gitkeep`
-- Modify: `packages/ui/src/index.ts`
+- Create (via generator): `packages/ui` React library with Vitest (generated stub component and
+  stub test kept as-is)
+- Create: `packages/ui/src/{atoms,molecules,organisms,templates}/.gitkeep`
 
 **Interfaces:**
 
-- Consumes: token utility classes from Task 4 (`bg-brand-primary`, `hover:bg-brand-primary-hover`,
-  `text-surface`); NOT the CSS file itself — Tailwind class strings compile in the consuming
-  app/Storybook, so `ui` has no runtime dependency on the CSS.
-- Produces: `@pink-paprikaa-web/ui` exporting `Button` and `ButtonProps`:
-
-  ```ts
-  type ButtonProps = React.ComponentPropsWithoutRef<"button"> & {
-    intent?: "primary" | "secondary";
-    size?: "sm" | "md" | "lg";
-  };
-  function Button(props: ButtonProps): JSX.Element;
-  ```
-
-  Tasks 7 and 8 import `Button` by this exact name.
+- Consumes: nothing yet (components arrive in Phase 1 with the designs).
+- Produces: `@pink-paprikaa-web/ui` as a registered project with working
+  `typecheck`/`lint`/`test` targets, the four atomic layer directories, and the generator's stub
+  export. **No design-system components are authored** (Global Constraint 15) — the
+  reference-component row in spec §15 is consciously deferred to Phase 1; Task 13 records that.
 
 - [ ] **Step 1: Generate the React library**
 
@@ -1128,102 +861,24 @@ pnpm nx g @nx/react:library packages/ui --bundler=none --unitTestRunner=vitest -
 (Check `--help`; goals: importPath `@pink-paprikaa-web/ui`, vitest with jsdom, no project.json.)
 Replace the generated eslint config content with:
 `import react from "@pink-paprikaa-web/eslint-config/react"; export default [...react];`
+**Keep the generator's stub component and stub test** — they are the empty-but-wired
+placeholder. Create the four layer directories, each holding only a `.gitkeep`.
 
-```bash
-pnpm --filter @pink-paprikaa-web/ui add tailwind-variants @radix-ui/react-slot
-pnpm --filter @pink-paprikaa-web/ui add -D @testing-library/react @testing-library/jest-dom vitest-axe jsdom
-```
+Run `pnpm nx test ui` → the generated stub test PASSES.
 
-Create the four layer directories; `molecules/`, `organisms/`, `templates/` each get a `.gitkeep`.
+- [ ] **Step 2: Prove the atomic-layering lint rule bites**
 
-- [ ] **Step 2: Failing tests first**
-
-`packages/ui/src/atoms/button/button.test.tsx`:
-
-```tsx
-import { render, screen } from "@testing-library/react";
-import { axe } from "vitest-axe";
-import { describe, expect, it } from "vitest";
-import { Button } from "./button.js";
-
-describe("Button", () => {
-  it("renders its children and defaults to the primary intent", () => {
-    render(<Button>Order Now</Button>);
-    const button = screen.getByRole("button", { name: "Order Now" });
-    expect(button.className).toContain("bg-brand-primary");
-  });
-
-  it("applies the secondary intent variant", () => {
-    render(<Button intent="secondary">View Menu</Button>);
-    expect(screen.getByRole("button", { name: "View Menu" }).className).toContain("border");
-  });
-
-  it("forwards native button props", () => {
-    render(<Button type="submit">Go</Button>);
-    expect(screen.getByRole("button")).toHaveAttribute("type", "submit");
-  });
-
-  it("has no axe violations", async () => {
-    const { container } = render(<Button>Order Now</Button>);
-    expect(await axe(container)).toHaveNoViolations();
-  });
-});
-```
-
-(Wire `vitest-axe/extend-expect` and `@testing-library/jest-dom` in the vitest setup file the
-generator created; add one if absent and reference it from the vite config `test.setupFiles`.)
-
-Run `pnpm nx test ui` → FAIL (button module missing).
-
-- [ ] **Step 3: Implement `Button` with tailwind-variants**
-
-`packages/ui/src/atoms/button/button.tsx`:
-
-```tsx
-import { tv, type VariantProps } from "tailwind-variants";
-
-const button = tv({
-  base: "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50",
-  variants: {
-    intent: {
-      primary: "bg-brand-primary text-surface hover:bg-brand-primary-hover",
-      secondary:
-        "border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-surface",
-    },
-    size: {
-      sm: "h-8 px-3 text-sm",
-      md: "h-10 px-4 text-base",
-      lg: "h-12 px-6 text-lg",
-    },
-  },
-  defaultVariants: { intent: "primary", size: "md" },
-});
-
-export type ButtonProps = React.ComponentPropsWithoutRef<"button"> & VariantProps<typeof button>;
-
-/** Reference atom proving the token → variant → story → test path (arch spec §8). */
-export function Button({ className, intent, size, ...props }: ButtonProps) {
-  return <button className={button({ intent, size, className })} {...props} />;
-}
-```
-
-`src/index.ts`: `export { Button, type ButtonProps } from "./atoms/button/button.js";`
-
-Run `pnpm nx test ui` → PASS.
-
-- [ ] **Step 4: Prove the atomic-layering lint rule bites**
-
-Temporarily create `packages/ui/src/atoms/button/layering-probe.ts` containing
-`import "../../molecules/probe.js";` plus a stub `packages/ui/src/molecules/probe.ts`. Run
+Temporarily create `packages/ui/src/atoms/layering-probe.ts` containing
+`import "../molecules/probe.js";` plus a stub `packages/ui/src/molecules/probe.ts`. Run
 `pnpm nx lint ui` → must FAIL with the "Atomic layering" message from Task 2. Delete both files.
 If it does not fail, fix the `react.js` zone globs until it does — this is the acceptance test
-for spec §7 rule 2.
+for spec §7 rule 2. (The deep-import variant was already proven in Task 2's fix round.)
 
-- [ ] **Step 5: Exit gate + commit**
+- [ ] **Step 3: Exit gate + commit**
 
 ```bash
 git add -A
-git commit -m "feat(ui): React library with atomic layers and reference Button atom"
+git commit -m "feat(ui): scaffold empty-but-wired ui library with atomic layer directories"
 ```
 
 ---
@@ -1232,15 +887,17 @@ git commit -m "feat(ui): React library with atomic layers and reference Button a
 
 **Files:**
 
-- Create (via generator): `packages/ui/.storybook/main.ts`, `.storybook/preview.ts`
+- Create (via generator): `packages/ui/.storybook/main.ts`, `.storybook/preview.ts`, and any
+  story the generator emits for the existing stub component
 - Create: `packages/ui/.storybook/styles.css`
-- Create: `packages/ui/src/atoms/button/button.stories.tsx`
 
 **Interfaces:**
 
-- Consumes: `Button` (Task 6), `@pink-paprikaa-web/design-tokens/theme.css` (Task 4).
-- Produces: `storybook` (dev) and `build-storybook` targets on the `ui` project; static build
-  output consumed by CI later phases. Task 12's CI does NOT build Storybook (deploy is Phase 6).
+- Consumes: `@pink-paprikaa-web/design-tokens/theme.css` (Task 4).
+- Produces: `storybook` (dev) and `build-storybook` targets on the `ui` project. **No
+  hand-authored stories** (Global Constraint 15) — if the generator offers story generation for
+  the existing stub component, accept it (generator output is boilerplate); author nothing
+  beyond that. Component stories arrive in Phase 1.
 
 - [ ] **Step 1: Generate the Storybook configuration**
 
@@ -1250,9 +907,10 @@ pnpm nx g @nx/storybook:configuration ui --uiFramework=@storybook/react-vite
 pnpm --filter @pink-paprikaa-web/ui add -D @storybook/addon-a11y @tailwindcss/vite tailwindcss
 ```
 
-(Check `--help` and the interactive prompts; pick react-vite, no interaction tests. Verify no
-`project.json` appears — Storybook targets are inferred by `@nx/storybook`'s plugin from
-`.storybook/main.ts`.)
+(Check `--help` and the prompts; pick react-vite, no interaction tests; accept generated stories
+for the stub component if offered — `build-storybook` needs at least one story to be a
+meaningful proof. Verify no `project.json` appears — Storybook targets are inferred by
+`@nx/storybook`'s plugin from `.storybook/main.ts`.)
 
 - [ ] **Step 2: Wire Tailwind v4 + tokens into the preview**
 
@@ -1272,72 +930,42 @@ import tailwindcss from "@tailwindcss/vite";
 // in viteFinal: config.plugins = [...(config.plugins ?? []), tailwindcss()];
 ```
 
-Ensure `design-tokens` builds before Storybook: `@nx/storybook` infers a dependency through the
-import only if the package graph knows it — add
+Ensure `design-tokens` builds before Storybook: add
 `pnpm --filter @pink-paprikaa-web/ui add @pink-paprikaa-web/design-tokens@workspace:*` and check
-`pnpm nx graph --print` (or `show project ui`) lists the dependency, so `build-storybook`
-triggers the token build via `dependsOn` defaults (`^build`).
+`pnpm nx show project ui` lists the dependency, so `build-storybook` triggers the token build
+via `dependsOn` defaults (`^build`).
 
-- [ ] **Step 3: The Button story**
-
-`packages/ui/src/atoms/button/button.stories.tsx`:
-
-```tsx
-import type { Meta, StoryObj } from "@storybook/react";
-import { Button } from "./button.js";
-
-const meta = {
-  title: "Atoms/Button",
-  component: Button,
-  args: { children: "Order Now" },
-} satisfies Meta<typeof Button>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Primary: Story = {};
-export const Secondary: Story = { args: { intent: "secondary", children: "View Menu" } };
-export const Sizes: Story = {
-  render: (args) => (
-    <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-      <Button {...args} size="sm" />
-      <Button {...args} size="md" />
-      <Button {...args} size="lg" />
-    </div>
-  ),
-};
-```
-
-- [ ] **Step 4: Verify both targets**
+- [ ] **Step 3: Verify the build target**
 
 Run: `pnpm nx run ui:build-storybook`
 Expected: static output builds; the emitted CSS contains `--color-brand-primary` (grep the
 output dir) proving the token pipeline reached Storybook. Then run the exit gate. (Do not leave
 a dev server running.)
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
 git add -A
-git commit -m "feat(ui): Storybook 10 shell with a11y addon and Button stories"
+git commit -m "feat(ui): Storybook 10 shell with a11y addon wired to the token pipeline"
 ```
 
 ---
 
-### Task 8: `apps/web` + `apps/web-e2e`
+### Task 8: `apps/web` + `apps/web-e2e` — empty-but-wired static-export app
 
 **Files:**
 
 - Create (via generator): `apps/web` (Next.js 16, App Router), `apps/web-e2e` (Playwright)
 - Modify: `apps/web/next.config.*` (static export), `apps/web/src/app/global.css`,
-  `apps/web/src/app/layout.tssx→tsx`, `apps/web/src/app/page.tsx`
+  `layout.tsx`, `page.tsx` (stripped to a minimal placeholder)
 - Create: `apps/web/public/_redirects`
 - Modify: `apps/web-e2e/src/*.spec.ts`
 
 **Interfaces:**
 
-- Consumes: `Button` from `@pink-paprikaa-web/ui`, `site` from `@pink-paprikaa-web/content`,
-  `restaurantJsonLd` from `@pink-paprikaa-web/seo`, `theme.css` from design-tokens.
+- Consumes: `theme.css` from `@pink-paprikaa-web/design-tokens` — the one workspace dependency,
+  proving cross-package wiring and that the token pipeline reaches an app build. **No ui/content/
+  seo imports** (those packages are empty stubs; wiring them into pages is Phase 1–2 work).
 - Produces: `pnpm nx build web` → static export in `apps/web/out/` containing `index.html` and
   `_redirects`. Task 12's CI, Lighthouse and founder-gate consume `apps/web/out/`.
 
@@ -1366,66 +994,34 @@ correct the generated output:
 - Replace generated eslint config content with
   `import next from "@pink-paprikaa-web/eslint-config/next"; export default [...next];`
 - Now add `eslint-plugin-tailwindcss` (deferred from Task 2):
-  `pnpm add -D eslint-plugin-tailwindcss`, and in `tools/eslint-config/react.js` register it with
-  its flat config and `settings: { tailwindcss: { config: "<path resolution per plugin docs for v4>" } }`.
-  If the installed plugin version does not support Tailwind v4 config-less mode, add it with the
-  rules it can run and record the limitation in the task report — do not pin an older Tailwind.
-- Add workspace deps:
-  `pnpm --filter web add @pink-paprikaa-web/ui@workspace:* @pink-paprikaa-web/content@workspace:* @pink-paprikaa-web/seo@workspace:* @pink-paprikaa-web/design-tokens@workspace:*`
+  `pnpm add -D -w eslint-plugin-tailwindcss`, and in `tools/eslint-config/react.js` register it
+  with its flat config and the settings the plugin documents for Tailwind v4. If the installed
+  plugin version does not support Tailwind v4, add it with the rules it can run and record the
+  limitation in the task report — do not pin an older Tailwind.
+- Add the one workspace dep:
+  `pnpm --filter web add @pink-paprikaa-web/design-tokens@workspace:*`
 
-- [ ] **Step 2: The placeholder home page (real metadata, no founder names)**
+- [ ] **Step 2: Strip to a minimal placeholder (no product content, no founder names)**
 
-`apps/web/src/app/layout.tsx` — metadata from the product spec §5.1, JSON-LD wired:
-
-```tsx
-import { site } from "@pink-paprikaa-web/content";
-import { restaurantJsonLd } from "@pink-paprikaa-web/seo";
-import type { Metadata } from "next";
-import "./global.css";
-
-export const metadata: Metadata = {
-  title: "Pink Paprikaa — Pure Veg Restaurant & AC Dine-In | Sector 57, Gurgaon",
-  description:
-    "Pure-veg North Indian, Chinese, momos and café food in Sector 57 Gurgaon. AC dine-in, delivery and corporate meals.",
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body className="bg-surface text-ink">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantJsonLd(site)) }}
-        />
-        {children}
-      </body>
-    </html>
-  );
-}
-```
-
-`apps/web/src/app/page.tsx`:
+Replace the generator's welcome page with the smallest honest placeholder. `layout.tsx`: title
+`Pink Paprikaa` (two `a`s — hard rule), import `./global.css`, no other metadata. `page.tsx`:
 
 ```tsx
-import { site } from "@pink-paprikaa-web/content";
-import { Button } from "@pink-paprikaa-web/ui";
-
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-8">
-      <h1 className="text-4xl font-bold text-brand-primary">{site.brand}</h1>
-      <p className="max-w-md text-center">
-        Pure veg since day one. AC dine-in in Sector 57 — new site under construction.
-      </p>
-      <a href={site.orderUrl} target="_blank" rel="noreferrer">
-        <Button>Order Now</Button>
-      </a>
+    <main>
+      <h1>Pink Paprikaa</h1>
+      <p>New site under construction.</p>
     </main>
   );
 }
 ```
 
-`apps/web/public/_redirects` (spec §4, unchanged Petpooja redirects):
+No token utility classes, no components, no copy beyond this — visual design is Phase 1,
+content is Phase 2. Delete unused generator assets (welcome component etc.).
+
+`apps/web/public/_redirects` (spec §4, unchanged Petpooja redirects — this is deploy config,
+in scope):
 
 ```
 https://order.pinkpaprikaa.com/*   https://pinkpaprikaa.petpooja.site/:splat   301!
@@ -1435,14 +1031,15 @@ https://pickup.pinkpaprikaa.com/*  https://pinkpaprikaa.petpooja.com/menu/:splat
 - [ ] **Step 3: Build and verify the export**
 
 Run: `pnpm nx build web`
-Expected: `apps/web/out/index.html` exists, contains `Pink Paprikaa` (grep it), contains
-`application/ld+json`, and `apps/web/out/_redirects` exists. Also assert the built CSS resolves
-the token: grep `out/_next/static/**/*.css` for `--color-brand-primary`.
+Expected: `apps/web/out/index.html` exists, contains `Pink Paprikaa` (grep it), and
+`apps/web/out/_redirects` exists. Also assert the built CSS resolves the token: grep
+`out/_next/static/**/*.css` (or the emitted CSS files) for `--color-brand-primary`.
 
 - [ ] **Step 4: Playwright e2e against the real static export**
 
 ```bash
 pnpm --filter web-e2e add -D @axe-core/playwright
+pnpm add -D -w serve
 pnpm exec playwright install chromium
 ```
 
@@ -1450,7 +1047,7 @@ In `apps/web-e2e/playwright.config.ts`, make the webServer serve the export (not
 
 ```ts
 webServer: {
-  command: "pnpm exec serve apps/web/out -l 4300",  // pnpm add -D serve (root)
+  command: "pnpm exec serve apps/web/out -l 4300",
   url: "http://localhost:4300",
   reuseExistingServer: !process.env.CI,
 },
@@ -1460,17 +1057,16 @@ and ensure the e2e target depends on the app build (check `pnpm nx show project 
 inferred e2e target lacks it, add `"nx": { "targets": { "e2e": { "dependsOn": ["web:build"] } } }`
 to `apps/web-e2e/package.json`).
 
-`apps/web-e2e/src/home.spec.ts`:
+`apps/web-e2e/src/home.spec.ts` (setup verification only — page serves, a11y wiring works,
+founder gate holds):
 
 ```ts
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-test("home renders the brand and the Order Now action", async ({ page }) => {
+test("the exported home page serves and renders the brand heading", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Pink Paprikaa" })).toBeVisible();
-  const order = page.getByRole("link", { name: /order now/i });
-  await expect(order).toHaveAttribute("href", /order\.pinkpaprikaa\.com/);
 });
 
 test("home has no critical or serious axe violations", async ({ page }) => {
@@ -1495,27 +1091,28 @@ Run: `pnpm nx e2e web-e2e` → PASS.
 
 ```bash
 git add -A
-git commit -m "feat(web): static-export Next.js app with wired tokens, ui, content, seo and e2e"
+git commit -m "feat(web): scaffold empty-but-wired static-export web app with e2e"
 ```
 
 ---
 
-### Task 9: `apps/blog` + `apps/blog-e2e`
+### Task 9: `apps/blog` + `apps/blog-e2e` — empty-but-wired blog app
 
 **Files:**
 
 - Create (via generator): `apps/blog`, `apps/blog-e2e`
 - Modify: `apps/blog/next.config.*` (`basePath: "/blog"`, static export)
-- Create: `apps/blog/content/posts/hello-pink-paprikaa.mdx`
 - Create: `apps/blog/content-collections.ts`
-- Modify: blog app pages to list and render posts; e2e spec
+- Create: `apps/blog/content/posts/placeholder.mdx` (fixture proving the MDX pipeline; not
+  brand content)
+- Modify: blog `page.tsx` minimally to read the collection; e2e spec
 
 **Interfaces:**
 
-- Consumes: `@pink-paprikaa-web/ui` (Button in the placeholder page proves `scope:blog` may use
-  `scope:shared`), design-tokens theme.
+- Consumes: `theme.css` from design-tokens (same single workspace dep as Task 8).
 - Produces: `pnpm nx build blog` → static export under `apps/blog/out/` with all URLs prefixed
-  `/blog`. Task 12's founder-gate scans this output too.
+  `/blog`, and a wired Content Collections pipeline. Task 12's founder-gate scans this output.
+  Real posts and templates are Phase 5.
 
 - [ ] **Step 1: Generate, then configure basePath + export**
 
@@ -1524,10 +1121,11 @@ pnpm nx g @nx/next:application apps/blog --e2eTestRunner=playwright --appDir=tru
 ```
 
 Apply the same §18 corrections as Task 8 (export, images.unoptimized, Tailwind v4, eslint config
-from `@pink-paprikaa-web/eslint-config/next`, workspace deps ui + design-tokens), **plus**
-`basePath: "/blog"` in the next config.
+from `@pink-paprikaa-web/eslint-config/next`, design-tokens workspace dep), **plus**
+`basePath: "/blog"` in the next config. Strip the welcome page to the same minimal shape as
+Task 8 (heading `Pink Paprikaa Blog`, nothing else authored).
 
-- [ ] **Step 2: Content Collections wiring (spec §9) with one real post**
+- [ ] **Step 2: Content Collections wiring (spec §9) with one placeholder fixture**
 
 ```bash
 pnpm --filter blog add -D @content-collections/core @content-collections/next @content-collections/mdx
@@ -1547,7 +1145,6 @@ const posts = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.string(),
-    template: z.enum(["article"]).default("article"),
   }),
   transform: async (doc, ctx) => ({
     ...doc,
@@ -1561,27 +1158,27 @@ export default defineConfig({ collections: [posts] });
 
 Wrap the next config with `withContentCollections` per `@content-collections/next` docs.
 
-`apps/blog/content/posts/hello-pink-paprikaa.mdx`:
+`apps/blog/content/posts/placeholder.mdx` — a fixture, clearly not content:
 
 ```mdx
 ---
-title: "The new Pink Paprikaa site is cooking"
-description: "A rebuilt pinkpaprikaa.com is on the way — faster pages, a real menu, and a blog."
+title: "Placeholder"
+description: "Scaffolding fixture proving the MDX pipeline builds. Replaced in Phase 5."
 date: "2026-08-07"
 ---
 
-Pure veg since day one. The new site — and this blog — are under construction.
+Scaffolding fixture. Real posts arrive in Phase 5.
 ```
 
-Blog `page.tsx` lists `allPosts` (title + description + date); `[slug]/page.tsx` renders the MDX
-body with `generateStaticParams()` reading the collection (spec §9's `createPages` replacement).
-Use the design-system-free defaults for MDX components in Phase 0.
+Wire the collection into the build minimally: blog `page.tsx` maps `allPosts` to a `<ul>` of
+titles — the least code that makes the build consume the collection (an unconsumed collection
+proves nothing). No detail pages, no templates — Phase 5.
 
 - [ ] **Step 3: Build + verify basePath**
 
 Run: `pnpm nx build blog`
-Expected: export exists; the post page is exported; grep the HTML for `/blog/_next/` asset
-prefixes proving basePath. Zero founder names in output.
+Expected: export exists; grep the HTML for `/blog/_next/` asset prefixes proving basePath; the
+placeholder title appears in the exported HTML (collection consumed); zero founder names.
 
 - [ ] **Step 4: e2e — serve the export mounted at `/blog`**
 
@@ -1595,8 +1192,8 @@ command:
 url: "http://localhost:4301/blog",
 ```
 
-Spec: `/blog` lists the post; clicking through renders the post title; no critical/serious axe
-violations; no founder names in HTML. (Same shape as Task 8's spec file.) Add the
+Spec: `/blog` serves and lists the placeholder title; no critical/serious axe violations; no
+founder names in HTML. (Same shape as Task 8's spec file.) Add the
 `dependsOn: ["blog:build"]` wiring as in Task 8, and gitignore `apps/blog-e2e/.serve`.
 
 Run: `pnpm nx e2e blog-e2e` → PASS.
@@ -1605,7 +1202,7 @@ Run: `pnpm nx e2e blog-e2e` → PASS.
 
 ```bash
 git add -A
-git commit -m "feat(blog): static-export blog app with Content Collections and basePath /blog"
+git commit -m "feat(blog): scaffold empty-but-wired blog app with Content Collections and basePath /blog"
 ```
 
 ---
@@ -1632,13 +1229,11 @@ git commit -m "feat(blog): static-export blog app with Content Collections and b
 - [ ] **Step 1: Add tags, verify they're seen**
 
 Add the `nx.tags` field to each package.json. Run `pnpm nx show project web --json` and confirm
-`tags`. Run `pnpm nx run-many -t lint` → all pass (no legitimate dependency violates §5's table —
-note `seo → content` requires `type:content` in the `type:util` allow-list? **No**: spec's table
-says `type:util → type:util` only. But `seo` imports `content`. Resolution, from the spec's own
-project table: `seo` is `type:util`, and seo→content is a real, spec-mandated dependency (§11
-"Builders take packages/content types as input"). Add `type:content` to the `type:util`
-constraint's allow-list in `tools/eslint-config/base.js` and record the spec-table amendment in
-the task report — the spec's prose wins over its table.)
+`tags`. Run `pnpm nx run-many -t lint` → all pass. (With Phase 0's empty-but-wired packages the
+only cross-project edges are `web`/`blog` → `design-tokens` and `ui` → `design-tokens`; all are
+legal under §5's table — `type:app` → `type:tokens`, `type:ui` → `type:tokens`, scopes →
+`scope:shared`. The table from Task 2 applies verbatim; the `seo → content` question only
+arises in Phase 2 when seo gains real builders.)
 
 - [ ] **Step 2: Prove the boundary bites both ways**
 
@@ -1856,8 +1451,9 @@ git commit -m "feat(tools): sharp image pipeline with AVIF/WebP ladder, LQIP and
 **Interfaces:**
 
 - Consumes: `apps/web/out`, `apps/blog/out` (Tasks 8–9); `pnpm verify` (Task 3).
-- Produces: CI gates per spec §12/§14. Content-integrity gate = the content package's build-time
-  `siteSchema.parse` (Task 5) + tests; no separate tool in Phase 0.
+- Produces: CI gates per spec §12/§14. The content-integrity gate is **fully deferred to
+  Phase 2** (packages are empty-but-wired; there are no schemas or content to validate yet) —
+  Task 13 records this in §15.
 
 - [ ] **Step 1: Founder-name guard (spec §12 — greps built output)**
 
@@ -2075,14 +1671,14 @@ git commit -m "docs: record Phase 0 completion in spec §15, CLAUDE.md and READM
 
 - **Spec coverage:** every ⬜ §15 row maps to a task: apps (8, 9), packages (4, 5, 6), tools
   (1, 2, 11), tags+boundaries (10), ESLint+rules (2), jsx-a11y override (2), hooks/commits (3),
-  token pipeline (4), Storybook+Button (6, 7), Vitest/Playwright/axe/LHCI + CI jobs (5, 8, 12),
-  content-integrity + founder gates (5, 12), root scripts (3).
-- **Known narrowings (deliberate, recorded in tasks):** deploy job is a Phase 6-gated skeleton
-  (Netlify access is a §16 external input); content-integrity in Phase 0 is the build-time Zod
-  parse + tests, not a separate link-checker (no content to check yet); `commitlint.config.mjs`
-  not `.ts`; `seo → content` requires amending the `type:util` dep-constraint (spec prose wins
-  over its table).
-- **Type consistency:** `Button`/`ButtonProps` (6→7,8); `site`, `Site`, `restaurantJsonLd`
-  (5→8); token utility names `bg-brand-primary`, `hover:bg-brand-primary-hover`, `text-surface`,
-  `text-ink`, `border-brand-primary` (4→6,7,8); `processImages`/`ImageManifestEntry` (11 only);
-  preset names `base/next/react-library/node` (1→5,6,8,11).
+  token pipeline (4), Storybook shell (7), Vitest/Playwright/axe/LHCI + CI jobs (5, 8, 12),
+  founder gate (12), root scripts (3).
+- **Known narrowings (deliberate, recorded in tasks and closed out in Task 13):** boilerplate
+  only per the user's 2026-08-07 directive — the §15 "reference `Button`" item and all package
+  implementations (schemas, helpers, JSON-LD builders) are deferred to Phases 1–2; the
+  content-integrity gate defers with them; deploy job is a Phase 6-gated skeleton (Netlify
+  access is a §16 external input); `commitlint.config.mjs` not `.ts`.
+- **Type consistency:** CSS custom properties `--color-brand-primary`, `--color-brand-primary-hover`,
+  `--color-surface`, `--color-ink` (4→7,8 grep checks); `processImages`/`ImageManifestEntry`
+  (11 only); preset names `base/next/react-library/node` (1→5,6,8,11); single workspace dep
+  `@pink-paprikaa-web/design-tokens` (4→7,8,9).
