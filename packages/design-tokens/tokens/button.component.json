@@ -1,0 +1,6 @@
+{
+  "button": {
+    "bg": { "default": { "$type": "color", "$value": "{color.brand.primary}" } },
+    "fg": { "default": { "$type": "color", "$value": "{color.surface}" } }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "color": {
+    "pink": {
+      "500": { "$type": "color", "$value": "#EE2C68" },
+      "600": { "$type": "color", "$value": "#D01F56" }
+    },
+    "neutral": {
+      "0": { "$type": "color", "$value": "#FFFFFF" },
+      "900": { "$type": "color", "$value": "#1A1A1A" }
+    }
+  }
+}

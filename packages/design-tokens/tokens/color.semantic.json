@@ -1,0 +1,10 @@
+{
+  "color": {
+    "brand": {
+      "primary": { "$type": "color", "$value": "{color.pink.500}" },
+      "primary-hover": { "$type": "color", "$value": "{color.pink.600}" }
+    },
+    "surface": { "$type": "color", "$value": "{color.neutral.0}" },
+    "ink": { "$type": "color", "$value": "{color.neutral.900}" }
+  }
+}
