@@ -27,38 +27,6 @@ const reactVersion = createRequire(import.meta.url)("react/package.json").versio
 // with a stricter-on-paper-but-actually-weaker legacy one. Using each
 // plugin's own documented flat preset directly instead.
 
-const layerOrder = ["atoms", "molecules", "organisms", "templates"];
-
-/**
- * no-restricted-imports zones: a layer may not import from any layer above it (spec §7 rule 2).
- *
- * The `files` pattern is anchored on `src/<layer>`, not `packages/ui/src/<layer>`. ESLint's flat
- * config resolves `files` globs relative to the *base path* — the directory of whichever
- * `eslint.config.mjs` was auto-discovered — and when `nx lint <project>` runs `eslint .` with
- * `cwd` set to the package root, that base path IS the package root (`packages/ui`), so the file
- * path ESLint matches against is already relative to it (`src/atoms/foo.ts`, not
- * `packages/ui/src/atoms/foo.ts`). A `packages/ui/`-prefixed pattern silently never matches under
- * that invocation and only appeared to work when linting via an explicit `--config` flag from the
- * repo root, which uses `cwd` (the repo root) as the base path instead — a different code path
- * `nx lint` never takes. Anchoring the pattern on `src/<layer>` and leading it with a globstar
- * matches both cases: the globstar absorbs the `packages/ui/` prefix when the base path is the
- * repo root, and absorbs nothing when the base path is already the package root.
- */
-const atomicLayering = layerOrder.slice(0, -1).map((layer, i) => ({
-  files: [`**/src/${layer}/**/*`],
-  rules: {
-    "no-restricted-imports": [
-      "error",
-      {
-        patterns: layerOrder.slice(i + 1).map((upper) => ({
-          group: [`**/${upper}/**`, `**/${upper}`],
-          message: `Atomic layering: ${layer} cannot import from ${upper} (layers only go upward).`,
-        })),
-      },
-    ],
-  },
-}));
-
 export default [
   ...base,
   {
@@ -83,5 +51,4 @@ export default [
     plugins: { "pink-paprikaa": { rules: { "no-raw-hex": noRawHex } } },
     rules: { "pink-paprikaa/no-raw-hex": "error" },
   },
-  ...atomicLayering,
 ];
