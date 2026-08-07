@@ -453,15 +453,15 @@ GitHub Actions. Netlify does **not** build — artifacts are built in CI so the 
 
 ## 15. Phase roadmap
 
-| Phase             | Contents                                                                                                                                   | Depends on       |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
-| **0 — this spec** | Workspace, Nx, TS, lint, hooks, commits, CI/CD, image pipeline, token pipeline, Storybook shell, one reference component, empty wired apps | —                |
-| 1                 | Design tokens populated + full component library                                                                                           | Designs supplied |
-| 2                 | Content schemas + marketing pages                                                                                                          | Phase 1          |
-| 3                 | Image migration + performance pass                                                                                                         | Phase 2          |
-| 4                 | SEO — JSON-LD, sitemaps, analytics                                                                                                         | Phase 2          |
-| 5                 | Blog — collections, templates, first posts                                                                                                 | Phase 1          |
-| 6                 | Git remote pointed at GitHub, Netlify cutover, old repo archived                                                                           | Phases 2–4       |
+| Phase             | Contents                                                                                                                                                                                | Depends on       |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| **0 — this spec** | Workspace, Nx, TS, lint, hooks, commits, CI/CD, image pipeline, token pipeline, Storybook shell, one reference component _(deferred to Phase 1 — see progress table)_, empty wired apps | —                |
+| 1                 | Design tokens populated + full component library                                                                                                                                        | Designs supplied |
+| 2                 | Content schemas + marketing pages                                                                                                                                                       | Phase 1          |
+| 3                 | Image migration + performance pass                                                                                                                                                      | Phase 2          |
+| 4                 | SEO — JSON-LD, sitemaps, analytics                                                                                                                                                      | Phase 2          |
+| 5                 | Blog — collections, templates, first posts                                                                                                                                              | Phase 1          |
+| 6                 | Git remote pointed at GitHub, Netlify cutover, old repo archived                                                                                                                        | Phases 2–4       |
 
 Each phase gets its own spec and implementation plan. Nothing in Phase 0 assumes anything about the visual design.
 
@@ -493,7 +493,7 @@ update it as items land.
 | Vitest, Playwright, axe, Lighthouse CI + their CI jobs       | ✅ done     | Vitest wired per-project (proven via `pipeline.test.ts`, `no-raw-hex.test.mjs`); Playwright `e2e` targets on `web`/`blog`; axe via Storybook a11y addon; `.lighthouserc.json` budgets (LCP ≤2.5s, CLS ≤0.1, TBT ≤200ms, byte-weight ≤1 MiB) all passing locally; CI `e2e` and `lighthouse` jobs (`59b7709`)                                                                                    |
 | Content-integrity and founder-name gates                     | ⚠️ partial  | Founder-name guard shipped and hardened — `scripts/check-founder-names.mjs`, covers source maps and extensionless output (`59b7709`, `48bebef`), wired as CI `guards` job. Content-integrity gate (dedicated link/asset checker) deferred to Phase 2 — there is no real content yet to validate; today's only integrity check is the build-time Zod parse Content Collections already performs |
 | Root scripts (`verify`, `commit`, `format`)                  | ✅ done     | `verify` → `nx affected -t typecheck lint test build`; `verify:all` → `nx run-many`; `commit` → `cz`; `format`/`format:check` → `nx format:write`/`nx format:check`; plus `guard:founder`, `prepare` (`7b10a29`)                                                                                                                                                                               |
-| Netlify deploy job                                           | ⚠️ deferred | `deploy` job exists in `.github/workflows/ci.yml` as a gated skeleton — `if: vars.NETLIFY_DEPLOY_ENABLED == 'true'` — real deploy steps land at the Phase 6 cutover once Netlify access exists (`59b7709`, §16)                                                                                                                                                                                |
+| Netlify deploy job                                           | ⚠️ deferred | `deploy` job exists in `.github/workflows/ci.yml` as a gated skeleton — `if: github.ref == 'refs/heads/main' && vars.NETLIFY_DEPLOY_ENABLED == 'true'` — real deploy steps land at the Phase 6 cutover once Netlify access exists (`59b7709`, §16)                                                                                                                                             |
 
 **Boilerplate-only scope narrowing.** Per the user's 2026-08-07 directive (`a2f2969`), this phase
 deliberately stops short of real components and package implementations: the reference `Button`
