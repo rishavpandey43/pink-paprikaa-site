@@ -3,6 +3,8 @@ import prettier from "eslint-config-prettier";
 import perfectionist from "eslint-plugin-perfectionist";
 import tseslint from "typescript-eslint";
 
+import noRawHex from "./rules/no-raw-hex.js";
+
 // `nx.configs["flat/base"]` registers the `@nx` plugin namespace (so
 // `@nx/enforce-module-boundaries` below resolves) and ignores `.nx`.
 //
@@ -17,9 +19,19 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
   { ignores: ["**/dist", "**/out", "**/.next", "**/storybook-static", "**/node_modules"] },
   ...nx.configs["flat/base"],
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
+  // Scoped via `extends` (a `tseslint.config()`-only feature: the referenced
+  // configs' rules are applied constrained to this object's `files` glob)
+  // rather than spread into the top-level array. Un-scoped — as this used to
+  // be — `strictTypeChecked`/`stylisticTypeChecked` attach to every file
+  // ESLint lints, including `**/*.json`, which `@nx/dependency-checks`
+  // parses with `jsonc-eslint-parser` and no `parserOptions.project`. That
+  // broke the JSON block for every consumer of this preset; only
+  // `tools/image-pipeline/eslint.config.mjs` carried a local
+  // `disableTypeChecked`-for-JSON workaround to compensate. Scoping here
+  // makes that workaround unnecessary — removed there in the same change.
   {
+    files: ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
+    extends: [tseslint.configs.strictTypeChecked, tseslint.configs.stylisticTypeChecked],
     languageOptions: {
       parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
     },
@@ -54,6 +66,16 @@ export default tseslint.config(
       "perfectionist/sort-imports": "error",
       "perfectionist/sort-named-imports": "error",
     },
+  },
+  // Workspace-wide `pink-paprikaa/no-raw-hex` for `.ts` files (CLAUDE.md rule 3), so base-only
+  // consumers — content, seo, utils, image-pipeline, the e2e apps, and this file's own root
+  // consumer — get raw-hex coverage without composing the React preset. `react.js` registers the
+  // same rule name again for `.tsx`/`.jsx`, since JSX literal/text bodies are React-preset-only
+  // surface this file never lints.
+  {
+    files: ["**/*.ts"],
+    plugins: { "pink-paprikaa": { rules: { "no-raw-hex": noRawHex } } },
+    rules: { "pink-paprikaa/no-raw-hex": "error" },
   },
   // Disable type-aware linting for plain JS config files.
   {

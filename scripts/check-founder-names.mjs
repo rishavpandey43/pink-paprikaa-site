@@ -2,7 +2,7 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 
 const BANNED = /rishav|pandey|anand/i;
-const TEXT_EXT = /\.(html|js|css|json|txt|xml|webmanifest|mjs|map)$|^[^.]+$/;
+const TEXT_EXT = /\.(html|js|css|json|txt|xml|webmanifest|mjs|map|svg)$|^[^.]+$/;
 const targets = process.argv.slice(2);
 
 if (targets.length === 0) {

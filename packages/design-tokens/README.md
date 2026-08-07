@@ -1,5 +1,10 @@
 # Design Tokens
 
+**Seed status:** only `color.pink.500` (`#EE2C68`) is a confirmed brand value. Every other token
+value in `tokens/` right now — the `#D01F56` hover shade, the neutral scale, and the button
+component tokens — is a placeholder seed proving the pipeline end to end, not a real design
+decision. Phase 1 replaces them once designs are supplied (spec §16).
+
 The single source of truth for the Pink Paprikaa brand palette, and the **only** place the brand
 hex `#EE2C68` may exist in this workspace (see `pink-paprikaa/no-raw-hex` in
 `@pink-paprikaa-web/eslint-config`). Tokens are authored in

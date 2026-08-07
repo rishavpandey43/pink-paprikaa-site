@@ -47,11 +47,10 @@ export default [
       "pink-paprikaa/no-raw-hex": "error",
     },
   },
-  {
-    files: ["**/*.ts"],
-    plugins: { "pink-paprikaa": { rules: { "no-raw-hex": noRawHex } } },
-    rules: { "pink-paprikaa/no-raw-hex": "error" },
-  },
+  // `pink-paprikaa/no-raw-hex` for `.ts` files is now registered once, workspace-wide, in
+  // `base.js` — every consumer of this preset composes `base.js` first, so plain `.ts` coverage
+  // already applies here without re-registering it. This block only needs to cover `.tsx`/`.jsx`,
+  // which it does above.
   // `eslint-plugin-tailwindcss`@4.x (task 2's deferred install, task 8 wires
   // it up) — this major is "Made for Tailwind CSS v4"
   // (https://github.com/francoismassart/eslint-plugin-tailwindcss#readme),
