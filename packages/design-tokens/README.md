@@ -43,9 +43,12 @@ edit it or commit it.
 
 ## Style Dictionary config notes (`sd.config.mjs`)
 
-Two custom formats are registered: `css/tailwind-theme` (the `@theme` block) and
+Two custom formats are registered: `css/tailwind-theme` (the `@theme static { ... }` block) and
 `typescript/tokens-const` (the typed const). The built-in `json/flat` format is used as-is for
-`tokens.json`.
+`tokens.json`. `static` (not plain `@theme`) is deliberate: Tailwind v4 tree-shakes any theme
+variable it doesn't see referenced by a scanned utility class, which would silently drop tokens
+that exist only for direct `var(--...)` consumption — confirmed by Storybook (`packages/ui`),
+the first real Tailwind consumer of this file, emitting an empty theme block without it.
 
 All three platforms use `transforms: ["attribute/cti", "name/kebab"]` — **not** the `css`/`js`
 built-in `transformGroup`s. Both of those groups include a color value transform (`color/css` /

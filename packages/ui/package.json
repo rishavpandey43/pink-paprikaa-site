@@ -10,5 +10,13 @@
       "default": "./src/index.ts"
     },
     "./package.json": "./package.json"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "^10.5.7",
+    "@tailwindcss/vite": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  },
+  "dependencies": {
+    "@pink-paprikaa-web/design-tokens": "workspace:*"
   }
 }
