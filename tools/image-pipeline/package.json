@@ -1,0 +1,28 @@
+{
+  "name": "@pink-paprikaa-web/image-pipeline",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@pink-paprikaa-web/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "sharp": "^0.35.3",
+    "tslib": "^2.3.0"
+  },
+  "nx": {
+    "tags": [
+      "type:tool",
+      "scope:shared"
+    ]
+  }
+}
