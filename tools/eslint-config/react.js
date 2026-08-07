@@ -24,7 +24,7 @@ const atomicLayering = layerOrder.slice(0, -1).map((layer, i) => ({
       "error",
       {
         patterns: layerOrder.slice(i + 1).map((upper) => ({
-          group: [`**/${upper}/*`, `**/${upper}`],
+          group: [`**/${upper}/**`, `**/${upper}`],
           message: `Atomic layering: ${layer} cannot import from ${upper} (layers only go upward).`,
         })),
       },
