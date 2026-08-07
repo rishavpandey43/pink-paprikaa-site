@@ -1,7 +1,7 @@
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 
-# General Guidelines for working with Nx
+## General Guidelines for working with Nx
 
 - For navigating/exploring the workspace, invoke the `nx-workspace` skill first - it has patterns for querying projects, targets, and dependencies
 - When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
@@ -43,38 +43,71 @@ Petpooja on an external domain (see §11 of the product spec for why an iframe i
 They are complementary, not competing. When they disagree, the architecture spec wins on
 build/tooling questions and the product spec wins on content/behaviour questions.
 
+Two divergences to expect rather than "fix": the product spec writes content paths in the old
+repo's layout (`src/data/`, `src/_redirects`) — the architecture spec's `packages/content` and
+`apps/web/public/_redirects` win. And the two number their phases differently; `docs/README.md`
+reconciles them.
+
 ## Hard rules
 
 1. **`Pink Paprikaa` — two `a`s.** Misspelling it is a content bug, not a typo.
-2. **Never write a literal brand hex.** `#EE2C68` exists once, in `packages/design-tokens`.
+2. **No founder identity on the site — ever.** Rishav Pandey must not appear as founder or owner in
+   markup, alt text, meta tags, structured data, or commit-authored page copy, and no "from code to
+   kitchen" or software-engineering framing. This is conflict-of-interest exposure from a full-time
+   MNC role, not a style preference — and it has already regressed once, on the live `/about`. The
+   legal entity name (Paprikaa Culinary Ventures Private Limited) stays; that is statutory
+   disclosure. Product spec §3.3; a CI grep gate enforces it (§12).
+3. **Never write a literal brand hex.** `#EE2C68` exists once, in `packages/design-tokens`.
    Everything else uses the token. A raw hex in `className` or JSX is a lint error.
-3. **Never hand-write a dependency version in `package.json`.** Install via `pnpm add`, which
+4. **Never hand-write a dependency version in `package.json`.** Install via `pnpm add`, which
    resolves latest stable. Two deliberate exceptions are documented in §13 of the architecture
    spec, each with a removal criterion:
    - **TypeScript stays on 6.x.** `latest` is 7.0.2 (Go-native), but `typescript-eslint` caps its
      peer range at `<6.1.0` in both stable and canary. On TS 7 every type-aware lint rule silently
      stops running. Do not "helpfully" upgrade this.
    - **`eslint-plugin-jsx-a11y` needs a pnpm peer override** for ESLint 10.
-4. **Module boundaries are enforced, not advisory.** The design system may never import app code;
+5. **Module boundaries are enforced, not advisory.** The design system may never import app code;
    `web` and `blog` may never import each other. If a boundary is in the way, the design is wrong —
    do not add an eslint-disable.
-5. **Atomic layering inside `packages/ui` only goes upward.** An atom cannot import a molecule.
-6. **Image originals live in `assets-src/` and are never deployed.** The old site shipped 43 MB of
+6. **Atomic layering inside `packages/ui` only goes upward.** An atom cannot import a molecule.
+7. **Image originals live in `assets-src/` and are never deployed.** The old site shipped 43 MB of
    raw PNGs; the Lighthouse byte-weight budget exists to make that impossible to repeat.
-7. **Conventional Commits.** Author with `pnpm commit` so the prompt and the commitlint rules stay
-   in sync.
-8. **Never touch `../pink-paprikaa-site`.** That repo still serves the live site. It is read-only
+8. **Conventional Commits.** `pnpm commit` (Commitizen) is the intended authoring path, but it does
+   **not exist yet** — root `scripts` is empty and husky/commitlint are unbuilt (§15). Until they
+   land, write conventional messages by hand with `git commit`; nothing validates them.
+9. **Never touch `../pink-paprikaa-site`.** That repo still serves the live site. It is read-only
    reference material until the Phase 6 cutover.
+
+Rules 3, 5 and 6 describe **lint** enforcement that is not wired yet — `tools/eslint-config` is
+unbuilt, so nothing currently fails on a raw hex, a boundary violation, or a downward atomic
+import. They are honour-system until the first ESLint config lands, and that config must implement
+them.
 
 ## Commands
 
 ```bash
-pnpm install                                  # frozen-lockfile in CI
+corepack enable                               # pnpm version comes from packageManager
+pnpm install                                  # --frozen-lockfile in CI
 pnpm nx affected -t typecheck lint test build # what CI runs
 pnpm nx format:check                          # Prettier, CI-blocking
 pnpm nx sync:check                            # TS project references in sync
 pnpm nx graph                                 # visualise the project graph
+pnpm nx show projects                         # prints [] today — see below
 ```
+
+**`nx affected` is a no-op right now.** The workspace has zero projects, so it runs no tasks and CI
+passes trivially. Green CI currently proves formatting and TS project references only — nothing was
+typechecked, linted, tested or built. Assume that until `nx show projects` returns something.
+
+Once projects exist, tasks are inferred (see Conventions) and scoped per project:
+
+```bash
+pnpm nx test ui                       # one project
+pnpm nx test ui -- -t "renders long"  # a single Vitest test by name
+pnpm nx run-many -t test              # whole workspace, ignoring affected
+```
+
+Vitest is not installed yet (§15) — that is the shape to use, not a command that works today.
 
 ## Conventions
 
@@ -84,6 +117,8 @@ pnpm nx graph                                 # visualise the project graph
 - **Nx inferred tasks (Project Crystal).** Targets come from `next.config.ts`, `vite.config.ts`,
   `eslint.config.mjs` etc. Do not hand-write `project.json` files.
 - **Nx Cloud is deliberately off.** Do not add `nx-cloud` steps to CI.
+- **The block at the top of this file is Nx-managed.** It is auto-updated between its
+  `<!-- nx configuration start/end -->` markers — keep them intact and add project content below.
 
 ## Current state
 
@@ -97,8 +132,17 @@ The working tree is authoritative if it and that table disagree. To establish gr
 
 ```bash
 pnpm nx format:check && pnpm nx sync:check   # confirm current state is green
+pnpm nx show projects                         # [] means no apps/packages exist yet
 git log --oneline                             # commit messages carry the reasoning
 ```
+
+Three more facts that are easy to trip on, all verified against the working tree:
+
+- **No git remote is configured.** The workspace was initialised locally; the remote is pointed at
+  GitHub in Phase 6. Nothing pushes anywhere yet.
+- **`main` is the only branch.** The spec's `dev` integration branch (§3) does not exist yet.
+- **Root `package.json` `scripts` is empty**, so every spec reference to `pnpm verify`,
+  `pnpm verify:all`, `pnpm commit` or `pnpm format` describes intent, not a working command.
 
 **§18 records the traps already hit** during setup — Nx and pnpm defaults that contradict this
 spec. Read it before running any generator; four of `create-nx-workspace`'s defaults had to be
