@@ -16,7 +16,8 @@
   "packageManager": "pnpm@10.26.1",
   "engines": {
     "node": ">=24.0.0",
-    "pnpm": ">=10.0.0"
+    "pnpm": ">=10.0.0",
+    "npm": "please-use-pnpm"
   },
   "devDependencies": {
     "@babel/core": "^7.14.5",
