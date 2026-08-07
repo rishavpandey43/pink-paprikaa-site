@@ -72,16 +72,14 @@ reconciles them.
 6. **Atomic layering inside `packages/ui` only goes upward.** An atom cannot import a molecule.
 7. **Image originals live in `assets-src/` and are never deployed.** The old site shipped 43 MB of
    raw PNGs; the Lighthouse byte-weight budget exists to make that impossible to repeat.
-8. **Conventional Commits.** `pnpm commit` (Commitizen) is the intended authoring path, but it does
-   **not exist yet** — root `scripts` is empty and husky/commitlint are unbuilt (§15). Until they
-   land, write conventional messages by hand with `git commit`; nothing validates them.
+8. **Conventional Commits.** Author with `pnpm commit` (Commitizen, via `cz-commitlint`); husky's
+   `commit-msg` hook runs commitlint against every commit.
 9. **Never touch `../pink-paprikaa-site`.** That repo still serves the live site. It is read-only
    reference material until the Phase 6 cutover.
 
-Rules 3, 5 and 6 describe **lint** enforcement that is not wired yet — `tools/eslint-config` is
-unbuilt, so nothing currently fails on a raw hex, a boundary violation, or a downward atomic
-import. They are honour-system until the first ESLint config lands, and that config must implement
-them.
+Rules 3, 5 and 6 are wired: `tools/eslint-config` implements `no-raw-hex` (workspace-wide) and
+`atomic-layering` (opt-in via `./atomic-layering`, `ui`-only). The acceptance probes that proved
+each rule catches its violation live in git history — see commits `5a3e2bb` and `1b79e84`.
 
 ## Commands
 
@@ -92,14 +90,12 @@ pnpm nx affected -t typecheck lint test build # what CI runs
 pnpm nx format:check                          # Prettier, CI-blocking
 pnpm nx sync:check                            # TS project references in sync
 pnpm nx graph                                 # visualise the project graph
-pnpm nx show projects                         # prints [] today — see below
+pnpm nx show projects                         # 12 projects — see below
 ```
 
-**`nx affected` is a no-op right now.** The workspace has zero projects, so it runs no tasks and CI
-passes trivially. Green CI currently proves formatting and TS project references only — nothing was
-typechecked, linted, tested or built. Assume that until `nx show projects` returns something.
-
-Once projects exist, tasks are inferred (see Conventions) and scoped per project:
+**12 projects exist**: apps `web`, `blog` + their `web-e2e`, `blog-e2e`; packages `design-tokens`,
+`ui`, `content`, `seo`, `utils`; tools `typescript-config`, `eslint-config`, `image-pipeline`.
+Tasks are inferred (see Conventions) and scoped per project:
 
 ```bash
 pnpm nx test ui                       # one project
@@ -107,7 +103,11 @@ pnpm nx test ui -- -t "renders long"  # a single Vitest test by name
 pnpm nx run-many -t test              # whole workspace, ignoring affected
 ```
 
-Vitest is not installed yet (§15) — that is the shape to use, not a command that works today.
+`nx affected` compares against `main` by default. Because none of Phase 0 has merged to `main`
+yet, it currently reports every project as affected on this branch regardless of what the latest
+commit touched — that stops once `feat/phase-0-foundation` merges, after which a docs-only commit
+will affect zero projects as intended. CI instead uses `nrwl/nx-set-shas` to diff against the last
+successful run, so it does not have this problem.
 
 ## Conventions
 
@@ -122,27 +122,31 @@ Vitest is not installed yet (§15) — that is the shape to use, not a command t
 
 ## Current state
 
-**Phase 0 (foundation) is in progress.**
+**Phase 0 (foundation) is complete, pending merge of `feat/phase-0-foundation` into `main`.**
 
-The item-by-item record of what is built and what is not lives in **§15 of the architecture spec**
-("Phase 0 progress"). Read it before planning any work, and update it as items land — it is the
-only place that state is tracked, so do not duplicate it here.
+The item-by-item record of what is built and what is deferred lives in **§15 of the architecture
+spec** ("Phase 0 progress"). Read it before planning the next phase, and update it as items
+land — it is the only place that state is tracked, so do not duplicate it here.
 
 The working tree is authoritative if it and that table disagree. To establish ground truth:
 
 ```bash
 pnpm nx format:check && pnpm nx sync:check   # confirm current state is green
-pnpm nx show projects                         # [] means no apps/packages exist yet
+pnpm nx show projects                         # 12 projects
 git log --oneline                             # commit messages carry the reasoning
 ```
 
 Three more facts that are easy to trip on, all verified against the working tree:
 
 - **No git remote is configured.** The workspace was initialised locally; the remote is pointed at
-  GitHub in Phase 6. Nothing pushes anywhere yet.
-- **`main` is the only branch.** The spec's `dev` integration branch (§3) does not exist yet.
-- **Root `package.json` `scripts` is empty**, so every spec reference to `pnpm verify`,
-  `pnpm verify:all`, `pnpm commit` or `pnpm format` describes intent, not a working command.
+  GitHub in Phase 6. Nothing pushes anywhere yet, and CI has never actually executed — every
+  workflow command in `.github/workflows/ci.yml` was verified locally instead.
+- **`main` is no longer the only branch.** This work landed on `feat/phase-0-foundation`; `main`
+  still points at the pre-Phase-0 state until that branch is merged. The spec's `dev` integration
+  branch (§3) still does not exist.
+- **Root `package.json` `scripts` is now real**: `verify`, `verify:all`, `commit` (`cz`), `format`,
+  `format:check`, `guard:founder`, `prepare`. `pnpm verify`, `pnpm commit` and `pnpm format` all
+  work as described in the architecture spec.
 
 **§18 records the traps already hit** during setup — Nx and pnpm defaults that contradict this
 spec. Read it before running any generator; four of `create-nx-workspace`'s defaults had to be

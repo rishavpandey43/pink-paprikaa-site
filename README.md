@@ -6,9 +6,12 @@ pure-vegetarian restaurant in Sector 57 / MKM Market, Gurgaon.
 Two static-export Next.js applications and a token-driven design system, built with Nx and pnpm.
 No server, no runtime cost.
 
-> **Status: Phase 0 — foundation.** The workspace and tooling exist; apps and packages do not yet.
-> The live site is still served from the separate `pink-paprikaa-site` repository until the Phase 6
-> cutover.
+> **Status: Phase 0 — foundation, complete.** Apps, packages, tools and CI gates exist — empty but
+> wired: static-export shells for `web`/`blog`, a working token pipeline, a Storybook shell, and
+> founder-name/Lighthouse/module-boundary gates all passing. No real components, content, or pages
+> yet — those land in Phases 1–5. The live site is still served from the separate
+> `pink-paprikaa-site` repository until the Phase 6 cutover; this work is on
+> `feat/phase-0-foundation`, not yet merged to `main`.
 
 ## Getting started
 
