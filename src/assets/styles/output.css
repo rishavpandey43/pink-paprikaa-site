@@ -64,6 +64,7 @@
     --color-leaf: #1c6058;
     --color-blush: #ffdbe8;
     --font-body: Inter, ui-sans-serif, system-ui;
+    --shadow-soft: 0 10px 25px rgba(0,0,0,0.08);
   }
 }
 @layer base {
@@ -382,6 +383,9 @@
   }
   .hidden {
     display: none;
+  }
+  .inline {
+    display: inline;
   }
   .inline-block {
     display: inline-block;
