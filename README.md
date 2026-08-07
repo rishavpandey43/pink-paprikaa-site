@@ -1,107 +1,63 @@
-# New Nx Repository
+# Pink Paprikaa — Website
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+Monorepo for [pinkpaprikaa.com](https://pinkpaprikaa.com) — the marketing site for Pink Paprikaa, a
+pure-vegetarian restaurant in Sector 57 / MKM Market, Gurgaon.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+Two static-export Next.js applications and a token-driven design system, built with Nx and pnpm.
+No server, no runtime cost.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/docs/technologies/typescript/introduction?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-🚀 If you haven't connected to Nx Cloud yet, [complete your setup here](https://cloud.nx.app/get-started). Get faster builds with remote caching, distributed task execution, and self-healing CI. [See how your workspace can benefit](#nx-cloud).
-## Generate a library
+> **Status: Phase 0 — foundation.** The workspace and tooling exist; apps and packages do not yet.
+> The live site is still served from the separate `pink-paprikaa-site` repository until the Phase 6
+> cutover.
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+## Getting started
+
+```bash
+corepack enable      # pnpm version comes from the packageManager field
+pnpm install
 ```
 
-## Run tasks
+Node version is pinned in `.nvmrc`.
 
-To build the library use:
+## Commands
 
-```sh
-npx nx run pkg1:build
-```
+| Command                                         | Does                                               |
+| ----------------------------------------------- | -------------------------------------------------- |
+| `pnpm nx affected -t typecheck lint test build` | Everything CI runs, on changed projects only       |
+| `pnpm nx format:check` / `format:write`         | Prettier — `format:check` blocks CI                |
+| `pnpm nx sync:check`                            | Verifies TypeScript project references are in sync |
+| `pnpm nx graph`                                 | Opens the interactive project graph                |
 
-To run any task with Nx use:
+## Architecture
 
-```sh
-npx nx run <project-name>:<target>
-```
+| Doc                                                                                              | Covers                                                         |
+| ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| [Boilerplate architecture](docs/superpowers/specs/2026-08-07-boilerplate-architecture-design.md) | **How** — workspace, tooling, CI, design system, phase roadmap |
+| [Product requirements](docs/superpowers/specs/2026-08-07-pink-paprikaa-site-redesign-design.md)  | **What** — pages, content, data model, SEO, success criteria   |
 
-These targets are either [inferred automatically](https://nx.dev/docs/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/docs/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
+Planned shape:
 
 ```
-npx nx release
+apps/web        Next.js · static export        → pinkpaprikaa.com
+apps/blog       Next.js · basePath /blog       → proxied onto the apex domain
+packages/       design-tokens · ui · content · seo · utils
+tools/          eslint-config · typescript-config · image-pipeline
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+Key decisions and their rationale — including why Gatsby was rejected, why TypeScript is pinned to
+6.x, and why hosting is Netlify rather than Vercel — are recorded in the architecture spec. It also
+documents what each decision costs, not just what it buys.
 
-[Learn more about Nx release &raquo;](https://nx.dev/docs/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Conventions
 
-## Keep TypeScript project references up to date
+- **pnpm only.** Pinned via `packageManager` and corepack.
+- **Conventional Commits**, authored with `pnpm commit`.
+- **No hand-written dependency versions.** Install through `pnpm add`; the two deliberate exceptions
+  are documented in §13 of the architecture spec with removal criteria.
+- **Module boundaries are lint-enforced.** The design system cannot import app code; the two apps
+  cannot import each other.
+- **Nx Cloud is off** by choice — local caching is sufficient for a single maintainer.
 
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
+## Licence
 
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
-
-```sh
-npx nx sync
-```
-
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
-
-```sh
-npx nx sync:check
-```
-
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
-
-## Nx Cloud
-
-Nx Cloud ensures a [fast and scalable CI](https://nx.dev/nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/docs/features/ci-features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/docs/features/ci-features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/docs/features/ci-features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/docs/features/ci-features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Set up CI (non-Github Actions CI)
-
-**Note:** This is only required if your CI provider is not GitHub Actions.
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/docs/features/ci-features?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/docs/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## 🔗 Learn More
-
-- [Nx Documentation](https://nx.dev/docs)
-- [Crafting Your Workspace Tutorial](https://nx.dev/docs/getting-started/tutorials/crafting-your-workspace)
-- [Module Boundaries](https://nx.dev/docs/features/enforce-module-boundaries)
-- [Releasing Packages](https://nx.dev/docs/features/manage-releases)
-- [Nx Plugins](https://nx.dev/docs/concepts/nx-plugins)
-- [Nx Cloud](https://nx.dev/nx-cloud)
-
-## 💬 Community
-
-Join the Nx community:
-
-- [Discord](https://go.nx.dev/community)
-- [X (Twitter)](https://twitter.com/nxdevtools)
-- [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [YouTube](https://www.youtube.com/@nxdevtools)
-- [Blog](https://nx.dev/blog)
+Private. All rights reserved.

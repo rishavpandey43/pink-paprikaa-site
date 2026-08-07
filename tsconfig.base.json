@@ -3,6 +3,7 @@
     "composite": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
+    "exactOptionalPropertyTypes": true,
     "importHelpers": true,
     "isolatedModules": true,
     "lib": ["es2022"],
@@ -12,11 +13,13 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
+    "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@org/source"],
+    "customConditions": ["@pink-paprikaa-web/source"],
     "noUncheckedSideEffectImports": false,
     "types": ["*"]
   }

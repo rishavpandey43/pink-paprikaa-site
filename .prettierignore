@@ -4,3 +4,6 @@
 /.nx/cache
 /.nx/workspace-data
 .nx/self-healing
+
+# Lockfile is machine-generated; formatting it fights pnpm on every install
+pnpm-lock.yaml

@@ -10,8 +10,13 @@ permissions:
   actions: read
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
-  main:
+  verify:
+    name: Verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -19,22 +24,30 @@ jobs:
           filter: tree:0
           fetch-depth: 0
 
-      # This enables task distribution via Nx Cloud
-      # Run this command as early as possible, before dependencies are installed
-      # Learn more at https://nx.dev/docs/reference/nx-cloud-cli#npx-nxcloud-startcirun
-      - run: npx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e"
+      # Must run before setup-node so that `cache: pnpm` can find pnpm.
+      # Reads the version from the `packageManager` field in package.json.
+      - uses: pnpm/action-setup@v4
 
-      # Cache node_modules
       - uses: actions/setup-node@v5
         with:
-          node-version: 24
-          cache: 'npm'
+          node-version-file: .nvmrc
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
-      # Prepend any command with "nx record --" to record its logs to Nx Cloud
-      - run: npx nx record -- npx nx format:check --base="remotes/origin/main"
-      - run: npx nx run-many -t lint test build typecheck e2e
-      # Nx Cloud recommends fixes for failures to help you get CI green faster. Learn more: https://nx.dev/docs/features/ci-features/self-healing-ci
-      - run: npx nx fix-ci
-        if: always()
+      # Derives NX_BASE / NX_HEAD so `nx affected` compares against the
+      # last successful commit rather than rebuilding the whole workspace.
+      - uses: nrwl/nx-set-shas@v4
+
+      - name: Formatting
+        run: pnpm nx format:check
+
+      - name: TypeScript project references in sync
+        run: pnpm nx sync:check
+
+      - name: Typecheck, lint, test, build
+        run: pnpm nx affected -t typecheck lint test build
+
+  # The e2e and lighthouse jobs described in the architecture spec (§12, §14)
+  # are added alongside the apps they test — they have no targets to run until
+  # apps/web exists.

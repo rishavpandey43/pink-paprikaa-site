@@ -1,2 +1,10 @@
 packages:
-  - 'packages/*'
+  - "apps/*"
+  - "packages/*"
+  - "tools/*"
+
+# pnpm 10 blocks dependency build scripts by default. Only packages that
+# genuinely need to compile native bindings at install time belong here.
+onlyBuiltDependencies:
+  - nx
+  - "@swc/core"
