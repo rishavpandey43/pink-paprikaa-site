@@ -8,5 +8,11 @@
     "./react": "./react.js",
     "./next": "./next.js",
     "./atomic-layering": "./atomic-layering.js"
+  },
+  "nx": {
+    "tags": [
+      "type:tool",
+      "scope:shared"
+    ]
   }
 }

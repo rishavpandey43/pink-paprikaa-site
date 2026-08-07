@@ -18,5 +18,11 @@
   },
   "dependencies": {
     "@pink-paprikaa-web/design-tokens": "workspace:*"
+  },
+  "nx": {
+    "tags": [
+      "type:ui",
+      "scope:shared"
+    ]
   }
 }

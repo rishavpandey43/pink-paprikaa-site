@@ -11,6 +11,10 @@
     "tailwindcss": "^4.3.3"
   },
   "nx": {
+    "tags": [
+      "type:app",
+      "scope:web"
+    ],
     "targets": {
       "build": {
         "outputs": [

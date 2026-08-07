@@ -17,6 +17,10 @@
     "zod": "^4.4.3"
   },
   "nx": {
+    "tags": [
+      "type:app",
+      "scope:blog"
+    ],
     "targets": {
       "build": {
         "outputs": [

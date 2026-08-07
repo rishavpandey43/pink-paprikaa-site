@@ -13,5 +13,11 @@
     },
     "./package.json": "./package.json"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "nx": {
+    "tags": [
+      "type:util",
+      "scope:shared"
+    ]
+  }
 }

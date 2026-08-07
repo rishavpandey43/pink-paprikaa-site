@@ -11,6 +11,10 @@
     "./tokens.json": "./dist/tokens.json"
   },
   "nx": {
+    "tags": [
+      "type:tokens",
+      "scope:shared"
+    ],
     "targets": {
       "build": {
         "inputs": [
