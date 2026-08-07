@@ -1,6 +1,7 @@
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
+import tailwindcss from "eslint-plugin-tailwindcss";
 import { createRequire } from "node:module";
 
 import base from "./base.js";
@@ -51,4 +52,31 @@ export default [
     plugins: { "pink-paprikaa": { rules: { "no-raw-hex": noRawHex } } },
     rules: { "pink-paprikaa/no-raw-hex": "error" },
   },
+  // `eslint-plugin-tailwindcss`@4.x (task 2's deferred install, task 8 wires
+  // it up) — this major is "Made for Tailwind CSS v4"
+  // (https://github.com/francoismassart/eslint-plugin-tailwindcss#readme),
+  // confirmed by reading the installed 4.2.0's README, not assumed from the
+  // package name.
+  //
+  // What is NOT set here: `settings.tailwindcss.cssConfigPath`. It is
+  // mandatory per the plugin's own docs ("REQUIRED, as the default value may
+  // not work out-of-the-box"), and — empirically, verified two ways: via
+  // ESLint's Linter API directly, and by the very first `nx lint` after this
+  // registration landed, which crashed `packages/ui:lint` outright — an
+  // unresolvable path doesn't just skip checks, it throws ("Could not find
+  // tailwindcss" / ENOENT on the theme file) at rule-init time, *before* any
+  // classname is even inspected. So this is not a dormant-until-someone-
+  // writes-a-classname landmine; it fails every consumer immediately. That
+  // path is inherently per-consumer (this repo's Next apps keep it at
+  // `src/app/global.css`; `packages/ui` keeps its Tailwind entry at
+  // `.storybook/styles.css`), so it cannot be hardcoded correctly here in
+  // the shared preset for every consumer at once — each consumer of
+  // `react.js` (directly or via `next.js`) MUST add its own
+  // `settings.tailwindcss.cssConfigPath` override. Next apps get theirs in
+  // `next.js` (all of them share the same `src/app/global.css` App Router
+  // convention); `packages/ui` sets its own in `packages/ui/eslint.config.mjs`.
+  // A future consumer that composes `react.js` directly must do the same or
+  // its `lint` target will fail immediately, not just once it writes a
+  // classname.
+  tailwindcss.configs.recommended,
 ];

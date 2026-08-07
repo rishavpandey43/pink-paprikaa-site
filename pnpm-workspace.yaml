@@ -8,6 +8,10 @@ packages:
 onlyBuiltDependencies:
   - nx
   - "@swc/core"
+  - "@parcel/watcher"
+  - less
+  - sharp
+  - unrs-resolver
 
 peerDependencyRules:
   allowedVersions:

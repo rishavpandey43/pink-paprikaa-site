@@ -1,0 +1,24 @@
+{
+  "name": "@pink-paprikaa-web/web",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@pink-paprikaa-web/design-tokens": "workspace:*",
+    "@tailwindcss/postcss": "^4.3.3",
+    "next": "~16.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "outputs": [
+          "{projectRoot}/.next/!(cache)/**/*",
+          "{projectRoot}/.next/!(cache)",
+          "{projectRoot}/out"
+        ]
+      }
+    }
+  }
+}
