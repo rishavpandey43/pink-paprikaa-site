@@ -101,6 +101,9 @@ Tasks are inferred (see Conventions) and scoped per project:
 pnpm nx test ui                       # one project
 pnpm nx test ui -- -t "renders long"  # a single Vitest test by name
 pnpm nx run-many -t test              # whole workspace, ignoring affected
+pnpm nx dev web                       # dev server (localhost:3000) — the target is `dev`, NOT `serve`
+pnpm nx dev blog                      # blog dev server (basePath /blog)
+pnpm nx serve-static web              # serve the production build
 ```
 
 `nx affected` compares against `main` by default. Because none of Phase 0 has merged to `main`
