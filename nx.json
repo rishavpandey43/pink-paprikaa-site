@@ -60,5 +60,12 @@
     "test": {
       "dependsOn": ["^build"]
     }
+  },
+  "generators": {
+    "@nx/react": {
+      "library": {
+        "unitTestRunner": "vitest"
+      }
+    }
   }
 }
