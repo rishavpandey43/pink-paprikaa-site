@@ -240,6 +240,20 @@ Conventional Commits via `@commitlint/config-conventional`, authored through Com
 
 Scopes are constrained to the workspace projects: `web`, `blog`, `ui`, `tokens`, `content`, `seo`, `utils`, `tools`, `ci`, `deps`.
 
+### Root scripts
+
+Defined once in the root `package.json` so local and CI invocations cannot drift apart:
+
+| Script              | Runs                                              | Called by                                      |
+| ------------------- | ------------------------------------------------- | ---------------------------------------------- |
+| `pnpm verify`       | `nx affected -t typecheck lint test build`        | `pre-push` hook, CI, and §1's success criteria |
+| `pnpm verify:all`   | `nx run-many -t typecheck lint test build`        | Full-workspace check, release prep             |
+| `pnpm commit`       | `cz` (Commitizen via `@commitlint/cz-commitlint`) | Authoring every commit                         |
+| `pnpm format`       | `nx format:write`                                 | Local                                          |
+| `pnpm format:check` | `nx format:check`                                 | CI                                             |
+
+`pnpm verify` is the single name for "everything that gates a change". The pre-push hook and the CI job both call it, so a green local run means a green CI run — there is no second list to keep in sync.
+
 ---
 
 ## 8. Design system
@@ -451,6 +465,35 @@ GitHub Actions. Netlify does **not** build — artifacts are built in CI so the 
 
 Each phase gets its own spec and implementation plan. Nothing in Phase 0 assumes anything about the visual design.
 
+### Phase 0 progress
+
+Phase 0 is partly built. This table is the authoritative record — verify it against the working tree before planning, and update it as items land.
+
+| Item                                                         | Status  | Notes                                                                                               |
+| ------------------------------------------------------------ | ------- | --------------------------------------------------------------------------------------------------- |
+| Workspace created (`--preset=apps`, pnpm, Nx 23.1.1)         | ✅ done | `--preset` is not offered by Nx 23's interactive flow; it must be passed explicitly (§3)            |
+| npm scope `@pink-paprikaa-web/*`                             | ✅ done | `package.json` name + `customConditions` in `tsconfig.base.json`                                    |
+| pnpm workspaces (`apps/*`, `packages/*`, `tools/*`)          | ✅ done | Plus `onlyBuiltDependencies` — pnpm 10 blocks postinstall scripts, leaving Nx's bindings uncompiled |
+| TypeScript strict options (§6)                               | ✅ done | Nx's template already pinned `typescript: ~6.0.3`, matching §13 independently                       |
+| Node + pnpm pinning                                          | ✅ done | `.nvmrc`, `packageManager`, `engines`                                                               |
+| Prettier config                                              | ✅ done | printWidth 100 / double quotes, replacing Nx's single-quote default; `pnpm-lock.yaml` ignored       |
+| CI — `format:check`, `sync:check`, `affected` (§14)          | ✅ done | Replaced Nx's generated workflow, which ran `npm ci` in a pnpm workspace and called Nx Cloud        |
+| Claude Code setup                                            | ✅ done | `.claude/` permissions + scaffolding; root `CLAUDE.md`                                              |
+| Apps `web`, `blog` + their e2e projects                      | ⬜ todo | §4                                                                                                  |
+| Packages `design-tokens`, `ui`, `content`, `seo`, `utils`    | ⬜ todo | §4, §8, §9, §11                                                                                     |
+| Tools `eslint-config`, `typescript-config`, `image-pipeline` | ⬜ todo | §7, §6, §10                                                                                         |
+| Nx tags + `enforce-module-boundaries`                        | ⬜ todo | §5 — tags cannot be applied until projects exist                                                    |
+| ESLint flat config, incl. the two project-specific rules     | ⬜ todo | §7                                                                                                  |
+| `eslint-plugin-jsx-a11y` pnpm peer override                  | ⬜ todo | §13 — add when ESLint is installed, not before                                                      |
+| husky + lint-staged + commitlint + Commitizen                | ⬜ todo | §7                                                                                                  |
+| Style Dictionary token pipeline                              | ⬜ todo | §8                                                                                                  |
+| Storybook shell + reference `Button`                         | ⬜ todo | §8                                                                                                  |
+| Vitest, Playwright, axe, Lighthouse CI + their CI jobs       | ⬜ todo | §12, §14 — no targets to run until the apps exist                                                   |
+| Content-integrity and founder-name gates                     | ⬜ todo | §12                                                                                                 |
+| Root scripts (`verify`, `commit`, `format`)                  | ⬜ todo | §7 — root `package.json` `scripts` is still empty                                                   |
+
+**Establishing ground truth.** The working tree, not this table, is authoritative if they disagree. `git log` carries the reasoning behind each completed item; `pnpm nx format:check && pnpm nx sync:check` confirms the current state is green before anything is added.
+
 ---
 
 ## 16. Deferred to later phases
@@ -466,6 +509,18 @@ Recorded so they are not silently forgotten:
 | Making AC dine-in visible, given it is invisible from the road                 | 2     |
 | Whether `nx release` should generate a CHANGELOG from conventional commits     | 6     |
 
+### External inputs required by later phases
+
+These live outside both repositories. Confirm each exists and is current **before** starting the phase that needs it — discovering a missing input mid-phase is what stalls a build.
+
+| Input                                                                               | Needed by | Notes                                                                                  |
+| ----------------------------------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------- |
+| Menu data — 207 dishes, `Sales & Menu Engineering/menu/parsed/new-offline-menu.csv` | Phase 2   | Per the product spec. Dine-in prices, not delivery. Outside both repos.                |
+| Design system designs                                                               | Phase 1   | Supplied by Rishav; Phase 1 cannot start without them                                  |
+| Image originals — 25 PNGs currently in `pink-paprikaa-site/src/assets/images/`      | Phase 3   | Move to `assets-src/`; decide which survive the redesign rather than porting all 43 MB |
+| Interior / AC dine-in photography                                                   | Phase 2   | Product spec D6 records these as available                                             |
+| Netlify account access — three sites (web, blog, storybook) plus the domain and DNS | Phase 6   | The two Petpooja 301s are already configured on the existing site                      |
+
 ---
 
 ## 17. Known costs
@@ -476,3 +531,21 @@ Stated plainly rather than discovered later.
 2. **Build time.** The sharp image pipeline and Style Dictionary codegen both add to cold builds. Nx caching makes warm builds cheap; cold CI builds will be slower than the current Tailwind-only setup.
 3. **Two TypeScript majors behind `latest`** until typescript-eslint catches up (§13).
 4. **Two repositories in play until Phase 6.** The old repo keeps the live site and the 43 MB of PNG history; the new one stays clean. The tradeoff is that content porting in Phase 2 reads across two directories, and both must be kept straight until the old one is archived.
+
+---
+
+## 18. Traps hit during setup
+
+Each of these cost real time and none is obvious from documentation. Recorded so they are not rediscovered.
+
+| Trap                                                                                                                                                                         | Resolution                                                                                                                          |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Nx 23's interactive prompt only offers `--template`** (GitHub template repos — `nrwl/react-template` is React + Express). The classic `--preset` list is gone from the UI. | Pass `--preset=apps` explicitly and skip interactive mode. It maps internally to `nrwl/empty-template`.                             |
+| **pnpm 10 blocks dependency build scripts by default.** Nx's native bindings were left uncompiled with only a warning.                                                       | Declare `onlyBuiltDependencies` in `pnpm-workspace.yaml` — committed config survives a fresh clone; `pnpm approve-builds` does not. |
+| **Nx's generated `ci.yml` runs `npm ci`** in a pnpm workspace and calls Nx Cloud commands (`start-ci-run`, `record`, `fix-ci`).                                              | Replaced entirely. Would have failed on the first push.                                                                             |
+| **`nx format:check` fails on `pnpm-lock.yaml`.**                                                                                                                             | Added to `.prettierignore`. Machine-generated; formatting it fights pnpm on every install.                                          |
+| **Nx's default `.prettierrc` uses single quotes**, contradicting the established project style.                                                                              | Replaced with printWidth 100 / double quotes / `trailingComma: es5`.                                                                |
+| **`--aiAgents=claude` generates configs for every agent**, not just Claude — `.codex/`, `.cursor/`, `.gemini/`, `.opencode/`, `AGENTS.md` (byte-identical to `CLAUDE.md`).   | Removed the unused ones. Kept `.agents/skills/` and `.github/skills/`, which hold the Nx skills.                                    |
+| **Prettier turns `~$20 (~₹1,700)` into `~~$20 (~~₹1,700)`** — valid GFM strikethrough, so the text renders struck through.                                                   | Avoid `~` as an "approximately" sign in Markdown. Use "about" or `≈`.                                                               |
+
+**The general lesson:** `create-nx-workspace` output is a starting point, not a finished configuration. Verify every generated file against this spec rather than assuming the generator agrees with it — on this workspace, four of its defaults did not.

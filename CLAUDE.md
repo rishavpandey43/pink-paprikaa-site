@@ -87,9 +87,21 @@ pnpm nx graph                                 # visualise the project graph
 
 ## Current state
 
-**Phase 0 (foundation) is in progress.** The workspace, Nx config, TypeScript, Prettier, CI shell
-and Claude setup exist. Not yet built: apps, packages, tooling presets, design system pipeline,
-image pipeline, git hooks, and the e2e/Lighthouse CI jobs.
+**Phase 0 (foundation) is in progress.**
 
-Phase roadmap is §15 of the architecture spec. Do not start a later phase before its dependencies
-are done.
+The item-by-item record of what is built and what is not lives in **§15 of the architecture spec**
+("Phase 0 progress"). Read it before planning any work, and update it as items land — it is the
+only place that state is tracked, so do not duplicate it here.
+
+The working tree is authoritative if it and that table disagree. To establish ground truth:
+
+```bash
+pnpm nx format:check && pnpm nx sync:check   # confirm current state is green
+git log --oneline                             # commit messages carry the reasoning
+```
+
+**§18 records the traps already hit** during setup — Nx and pnpm defaults that contradict this
+spec. Read it before running any generator; four of `create-nx-workspace`'s defaults had to be
+undone.
+
+Do not start a later phase before its dependencies (§15) are done.
