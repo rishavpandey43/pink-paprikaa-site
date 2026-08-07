@@ -1,0 +1,6 @@
+{
+  "name": "@pink-paprikaa-web/typescript-config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared TypeScript presets: base / next / react-library / node"
+}
