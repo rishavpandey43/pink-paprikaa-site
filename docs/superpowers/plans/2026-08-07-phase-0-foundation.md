@@ -54,6 +54,13 @@ Every task's requirements implicitly include all of these.
 14. **Generated output is a starting point** (spec §18): after any generator runs, diff every
     file it wrote against this plan and the spec, and correct disagreements (quote style, npm
     commands, Nx Cloud references, single-quote Prettier output).
+15. **The Nx way, always (user directive 2026-08-07).** Set up every capability through Nx:
+    `pnpm nx add <plugin>` / `pnpm nx g <generator>` first, hand-authoring only where no
+    generator covers it. Build on what Nx generates and exports (e.g. compose ESLint configs
+    from `@nx/eslint-plugin`'s flat presets rather than reinventing them) instead of replacing
+    Nx's structure. Every task must remain invocable as `pnpm nx <target> <project>`, inference
+    must keep working (`pnpm nx show project <name>` lists the expected targets), and nothing
+    may break `nx graph`, `nx sync`, or `nx affected`.
 
 ---
 
