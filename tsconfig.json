@@ -2,8 +2,10 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "include": ["vitest.config.ts"],
   "references": [
+    {
+      "path": "./tsconfig.vitest.json"
+    },
     {
       "path": "./packages/utils"
     },
