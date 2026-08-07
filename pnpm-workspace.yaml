@@ -9,6 +9,7 @@ onlyBuiltDependencies:
   - nx
   - "@swc/core"
   - "@parcel/watcher"
+  - esbuild
   - less
   - sharp
   - unrs-resolver

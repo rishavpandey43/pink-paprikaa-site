@@ -23,6 +23,12 @@
     },
     {
       "path": "./apps/web"
+    },
+    {
+      "path": "./apps/blog-e2e"
+    },
+    {
+      "path": "./apps/blog"
     }
   ],
   "compilerOptions": {}

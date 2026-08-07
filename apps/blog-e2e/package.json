@@ -1,0 +1,20 @@
+{
+  "name": "@pink-paprikaa-web/blog-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@pink-paprikaa-web/blog"
+    ],
+    "targets": {
+      "e2e": {
+        "dependsOn": [
+          "@pink-paprikaa-web/blog:build"
+        ]
+      }
+    }
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.12.1"
+  }
+}
