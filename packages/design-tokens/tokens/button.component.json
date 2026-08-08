@@ -1,6 +1,64 @@
 {
   "button": {
-    "bg": { "default": { "$type": "color", "$value": "{color.brand.primary}" } },
-    "fg": { "default": { "$type": "color", "$value": "{color.surface}" } }
+    "bg": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.brand.primary}"
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "{color.brand.primary-hover}"
+      },
+      "active": {
+        "$type": "color",
+        "$value": "{color.brand.primary-active}"
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{color.ink.200}"
+      }
+    },
+    "fg": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.text.on-brand}"
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{color.ink.400}"
+      }
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.6}"
+    },
+    "h-sm": {
+      "$type": "dimension",
+      "$value": "36px"
+    },
+    "h-md": {
+      "$type": "dimension",
+      "$value": "48px"
+    },
+    "h-lg": {
+      "$type": "dimension",
+      "$value": "62px"
+    },
+    "px-sm": {
+      "$type": "dimension",
+      "$value": "{spacing.4}"
+    },
+    "px-md": {
+      "$type": "dimension",
+      "$value": "{spacing.7}"
+    },
+    "px-lg": {
+      "$type": "dimension",
+      "$value": "{spacing.10}"
+    },
+    "shadow": {
+      "$type": "other",
+      "$value": "{shadow.brand}"
+    }
   }
 }

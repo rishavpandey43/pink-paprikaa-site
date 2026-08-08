@@ -1,0 +1,102 @@
+{
+  "canvas": {
+    "post-w": {
+      "$type": "dimension",
+      "$value": "1080px"
+    },
+    "post-h": {
+      "$type": "dimension",
+      "$value": "1080px"
+    },
+    "portrait-w": {
+      "$type": "dimension",
+      "$value": "1080px"
+    },
+    "portrait-h": {
+      "$type": "dimension",
+      "$value": "1350px"
+    },
+    "story-w": {
+      "$type": "dimension",
+      "$value": "1080px"
+    },
+    "story-h": {
+      "$type": "dimension",
+      "$value": "1920px"
+    },
+    "landscape-w": {
+      "$type": "dimension",
+      "$value": "1200px"
+    },
+    "landscape-h": {
+      "$type": "dimension",
+      "$value": "628px"
+    },
+    "wide-w": {
+      "$type": "dimension",
+      "$value": "1920px"
+    },
+    "wide-h": {
+      "$type": "dimension",
+      "$value": "1080px"
+    },
+    "mpu-w": {
+      "$type": "dimension",
+      "$value": "300px"
+    },
+    "mpu-h": {
+      "$type": "dimension",
+      "$value": "250px"
+    },
+    "leaderboard-w": {
+      "$type": "dimension",
+      "$value": "728px"
+    },
+    "leaderboard-h": {
+      "$type": "dimension",
+      "$value": "90px"
+    },
+    "pad": {
+      "$type": "dimension",
+      "$value": "72px"
+    },
+    "pad-tight": {
+      "$type": "dimension",
+      "$value": "48px"
+    },
+    "story-safe-top": {
+      "$type": "dimension",
+      "$value": "250px"
+    },
+    "story-safe-bottom": {
+      "$type": "dimension",
+      "$value": "320px"
+    }
+  },
+  "text": {
+    "canvas-hero": {
+      "$type": "dimension",
+      "$value": "132px"
+    },
+    "canvas-h1": {
+      "$type": "dimension",
+      "$value": "96px"
+    },
+    "canvas-h2": {
+      "$type": "dimension",
+      "$value": "72px"
+    },
+    "canvas-body": {
+      "$type": "dimension",
+      "$value": "34px"
+    },
+    "canvas-caption": {
+      "$type": "dimension",
+      "$value": "26px"
+    },
+    "canvas-overline": {
+      "$type": "dimension",
+      "$value": "24px"
+    }
+  }
+}

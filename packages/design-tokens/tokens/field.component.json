@@ -1,0 +1,66 @@
+{
+  "field": {
+    "h": {
+      "$type": "dimension",
+      "$value": "48px"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.3}"
+    },
+    "bg": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.surface.card}"
+      },
+      "readonly": {
+        "$type": "color",
+        "$value": "{color.surface.sunken}"
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{color.ink.200}"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.border.default}"
+      },
+      "focus": {
+        "$type": "color",
+        "$value": "{color.border.brand}"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "{color.status.danger}"
+      },
+      "success": {
+        "$type": "color",
+        "$value": "{color.status.success}"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "{color.status.warning}"
+      }
+    },
+    "fg": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.text.body}"
+      },
+      "placeholder": {
+        "$type": "color",
+        "$value": "{color.text.subtle}"
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{color.ink.400}"
+      }
+    },
+    "ring": {
+      "$type": "other",
+      "$value": "{shadow.focus-ring}"
+    }
+  }
+}
