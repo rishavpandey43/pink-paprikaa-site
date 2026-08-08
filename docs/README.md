@@ -6,9 +6,11 @@
 | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
 | [Boilerplate architecture](superpowers/specs/2026-08-07-boilerplate-architecture-design.md) | **How** the site is built — workspace, Nx, TypeScript, lint, hooks, design system pipeline, image pipeline, CI/CD, phase roadmap | Approved              |
 | [Product requirements](superpowers/specs/2026-08-07-pink-paprikaa-site-redesign-design.md)  | **What** the site must do — pages, sections, content, data model, SEO, assets, success criteria                                  | Approved for planning |
+| [Coding guidelines](superpowers/specs/2026-08-08-coding-guidelines-design.md)               | **How code is written** — principles, layer map, component/state/constants patterns, TypeScript rules, testing philosophy        | Approved              |
 
-The two are complementary. On a build or tooling question the architecture spec is authoritative;
-on content or behaviour the product spec is.
+The three are complementary. On a build or tooling question the architecture spec is
+authoritative; on content or behaviour the product spec is; on code shape the coding guidelines
+are.
 
 ### Reconciling their phase numbering
 

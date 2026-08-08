@@ -39,9 +39,13 @@ Petpooja on an external domain (see §11 of the product spec for why an iframe i
 | ------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | `docs/superpowers/specs/2026-08-07-boilerplate-architecture-design.md`    | **How** it's built — workspace, tooling, CI, design system, phases      |
 | `docs/superpowers/specs/2026-08-07-pink-paprikaa-site-redesign-design.md` | **What** it must do — pages, content, data model, SEO, success criteria |
+| `docs/superpowers/specs/2026-08-08-coding-guidelines-design.md`           | **How code is written** — patterns, layers, state, constants, testing   |
 
 They are complementary, not competing. When they disagree, the architecture spec wins on
-build/tooling questions and the product spec wins on content/behaviour questions.
+build/tooling questions, the product spec wins on content/behaviour questions, and the coding
+guidelines win on code-shape questions. Before writing any component, hook, or state, follow the
+guidelines' decision trees (§2 where code lives, §4 state ladder, §6 constants) — they exist so
+the same problem always gets the same shape.
 
 Two divergences to expect rather than "fix": the product spec writes content paths in the old
 repo's layout (`src/data/`, `src/_redirects`) — the architecture spec's `packages/content` and
