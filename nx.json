@@ -11,7 +11,7 @@
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)",
       "!{projectRoot}/.storybook/**/*",
-      "!{projectRoot}/tsconfig.storybook.json"
+      "!{projectRoot}/tsconfig.stories.json"
     ],
     "sharedGlobals": []
   },

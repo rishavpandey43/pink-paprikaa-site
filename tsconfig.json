@@ -4,9 +4,6 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.vitest.json"
-    },
-    {
       "path": "./packages/utils"
     },
     {
@@ -32,6 +29,9 @@
     },
     {
       "path": "./tools/image-pipeline"
+    },
+    {
+      "path": "./apps/storybook"
     }
   ],
   "compilerOptions": {}
