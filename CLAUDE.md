@@ -35,17 +35,22 @@ Petpooja on an external domain (see §11 of the product spec for why an iframe i
 
 ## Read these first
 
-| Document                                                                  | Owns                                                                    |
-| ------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `docs/superpowers/specs/2026-08-07-boilerplate-architecture-design.md`    | **How** it's built — workspace, tooling, CI, design system, phases      |
-| `docs/superpowers/specs/2026-08-07-pink-paprikaa-site-redesign-design.md` | **What** it must do — pages, content, data model, SEO, success criteria |
-| `docs/superpowers/specs/2026-08-08-coding-guidelines-design.md`           | **How code is written** — patterns, layers, state, constants, testing   |
+| Document                                                                  | Owns                                                                                                         |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `docs/superpowers/specs/2026-08-07-boilerplate-architecture-design.md`    | **How** it's built — workspace, tooling, CI, design system, phases                                           |
+| `docs/superpowers/specs/2026-08-07-pink-paprikaa-site-redesign-design.md` | **What** it must do — pages, content, data model, SEO, success criteria                                      |
+| `docs/engineering/README.md`                                              | **The Engineering Handbook** — patterns, naming, configs, gates, AI workflows (authoritative for code shape) |
 
-They are complementary, not competing. When they disagree, the architecture spec wins on
-build/tooling questions, the product spec wins on content/behaviour questions, and the coding
-guidelines win on code-shape questions. Before writing any component, hook, or state, follow the
-guidelines' decision trees (§2 where code lives, §4 state ladder, §6 constants) — they exist so
-the same problem always gets the same shape.
+They are complementary, not competing. When they disagree: architecture spec wins on
+build/tooling, product spec wins on content/behaviour, **the engineering handbook wins on how
+code is written**. The dated coding-guidelines spec was the handbook's seed and now defers to it.
+
+**AI session contract (binding — docs/engineering/07-ai-workflows.md §1):** read the handbook
+README before writing code; look decisions up in its trees instead of re-deriving (02 §5
+placement, 03 patterns, 04 naming, 08 recipes); verify APIs against `node_modules`, never
+memory; never bypass a gate (`--no-verify`, eslint-disable on LAW rules, budget edits); done =
+gates green with evidence. Repeatable workflows are slash commands: `/new-component`,
+`/new-feature`, `/pre-merge`.
 
 Two divergences to expect rather than "fix": the product spec writes content paths in the old
 repo's layout (`src/data/`, `src/_redirects`) — the architecture spec's `packages/content` and

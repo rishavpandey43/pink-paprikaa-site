@@ -66,3 +66,8 @@ apps/blog-e2e/.serve
 
 # Lighthouse CI local run artifacts
 .lighthouseci
+# Reference material from previous employers — never commit (IP hygiene)
+docs/Reference_*.md
+
+# Phase 1 design handoff — reference input, imported deliberately in Phase 1 (not committed raw)
+design_handoff_pink_paprikaa_ds/

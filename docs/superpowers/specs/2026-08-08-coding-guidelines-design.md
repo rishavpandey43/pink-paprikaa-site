@@ -1,7 +1,9 @@
 # Pink Paprikaa — Coding Guidelines & Architecture
 
 **Date:** 2026-08-08
-**Status:** Approved
+**Status:** Superseded — expanded into [`docs/engineering/`](../../engineering/README.md)
+(2026-08-08, same day). This document remains as the dated decision record; the handbook is
+authoritative and is where amendments land.
 **Scope:** How code is written in this workspace — patterns, structure, state, naming, constants,
 testing. Applies to every phase from 1 onward.
 **Companions:** the [architecture spec](./2026-08-07-boilerplate-architecture-design.md) owns

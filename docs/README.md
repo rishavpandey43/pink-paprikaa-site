@@ -1,5 +1,11 @@
 # Documentation
 
+## Engineering Handbook
+
+[`engineering/`](engineering/README.md) — the authoritative standard for how code is written
+here: principles, architecture, canonical patterns, naming, config registry, quality gates,
+**deterministic AI workflows**, recipes, and the decision log. Start there for any code work.
+
 ## Specs
 
 | Spec                                                                                        | Scope                                                                                                                            | Status                |
