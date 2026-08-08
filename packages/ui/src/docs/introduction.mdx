@@ -1,0 +1,70 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Introduction" />
+
+<div className="sb-unstyled rounded-5 bg-surface-brand px-8 py-12 text-text-on-brand">
+  <p className="m-0 font-display text-overline font-bold uppercase tracking-overline opacity-80">
+    Design System
+  </p>
+  <h1 className="m-0 mt-2 font-display text-display2-fluid font-extrabold leading-display2 tracking-display2 text-balance">
+    Pink Paprikaa
+  </h1>
+  <p className="m-0 mt-4 max-w-(--measure-prose) font-body text-subtitle2 leading-subtitle2 opacity-90">
+    India's First Desi Urban Café. Pink is not decorative here — it is the whole identity.
+  </p>
+</div>
+
+## What this is
+
+The component library behind `pinkpaprikaa.com` — a pure-vegetarian café in Sector 57 / MKM Market,
+Gurgaon. Four tiers, one token pipeline, no runtime cost.
+
+The system is loud, warm, young and city-street confident. One primary pink used at full strength,
+warm neutrals tinted toward it, and a single accent per screen. Everything else is restraint.
+
+## How it fits together
+
+| Layer                              | What lives there                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------ |
+| `@pink-paprikaa-web/design-tokens` | Every value, authored in DTCG JSON, compiled by Style Dictionary               |
+| `@pink-paprikaa-web/ui` — atoms    | Indivisible primitives: `Button` `Text` `Icon` `Input` `SpiceLevel` `DietMark` |
+| — molecules                        | Small compositions: `Field` `MenuItemCard` `Tabs` `Alert`                      |
+| — organisms                        | Page-level regions: `SiteHeader` `HeroBanner` `MenuList` `CtaBand`             |
+| — templates                        | Spacing, width and frame only: `Container` `Section` `AutoGrid` `PostFrame`    |
+
+Imports only ever go **downward**. A molecule may use atoms; an atom may never reach up. The rule is
+lint-enforced, not advisory.
+
+## Using it
+
+```tsx
+import { Button, MenuItemCard, Text } from "@pink-paprikaa-web/ui";
+```
+
+and once, in the app's global stylesheet:
+
+```css
+@import "tailwindcss";
+@import "@pink-paprikaa-web/ui/styles.css";
+```
+
+That single import pulls in the token theme, the system's keyframes and the base layer (element
+defaults, the pink focus ring, and the reduced-motion contract).
+
+## The one thing that will surprise you
+
+**Stock Tailwind classes do not exist here.** The tokens package clears every Tailwind namespace it
+replaces, so `rounded-lg`, `text-sm`, `bg-red-500`, `shadow-md` and `font-sans` compile to nothing.
+That is deliberate: a class outside the system fails loudly rather than quietly rendering an
+off-brand value. Use `rounded-4`, `text-body2`, `bg-status-danger`, `shadow-elevation2`,
+`font-body`.
+
+The full class contract is in `packages/ui/AUTHORING.md` §3.
+
+## Before you add a component
+
+1. Tokens first — a new visual value goes into `packages/design-tokens/tokens/` before any
+   component uses it.
+2. Copy the canonical shape from `src/atoms/button/button.tsx`.
+3. Ship the trio: component, test (behaviour + axe), stories (every variant).
+4. Gate: `pnpm nx run-many -t typecheck lint test -p ui && pnpm nx run storybook:build`.

@@ -1,0 +1,14 @@
+/*
+ * The library's Tailwind entry.
+ *
+ * Nothing bundles this file — it exists so `eslint-plugin-tailwindcss` has a real stylesheet to
+ * read this package's theme from (`settings.tailwindcss.cssConfigPath` in `eslint.config.mjs`).
+ * That setting is mandatory for every consumer of the shared React preset: an unresolvable path
+ * makes the plugin throw at rule-init time and takes the whole `lint` target down with it (see the
+ * long comment in `tools/eslint-config/react.js`).
+ *
+ * Storybook is an app now (`apps/storybook`) and carries its own Tailwind entry, so the library can
+ * no longer point at that one.
+ */
+@import "tailwindcss";
+@import "./src/styles.css";

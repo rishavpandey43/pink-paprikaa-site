@@ -1,0 +1,141 @@
+/*
+ * Pink Paprikaa design system — the stylesheet every consumer imports.
+ *
+ *   @import "tailwindcss";
+ *   @import "@pink-paprikaa-web/ui/styles.css";
+ *
+ * It carries three things Tailwind utilities cannot express on their own: the generated token
+ * theme, the system's named keyframes, and the base layer (element defaults + the reduced-motion
+ * contract). No component styles live here — those are `tv()` class lists on the components.
+ */
+
+@import "@pink-paprikaa-web/design-tokens/theme.css";
+
+/*
+ * Animations are the one visual scale not authored in `packages/design-tokens`: a keyframe is a
+ * rule, not a value, so it cannot round-trip through Style Dictionary's DTCG source. Durations and
+ * easings below are token references, so the timing still has a single source of truth.
+ */
+@theme static {
+  --animate-pp-spin: pp-spin 1s linear infinite;
+  --animate-pp-pulse: pp-pulse 1.2s var(--ease-in-out) infinite;
+  --animate-pp-shimmer: pp-shimmer 1.4s var(--ease-in-out) infinite;
+  --animate-pp-rise: pp-rise var(--duration-base) var(--ease-entrance) both;
+  --animate-pp-fade: pp-fade var(--duration-base) var(--ease-out) both;
+}
+
+@keyframes pp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* The brand's loading state: the diamond symbol pulsing. Never a gradient spinner. */
+@keyframes pp-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.92);
+  }
+}
+
+@keyframes pp-shimmer {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Entrances always pair a fade with a small translate — never opacity alone (guide §3.7). */
+@keyframes pp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pp-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-surface-page);
+    color: var(--color-text-body);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /*
+   * Focus is a brand decision, not a browser default: 2px pink at 2px offset everywhere, so no
+   * component has to re-state it and none can quietly drop it.
+   */
+  :focus-visible {
+    outline: var(--stroke-strong) solid var(--color-border-brand);
+    outline-offset: 2px;
+  }
+
+  /*
+   * Pointer affordance on anything clickable.
+   *
+   * Tailwind v3's preflight carried `button, [role="button"] { cursor: pointer }`; v4 removed it
+   * deliberately, deferring to the browser default — which for `<button>` is `cursor: default`.
+   * The result is that every button in the system looked unclickable.
+   *
+   * Restoring it here rather than as a `cursor-pointer` class on each component is the whole point:
+   * a class has to be remembered by all ~40 interactive components and every future one, and the
+   * omission is invisible in tests (jsdom computes no cursor) and in a static Storybook screenshot.
+   * A base rule cannot be forgotten, and it covers Radix triggers — which render real buttons — for
+   * free. Disabled controls are excluded so they keep the not-allowed cursor the state contract
+   * requires.
+   */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  label[for],
+  summary,
+  a[href] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  /*
+   * Reduced motion keeps the fade and drops the movement (guide §3.7 / inventory responsive
+   * contract). Transitions are shortened rather than removed so state changes stay legible.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

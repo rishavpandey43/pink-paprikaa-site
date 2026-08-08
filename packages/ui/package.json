@@ -13,12 +13,17 @@
     "./package.json": "./package.json"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^10.5.7",
-    "@tailwindcss/vite": "^4.3.3",
-    "tailwindcss": "^4.3.3"
+    "@storybook/addon-docs": "^10.5.7",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/user-event": "^14.6.3",
+    "axe-core": "^4.13.0"
   },
   "dependencies": {
-    "@pink-paprikaa-web/design-tokens": "workspace:*"
+    "@pink-paprikaa-web/design-tokens": "workspace:*",
+    "lucide-react": "^1.30.0",
+    "radix-ui": "^1.6.7",
+    "tailwind-merge": "^3.6.0",
+    "tailwind-variants": "^3.3.1"
   },
   "nx": {
     "tags": [

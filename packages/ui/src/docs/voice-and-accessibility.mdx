@@ -1,0 +1,120 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Voice & Accessibility" />
+
+# Voice & Accessibility
+
+## Voice
+
+A confident city café that speaks Hinglish without apology. The brand's one supplied line sets the
+tone — _India's First Desi Urban Café_: a claim, stated flatly, no hedging.
+
+Talk to the guest as **you**; the café speaks as **we**. Never "the customer", never "users".
+
+export const Compare = ({ good, bad, situation }) => (
+  <tr className="border-b border-border-subtle align-top">
+    <td className="py-3 pr-4 font-body text-body2 text-text-muted">{situation}</td>
+    <td className="py-3 pr-4 font-body text-body2 text-status-success">{good}</td>
+    <td className="py-3 font-body text-body2 text-text-subtle line-through">{bad}</td>
+  </tr>
+);
+
+<table className="sb-unstyled w-full border-collapse">
+  <thead>
+    <tr className="border-b border-border-default text-left">
+      <th className="pb-2 pr-4 font-display text-overline font-bold uppercase tracking-overline text-text-muted">
+        Situation
+      </th>
+      <th className="pb-2 pr-4 font-display text-overline font-bold uppercase tracking-overline text-text-muted">
+        Write
+      </th>
+      <th className="pb-2 font-display text-overline font-bold uppercase tracking-overline text-text-muted">
+        Don't
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <Compare
+      situation="Hero"
+      good="Desi at heart. Urban by nature."
+      bad="Experience Our Curated Culinary Journey"
+    />
+    <Compare
+      situation="Menu item"
+      good="Amritsari paneer, burnt chilli mayo."
+      bad="Our signature artisanal paneer creation"
+    />
+    <Compare
+      situation="Veg claim"
+      good="100% vegetarian kitchen. Always was."
+      bad="100% PURE VEG!! No compromise!"
+    />
+    <Compare
+      situation="Empty cart"
+      good="Nothing here yet. Let's fix that."
+      bad="Your cart is currently empty!"
+    />
+    <Compare
+      situation="Error"
+      good="That card didn't go through. Try another?"
+      bad="Transaction failed. Error code 402."
+    />
+    <Compare
+      situation="Order placed"
+      good="Order in. Kitchen's on it."
+      bad="Thank you for your purchase!!!"
+    />
+    <Compare
+      situation="Loyalty"
+      good="3 more visits and chai's on us."
+      bad="Unlock exclusive rewards today"
+    />
+  </tbody>
+</table>
+
+### The hard rules
+
+- **`Pink Paprikaa`** — two `a`s. A misspelling is a content bug, not a typo.
+- **Casing.** Title Case for names, claims and buttons of consequence. Sentence case for body,
+  helper text and form labels. ALL CAPS only for overlines and heat labels — never a full sentence.
+- **Numbers.** `₹` with no space, no decimals on whole rupees: `₹240`. Ranges use an en dash:
+  `₹180–₹320`. Times are 12-hour lowercase: `8am – 11:30pm`.
+- **Interface labels are plain English.** Spice is Mild / Medium / Hot / Extra Hot; sizes are
+  Regular / Sharing. Hinglish belongs to dish names and voice, never to a control a guest must
+  decode.
+- **No emoji. Ever** — including 🌶 for spice. That is what `SpiceLevel` is for.
+- At most one exclamation mark per screen, and never in a heading.
+- **Never say:** artisanal, curated, experience (as a noun), elevated, journey, unleash,
+  revolutionise. Never call the food "authentic" — the claim is _desi_, which is a fact, not a
+  compliment.
+- Being pure veg is stated once, plainly, and never over-sold: "100% vegetarian kitchen."
+
+## Accessibility
+
+Every component ships an axe assertion in its test and runs the same engine again in Storybook,
+where real CSS is available and colour contrast can actually be measured. The a11y addon is set to
+`test: "error"` — a violation fails the story, it does not sit in a panel.
+
+### What the system guarantees
+
+- **Focus is a brand decision.** The base layer paints `:focus-visible` as a 2px pink outline at 2px
+  offset, everywhere. No component re-states it, and none can quietly drop it.
+- **Hit targets are 44px minimum** (`--layout-hit-min`), including icon-only buttons whose glyph is
+  20px.
+- **Disabled is a real grey fill**, never a reduced opacity — opacity fails contrast and reads as
+  "loading" rather than "unavailable".
+- **Behaviour comes from Radix.** Dialogs, tabs, accordions, tooltips, selects and switches inherit
+  correct roles, keyboard handling and focus management rather than hand-rolled approximations.
+- **Reduced motion is global.** `prefers-reduced-motion: reduce` collapses animation and transition
+  durations in the base layer.
+
+### What each component owns
+
+- A **name**: an icon-only control takes a label; a decorative icon is `aria-hidden` so its meaning
+  is not announced twice beside the text it decorates.
+- **Never colour alone.** A status colour always arrives with a message. `SpiceLevel` and `DietMark`
+  both carry text alternatives — heat and diet are legally and practically load-bearing information.
+- **Heading order.** `Text` picks a sensible element per step, but the page owns its outline: pass
+  `as` when the visual level and the document level differ.
+- **Contrast.** `text-text-muted` and lighter are for secondary content on light grounds only. On a
+  flooded pink or ink panel, use `text-on-brand` / `text-on-inverse`.

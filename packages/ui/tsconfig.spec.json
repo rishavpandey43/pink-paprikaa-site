@@ -5,9 +5,11 @@
     "types": ["vitest/globals", "vitest/importMeta", "vite/client", "node", "vitest"],
     "jsx": "react-jsx",
     "module": "esnext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "lib": ["es2022", "dom", "dom.iterable"]
   },
   "include": [
+    "vitest.setup.ts",
     "vite.config.ts",
     "vite.config.mts",
     "vitest.config.ts",
