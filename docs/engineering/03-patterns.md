@@ -8,31 +8,43 @@ PR (trust the code, fix the doc).
 
 ```tsx
 // packages/ui/src/atoms/button/button.tsx — the reference shape
-import { tv, type VariantProps } from "tailwind-variants";
+import { componentVariants, type VariantProps } from "../../lib/component-variants";
 
-const button = tv({
-  base: "inline-flex items-center justify-center rounded-md font-medium transition-colors",
+const button = componentVariants({
+  base: "inline-flex items-center justify-center rounded-6 font-display font-bold transition-colors",
   variants: {
-    intent: {
-      primary: "bg-brand-primary text-surface hover:bg-brand-primary-hover",
-      secondary: "border border-brand-primary text-brand-primary",
+    variant: {
+      primary: "bg-brand-primary text-text-on-brand not-disabled:hover:bg-brand-primary-hover",
+      secondary: "border-2 border-brand-primary bg-surface-card text-text-link",
     },
-    size: { sm: "h-8 px-3 text-sm", md: "h-10 px-4", lg: "h-12 px-6 text-lg" },
+    size: {
+      sm: "h-(--button-h-sm) px-(--button-px-sm) text-body2",
+      md: "h-(--button-h-md) px-(--button-px-md) text-body1",
+      lg: "h-(--button-h-lg) px-(--button-px-lg) text-subtitle1",
+    },
   },
-  defaultVariants: { intent: "primary", size: "md" },
+  defaultVariants: { variant: "primary", size: "md" },
 });
 
-export type ButtonProps = React.ComponentPropsWithoutRef<"button"> & VariantProps<typeof button>;
+export interface ButtonProps
+  extends React.ComponentPropsWithoutRef<"button">, VariantProps<typeof button> {}
 
-export function Button({ className, intent, size, ...props }: ButtonProps) {
-  return <button className={button({ intent, size, className })} {...props} />;
+export function Button({ className, variant, size, ...props }: ButtonProps) {
+  return <button className={button({ variant, size, className })} {...props} />;
 }
 ```
 
 Encoded rules — all CONVENTION unless marked:
 
-- `tv()` owns every class decision; no conditional string concatenation in JSX.
-- Extend native element props; spread last; `className` merges through `tv()`.
+- `componentVariants()` owns every class decision; no conditional string concatenation in JSX.
+  **Never import `tv` from `tailwind-variants` directly** (LAW-in-practice): the bare instance
+  merges against stock Tailwind scales and silently deletes token classes — `text-h1` is read as a
+  colour and disappears next to `text-text-muted`. `packages/ui/src/lib/component-variants.ts`
+  is the configured instance, and its spec asserts the scale lists against the generated tokens.
+- **Only token classes exist.** `packages/design-tokens` clears the stock Tailwind scales it
+  replaces, so `rounded-lg`, `text-sm`, `shadow-md`, `bg-red-500` and `font-sans` compile to
+  nothing. The full contract is `packages/ui/AUTHORING.md` §3.
+- Extend native element props; spread last; `className` merges through `componentVariants()`.
 - `ref` is a plain prop (React 19) — **no `forwardRef`** (R-03: the reference codebase's
   `forwardRef` wrappers are obsolete boilerplate on this React version).
 - **Named exports, function declarations. No default exports** (R-02) — except Next.js
@@ -41,7 +53,8 @@ Encoded rules — all CONVENTION unless marked:
   components or a variant.
 - Behavioural complexity (dialog, menu, tabs, focus, keyboard) → Radix primitives, never
   hand-rolled (LAW-in-practice: a11y gates will fail you anyway).
-- Multi-part components use `tv()` **slots** (the reason tailwind-variants was chosen over CVA).
+- Multi-part components use `componentVariants()` **slots** (the reason tailwind-variants was
+  chosen over CVA).
 
 ## 2. Component file set
 
@@ -51,6 +64,10 @@ packages/ui/src/<layer>/<name>/
   <name>.test.tsx      # behaviour + axe (mandatory pair)
   <name>.stories.tsx   # every variant (mandatory in ui)
 ```
+
+The axe assertion is `await expectNoA11yViolations(container)` from `packages/ui/vitest.setup.ts`
+— a helper rather than a `toHaveNoViolations()` matcher, because Vitest declares
+`interface Matchers<T = any>` and augmenting it would force an `any` into the package's types.
 
 App feature components: same trio minus stories (stories only for `packages/ui`).
 

@@ -16,7 +16,7 @@ in the same PR (and say so in [09](09-decision-log.md)).
 4. Export from `packages/ui/src/index.ts` (the single public barrel).
 5. Tokens first: any new visual value goes into `packages/design-tokens/tokens/` (recipe 3)
    BEFORE the component uses its utility class.
-6. Gate: `pnpm nx test ui && pnpm nx lint ui && pnpm nx run ui:build-storybook`, then
+6. Gate: `pnpm nx test ui && pnpm nx lint ui && pnpm nx run storybook:build`, then
    `pnpm verify`.
 
 ## 2. New feature module (in an app)

@@ -99,21 +99,42 @@ pnpm nx affected -t typecheck lint test build # what CI runs
 pnpm nx format:check                          # Prettier, CI-blocking
 pnpm nx sync:check                            # TS project references in sync
 pnpm nx graph                                 # visualise the project graph
-pnpm nx show projects                         # 12 projects — see below
+pnpm nx show projects                         # 13 projects — see below
 ```
 
-**12 projects exist**: apps `web`, `blog` + their `web-e2e`, `blog-e2e`; packages `design-tokens`,
-`ui`, `content`, `seo`, `utils`; tools `typescript-config`, `eslint-config`, `image-pipeline`.
-Tasks are inferred (see Conventions) and scoped per project:
+**13 projects exist**: apps `web`, `blog`, `storybook` + `web-e2e`, `blog-e2e`; packages
+`design-tokens`, `ui`, `content`, `seo`, `utils`; tools `typescript-config`, `eslint-config`,
+`image-pipeline`. Tasks are inferred (see Conventions) and scoped per project:
 
 ```bash
 pnpm nx test ui                       # one project
 pnpm nx test ui -- -t "renders long"  # a single Vitest test by name
 pnpm nx run-many -t test              # whole workspace, ignoring affected
-pnpm nx dev web                       # dev server (localhost:3000) — the target is `dev`, NOT `serve`
-pnpm nx dev blog                      # blog dev server (basePath /blog)
-pnpm nx serve-static web              # serve the production build
+pnpm nx run web:serve                 # localhost:3000
+pnpm nx run blog:serve                # localhost:3001 (basePath /blog — open /blog, `/` 404s)
+pnpm nx run storybook:serve           # localhost:6006
+pnpm nx run web:build                 # every app builds the same way
+pnpm nx run web:serve-static          # serve the production build
 ```
+
+**Command structure is `nx run <project>:<target>`, and every app answers to the same four
+targets: `serve` · `build` · `serve-static` · `lint`.**
+
+This is declared, not inherited. Left alone, the plugins disagree: `@nx/next` infers `dev` for the
+Next apps while `@nx/storybook` infers `storybook` / `build-storybook` / `static-storybook` — so the
+three dev servers would have been `nx dev web`, `nx dev blog` and `nx storybook storybook`, three
+vocabularies for one action. Each app's `package.json` therefore declares `serve` explicitly (with a
+pinned port, since `next dev` and `storybook dev` both default to picking one themselves — Storybook
+picks a _random_ free port every launch), and `apps/storybook` aliases `build` / `serve-static` onto
+its inferred targets with `nx:noop` + `dependsOn` so nothing runs twice.
+
+The inferred names still work as plumbing; the four above are the contract. **Do not "simplify" them
+away** — deleting them silently restores three different vocabularies.
+
+**Storybook is `apps/storybook`, not part of `packages/ui`.** It is the only Storybook in the
+workspace: the app owns `.storybook/` and the Tailwind entry, the library owns the stories, and the
+`stories` globs reach across into `packages/ui/src`. `packages/ui/tailwind.css` exists solely so
+the library's ESLint config has a resolvable `tailwindcss.cssConfigPath` — nothing bundles it.
 
 `nx affected` compares against `main` by default. Because none of Phase 0 has merged to `main`
 yet, it currently reports every project as affected on this branch regardless of what the latest
@@ -144,7 +165,7 @@ The working tree is authoritative if it and that table disagree. To establish gr
 
 ```bash
 pnpm nx format:check && pnpm nx sync:check   # confirm current state is green
-pnpm nx show projects                         # 12 projects
+pnpm nx show projects                         # 13 projects
 git log --oneline                             # commit messages carry the reasoning
 ```
 

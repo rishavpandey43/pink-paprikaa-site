@@ -7,15 +7,15 @@ below are **this repo's binding** of those rules.
 
 ## 1. The layer map (LAW — `@nx/enforce-module-boundaries`)
 
-| Layer                    | Holds                                                    | May import                                         |
-| ------------------------ | -------------------------------------------------------- | -------------------------------------------------- |
-| `apps/web`, `apps/blog`  | Routes, pages, feature modules, app composition. Thin.   | `ui`, `content`, `seo`, `utils`, `design-tokens`   |
-| `packages/ui`            | Presentational components (atomic layers) + Storybook    | `ui` (upward only — LAW), `utils`, `design-tokens` |
-| `packages/content`       | Zod schemas + typed site data — the single content truth | `utils`                                            |
-| `packages/seo`           | JSON-LD builders, metadata helpers                       | `content` types, `utils`                           |
-| `packages/utils`         | Framework-agnostic pure functions                        | `utils`                                            |
-| `packages/design-tokens` | Token source → generated theme. Imports nothing (LAW).   | —                                                  |
-| `tools/*`                | Build/lint/pipeline tooling                              | (unconstrained; not imported by app code)          |
+| Layer                    | Holds                                                     | May import                                         |
+| ------------------------ | --------------------------------------------------------- | -------------------------------------------------- |
+| `apps/web`, `apps/blog`  | Routes, pages, feature modules, app composition. Thin.    | `ui`, `content`, `seo`, `utils`, `design-tokens`   |
+| `packages/ui`            | Presentational components (atomic layers) + their stories | `ui` (upward only — LAW), `utils`, `design-tokens` |
+| `packages/content`       | Zod schemas + typed site data — the single content truth  | `utils`                                            |
+| `packages/seo`           | JSON-LD builders, metadata helpers                        | `content` types, `utils`                           |
+| `packages/utils`         | Framework-agnostic pure functions                         | `utils`                                            |
+| `packages/design-tokens` | Token source → generated theme. Imports nothing (LAW).    | —                                                  |
+| `tools/*`                | Build/lint/pipeline tooling                               | (unconstrained; not imported by app code)          |
 
 Apps never import each other (LAW). Deep imports into another package's `src/` are boundary
 violations — cross-package traffic goes through the package's public surface only.

@@ -49,9 +49,9 @@ pnpm verify:all        # same, whole workspace
 pnpm commit            # Commitizen (enforced conventional commits)
 pnpm format            # prettier via nx
 pnpm guard:founder     # founder-name gate over built output
-pnpm nx dev web        # dev servers (target is `dev`, not `serve`)
+pnpm nx run web:serve        # dev servers
 pnpm nx e2e web-e2e    # Playwright vs the real static export
-pnpm nx run ui:build-storybook
+pnpm nx run storybook:build   # Storybook is apps/storybook, not packages/ui
 pnpm nx graph          # visualise projects + task deps
 pnpm nx show project <name>   # the resolved "virtual project.json"
 ```

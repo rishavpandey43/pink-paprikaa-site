@@ -7,7 +7,7 @@ Two static-export Next.js applications and a token-driven design system, built w
 No server, no runtime cost.
 
 > **Status: Phase 0 — foundation, complete.** Apps, packages, tools and CI gates exist — empty but
-> wired: static-export shells for `web`/`blog`, a working token pipeline, a Storybook shell, and
+> wired: static-export shells for `web`/`blog`, a working token pipeline, `apps/storybook`, and
 > founder-name/Lighthouse/module-boundary gates all passing. No real components, content, or pages
 > yet — those land in Phases 1–5. The live site is still served from the separate
 > `pink-paprikaa-site` repository until the Phase 6 cutover; this work is on
@@ -30,6 +30,8 @@ Node version is pinned in `.nvmrc`.
 | `pnpm nx format:check` / `format:write`         | Prettier — `format:check` blocks CI                |
 | `pnpm nx sync:check`                            | Verifies TypeScript project references are in sync |
 | `pnpm nx graph`                                 | Opens the interactive project graph                |
+| `pnpm nx run storybook:serve`                   | Storybook dev server for the design system         |
+| `pnpm nx run storybook:build`                   | Static Storybook build                             |
 
 ## Architecture
 
@@ -43,6 +45,7 @@ Planned shape:
 ```
 apps/web        Next.js · static export        → pinkpaprikaa.com
 apps/blog       Next.js · basePath /blog       → proxied onto the apex domain
+apps/storybook  Storybook · static build       → the design system's review surface
 packages/       design-tokens · ui · content · seo · utils
 tools/          eslint-config · typescript-config · image-pipeline
 ```

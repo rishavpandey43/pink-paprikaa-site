@@ -17,7 +17,7 @@ Deterministic procedure — follow docs/engineering/08-recipes.md §1 with these
    `expect(await axe(container)).toHaveNoViolations()`. Run RED, implement, run GREEN.
 5. Write `<name>.stories.tsx` — one story per variant.
 6. Export from `packages/ui/src/index.ts` only (no folder barrels).
-7. Gate (all must pass; show output): `pnpm nx test ui && pnpm nx lint ui && pnpm nx run ui:build-storybook`
+7. Gate (all must pass; show output): `pnpm nx test ui && pnpm nx lint ui && pnpm nx run storybook:build`
    then `pnpm verify`.
 8. Self-review against docs/engineering/06-quality-gates.md §5, then commit with scope `ui`
    (`pnpm commit` or a conventional message).
