@@ -76,6 +76,7 @@
     "serve": "^14.2.6",
     "storybook": "^10.5.0",
     "style-dictionary": "^5.5.1",
+    "svgo": "^4.0.2",
     "tailwindcss": "^4.3.3",
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",

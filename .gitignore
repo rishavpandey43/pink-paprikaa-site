@@ -53,6 +53,14 @@ vitest.config.*.timestamp*
 
 storybook-static
 
+# Chromatic (Visual Tests addon + CLI). `.env` is where CHROMATIC_PROJECT_TOKEN lives —
+# it is a write-capable secret and must never be committed.
+.env
+.env.local
+chromatic.log
+chromatic-diagnostics.json
+build-storybook.log
+
 # Next.js
 .next
 out

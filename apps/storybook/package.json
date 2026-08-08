@@ -1,0 +1,72 @@
+{
+  "name": "@pink-paprikaa-web/storybook",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "tags": [
+      "type:app",
+      "scope:shared"
+    ],
+    "targets": {
+      "build-storybook": {
+        "inputs": [
+          "default",
+          "^default",
+          {
+            "externalDependencies": [
+              "storybook"
+            ]
+          }
+        ]
+      },
+      "build": {
+        "executor": "nx:noop",
+        "dependsOn": [
+          "build-storybook"
+        ]
+      },
+      "serve-static": {
+        "executor": "nx:noop",
+        "dependsOn": [
+          "static-storybook"
+        ]
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "apps/storybook",
+          "command": "storybook dev --port 6006"
+        }
+      },
+      "chromatic": {
+        "executor": "nx:run-commands",
+        "dependsOn": [
+          "build-storybook"
+        ],
+        "options": {
+          "cwd": "apps/storybook",
+          "command": "chromatic --storybook-build-dir storybook-static --storybook-base-dir apps/storybook"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@pink-paprikaa-web/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^5.3.0",
+    "@storybook/addon-a11y": "^10.5.7",
+    "@storybook/addon-docs": "^10.5.7",
+    "@storybook/addon-vitest": "^10.5.7",
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.0.5",
+    "@vitest/browser": "^4.1.10",
+    "@vitest/browser-playwright": "^4.1.10",
+    "chromatic": "^18.1.0",
+    "playwright": "^1.62.1",
+    "remark-gfm": "^4.0.1",
+    "tailwindcss": "^4.3.3",
+    "vitest": "~4.1.10"
+  }
+}

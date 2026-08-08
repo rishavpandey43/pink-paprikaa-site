@@ -1,0 +1,18 @@
+/*
+ * Storybook's Tailwind entry.
+ *
+ * `@source` is mandatory here: Tailwind v4 auto-detects source files relative to the stylesheet's
+ * own directory, which is this app's `.storybook/` — so without it the scanner never sees the
+ * design system's `src/` and every component renders unstyled. Storybook lives in its own app, so
+ * the path has to reach across the workspace into the library.
+ *
+ * The Google Fonts import is Storybook-only. The shipping apps load Poppins / DM Sans / Space Mono
+ * through `next/font/google` in their root layout instead, because an `@import` costs a
+ * render-blocking round trip on a static export (handoff README §5).
+ */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Poppins:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap");
+
+@import "tailwindcss";
+@import "../../../packages/ui/src/styles.css";
+
+@source "../../../packages/ui/src/**/*.{ts,tsx,mdx}";

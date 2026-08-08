@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "out-tsc/storybook",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "types": ["node", "vite/client"],
+    "lib": ["es2022", "dom", "dom.iterable"]
+  },
+  "include": [".storybook/**/*.ts", ".storybook/**/*.tsx", "vite.config.mts", "vitest.config.mts"],
+  "exclude": ["out-tsc", "storybook-static", "eslint.config.mjs"]
+}
