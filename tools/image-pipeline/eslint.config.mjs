@@ -23,6 +23,11 @@ export default [
       parser: await import("jsonc-eslint-parser"),
     },
   },
+  // The CLI's job is printing to stdout — `no-console` (base preset) doesn't apply there.
+  {
+    files: ["src/cli.ts"],
+    rules: { "no-console": "off" },
+  },
   {
     ignores: ["**/out-tsc"],
   },

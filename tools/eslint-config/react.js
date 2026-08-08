@@ -45,6 +45,12 @@ export default [
       ...jsxA11y.flatConfigs.recommended.rules,
       "react/react-in-jsx-scope": "off",
       "pink-paprikaa/no-raw-hex": "error",
+      // Curated addition ported from a predecessor workspace.
+      // (`react/jsx-filename-extension` was evaluated too and dropped: its
+      // 7.37.5 implementation calls the ESLint-10-removed
+      // `context.getFilename()` and crashes at rule load — and TypeScript
+      // already rejects JSX outside `.tsx`, so the rule adds nothing here.)
+      "react/jsx-no-useless-fragment": "error",
     },
   },
   // `pink-paprikaa/no-raw-hex` for `.ts` files is now registered once, workspace-wide, in

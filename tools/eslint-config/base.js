@@ -3,6 +3,7 @@ import prettier from "eslint-config-prettier";
 import perfectionist from "eslint-plugin-perfectionist";
 import tseslint from "typescript-eslint";
 
+import namingConvention from "./rules/naming-convention.js";
 import noRawHex from "./rules/no-raw-hex.js";
 
 // `nx.configs["flat/base"]` registers the `@nx` plugin namespace (so
@@ -35,6 +36,19 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
     },
+    rules: {
+      // Underscore-prefixed = intentionally unused (ported convention).
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      // "warn" until Phase 1 lands real code, then promote to "error".
+      "@typescript-eslint/naming-convention": ["warn", ...namingConvention],
+    },
   },
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
@@ -63,8 +77,24 @@ export default tseslint.config(
           ],
         },
       ],
-      "perfectionist/sort-imports": "error",
+      "perfectionist/sort-imports": [
+        "error",
+        {
+          // Workspace packages and the apps' `@/` self-alias sort as
+          // "internal": after external packages, before relative imports.
+          internalPattern: ["^@pink-paprikaa-web/.+", "^@/.+"],
+          // v5 schema: a number of blank lines between groups ("always" = 1).
+          newlinesBetween: 1,
+        },
+      ],
       "perfectionist/sort-named-imports": "error",
+
+      // Curated core rules ported from a predecessor workspace (the subset
+      // not already covered by strictTypeChecked/stylisticTypeChecked).
+      eqeqeq: "error",
+      "array-callback-return": "error",
+      "no-console": ["error", { allow: ["warn", "error"] }],
+      "max-lines": ["warn", { max: 500, skipComments: true, skipBlankLines: true }],
     },
   },
   // Workspace-wide `pink-paprikaa/no-raw-hex` for `.ts` files (CLAUDE.md rule 3), so base-only
