@@ -28,6 +28,17 @@
           "{projectRoot}/.next/!(cache)",
           "{projectRoot}/out"
         ]
+      },
+      "serve": {
+        "continuous": true,
+        "syncGenerators": [
+          "@nx/js:typescript-sync"
+        ],
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "apps/blog",
+          "command": "next dev --port 3001"
+        }
       }
     }
   }
