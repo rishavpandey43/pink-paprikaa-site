@@ -126,10 +126,35 @@ fbq('track', 'PageView');
   // Lets the policies page (or anyone) reopen the choice later.
   window.ppCookieSettings = show;
 
+  // Standard events for outbound clicks. fbq only exists once the visitor has
+  // accepted, so the guard below keeps these gated exactly like PageView.
+  //   Contact          -> taps WhatsApp, phone or email
+  //   FindLocation     -> taps through to Google Maps
+  //   InitiateCheckout -> taps Order Now, handing off to Petpooja ordering
+  var CLICK_EVENTS = [
+    { name: "Contact", match: /^tel:|^mailto:|wa\.me\// },
+    { name: "FindLocation", match: /maps\.app\.goo\.gl|google\.[a-z.]+\/maps/ },
+    { name: "InitiateCheckout", match: /order\.pinkpaprikaa\.com/ }
+  ];
+
+  function trackClick(e) {
+    if (!window.fbq) return;
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!a) return;
+    var href = a.getAttribute("href") || "";
+    for (var i = 0; i < CLICK_EVENTS.length; i++) {
+      if (CLICK_EVENTS[i].match.test(href)) {
+        window.fbq("track", CLICK_EVENTS[i].name);
+        return;
+      }
+    }
+  }
+
   function start() {
     var choice = read();
     if (choice === GRANTED) loadPixel();
     else if (choice !== DENIED) show();
+    document.addEventListener("click", trackClick, true);
   }
 
   if (document.readyState === "loading") {
