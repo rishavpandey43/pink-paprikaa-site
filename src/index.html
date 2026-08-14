@@ -66,8 +66,48 @@
     <!-- Discovery -->
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <link rel="stylesheet" href="./assets/styles/output.css" />
-<!-- Meta Pixel Code -->
+<!-- Cookie Consent + Meta Pixel -->
+<style>
+#pp-consent{position:fixed;left:0;right:0;bottom:0;z-index:9999;display:none;
+padding:16px 20px;background:#fff;border-top:3px solid #ee2c68;
+box-shadow:0 -4px 20px rgba(0,0,0,.14)}
+#pp-consent.pp-show{display:block}
+#pp-consent .pp-inner{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;
+align-items:center;justify-content:space-between;gap:14px}
+#pp-consent p{flex:1 1 320px;margin:0;font-size:14px;line-height:1.5;color:#374151}
+#pp-consent a{color:#ee2c68;font-weight:600;text-decoration:underline}
+#pp-consent .pp-actions{flex:0 0 auto;display:flex;gap:10px}
+#pp-consent button{font:inherit;font-size:14px;font-weight:600;line-height:1.2;
+padding:10px 22px;border-radius:9999px;border:2px solid #ee2c68;cursor:pointer}
+#pp-consent .pp-accept{background:#ee2c68;color:#fff}
+#pp-consent .pp-accept:hover{background:#d61f57;border-color:#d61f57}
+#pp-consent .pp-decline{background:transparent;color:#1c6058;border-color:#1c6058}
+#pp-consent .pp-decline:hover{background:#1c6058;color:#fff}
+#pp-consent button:focus-visible{outline:3px solid #1c6058;outline-offset:2px}
+@media (max-width:520px){#pp-consent .pp-actions{width:100%}#pp-consent button{flex:1 1 0}}
+@media print{#pp-consent{display:none!important}}
+</style>
 <script>
+(function () {
+  var KEY = "pp-cookie-consent";
+  var GRANTED = "granted";
+  var DENIED = "denied";
+  var pixelLoaded = false;
+  var banner = null;
+
+  function read() {
+    try { return window.localStorage.getItem(KEY); } catch (e) { return null; }
+  }
+
+  function save(value) {
+    try { window.localStorage.setItem(KEY, value); } catch (e) {}
+  }
+
+  // Marketing cookies only load from here, and only after an explicit Accept.
+  function loadPixel() {
+    if (pixelLoaded) return;
+    pixelLoaded = true;
+    /* Meta Pixel Code */
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -78,11 +118,61 @@ s.parentNode.insertBefore(t,s)}(window,document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '1339451664838482');
 fbq('track', 'PageView');
+    /* End Meta Pixel Code */
+  }
+
+  function hide() {
+    if (banner) banner.className = "";
+  }
+
+  function decide(value) {
+    save(value);
+    hide();
+    if (value === GRANTED) loadPixel();
+  }
+
+  function build() {
+    if (banner) return banner;
+    banner = document.createElement("div");
+    banner.id = "pp-consent";
+    banner.setAttribute("role", "region");
+    banner.setAttribute("aria-label", "Cookie consent");
+    banner.innerHTML =
+      '<div class="pp-inner">' +
+      "<p>We use cookies to run this site. With your permission we also use Meta " +
+      "(Facebook) advertising cookies to measure how well our ads work. Read our " +
+      '<a href="./policies.html">cookie policy</a>.</p>' +
+      '<div class="pp-actions">' +
+      '<button type="button" class="pp-decline">Decline</button>' +
+      '<button type="button" class="pp-accept">Accept</button>' +
+      "</div></div>";
+    banner.querySelector(".pp-accept").onclick = function () { decide(GRANTED); };
+    banner.querySelector(".pp-decline").onclick = function () { decide(DENIED); };
+    document.body.appendChild(banner);
+    return banner;
+  }
+
+  function show() {
+    build().className = "pp-show";
+  }
+
+  // Lets the policies page (or anyone) reopen the choice later.
+  window.ppCookieSettings = show;
+
+  function start() {
+    var choice = read();
+    if (choice === GRANTED) loadPixel();
+    else if (choice !== DENIED) show();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
 </script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1339451664838482&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
+<!-- End Cookie Consent + Meta Pixel -->
   </head>
 
   <body class="font-body bg-blush/30 text-gray-800">
