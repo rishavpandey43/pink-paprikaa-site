@@ -6,6 +6,12 @@
 here: principles, architecture, canonical patterns, naming, config registry, quality gates,
 **deterministic AI workflows**, recipes, and the decision log. Start there for any code work.
 
+## Analytics
+
+[`analytics/meta-pixel.md`](analytics/meta-pixel.md) — the Meta Pixel installation: its two
+environment gates, why `/blog` is uninstrumented, which standard events to add when real
+components land, and the reported-but-unbuilt items (consent, CSP, Conversions API).
+
 ## Specs
 
 | Spec                                                                                        | Scope                                                                                                                            | Status                |
