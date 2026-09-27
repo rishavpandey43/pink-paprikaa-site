@@ -91,6 +91,9 @@
     "lint": {
       "dependsOn": ["^build"]
     },
+    "typecheck": {
+      "inputs": ["default", "^production", { "externalDependencies": ["typescript"] }]
+    },
     "test": {
       "dependsOn": ["^build"]
     },
