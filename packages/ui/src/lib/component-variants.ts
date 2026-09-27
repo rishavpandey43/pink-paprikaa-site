@@ -49,6 +49,11 @@ const TEXT = [
   "tag",
   "image-slot-label",
   "status-dot-label",
+  "avatar-xs",
+  "avatar-sm",
+  "avatar-md",
+  "avatar-lg",
+  "avatar-xl",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -63,6 +68,7 @@ const SHADOW = [
   "focus-ring",
   "focus-ring-inverse",
   "button-primary",
+  "avatar-ring",
 ];
 const BLUR = ["glass"];
 const EASE = ["out", "in-out", "entrance", "pop"];
@@ -109,6 +115,11 @@ const SPACING = [
   "badge-icon",
   "status-dot-sm",
   "status-dot-md",
+  "avatar-xs",
+  "avatar-sm",
+  "avatar-md",
+  "avatar-lg",
+  "avatar-xl",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];

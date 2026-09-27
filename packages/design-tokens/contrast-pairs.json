@@ -317,6 +317,12 @@
       "surface": "brand",
       "pairs": [["color-badge-brand-fg", "color-badge-brand-bg"]],
       "min": 4.5
+    },
+    {
+      "id": "avatar",
+      "surface": null,
+      "pairs": [["color-pink-700", "color-pink-100"]],
+      "min": 4.5
     }
   ]
 }

@@ -1,0 +1,61 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "avatar-xs": { "$value": "24px" },
+    "avatar-sm": { "$value": "32px" },
+    "avatar-md": { "$value": "40px" },
+    "avatar-lg": { "$value": "56px" },
+    "avatar-xl": { "$value": "80px" }
+  },
+  "text": {
+    "$type": "typography",
+    "avatar-xs": {
+      "$value": {
+        "fontSize": "10px",
+        "lineHeight": 1,
+        "letterSpacing": "-0.01em",
+        "fontWeight": "{font-weight.bold}"
+      },
+      "$description": "Initials: max(10px, 0.38 × the avatar size)."
+    },
+    "avatar-sm": {
+      "$value": {
+        "fontSize": "12px",
+        "lineHeight": 1,
+        "letterSpacing": "-0.01em",
+        "fontWeight": "{font-weight.bold}"
+      }
+    },
+    "avatar-md": {
+      "$value": {
+        "fontSize": "15px",
+        "lineHeight": 1,
+        "letterSpacing": "-0.01em",
+        "fontWeight": "{font-weight.bold}"
+      }
+    },
+    "avatar-lg": {
+      "$value": {
+        "fontSize": "21px",
+        "lineHeight": 1,
+        "letterSpacing": "-0.01em",
+        "fontWeight": "{font-weight.bold}"
+      }
+    },
+    "avatar-xl": {
+      "$value": {
+        "fontSize": "30px",
+        "lineHeight": 1,
+        "letterSpacing": "-0.01em",
+        "fontWeight": "{font-weight.bold}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "avatar-ring": {
+      "$value": "0 0 0 2px {color.ink.000}, 0 0 0 4px {color.pink.500}",
+      "$description": "The signed-in guest's halo."
+    }
+  }
+}
