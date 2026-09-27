@@ -6,7 +6,7 @@ import type { SVGProps } from "react";
  * references — so they match every other icon's grid and stroke.
  */
 export interface GlyphProps extends SVGProps<SVGSVGElement> {
-  size?: number | string;
+  size?: number | string | undefined;
 }
 
 function Glyph({ size = 24, strokeWidth = 2, children, ...props }: GlyphProps) {

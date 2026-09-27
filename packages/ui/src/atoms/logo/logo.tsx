@@ -26,12 +26,15 @@ const DEFAULT_TITLE: Readonly<Record<Mark, string>> = {
 
 export interface LogoProps
   extends
-    Omit<ComponentProps<"svg">, "children" | "viewBox" | "width" | "height">,
+    Omit<
+      ComponentProps<"svg">,
+      "children" | "dangerouslySetInnerHTML" | "viewBox" | "width" | "height"
+    >,
     VariantProps<typeof logo> {
   /** Accessible name. Defaults to the brand name (with the tagline for the lockup). */
-  title?: string;
+  title?: string | undefined;
   /** Hide from assistive tech when a visible brand name sits beside it. */
-  isDecorative?: boolean;
+  isDecorative?: boolean | undefined;
 }
 
 /**

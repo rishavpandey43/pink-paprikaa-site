@@ -76,7 +76,7 @@ export interface IconProps
   extends Omit<ComponentProps<"span">, "children">, VariantProps<typeof icon> {
   icon: IconComponent;
   /** Accessible name. Omit for a decorative icon (then it is hidden from assistive tech). */
-  label?: string;
+  label?: string | undefined;
 }
 
 export function Icon({ icon: Glyph, size = "md", label, className, ...props }: IconProps) {
@@ -107,8 +107,9 @@ export function Icon({ icon: Glyph, size = "md", label, className, ...props }: I
 - **Optional props are `?: T | undefined`** (ruling R13). Where the contracts file or a
   design-system `.d.ts` writes `label?: string`, implement it as `label?: string | undefined`.
   `exactOptionalPropertyTypes` is on, and a composition must be able to forward a value that may be
-  `undefined`. `Icon`, `Logo` and `RevealObserver` were written before R13 and still declare
-  `?: T`. New code follows R13.
+  `undefined`. Every optional prop in the package follows R13. The one exception is
+  `IconComponent`'s `size`: it mirrors lucide-react's own `size?: string | number`, and widening it
+  would stop every lucide icon being assignable to it.
 - **Booleans** read as questions: `is*`, `has*`, `should*`, `can*`. For variables this is LAW
   (naming-convention at `error`). For props it is the §4 table.
 - **Variant props** come from `VariantProps<typeof x>` (as in `Icon` and `Logo`), or are spelled
@@ -252,9 +253,10 @@ scale becomes a token.
   Both are defined once, in `src/lib/brand-artwork.css`. Never inline the symbol's SVG per instance
   (rulings R19/R25): the symbol's markup is ~3.5 KB, and it would ship once per diamond on a menu
   page.
-- **Logo is sized with classes only.** `LogoProps` omits `width` and `height`. Its defaults are
-  `w-logo-*`. A consumer passes `className="w-50"`, or `className="h-12 w-auto"` in a header. Each
-  instance gets its own ids (`useId`), so two logos never share a `clip-path`.
+- **Logo is sized with classes only.** `LogoProps` omits `width` and `height` (and `children` and
+  `dangerouslySetInnerHTML`: the root renders the artwork). Its defaults are `w-logo-*`. A
+  consumer passes `className="w-50"`, or `className="h-12 w-auto"` in a header. Each instance gets
+  its own ids (`useId`), so two logos never share a `clip-path`.
 - **The artwork is generated.** `pnpm nx run ui:brand-artwork` compiles `src/assets/brand/*-pink.svg`
   into `src/lib/brand-artwork.{ts,css}` (svgo, path precision 2). Never hand-edit the outputs.
   Regenerate them, run `pnpm exec prettier --write packages/ui/src/lib/brand-artwork.*` (the

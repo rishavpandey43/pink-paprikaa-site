@@ -6,6 +6,10 @@ import { componentVariants, type VariantProps } from "../../lib/component-varian
  * Anything that renders an icon glyph: a lucide-react icon or one of the brand glyphs. The SVG
  * attributes are picked from React's own types (not spelled out) so `aria-hidden` keeps its
  * exact type and a hyphenated key never has to be declared here.
+ *
+ * `size` is the one optional without `| undefined` (R13's exception): this type lists what `Icon`
+ * passes a glyph, and a lucide-react icon declares `size?: string | number`, so with
+ * `exactOptionalPropertyTypes` a widened `size` would stop every lucide icon being assignable.
  */
 export type IconComponent = ComponentType<
   Pick<SVGProps<SVGSVGElement>, "strokeWidth" | "aria-hidden" | "focusable"> & {
@@ -42,7 +46,7 @@ export interface IconProps
   extends Omit<ComponentProps<"span">, "children">, VariantProps<typeof icon> {
   icon: IconComponent;
   /** Accessible name. Omit for a decorative icon (then it is hidden from assistive tech). */
-  label?: string;
+  label?: string | undefined;
 }
 
 /** A Lucide-style glyph in the system's sizes, painted with `currentColor`. */

@@ -84,6 +84,11 @@ describe("Logo", () => {
     expectTypeOf<LogoProps>().not.toHaveProperty("height");
   });
 
+  it("takes no markup of its own — the root renders the artwork (checked by typecheck)", () => {
+    expectTypeOf<LogoProps>().not.toHaveProperty("children");
+    expectTypeOf<LogoProps>().not.toHaveProperty("dangerouslySetInnerHTML");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(<Logo />);
     await expectNoA11yViolations(container);

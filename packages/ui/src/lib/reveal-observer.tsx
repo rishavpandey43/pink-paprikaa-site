@@ -7,7 +7,7 @@ const REVEAL_ROOT_MARGIN = "0px 0px -8% 0px";
 
 export interface RevealObserverProps {
   /** Elements to reveal. Default: every `<section>`. */
-  selector?: string;
+  selector?: string | undefined;
 }
 
 /**
