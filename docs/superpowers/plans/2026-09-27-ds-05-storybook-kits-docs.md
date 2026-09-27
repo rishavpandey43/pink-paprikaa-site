@@ -56,7 +56,7 @@ Storybook rules added by this plan:
 | V1  | Docs-kit reads `@pink-paprikaa-web/design-tokens/contrast` for `contrastRatio`/`parseColor`                                 | The pair resolution + verdict logic moves from `policy.spec.ts` into `contrast.ts` as `evaluateContrastPolicy`; new exports `./catalogue` (type) and `./contrast-pairs.json` | The Contrast page must show exactly what the gate asserts; two implementations would drift. A relative import across packages is a boundary violation, so the JSON becomes an export. |
 | V2  | Kits compose only `@pink-paprikaa-web/ui`                                                                                   | Kits also use `formatRupees` from `@pink-paprikaa-web/utils` for prices on 1080px canvases                                                                                   | `PriceTag` has no canvas size; `SocialHeadline` + `formatRupees` keeps the `₹` rules. Adding a canvas size to `PriceTag` is an open question for the owner.                           |
 | V3  | Docs-kit helper list: Swatch, TokenTable, TypeSpecimen, ContrastMatrix, SpacingScale, RadiusScale, ShadowLadder, MotionDemo | Adds `Swatches` (a grid of Swatch), `SpecimenRow`, `SpecimenTile` (layout for specimens) and `catalogue.ts`                                                                  | Every specimen file needs the same row/tile layout; one definition keeps them identical.                                                                                              |
-| V4  | Marketing kit sizes (zip: seal 360px, lockup 280px on canvases, notch pink)                                                 | `OfferSeal size="xl"`, `LogoLockup` token sizes, `CouponTicket` default notch                                                                                                | Sizes are token enums (spec §8.2); the kit uses the largest step. Recorded on the kit's docs description.                                                                             |
+| V4  | Marketing kit sizes (zip: seal 360/110px, lockup 280/240/220/200px, notch pink)                                             | `OfferSeal` `xl` (360, feed post) and `sm` (110, MPU) — exact; `LogoLockup` `lg` 280 · `md` 240 (also for the kit's 220) · `sm` 200; `CouponTicket notch="brand"`            | Sizes are token enums (spec §8.2, Plan 3b deviations 7, 8, 12). Only the 220px lockups move, to 240.                                                                                  |
 
 ## Review Focus
 
@@ -197,34 +197,34 @@ Expected: `{"missing":[],"empty":[],"surfaces":[],"undescribed":[]}`. A missing 
 
 Read each file named and answer each question in the report. Where the answer differs from this plan, patch the named task's code.
 
-| #   | Read                                                                         | Question — and the task it feeds                                                                                                                                                                                                                                                                                      |
-| --- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A1  | `molecules/choice-card/choice-card*.tsx`                                     | Does `ChoiceCardGroup` accept `{...register("meal")}` — i.e. forward `name`, `onChange`, `onBlur` and `ref` to **every** radio `<input>` (spec D17)? (Task 13; if not, Step 6)                                                                                                                                        |
-| A2  | `molecules/quantity-stepper/quantity-stepper.{tsx,test.tsx}`                 | Exact accessible names of the increase/decrease buttons (e.g. `Increase guests`)? Are they `type="button"`? (Task 13 play)                                                                                                                                                                                            |
-| A3  | `molecules/chip-group/chip-group.tsx`                                        | With `type="single"`, are items `role="radio"` named by their label (Radix ToggleGroup)? (Task 13 play)                                                                                                                                                                                                               |
-| A4  | `molecules/field/field.tsx`                                                  | Is the label a `<label htmlFor={id}>`; does the required marker change the accessible name (`Name *` vs `Name`)? The plays use `/^Name/`-style regexes, so either is fine — confirm. (Task 13)                                                                                                                        |
-| A5  | `atoms/radio/radio.tsx`                                                      | `RadioGroup` exported beside `Radio`, props `legend`, `isLegendHidden`, `status`; it spreads fieldset props (`id`, `aria-describedby`). (Tasks 11, 13)                                                                                                                                                                |
-| A6  | `molecules/table/table.tsx`                                                  | Parts and `caption`/`isCaptionVisible`/`minWidth` as the contract; does the scroll wrapper handle `scrollable-region-focusable`? (Task 2)                                                                                                                                                                             |
-| A7  | `layouts/post-frame/post-frame.tsx`                                          | `POST_FORMATS[format]` is `{ width, height, label }`; the frame is `position: relative`; `isFit` fits the parent's width. (Tasks 9, 12)                                                                                                                                                                               |
-| A8  | `molecules/logo-lockup/*`, `molecules/offer-seal/*` + their component tokens | Which `size` steps exist and what widths they map to (the kit uses `sm`…`xl`). (Task 12)                                                                                                                                                                                                                              |
-| A9  | `layouts/app-shell/app-shell.tsx` + tokens                                   | Width of `size="phone-sm"` — must be ≤ 360px for `Home360`. If it is wider, `Home360` renders the screens without `AppShell` and the report says so. (Task 11)                                                                                                                                                        |
-| A10 | `layouts/cluster/cluster.tsx`                                                | With `isScrollable`, does Cluster make the rail keyboard-focusable (tabindex + role region)? If not, the App kit passes `tabIndex={0}` + `role="region"` + `aria-label`. (Task 11)                                                                                                                                    |
-| A11 | `organisms/menu-list/menu-list.tsx`                                          | Does it add an "All" category itself (the kits pass only real categories)? (Tasks 10, 11)                                                                                                                                                                                                                             |
-| A12 | `organisms/site-header/*`                                                    | Drawer trigger accessible name equals `menuLabel` (`"Menu"`); desktop `actions` hidden from the accessibility tree below `md`, drawer actions hidden above it. (Task 10 plays)                                                                                                                                        |
-| A13 | `molecules/toast/toast.tsx`                                                  | `ToastProvider` props (`duration`, `label`) and the name of its **contained-viewport** option (Plan 3a); whether `Toast` takes a `portalContainer`, or the provider itself must sit inside `AppShell`'s `overlay` to contain the viewport. The App kit writes `isContained` + `Toast portalContainer`. (Tasks 10, 11) |
-| A14 | `organisms/dialog/dialog.tsx`                                                | Title is the dialog's accessible name; `footer` renders inside the dialog content; the prop that portals it into a given element is `portalContainer` (Plan 4) and accepts `HTMLElement \| null`. (Tasks 10, 11)                                                                                                      |
-| A15 | `atoms/button/button.tsx`, `atoms/icon-button/icon-button.tsx`               | `asChild` with an `<a>` child keeps `icon`/`iconAfter`; `IconButton count` keeps the accessible name equal to `label`. (Tasks 10–12)                                                                                                                                                                                  |
-| A16 | `.storybook/preview.tsx`                                                     | Viewport option key `floor360` exists; `a11y.test = "error"`; the storySort order from Plan 1 Task 8. (Tasks 2, 10–12)                                                                                                                                                                                                |
-| A17 | `packages/design-tokens/dist/tokens.json` (container tokens)                 | The utility names for the container steps this plan uses: `max-w-article` (the form) and `max-w-text-measure-prose` (Type → Body). Tailwind's static `max-w-prose` is never used. Patch Tasks 5 and 13 to the built names.                                                                                            |
-| A18 | `layouts/post-frame/post-frame.tsx`                                          | The `alt` tone (pink-50, Plan 2c) exists for the carousel board. (Task 12)                                                                                                                                                                                                                                            |
-| A19 | every component the kits and specimens pass optional values to               | Optional custom props accept `undefined` (`name?: T \| undefined`, Plans 2–4 ruling R13), so optional fields are passed straight through (`was={item.was}`). If one does not, that component is fixed forward under Step 6, not worked around here.                                                                   |
+| #   | Read                                                                             | Question — and the task it feeds                                                                                                                                                                                                                                                                                      |
+| --- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A1  | `molecules/choice-card-group/choice-card-group.tsx`                              | Plan 3b deviation 1 says `ChoiceCardGroup` forwards `name`, `onChange`, `onBlur` and `ref` from `{...register("meal")}` to **every** radio `<input>` (spec D17) — confirm in the code and its test. (Task 13; if not, Step 6)                                                                                         |
+| A2  | `molecules/quantity-stepper/quantity-stepper.{tsx,test.tsx}`                     | Exact accessible names of the increase/decrease buttons (e.g. `Increase guests`)? Are they `type="button"`? (Task 13 play)                                                                                                                                                                                            |
+| A3  | `molecules/chip-group/chip-group.tsx`                                            | Plan 3b: `type="single"` renders `role="radiogroup"` with items `role="radio"` + `aria-checked`, named by their label; a single group never deselects; `onBlur` is a prop (deviation 5). Confirm, since the Task 13 play presses ArrowRight then Space. (Task 13)                                                     |
+| A4  | `molecules/field/field.tsx`                                                      | Is the label a `<label htmlFor={id}>`; does the required marker change the accessible name (`Name *` vs `Name`)? The plays use `/^Name/`-style regexes, so either is fine — confirm. (Task 13)                                                                                                                        |
+| A5  | `atoms/radio/radio.tsx`                                                          | `RadioGroup` exported beside `Radio`, props `legend`, `isLegendHidden`, `status`; it spreads fieldset props (`id`, `aria-describedby`). (Tasks 11, 13)                                                                                                                                                                |
+| A6  | `molecules/table/table.tsx`                                                      | Parts and `caption`/`isCaptionVisible`/`minWidth` as the contract; does the scroll wrapper handle `scrollable-region-focusable`? (Task 2)                                                                                                                                                                             |
+| A7  | `layouts/post-frame/post-frame.tsx`                                              | `POST_FORMATS[format]` is `{ width, height, label }`; the frame is `position: relative`; `isFit` fits the parent's width. (Tasks 9, 12)                                                                                                                                                                               |
+| A8  | `molecules/logo-lockup/*`, `molecules/offer-seal/*`, `molecules/coupon-ticket/*` | Plan 3b fixes the scales — LogoLockup `sm` 200 · `md` 240 · `lg` 280 · `xl` 360 (default tone **white**); OfferSeal `sm` 110 · `md` 156 · `lg` 260 · `xl` 360, bleed `sm` = 1/12, `md` = 1/6 of the side; CouponTicket adds `notch="brand"`. Confirm against the component tokens. (Tasks 3, 12)                      |
+| A9  | `layouts/app-shell/app-shell.tsx` + tokens                                       | Width of `size="phone-sm"` — must be ≤ 360px for `Home360`. If it is wider, `Home360` renders the screens without `AppShell` and the report says so. (Task 11)                                                                                                                                                        |
+| A10 | `layouts/cluster/cluster.tsx`                                                    | With `isScrollable`, does Cluster make the rail keyboard-focusable (tabindex + role region)? If not, the App kit passes `tabIndex={0}` + `role="region"` + `aria-label`. (Task 11)                                                                                                                                    |
+| A11 | `organisms/menu-list/menu-list.tsx`                                              | Does it add an "All" category itself (the kits pass only real categories)? (Tasks 10, 11)                                                                                                                                                                                                                             |
+| A12 | `organisms/site-header/*`                                                        | Drawer trigger accessible name equals `menuLabel` (`"Menu"`); desktop `actions` hidden from the accessibility tree below `md`, drawer actions hidden above it. (Task 10 plays)                                                                                                                                        |
+| A13 | `molecules/toast/toast.tsx`                                                      | `ToastProvider` props (`duration`, `label`) and the name of its **contained-viewport** option (Plan 3a); whether `Toast` takes a `portalContainer`, or the provider itself must sit inside `AppShell`'s `overlay` to contain the viewport. The App kit writes `isContained` + `Toast portalContainer`. (Tasks 10, 11) |
+| A14 | `organisms/dialog/dialog.tsx`                                                    | Title is the dialog's accessible name; `footer` renders inside the dialog content; the prop that portals it into a given element is `portalContainer` (Plan 4) and accepts `HTMLElement \| null`. (Tasks 10, 11)                                                                                                      |
+| A15 | `atoms/button/button.tsx`, `atoms/icon-button/icon-button.tsx`                   | `asChild` with an `<a>` child keeps `icon`/`iconAfter`; `IconButton count` keeps the accessible name equal to `label`. (Tasks 10–12)                                                                                                                                                                                  |
+| A16 | `.storybook/preview.tsx`                                                         | Viewport option key `floor360` exists; `a11y.test = "error"`; the storySort order from Plan 1 Task 8. (Tasks 2, 10–12)                                                                                                                                                                                                |
+| A17 | `packages/design-tokens/dist/tokens.json` (container tokens)                     | The utility names for the container steps this plan uses: `max-w-article` (the form) and `max-w-text-measure-prose` (Type → Body). Tailwind's static `max-w-prose` is never used. Patch Tasks 5 and 13 to the built names.                                                                                            |
+| A18 | `layouts/post-frame/post-frame.tsx`                                              | The `alt` tone (pink-50, Plan 2c) exists for the carousel board. (Task 12)                                                                                                                                                                                                                                            |
+| A19 | every component the kits and specimens pass optional values to                   | Optional custom props accept `undefined` (`name?: T \| undefined`, Plans 2–4 ruling R13), so optional fields are passed straight through (`was={item.was}`). If one does not, that component is fixed forward under Step 6, not worked around here.                                                                   |
 
 - [ ] **Step 6: Fix forward only what D17 or the contracts require**
 
-If A1 fails (ChoiceCardGroup cannot take `register()`), that is a bug in the component against spec D17, not a docs problem: add a failing test to `molecules/choice-card/choice-card.test.tsx` that asserts the contract `register()` relies on (RHF itself is not a `ui` dependency, so the test passes the same four props by hand): render with `name="meal" onChange={spy} onBlur={spy} ref={refSpy}`, click the second card, expect `spy` called with an event whose `target.value` is the second option's value and `refSpy` called with an `HTMLInputElement`. Make it pass by forwarding the props to each radio, then commit:
+If A1 fails (ChoiceCardGroup cannot take `register()`), that is a bug in the component against spec D17, not a docs problem: add a failing test to `molecules/choice-card-group/choice-card-group.test.tsx` that asserts the contract `register()` relies on (RHF itself is not a `ui` dependency, so the test passes the same four props by hand): render with `name="meal" onChange={spy} onBlur={spy} ref={refSpy}`, click the second card, expect `spy` called with an event whose `target.value` is the second option's value and `refSpy` called with an `HTMLInputElement`. Make it pass by forwarding the props to each radio, then commit:
 
 ```bash
-git add packages/ui/src/molecules/choice-card
+git add packages/ui/src/molecules/choice-card-group
 git commit -m "fix(ui): forward register props to every ChoiceCard radio
 
 react-hook-form's register() hands a group one name/onChange/onBlur/ref set;
@@ -1812,10 +1812,10 @@ export const ClearSpace: Story = {
   render: () => (
     <SpecimenRow label="Dashed: the clear space LogoLockup keeps on every side — the height of the P">
       <div className="border border-dashed border-border-brand">
-        <LogoLockup />
+        <LogoLockup tone="pink" />
       </div>
       <div className="border border-dashed border-border-brand">
-        <LogoLockup hasTagline={false} />
+        <LogoLockup tone="pink" hasTagline={false} />
       </div>
     </SpecimenRow>
   ),
@@ -4445,6 +4445,7 @@ export const GOOGLE_REVIEWS: ReviewCardProps[] = [
     meta: "Restaurant · Google review",
     rating: 5,
     isVerified: true,
+    hasAvatar: false,
     source: { label: "View on Google", href: "https://maps.app.goo.gl/uGhWvzmZW7To5etbA" },
     quote:
       "I ordered Mahararaja Thali, steamed Momos and other few extras for the first time. The experience and taste was great😋 A1. Restaurant customer support over phone were well spoken. I will recommend this to my friends. Looking forward to order more […]. Packing was great👌Hatts of Team",
@@ -4454,6 +4455,7 @@ export const GOOGLE_REVIEWS: ReviewCardProps[] = [
     meta: "Restaurant · Google review",
     rating: 5,
     isVerified: true,
+    hasAvatar: false,
     source: { label: "View on Google", href: "https://maps.app.goo.gl/32n6SYDUMejsa3NeA" },
     quote: "Very nice and economical food or very tasty food as home",
   },
@@ -4462,6 +4464,7 @@ export const GOOGLE_REVIEWS: ReviewCardProps[] = [
     meta: "Restaurant · Google review",
     rating: 4,
     isVerified: true,
+    hasAvatar: false,
     source: { label: "View on Google", href: "https://maps.app.goo.gl/GB38hi9T2G2UfQdG9" },
     quote: "Good place for indian main course at reasonable price in gurgaon sector 57",
   },
@@ -4470,6 +4473,7 @@ export const GOOGLE_REVIEWS: ReviewCardProps[] = [
     meta: "Restaurant · Google review",
     rating: 4,
     isVerified: true,
+    hasAvatar: false,
     source: { label: "View on Google", href: "https://maps.app.goo.gl/s1ghZv4qg3f773Gn8" },
     quote: "Had Honey chili potato and it was good 👍",
   },
@@ -5894,7 +5898,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "The design system's feed artboards (ui_kits/marketing), each built inside PostFrame at its true canvas and fitted for preview. Sizes are token steps: the kit's oversized seal and lockup use the largest steps (OfferSeal xl, LogoLockup xl). Reference kit — not production copy.",
+          "The design system's feed artboards (ui_kits/marketing), each built inside PostFrame at its true canvas and fitted for preview. Sizes are token steps: the feed seal is OfferSeal xl (360) and the MPU seal sm (110), as in the kit; the lockups are lg (280), md (240, also for the kit's 220) and sm (200). Reference kit — not production copy.",
       },
     },
   },
@@ -6149,7 +6153,7 @@ export function OfferPost() {
           Masala Fries, half price.
         </SocialHeadline>
         <div className="flex items-end justify-between gap-10">
-          <LogoLockup tone="white" size="xl" />
+          <LogoLockup tone="white" size="lg" />
           <SocialHeadline size="caption" measure="tight" align="end" as="p">
             {`Dine-in and pickup. At our ${OUTLET.name} café.`}
           </SocialHeadline>
@@ -6213,7 +6217,7 @@ export function StatementPost() {
             <SocialHeadline size="body" measure="wide" as="p">
               {brand.vegStatement}
             </SocialHeadline>
-            <LogoLockup tone="white" size="lg" />
+            <LogoLockup tone="white" size="md" />
           </div>
         </div>
       </div>
@@ -6301,11 +6305,12 @@ export function OfferStory({ hasSafeArea = false }: StoryArtboardProps) {
         <CouponTicket
           tone="light"
           size="lg"
+          notch="brand"
           headline="50% off your first order"
           code="PAPRIKAA50"
           terms="One use per guest. Dine-in and pickup."
         />
-        <LogoLockup tone="white" size="xl" align="center" className="self-center" />
+        <LogoLockup tone="white" size="lg" align="center" className="self-center" />
       </div>
     </PostFrame>
   );
@@ -6398,7 +6403,7 @@ export function Mpu() {
           <a href="#order">Order Now</a>
         </Button>
       </div>
-      <OfferSeal value="50%" label="Off" size="sm" corner="top-right" bleed="sm" />
+      <OfferSeal value="50%" label="Off" size="sm" corner="top-right" bleed="md" />
     </PostFrame>
   );
 }
@@ -6408,7 +6413,7 @@ export function Mpu() {
 
 Run the Step 1 command → PASS (11 stories). Probe (Review Focus 3): in `Feed360`, change the first `Artboard` class to `max-w-150` **and** remove `isFit` from `OfferPost`'s `PostFrame`; expect FAIL `the page is 1…px wide`; revert both. Paste both.
 
-Compare every board with the source kit (`/ui_kits/marketing/index.html` on the Task 10 `serve`; Feed, Stories and Ads tabs); list size differences (seal, lockup, notch) with the V4 reason.
+Compare every board with the source kit (`/ui_kits/marketing/index.html` on the Task 10 `serve`; Feed, Stories and Ads tabs); list any difference with its reason (expected: only the kit's 220px lockups, now the 240px `md` step — V4).
 
 ```bash
 pnpm nx lint @pink-paprikaa-web/storybook --fix 2>&1 | tail -5
@@ -6913,6 +6918,7 @@ export function EnquiryForm({ onSubmit }: EnquiryFormProps) {
                     options={SPICE_LEVELS}
                     value={field.value}
                     onValueChange={field.onChange}
+                    onBlur={field.onBlur}
                   />
                 )}
               />
