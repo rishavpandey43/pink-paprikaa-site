@@ -12,7 +12,10 @@ export interface LinkProps extends ComponentProps<"a"> {
   size?: "sm" | "md" | "lg" | undefined;
   icon?: IconComponent | undefined;
   iconAfter?: IconComponent | undefined;
-  /** Opens in a new tab with a safe `rel` and appends the outward arrow, announced "Opens in a new tab". */
+  /**
+   * Opens in a new tab with a safe `rel` and announces "Opens in a new tab" on a trailing glyph:
+   * the outward arrow, or the caller's `iconAfter` when one is set.
+   */
   isExternal?: boolean | undefined;
   /** Render the single child (e.g. `next/link`) with Link styling. */
   asChild?: boolean | undefined;

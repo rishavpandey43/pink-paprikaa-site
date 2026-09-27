@@ -88,7 +88,7 @@
 
   a {
     color: var(--color-text-link);
-    text-decoration-color: var(--color-pink-200);
+    text-decoration-color: var(--color-link-underline);
     text-decoration-thickness: 1.5px;
     text-underline-offset: 3px;
     transition: color var(--duration-fast) var(--ease-out);

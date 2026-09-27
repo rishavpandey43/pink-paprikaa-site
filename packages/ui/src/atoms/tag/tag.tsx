@@ -5,7 +5,10 @@ import { controlStates } from "../../lib/control-states";
 import { Icon, type IconComponent } from "../icon/icon";
 
 export interface TagProps extends ComponentProps<"button"> {
-  /** Selected tags flood pink (ink on a pink field). Reported as `aria-pressed` when pressable. */
+  /**
+   * Selected tags flood pink (ink on a pink field). The state is only announced on an interactive
+   * Tag (`aria-pressed`); a static tag uses it for visual emphasis only.
+   */
   isSelected?: boolean | undefined;
   /** 16px leading glyph. */
   icon?: IconComponent | undefined;
