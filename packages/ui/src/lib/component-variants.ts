@@ -48,10 +48,11 @@ const TEXT = [
   "icon-button-count",
   "tag",
   "image-slot-label",
+  "status-dot-label",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
-const RADIUS = ["xs", "sm", "md", "lg", "xl", "pill"];
+const RADIUS = ["xs", "sm", "md", "lg", "xl", "pill", "diamond"];
 const SHADOW = [
   "1",
   "2",
@@ -106,6 +107,8 @@ const SPACING = [
   "tag-h",
   "divider-mark",
   "badge-icon",
+  "status-dot-sm",
+  "status-dot-md",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];
