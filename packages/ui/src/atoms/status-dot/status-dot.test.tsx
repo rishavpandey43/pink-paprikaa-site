@@ -28,6 +28,12 @@ describe("StatusDot", () => {
     }
   );
 
+  it("treats a blank label as no label, so the dot is still named by its tone", () => {
+    const { container } = render(<StatusDot tone="busy" label="   " />);
+    expect(screen.getByRole("img", { name: "Busy" })).toBeInTheDocument();
+    expect(container.firstElementChild?.children).toHaveLength(1);
+  });
+
   it("lets a consumer name a bare dot", () => {
     render(<StatusDot tone="open" aria-label="Sector 57 is open" />);
     expect(screen.getByRole("img", { name: "Sector 57 is open" })).toBeInTheDocument();

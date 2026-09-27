@@ -59,7 +59,8 @@ export function StatusDot({
   ...props
 }: StatusDotProps) {
   const slots = statusDot({ tone, size });
-  const bareName = label === undefined ? { role: "img", "aria-label": TONE_NAME[tone] } : undefined;
+  const hasLabel = label !== undefined && label.trim() !== "";
+  const bareName = hasLabel ? undefined : { role: "img", "aria-label": TONE_NAME[tone] };
   return (
     <span className={slots.root({ className })} {...bareName} {...props}>
       <span aria-hidden className={slots.dot()}>
@@ -68,7 +69,7 @@ export function StatusDot({
           <SymbolMark className={slots.mark()} />
         </span>
       </span>
-      {label === undefined ? null : <span className={slots.label()}>{label}</span>}
+      {hasLabel ? <span className={slots.label()}>{label}</span> : null}
     </span>
   );
 }
