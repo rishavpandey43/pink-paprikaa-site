@@ -111,3 +111,14 @@ export const ClearSpace: Story = {
     </div>
   ),
 };
+
+/** Header sizing: set the height in horizontal chrome and let the width follow the artwork. */
+export const HeaderHeight: Story = {
+  render: () => (
+    <Specimen prop='className="h-10 w-auto" — in the 64px header row'>
+      <div className="flex h-header-compact items-center border-b-default border-border-subtle bg-surface-page px-6">
+        <Logo className="h-10 w-auto" />
+      </div>
+    </Specimen>
+  ),
+};

@@ -25,7 +25,9 @@ const DEFAULT_TITLE: Readonly<Record<Mark, string>> = {
 };
 
 export interface LogoProps
-  extends Omit<ComponentProps<"svg">, "children" | "viewBox">, VariantProps<typeof logo> {
+  extends
+    Omit<ComponentProps<"svg">, "children" | "viewBox" | "width" | "height">,
+    VariantProps<typeof logo> {
   /** Accessible name. Defaults to the brand name (with the tagline for the lockup). */
   title?: string;
   /** Hide from assistive tech when a visible brand name sits beside it. */
@@ -35,7 +37,9 @@ export interface LogoProps
 /**
  * The brand marks. `lockup` (with the drawn tagline) is the default everywhere; `wordmark` only
  * below ~120px wide; `symbol` is the diamond mark. Tones: `pink` on light, `white` on pink or ink,
- * `badge` on its own pink plate. Size it with width classes (`w-50`); height follows the artwork.
+ * `badge` on its own pink plate. Size it with classes only (no width/height attributes): `w-50` to
+ * set the width, or `h-12 w-auto` in a header to set the height — the other side follows the
+ * artwork. The root paints with `fill="currentColor"`, so an unfilled path never renders black.
  *
  * The markup is the build-time artwork compiled from the committed SVGs — never user input — so
  * `dangerouslySetInnerHTML` is safe here.
@@ -73,6 +77,7 @@ export function Logo({
           width={width}
           height={height}
           viewBox={artwork.viewBox}
+          fill="currentColor"
           className="text-ink-000"
           dangerouslySetInnerHTML={{ __html: markup }}
         />
@@ -83,6 +88,7 @@ export function Logo({
   return (
     <svg
       viewBox={artwork.viewBox}
+      fill="currentColor"
       className={logo({ variant, tone, className })}
       {...a11y}
       {...props}

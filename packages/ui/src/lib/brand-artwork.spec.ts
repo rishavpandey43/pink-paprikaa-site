@@ -1,7 +1,9 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { ARTWORK, SYMBOL_DATA_URI_WHITE } from "./brand-artwork";
+import * as brandArtwork from "./brand-artwork";
+
+const { ARTWORK } = brandArtwork;
 
 /* `join(import.meta.dirname, …)`, not `new URL(…, import.meta.url)`: Vite rewrites that literal
    pattern into an asset URL when it transforms a jsdom test. */
@@ -23,7 +25,7 @@ describe("brand artwork", () => {
 
   it("paints every mark with currentColor — no literal colour survives", () => {
     for (const { markup } of Object.values(ARTWORK)) {
-      expect(markup).not.toMatch(/#[\da-f]{3,6}\b/i);
+      expect(markup).not.toMatch(/#[\da-f]{3,8}\b/i);
       expect(markup).toContain("currentColor");
     }
   });
@@ -34,8 +36,33 @@ describe("brand artwork", () => {
     }
   });
 
-  it("offers the white symbol as a CSS data URI", () => {
-    expect(SYMBOL_DATA_URI_WHITE).toMatch(/^url\("data:image\/svg\+xml,/);
+  it('holds inner markup only, with no href="#…" reference left instance-unsafe', () => {
+    for (const { markup } of Object.values(ARTWORK)) {
+      expect(markup.startsWith("<svg")).toBe(false);
+      expect(markup).not.toMatch(/href="#/);
+    }
+  });
+
+  it("reads a finite width and height from every viewBox", () => {
+    for (const { width, height } of Object.values(ARTWORK)) {
+      expect(Number.isFinite(width) && width > 0).toBe(true);
+      expect(Number.isFinite(height) && height > 0).toBe(true);
+    }
+  });
+
+  it.each([
+    ["lockup", 40_000],
+    ["wordmark", 34_000],
+    ["symbol", 4_000],
+  ] as const)(
+    "keeps the inline %s under %i characters (two-decimal path data — every instance ships it)",
+    (mark, budget) => {
+      expect(ARTWORK[mark].markup.length).toBeLessThan(budget);
+    }
+  );
+
+  it("exports the artwork only — the white symbol tile lives in brand-artwork.css", () => {
+    expect(Object.keys(brandArtwork)).toEqual(["ARTWORK"]);
   });
 
   it("defines the symbol mask once, as a CSS custom property and a utility", () => {
