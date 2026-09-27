@@ -6916,7 +6916,7 @@ const statusDot = componentVariants({
     diamond:
       "rounded-status-dot absolute inset-0 grid rotate-45 place-items-center overflow-hidden bg-current",
     mark: "size-4/5 -rotate-45 text-ink-000 opacity-66",
-    label: "text-status-dot-label font-body text-text-body",
+    label: "font-body text-status-dot-label text-text-body",
   },
   variants: {
     tone: {
