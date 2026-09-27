@@ -16,8 +16,6 @@ export default defineConfig(() => ({
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
     include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    // Temporary: the package has no tests until plan 1 task 5 lands. Remove with that task.
-    passWithNoTests: true,
     reporters: ["default"],
     coverage: {
       reportsDirectory: "./test-output/vitest/coverage",

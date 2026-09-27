@@ -1,2 +1,318 @@
-/* Temporary entry — rebuilt by plan 1 task 5. */
+/*
+ * @pink-paprikaa-web/ui — the single stylesheet a consumer imports, after Tailwind:
+ *
+ *   @import "tailwindcss";
+ *   @import "@pink-paprikaa-web/ui/styles.css";
+ *
+ * It brings the tokens, the surface remaps, the base layer, the system's named utilities and its
+ * animations, and it scans its own sources, so a consumer never adds an @source for the library.
+ */
 @import "@pink-paprikaa-web/design-tokens/theme.css";
+/* In the base layer so a utility on the same element (text-text-muted) still wins over the
+   surface's inherited colour. */
+@import "@pink-paprikaa-web/design-tokens/surfaces.css" layer(base);
+
+@source "./";
+
+@theme {
+  --animate-skeleton: pp-skeleton 1.2s var(--ease-in-out) infinite;
+  --animate-mark-pulse: pp-mark-pulse 1.2s var(--ease-in-out) infinite;
+  --animate-spin-pulse: pp-spin-pulse 1.2s var(--ease-in-out) infinite;
+  --animate-dot-pulse: pp-dot-pulse 1.6s var(--ease-out) infinite;
+  --animate-rotate: pp-rotate 1s linear infinite;
+  --animate-sheet-in: pp-sheet-in var(--duration-base) var(--ease-out);
+  --animate-toast-pop: pp-toast-pop var(--duration-slow) var(--ease-pop);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-surface-page);
+    color: var(--color-text-body);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-heading);
+  }
+
+  h1 {
+    font-size: var(--text-h1);
+    line-height: var(--text-h1--line-height);
+    letter-spacing: var(--text-h1--letter-spacing);
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    letter-spacing: var(--text-h2--letter-spacing);
+  }
+
+  h3 {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    letter-spacing: var(--text-h3--letter-spacing);
+  }
+
+  h4 {
+    font-size: var(--text-h4);
+    line-height: var(--text-h4--line-height);
+    letter-spacing: var(--text-h4--letter-spacing);
+  }
+
+  p {
+    margin: 0 0 calc(var(--spacing) * 4);
+    max-width: var(--container-prose);
+    text-wrap: pretty;
+  }
+
+  a {
+    color: var(--color-text-link);
+    text-decoration-color: var(--color-pink-200);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  a:hover {
+    color: var(--color-text-link-hover);
+    text-decoration-color: currentColor;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Inline links get a soft corner on their focus outline; controls keep their own shape. */
+  a:focus-visible {
+    border-radius: var(--radius-xs);
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Section reveal (spec §3.2.4) — only ever applied by RevealObserver, below the fold. */
+  [data-pp-reveal] {
+    opacity: 0;
+    transform: translateY(var(--motion-reveal-distance));
+    transition:
+      opacity var(--duration-slow) var(--ease-out),
+      transform var(--duration-slow) var(--ease-out);
+  }
+
+  [data-pp-reveal][data-pp-revealed] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-pp-reveal] {
+      transform: none;
+    }
+  }
+
+  @media print {
+    [data-pp-reveal] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Named layout utilities — the design system's .pp-* classes. */
+@utility container-page {
+  width: 100%;
+  max-width: var(--container-content);
+  margin-inline: auto;
+  padding-inline: var(--spacing-gutter);
+}
+
+@utility section-y {
+  padding-block: var(--spacing-section);
+}
+
+@utility autogrid {
+  display: grid;
+  gap: var(--spacing-grid-gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--spacing-card-min), 100%), 1fr));
+}
+
+@utility autogrid-wide {
+  display: grid;
+  gap: var(--spacing-grid-gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--spacing-card-min-wide), 100%), 1fr));
+}
+
+@utility cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+}
+
+@utility scrim-bottom {
+  background-image: var(--effect-scrim-bottom);
+}
+
+@utility scrim-top {
+  background-image: var(--effect-scrim-top);
+}
+
+/* Motion tokens as named utilities, so components never need an arbitrary value. */
+@utility duration-instant {
+  transition-duration: var(--duration-instant);
+}
+
+@utility duration-fast {
+  transition-duration: var(--duration-fast);
+}
+
+@utility duration-base {
+  transition-duration: var(--duration-base);
+}
+
+@utility duration-slow {
+  transition-duration: var(--duration-slow);
+}
+
+@utility duration-page {
+  transition-duration: var(--duration-page);
+}
+
+@utility press-scale {
+  scale: var(--motion-press-scale);
+}
+
+@utility lift {
+  translate: 0 var(--motion-lift-y);
+}
+
+@utility z-raised {
+  z-index: var(--z-raised);
+}
+
+@utility z-sticky {
+  z-index: var(--z-sticky);
+}
+
+@utility z-header {
+  z-index: var(--z-header);
+}
+
+@utility z-dock {
+  z-index: var(--z-dock);
+}
+
+@utility z-overlay {
+  z-index: var(--z-overlay);
+}
+
+@utility z-toast {
+  z-index: var(--z-toast);
+}
+
+/* The design system's seven animations. */
+@keyframes pp-toast-pop {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pp-skeleton {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes pp-spin-pulse {
+  0%,
+  100% {
+    transform: rotate(45deg) scale(0.7);
+    opacity: 0.25;
+  }
+  50% {
+    transform: rotate(45deg) scale(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes pp-dot-pulse {
+  0% {
+    transform: rotate(45deg) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: rotate(45deg) scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes pp-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pp-sheet-in {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pp-mark-pulse {
+  0%,
+  100% {
+    transform: scale(0.72);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}

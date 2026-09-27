@@ -10,8 +10,12 @@
       "import": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./styles.css": "./src/styles.css",
     "./package.json": "./package.json"
   },
+  "sideEffects": [
+    "**/*.css"
+  ],
   "devDependencies": {
     "@storybook/addon-docs": "^10.5.7",
     "@testing-library/jest-dom": "^7.0.0",
@@ -20,6 +24,7 @@
   },
   "dependencies": {
     "@pink-paprikaa-web/design-tokens": "workspace:*",
+    "@pink-paprikaa-web/utils": "workspace:*",
     "lucide-react": "^1.30.0",
     "radix-ui": "^1.6.7",
     "tailwind-merge": "^3.6.0",

@@ -1,5 +1,4 @@
 /**
- * Public surface of @pink-paprikaa-web/ui — the only barrel in the package.
- * Components are re-exported here, by name, as each one lands.
+ * Public surface of @pink-paprikaa-web/ui — the only barrel in the package. Named re-exports only.
  */
-export {};
+export { RevealObserver, type RevealObserverProps } from "./lib/reveal-observer";
