@@ -1959,7 +1959,7 @@ const GOOGLE_REVIEWS = [
     meta: "Restaurant · Google review",
     rating: 5,
     quote:
-      "I ordered Mahararaja Thali, steamed Momos and other few extras for the first time. The experience and taste was great😋 A1. Restaurant customer support over phone were well spoken. I will recommend this to my friends. Looking forward to order more from Pink Paprika. Packing was great👌Hatts of Team",
+      "I ordered Mahararaja Thali, steamed Momos and other few extras for the first time. The experience and taste was great😋 A1. Restaurant customer support over phone were well spoken. I will recommend this to my friends. Looking forward to order more […]. Packing was great👌Hatts of Team",
     href: "https://maps.app.goo.gl/uGhWvzmZW7To5etbA",
   },
   {

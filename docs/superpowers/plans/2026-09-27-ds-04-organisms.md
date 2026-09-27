@@ -229,6 +229,11 @@ rtk proxy grep -n "no-noninteractive-tabindex" packages/ui/eslint.config.mjs
 
 Expected: every token count is `1`; all eight utilities and `--animate-sheet-in` exist; component token files follow `<component>-<part>` names in `spacing`/`text` (read one, e.g. `button.json`, and match its shape); `component-variants.ts` has `SPACING` and `TEXT` arrays (if Plans 2–3 added other arrays — e.g. `COLOR` — note it; this plan adds no colour tokens); the preview's viewport keys include `floor360`, `md`, `lg`, `xl` and `storySort` contains `Organisms`. Note whether `jsx-a11y/no-noninteractive-tabindex` is already configured (Plan 3b's Table scroll wrapper may have allowed `region`) — Task 13 Step 1 is skipped if so.
 
+- [ ] **Step 4a: Dev parity tables present on every ported-component task**
+
+Run: `rtk proxy grep -c "^\*\*Dev parity:\*\*" docs/superpowers/plans/2026-09-27-ds-04-organisms.md && rtk proxy grep -c "^\*\*Dev reference:\*\* none (handoff component)" docs/superpowers/plans/2026-09-27-ds-04-organisms.md`
+Expected: `12`, then `3` — a parity table on each task that ports a `dev` organism (Tasks 1–5, 7, 8, 10–12, 14, 15; contracts §0.0) and the handoff marker on Tasks 6, 9 and 13. A missing table is a delta: stop and report it. Rows marked "pending contract delta" are built only if the controller has ruled them in.
+
 - [ ] **Step 5: Apply the deltas to this plan and commit**
 
 For each recorded delta, edit the affected task's code in this file (import path, prop name, class name, test selector). Then:
@@ -247,6 +252,32 @@ If there are no deltas, skip the commit and say so in the report.
 ---
 
 ### Task 1: CtaBand (and the organism story fixtures)
+
+**Dev reference:** `git show dev:packages/ui/src/organisms/cta-band/cta-band.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                               | Ruling  | Where / clause                                                                  |
+| ---------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------- |
+| Overline, heading and body render                                      | ALREADY | test "renders the overline, a level-2 title…"                                   |
+| `headingLevel`                                                         | ALREADY | test "takes its heading level from headingLevel"                                |
+| The action stays clickable                                             | ADD     | test "keeps the action clickable"                                               |
+| Nothing extra without an action                                        | ALREADY | test "renders nothing but the title…" (whole text content)                      |
+| Each tone floods its `bg-surface-*` ground                             | ADD     | the tone `it.each` asserts the background class beside `data-surface`           |
+| Split: the action sits beside the copy (`shrink-0`)                    | ADD     | test "sits the action beside the copy with align=split"                         |
+| Centre: the action stacks under the copy (`justify-center`)            | ADD     | the centre test asserts the action wrapper                                      |
+| Type inverts on ink/brand, stays dark on soft (heading colour classes) | DROP    | D5 — text follows `data-surface`, asserted per tone                             |
+| Merges a caller `className`                                            | ADD     | test "merges a caller className over its own"                                   |
+| axe                                                                    | ALREADY | test "has no accessibility violations"                                          |
+| Heading always the fluid `h2` step                                     | ALREADY | `variant="h2" isFluid`                                                          |
+| `on="brand"` on the action's Button                                    | DROP    | D5                                                                              |
+| "One action, never two"                                                | DROP    | handoff bands carry two actions (D2; `HandoffOfficeStrip`, `HandoffTasteFirst`) |
+| Exported `CtaBandTone`                                                 | ALREADY | `CtaBandProps["tone"]`                                                          |
+| Stories Default · Split · Centred · Tones · Narrow                     | ALREADY | Playground · InkSplit · BrandCentred · InkSplit/BrandCentred/SoftSplit · Mobile |
+| Story HeadingOnly                                                      | ADD     | `HeadingOnly`                                                                   |
+| Story WithoutAction                                                    | ADD     | `WithoutAction`                                                                 |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Files:**
 
@@ -329,7 +360,8 @@ export const BRAND = {
 
 /**
  * The four verified Google reviews (rates.js → google.reviews). Quotes are verbatim, the guests'
- * own spelling included — a review is never edited.
+ * own spelling included — a review is never edited. One elision ("[…]") removes a guest's one-a
+ * spelling of the brand name (ruling R17, the same text as Plan 5's `fixtures.ts`).
  */
 export const GOOGLE_REVIEWS: ReviewCardProps[] = [
   {
@@ -337,7 +369,7 @@ export const GOOGLE_REVIEWS: ReviewCardProps[] = [
     meta: "Restaurant · Google review",
     rating: 5,
     quote:
-      "I ordered Mahararaja Thali, steamed Momos and other few extras for the first time. The experience and taste was great😋 A1. Restaurant customer support over phone were well spoken. I will recommend this to my friends. Looking forward to order more from Pink Paprika. Packing was great👌Hatts of Team",
+      "I ordered Mahararaja Thali, steamed Momos and other few extras for the first time. The experience and taste was great😋 A1. Restaurant customer support over phone were well spoken. I will recommend this to my friends. Looking forward to order more […]. Packing was great👌Hatts of Team",
     isVerified: true,
     source: { label: "View on Google", href: "https://maps.app.goo.gl/uGhWvzmZW7To5etbA" },
   },
@@ -380,6 +412,7 @@ export const VIEWPORT_1280 = { viewport: { value: "xl", isRotated: false } };
 
 ```tsx
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { CtaBand } from "./cta-band";
@@ -412,9 +445,31 @@ describe("CtaBand", () => {
     expect(container.textContent).toBe(COPY.title);
   });
 
-  it.each(["ink", "brand", "soft"] as const)("paints the %s field and sets its surface", (tone) => {
+  it("keeps the action clickable", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    render(
+      <CtaBand
+        title={COPY.title}
+        action={
+          <button type="button" onClick={onClick}>
+            Book a trial Dawat
+          </button>
+        }
+      />
+    );
+    await user.click(screen.getByRole("button", { name: "Book a trial Dawat" }));
+    expect(onClick).toHaveBeenCalledOnce();
+  });
+
+  it.each([
+    ["ink", "bg-surface-inverse"],
+    ["brand", "bg-surface-brand"],
+    ["soft", "bg-surface-brand-soft"],
+  ] as const)("paints the %s field and sets its surface", (tone, background) => {
     const { container } = render(<CtaBand title={COPY.title} tone={tone} />);
     expect(container.firstElementChild).toHaveAttribute("data-surface", tone);
+    expect(container.firstElementChild).toHaveClass(background);
   });
 
   it("carries the tiled diamond by default and drops it with pattern=none", () => {
@@ -424,9 +479,35 @@ describe("CtaBand", () => {
     expect(patternLayer(container)).not.toBeInTheDocument();
   });
 
+  it("sits the action beside the copy with align=split (the default)", () => {
+    const { container } = render(
+      <CtaBand title={COPY.title} pattern="none" action={<a href="#trial">Book a trial Dawat</a>} />
+    );
+    expect(container.querySelector("section > div")).toHaveClass("justify-between");
+    expect(screen.getByRole("link", { name: "Book a trial Dawat" }).parentElement).toHaveClass(
+      "shrink-0"
+    );
+  });
+
   it("stacks and centres copy and action with align=center", () => {
-    const { container } = render(<CtaBand title={COPY.title} align="center" pattern="none" />);
+    const { container } = render(
+      <CtaBand
+        title={COPY.title}
+        align="center"
+        pattern="none"
+        action={<a href="#trial">Book a trial Dawat</a>}
+      />
+    );
     expect(container.querySelector("section > div")).toHaveClass("flex-col", "text-center");
+    expect(screen.getByRole("link", { name: "Book a trial Dawat" }).parentElement).toHaveClass(
+      "justify-center"
+    );
+  });
+
+  it("merges a caller className over its own", () => {
+    const { container } = render(<CtaBand title={COPY.title} className="bg-surface-page-alt" />);
+    expect(container.firstElementChild).toHaveClass("bg-surface-page-alt");
+    expect(container.firstElementChild).not.toHaveClass("bg-surface-inverse");
   });
 
   it("has no accessibility violations", async () => {
@@ -549,7 +630,7 @@ export function CtaBand({
 - [ ] **Step 6: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- cta-band 2>&1 | tail -8`
-Expected: PASS (7 tests).
+Expected: PASS (12 tests).
 
 - [ ] **Step 7: Stories (card parity with `components/organisms/CtaBand.card.html` + handoff bands)**
 
@@ -680,6 +761,12 @@ export const HandoffTasteFirst: Story = {
 
 export const WithoutPattern: Story = { args: { pattern: "none" } };
 
+/** No overline and no body — the heading carries the band on its own. */
+export const HeadingOnly: Story = { args: { overline: undefined, body: undefined } };
+
+/** A band that only announces — no action. Rare, but the layout holds. */
+export const WithoutAction: Story = { args: { action: undefined } };
+
 export const Mobile: Story = { ...HandoffOfficeStrip, globals: VIEWPORT_360 };
 export const Tablet: Story = { ...HandoffOfficeStrip, globals: VIEWPORT_768 };
 export const Desktop: Story = { ...HandoffOfficeStrip, globals: VIEWPORT_1280 };
@@ -705,7 +792,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 ```
 
-Expected: green; Storybook lists Organisms/CtaBand with 10 stories.
+Expected: green; Storybook lists Organisms/CtaBand with 12 stories.
 
 ```bash
 git add packages/design-tokens/tokens/component/cta-band.json packages/ui/src/organisms packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
@@ -722,6 +809,30 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 2: StatBand
+
+**Dev reference:** `git show dev:packages/ui/src/organisms/stat-band/stat-band.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                          | Ruling  | Where / clause                                                           |
+| ------------------------------------------------- | ------- | ------------------------------------------------------------------------ |
+| Every value and label render                      | ALREADY | test "lists every stat with its value, label and sub-line"               |
+| A sub-line only on the stat that carries one      | ADD     | test "renders a sub-line only for the stat that carries one"             |
+| One glyph per stat that asks for one              | ADD     | test "draws one glyph per stat that asks for one"                        |
+| Each tone floods its `bg-surface-*` ground        | ADD     | the tone `it.each` asserts the background class                          |
+| Numbers white on brand/ink, pink on soft          | ADD     | test "colours the numbers brand on soft and white on the flooded fields" |
+| Every column centred                              | ADD     | test "centres every stat so the row reads as one band"                   |
+| Auto-fit grid survives 360px (`min(200px,100%)`)  | ALREADY | `autogrid-min-sm` test                                                   |
+| Merges a caller `className`                       | ADD     | test "merges a caller className over its own"                            |
+| axe                                               | ALREADY | test "has no accessibility violations"                                   |
+| `label`/`sub` as `string`, `icon` as `LucideIcon` | ALREADY | `ReactNode` / `IconComponent` (D10)                                      |
+| Exported `StatBandTone`                           | ALREADY | `StatBandProps["tone"]`                                                  |
+| Stories Default · Tones · FourAcross · Narrow     | ALREADY | Playground · Soft/Brand/Ink · FourStats · Mobile                         |
+| Story WithIcons                                   | ADD     | `WithIcons`                                                              |
+| Story WithSubLines                                | ADD     | `WithSubLines`                                                           |
+| "4.6 average guest rating", "7 sections" copy     | DROP    | prompt "only real, verifiable numbers" + spec §10.1 (Step 6 note)        |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Files:**
 
@@ -767,6 +878,7 @@ Expected: `--spacing-stat-band-y` and `--spacing-stat-band-gap`. The track is Pl
 
 ```tsx
 import { render, screen, within } from "@testing-library/react";
+import { Leaf } from "lucide-react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { StatBand, type StatBandItem } from "./stat-band";
@@ -787,9 +899,48 @@ describe("StatBand", () => {
     expect(screen.getByText("No egg, no meat, ever")).toBeInTheDocument();
   });
 
-  it.each(["soft", "brand", "ink"] as const)("paints the %s field and sets its surface", (tone) => {
+  it("renders a sub-line only for the stat that carries one", () => {
+    render(<StatBand stats={STATS} />);
+    const items = within(screen.getByRole("list")).getAllByRole("listitem");
+    expect(items[0]?.textContent).toBe("30dishes on the Classic plan");
+    expect(items[2]).toHaveTextContent("No egg, no meat, ever");
+  });
+
+  it("draws one glyph per stat that asks for one", () => {
+    render(
+      <StatBand
+        stats={STATS.map((stat, index) => (index === 1 ? stat : { ...stat, icon: Leaf }))}
+      />
+    );
+    expect(screen.getByRole("list").querySelectorAll("svg")).toHaveLength(2);
+  });
+
+  it.each([
+    ["soft", "bg-surface-brand-soft"],
+    ["brand", "bg-surface-brand"],
+    ["ink", "bg-surface-inverse"],
+  ] as const)("paints the %s field and sets its surface", (tone, background) => {
     const { container } = render(<StatBand stats={STATS} tone={tone} />);
     expect(container.firstElementChild).toHaveAttribute("data-surface", tone);
+    expect(container.firstElementChild).toHaveClass(background);
+  });
+
+  it("colours the numbers brand on soft and white on the flooded fields", () => {
+    const { rerender } = render(<StatBand stats={STATS} tone="soft" />);
+    expect(screen.getByText("3 km")).toHaveClass("text-text-brand");
+    rerender(<StatBand stats={STATS} tone="ink" />);
+    expect(screen.getByText("3 km")).toHaveClass("text-text-on-inverse");
+  });
+
+  it("centres every stat so the row reads as one band", () => {
+    render(<StatBand stats={STATS} />);
+    expect(screen.getByText("3 km").parentElement).toHaveClass("text-center");
+  });
+
+  it("merges a caller className over its own", () => {
+    const { container } = render(<StatBand stats={STATS} className="bg-surface-page" />);
+    expect(container.firstElementChild).toHaveClass("bg-surface-page");
+    expect(container.firstElementChild).not.toHaveClass("bg-surface-brand-soft");
   });
 
   it("always carries the tiled diamond", () => {
@@ -886,7 +1037,7 @@ export function StatBand({ stats, tone = "soft", className, ...props }: StatBand
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- stat-band 2>&1 | tail -8`
-Expected: PASS (7 tests).
+Expected: PASS (12 tests). The number-colour and centring assertions read Stat's own classes (Plan 3a: `text-text-brand` / `text-text-on-inverse` on the value, `text-center` on the root); if Task 0 found them renamed, use the built names.
 
 - [ ] **Step 6: Stories (card parity with `StatBand.card.html`)**
 
@@ -896,6 +1047,8 @@ The card's own numbers ("6 outlets", "4.6 average guest rating") are not true of
 
 ```tsx
 import type { Meta, StoryObj } from "@storybook/react-vite";
+
+import { Clock, Leaf, Truck, UtensilsCrossed } from "lucide-react";
 
 import { VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
 import { StatBand, type StatBandItem } from "./stat-band";
@@ -939,6 +1092,43 @@ export const FourStats: Story = {
   args: { stats: [...STATS, { value: "8 km", label: "free catering delivery" }] },
 };
 
+/** Glyphs go on every stat or none — a half-set row reads as a rendering bug. */
+export const WithIcons: Story = {
+  args: {
+    stats: [
+      { value: "30", label: "dishes on the Classic plan", icon: UtensilsCrossed },
+      { value: "3 km", label: "free delivery radius", icon: Truck },
+      { value: "100%", label: "pure vegetarian kitchen", icon: Leaf },
+    ],
+  },
+};
+
+/** The sub-line carries the detail behind a number that needs one. */
+export const WithSubLines: Story = {
+  args: {
+    stats: [
+      {
+        value: "8am",
+        label: "the kitchen opens",
+        sub: "Open till 11:30pm, every day",
+        icon: Clock,
+      },
+      {
+        value: "3 km",
+        label: "free delivery radius",
+        sub: "From MKM Market, Sector 57",
+        icon: Truck,
+      },
+      {
+        value: "100%",
+        label: "pure vegetarian kitchen",
+        sub: "No egg, no meat, ever",
+        icon: Leaf,
+      },
+    ],
+  },
+};
+
 export const Mobile: Story = { globals: VIEWPORT_360 };
 export const Tablet: Story = { globals: VIEWPORT_768 };
 export const Desktop: Story = { globals: VIEWPORT_1280 };
@@ -971,6 +1161,33 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 3: HeroBanner
+
+**Dev reference:** `git show dev:packages/ui/src/organisms/hero-banner/hero-banner.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                       | Ruling  | Where / clause                                                                                          |
+| ------------------------------------------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------- |
+| The title is the page's `h1`                                                   | ALREADY | test "renders its title as the page's h1 by default"                                                    |
+| The title is the fluid display step by default (`text-display-1-fluid`)        | ADD     | test "sets the title in the fluid display-1 step by default"                                            |
+| Overline, body and actions render                                              | ALREADY | test "renders the badges, overline, body and actions…"                                                  |
+| Every meta fact, diamond between each pair                                     | ALREADY | test "lists the meta facts…"                                                                            |
+| Headline ink class per tone                                                    | DROP    | D5 — `data-surface` per tone (tested)                                                                   |
+| Default placeholder `imageLabel = "Hero food photography 4:5"`                 | DROP    | D9; contract §7 `media` slot (Playground passes the labelled ImageSlot)                                 |
+| `image` / `imageAlt` / `imageCaption` props                                    | DROP    | contract §7 / spec §9.3 `media` slot (ImageSlot + overlays)                                             |
+| Caption on the `scrim-bottom` over a real photograph, never over a placeholder | ADD     | story `WithPhotograph` composes it in the media slot                                                    |
+| Centred layout shows no image                                                  | ALREADY | `media` renders only when passed (SoftCentred passes none)                                              |
+| Split tracks stack the photo under the copy at 360px                           | ALREADY | one column below `lg`                                                                                   |
+| Merges a caller `className`                                                    | ADD     | test "merges a caller className over its own"                                                           |
+| axe                                                                            | ALREADY | test "has no accessibility violations"                                                                  |
+| `variant` split/center                                                         | ALREADY | contract `layout`                                                                                       |
+| `on="brand"` on the actions                                                    | DROP    | D5                                                                                                      |
+| "Est. 2019"                                                                    | DROP    | C3 — established 2025                                                                                   |
+| Stories Default · Tones · Centred · Soft · AwaitingPhotography · Smallest      | ALREADY | Playground · BrandSplit/InkSplit · SoftCentred · SoftCentred · Playground (labelled ImageSlot) · Mobile |
+| Story HeadlineOnly                                                             | ADD     | `HeadlineOnly`                                                                                          |
+| Story WithPhotograph                                                           | ADD     | `WithPhotograph`                                                                                        |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Files:**
 
@@ -1038,6 +1255,11 @@ describe("HeroBanner", () => {
   it("takes its heading level from headingLevel", () => {
     render(<HeroBanner title={TITLE} headingLevel={2} />);
     expect(screen.getByRole("heading", { level: 2, name: TITLE })).toBeInTheDocument();
+  });
+
+  it("sets the title in the fluid display-1 step by default, so it never overflows", () => {
+    render(<HeroBanner title={TITLE} />);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveClass("text-display-1-fluid");
   });
 
   it("renders the badges, overline, body and actions it is given — and nothing else", () => {
@@ -1112,6 +1334,12 @@ describe("HeroBanner", () => {
   it("centres everything with layout=center", () => {
     const { container } = render(<HeroBanner title={TITLE} layout="center" pattern="none" />);
     expect(container.querySelector("section > div")).toHaveClass("text-center");
+  });
+
+  it("merges a caller className over its own", () => {
+    const { container } = render(<HeroBanner title={TITLE} className="bg-surface-page" />);
+    expect(container.firstElementChild).toHaveClass("bg-surface-page");
+    expect(container.firstElementChild).not.toHaveClass("bg-surface-brand");
   });
 
   it("has no accessibility violations", async () => {
@@ -1293,7 +1521,7 @@ export function HeroBanner({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- hero-banner 2>&1 | tail -8`
-Expected: PASS (13 tests).
+Expected: PASS (15 tests).
 
 - [ ] **Step 6: Stories (card parity with `HeroBanner.card.html` + the handoff heroes)**
 
@@ -1318,9 +1546,17 @@ import { Button } from "../../atoms/button/button";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
 import { Icon } from "../../atoms/icon/icon";
 import { ImageSlot } from "../../atoms/image-slot/image-slot";
+import { Text } from "../../atoms/text/text";
 import { OfferSeal } from "../../molecules/offer-seal/offer-seal";
 import { BRAND, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
 import { HeroBanner } from "./hero-banner";
+
+/**
+ * A blank bitmap standing in for a photograph, so the scrim over it shows in review. A fixture,
+ * not a design decision — no photography exists yet, which is what ImageSlot's placeholder is for.
+ */
+const BLANK_PHOTOGRAPH =
+  "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5'%3E%3Crect width='4' height='5' fill='white'/%3E%3C/svg%3E";
 
 const VEG_BADGE = (
   <Badge tone="success">
@@ -1541,6 +1777,44 @@ export const HandoffOffice: Story = {
   },
 };
 
+/** The title alone — everything else on the hero is optional. */
+export const HeadlineOnly: Story = {
+  args: { overline: undefined, body: undefined, meta: [], actions: undefined, media: undefined },
+};
+
+/**
+ * A real photograph with a line printed on it: the media slot layers the `scrim-bottom` gradient
+ * under the caption so it stays legible whatever the picture does. Only over a photograph — over
+ * a placeholder the scrim would dim the crop note.
+ */
+export const WithPhotograph: Story = {
+  args: {
+    media: (
+      <div className="relative">
+        <ImageSlot
+          src={BLANK_PHOTOGRAPH}
+          alt=""
+          width={4}
+          height={5}
+          ratio="4:5"
+          radius="xl"
+          className="shadow-4"
+        />
+        <div aria-hidden className="absolute inset-0 rounded-xl scrim-bottom" />
+        <Text
+          as="p"
+          variant="body"
+          weight="bold"
+          tone="inverse"
+          className="absolute right-6 bottom-6 left-6"
+        >
+          From our restaurant kitchen, MKM Market, Sector 57
+        </Text>
+      </div>
+    ),
+  },
+};
+
 export const Mobile: Story = { ...HandoffHome, globals: VIEWPORT_360 };
 export const Tablet: Story = { ...HandoffHome, globals: VIEWPORT_768 };
 export const Desktop: Story = { ...HandoffHome, globals: VIEWPORT_1280 };
@@ -1574,6 +1848,31 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 4: TestimonialWall
+
+**Dev reference:** `git show dev:packages/ui/src/organisms/testimonial-wall/testimonial-wall.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                         | Ruling                         | Where / clause                                                                                  |
+| ------------------------------------------------ | ------------------------------ | ----------------------------------------------------------------------------------------------- |
+| Heading and every review render                  | ALREADY                        | tests "heads the wall…", "lists one review card per review…"                                    |
+| The component adds the quote marks               | ALREADY                        | ReviewCard's behaviour (Plan 3b, spec §9.2); this plan asserts the verbatim text                |
+| `lede` under the heading                         | ADD — pending contract delta 1 | not built until the controller rules (report)                                                   |
+| `headingLevel`                                   | ALREADY                        | test "takes its heading level from headingLevel"                                                |
+| Each score announced as an image                 | ADD                            | test "announces each score as an image with its value"                                          |
+| No score when a review carries none              | ADD                            | test "omits the score for a review that carries none"                                           |
+| Cards pale pink by default (`variant = "brand"`) | DROP                           | D1 — the design system's `TestimonialWall.jsx` defaults `variant="default"`; `brand` is tested  |
+| `mark="symbol"` forced on every card             | DROP                           | D1 — the design system passes no `mark`; a review's own `mark` passes through `ReviewCardProps` |
+| Auto-fit grid survives 360px                     | ALREADY                        | `autogrid` test                                                                                 |
+| Merges a caller `className`                      | ADD                            | test "merges a caller className"                                                                |
+| axe                                              | ALREADY                        | test "has no accessibility violations"                                                          |
+| `WallReview` type                                | ALREADY                        | `ReviewCardProps` (contract §7)                                                                 |
+| Stories Default · DefaultCards · Narrow          | ALREADY                        | Default · BrandCards (the other variant) · Mobile                                               |
+| Story SixReviews (invented guests)               | DROP                           | spec §10.1 — real reviews only; four exist (`FourReviews`)                                      |
+| Story WithLede                                   | ADD — pending contract delta 1 | —                                                                                               |
+| Story WithoutScores                              | ADD                            | `WithoutScores`                                                                                 |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Files:**
 
@@ -1634,6 +1933,26 @@ describe("TestimonialWall", () => {
   it("lays the cards on the auto-fitting card grid", () => {
     render(<TestimonialWall title="Reviews" reviews={REVIEWS} />);
     expect(screen.getByRole("list")).toHaveClass("autogrid");
+  });
+
+  it("announces each score as an image with its value", () => {
+    render(<TestimonialWall title="Reviews" reviews={REVIEWS} />);
+    expect(screen.getAllByRole("img", { name: /out of 5$/ })).toHaveLength(REVIEWS.length);
+  });
+
+  it("omits the score for a review that carries none", () => {
+    const [first] = REVIEWS;
+    if (first === undefined) throw new Error("no fixture review");
+    render(<TestimonialWall title="Reviews" reviews={[{ ...first, rating: undefined }]} />);
+    expect(screen.queryByRole("img", { name: /out of 5$/ })).not.toBeInTheDocument();
+    expect(screen.getAllByRole("figure")).toHaveLength(1);
+  });
+
+  it("merges a caller className", () => {
+    const { container } = render(
+      <TestimonialWall title="Reviews" reviews={REVIEWS} className="bg-surface-page-alt" />
+    );
+    expect(container.firstElementChild).toHaveClass("section-y", "bg-surface-page-alt");
   });
 
   it("has no accessibility violations", async () => {
@@ -1717,7 +2036,7 @@ export function TestimonialWall({
 - [ ] **Step 4: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- testimonial-wall 2>&1 | tail -8`
-Expected: PASS (6 tests).
+Expected: PASS (9 tests). The score assertions read Rating's name ("5 out of 5", Plan 2b via ReviewCard); if Task 0 found another wording, match it.
 
 - [ ] **Step 5: Stories (card parity with `TestimonialWall.card.html`)**
 
@@ -1764,6 +2083,11 @@ export const FourReviews: Story = { args: { reviews: GOOGLE_REVIEWS } };
 
 export const OnTint: Story = { args: { className: "bg-surface-page-alt" } };
 
+/** Quotes with no score still carry the card — the words are the proof, not the number. */
+export const WithoutScores: Story = {
+  args: { reviews: GOOGLE_REVIEWS.slice(1).map((review) => ({ ...review, rating: undefined })) },
+};
+
 export const Mobile: Story = { globals: VIEWPORT_360 };
 export const Tablet: Story = { globals: VIEWPORT_768 };
 export const Desktop: Story = { globals: VIEWPORT_1280 };
@@ -1799,6 +2123,29 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 5: FaqSection
+
+**Dev reference:** `git show dev:packages/ui/src/organisms/faq-section/faq-section.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                          | Ruling                         | Where / clause                                                                                                                    |
+| ------------------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| Heading, lede and every question                  | ALREADY                        | test "heads the section with overline, a level-2 title and the lede"                                                              |
+| The first answer open on arrival                  | ALREADY                        | test "opens the first answer by default…"                                                                                         |
+| `defaultOpen` (named questions, or `[]` for none) | ADD — pending contract delta 2 | Accordion already takes `defaultOpen` (Plan 3a); not built until ruled (report)                                                   |
+| Clicking another question swaps the open answer   | ALREADY                        | native `<details name>` (shared `name` asserted); Plan 3a Accordion's `play` proves exclusivity in Chromium                       |
+| `isMultiple` keeps several open                   | ALREADY                        | test "lets several answers stay open with isMultiple"                                                                             |
+| Questions sit one heading level below the section | DROP here                      | Plan 3a's Accordion renders questions in `<summary>` with no heading level (spec §9.2 lists none) — cross-plan note in the report |
+| Two columns stack at 360px                        | ALREADY                        | `lg:grid-cols-2`, one column below                                                                                                |
+| Merges a caller `className`                       | ADD                            | test "merges a caller className"                                                                                                  |
+| axe                                               | ALREADY                        | test "has no accessibility violations"                                                                                            |
+| "A few bakes contain egg" answer                  | DROP                           | C10                                                                                                                               |
+| Stories Default · Multiple · Narrow               | ALREADY                        | Default · Multiple · Mobile                                                                                                       |
+| Story WithoutLede                                 | ADD                            | `WithoutLede`                                                                                                                     |
+| Story HeadingLevels                               | ADD                            | `HeadingLevel3`                                                                                                                   |
+| Stories SecondOpen · AllClosed                    | ADD — pending contract delta 2 | —                                                                                                                                 |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Files:**
 
@@ -1904,6 +2251,13 @@ describe("FaqSection", () => {
     expect(lead).toHaveClass("lg:top-faq-section-sticky");
   });
 
+  it("merges a caller className", () => {
+    const { container } = render(
+      <FaqSection title="FAQ" items={ITEMS} className="bg-surface-page-alt" />
+    );
+    expect(container.firstElementChild).toHaveClass("section-y", "bg-surface-page-alt");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <FaqSection overline="Questions" title="Before you order" items={ITEMS} aside={<p>Help</p>} />
@@ -1987,7 +2341,7 @@ export function FaqSection({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- faq-section 2>&1 | tail -8`
-Expected: PASS (5 tests).
+Expected: PASS (6 tests).
 
 - [ ] **Step 6: Stories (card parity with `FaqSection.card.html` + handoff `FaqBlock`)**
 
@@ -2134,6 +2488,14 @@ export const HandoffWithAside: Story = {
 
 export const Multiple: Story = { args: { isMultiple: true } };
 
+/** No lede: the heading sits alone in its column and the answers carry the section. */
+export const WithoutLede: Story = { args: { lede: undefined } };
+
+/** Under a page section that already owns the h2, the FAQ steps down a level. */
+export const HeadingLevel3: Story = {
+  args: { headingLevel: 3, overline: "Homely Meals", title: "Plans and delivery" },
+};
+
 export const Mobile: Story = { ...HandoffWithAside, globals: VIEWPORT_360 };
 export const Tablet: Story = { ...HandoffWithAside, globals: VIEWPORT_768 };
 export const Desktop: Story = { ...HandoffWithAside, globals: VIEWPORT_1280 };
@@ -2167,6 +2529,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 6: QuotePanel
+
+**Dev reference:** none (handoff component)
 
 **Files:**
 
@@ -2684,6 +3048,33 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 7: OrderTracker
 
+**Dev reference:** `git show dev:packages/ui/src/organisms/order-tracker/order-tracker.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                              | Ruling                         | Where / clause                                                               |
+| ----------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------- |
+| Leads with the current step's label and note          | ALREADY                        | test "heads the screen with the current step…" (and a `status` live region)  |
+| The heading moves as the kitchen works                | ALREADY                        | same test at `current={1}`                                                   |
+| "Preparing" until the last step, then "Ready"         | DROP                           | D9 — status copy is the `badge` slot (Contract deviations)                   |
+| Clamps an index past the end                          | ALREADY                        | test "clamps a current index past the end…"                                  |
+| Code and outlet on one line                           | ALREADY                        | test "prints the order code with its label and the outlet"                   |
+| StepTracker composed, current step marked             | ALREADY                        | test "marks the current step in the tracker"                                 |
+| The tracker list is named ("Order progress")          | ADD — pending contract delta 3 | not built until ruled (report)                                               |
+| Bare-string steps                                     | DROP                           | spec §8.2 — object lists only                                                |
+| What was paid and how                                 | ALREADY                        | test "formats the total beside the payment line"                             |
+| No action when there is nowhere to go                 | ADD                            | test "renders no action when none is given"                                  |
+| `onDone` / `doneLabel`                                | DROP                           | spec §8.1 — slots, not callbacks (`action`)                                  |
+| Card frame rounds and clips                           | ALREADY                        | test "frames itself as a light card with variant=card"                       |
+| Merges a caller `className`                           | ADD                            | test "merges a caller className"                                             |
+| axe                                                   | ALREADY                        | test "has no accessibility violations"                                       |
+| Default steps, code, outlet, payment, total           | DROP                           | D9                                                                           |
+| Stories Default · EveryState · WithAction · CardFrame | ALREADY                        | Playground · OrderIn/OnTheTandoor/Ready · Playground (`action` arg) · AsCard |
+| Story DeliverySteps                                   | ADD                            | `DeliverySteps`                                                              |
+| Story Smallest                                        | ADD                            | `Mobile`                                                                     |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Files:**
 
 - Create: `packages/ui/src/organisms/order-tracker/order-tracker.tsx`, `order-tracker.test.tsx`, `order-tracker.stories.tsx`
@@ -2760,6 +3151,19 @@ describe("OrderTracker", () => {
     );
     expect(within(screen.getByRole("status")).getByText("Preparing")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Back to Home" })).toBeInTheDocument();
+  });
+
+  it("renders no action when none is given", () => {
+    render(<OrderTracker steps={STEPS} current={0} code="PPK-4821" />);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it("merges a caller className", () => {
+    const { container } = render(
+      <OrderTracker steps={STEPS} current={0} code="PPK-4821" className="bg-surface-page" />
+    );
+    expect(container.firstElementChild).toHaveClass("flex", "bg-surface-page");
   });
 
   it("frames itself as a light card with variant=card", () => {
@@ -2929,7 +3333,7 @@ export function OrderTracker({
 - [ ] **Step 4: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- order-tracker 2>&1 | tail -8`
-Expected: PASS (8 tests).
+Expected: PASS (10 tests).
 
 - [ ] **Step 5: Stories (card parity with `OrderTracker.card.html`)**
 
@@ -2942,6 +3346,7 @@ import type { TrackerStep } from "../../molecules/step-tracker/step-tracker";
 
 import { Badge } from "../../atoms/badge/badge";
 import { Button } from "../../atoms/button/button";
+import { VIEWPORT_360 } from "../story-fixtures";
 import { OrderTracker } from "./order-tracker";
 
 /** The design system's brand-voice steps. */
@@ -3010,6 +3415,20 @@ export const AsCard: Story = {
     ),
   ],
 };
+
+/** Delivery runs its own two steps — as short as the tracker is worth drawing. */
+export const DeliverySteps: Story = {
+  args: {
+    current: 1,
+    steps: [
+      { label: "Order in", note: "Kitchen's on it." },
+      { label: "On its way", note: "Riding out to you now." },
+    ],
+  },
+};
+
+/** The smallest supported viewport: the header copy wraps, nothing clips. */
+export const Mobile: Story = { args: { current: 1 }, globals: VIEWPORT_360 };
 ```
 
 - [ ] **Step 6: Export**
@@ -3040,6 +3459,30 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 8: SiteFooter
+
+**Dev reference:** `git show dev:packages/ui/src/organisms/site-footer/site-footer.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                         | Ruling  | Where / clause                                                      |
+| -------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------- |
+| The `contentinfo` landmark                                                       | ALREADY | test "is the page's contentinfo landmark…"                          |
+| White lockup built in                                                            | DROP    | D9 — the `brand` slot (stories pass `<Logo tone="white">`)          |
+| Floods `bg-surface-brand`                                                        | ADD     | the tone `it.each` asserts the background class                     |
+| Default columns, blurb, statement, FSSAI licence, legal entity, policies, social | DROP    | D9 — the August fake FSSAI default; Review Focus 5 test             |
+| Caller columns replace everything                                                | ALREADY | test "renders exactly what it is given…"                            |
+| Social links named, new tab, `rel`                                               | ALREADY | test "names each social link and opens it in a new tab"             |
+| Social links keep the 44px hit target                                            | ALREADY | IconButton's `::before` hit area (Plan 2a)                          |
+| Generic glyphs for the networks (AtSign, Play, Briefcase)                        | DROP    | D10 — the real brand glyphs                                         |
+| Policy links                                                                     | ALREADY | test "renders the brand block, legal lines and policy links…"       |
+| Column headings as `<p>`                                                         | DROP    | spec §9.3 — "headings not `<p>`"                                    |
+| `Link variant="inverse"`, `Divider on="brand"`                                   | DROP    | D5                                                                  |
+| Merges a caller `className`                                                      | ADD     | test "merges a caller className over its own"                       |
+| axe                                                                              | ALREADY | test "has no accessibility violations"                              |
+| Stories Default · OneColumn · OwnCopy · Smallest                                 | ALREADY | DesignSystemPink · ColumnsOnly · Playground (`brand` slot) · Mobile |
+| Story FourColumns                                                                | ADD     | `FourColumns`                                                       |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Files:**
 
@@ -3203,9 +3646,19 @@ describe("SiteFooter", () => {
     );
   });
 
-  it.each(["brand", "ink"] as const)("sets the %s surface", (tone) => {
+  it.each([
+    ["brand", "bg-surface-brand"],
+    ["ink", "bg-surface-inverse"],
+  ] as const)("sets the %s surface and paints its field", (tone, background) => {
     render(<SiteFooter columns={COLUMNS} tone={tone} />);
     expect(screen.getByRole("contentinfo")).toHaveAttribute("data-surface", tone);
+    expect(screen.getByRole("contentinfo")).toHaveClass(background);
+  });
+
+  it("merges a caller className over its own", () => {
+    render(<SiteFooter columns={COLUMNS} className="bg-surface-inverse" />);
+    expect(screen.getByRole("contentinfo")).toHaveClass("bg-surface-inverse");
+    expect(screen.getByRole("contentinfo")).not.toHaveClass("bg-surface-brand");
   });
 
   it("carries the faint diamond on ink by default and none on brand", () => {
@@ -3666,6 +4119,22 @@ export const ColumnsOnly: Story = {
   },
 };
 
+/** Four link columns still fit; a fifth belongs on a page, not in the footer. */
+export const FourColumns: Story = {
+  args: {
+    columns: [
+      ...DS_COLUMNS,
+      {
+        heading: "Help",
+        items: [
+          { label: "Contact & directions", href: "#contact" },
+          { label: "Delivery Policy", href: "#delivery" },
+        ],
+      },
+    ],
+  },
+};
+
 export const Mobile: Story = { ...HandoffInk, globals: VIEWPORT_360 };
 export const Tablet: Story = { ...HandoffInk, globals: VIEWPORT_768 };
 export const Desktop: Story = { ...HandoffInk, globals: VIEWPORT_1280 };
@@ -3707,6 +4176,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 9: ActionDock
+
+**Dev reference:** none (handoff component)
 
 **Files:**
 
@@ -4024,6 +4495,30 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 10: TabBar
 
+**Dev reference:** `git show dev:packages/ui/src/organisms/tab-bar/tab-bar.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                         | Ruling  | Where / clause                                                                                     |
+| ---------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------- |
+| One control per destination in a named `nav`                     | ALREADY | test "is a navigation landmark named Primary by default"                                           |
+| Five destinations                                                | ADD     | test "carries five destinations too"                                                               |
+| The destination in view is `aria-current="page"`                 | ALREADY | test "marks the current destination…"                                                              |
+| Uncontrolled: starts on the first / `defaultValue`, moves itself | DROP    | contract §7 `value: string` (required) + D6 — server-safe, no state; stories hold state in `Frame` |
+| Controlled: reports the tap, does not move itself                | ADD     | the `onValueChange` test asserts Home stays current                                                |
+| Count announced with the label; singular/plural wording          | ALREADY | "Cart (2)" — no pluralised copy to own (D9)                                                        |
+| The 64px bar                                                     | ALREADY | test "sits in the fixed 64px bar height"                                                           |
+| A long label truncates; tabs `min-w-0` so five fit at 360px      | ADD     | `label` slot + test "keeps a long label on one line…"                                              |
+| Press feedback (`active:scale`)                                  | ADD     | `active:press-scale` on the control (CSS only)                                                     |
+| 44px hit target                                                  | ALREADY | full-height 64px controls                                                                          |
+| Merges a caller `className`                                      | ADD     | test "merges a caller className over its own"                                                      |
+| axe                                                              | ALREADY | test "has no accessibility violations"                                                             |
+| Stories Default · FourDestinations · FiveDestinations            | ALREADY | Playground · FourTabsWithCount · FiveTabs                                                          |
+| Story EachDestinationActive (each bar self-named)                | ADD     | `EachDestinationActive`                                                                            |
+| Story Smallest (five at 360px)                                   | ADD     | `Mobile`                                                                                           |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Files:**
 
 - Create: `packages/design-tokens/tokens/component/tab-bar.json`
@@ -4083,7 +4578,7 @@ Append to `TEXT`:
 ```tsx
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { House, ShoppingBag, User, Utensils } from "lucide-react";
+import { House, Receipt, ShoppingBag, User, Utensils } from "lucide-react";
 
 import type { LinkAsProps } from "../../lib/link-as";
 
@@ -4112,6 +4607,16 @@ describe("TabBar", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(4);
   });
 
+  it("carries five destinations too", () => {
+    render(
+      <TabBar
+        items={[...ITEMS, { value: "orders", label: "Orders", icon: Receipt }]}
+        value="home"
+      />
+    );
+    expect(screen.getAllByRole("button")).toHaveLength(5);
+  });
+
   it("marks the current destination with aria-current=page, in the brand colour", () => {
     render(<TabBar items={ITEMS} value="menu" />);
     const menu = screen.getByRole("button", { name: "Menu" });
@@ -4129,6 +4634,21 @@ describe("TabBar", () => {
     screen.getByRole("button", { name: "You" }).focus();
     await user.keyboard("{Enter}");
     expect(onValueChange).toHaveBeenLastCalledWith("you");
+    // Controlled: the bar reports the tap but only `value` moves it.
+    expect(screen.getByRole("button", { name: "Home" })).toHaveAttribute("aria-current", "page");
+  });
+
+  it("keeps a long label on one line, truncated, so five tabs fit at 360px", () => {
+    render(
+      <TabBar items={[{ value: "orders", label: "Order history", icon: Receipt }]} value="orders" />
+    );
+    expect(screen.getByText("Order history")).toHaveClass("max-w-full", "truncate");
+  });
+
+  it("merges a caller className over its own", () => {
+    render(<TabBar items={ITEMS} value="home" className="bg-surface-sunken" />);
+    expect(screen.getByRole("navigation")).toHaveClass("bg-surface-sunken");
+    expect(screen.getByRole("navigation")).not.toHaveClass("bg-surface-card");
   });
 
   it("announces a count with its label and hides the visual pill", () => {
@@ -4195,10 +4715,11 @@ const tabBar = componentVariants({
   slots: {
     root: "h-tabbar border-t border-border-subtle bg-surface-card",
     list: "flex h-full",
-    item: "flex flex-1",
+    item: "flex min-w-0 flex-1",
     control:
-      "text-tab-bar-label flex flex-1 flex-col items-center justify-center gap-1 font-display text-text-subtle no-underline transition-colors duration-fast ease-out hover:text-text-heading",
+      "text-tab-bar-label flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 font-display text-text-subtle no-underline transition-colors duration-fast ease-out hover:text-text-heading active:press-scale",
     glyph: "relative inline-flex",
+    label: "max-w-full truncate",
     count:
       "h-tab-bar-count min-w-tab-bar-count text-tab-bar-count absolute -top-1 -right-2 grid place-items-center rounded-pill bg-surface-brand px-1 font-display text-text-on-brand",
   },
@@ -4249,7 +4770,7 @@ export function TabBar({
                   </span>
                 ) : null}
               </span>
-              {item.label}
+              <span className={slots.label()}>{item.label}</span>
               {hasCount ? <span className="sr-only"> ({item.count})</span> : null}
             </>
           );
@@ -4291,7 +4812,7 @@ export function TabBar({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- tab-bar 2>&1 | tail -8`
-Expected: PASS (7 tests).
+Expected: PASS (10 tests).
 
 - [ ] **Step 6: Stories (card parity with `TabBar.card.html`)**
 
@@ -4304,6 +4825,7 @@ import { House, Receipt, ShoppingBag, User, Utensils } from "lucide-react";
 import { useState } from "react";
 import { expect } from "storybook/test";
 
+import { VIEWPORT_360 } from "../story-fixtures";
 import { TabBar, type TabBarItem } from "./tab-bar";
 
 const FOUR: TabBarItem[] = [
@@ -4374,6 +4896,32 @@ export const AsLinks: Story = {
     </div>
   ),
 };
+
+/**
+ * Each destination active in turn, for comparing the active treatment at a glance. Four bars are
+ * four navigation landmarks, so each names itself — four called "Primary" could not be told apart.
+ */
+export const EachDestinationActive: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4">
+      {FOUR.map((item) => (
+        <div
+          key={item.value}
+          className="w-97.5 overflow-hidden rounded-lg border border-border-subtle"
+        >
+          <TabBar items={FOUR} value={item.value} label={`Primary, ${item.label} in view`} />
+        </div>
+      ))}
+    </div>
+  ),
+};
+
+/** Five tabs across the smallest supported viewport (360px): nothing wraps. */
+export const Mobile: Story = {
+  globals: VIEWPORT_360,
+  parameters: { layout: "fullscreen" },
+  render: () => <TabBar items={FIVE} value="home" />,
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -4404,6 +4952,37 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 11: Dialog
+
+**Dev reference:** `git show dev:packages/ui/src/organisms/dialog/dialog.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                     | Ruling                         | Where / clause                                                                                      |
+| ------------------------------------------------------------ | ------------------------------ | --------------------------------------------------------------------------------------------------- |
+| Closed until the trigger is used                             | ALREADY                        | test "opens from its trigger…"                                                                      |
+| Named by its title; described by its description             | ALREADY                        | same test                                                                                           |
+| Escape closes and reports `onOpenChange(false)`              | ALREADY                        | tests "closes on Escape…", "reports open changes…"                                                  |
+| The close glyph closes                                       | ALREADY                        | test "closes from its labelled close button"                                                        |
+| `hasCloseButton={false}` — a decision that must be answered  | ADD — pending contract delta 4 | not built until ruled (report)                                                                      |
+| Focus moves into the dialog when it opens                    | ADD                            | test "moves focus into the dialog when it opens"                                                    |
+| Footer actions render and work                               | ALREADY                        | test "renders the footer actions"                                                                   |
+| Controlled open state holds                                  | ALREADY                        | test "reports open changes and stays open when controlled"                                          |
+| Sheet: top corners only, plus a grab handle                  | ADD                            | the sheet test also asserts no `rounded-xl`                                                         |
+| Three widths                                                 | ALREADY                        | `it.each` sizes (token widths, D4)                                                                  |
+| `position="container"` anchors inside a phone frame          | ALREADY                        | `portalContainer` + the frame's `contain-layout` (AppShell, Plan 2c); story `InsideAPhoneFrame` ADD |
+| A scrim over everything behind it                            | ADD                            | test "lays the ink scrim over the page behind it"                                                   |
+| Merges a caller `className`                                  | ADD — pending contract delta 5 | `DialogProps` does not extend native props (contract §7)                                            |
+| axe                                                          | ALREADY                        | test "has no accessibility violations while open"                                                   |
+| The body scrolls; header and footer never leave the screen   | ADD                            | `body` slot `min-h-0 flex-1 overflow-y-auto`, `shrink-0` header/footer, test "scrolls its body…"    |
+| Footer wraps at 360px                                        | ALREADY                        | `flex-wrap`                                                                                         |
+| `aria-describedby={undefined}` opt-out                       | ALREADY                        | Radix 1.1.23 omits it without a Description, no warning (Interfaces)                                |
+| `isOpen` / `isDefaultOpen` names                             | DROP                           | spec §8.2 — `open` / `defaultOpen` / `onOpenChange`                                                 |
+| Stories Default · Sheet · WithDescription · WithForm · Sizes | ALREADY                        | Playground · Sheet · Large · Playground (`BOOKING_FORM`) · CentredModal/Playground/Large            |
+| Story MustBeAnswered                                         | ADD — pending contract delta 4 | —                                                                                                   |
+| Story InsideAPhoneFrame                                      | ADD                            | `InsideAPhoneFrame`                                                                                 |
+| Story Smallest                                               | ADD                            | `Mobile`                                                                                            |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Files:**
 
@@ -4498,6 +5077,13 @@ describe("Dialog", () => {
     expect(trigger).toHaveFocus();
   });
 
+  it("moves focus into the dialog when it opens", async () => {
+    const user = userEvent.setup();
+    render(<Dialog trigger={TRIGGER} title="Book a table" />);
+    await user.click(screen.getByRole("button", { name: "Book a table" }));
+    expect(screen.getByRole("dialog").contains(document.activeElement)).toBe(true);
+  });
+
   it("closes from its labelled close button", async () => {
     const user = userEvent.setup();
     render(<Dialog trigger={TRIGGER} title="Book a table" />);
@@ -4528,11 +5114,39 @@ describe("Dialog", () => {
     expect(document.body).not.toHaveAttribute("data-scroll-locked");
   });
 
+  it("lays the ink scrim over the page behind it", () => {
+    render(<Dialog defaultOpen title="Book a table" />);
+    expect(document.querySelector(".bg-surface-overlay")).toBeInTheDocument();
+  });
+
   it("renders the sheet with a grab handle and top-only corners", () => {
     render(<Dialog defaultOpen variant="sheet" title="Remove this item?" />);
     const sheet = screen.getByRole("dialog");
     expect(sheet).toHaveClass("rounded-t-xl");
+    expect(sheet).not.toHaveClass("rounded-xl");
     expect(sheet.querySelector('[aria-hidden="true"] .rounded-pill')).toBeInTheDocument();
+  });
+
+  it("scrolls its body, never the header or footer, so the actions stay on screen", () => {
+    render(
+      <Dialog
+        defaultOpen
+        title="Book a table"
+        footer={<button type="button">Hold my table</button>}
+      >
+        Pick your outlet.
+      </Dialog>
+    );
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveClass("overflow-hidden");
+    expect(within(dialog).getByText("Pick your outlet.")).toHaveClass(
+      "min-h-0",
+      "flex-1",
+      "overflow-y-auto"
+    );
+    expect(within(dialog).getByRole("button", { name: "Hold my table" }).parentElement).toHaveClass(
+      "shrink-0"
+    );
   });
 
   it.each([
@@ -4605,15 +5219,16 @@ import { componentVariants, type VariantProps } from "../../lib/component-varian
 const dialog = componentVariants({
   slots: {
     overlay: "fixed inset-0 z-overlay flex bg-surface-overlay",
+    // Only the body scrolls: the title, the close button and the footer's actions stay on screen.
     content:
-      "flex max-h-full w-full animate-sheet-in flex-col overflow-y-auto bg-surface-card shadow-4",
-    handle: "flex justify-center pt-2.5",
+      "flex max-h-full w-full animate-sheet-in flex-col overflow-hidden bg-surface-card shadow-4",
+    handle: "flex shrink-0 justify-center pt-2.5",
     handleBar: "h-1 w-10 rounded-pill bg-ink-300",
-    header: "flex items-start justify-between gap-4 px-6 pt-5",
+    header: "flex shrink-0 items-start justify-between gap-4 px-6 pt-5",
     title: "text-dialog-title font-display text-text-heading",
-    description: "px-6 pt-1 text-body-sm text-text-muted",
-    body: "text-dialog-body px-6 pt-3 pb-5 text-text-body",
-    footer: "flex flex-wrap justify-end gap-2.5 px-6 pb-6",
+    description: "shrink-0 px-6 pt-1 text-body-sm text-text-muted",
+    body: "text-dialog-body min-h-0 flex-1 overflow-y-auto px-6 pt-3 pb-5 text-text-body",
+    footer: "flex shrink-0 flex-wrap justify-end gap-2.5 px-6 pb-6",
   },
   variants: {
     variant: {
@@ -4699,7 +5314,7 @@ export function Dialog({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- organisms/dialog 2>&1 | tail -8`
-Expected: PASS (12 tests).
+Expected: PASS (15 tests).
 
 - [ ] **Step 6: Stories (card parity with `Dialog.card.html`)**
 
@@ -4711,13 +5326,15 @@ Stories that render open set `a11y` to skip `aria-hidden-focus` only: Radix mark
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { Phone } from "lucide-react";
+import { useState } from "react";
 import { expect, screen, waitFor } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
 import { Input } from "../../atoms/input/input";
 import { Select } from "../../atoms/select/select";
 import { Field } from "../../molecules/field/field";
-import { Dialog } from "./dialog";
+import { VIEWPORT_360 } from "../story-fixtures";
+import { Dialog, type DialogProps } from "./dialog";
 
 /** Radix hides the page behind an open dialog while trapping focus; that rule misreads it. */
 const OPEN_DIALOG_A11Y = {
@@ -4810,6 +5427,49 @@ export const KeyboardFlow: Story = {
     await expect(trigger).toHaveFocus();
   },
 };
+
+/**
+ * The sheet inside a phone frame: the frame is `portalContainer`, and its `contain-layout` (as
+ * AppShell's frame has) makes it the containing block for the fixed scrim, so the sheet anchors to
+ * the frame, not the viewport.
+ */
+function FramedSheet(args: DialogProps) {
+  const [frame, setFrame] = useState<HTMLDivElement | null>(null);
+  return (
+    <div
+      ref={setFrame}
+      className="relative h-165 w-90 overflow-hidden rounded-lg border border-border-subtle bg-surface-page-alt contain-layout"
+    >
+      {frame === null ? null : <Dialog {...args} portalContainer={frame} />}
+    </div>
+  );
+}
+
+export const InsideAPhoneFrame: Story = {
+  args: {
+    defaultOpen: true,
+    variant: "sheet",
+    title: "Remove this item?",
+    children: "Chilli Paneer will come off your order.",
+    footer: (
+      <>
+        <Button variant="ghost" size="sm">
+          Keep It
+        </Button>
+        <Button size="sm">Remove</Button>
+      </>
+    ),
+  },
+  parameters: OPEN_DIALOG_A11Y,
+  render: (args) => <FramedSheet {...args} />,
+};
+
+/** The smallest supported viewport: the modal keeps its gutter on both sides. */
+export const Mobile: Story = {
+  args: { defaultOpen: true },
+  globals: VIEWPORT_360,
+  parameters: OPEN_DIALOG_A11Y,
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -4840,6 +5500,34 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 12: SiteHeader
+
+**Dev reference:** `git show dev:packages/ui/src/organisms/site-header/site-header.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                 | Ruling  | Where / clause                                                                                               |
+| ------------------------------------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------ |
+| The `banner` landmark with the lockup                                    | ALREADY | tests "is the banner landmark…", "links the logo home…"                                                      |
+| Rail links in a named `nav`                                              | ALREADY | test "links the logo home and lists the nav links…"                                                          |
+| A custom `navLabel` keeps two mastheads on one page distinct             | ADD     | test "names its navigation from navLabel…"                                                                   |
+| Fixed 72px height                                                        | DROP    | C1 — 88 default / 64 compact (tested)                                                                        |
+| `onOrder` / `onBook` / `onSearch` / `onCart` and the built-in buttons    | DROP    | spec §8.1 — slots, not callbacks (`actions`, `compactActions`, `drawerActions`)                              |
+| Cart count in the button's name, printed on the glyph, hidden at 0       | ALREADY | IconButton `count` (Plan 2a) in the actions slot (`ScrolledWithCart`)                                        |
+| Glass and hairline once scrolled                                         | ALREADY | test "turns the bar to glass…" (`data-scrolled:bg-surface-glass`, `data-scrolled:border-border-subtle`)      |
+| `isScrolled` as a prop                                                   | DROP    | spec §9.3 + Controller amendment — glass on scroll is a client leaf; its server snapshot keeps SSR identical |
+| The sheet opens, lists every link, closes from its close button          | ADD     | test "opens the drawer from the keyboard, hides the bar's own links behind it…"                              |
+| The rail behind the open sheet leaves the accessibility tree             | ADD     | same test (one "Catering" link, not two)                                                                     |
+| Following a sheet link closes it                                         | ALREADY | test "the drawer traps focus…"                                                                               |
+| Opens from the keyboard                                                  | ADD     | same new test (`Enter` on the menu button)                                                                   |
+| Merges a caller `className`                                              | ADD     | test "merges a caller className over its own"                                                                |
+| axe                                                                      | ALREADY | test "has no accessibility violations, closed or with the drawer open"                                       |
+| Sheet description "Every page on the Pink Paprikaa site."                | DROP    | D9                                                                                                           |
+| Search moves into the sheet below md; "Book a Table" gives way first     | DROP    | spec §8.1 — the app places its actions through the three action slots                                        |
+| Default links                                                            | DROP    | D9                                                                                                           |
+| Stories Default · Scrolled · WithCart · ShortRail · Smallest · InContext | ALREADY | Rest · ScrolledWithCart · ScrolledWithCart · HandoffCompact · Mobile · the decorator's `<main>`              |
+| Story CartCounts (0 / 1 / 12, each masthead self-named)                  | ADD     | `CartCounts`                                                                                                 |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Files:**
 
@@ -4988,6 +5676,12 @@ describe("SiteHeader", () => {
     );
   });
 
+  it("names its navigation from navLabel, so two mastheads on one page stay distinct", () => {
+    render(<SiteHeader homeHref="#home" links={LINKS} navLabel="Main, catering" />);
+    expect(screen.getByRole("navigation", { name: "Main, catering" })).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: "Main" })).not.toBeInTheDocument();
+  });
+
   it("keeps three links inline below xl, never wrapping, and moves the rest into the drawer", async () => {
     const user = userEvent.setup();
     render(<SiteHeader homeHref="#home" links={LONG_LINKS} />);
@@ -5042,6 +5736,18 @@ describe("SiteHeader", () => {
 
     await user.click(menuButton);
     await user.click(within(screen.getByRole("dialog")).getByRole("link", { name: "Catering" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("opens the drawer from the keyboard, hides the bar's own links behind it, and closes from its close button", async () => {
+    const user = userEvent.setup();
+    render(<SiteHeader homeHref="#home" links={LINKS} />);
+    screen.getByRole("button", { name: "Menu" }).focus();
+    await user.keyboard("{Enter}");
+    const drawer = screen.getByRole("dialog", { name: "Menu" });
+    // Radix hides the rest of the page while the drawer is open: one "Catering" link, not two.
+    expect(screen.getAllByRole("link", { name: "Catering" })).toHaveLength(1);
+    await user.click(within(drawer).getByRole("button", { name: "Close menu" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
@@ -5120,6 +5826,12 @@ describe("SiteHeader", () => {
     await user.click(screen.getByRole("button", { name: "Menu" }));
     expect(frame).toContainElement(screen.getByRole("dialog", { name: "Menu" }));
     frame.remove();
+  });
+
+  it("merges a caller className over its own", () => {
+    render(<SiteHeader homeHref="#home" links={LINKS} className="top-8" />);
+    expect(screen.getByRole("banner")).toHaveClass("sticky", "top-8");
+    expect(screen.getByRole("banner")).not.toHaveClass("top-0");
   });
 
   it("has no accessibility violations, closed or with the drawer open", async () => {
@@ -5461,7 +6173,7 @@ export function SiteHeader({
 - [ ] **Step 7: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- site-header 2>&1 | tail -8`
-Expected: PASS (12 tests). If the focus-trap loop fails on a Radix focus guard (`data-radix-focus-guard`), check the guard is outside the dialog and that FocusScope moved focus back — never loosen the assertion.
+Expected: PASS (15 tests). If the focus-trap loop fails on a Radix focus guard (`data-radix-focus-guard`), check the guard is outside the dialog and that FocusScope moved focus back — never loosen the assertion.
 
 - [ ] **Step 8: Stories (card parity with `SiteHeader.card.html` + handoff `PPHeader`)**
 
@@ -5632,6 +6344,34 @@ export const ScrolledWithCart: Story = {
   },
 };
 
+/**
+ * Cart counts 0, 1 and 12 on the design-system header. A document holds one `banner` and no two
+ * landmarks may share a name, so each specimen sits in its own named `section` (a `header` inside
+ * a `section` is not a banner) and names its own nav.
+ */
+export const CartCounts: Story = {
+  render: (args) => (
+    <div className="flex flex-col gap-6">
+      {[0, 1, 12].map((count) => (
+        <section key={count} aria-label={`Cart with ${String(count)} items`}>
+          <SiteHeader
+            {...args}
+            size="default"
+            links={DS_LINKS}
+            drawerLinks={DS_LINKS}
+            announcement={undefined}
+            badge={undefined}
+            actions={dsActions(count)}
+            drawerActions={undefined}
+            compactActions={<IconButton icon={ShoppingBag} label="Your order" count={count} />}
+            navLabel={`Main, cart with ${String(count)} items`}
+          />
+        </section>
+      ))}
+    </div>
+  ),
+};
+
 /** Handoff PPHeader — launch bar, Pure Veg chip, four links, two actions. */
 export const HandoffCompact: Story = {};
 
@@ -5695,6 +6435,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 13: ReviewCarousel
+
+**Dev reference:** none (handoff component)
 
 **Files:**
 
@@ -6314,6 +7056,37 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 14: MenuList
 
+**Dev reference:** `git show dev:packages/ui/src/organisms/menu-list/menu-list.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                      | Ruling                             | Where / clause                                                                                                                             |
+| ----------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Section header when titled                                                    | ALREADY                            | test "heads the section with overline, a level-2 title and the action"                                                                     |
+| No header at all without a title                                              | ALREADY                            | test "renders only the filters when there is no title"                                                                                     |
+| One pill per category, behind "All"                                           | ALREADY                            | test "offers All first…"                                                                                                                   |
+| The note pinned beside the pills                                              | ADD                                | test "pins the note beside the filters" (its default copy: DROP, D9)                                                                       |
+| First four dishes as cards, the rest as rows                                  | ALREADY                            | test "shows the first gridCount dishes as cards…"                                                                                          |
+| A caller's smaller `gridCount`                                                | ADD                                | test "honours a smaller gridCount and drops the overflow…"                                                                                 |
+| Rows only in `list`                                                           | ALREADY                            | test "shows every dish as a row in the list variant"                                                                                       |
+| No overflow divider when every dish fits                                      | ADD                                | same new test (`gridCount={10}`)                                                                                                           |
+| Filtering by pill; the chosen pill marked                                     | ALREADY                            | tests "filters to a category…", "offers All first…" (`aria-checked`)                                                                       |
+| `defaultCategory`                                                             | ADD — pending contract delta 6     | a string, so it can seed the client leaf; not built until ruled (report)                                                                   |
+| Controlled `category` + `onCategoryChange`                                    | DROP                               | D6 — the filter is a client leaf under a server organism, which cannot pass it a function (Contract deviations); contract §7 lists neither |
+| `onAdd`; no Add control without it                                            | DROP / ALREADY                     | spec §9.2 — the `action` slot replaces `onAdd`: `renderItemAction` (tested); none given, no action                                         |
+| Empty-state copy built in                                                     | DROP                               | D9 — `emptyState` slot (tested)                                                                                                            |
+| Auto-fit grid survives 360px                                                  | ALREADY                            | `autogrid`                                                                                                                                 |
+| Merges a caller `className`                                                   | ADD                                | test "merges a caller className"                                                                                                           |
+| axe                                                                           | ALREADY                            | test "has no accessibility violations"                                                                                                     |
+| `lede` under the heading                                                      | ADD — pending contract delta 7     | not built until ruled (report)                                                                                                             |
+| `diet` per dish                                                               | DROP                               | C10                                                                                                                                        |
+| `href` per dish                                                               | ALREADY                            | `getItemHref`                                                                                                                              |
+| Stories Default · WithAction · ListVariant · WithoutHeader · Empty · Smallest | ALREADY                            | GridWebsite · Playground (`action` arg) · ListApp · ListApp · EmptyCategory · Mobile                                                       |
+| Stories GridOnly · SmallGrid                                                  | ADD                                | `GridOnly`, `SmallGrid`                                                                                                                    |
+| Stories PreselectedCategory · WithLede                                        | ADD — pending contract deltas 6, 7 | —                                                                                                                                          |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Files:**
 
 - Create: `packages/ui/src/organisms/menu-list/menu-list.tsx`, `menu-list-filter.tsx` (client leaf), `menu-list.test.tsx`, `menu-list.stories.tsx`
@@ -6424,6 +7197,11 @@ describe("MenuList", () => {
     expect(names).toEqual(["All", "Sweets", "Small Plates"]);
   });
 
+  it("pins the note beside the filters", () => {
+    render(<MenuList items={MENU} note="100% Vegetarian" />);
+    expect(screen.getByText("100% Vegetarian")).toBeInTheDocument();
+  });
+
   it("shows the first gridCount dishes as cards and the rest as rows under the overflow label", () => {
     const { container } = render(
       <MenuList items={MENU} gridCount={4} overflowLabel="Also on the menu" />
@@ -6431,6 +7209,18 @@ describe("MenuList", () => {
     expect(container.querySelector("ul.autogrid")?.querySelectorAll("article")).toHaveLength(4);
     expect(screen.getAllByRole("article")).toHaveLength(MENU.length);
     expect(screen.getByText("Also on the menu")).toBeInTheDocument();
+  });
+
+  it("honours a smaller gridCount and drops the overflow when every dish fits", () => {
+    const { container, rerender } = render(
+      <MenuList items={MENU} gridCount={2} overflowLabel="Also on the menu" />
+    );
+    expect(container.querySelector("ul.autogrid")?.querySelectorAll("article")).toHaveLength(2);
+    rerender(<MenuList items={MENU} gridCount={10} overflowLabel="Also on the menu" />);
+    expect(container.querySelector("ul.autogrid")?.querySelectorAll("article")).toHaveLength(
+      MENU.length
+    );
+    expect(screen.queryByText("Also on the menu")).not.toBeInTheDocument();
   });
 
   it("shows every dish as a row in the list variant", () => {
@@ -6493,6 +7283,11 @@ describe("MenuList", () => {
     await user.click(option("Thalis"));
     expect(screen.getByText("Nothing matches that yet.")).toBeInTheDocument();
     expect(screen.queryByRole("article")).not.toBeInTheDocument();
+  });
+
+  it("merges a caller className", () => {
+    const { container } = render(<MenuList items={MENU} className="bg-surface-page-alt" />);
+    expect(container.firstElementChild).toHaveClass("section-y", "bg-surface-page-alt");
   });
 
   it("has no accessibility violations", async () => {
@@ -6771,7 +7566,7 @@ export function MenuList({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- menu-list 2>&1 | tail -8`
-Expected: PASS (12 tests). If the keyboard test fails because FilterBar's roving focus starts elsewhere, read `molecules/filter-bar/filter-bar.tsx` and adjust only the key sequence — the assertion (arrowing to the next option and pressing Space selects it) stays.
+Expected: PASS (15 tests). If the keyboard test fails because FilterBar's roving focus starts elsewhere, read `molecules/filter-bar/filter-bar.tsx` and adjust only the key sequence — the assertion (arrowing to the next option and pressing Space selects it) stays.
 
 - [ ] **Step 6: Stories (card parity with `MenuList.card.html`)**
 
@@ -6896,6 +7691,12 @@ export const GridWebsite: Story = {};
 /** Card row: `variant="list"` (app), no section header. */
 export const ListApp: Story = { args: { variant: "list", title: null } };
 
+/** Every dish in the grid: the overflow list and its divider disappear. */
+export const GridOnly: Story = { args: { gridCount: 6 } };
+
+/** Two cards and a long overflow list — the shape a big menu takes. */
+export const SmallGrid: Story = { args: { gridCount: 2 } };
+
 /** Filter by pointer: Chai & Coffee shows its two dishes. */
 export const FilterByCategory: Story = {
   play: async ({ canvas, userEvent }) => {
@@ -6950,6 +7751,35 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 15: CartPanel
+
+**Dev reference:** `git show dev:packages/ui/src/organisms/cart-panel/cart-panel.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                               | Ruling  | Where / clause                                                                                                                                    |
+| -------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A Radix side sheet: `trigger`, open state, Escape, close glyph, `position="container"` | DROP    | D1 + spec §9.3 / contract §7 — the design system's CartPanel is a panel; an app that wants a sheet wraps it in `Dialog variant="sheet"` (Task 11) |
+| Every line with its dish and options                                                   | ALREADY | test "lists every line with its name, note, unit price and the veg mark"                                                                          |
+| Each line priced at its quantity (₹560 for 2 × ₹280)                                   | DROP    | D2 — the design system's `CartPanel.jsx` prints the unit price (`PriceTag amount={l.price}`)                                                      |
+| GST added to the subtotal, the total paid                                              | ALREADY | `cart-totals.spec.ts` + test "totals through PriceSummary…"                                                                                       |
+| A different GST rate, shown                                                            | ALREADY | test "takes its GST rate and summary labels from props"                                                                                           |
+| A quantity change for the right line; stepping to 0 removes it                         | ALREADY | test "reports a quantity change for the right line"                                                                                               |
+| `onPlaceOrder` / `onBrowse`                                                            | DROP    | spec §8.1 — `placeAction` / `browseAction` slots                                                                                                  |
+| Its own empty state instead of an empty list                                           | ALREADY | test "renders its own empty state…"                                                                                                               |
+| No pay bar on the empty cart                                                           | ADD     | the empty-state test passes a `placeAction` and asserts it is absent                                                                              |
+| The fulfilment line; dropped when blank                                                | ALREADY | `meta ? …`                                                                                                                                        |
+| A long dish name and its options truncate, so the stepper keeps its place              | ADD     | `name`/`nameText`/`note` slots + test "keeps a long dish name and its options on one line…"                                                       |
+| The pay bar never scrolls away                                                         | ALREADY | bar outside the scrolling body                                                                                                                    |
+| Stepper buttons named per dish                                                         | ALREADY | QuantityStepper `label` (Plan 3a)                                                                                                                 |
+| Built-in kitchen-note Input; fixed labels and copy                                     | DROP    | D9 — `noteField`, the label props, `note`                                                                                                         |
+| `diet: "egg"`                                                                          | DROP    | C10                                                                                                                                               |
+| Merges a caller `className`                                                            | ADD     | test "merges a caller className"                                                                                                                  |
+| axe                                                                                    | ALREADY | test "has no accessibility violations"                                                                                                            |
+| Stories Filled · Empty                                                                 | ALREADY | Filled · Empty                                                                                                                                    |
+| Story Default (a trigger-opened sheet)                                                 | DROP    | not a dialog (row 1)                                                                                                                              |
+| Stories OneLine · DineIn · Smallest                                                    | ADD     | `OneLine`, `DineIn`, `Mobile`                                                                                                                     |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Files:**
 
@@ -7117,7 +7947,7 @@ describe("CartPanel", () => {
     expect(screen.getByRole("button", { name: "Pay ₹1,008" })).toBeInTheDocument();
   });
 
-  it("renders its own empty state with the given copy and the browse action", () => {
+  it("renders its own empty state with the given copy and the browse action — and no pay bar", () => {
     render(
       <CartPanel
         lines={[]}
@@ -7125,12 +7955,25 @@ describe("CartPanel", () => {
         emptyTitle="Nothing here yet."
         emptyBody="Let's fix that."
         browseAction={<a href="#menu">Browse the Menu</a>}
+        placeAction={<button type="button">Pay ₹0</button>}
       />
     );
     expect(screen.getByRole("heading", { name: "Nothing here yet." })).toBeInTheDocument();
     expect(screen.getByText("Let's fix that.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Browse the Menu" })).toBeInTheDocument();
     expect(screen.queryByRole("list")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^Pay/ })).not.toBeInTheDocument();
+  });
+
+  it("keeps a long dish name and its options on one line each, so the stepper keeps its place", () => {
+    render(<CartPanel lines={LINES} />);
+    expect(screen.getByText("Paprikaa Chilli Paneer")).toHaveClass("truncate");
+    expect(screen.getByText("Sharing · Hot")).toHaveClass("truncate");
+  });
+
+  it("merges a caller className", () => {
+    const { container } = render(<CartPanel lines={LINES} className="bg-surface-page" />);
+    expect(container.firstElementChild).toHaveClass("flex", "bg-surface-page");
   });
 
   it("has no accessibility violations", async () => {
@@ -7220,9 +8063,10 @@ const cartPanel = componentVariants({
     line: "flex items-center gap-3.5 border-b border-border-subtle py-4",
     thumb: "size-cart-panel-thumb shrink-0 rounded-md bg-surface-brand-soft",
     info: "flex min-w-0 flex-1 flex-col",
-    name: "flex items-center gap-2",
-    nameText: "font-display",
-    note: "mt-0.5",
+    // A long dish name or option line truncates rather than pushing the stepper off the line.
+    name: "flex min-w-0 items-center gap-2",
+    nameText: "min-w-0 truncate font-display",
+    note: "mt-0.5 truncate",
     price: "mt-1.5",
     noteField: "mt-4.5",
     summary: "pt-4.5 pb-5",
@@ -7383,7 +8227,7 @@ export function CartPanel({
 - [ ] **Step 6: Run them to verify they pass**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- cart- 2>&1 | tail -8`
-Expected: PASS (5 + 8 tests).
+Expected: PASS (5 + 10 tests).
 
 - [ ] **Step 7: Stories (card parity with `CartPanel.card.html`)**
 
@@ -7399,6 +8243,7 @@ import { expect, within } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
 import { Input } from "../../atoms/input/input";
+import { VIEWPORT_360 } from "../story-fixtures";
 import { CartPanel } from "./cart-panel";
 import { type CartLine, cartTotals } from "./cart-totals";
 
@@ -7508,6 +8353,37 @@ export const Empty: Story = {
   },
   render: (args) => (
     <div className={`${FRAME} w-75`}>
+      <CartPanel {...args} />
+    </div>
+  ),
+};
+
+/** A single line, so the summary and the pay bar read against a short list. */
+export const OneLine: Story = {
+  args: { lines: LINES.slice(0, 1) },
+  render: (args) => (
+    <div className={`${FRAME} w-90`}>
+      <CartPanel {...args} />
+    </div>
+  ),
+};
+
+/** Dine-in swaps the fulfilment line; everything else is the same panel. */
+export const DineIn: Story = {
+  args: { meta: "Dine-in · Table 4 · Sector 57" },
+  render: (args) => (
+    <div className={`${FRAME} w-90`}>
+      <CartPanel {...args} />
+    </div>
+  ),
+};
+
+/** The smallest supported viewport: the panel runs full width and nothing truncates badly. */
+export const Mobile: Story = {
+  globals: VIEWPORT_360,
+  parameters: { layout: "fullscreen" },
+  render: (args) => (
+    <div className="flex h-165 flex-col">
       <CartPanel {...args} />
     </div>
   ),
