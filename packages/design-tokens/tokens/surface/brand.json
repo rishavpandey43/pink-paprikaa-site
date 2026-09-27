@@ -40,7 +40,13 @@
         "selected": { "$value": "{color.ink.900}" },
         "selected-hover": { "$value": "{color.ink.800}" }
       },
-      "divider": { "mark": { "$value": "{color.ink.000}" } }
+      "divider": { "mark": { "$value": "{color.ink.000}" } },
+      "badge": {
+        "brand": {
+          "bg": { "$value": "{color.ink.000}" },
+          "fg": { "$value": "{color.pink.600}" }
+        }
+      }
     },
     "shadow": {
       "$type": "shadow",

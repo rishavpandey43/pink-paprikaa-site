@@ -105,6 +105,7 @@ const SPACING = [
   "icon-button-count",
   "tag-h",
   "divider-mark",
+  "badge-icon",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];

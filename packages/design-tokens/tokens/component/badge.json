@@ -1,0 +1,15 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "badge-icon": { "$value": "12px", "$description": "The Badge glyph." }
+  },
+  "color": {
+    "$type": "color",
+    "badge": {
+      "brand": {
+        "bg": { "$value": "{color.surface.brand}", "$description": "White on a pink field." },
+        "fg": { "$value": "{color.text.on-brand}", "$description": "Pink-600 on a pink field." }
+      }
+    }
+  }
+}

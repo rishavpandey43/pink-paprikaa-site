@@ -291,6 +291,32 @@
         ["color-ink-600", "color-ink-200"]
       ],
       "min": 4.5
+    },
+    {
+      "id": "badge",
+      "surface": null,
+      "pairs": [
+        ["color-pink-700", "color-pink-100"],
+        ["color-ink-000", "color-ink-900"],
+        ["color-ink-700", "color-ink-100"],
+        ["color-text-success", "color-status-success-soft"],
+        ["color-text-warning", "color-status-warning-soft"],
+        ["color-text-danger", "color-status-danger-soft"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "badge-brand",
+      "surface": null,
+      "pairs": [["color-badge-brand-fg", "color-badge-brand-bg"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "badge-brand-on-brand",
+      "surface": "brand",
+      "pairs": [["color-badge-brand-fg", "color-badge-brand-bg"]],
+      "min": 4.5
     }
   ]
 }
