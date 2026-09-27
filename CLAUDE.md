@@ -183,9 +183,12 @@ More facts that are easy to trip on, all verified with git:
   for the rewrite (contracts §0.0, `docs/superpowers/plans/2026-09-27-ds-00-contracts.md`): read its
   files with `git show dev:<path>`, never check out, merge or restore them. `feat/design-system`
   has no upstream yet. `feat/phase-0-foundation` no longer exists.
-- **SDD records** (ledgers, briefs, reports) are copied from `.superpowers/sdd/` to
-  `docs/superpowers/records/sdd/`. That folder's own `.gitignore` (`*`) keeps them out of git, so
-  they exist only in this working copy.
+- **SDD records** (ledgers, briefs, reports, audits, evidence) are the git-ignored workspaces under
+  `.superpowers/sdd/`, archived to the **tracked** `docs/superpowers/records/sdd/` after every task
+  and plan. Sync them with
+  `rsync -a --exclude '*.diff' --exclude plan-path --exclude .gitignore .superpowers/sdd/ docs/superpowers/records/sdd/`.
+  Keep the `.gitignore` exclude: the workspace's own `.gitignore` is a bare `*`, and copying it
+  un-tracks the whole archive. Never delete either copy.
 - **Root `package.json` `scripts` is now real**: `verify`, `verify:all`, `commit` (`cz`), `format`,
   `format:check`, `guard:founder`, `prepare`. `pnpm verify`, `pnpm commit` and `pnpm format` all
   work as described in the architecture spec.
