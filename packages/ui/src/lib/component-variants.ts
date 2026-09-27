@@ -8,10 +8,10 @@ import { createTV, type TWMergeConfig } from "tailwind-variants";
  * The token names are not Tailwind's stock scales, so without these lists tailwind-merge guesses
  * wrong and silently deletes classes: `text-h1` would be read as a text *colour* and dropped next
  * to `text-text-muted`, `border-default` as a border colour next to `border-border-subtle`. The
- * stylesheet's own utilities (`z-header`, `duration-fast`, `scrim-*`, `autogrid*`) are registered
- * too, so a later one replaces an earlier one. `component-variants.spec.ts` asserts every token
- * list equals the token build (and the stylesheet's animations), so a new token cannot be
- * forgotten here.
+ * stylesheet's own utilities (`z-header`, `duration-fast`, `scrim-*`, `autogrid*`, `pattern-*`)
+ * are registered too, so a later one replaces an earlier one. `component-variants.spec.ts`
+ * asserts every token list equals the token build (and the stylesheet's animations), so a new
+ * token cannot be forgotten here.
  */
 const TEXT = [
   "display-1",
@@ -76,6 +76,9 @@ const SPACING = [
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];
 const DURATION = ["instant", "fast", "base", "slow", "page"];
+/** PatternField's named utilities (`styles.css`): `pattern-tile-*` and `pattern-opacity-*`. */
+const PATTERN_TILE = ["56", "64", "72", "80", "86", "96"];
+const PATTERN_OPACITY = ["default", "light", "faint"];
 /** tailwind-merge keeps a width group per side (`border-w-t` for `border-t-*`, …); all read these. */
 const BORDER_SIDES = ["x", "y", "s", "e", "bs", "be", "t", "r", "b", "l"];
 const ANIMATE = [
@@ -113,6 +116,8 @@ export const twMergeConfig: TWMergeConfig = {
       duration: [{ duration: DURATION }],
       scrim: ["scrim-bottom", "scrim-top"],
       autogrid: ["autogrid", "autogrid-wide"],
+      "pattern-tile": [{ "pattern-tile": PATTERN_TILE }],
+      "pattern-opacity": [{ "pattern-opacity": PATTERN_OPACITY }],
     },
   },
 };

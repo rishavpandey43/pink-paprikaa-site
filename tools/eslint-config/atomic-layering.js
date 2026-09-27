@@ -3,7 +3,8 @@ const layerOrder = ["atoms", "molecules", "organisms", "layouts"];
 /**
  * no-restricted-imports zones over the design system's four tiers — atoms → molecules →
  * organisms → layouts. In every tier a file may not import a layer above it (spec §7 rule 2) nor
- * the package barrel, by any spelling (`..`, `../..`, `../../`, `../../index`, `../../index.ts`).
+ * the package barrel, by any spelling (`..`, `../..`, `../../`, `../../index`, `../../index.ts`,
+ * `../../../src/index`, or the package's own name `@pink-paprikaa-web/ui`, ruling R41).
  * An atom also imports no other atom but Icon, directly (`../text/text`) or by the roundabout
  * path (`../../atoms/text/text`). Everything else passes: `../../lib/*`, `../../assets/*`,
  * `../../styles.css`, `../../../vitest.setup`, packages. `atomic-layering.test.mjs` pins each case.
@@ -27,13 +28,22 @@ const upperLayerPatterns = (layer) =>
     message: `Atomic layering: ${layer} cannot import from ${upper} (layers only go upward).`,
   }));
 
-/** `src/index.ts` from inside `src/<tier>/<name>/`: import the component's own file instead. */
+/**
+ * `src/index.ts` from inside `src/<tier>/<name>/`: import the component's own file instead. The
+ * optional `/src` segment catches the roundabout `../../../src/index`.
+ */
 const barrelPattern = {
-  regex: "^(?:\\.\\./)*\\.\\.(?:/(?:index(?:\\.[jt]sx?)?)?)?$",
+  regex: "^(?:\\.\\./)*\\.\\.(?:/src)?(?:/(?:index(?:\\.[jt]sx?)?)?)?$",
   message: "Atomic layering: never import the package barrel from inside the package.",
 };
 
-const tierPatterns = (layer) => [...upperLayerPatterns(layer), barrelPattern];
+/** The package by its own name (any subpath) resolves to the barrel or around it. */
+const selfPackagePattern = {
+  regex: "^@pink-paprikaa-web/ui(?:/|$)",
+  message: "Atomic layering: never import @pink-paprikaa-web/ui from inside the package.",
+};
+
+const tierPatterns = (layer) => [...upperLayerPatterns(layer), barrelPattern, selfPackagePattern];
 
 const atomicLayering = [
   {

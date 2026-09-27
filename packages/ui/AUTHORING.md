@@ -239,7 +239,9 @@ scale becomes a token.
   The tailwindcss plugin lists both keys in its default `ignoredKeys`. Inside them it checks only
   the `class` property, so `className: "h-[13px] bg-red-500"` there passes lint (probed).
 - **Named utilities** (`src/styles.css`) cover what Tailwind has no token utility for:
-  - motion: `duration-instant|fast|base|slow|page`, `active:press-scale`, `hover:lift`
+  - motion: `duration-instant|fast|base|slow|page`, `active:press-scale`, `hover:lift`,
+    `transition-control` (pill controls)
+  - pattern: `pattern-tile-56|64|72|80|86|96`, `pattern-opacity-default|light|faint`
   - stacking: `z-raised|sticky|header|dock|overlay|toast`
   - layout: `container-page`, `section-y`, `autogrid`, `autogrid-wide`, `cluster`
   - imagery: `scrim-bottom`, `scrim-top`
@@ -277,6 +279,14 @@ scale becomes a token.
   PatternField, SiteFooter, CtaBand, StatBand, HeroBanner, QuotePanel, PostFrame and flooded
   PricingCard. A white-filled component (Card `default`, form controls) sets `data-surface="light"`.
   That is the light island.
+
+**Skins on surfaces.** A skin with its own fill (white Tag, inverse Button, soft Badge) uses fixed
+primitives, so it looks the same on every field. A transparent or text-only skin (ghost, link,
+divider, outline) paints with semantic tokens, which follow `data-surface` for free. Only a flip no
+semantic token describes (primary Button on pink → white) gets a component colour token, overridden
+in `surface/{brand,ink}.json` and restored in `surface/light.json`. A component token never aliases a
+semantic token a surface overrides — the alias resolves once, at `:root`
+(`packages/design-tokens/src/surface-aliases.spec.ts` fails the build).
 
 ## 8. Server-first
 

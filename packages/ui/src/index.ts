@@ -10,3 +10,5 @@ export {
 } from "./atoms/icon/brand-glyphs";
 export { Logo, type LogoProps } from "./atoms/logo/logo";
 export { RevealObserver, type RevealObserverProps } from "./lib/reveal-observer";
+export { type HeadingLevel, headingTag } from "./lib/heading";
+export type { LinkAs, LinkAsProps } from "./lib/link-as";

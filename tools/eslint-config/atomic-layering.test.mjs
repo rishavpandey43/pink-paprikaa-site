@@ -14,7 +14,18 @@ function errors(tier, source) {
 
 test("no tier imports the package barrel, by any spelling", () => {
   for (const tier of TIERS) {
-    for (const barrel of ["..", "../..", "../../", "../../index", "../../index.ts"]) {
+    for (const barrel of [
+      "..",
+      "../..",
+      "../../",
+      "../../index",
+      "../../index.ts",
+      "../../../src",
+      "../../../src/index",
+      "../../../src/index.ts",
+      "@pink-paprikaa-web/ui",
+      "@pink-paprikaa-web/ui/styles.css",
+    ]) {
       assert.equal(errors(tier, barrel), 1, `${tier} importing "${barrel}"`);
     }
   }
@@ -26,6 +37,8 @@ const ALLOWED = [
   "../../styles.css",
   "../../../vitest.setup",
   "react",
+  "@pink-paprikaa-web/utils",
+  "@pink-paprikaa-web/design-tokens/tokens.json",
 ];
 
 test("every tier may import lib, assets, the stylesheet, the test setup and packages", () => {

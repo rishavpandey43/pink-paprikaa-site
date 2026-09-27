@@ -19,10 +19,10 @@ const catalogue = JSON.parse(
 ) as CatalogueEntry[];
 const stylesheet = readFileSync(join(import.meta.dirname, "../styles.css"), "utf8");
 
-function namesIn(namespace: string): string[] {
+function namesIn(...prefix: string[]): string[] {
   return catalogue
-    .filter((e) => e.surface === null && e.path[0] === namespace)
-    .map((e) => e.path.slice(1).join("-"));
+    .filter((e) => e.surface === null && prefix.every((part, i) => e.path[i] === part))
+    .map((e) => e.path.slice(prefix.length).join("-"));
 }
 
 /** The values a class group accepts after `prefix-`, e.g. `border-w` / `border` → default, strong. */
@@ -66,8 +66,10 @@ describe("twMergeConfig", () => {
       prefix: `border${side}`,
       namespace: "border-width",
     })),
+    { group: "pattern-tile", prefix: "pattern-tile", namespace: "pattern.tile" },
+    { group: "pattern-opacity", prefix: "pattern-opacity", namespace: "pattern.opacity" },
   ])("class group $group takes every $namespace token", ({ group, prefix, namespace }) => {
-    expect(new Set(groupValues(group, prefix))).toEqual(new Set(namesIn(namespace)));
+    expect(new Set(groupValues(group, prefix))).toEqual(new Set(namesIn(...namespace.split("."))));
   });
 
   it("declares every animation the stylesheet defines", () => {
@@ -113,6 +115,8 @@ describe("componentVariants", () => {
     ["duration-slow", "duration-fast"],
     ["scrim-bottom", "scrim-top"],
     ["autogrid", "autogrid-wide"],
+    ["pattern-tile-64", "pattern-tile-96"],
+    ["pattern-opacity-default", "pattern-opacity-faint"],
   ])("lets a consumer className replace %s with %s", (base, className) => {
     expect(componentVariants({ base })({ className })).toBe(className);
   });

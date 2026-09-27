@@ -226,6 +226,55 @@
   translate: 0 var(--motion-lift-y);
 }
 
+/* Pill controls (Button, IconButton, Tag): colours and shadow ease over --duration-fast; the press
+   scale snaps in --duration-instant (design system readme §3.8). */
+@utility transition-control {
+  transition-property:
+    color, background-color, border-color, text-decoration-color, box-shadow, scale;
+  transition-timing-function: var(--ease-out);
+  transition-duration:
+    var(--duration-fast), var(--duration-fast), var(--duration-fast), var(--duration-fast),
+    var(--duration-fast), var(--duration-instant);
+}
+
+/* PatternField (spec §7.2): the tile image is the white symbol as a mask, set by the component;
+   these carry the token-backed tile size and opacity. */
+@utility pattern-tile-56 {
+  mask-size: var(--pattern-tile-56);
+}
+
+@utility pattern-tile-64 {
+  mask-size: var(--pattern-tile-64);
+}
+
+@utility pattern-tile-72 {
+  mask-size: var(--pattern-tile-72);
+}
+
+@utility pattern-tile-80 {
+  mask-size: var(--pattern-tile-80);
+}
+
+@utility pattern-tile-86 {
+  mask-size: var(--pattern-tile-86);
+}
+
+@utility pattern-tile-96 {
+  mask-size: var(--pattern-tile-96);
+}
+
+@utility pattern-opacity-default {
+  opacity: var(--pattern-opacity-default);
+}
+
+@utility pattern-opacity-light {
+  opacity: var(--pattern-opacity-light);
+}
+
+@utility pattern-opacity-faint {
+  opacity: var(--pattern-opacity-faint);
+}
+
 @utility z-raised {
   z-index: var(--z-raised);
 }

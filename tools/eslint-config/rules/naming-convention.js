@@ -55,6 +55,13 @@ export default [
     format: ["camelCase", "snake_case"],
   },
   {
+    // Quoted names mirror DOM attributes a prop forwards verbatim ("aria-current",
+    // "aria-describedby"); they cannot be camelCase. Unquoted properties stay strict.
+    selector: "typeProperty",
+    modifiers: ["requiresQuotes"],
+    format: null,
+  },
+  {
     selector: "enumMember",
     format: ["PascalCase"],
   },
