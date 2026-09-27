@@ -237,6 +237,14 @@
     var(--duration-fast), var(--duration-instant);
 }
 
+/* Tailwind's `shadow-*` inlines the theme value (`--tw-shadow: var(--shadow-brand)`) so it can
+   swap in `--tw-shadow-color`, which means a surface override of `--shadow-button-primary` never
+   reached the class. This merges into the generated rule and reads the variable at the element, so
+   primary takes shadow-2 on a pink field (surface/brand.json). */
+@utility shadow-button-primary {
+  --tw-shadow: var(--shadow-button-primary);
+}
+
 /* PatternField (spec §7.2): the tile image is the white symbol as a mask, set by the component;
    these carry the token-backed tile size and opacity. */
 @utility pattern-tile-56 {

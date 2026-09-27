@@ -152,6 +152,17 @@ export const OnBrand: Story = {
       </Button>
     </div>
   ),
+  // On a pink field primary trades the brand glow for shadow-2 (surface/brand.json). A probe
+  // painted with var(--shadow-2) gives the expected value in the browser's own format.
+  play: async ({ canvasElement }) => {
+    const primary = within(canvasElement).getByRole("button", { name: "Order Now" });
+    const probe = document.createElement("div");
+    probe.style.boxShadow = "var(--shadow-2)";
+    canvasElement.append(probe);
+    const expected = getComputedStyle(probe).boxShadow;
+    probe.remove();
+    await expect(getComputedStyle(primary).boxShadow).toContain(expected);
+  },
 };
 
 export const Loading: Story = {
