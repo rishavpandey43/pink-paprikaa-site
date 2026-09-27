@@ -39,6 +39,9 @@ jobs:
       # last successful commit rather than rebuilding the whole workspace.
       - uses: nrwl/nx-set-shas@v4
 
+      # storybook:test runs stories in headless Chromium (addon-vitest browser mode).
+      - run: pnpm exec playwright install --with-deps chromium
+
       - name: Formatting
         run: pnpm nx format:check
 

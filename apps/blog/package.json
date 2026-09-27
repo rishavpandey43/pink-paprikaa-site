@@ -29,6 +29,11 @@
           "{projectRoot}/out"
         ]
       },
+      "lint": {
+        "dependsOn": [
+          "build"
+        ]
+      },
       "serve": {
         "continuous": true,
         "syncGenerators": [
