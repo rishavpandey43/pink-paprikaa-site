@@ -110,10 +110,11 @@ cat packages/ui/src/index.ts
 rtk proxy grep -nE "^const (TEXT|SPACING|RADIUS|SHADOW|ANIMATE) = |export const (componentVariants|twMergeConfig)|export type \{ VariantProps \}" packages/ui/src/lib/component-variants.ts
 rtk proxy grep -n "export async function expectNoA11yViolations" packages/ui/vitest.setup.ts
 rtk proxy grep -nE "export (type IconComponent|interface IconProps|function Icon)|xs: \"size-icon-xs\"" packages/ui/src/atoms/icon/icon.tsx
-rtk proxy grep -nE "export (type Mark|interface Artwork|const ARTWORK|const SYMBOL_DATA_URI_WHITE)" packages/ui/src/lib/brand-artwork.ts
+rtk proxy grep -nE "export (type Mark|interface Artwork|const ARTWORK)" packages/ui/src/lib/brand-artwork.ts
+rtk proxy grep -n "@utility mask-symbol\|--pp-symbol-mask" packages/ui/src/lib/brand-artwork.css
 ```
 
-Expected: the barrel exports `Icon`, `IconComponent`, `IconProps`, the three glyphs, `Logo`, `LogoProps` and `RevealObserver`. The five list constants and three exports exist. `expectNoA11yViolations(container: Element, options: RunOptions = {})` is present. `Icon` takes `size: "xs"|"sm"|"md"|"lg"|"xl"` and renders `size-icon-*` classes. `ARTWORK` and `SYMBOL_DATA_URI_WHITE` are exported. (Task 1's `symbol-mark.test.tsx` asserts that the symbol markup carries no `id=`. If that assertion ever fails, `SymbolMark` must replace `__ID__` with a `useId`-derived prefix, as `Logo` does.)
+Expected: the barrel exports `Icon`, `IconComponent`, `IconProps`, the three glyphs, `Logo`, `LogoProps` and `RevealObserver`. The five list constants and three exports exist. `expectNoA11yViolations(container: Element, options: RunOptions = {})` is present. `Icon` takes `size: "xs"|"sm"|"md"|"lg"|"xl"` and renders `size-icon-*` classes. `ARTWORK` is exported (there is no JS data-URI export — ruling R25); `brand-artwork.css` defines `--pp-symbol-mask` and `@utility mask-symbol` (R19). (Task 1's `symbol-mark.test.tsx` asserts that the symbol markup carries no `id=`. If that assertion ever fails, `SymbolMark` must replace `__ID__` with a `useId`-derived prefix, as `Logo` does.)
 
 - [ ] **Step 3: Every token and utility this plan consumes exists**
 
@@ -1714,7 +1715,7 @@ Source: `components/atoms/PatternField.{jsx,d.ts,card.html,prompt.md}`, readme �
 
 **Interfaces:**
 
-- Consumes: `SYMBOL_DATA_URI_WHITE` (`lib/brand-artwork`), `Slot`, `componentVariants`; `bg-surface-{brand,inverse,brand-soft,page}`.
+- Consumes: the CSS custom property `--pp-symbol-mask` (`lib/brand-artwork.css`, R19/R25), `Slot`, `componentVariants`; `bg-surface-{brand,inverse,brand-soft,page}`.
 - Produces: `PatternField`, `interface PatternFieldProps extends ComponentProps<"div">` (contracts §2); utilities `pattern-tile-{56,64,72,80,86,96}`, `pattern-opacity-{default,light,faint}`.
 
 - [ ] **Step 1: Named utilities for the tile tokens**
@@ -1837,7 +1838,7 @@ describe("PatternField", () => {
   it("paints the tile through the white symbol mask, rendered on the server", () => {
     const html = renderToStaticMarkup(<PatternField tone="ink">Statement</PatternField>);
     expect(html).toContain('data-surface="ink"');
-    expect(html).toContain("mask-image:url(");
+    expect(html).toContain("mask-image:var(--pp-symbol-mask)");
   });
 
   it("stacks its content above the pattern", () => {
@@ -1910,7 +1911,6 @@ import type { ComponentProps, ElementType } from "react";
 
 import { Slot } from "radix-ui";
 
-import { SYMBOL_DATA_URI_WHITE } from "../../lib/brand-artwork";
 import { componentVariants } from "../../lib/component-variants";
 
 export interface PatternFieldProps extends ComponentProps<"div"> {
@@ -1926,7 +1926,7 @@ export interface PatternFieldProps extends ComponentProps<"div"> {
 }
 
 /** One white symbol tile, used as a mask: the colour painted through it comes from the tone. */
-const PATTERN_MASK = { maskImage: SYMBOL_DATA_URI_WHITE } as const;
+const PATTERN_MASK = { maskImage: "var(--pp-symbol-mask)" } as const;
 
 const patternField = componentVariants({
   slots: {
