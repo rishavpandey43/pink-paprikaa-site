@@ -41,6 +41,12 @@ const atomicLayering = [
               message:
                 "Atomic layering: an atom may import only the Icon atom (plus ../../lib and packages).",
             },
+            {
+              // The same rule by the roundabout path: `../../atoms/text/text`, `../../index`.
+              regex: "^(?:\\.\\./)+(?:atoms/(?!icon(?:/|$))|index$)",
+              message:
+                "Atomic layering: an atom may import only the Icon atom (plus ../../lib and packages).",
+            },
           ],
         },
       ],

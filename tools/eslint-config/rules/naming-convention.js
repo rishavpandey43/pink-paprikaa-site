@@ -1,7 +1,7 @@
 /**
  * Shared `@typescript-eslint/naming-convention` options. Severity is applied by
- * the consumer (`base.js` wires these at "warn" until Phase 1 lands real code,
- * then promotes to "error").
+ * the consumer (`base.js` wires these at "error" — a LAW since the design
+ * system rewrite).
  *
  * Ported from a battle-tested predecessor config, minus its project-specific
  * filters (GraphQL `__typename`, generated-hook `loading` names). Add

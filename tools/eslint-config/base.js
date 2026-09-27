@@ -4,7 +4,7 @@ import perfectionist from "eslint-plugin-perfectionist";
 import tseslint from "typescript-eslint";
 
 import namingConvention from "./rules/naming-convention.js";
-import noRawHex from "./rules/no-raw-hex.js";
+import pinkPaprikaa from "./rules/plugin.js";
 
 // `nx.configs["flat/base"]` registers the `@nx` plugin namespace (so
 // `@nx/enforce-module-boundaries` below resolves) and ignores `.nx`.
@@ -104,7 +104,7 @@ export default tseslint.config(
   // surface this file never lints.
   {
     files: ["**/*.ts"],
-    plugins: { "pink-paprikaa": { rules: { "no-raw-hex": noRawHex } } },
+    plugins: { "pink-paprikaa": pinkPaprikaa },
     rules: { "pink-paprikaa/no-raw-hex": "error" },
   },
   // Disable type-aware linting for plain JS config files.

@@ -5,7 +5,7 @@ import tailwindcss from "eslint-plugin-tailwindcss";
 import { createRequire } from "node:module";
 
 import base from "./base.js";
-import noRawHex from "./rules/no-raw-hex.js";
+import pinkPaprikaa from "./rules/plugin.js";
 
 // `settings.react.version: "detect"` crashes under ESLint 10's flat config:
 // eslint-plugin-react@7.37.5 (the current `latest` — no newer release fixes
@@ -36,7 +36,7 @@ export default [
       react,
       "react-hooks": reactHooks,
       "jsx-a11y": jsxA11y,
-      "pink-paprikaa": { rules: { "no-raw-hex": noRawHex } },
+      "pink-paprikaa": pinkPaprikaa,
     },
     settings: { react: { version: reactVersion } },
     rules: {
@@ -57,6 +57,13 @@ export default [
   // `base.js` — every consumer of this preset composes `base.js` first, so plain `.ts` coverage
   // already applies here without re-registering it. This block only needs to cover `.tsx`/`.jsx`,
   // which it does above.
+  {
+    // The token-only class LAW's shorthand half (`w-(--x)`, `[mask-type:alpha]`), which the
+    // tailwindcss plugin's own rules let through. React-preset only: classes live in UI code.
+    files: ["**/*.tsx", "**/*.jsx", "**/*.ts"],
+    plugins: { "pink-paprikaa": pinkPaprikaa },
+    rules: { "pink-paprikaa/no-arbitrary-shorthand": "error" },
+  },
   // `eslint-plugin-tailwindcss`@4.x (task 2's deferred install, task 8 wires
   // it up) — this major is "Made for Tailwind CSS v4"
   // (https://github.com/francoismassart/eslint-plugin-tailwindcss#readme),
@@ -74,7 +81,7 @@ export default [
   // writes-a-classname landmine; it fails every consumer immediately. That
   // path is inherently per-consumer (this repo's Next apps keep it at
   // `src/app/global.css`; `packages/ui` keeps its Tailwind entry at
-  // `.storybook/styles.css`), so it cannot be hardcoded correctly here in
+  // `tailwind.css`), so it cannot be hardcoded correctly here in
   // the shared preset for every consumer at once — each consumer of
   // `react.js` (directly or via `next.js`) MUST add its own
   // `settings.tailwindcss.cssConfigPath` override. Next apps get theirs in
