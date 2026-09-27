@@ -169,13 +169,25 @@ pnpm nx run @pink-paprikaa-web/storybook:build 2>&1 | tail -3
 
 Expected: `Successfully ran targets typecheck, lint, test for 2 projects` and a finished Storybook build. Plan 1's `icon.tsx` imports `../../lib/component-variants` and its test imports `../../../vitest.setup`, so a green lint here proves those import shapes pass the atom layering rule.
 
-- [ ] **Step 6: Record**
+- [ ] **Step 6: Dev parity tables present on every ported-component task**
+
+Contracts §0.0: every atom here is ported from the `dev` branch. Run:
+
+```bash
+rtk proxy grep -c '^\*\*Dev parity:\*\*' docs/superpowers/plans/2026-09-27-ds-02a-atoms-core.md
+```
+
+Expected: `13` — one table in each of Tasks 2–14 (Icon and Logo are Plan 1). If a task lacks one, stop and audit it against `git show dev:packages/ui/src/atoms/<name>/<name>.{tsx,test.tsx,stories.tsx}` before it runs.
+
+- [ ] **Step 7: Record**
 
 In the report, list every difference found and the task you patched, or write "Plan 1 matched this plan's assumptions".
 
 ---
 
 ### Task 1: Shared library — heading, link-as, the symbol mark, control states, story surfaces
+
+**Dev reference:** none (shared-library task; dev's `lib/` has no `heading`, `link-as`, `symbol-mark`, `control-states` or `story-surfaces`).
 
 **Files:**
 
@@ -580,6 +592,30 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 2: Text
 
+**Dev reference:** `git show dev:packages/ui/src/atoms/text/text.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                                                                  | Ruling  | Where / reason                                                                                               |
+| ----------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| Step names `display1`, `subtitle1/2`, `body1/2`                                                                                           | DROP    | D4 (token names mirror the design system: `display-1`, `h4`, `body-lg`, `body-sm`)                           |
+| `caption` and `overline` default to the `muted` tone                                                                                      | DROP    | contracts §2 (`tone` = heading for display/h steps, body otherwise), as `Text.jsx`                           |
+| `as?: ElementType` (any element)                                                                                                          | DROP    | contracts §2 fixes the `as` union                                                                            |
+| `align` left/right; `measure` via `max-w-(--measure-*)`                                                                                   | DROP    | contracts §2 (`start`/`center`/`end`); AUTHORING §6 (no arbitrary shorthand). The measure tokens replace it  |
+| Display steps render `<p>`                                                                                                                | ALREADY | the plan follows `Text.jsx` (`span`); `as` overrides it                                                      |
+| Native props not forwarded                                                                                                                | ALREADY | the plan extends `ComponentProps<"p">` and spreads them                                                      |
+| `isBalanced={false}` opts a heading out of balance (`text-pretty`)                                                                        | ADD     | Step 2 test; Step 4 `className` merge (an unset boolean variant reads as `false`, so it cannot be a variant) |
+| Test: `as="h1" variant="h2"` is a level-1 heading on the h2 step                                                                          | ADD     | Step 2                                                                                                       |
+| Test: no alignment or measure class unless asked                                                                                          | ADD     | Step 2                                                                                                       |
+| Tests: caller tone replaces the default, fluid swap, steps without a fluid twin, balance/pretty, measure, `lineClamp`, overline caps, axe | ALREADY | Step 2 existing cases                                                                                        |
+| Story `Tones`: `onBrand` on a pink panel                                                                                                  | ADD     | Step 6 `ToneOnBrand`                                                                                         |
+| Story `Fluid`: all seven fluid steps                                                                                                      | ADD     | Step 6 `Fluid`                                                                                               |
+| Story `Measure`: prose and narrow                                                                                                         | ADD     | Step 6 `Measure`                                                                                             |
+| Stories `Default`, `Ramp`, `Truncated`                                                                                                    | ALREADY | `Playground`; the five ramp-row stories; `LineClamp`                                                         |
+| `Ramp` metric captions (px / line height / tracking)                                                                                      | DROP    | the Type foundation pages own the metrics, read from `tokens.json` (spec §10.1)                              |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 Source: `components/atoms/Text.{jsx,d.ts,card.html,prompt.md}`. Sizes, line heights, tracking and weights all come from Plan 1's `text-*` typography composites. The only new values are the two measures.
 
 **Files:**
@@ -780,6 +816,35 @@ describe("Text", () => {
     expect(text).not.toHaveClass("max-w-prose");
   });
 
+  it("adds neither an alignment nor a line-length class when asked for neither", () => {
+    render(<Text>We roast our own masala every morning.</Text>);
+    const text = screen.getByText("We roast our own masala every morning.");
+    expect(text.className).not.toMatch(/(^|\s)text-(start|center|end)(\s|$)/);
+    expect(text.className).not.toMatch(/(^|\s)max-w-/);
+  });
+
+  it("lets the document outline differ from the visual level", () => {
+    render(
+      <Text as="h1" variant="h2">
+        Desi at heart.
+      </Text>
+    );
+    expect(screen.getByRole("heading", { level: 1, name: "Desi at heart." })).toHaveClass(
+      "text-h2"
+    );
+  });
+
+  it("lets isBalanced={false} opt a heading out of balance", () => {
+    render(
+      <Text variant="h2" isBalanced={false}>
+        Most ordered this week
+      </Text>
+    );
+    const heading = screen.getByRole("heading", { level: 2 });
+    expect(heading).toHaveClass("text-pretty");
+    expect(heading).not.toHaveClass("text-balance");
+  });
+
   it("merges a consumer className and forwards native props", () => {
     render(
       <Text className="mt-4" id="lede" data-testid="lede">
@@ -873,7 +938,7 @@ export interface TextProps extends ComponentProps<"p"> {
   lineClamp?: 1 | 2 | 3 | 4 | 5 | 6;
   /** Line-length cap: prose 64ch, narrow 44ch. */
   measure?: "prose" | "narrow";
-  /** `text-wrap: balance` for body copy (display and heading steps are always balanced). */
+  /** `text-wrap: balance` for body copy. Display and heading steps balance by default; `false` sets them `pretty`. */
   isBalanced?: boolean;
 }
 
@@ -983,7 +1048,10 @@ export function Text({
         lineClamp,
         measure,
         isBalanced,
-        className,
+        // `isBalanced={false}` opts a display or heading step out of balance. tailwind-variants
+        // reads an unset boolean as `false`, so the opt-out cannot be a variant; it merges after
+        // the step's `text-balance` and replaces it.
+        className: [isBalanced === false ? "text-pretty" : undefined, className],
       })}
       {...props}
     />
@@ -998,7 +1066,7 @@ Expected: PASS — all `Text` tests green.
 
 - [ ] **Step 6: Stories**
 
-Card rows (`Text.card.html`, one story each): `display-1`, `display-2`, `h1 h2 h3 h4`, `body-lg body body-sm`, `caption overline mono`, `tone`, `tone inverse`, `clamp={2}` (→ `lineClamp={2}`), `measure`. Extras: `isFluid` and `OnSurfaces`. The card shrinks display steps to 44/34px to fit its 700px frame; these stories show the true size.
+Card rows (`Text.card.html`, one story each): `display-1`, `display-2`, `h1 h2 h3 h4`, `body-lg body body-sm`, `caption overline mono`, `tone`, `tone inverse`, `clamp={2}` (→ `lineClamp={2}`), `measure` (prose and narrow). Extras: `isFluid` (all seven fluid steps), `tone="on-brand"` and `OnSurfaces` (dev parity). The card shrinks display steps to 44/34px to fit its 700px frame; these stories show the true size.
 
 `packages/ui/src/atoms/text/text.stories.tsx`:
 
@@ -1103,6 +1171,17 @@ export const ToneInverse: Story = {
   ),
 };
 
+export const ToneOnBrand: Story = {
+  name: 'tone="on-brand"',
+  render: () => (
+    <div data-surface="brand" className="rounded-lg bg-surface-brand p-3.5">
+      <Text variant="body-sm" tone="on-brand" as="span">
+        on-brand
+      </Text>
+    </div>
+  ),
+};
+
 export const LineClamp: Story = {
   name: "lineClamp={2}",
   args: {
@@ -1116,18 +1195,32 @@ export const LineClamp: Story = {
 };
 
 export const Measure: Story = {
-  name: 'measure="narrow"',
-  args: {
-    variant: "body-sm",
-    tone: "muted",
-    measure: "narrow",
-    children: "We roast our own masala every morning, then build the rest of the day around it.",
-  },
+  name: 'measure="prose" · "narrow"',
+  render: () => (
+    <div className="grid gap-4">
+      <Text measure="prose">
+        We roast our own masala every morning. Before the shutters go up, the kitchen smells of
+        cumin and coriander hitting a hot pan, and that is the smell the whole day is built on.
+      </Text>
+      <Text variant="body-sm" tone="muted" measure="narrow">
+        We roast our own masala every morning, then build the rest of the day around it.
+      </Text>
+    </div>
+  ),
 };
 
+/** Every step with a clamp() twin. Check it at the 360 viewport, the floor every layout survives. */
 export const Fluid: Story = {
   name: "isFluid",
-  args: { variant: "display-1", isFluid: true, children: "Desi at heart." },
+  render: () => (
+    <div className="grid gap-4">
+      {(["display-1", "display-2", "h1", "h2", "h3", "h4", "body"] as const).map((variant) => (
+        <Text key={variant} variant={variant} isFluid>
+          Desi at heart.
+        </Text>
+      ))}
+    </div>
+  ),
 };
 
 export const OnSurfacesStory: Story = {
@@ -1185,6 +1278,30 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 3: Link
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/link/link.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                                    | Ruling  | Where / reason                                                                                     |
+| ----------------------------------------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------- |
+| `href` required                                                                                             | DROP    | contracts §2 (`LinkProps extends ComponentProps<"a">`); with `asChild` the href lives on the child |
+| Sizes on `text-body2/body1/subtitle2`, `decoration-2`, `rounded-*` names                                    | DROP    | D4; `Link.jsx` sizes 13.5/15/17 (`text-link-*`) and the base `a` rule's 1.5px underline            |
+| Glyph shrinks to 14px at `sm`                                                                               | DROP    | `Link.jsx` draws `size="sm"` (16px) at every size (spec §2, rank-1 source)                         |
+| `quiet` hovers pink with an underline                                                                       | DROP    | `Link.jsx` keeps it transparent; Task 15 accepted list                                             |
+| `inverse` = `text-text-on-brand`                                                                            | ALREADY | `text-ink-000` + white-alpha underline, the same on pink and ink                                   |
+| On-brand story sets the link at 20px bold for AA-large                                                      | DROP    | spec §5.1: white on the brand fill is the declared exception                                       |
+| External arrow announced "Opens in a new tab" (`role="img"`)                                                | ADD     | Step 2 external tests; Step 4 implementation                                                       |
+| Test: an internal link has no `target`/`rel`                                                                | ADD     | Step 2                                                                                             |
+| Test: `onClick` fires when followed                                                                         | ADD     | Step 2                                                                                             |
+| Test: caller className replaces the variant colour                                                          | ADD     | Step 2                                                                                             |
+| Tests: href and name, default colour, variants, sizes, underline in every variant, glyph not announced, axe | ALREADY | Step 2 existing cases                                                                              |
+| Story `WithIcons` (`iconAfter`)                                                                             | ADD     | Step 6 `Default` gains an `iconAfter` link                                                         |
+| Story `OnBrand` also shows an ink panel and an external link                                                | ADD     | Step 6 `Inverse`                                                                                   |
+| Story `InFooterNav` (a column of quiet links)                                                               | ADD     | Step 6                                                                                             |
+| Stories `Default`, `Variants`, `Sizes`, `External`                                                          | ALREADY | `Playground`, `Default` + `SubtleQuiet`, `Sizes`, `External`                                       |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 Source: `components/atoms/Link.{jsx,d.ts,card.html,prompt.md}`. Visuals: DM Sans 500 at 13.5 / 15 / 17px, a 6px gap to the 16px glyphs, and an underline 1.5px thick at a 3px offset. The underline's rest and hover colours differ per variant. Tailwind has no 1.5px `decoration-*` utility (verified: `decoration-1.5` compiles to nothing), so the thickness and offset come from Plan 1's base `a` rule, and Link decides only colours.
 
@@ -1308,7 +1425,7 @@ Expected: PASS. The contrast groups pass, the light-restore and alias-guard test
 `packages/ui/src/atoms/link/link.test.tsx`:
 
 ```tsx
-import type { ComponentProps } from "react";
+import type { ComponentProps, MouseEvent } from "react";
 
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -1390,16 +1507,18 @@ describe("Link", () => {
     expect(link.lastElementChild).toHaveClass("size-icon-sm");
   });
 
-  it("opens an external link in a new tab with a safe rel and the outward arrow", () => {
+  it("opens an external link in a new tab with a safe rel and an announced outward arrow", () => {
     render(
       <Link href="https://www.zomato.com" isExternal>
         Zomato listing
       </Link>
     );
-    const link = screen.getByRole("link", { name: "Zomato listing" });
+    const link = screen.getByRole("link", { name: /^Zomato listing/ });
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", "noreferrer noopener");
     expect(link.querySelector(".lucide-arrow-up-right")).not.toBeNull();
+    // The jump is spoken as well as drawn.
+    expect(screen.getByRole("img", { name: "Opens in a new tab" })).toBeInTheDocument();
   });
 
   it("keeps an explicit iconAfter instead of the external arrow", () => {
@@ -1411,6 +1530,28 @@ describe("Link", () => {
     const link = screen.getByRole("link");
     expect(link.querySelector(".lucide-arrow-right")).not.toBeNull();
     expect(link.querySelector(".lucide-arrow-up-right")).toBeNull();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("keeps an internal link in the same tab", () => {
+    render(<Link href="/menu">See the full menu</Link>);
+    const link = screen.getByRole("link");
+    expect(link).not.toHaveAttribute("target");
+    expect(link).not.toHaveAttribute("rel");
+  });
+
+  it("calls onClick when followed", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn((event: MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+    });
+    render(
+      <Link href="/menu" onClick={onClick}>
+        See the full menu
+      </Link>
+    );
+    await user.click(screen.getByRole("link"));
+    expect(onClick).toHaveBeenCalledOnce();
   });
 
   it("renders a router link through asChild with the link classes and glyphs", () => {
@@ -1440,6 +1581,17 @@ describe("Link", () => {
       </Link>
     );
     expect(screen.getByRole("link")).toHaveClass("whitespace-nowrap", "inline-flex");
+  });
+
+  it("lets a consumer className replace the variant colour", () => {
+    render(
+      <Link href="/menu" className="text-text-muted">
+        See the full menu
+      </Link>
+    );
+    const link = screen.getByRole("link");
+    expect(link).toHaveClass("text-text-muted");
+    expect(link).not.toHaveClass("text-text-link");
   });
 
   it("has no accessibility violations", async () => {
@@ -1482,7 +1634,7 @@ export interface LinkProps extends ComponentProps<"a"> {
   size?: "sm" | "md" | "lg";
   icon?: IconComponent;
   iconAfter?: IconComponent;
-  /** Opens in a new tab with a safe `rel` and appends the outward arrow. */
+  /** Opens in a new tab with a safe `rel` and appends the outward arrow, announced "Opens in a new tab". */
   isExternal?: boolean;
   /** Render the single child (e.g. `next/link`) with Link styling. */
   asChild?: boolean;
@@ -1524,7 +1676,10 @@ export function Link({
   ...props
 }: LinkProps) {
   const Component: ElementType = asChild ? Slot.Root : "a";
-  const trailing = iconAfter ?? (isExternal ? ArrowUpRight : undefined);
+  // The outward arrow is the one glyph that speaks: it tells a screen reader the link opens a new
+  // tab. A caller's own `iconAfter` is decorative and replaces it. (Icon's `label` predates R13,
+  // so the named arrow is its own element rather than `label={cond ? … : undefined}`.)
+  const hasExternalArrow = isExternal && iconAfter === undefined;
   return (
     <Component
       className={link({ variant, size, className })}
@@ -1533,7 +1688,8 @@ export function Link({
     >
       {icon ? <Icon icon={icon} size="sm" /> : null}
       <Slot.Slottable child={children}>{(label) => label}</Slot.Slottable>
-      {trailing ? <Icon icon={trailing} size="sm" /> : null}
+      {iconAfter ? <Icon icon={iconAfter} size="sm" /> : null}
+      {hasExternalArrow ? <Icon icon={ArrowUpRight} size="sm" label="Opens in a new tab" /> : null}
     </Component>
   );
 }
@@ -1546,7 +1702,7 @@ Expected: PASS.
 
 - [ ] **Step 6: Stories**
 
-Card rows (`Link.card.html`): `default` (plain + `icon`), `subtle quiet`, `inverse` (on brand), `size`, `external` (→ `isExternal`). Extras: `asChild`, `OnSurfaces`.
+Card rows (`Link.card.html`): `default` (plain + `icon`, plus `iconAfter`), `subtle quiet`, `inverse` (on brand, plus an ink panel), `size`, `external` (→ `isExternal`). Extras: `asChild`, `OnSurfaces`, `InFooterNav` (dev parity).
 
 `packages/ui/src/atoms/link/link.stories.tsx`:
 
@@ -1554,7 +1710,7 @@ Card rows (`Link.card.html`): `default` (plain + `icon`), `subtle quiet`, `inver
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ComponentProps } from "react";
 
-import { MapPin } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Link } from "./link";
@@ -1595,6 +1751,9 @@ export const Default: Story = {
       <Link href="/outlets" icon={MapPin}>
         Find a Paprikaa
       </Link>
+      <Link href="/about" iconAfter={ArrowRight}>
+        Our story
+      </Link>
     </div>
   ),
 };
@@ -1616,10 +1775,29 @@ export const SubtleQuiet: Story = {
 export const Inverse: Story = {
   name: 'variant="inverse"',
   render: () => (
-    <div data-surface="brand" className="rounded-lg bg-surface-brand p-3.5">
-      <Link href="/legal" variant="inverse">
-        FSSAI licence
-      </Link>
+    <div className="grid gap-3">
+      <div
+        data-surface="brand"
+        className="flex flex-wrap items-center gap-4 rounded-lg bg-surface-brand p-3.5"
+      >
+        <Link href="/legal" variant="inverse">
+          FSSAI licence
+        </Link>
+        <Link href="https://www.zomato.com" isExternal variant="inverse">
+          Zomato listing
+        </Link>
+      </div>
+      <div
+        data-surface="ink"
+        className="flex flex-wrap items-center gap-4 rounded-lg bg-surface-inverse p-3.5"
+      >
+        <Link href="/legal" variant="inverse">
+          FSSAI licence
+        </Link>
+        <Link href="https://www.zomato.com" isExternal variant="inverse">
+          Zomato listing
+        </Link>
+      </div>
     </div>
   ),
 };
@@ -1652,6 +1830,27 @@ export const AsChild: Story = {
     <Link asChild icon={MapPin}>
       <DemoRouterLink href="/outlets">Outlets</DemoRouterLink>
     </Link>
+  ),
+};
+
+/** In context: a footer column, where `quiet` keeps the nav calm until it is pointed at. */
+export const InFooterNav: Story = {
+  name: "in context: footer nav",
+  render: () => (
+    <nav aria-label="Footer" className="flex flex-col items-start gap-3">
+      <Link href="/menu" variant="quiet">
+        Menu
+      </Link>
+      <Link href="/outlets" variant="quiet">
+        Outlets
+      </Link>
+      <Link href="/catering" variant="quiet">
+        Party Orders
+      </Link>
+      <Link href="/contact" variant="quiet">
+        Contact
+      </Link>
+    </nav>
   ),
 };
 
@@ -1703,6 +1902,25 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 4: PatternField
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/pattern-field/pattern-field.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                            | Ruling  | Where / reason                                                                      |
+| ----------------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------- |
+| `tile` as a free number; an SVG `<pattern>` per instance with `useId` ids           | DROP    | spec §8.2 (numeric px → token enum); R19 (one shared CSS mask, no per-instance SVG) |
+| `"use client"`                                                                      | DROP    | D6 — the mask needs no hook, so the field stays server-safe                         |
+| `light` on `bg-surface-card`; `rounded-4/5`                                         | DROP    | `PatternField.jsx` (the page ground); D4 radius names                               |
+| Texture colour from tokens, ≤12% per tone, `aria-hidden`, content above the texture | ALREADY | Step 2 tone, density, decorative and stacking tests                                 |
+| Radii `none`/`md`/`lg`                                                              | ALREADY | Step 2 radius test (plus `xl`)                                                      |
+| `isolate` on the root, so the texture's stacking context stays inside the panel     | ADD     | Step 4 `root` slot; Step 2 first test                                               |
+| Test: every instance has its own paint server                                       | ALREADY | nothing to collide: the tile is one CSS custom property (R19)                       |
+| Test: caller className replaces the radius                                          | ADD     | Step 2                                                                              |
+| Stories `Default`, `Tones`, `TileSizes`                                             | ALREADY | `Playground`/`Brand`, the four tone stories, `Tiles`                                |
+| Story `FullBleedBand` (edge to edge, no radius)                                     | ADD     | Step 6                                                                              |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 Source: `components/atoms/PatternField.{jsx,d.ts,card.html,prompt.md}`, readme §3.4, spec §7.2 and C7. The field is a flooded colour with the diamond symbol tiled over it. The zip loads `symbol-white.svg` or `symbol-pink.svg`; here one tile does both jobs. Plan 1's white-symbol data URI is used as a CSS **mask** over a tone-coloured layer, so the same tile paints white on brand/ink and pink on soft/light with no second asset and no literal colour. Opacity: 8% on dark fields, 9% on light ones, 4% for `density="faint"` (the handoff's ink sections).
 
@@ -1782,7 +2000,7 @@ describe("PatternField", () => {
     );
     const field = container.firstElementChild;
     expect(field).toHaveAttribute("data-surface", "brand");
-    expect(field).toHaveClass("relative", "overflow-hidden", "bg-surface-brand");
+    expect(field).toHaveClass("relative", "isolate", "overflow-hidden", "bg-surface-brand");
   });
 
   it.each([
@@ -1885,6 +2103,16 @@ describe("PatternField", () => {
     expect(container.firstElementChild).toHaveAttribute("id", "offer");
   });
 
+  it("lets a consumer className replace its radius", () => {
+    const { container } = render(
+      <PatternField radius="md" className="rounded-xl">
+        Field
+      </PatternField>
+    );
+    expect(container.firstElementChild).toHaveClass("rounded-xl");
+    expect(container.firstElementChild).not.toHaveClass("rounded-md");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <PatternField tone="brand">
@@ -1930,7 +2158,9 @@ const PATTERN_MASK = { maskImage: "var(--pp-symbol-mask)" } as const;
 
 const patternField = componentVariants({
   slots: {
-    root: "relative overflow-hidden",
+    // `isolate`: the texture's stacking context stays inside the panel, so an overlapping card
+    // cannot slide underneath it.
+    root: "relative isolate overflow-hidden",
     pattern: "pointer-events-none absolute inset-0",
     content: "relative h-full",
   },
@@ -1996,7 +2226,7 @@ Expected: PASS.
 
 - [ ] **Step 6: Stories**
 
-Card rows (`PatternField.card.html`, all at tile 64 with radius lg): `brand`, `ink`, `soft`. Extras: `light`, `density="faint"`, `tile`, `asChild`.
+Card rows (`PatternField.card.html`, all at tile 64 with radius lg): `brand`, `ink`, `soft`. Extras: `light`, `density="faint"`, `tile`, `asChild`, `FullBleedBand` (dev parity).
 
 `packages/ui/src/atoms/pattern-field/pattern-field.stories.tsx`:
 
@@ -2079,6 +2309,19 @@ export const AsChild: Story = {
     </PatternField>
   ),
 };
+
+/** A full-bleed section band: no radius, edge to edge. */
+export const FullBleedBand: Story = {
+  name: 'full-bleed band (radius="none")',
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <PatternField tone="ink" radius="none">
+      <div className="container-page section-y">
+        <h2 className="m-0 text-balance">Momos, chaat and North Indian plates from ₹180–₹320</h2>
+      </div>
+    </PatternField>
+  ),
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -2114,6 +2357,28 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 5: SocialHeadline
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/social-headline/social-headline.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                                           | Ruling  | Where / reason                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `on` prop (brand/ink/soft/light)                                                                                   | DROP    | D5 — colour follows the artboard's `data-surface`                                                                                                    |
+| Body and caption at 88% white on dark grounds                                                                      | DROP    | spec §3.2.2 (`--text-body` is white on brand/ink); `/88` is not a token                                                                              |
+| Soft ground ink `pink-800`                                                                                         | ALREADY | the soft surface's `text-heading`                                                                                                                    |
+| Default element `p` for every size                                                                                 | DROP    | contracts §0.0 (the plan's code wins shape); plan deviation 4 defaults hero/h1/h2 to `h2`                                                            |
+| Measures `narrow` 14ch / `wide` 34ch / `none`; a size-dependent default (34ch for body/caption, none for overline) | DROP    | contracts §2 (`tight`/`default`/`wide`, deviation 4) and `SocialHeadline.d.ts` (one default, 18ch). `className="max-w-none"` still frees an overline |
+| `align="end"` pushes the block (`ms-auto`)                                                                         | DROP    | `SocialHeadline.jsx` moves the block only for `center`                                                                                               |
+| Arbitrary `leading-[…]`, `tracking-[…]`, `max-w-[…]`                                                               | DROP    | AUTHORING §6; the canvas composites and measure tokens replace them                                                                                  |
+| Tests: every size, overline caps and tracking, balance, measures, centring, `as`, axe                              | ALREADY | Step 2 (the tracking lives in `text-canvas-overline`)                                                                                                |
+| Test: caller className replaces the size step                                                                      | ADD     | Step 2                                                                                                                                               |
+| Stories `Ramp`, `Grounds`                                                                                          | ALREADY | the four size-row stories; `OnSurfaces`                                                                                                              |
+| Story `Alignment`                                                                                                  | ADD     | Step 6                                                                                                                                               |
+| Story `OnACanvas` (a whole post)                                                                                   | ADD     | Step 6, at true pixels on a brand field                                                                                                              |
+| Half-scale `Artboard` wrapper                                                                                      | DROP    | Task 15 accepted difference: true canvas pixels here; PostFrame (Plan 2c) scales artboards                                                           |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 Source: `components/atoms/SocialHeadline.{jsx,d.ts,card.html,prompt.md}`, readme §4b. Canvas type: hero 132 / 0.96 / −0.035em, h1 96 / 1.0 / −0.03em, h2 72 / 1.05 / −0.025em (all Poppins 800), body 34 / 1.45 and caption 26 / 1.4 (DM Sans 500), overline 24 / 1.2 / +0.14em (Poppins 700, capitals). Always `text-wrap: balance`, capped by a measure. The `on` prop is removed (D5): colour follows the artboard's surface.
 
@@ -2278,6 +2543,13 @@ describe("SocialHeadline", () => {
     expect(screen.getByRole("heading")).toHaveClass("mt-8", "m-0");
   });
 
+  it("lets a consumer className replace the size step", () => {
+    render(<SocialHeadline className="text-canvas-h2">Masala Cold Brew</SocialHeadline>);
+    const headline = screen.getByRole("heading");
+    expect(headline).toHaveClass("text-canvas-h2");
+    expect(headline).not.toHaveClass("text-canvas-h1");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
@@ -2367,7 +2639,7 @@ Expected: PASS.
 
 - [ ] **Step 6: Stories**
 
-Card rows (`SocialHeadline.card.html`, shown there at 40% scale): `overline`, `hero`, `h1 / h2`, `body / caption`. These stories show true canvas pixels (PostFrame in Plan 2c does the scaling), so view them in the `xl — 1280` viewport. Extra: `OnSurfaces`.
+Card rows (`SocialHeadline.card.html`, shown there at 40% scale): `overline`, `hero`, `h1 / h2`, `body / caption`. These stories show true canvas pixels (PostFrame in Plan 2c does the scaling), so view them in the `xl — 1280` viewport. Extras: `OnSurfaces`, `Alignment` and `OnACanvas` (dev parity).
 
 `packages/ui/src/atoms/social-headline/social-headline.stories.tsx`:
 
@@ -2433,6 +2705,40 @@ export const BodyCaption: Story = {
   ),
 };
 
+export const Alignment: Story = {
+  name: "align",
+  render: () => (
+    <div className="grid gap-4">
+      <SocialHeadline size="h2" align="start">
+        Start
+      </SocialHeadline>
+      <SocialHeadline size="h2" align="center">
+        Center
+      </SocialHeadline>
+      <SocialHeadline size="h2" align="end">
+        End
+      </SocialHeadline>
+    </div>
+  ),
+};
+
+/** A whole post as the ramp is really used, at true canvas pixels (72px canvas padding). */
+export const OnACanvas: Story = {
+  name: "on a canvas (a whole post)",
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <div data-surface="brand" className="grid gap-8 bg-surface-brand p-18">
+      <SocialHeadline size="overline">Tonight Only</SocialHeadline>
+      <SocialHeadline size="hero" measure="tight">
+        Chai first, decisions later.
+      </SocialHeadline>
+      <SocialHeadline size="body" measure="wide">
+        Kadak chai and hot momos · ₹180–₹320
+      </SocialHeadline>
+    </div>
+  ),
+};
+
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
@@ -2477,6 +2783,22 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 6: Button
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/button/button.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                                                                                             | Ruling  | Where / reason                                                                                                                                 |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `on="brand"` compound skins                                                                                                                                          | DROP    | D5 — surface tokens flip primary, secondary and ghost (Step 1)                                                                                 |
+| Loader is the pulsing brand diamond (`Spinner`)                                                                                                                      | DROP    | D14 (an atom imports only `atoms/icon`); spec §9.1 (loader glyph)                                                                              |
+| `rounded-6`, `shadow-elevation2`, `h-(--button-h-*)`, `text-body1`                                                                                                   | DROP    | D4; AUTHORING §6                                                                                                                               |
+| `not-disabled:` guards on hover and press                                                                                                                            | ALREADY | `controlStates`' `disabled:`/`aria-disabled:` classes sort after `hover:`/`active:`, and `aria-disabled:pointer-events-none` stops a busy link |
+| Tests: `type="button"`, `onClick`, variants, sizes, the on-brand flip, two glyphs, loading keeps the label and disables, grey disabled fill, className override, axe | ALREADY | Step 2; the flip is proved in the `NestedSurfaces` play                                                                                        |
+| Test: a disabled button does not call `onClick`                                                                                                                      | ADD     | Step 2                                                                                                                                         |
+| Stories `Default`, `Variants`, `Sizes`, `WithIcons`, `OnBrand` (with ghost), `States`, `FullWidth`                                                                   | ALREADY | `Playground`, the card-row stories, `OnSurfaces` (ghost on brand), `Loading` + `Disabled`, `FullWidth`                                         |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 Source: `components/atoms/Button.{jsx,d.ts,card.html,prompt.md}`, readme §3.8, spec C9 and D8.
 
@@ -2869,6 +3191,18 @@ describe("Button", () => {
       "disabled:cursor-not-allowed"
     );
     expect(button.className).not.toMatch(/opacity/);
+  });
+
+  it("does not fire while disabled", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    render(
+      <Button disabled onClick={onClick}>
+        Sold Out
+      </Button>
+    );
+    await user.click(screen.getByRole("button", { name: "Sold Out" }));
+    expect(onClick).not.toHaveBeenCalled();
   });
 
   it("presses with the brand scale and the control transition", () => {
@@ -3376,6 +3710,25 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 7: IconButton
 
+**Dev reference:** `git show dev:packages/ui/src/atoms/icon-button/icon-button.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                                                          | Ruling  | Where / reason                                                                                               |
+| --------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| `on="brand"` compound skins                                                                                                       | DROP    | D5 — primary and ghost follow the surface (Step 1 tokens)                                                    |
+| Two-element hit target (a 44px `min-h`/`min-w` button around the drawn circle)                                                    | ALREADY | a transparent `::before` pads sm/md to 44px; lg is 48px                                                      |
+| Secondary on semantic `text-text-link` / `border-border-default`                                                                  | ALREADY | a filled skin uses fixed primitives (atom-tier rule "Skins on surfaces")                                     |
+| Glass carries `shadow-elevation2` and hovers to card white                                                                        | DROP    | `IconButton.jsx` gives glass no hover; the card passes the shadow (`className="shadow-2"`, `Variants` story) |
+| `size-8/10/12`, `rounded-6`, `(--layout-hit-min)`                                                                                 | DROP    | D4; `icon-button-*` tokens                                                                                   |
+| Tests: name from `label`, 44px target, `onClick`, disabled blocks, variants, sizes, grey disabled fill, one decorative glyph, axe | ALREADY | Step 2                                                                                                       |
+| Test: caller className replaces the radius                                                                                        | ADD     | Step 2                                                                                                       |
+| Stories `Default`, `Variants`, `Sizes`, `OnBrand`                                                                                 | ALREADY | `Playground`, `Variants`, `Sizes`, `OnBrand` + `OnSurfaces`                                                  |
+| Story `OverPhotography` (glass on a dark ground)                                                                                  | ADD     | Step 6                                                                                                       |
+| Story `States` (a disabled secondary too)                                                                                         | ADD     | Step 6 `Disabled` renders primary and secondary                                                              |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 Source: `components/atoms/IconButton.{jsx,d.ts,card.html,prompt.md}`; the count bubble is from `organisms/SiteHeader.jsx`.
 
 **Visuals:**
@@ -3639,6 +3992,13 @@ describe("IconButton", () => {
     expect(link.querySelector(".lucide-shopping-bag")).not.toBeNull();
   });
 
+  it("lets a consumer className replace its radius", () => {
+    render(<IconButton icon={Heart} label="Save" className="rounded-md" />);
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass("rounded-md");
+    expect(button).not.toHaveClass("rounded-pill");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
@@ -3761,6 +4121,7 @@ Expected: PASS.
 Card rows (`IconButton.card.html`): `variant` (ghost, primary, secondary, glass with `shadow-2`), `size`, `on="brand"` (→ a brand surface), `disabled`. Extras:
 
 - `count`, from SiteHeader.
+- `OverPhotography`: glass on a dark ground (dev parity); `disabled` shows primary and secondary.
 - `IconOnly`: the Button card's "icon-only" row.
 - `OnSurfaces`.
 - `asChild`.
@@ -3842,7 +4203,24 @@ export const OnBrand: Story = {
 
 export const Disabled: Story = {
   name: "disabled",
-  args: { icon: Plus, label: "Add", variant: "primary", disabled: true },
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <IconButton icon={Plus} label="Add" variant="primary" disabled />
+      <IconButton icon={Search} label="Search" variant="secondary" disabled />
+    </div>
+  ),
+};
+
+/** `glass` is the treatment for buttons floating over food photography (a dark stand-in here). */
+export const OverPhotography: Story = {
+  name: 'variant="glass" over a dark photo',
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3 rounded-lg bg-surface-inverse p-6">
+      <IconButton icon={ArrowLeft} label="Back" variant="glass" />
+      <IconButton icon={Heart} label="Save" variant="glass" />
+      <IconButton icon={Share2} label="Share" variant="glass" />
+    </div>
+  ),
 };
 
 export const Count: Story = {
@@ -3921,6 +4299,26 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 8: Tag
 
+**Dev reference:** `git show dev:packages/ui/src/atoms/tag/tag.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                       | Ruling  | Where / reason                                                                                                                  |
+| ---------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Always a `<button aria-pressed>`                                                               | DROP    | spec §9.1 (`<button>` with `onClick`, `<span>` without)                                                                         |
+| `h-9.5`, `rounded-6`, `text-body2`, `bg-brand-primary`                                         | DROP    | D4; `tag-h` / `text-tag` tokens                                                                                                 |
+| Unselected hover also tints the border (`border-brand-soft`)                                   | DROP    | `Tag.jsx` keeps the border; readme §3.8 tints the fill only                                                                     |
+| A selected, pressable tag darkens on hover                                                     | ADD     | readme §3.8 ("darken pink one step"); Step 1 `color-tag-selected-hover` (ink-800 on a pink field); Step 4 compound; Step 2 test |
+| Press scale (`active:scale`)                                                                   | ADD     | readme §3.8 and `controlStates`' own contract ("interactive Tag"); Step 4 `isInteractive`; Step 2 test                          |
+| Tests: pressed state, selected fill, 38px, `onClick`, disabled blocks, grey disabled fill, axe | ALREADY | Step 2                                                                                                                          |
+| Test: the glyph is not announced twice                                                         | ADD     | Step 2                                                                                                                          |
+| Test: caller className replaces the radius                                                     | ADD     | Step 2                                                                                                                          |
+| Stories `Default`, `Selection`, `WithIcons`                                                    | ALREADY | `Playground`, `Selectable`, `WithIcon`                                                                                          |
+| Story `Disabled` includes a disabled selected tag                                              | ADD     | Step 6                                                                                                                          |
+| Story `CategoryFilterRail` (six categories, wrapping at 360px)                                 | ADD     | Step 6                                                                                                                          |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 Source: `components/atoms/Tag.{jsx,d.ts,card.html,prompt.md}`; static tones from the handoff's delivery-zone chips (`design/Contact.dc.html`).
 
 **Visuals:**
@@ -3934,7 +4332,8 @@ Source: `components/atoms/Tag.{jsx,d.ts,card.html,prompt.md}`; static tones from
 
 - With `onClick` it is `<button type="button" aria-pressed>`; without, a `<span>` (spec §9.1). The zip was always a button.
 - Disabled is the grey fill (readme §3.8), not the zip's 50% opacity.
-- On a pink field a selected tag would vanish (pink on pink), so the selected fill turns ink there. That is the one surface skin, `color-tag-selected`.
+- On a pink field a selected tag would vanish (pink on pink), so the selected fill turns ink there. That is the one surface skin, `color-tag-selected`, with its hover twin `color-tag-selected-hover` (brand-hover pink-600; ink-800 on a pink field).
+- A pressable tag presses with the 0.97 scale, and a pressable selected tag darkens one step on hover (readme §3.8; dev parity).
 
 **Files:**
 
@@ -3946,7 +4345,7 @@ Source: `components/atoms/Tag.{jsx,d.ts,card.html,prompt.md}`; static tones from
 **Interfaces:**
 
 - Consumes: `Icon`, `IconComponent`, `controlStates`; `OnSurfaces`.
-- Produces: `Tag`, `interface TagProps extends ComponentProps<"button">` (contracts §2), `tagVariants` (slots `root`, `label`; variants `tone`, `isSelected`, `isInteractive`). ChipGroup and FilterBar (Plan 3b) call it for Radix ToggleGroup items: `tagVariants({ isSelected, isInteractive: true }).root()`. Tokens `spacing-tag-h`, `text-tag`, `color-tag-selected`.
+- Produces: `Tag`, `interface TagProps extends ComponentProps<"button">` (contracts §2), `tagVariants` (slots `root`, `label`; variants `tone`, `isSelected`, `isInteractive`). ChipGroup and FilterBar (Plan 3b) call it for Radix ToggleGroup items: `tagVariants({ isSelected, isInteractive: true }).root()`. Tokens `spacing-tag-h`, `text-tag`, `color-tag-selected`, `color-tag-selected-hover`.
 
 - [ ] **Step 1: Component tokens, surface skin, contrast pairs**
 
@@ -3970,14 +4369,20 @@ Source: `components/atoms/Tag.{jsx,d.ts,card.html,prompt.md}`; static tones from
       "selected": {
         "$value": "{color.pink.500}",
         "$description": "Selected fill and border; ink on a pink field, where pink would vanish."
+      },
+      "selected-hover": {
+        "$value": "{color.brand.hover}",
+        "$description": "Hover fill and border of a pressable selected tag (readme §3.8); ink-800 on a pink field."
       }
     }
   }
 }
 ```
 
-`tokens/surface/brand.json`: inside `surface-brand.color`, add `"tag": { "selected": { "$value": "{color.ink.900}" } }`.
-`tokens/surface/light.json`: inside `surface-light.color`, add `"tag": { "selected": { "$value": "{color.pink.500}" } }`.
+(`color.brand.hover` is not overridden by any surface, so the alias guard holds.)
+
+`tokens/surface/brand.json`: inside `surface-brand.color`, add `"tag": { "selected": { "$value": "{color.ink.900}" }, "selected-hover": { "$value": "{color.ink.800}" } }`.
+`tokens/surface/light.json`: inside `surface-light.color`, add `"tag": { "selected": { "$value": "{color.pink.500}" }, "selected-hover": { "$value": "{color.brand.hover}" } }`.
 
 `packages/design-tokens/contrast-pairs.json`: append to `groups`:
 
@@ -3990,7 +4395,8 @@ Source: `components/atoms/Tag.{jsx,d.ts,card.html,prompt.md}`; static tones from
     ["color-ink-700", "color-pink-50"],
     ["color-pink-700", "color-ink-000"],
     ["color-pink-700", "color-pink-50"],
-    ["color-text-success", "color-status-success-soft"]
+    ["color-text-success", "color-status-success-soft"],
+    ["color-ink-000", "color-tag-selected-hover"]
   ],
   "min": 4.5
 },
@@ -4004,12 +4410,15 @@ Source: `components/atoms/Tag.{jsx,d.ts,card.html,prompt.md}`; static tones from
 {
   "id": "tag-selected-on-brand",
   "surface": "brand",
-  "pairs": [["color-ink-000", "color-tag-selected"]],
+  "pairs": [
+    ["color-ink-000", "color-tag-selected"],
+    ["color-ink-000", "color-tag-selected-hover"]
+  ],
   "min": 4.5
 }
 ```
 
-(Measured: ink-700 on white 11.19, on pink-50 10.48; pink-700 on white 7.19, on pink-50 6.73; mint-strong on mint-soft 5.57; white on ink-900 18.39.)
+(Measured: ink-700 on white 11.19, on pink-50 10.48; pink-700 on white 7.19, on pink-50 6.73; mint-strong on mint-soft 5.57; white on ink-900 18.39; white on pink-600 5.18; white on ink-800 16.1.)
 
 In `component-variants.ts`, append to `SPACING`: `"tag-h",`; to `TEXT`: `"tag",`.
 
@@ -4022,7 +4431,7 @@ Run: `pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache && pnpm nx 
 ```tsx
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Clock, Flame } from "lucide-react";
+import { Clock, Flame, Leaf } from "lucide-react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { Tag } from "./tag";
@@ -4096,6 +4505,43 @@ describe("Tag", () => {
     expect(screen.getByRole("button", { name: "Hot" })).not.toHaveClass("hover:bg-pink-50");
     expect(screen.getByText("Static").parentElement).not.toHaveClass("hover:bg-pink-50");
     expect(screen.getByText("Static").parentElement).not.toHaveClass("cursor-pointer");
+  });
+
+  it("presses with the brand scale and darkens a selected tag on hover, only when pressable (readme §3.8)", () => {
+    render(
+      <>
+        <Tag onClick={noop} isSelected>
+          Hot
+        </Tag>
+        <Tag isSelected>Static</Tag>
+      </>
+    );
+    expect(screen.getByRole("button", { name: "Hot" })).toHaveClass(
+      "active:press-scale",
+      "hover:bg-tag-selected-hover",
+      "hover:border-tag-selected-hover"
+    );
+    const chip = screen.getByText("Static").parentElement;
+    expect(chip).not.toHaveClass("active:press-scale");
+    expect(chip).not.toHaveClass("hover:bg-tag-selected-hover");
+  });
+
+  it("keeps its glyph decorative, so the label alone names it", () => {
+    render(
+      <Tag icon={Leaf} onClick={noop}>
+        Jain
+      </Tag>
+    );
+    const glyphs = screen.getByRole("button", { name: "Jain" }).querySelectorAll("svg");
+    expect(glyphs).toHaveLength(1);
+    expect(glyphs[0]).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("lets a consumer className replace its radius", () => {
+    render(<Tag className="rounded-md">Sweets</Tag>);
+    const chip = screen.getByText("Sweets").parentElement;
+    expect(chip).toHaveClass("rounded-md");
+    expect(chip).not.toHaveClass("rounded-pill");
   });
 
   it.each([
@@ -4215,10 +4661,16 @@ export const tagVariants = componentVariants({
     },
     // Declared after `tone`, so a selected tag's fill, border and text replace the tone's.
     isSelected: { true: { root: "border-tag-selected bg-tag-selected text-ink-000" } },
-    isInteractive: { true: { root: "cursor-pointer" } },
+    isInteractive: { true: { root: "cursor-pointer active:press-scale" } },
   },
   compoundVariants: [
     { isInteractive: true, isSelected: false, class: { root: "hover:bg-pink-50" } },
+    // Readme §3.8: a pink fill darkens one step on hover (ink-800 on a pink field).
+    {
+      isInteractive: true,
+      isSelected: true,
+      class: { root: "hover:border-tag-selected-hover hover:bg-tag-selected-hover" },
+    },
   ],
   defaultVariants: { tone: "default", isSelected: false, isInteractive: false },
 });
@@ -4257,7 +4709,7 @@ Expected: PASS.
 
 - [ ] **Step 6: Stories**
 
-Card rows (`Tag.card.html`): `selectable` (one at a time, stateful, with a `play` that presses a tag), `icon`, `disabled`. Extras: `tone` (zone chips), `OnSurfaces`, `LongLabel` (Review Focus 1, `play` measures layout).
+Card rows (`Tag.card.html`): `selectable` (one at a time, stateful, with a `play` that presses a tag), `icon`, `disabled` (plus a disabled selected tag). Extras: `tone` (zone chips), `OnSurfaces`, `LongLabel` (Review Focus 1, `play` measures layout), `CategoryFilterRail` (dev parity).
 
 `packages/ui/src/atoms/tag/tag.stories.tsx`:
 
@@ -4273,11 +4725,15 @@ import { Tag } from "./tag";
 
 const noop = () => undefined;
 
-function SelectableRow() {
+function SelectableRow({
+  labels = ["All", "Small Plates", "Sweets"],
+}: {
+  labels?: readonly string[] | undefined;
+}) {
   const [value, setValue] = useState("All");
   return (
     <div className="flex flex-wrap items-center gap-3">
-      {["All", "Small Plates", "Sweets"].map((label) => (
+      {labels.map((label) => (
         <Tag
           key={label}
           isSelected={value === label}
@@ -4347,7 +4803,22 @@ export const Disabled: Story = {
       <Tag disabled onClick={noop}>
         Breakfast
       </Tag>
+      <Tag disabled isSelected icon={Leaf} onClick={noop}>
+        Jain
+      </Tag>
       <Tag>Static, no onClick</Tag>
+    </div>
+  ),
+};
+
+/** In context: the menu category rail, one selection at a time. It wraps rather than clips at 360px. */
+export const CategoryFilterRail: Story = {
+  name: "in context: category rail at 360px",
+  render: () => (
+    <div className="w-90">
+      <SelectableRow
+        labels={["All", "Small Plates", "North Indian", "Momos", "Chinese", "Sweets"]}
+      />
     </div>
   ),
 };
@@ -4428,6 +4899,26 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 9: Card
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/card/card.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                    | Ruling  | Where / reason                                                   |
+| ------------------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------- |
+| Flooded skins set `text-text-on-brand` / `on-inverse` on the root                           | ALREADY | the card sets `data-surface` (D5), so all of its content follows |
+| `rounded-4/5`, `shadow-elevation*`, `translate-y-(--motion-lift-y)`                         | DROP    | D4; AUTHORING §6 (`hover:lift`)                                  |
+| A transition on every card                                                                  | ALREADY | only an interactive card changes, so only it animates            |
+| Tests: default skin, five skins, per-skin radius, paddings, lift only when interactive, axe | ALREADY | Step 2                                                           |
+| Test: an interactive card never fades (no opacity)                                          | ADD     | Step 2                                                           |
+| Test: a nested link owns the interaction inside an interactive card                         | ADD     | Step 2                                                           |
+| Test: caller className replaces the radius                                                  | ADD     | Step 2                                                           |
+| Brand-card support line stepped up to 20px bold (AA-large)                                  | DROP    | spec §5.1: white on the brand fill is the declared exception     |
+| Stories `Default`, `Skins`, `MediaCard`                                                     | ALREADY | `Default`, `FeatureQuiet` + `BrandInk`, `PaddingNone`            |
+| Story `Padding` (sm/md/lg)                                                                  | ADD     | Step 6 `Paddings`                                                |
+| Story `Interactive` with a nested link                                                      | ADD     | Step 6 `InteractiveWithLink`                                     |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 Source: `components/atoms/Card.{jsx,d.ts,card.html,prompt.md}`, readme §3.5.
 
@@ -4537,6 +5028,26 @@ describe("Card", () => {
     expect(screen.getByText("Static")).not.toHaveClass("hover:lift");
   });
 
+  it("never fades: an interactive card keeps a real surface", () => {
+    render(
+      <Card isInteractive variant="feature">
+        Feature
+      </Card>
+    );
+    expect(screen.getByText("Feature").className).not.toMatch(/opacity/);
+  });
+
+  it("stays a plain container, so a nested link owns the interaction", () => {
+    render(
+      <Card isInteractive>
+        <a href="/menu">See Full Menu</a>
+      </Card>
+    );
+    const link = screen.getByRole("link", { name: "See Full Menu" });
+    expect(link).toHaveAttribute("href", "/menu");
+    expect(link.parentElement?.tagName).toBe("DIV");
+  });
+
   it("stays a light island inside a flooded field (Review Focus 5)", () => {
     render(
       <div data-surface="brand">
@@ -4567,6 +5078,13 @@ describe("Card", () => {
     );
     const card = screen.getByRole("group", { name: "Outlet" });
     expect(card).toHaveClass("w-50", "p-5");
+  });
+
+  it("lets a consumer className replace its radius", () => {
+    render(<Card className="rounded-md">Card</Card>);
+    const card = screen.getByText("Card");
+    expect(card).toHaveClass("rounded-md");
+    expect(card).not.toHaveClass("rounded-lg");
   });
 
   it("has no accessibility violations", async () => {
@@ -4672,6 +5190,7 @@ Card rows (`Card.card.html`, cards 200px wide): `default` (+ interactive), `feat
 
 - `asChild`.
 - `LightIsland`: Review Focus 5, `play` reads computed colours.
+- `Paddings` (sm/md/lg) and `InteractiveWithLink` (dev parity).
 
 Inner content is plain `<h4>`/`<p>`, which follow the card's own surface. That is the D5 point: the zip passed `tone="inverse"` by hand.
 
@@ -4771,6 +5290,19 @@ export const PaddingNone: Story = {
   ),
 };
 
+export const Paddings: Story = {
+  name: 'padding="sm" · "md" · "lg"',
+  render: () => (
+    <div className="flex flex-wrap items-start gap-3">
+      {(["sm", "md", "lg"] as const).map((padding) => (
+        <Card key={padding} padding={padding} className="w-50">
+          <Inner title={`padding ${padding}`} detail="16 / 20 / 28px" />
+        </Card>
+      ))}
+    </div>
+  ),
+};
+
 export const AsChild: Story = {
   name: "asChild (a link)",
   render: () => (
@@ -4778,6 +5310,21 @@ export const AsChild: Story = {
       <a href="/outlets/sector-57">
         <Inner title="Sector 57" detail="Booth No. 67P, MKM Market" />
       </a>
+    </Card>
+  ),
+};
+
+/** The other interactive pattern: the lift is styling only, and the real link inside owns the click. */
+export const InteractiveWithLink: Story = {
+  name: "isInteractive with a nested link",
+  render: () => (
+    <Card isInteractive className="w-60">
+      <h4 className="m-0">
+        <a href="/menu">See Full Menu</a>
+      </h4>
+      <p className="mt-1.5 mb-0 font-body text-caption text-text-subtle">
+        Momos, chaat and North Indian plates · ₹180–₹320
+      </p>
     </Card>
   ),
 };
@@ -4839,6 +5386,25 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 10: Divider
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/divider/divider.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                           | Ruling  | Where / reason                                                                                       |
+| ---------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------- |
+| A labelled divider is a plain row of decorative rules, so the label stays readable | ALREADY | the label names the separator (`aria-label`), plan deviation 4                                       |
+| `on="brand"` (white 30% rule, white label and mark)                                | DROP    | D5 — `border-subtle`, `text-subtle` and `color-divider-mark` follow the surface; Task 15 accepts 22% |
+| Radix `Separator` + `"use client"`                                                 | DROP    | D6/D7 — a native `role="separator"` needs no JS                                                      |
+| `min-w-0` rules, so a long label cannot push them out                              | ALREADY | the rules are empty `flex-1` spans (zero min-content width)                                          |
+| `diamond` ignores `label`                                                          | ALREADY | the label names the diamond break without printing it                                                |
+| Tests: hairline + separator role, overline caps, two rules, decorative mark, axe   | ALREADY | Step 2                                                                                               |
+| Test: caller className replaces the rule colour                                    | ADD     | Step 2                                                                                               |
+| Stories `Default`, `Variants`                                                      | ALREADY | `Line`, `Label`, `Diamond`                                                                           |
+| Story `OnBrand` includes the plain line                                            | ADD     | Step 6                                                                                               |
+| Story `BetweenMenuRows`                                                            | ADD     | Step 6                                                                                               |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 Source: `components/atoms/Divider.{jsx,d.ts,card.html,prompt.md}`.
 
@@ -4957,6 +5523,13 @@ describe("Divider", () => {
     expect(rule).toHaveAttribute("id", "rule");
   });
 
+  it("lets a consumer className replace the rule colour", () => {
+    render(<Divider className="bg-border-strong" />);
+    const rule = screen.getByRole("separator");
+    expect(rule).toHaveClass("bg-border-strong");
+    expect(rule).not.toHaveClass("bg-border-subtle");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
@@ -5066,7 +5639,7 @@ Expected: PASS.
 
 - [ ] **Step 6: Stories**
 
-Card rows (`Divider.card.html`, full-width rows): `line`, `label`, `diamond`, `on="brand"` (→ a brand surface: `label="Company"` + `diamond`). Extras: `orientation="vertical"`, `OnSurfaces`.
+Card rows (`Divider.card.html`, full-width rows): `line`, `label`, `diamond`, `on="brand"` (→ a brand surface: the plain line, `label="Company"` + `diamond`). Extras: `orientation="vertical"`, `OnSurfaces`, `BetweenMenuRows` (dev parity).
 
 `packages/ui/src/atoms/divider/divider.stories.tsx`:
 
@@ -5106,8 +5679,32 @@ export const OnBrand: Story = {
   name: "on a brand surface",
   render: () => (
     <div data-surface="brand" className="grid gap-2.5 rounded-lg bg-surface-brand p-3.5">
+      <Divider />
       <Divider label="Company" />
       <Divider variant="diamond" />
+    </div>
+  ),
+};
+
+/** How it reads: menu rows separated by a rule, not by cards, closed by the diamond. */
+export const BetweenMenuRows: Story = {
+  name: "in context: between menu rows",
+  render: () => (
+    <div className="w-80 font-body text-body">
+      {[
+        { name: "Paneer Tikka Masala", price: "₹280" },
+        { name: "Veg Steamed Momos", price: "₹180" },
+        { name: "Masala Cold Brew", price: "₹200" },
+      ].map((dish, index) => (
+        <div key={dish.name}>
+          {index > 0 ? <Divider /> : null}
+          <div className="flex items-baseline justify-between gap-4 py-4">
+            <span className="min-w-0">{dish.name}</span>
+            <span className="text-text-brand">{dish.price}</span>
+          </div>
+        </div>
+      ))}
+      <Divider variant="diamond" className="my-8" />
     </div>
   ),
 };
@@ -5168,6 +5765,25 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 11: ImageSlot
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/image-slot/image-slot.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                                     | Ruling                        | Where / reason                                                                                  |
+| ------------------------------------------------------------------------------------------------------------ | ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| `label` defaults to "Dish photo"                                                                             | DROP                          | D9 (no content defaults); a placeholder requires `label` (contracts §2)                         |
+| The placeholder is not announced                                                                             | ALREADY                       | the plan names it (`role="img"` + `label`), so the crop brief is not silent                     |
+| `alt` defaults to `""`                                                                                       | ALREADY                       | `alt` is required; a decorative photo passes `alt=""` explicitly                                |
+| Arbitrary `aspect-[4/3]`; radius `thumb`/`card`/`sheet`; labels pink-400 / pink-700 / ink-500                | DROP                          | AUTHORING §6 (aspect tokens); contracts §2 radius enum (D4); spec §5.3 re-pointing              |
+| `isFullHeight` drops the ratio                                                                               | ALREADY                       | `isFill` (`aspect-auto h-full`, exactly one aspect class)                                       |
+| The caption is dropped once a photo is given                                                                 | ALREADY                       | the union forbids `label` with `src` (`label?: never`)                                          |
+| Native `div` props (`id`, `data-*`, `ref`, `aria-*`) forwarded to the root                                   | ADD, pending a contract delta | contracts §2 `ImageSlotBase` has no native props: 02a audit, proposed delta 1. Not amended here |
+| Tests: placeholder, photo + `object-cover`, ratios, no collapse, tones, radii, fill, className override, axe | ALREADY                       | Step 2                                                                                          |
+| Stories `Default`, `Tones`, `Radii`, `NamingTheCrop`, `FullHeight`                                           | ALREADY                       | `Playground`, `Tones`, `Radii`, `Label`, `Fill`                                                 |
+| Story `Ratios` shows 4:5 and 21:9 too                                                                        | ADD                           | Step 6 `Ratios` (all seven)                                                                     |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 Source: `components/atoms/ImageSlot.{jsx,d.ts,card.html,prompt.md}`, readme §3.4 and §3.10 ("images always sit in an `aspect-ratio` box, so a missing photo can't collapse a layout"), spec §9.1.
 
@@ -5513,7 +6129,7 @@ Expected: PASS.
 
 - [ ] **Step 6: Stories**
 
-Card rows (`ImageSlot.card.html`): `ratio` (square 96px, 4:3 120px, 3:4 80px, 16:9 150px wide), `tone`, `label` ("name the real crop", max 300px). Extras: `src` (a real image, the committed brand symbol), `isFill`, `radius`.
+Card rows (`ImageSlot.card.html`): `ratio` (square 96px, 4:3 120px, 3:4 80px, 16:9 150px wide; plus 4:5, 16:10 and 21:9 for dev parity), `tone`, `label` ("name the real crop", max 300px). Extras: `src` (a real image, the committed brand symbol), `isFill`, `radius`.
 
 `packages/ui/src/atoms/image-slot/image-slot.stories.tsx`:
 
@@ -5545,11 +6161,14 @@ export const Playground: Story = {};
 export const Ratios: Story = {
   name: "ratio",
   render: () => (
-    <div className="flex items-start gap-3">
+    <div className="flex flex-wrap items-start gap-3">
       <ImageSlot ratio="square" label="1:1" className="w-24" />
       <ImageSlot ratio="4:3" label="4:3" className="w-30" />
       <ImageSlot ratio="3:4" label="3:4" className="w-20" />
+      <ImageSlot ratio="4:5" label="4:5" className="w-20" />
       <ImageSlot ratio="16:9" label="16:9" className="w-37.5" />
+      <ImageSlot ratio="16:10" label="16:10" className="w-37.5" />
+      <ImageSlot ratio="wide" label="21:9" className="w-37.5" />
     </div>
   ),
 };
@@ -5645,6 +6264,22 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 12: Badge
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/badge/badge.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                               | Ruling  | Where / reason                                                 |
+| ---------------------------------------------------------------------- | ------- | -------------------------------------------------------------- |
+| `rounded-6`, `bg-brand-soft`, status colours as text (`text-status-*`) | DROP    | D4; spec §5.3 (status text uses the AA `text-text-*` tokens)   |
+| `brand` is a fixed pink                                                | ALREADY | the surface-aware `badge-brand-*` pair (white on a pink field) |
+| Tests: caps, not a control, seven tones, soft default, axe             | ALREADY | Step 2                                                         |
+| Test: the glyph is decorative (one svg, `aria-hidden`)                 | ADD     | Step 2                                                         |
+| Test: caller className replaces the radius                             | ADD     | Step 2                                                         |
+| Stories `Default`, `Tones`, `StatusTones`, `WithIcons`                 | ALREADY | `Playground`, `Tones`, `StatusTones`, `WithIcon`               |
+| Story `OnAMenuCard`                                                    | ADD     | Step 6                                                         |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 Source: `components/atoms/Badge.{jsx,d.ts,card.html,prompt.md}`. Visuals: a non-interactive pill with 4px × 10px padding, a 5px gap to a 12px glyph, and overline type (Poppins 700, 11.5px, +0.14em, line height 1.2, capitals), no wrap. Tones:
 
@@ -5822,6 +6457,20 @@ describe("Badge", () => {
     expect(badge).toHaveAttribute("id", "pick");
   });
 
+  it("keeps its glyph decorative, so only the label is read", () => {
+    render(<Badge icon={Flame}>Hot</Badge>);
+    const glyphs = screen.getByText("Hot").parentElement?.querySelectorAll("svg");
+    expect(glyphs).toHaveLength(1);
+    expect(glyphs?.[0]).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("lets a consumer className replace its radius", () => {
+    render(<Badge className="rounded-md">Pick</Badge>);
+    const badge = screen.getByText("Pick").parentElement;
+    expect(badge).toHaveClass("rounded-md");
+    expect(badge).not.toHaveClass("rounded-pill");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
@@ -5899,7 +6548,7 @@ Expected: PASS.
 
 - [ ] **Step 6: Stories**
 
-Card rows (`Badge.card.html`): `tone` (brand Bestseller, soft New, ink Tonight Only, neutral Veg), `status tones` (success Confirmed, warning Kitchen Busy, danger Sold Out), `icon` (soft flame Hot, success leaf 100% Veg, brand star Chef Pick). Extra: `OnSurfaces`.
+Card rows (`Badge.card.html`): `tone` (brand Bestseller, soft New, ink Tonight Only, neutral Veg), `status tones` (success Confirmed, warning Kitchen Busy, danger Sold Out), `icon` (soft flame Hot, success leaf 100% Veg, brand star Chef Pick). Extras: `OnSurfaces`, `OnAMenuCard` (dev parity).
 
 `packages/ui/src/atoms/badge/badge.stories.tsx`:
 
@@ -5971,6 +6620,23 @@ export const WithIcon: Story = {
   ),
 };
 
+/** In context: the markers on a menu card, above the dish name. */
+export const OnAMenuCard: Story = {
+  name: "in context: on a menu card",
+  render: () => (
+    <div className="grid max-w-72 gap-2 rounded-lg bg-surface-card p-4 shadow-1">
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge tone="brand">Bestseller</Badge>
+        <Badge tone="soft" icon={Flame}>
+          Hot
+        </Badge>
+      </div>
+      <h4 className="m-0">Paneer Tikka Masala</h4>
+      <p className="m-0 font-body text-body-sm text-text-muted">₹280</p>
+    </div>
+  ),
+};
+
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
@@ -6015,6 +6681,25 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ### Task 13: StatusDot
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/status-dot/status-dot.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                                                  | Ruling  | Where / reason                                                    |
+| ------------------------------------------------------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------- |
+| Sizes `xs`/`sm`/`md`/`lg`                                                                                                 | DROP    | contracts §2 (`sm`/`md`; plan deviation 4)                        |
+| The whole dot throbs (`animate-pp-pulse`)                                                                                 | ALREADY | the pulse ring (`animate-dot-pulse`), hidden under reduced motion |
+| A bare danger dot is named "Unavailable"                                                                                  | ALREADY | named "Attention"; a bare dot is always named                     |
+| `rounded-1`, `size-2…5`, `text-body2`                                                                                     | DROP    | D4; `status-dot-*` tokens                                         |
+| Tests: label beside the dot, dot hidden when labelled, bare dot named by tone, tones, diamond, pulse only when asked, axe | ALREADY | Step 2                                                            |
+| Test: caller className replaces the gap                                                                                   | ADD     | Step 2                                                            |
+| Story `Tones` includes a labelled `danger`                                                                                | ADD     | Step 6                                                            |
+| Story `Sizes` (labelled dots side by side)                                                                                | ADD     | Step 6                                                            |
+| Stories `Default`, `Live`, `Bare`                                                                                         | ALREADY | `Playground`, `Pulse`, `Bare`                                     |
+| Story `OutletStrip`                                                                                                       | ADD     | Step 6                                                            |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 Source: `components/atoms/StatusDot.{jsx,d.ts,card.html,prompt.md}`, readme §3.4 ("every small diamond … is a rotated square with the brand mark inside it").
 
@@ -6165,6 +6850,13 @@ describe("StatusDot", () => {
     expect(screen.getByText("Opens 9am").parentElement).toHaveClass("ml-2", "gap-2");
   });
 
+  it("lets a consumer className replace the gap", () => {
+    render(<StatusDot tone="closed" label="Opens 9am" className="gap-4" />);
+    const root = screen.getByText("Opens 9am").parentElement;
+    expect(root).toHaveClass("gap-4");
+    expect(root).not.toHaveClass("gap-2");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
@@ -6271,7 +6963,7 @@ Expected: PASS.
 
 - [ ] **Step 6: Stories**
 
-Card rows (`StatusDot.card.html`): `tone` (open "Open till 11:30pm", busy "Kitchen is busy", closed "Opens 9am"), `pulse` (→ `isPulsing`, live "On the tandoor"), `bare` (size 16 → `size="md"`: open, busy, closed, danger).
+Card rows (`StatusDot.card.html`): `tone` (open "Open till 11:30pm", busy "Kitchen is busy", closed "Opens 9am"), `pulse` (→ `isPulsing`, live "On the tandoor"), `bare` (size 16 → `size="md"`: open, busy, closed, danger). Dev parity adds a labelled `danger` row, `Sizes` and `OutletStrip`.
 
 `packages/ui/src/atoms/status-dot/status-dot.stories.tsx`:
 
@@ -6306,6 +6998,17 @@ export const Tones: Story = {
       <StatusDot tone="open" label="Open till 11:30pm" />
       <StatusDot tone="busy" label="Kitchen is busy" />
       <StatusDot tone="closed" label="Opens 9am" />
+      <StatusDot tone="danger" label="Not taking orders" />
+    </div>
+  ),
+};
+
+export const Sizes: Story = {
+  name: "size",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-4">
+      <StatusDot size="sm" label="Small (14px)" />
+      <StatusDot size="md" label="Medium (16px)" />
     </div>
   ),
 };
@@ -6323,6 +7026,18 @@ export const Bare: Story = {
       <StatusDot tone="busy" size="md" />
       <StatusDot tone="closed" size="md" />
       <StatusDot tone="danger" size="md" />
+    </div>
+  ),
+};
+
+/** In context: the outlet strip under the header. */
+export const OutletStrip: Story = {
+  name: "in context: outlet strip",
+  render: () => (
+    <div className="grid justify-items-start gap-3 rounded-lg bg-surface-sunken p-4">
+      <StatusDot tone="open" label="Sector 57 — open till 11:30pm" />
+      <StatusDot tone="busy" label="Kitchen is busy — about 25 minutes" />
+      <StatusDot tone="live" label="Your order is on the tandoor" isPulsing />
     </div>
   ),
 };
@@ -6362,6 +7077,27 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 14: Avatar
 
+**Dev reference:** `git show dev:packages/ui/src/atoms/avatar/avatar.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                              | Ruling  | Where / reason                                                                                                     |
+| --------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
+| Radix `Avatar` + `"use client"`                                       | DROP    | D6/D7 (Radix only for Dialog/Sheet, Tabs, Tooltip, Toast, ToggleGroup and Slot)                                    |
+| The initials stay up while the photo loads, and for good if it fails  | ADD     | Step 4: the photo is layered over the initials (`absolute inset-0`, server-safe, no load state); Step 2 photo test |
+| The photo carries the name as `alt`                                   | ALREADY | the root is `role="img"` named by `name`; the photo is presentational (`alt=""`)                                   |
+| A glyph wins over a name                                              | ALREADY | Step 4 (`icon ? … : initials`); ADD a test for `icon` + `name` (Step 2)                                            |
+| Ring as `ring-2 ring-offset-2`, never a border                        | ALREADY | `shadow-avatar-ring` (two box-shadows, no border)                                                                  |
+| `size-6…20`, `rounded-6`, `text-h3`                                   | DROP    | D4; `avatar-*` tokens                                                                                              |
+| `select-none` on the root                                             | ADD     | Step 4 `root` slot; Step 2 className test                                                                          |
+| Tests: one-, two- and three-word initials, sizes, ring, circular, axe | ALREADY | Step 2                                                                                                             |
+| Test: caller className replaces the radius                            | ADD     | Step 2                                                                                                             |
+| Stories `Default`, `Sizes`, `Initials`, `GlyphFallback`, `Ring`       | ALREADY | `Playground`, `Sizes`, `Initials`, `IconFallback`, `Ring`                                                          |
+| Story `Photo` (with the failed-photo fallback)                        | ADD     | Step 6                                                                                                             |
+| Story `InAReviewRow`                                                  | ADD     | Step 6 `InAGuestRow` (no review copy: spec §10.1 bars fabricated testimonials)                                     |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 Source: `components/atoms/Avatar.{jsx,d.ts,card.html,prompt.md}`.
 
 **Visuals:**
@@ -6370,7 +7106,7 @@ Source: `components/atoms/Avatar.{jsx,d.ts,card.html,prompt.md}`.
 - Initials size is `max(10, round(0.38 × size))`: 10 / 12 / 15 / 21 / 30px.
 - Up to two initials, from the first two words.
 - The glyph fallback is half the circle (12 / 16 / 20 / 28 / 40px). Its stroke is 2px up to 16px and 1.75px above, the same rule as Icon.
-- A photo fills the circle.
+- A photo fills the circle, layered over the initials (or glyph), so they show while it loads and stay if it fails (dev parity, no client code).
 - `hasRing`: `0 0 0 2px white, 0 0 0 4px pink-500`.
 
 **Semantics:** with a `name`, `role="img"` named by it (and `title`, as in the zip). The initials and photo inside are presentational. Without a name it is decorative (`aria-hidden`).
@@ -6509,14 +7245,29 @@ describe("Avatar", () => {
     expect(screen.getByRole("img")).toHaveTextContent(initials);
   });
 
-  it("shows a photo filling the circle, presentational inside the named avatar", () => {
+  it("layers a photo over the initials, which stay as the fallback while it loads or if it fails", () => {
     render(<Avatar name="Aditi Rao" src="/guests/aditi.jpg" />);
     const avatar = screen.getByRole("img", { name: "Aditi Rao" });
     const photo = avatar.querySelector("img");
     expect(photo).toHaveAttribute("src", "/guests/aditi.jpg");
     expect(photo).toHaveAttribute("alt", "");
-    expect(photo).toHaveClass("size-full", "object-cover");
+    expect(photo).toHaveClass("absolute", "inset-0", "size-full", "object-cover");
+    expect(avatar).toHaveClass("relative");
+    expect(avatar).toHaveTextContent("AR");
+  });
+
+  it("draws the glyph instead of initials when both are given, still named by the person", () => {
+    render(<Avatar name="Aditi Rao" icon={User} />);
+    const avatar = screen.getByRole("img", { name: "Aditi Rao" });
+    expect(avatar.querySelector("svg")).not.toBeNull();
     expect(avatar).not.toHaveTextContent("AR");
+  });
+
+  it("lets a consumer className replace its radius, and never selects its initials", () => {
+    render(<Avatar name="Aditi Rao" className="rounded-md" />);
+    const avatar = screen.getByRole("img");
+    expect(avatar).toHaveClass("rounded-md", "select-none");
+    expect(avatar).not.toHaveClass("rounded-pill");
   });
 
   it("draws a glyph at half its size in place of initials", () => {
@@ -6604,8 +7355,9 @@ export interface AvatarProps extends ComponentProps<"span"> {
 
 const avatar = componentVariants({
   slots: {
-    root: "inline-grid shrink-0 place-items-center overflow-hidden rounded-pill bg-pink-100 font-display text-pink-700",
-    image: "size-full object-cover",
+    root: "relative inline-grid shrink-0 place-items-center overflow-hidden rounded-pill bg-pink-100 font-display text-pink-700 select-none",
+    // Over the initials: they show while the photo loads, and stay if it fails (alt="" paints nothing).
+    image: "absolute inset-0 size-full object-cover",
     // Half the circle; `Icon`'s own size only picks the stroke (2px ≤ 16px, 1.75px above).
     icon: "size-1/2",
   },
@@ -6655,15 +7407,8 @@ export function Avatar({
       className={slots.root({ className })}
       {...props}
     >
-      {src === undefined ? (
-        icon ? (
-          <Icon icon={icon} size={size} className={slots.icon()} />
-        ) : (
-          initialsOf(title)
-        )
-      ) : (
-        <img src={src} alt="" className={slots.image()} />
-      )}
+      {icon ? <Icon icon={icon} size={size} className={slots.icon()} /> : initialsOf(title)}
+      {src === undefined ? null : <img src={src} alt="" className={slots.image()} />}
     </span>
   );
 }
@@ -6676,7 +7421,7 @@ Expected: PASS.
 
 - [ ] **Step 6: Stories**
 
-Card rows (`Avatar.card.html`): `size` (xs–xl), `initials` (Aditi Rao, Kabir, Meera S Iyer), `icon fallback` (user; user lg), `ring` (→ `hasRing`, lg). These are sample guest names on a component card, not testimonials (spec §10.1's kit rule).
+Card rows (`Avatar.card.html`): `size` (xs–xl), `initials` (Aditi Rao, Kabir, Meera S Iyer), `icon fallback` (user; user lg), `ring` (→ `hasRing`, lg). Dev parity adds `Photo` (with a failed photo) and `InAGuestRow`. These are sample guest names on a component card, not testimonials (spec §10.1's kit rule).
 
 `packages/ui/src/atoms/avatar/avatar.stories.tsx`:
 
@@ -6685,6 +7430,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { User } from "lucide-react";
 
+import symbolPink from "../../assets/brand/symbol-pink.svg";
 import { Avatar } from "./avatar";
 
 const meta = {
@@ -6742,6 +7488,34 @@ export const IconFallback: Story = {
 export const Ring: Story = {
   name: "hasRing",
   args: { name: "Aditi Rao", size: "lg", hasRing: true },
+};
+
+/**
+ * With `src` the photo covers the initials once it decodes. The second path is deliberately
+ * unresolvable: it is the failed-photo case, where the initials hold the space.
+ */
+export const Photo: Story = {
+  name: "src (and a failed photo)",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Avatar name="Aditi Rao" src={symbolPink} size="lg" />
+      <Avatar name="Kabir" src="/missing/guest-photo.jpg" size="lg" hasRing />
+    </div>
+  ),
+};
+
+/** In context: a signed-in guest row. */
+export const InAGuestRow: Story = {
+  name: "in context: a signed-in guest row",
+  render: () => (
+    <div className="flex max-w-96 items-center gap-3 rounded-lg bg-surface-card p-4 shadow-1">
+      <Avatar name="Aditi Rao" size="lg" hasRing />
+      <div className="min-w-0">
+        <p className="m-0 font-display text-body font-bold text-text-heading">Aditi Rao</p>
+        <p className="m-0 font-body text-caption text-text-muted">Signed in · 3 orders</p>
+      </div>
+    </div>
+  ),
 };
 ```
 
