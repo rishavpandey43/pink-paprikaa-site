@@ -30,7 +30,7 @@ export const brandSchema = z.object({
   }),
   contact: z.object({
     website: text,
-    websiteUrl: z.url(),
+    websiteUrl: z.httpUrl(),
     phone: z.string().regex(INDIAN_PHONE),
     phoneDisplay: text,
     whatsapp: z.string().regex(INDIAN_PHONE),
@@ -39,7 +39,9 @@ export const brandSchema = z.object({
     franchiseEmail: z.email(),
     careersEmail: z.email(),
   }),
-  social: z.array(z.object({ network: socialNetworkSchema, handle: text, url: z.url() })).min(1),
+  social: z
+    .array(z.object({ network: socialNetworkSchema, handle: text, url: z.httpUrl() }))
+    .min(1),
   hours: z.object({ weekday: text, weekend: text, display: text }),
   outlets: z
     .array(
@@ -50,7 +52,7 @@ export const brandSchema = z.object({
         address: text,
         hours: pending,
         phone: z.string().regex(INDIAN_PHONE),
-        mapsUrl: z.url().nullable(),
+        mapsUrl: z.httpUrl().nullable(),
       })
     )
     .min(1),

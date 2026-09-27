@@ -36,6 +36,26 @@ describe("brandSchema", () => {
     expect(brandSchema.safeParse(bad).success).toBe(false);
   });
 
+  it("rejects a CIN that is not 21 characters of the right shape", () => {
+    const bad = withChange(
+      (d) => ((d.legal as Record<string, unknown>).cin = "U56101HR2025PTC13346")
+    );
+    expect(brandSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("rejects a PAN that is not 10 characters of the right shape", () => {
+    const bad = withChange((d) => ((d.legal as Record<string, unknown>).pan = "AAPCP9130"));
+    expect(brandSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("rejects the legal entity with one 'a'", () => {
+    const bad = withChange(
+      (d) =>
+        ((d.legal as Record<string, unknown>).entity = "Paprika Culinary Ventures Private Limited")
+    );
+    expect(brandSchema.safeParse(bad).success).toBe(false);
+  });
+
   it("rejects an FSSAI licence that is not 14 digits", () => {
     const bad = withChange((d) => ((d.legal as Record<string, unknown>).fssai = "1082500500170"));
     expect(brandSchema.safeParse(bad).success).toBe(false);
@@ -59,6 +79,31 @@ describe("brandSchema", () => {
       const [first] = d.social as { network: string }[];
       if (!first) throw new Error("the brand fixture has no social links to corrupt");
       first.network = "facebook";
+    });
+    expect(brandSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("rejects a social link that is not http or https", () => {
+    const bad = withChange((d) => {
+      const [first] = d.social as { url: string }[];
+      if (!first) throw new Error("the brand fixture has no social links to corrupt");
+      first.url = "javascript:alert(1)";
+    });
+    expect(brandSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("rejects a website URL that is not http or https", () => {
+    const bad = withChange(
+      (d) => ((d.contact as Record<string, unknown>).websiteUrl = "javascript:alert(1)")
+    );
+    expect(brandSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("rejects a maps URL that is not http or https", () => {
+    const bad = withChange((d) => {
+      const [first] = d.outlets as { mapsUrl: string | null }[];
+      if (!first) throw new Error("the brand fixture has no outlets to corrupt");
+      first.mapsUrl = "javascript:alert(1)";
     });
     expect(brandSchema.safeParse(bad).success).toBe(false);
   });
