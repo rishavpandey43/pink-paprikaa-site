@@ -17,12 +17,11 @@ import { defineConfig } from "vitest/config";
  *     project, different config, different target. `nx run-many -t test` runs both.
  *
  * Browser mode, not jsdom, is deliberate. `preview.tsx` sets `parameters.a11y.test = "error"`, and
- * the a11y addon throws on violations during a Vitest run — but half of what axe checks (colour
- * contrast, focus visibility, computed roles from real CSS) needs layout and a resolved
- * stylesheet, which jsdom does not have. That is exactly why `packages/ui/vitest.setup.ts` has to
- * disable `color-contrast` in its own jsdom suite. Here the stories render in headless Chromium
- * with Tailwind applied, so the contrast rule runs for real and the two suites complement rather
- * than duplicate each other.
+ * the a11y addon throws on violations during a Vitest run — but much of what axe checks (focus
+ * visibility, computed roles and names from real CSS) needs layout and a resolved stylesheet,
+ * which jsdom does not have. Here the stories render in headless Chromium with Tailwind applied,
+ * so the two suites complement rather than duplicate each other. (`color-contrast` is off in both:
+ * the token contrast policy owns it — see the comment on the rule in `preview.tsx`.)
  */
 export default defineConfig({
   plugins: [

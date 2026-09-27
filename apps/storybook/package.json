@@ -19,6 +19,18 @@
           }
         ]
       },
+      "test": {
+        "inputs": [
+          "default",
+          "^default",
+          {
+            "externalDependencies": [
+              "storybook",
+              "vitest"
+            ]
+          }
+        ]
+      },
       "build": {
         "executor": "nx:noop",
         "dependsOn": [
@@ -52,10 +64,15 @@
     }
   },
   "dependencies": {
+    "@pink-paprikaa-web/content": "workspace:*",
+    "@pink-paprikaa-web/design-tokens": "workspace:*",
     "@pink-paprikaa-web/ui": "workspace:*"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.3.0",
+    "@fontsource/dm-sans": "^5.3.0",
+    "@fontsource/poppins": "^5.3.0",
+    "@fontsource/space-mono": "^5.3.0",
     "@storybook/addon-a11y": "^10.5.7",
     "@storybook/addon-docs": "^10.5.7",
     "@storybook/addon-vitest": "^10.5.7",

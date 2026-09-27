@@ -1,3 +1,4 @@
+import "./fonts";
 import "./styles.css";
 
 import type { Preview } from "@storybook/react-vite";
@@ -39,6 +40,7 @@ const deviceViewports = { ...viewports, ...INITIAL_VIEWPORTS };
 const backgrounds = {
   page: { name: "Page — white", value: "var(--color-surface-page)" },
   tint: { name: "Page alt — pink tint", value: "var(--color-surface-page-alt)" },
+  soft: { name: "Soft — light pink", value: "var(--color-surface-brand-soft)" },
   brand: { name: "Brand — flooded pink", value: "var(--color-surface-brand)" },
   inverse: { name: "Inverse — ink", value: "var(--color-surface-inverse)" },
 } as const;
@@ -60,33 +62,35 @@ const preview: Preview = {
       config: {
         rules: [
           /**
-           * `color-contrast` is OFF, and this is a deliberate, owner-made brand decision — not an
-           * oversight and not a convenience.
-           *
-           * White on the brand pink `#EE2C68` measures **4.04:1**. WCAG AA asks 4.5:1 for normal
-           * text and 3:1 for large, so white-on-brand passes at heading sizes and falls just short
-           * at body sizes. The three ways out were: darken the panel (rejected — `#EE2C68` is the
-           * brand), enlarge every label on pink (rejected — it distorts the components), or use
-           * dark ink on pink (rejected — "white type on a flooded pink field" is the brand's
-           * signature relationship, design guide §3.1).
-           *
-           * The owner chose to keep white text. With that settled, leaving the rule on would mean
-           * ~460 permanent failures that no one can ever action, which trains everyone to ignore a
-           * red suite — the rule would protect nothing and cost the gate its credibility.
-           *
-           * Everything else axe checks still FAILS the story: names, roles, labels, landmarks,
-           * focus order, keyboard reachability, ARIA correctness. Only this one ratio is exempt.
-           * Revisit if the brand palette is ever reopened.
+           * `color-contrast` is owned by the token contrast policy (spec §5.4): every text/background
+           * pair the components use is measured in `packages/design-tokens` on every build, with white
+           * on the brand pink as the single declared exception at the AA-large floor. axe cannot scope
+           * an exception to one pair, so here it is off; every other axe rule fails the story.
            */
           { id: "color-contrast", enabled: false },
         ],
       },
     },
     options: {
-      // Atoms → molecules → organisms → templates, matching the layering rule, instead of
-      // alphabetical (which would file "Atoms" after "Organisms" only by accident of spelling).
+      // Introduction, then the design system's thirteen tab groups in its own order (foundations,
+      // then the atomic layers, then the reference kits), instead of alphabetical.
       storySort: {
-        order: ["Foundations", "Atoms", "Molecules", "Organisms", "Templates"],
+        order: [
+          "Introduction",
+          "Brand",
+          "Colors",
+          "Type",
+          "Spacing",
+          "Layout",
+          "Motion",
+          "Marketing",
+          "Atoms",
+          "Molecules",
+          "Organisms",
+          "Layouts",
+          "Website",
+          "App",
+        ],
       },
     },
   },
