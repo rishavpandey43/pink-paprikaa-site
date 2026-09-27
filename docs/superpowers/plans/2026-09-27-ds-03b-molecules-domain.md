@@ -389,10 +389,10 @@ const menuItemRow = componentVariants({
     root: "flex items-start gap-5 py-5",
     body: "min-w-0 flex-1",
     header: "flex flex-wrap items-center gap-2",
-    name: "font-display text-menu-item-name text-text-heading",
-    nameDevanagari: "font-devanagari text-menu-item-devanagari text-text-brand",
+    name: "text-menu-item-name font-display text-text-heading",
+    nameDevanagari: "text-menu-item-devanagari font-devanagari text-text-brand",
     meta: "mt-2 flex items-center gap-3.5",
-    description: "mt-2 mb-0 max-w-text-measure-narrow text-body-sm text-text-muted",
+    description: "max-w-text-measure-narrow mt-2 mb-0 text-body-sm text-text-muted",
     action: "mt-3.5",
     thumbnail: "size-26 shrink-0",
   },
@@ -761,7 +761,7 @@ const menuItemCard = componentVariants({
     action: "absolute right-3.5 -bottom-4.5 z-raised",
     body: "grid gap-2 p-4.5",
     header: "flex items-center gap-2",
-    name: "min-w-0 font-display text-menu-item-name text-text-heading",
+    name: "text-menu-item-name min-w-0 font-display text-text-heading",
     // Stretched link: the ::after covers the whole card, so the card clicks through to the dish.
     link: "text-inherit no-underline after:absolute after:inset-0",
     description: "m-0 max-w-none text-body-sm text-text-muted",
@@ -1391,7 +1391,7 @@ const reviewCard = componentVariants({
     root: "flex flex-col gap-3.5",
     header: "flex flex-wrap items-center justify-between gap-3",
     quote: "m-0",
-    quoteText: "m-0 max-w-text-measure-narrow text-body",
+    quoteText: "max-w-text-measure-narrow m-0 text-body",
     footer: "flex items-center gap-2.5",
     person: "grid min-w-0 flex-1",
     name: "text-body-sm font-medium text-text-heading",
@@ -1815,7 +1815,7 @@ const meta = {
   args: { visits: 3, goal: 6, reward: "chai" },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-text-measure-prose">
+      <div className="max-w-text-measure-prose w-full">
         <Story />
       </div>
     ),
@@ -2693,11 +2693,11 @@ import { componentVariants } from "../../lib/component-variants";
 
 const offerSeal = componentVariants({
   slots: {
-    root: "grid size-offer-seal shrink-0 rotate-45 place-items-center rounded-offer-seal shadow-3",
+    root: "size-offer-seal rounded-offer-seal grid shrink-0 rotate-45 place-items-center shadow-3",
     content: "grid -rotate-45 gap-0.5 text-center",
-    value: "font-display text-offer-seal-value",
-    label: "font-display text-offer-seal-label uppercase",
-    note: "font-body text-offer-seal-note",
+    value: "text-offer-seal-value font-display",
+    label: "text-offer-seal-label font-display uppercase",
+    note: "text-offer-seal-note font-body",
   },
   variants: {
     size: {
@@ -3246,14 +3246,14 @@ const couponTicket = componentVariants({
     main: "min-w-0 flex-1",
     logo: "w-auto",
     headline: "mb-0 max-w-none font-display text-balance",
-    terms: "mb-0 max-w-text-measure-narrow text-text-muted",
+    terms: "max-w-text-measure-narrow mb-0 text-text-muted",
     // The perforation sits exactly between main and stub, whatever the ticket's width.
     perforation: "relative w-0 shrink-0",
     rule: "absolute inset-y-4.5 -left-px border-l-2 border-dashed border-border-default",
     notchTop:
-      "absolute top-0 left-0 size-coupon-ticket-notch -translate-x-1/2 -translate-y-1/2 rounded-pill",
+      "size-coupon-ticket-notch absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 rounded-pill",
     notchBottom:
-      "absolute bottom-0 left-0 size-coupon-ticket-notch -translate-x-1/2 translate-y-1/2 rounded-pill",
+      "size-coupon-ticket-notch absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 rounded-pill",
     stub: "grid shrink-0 place-items-center p-5 text-center",
     stubInner: "grid justify-items-center gap-2",
     stubLabel: "font-display text-text-muted uppercase",
@@ -3270,7 +3270,7 @@ const couponTicket = componentVariants({
         root: "max-w-coupon-ticket-md",
         main: "p-6",
         logo: "h-10",
-        headline: "mt-4 text-coupon-ticket-headline-md",
+        headline: "text-coupon-ticket-headline-md mt-4",
         terms: "mt-3 text-body-sm",
         stub: "w-coupon-ticket-stub-md",
         stubLabel: "text-overline",
@@ -3281,7 +3281,7 @@ const couponTicket = componentVariants({
         root: "max-w-coupon-ticket-lg",
         main: "p-10",
         logo: "h-17",
-        headline: "mt-7 text-coupon-ticket-headline-lg",
+        headline: "text-coupon-ticket-headline-lg mt-7",
         terms: "mt-5 text-body-lg",
         stub: "w-coupon-ticket-stub-lg",
         stubLabel: "text-coupon-ticket-stub-label-lg",
@@ -3797,13 +3797,13 @@ export interface ChoiceCardGroupProps extends Omit<
 const choiceCardGroup = componentVariants({
   slots: {
     root: "min-w-0",
-    legend: "mb-2.5 font-display text-choice-card-title text-text-heading",
+    legend: "text-choice-card-title mb-2.5 font-display text-text-heading",
     list: "grid gap-2",
-    card: "relative flex min-h-16 cursor-pointer rounded-md p-3 text-left transition-control has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus",
+    card: "transition-control relative flex min-h-16 cursor-pointer rounded-md p-3 text-left has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400",
     input: "",
     body: "flex min-w-0 flex-1 flex-col items-start gap-1",
     head: "flex w-full flex-wrap items-center justify-between gap-1.5",
-    title: "font-display text-choice-card-title",
+    title: "text-choice-card-title font-display",
     price:
       "flex flex-wrap items-baseline gap-1.5 font-display text-h4 font-black whitespace-nowrap",
     was: "font-body text-body-sm font-regular",
@@ -3817,13 +3817,13 @@ const choiceCardGroup = componentVariants({
     tone: {
       light: {
         // 1px border + the inset `selected` shadow = a 2px border that never shifts the layout.
-        card: "border border-border-default bg-surface-card text-text-heading has-checked:border-border-brand has-checked:bg-pink-50 has-checked:text-pink-700 has-checked:shadow-selected",
+        card: "has-checked:shadow-selected border border-border-default bg-surface-card text-text-heading has-checked:border-border-brand has-checked:bg-pink-50 has-checked:text-pink-700",
         input: "sr-only",
       },
       "on-brand": {
         card: "border-2 border-transparent bg-white-alpha-92 text-text-heading has-checked:border-ink-900 has-checked:bg-ink-000",
         input:
-          "size-4.5 shrink-0 cursor-pointer appearance-none rounded-pill border-2 border-ink-600 bg-ink-000 checked:border-pink-600 checked:bg-pink-600 checked:shadow-choice-card-radio focus-visible:outline-none",
+          "checked:shadow-choice-card-radio size-4.5 shrink-0 cursor-pointer appearance-none rounded-pill border-2 border-ink-600 bg-ink-000 checked:border-pink-600 checked:bg-pink-600 focus-visible:outline-none",
       },
     },
     min: {
@@ -4347,7 +4347,7 @@ import { componentVariants } from "../../lib/component-variants";
 
 const checkCard = componentVariants({
   slots: {
-    root: "flex min-h-13 cursor-pointer items-center gap-3 rounded-md border border-border-default bg-surface-card px-3.5 py-3 text-text-heading transition-control has-checked:border-border-brand has-checked:bg-pink-50 has-checked:shadow-selected has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus",
+    root: "transition-control has-checked:shadow-selected flex min-h-13 cursor-pointer items-center gap-3 rounded-md border border-border-default bg-surface-card px-3.5 py-3 text-text-heading has-checked:border-border-brand has-checked:bg-pink-50 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400",
     // The native checkbox, restyled, with the tick stacked on it in the same grid cell.
     box: "grid shrink-0 place-items-center",
     input:
@@ -4425,7 +4425,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-text-measure-prose">
+      <div className="max-w-text-measure-prose w-full">
         <Story />
       </div>
     ),
@@ -5463,7 +5463,7 @@ const meta = {
   args: { items: YOUR_BOX, keyWidth: "sm", density: "compact" },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-text-measure-prose">
+      <div className="max-w-text-measure-prose w-full">
         <Story />
       </div>
     ),
@@ -5743,7 +5743,7 @@ const steps = componentVariants({
     item: "",
     marker: "font-display font-black",
     body: "flex min-w-0 flex-col gap-1",
-    title: "font-display text-steps-title text-text-heading",
+    title: "text-steps-title font-display text-text-heading",
     description: "m-0 max-w-none text-body text-text-body",
   },
   variants: {
@@ -5755,7 +5755,7 @@ const steps = componentVariants({
           "grid size-11 shrink-0 place-items-center rounded-pill bg-surface-brand text-body text-text-on-brand",
       },
       rule: {
-        root: "grid gap-4 autogrid-min-md",
+        root: "autogrid-min-md grid gap-4",
         item: "flex flex-col gap-2 border-t-3 border-border-brand pt-4",
         marker: "text-h2 leading-none text-text-brand",
       },
@@ -6083,7 +6083,7 @@ export interface FeatureItemProps extends Omit<ComponentProps<"div">, "title"> {
 const featureItem = componentVariants({
   slots: {
     root: "flex items-start gap-3.5",
-    tile: "grid shrink-0 place-items-center rounded-md bg-feature-item-tile text-feature-item-icon",
+    tile: "bg-feature-item-tile text-feature-item-icon grid shrink-0 place-items-center rounded-md",
     body: "flex min-w-0 flex-col gap-1",
     title: "font-display text-text-heading",
     description: "m-0 max-w-none text-text-muted",
@@ -6550,13 +6550,13 @@ const SURFACE_OF: Readonly<Record<PricingCardVariant, "light" | "brand">> = {
 
 const pricingCard = componentVariants({
   slots: {
-    root: "relative flex h-full flex-col gap-3.5 rounded-xl p-pricing-card-pad",
+    root: "p-pricing-card-pad relative flex h-full flex-col gap-3.5 rounded-xl",
     badge: "absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap",
     header: "flex flex-wrap items-center justify-between gap-2",
     // A long name wraps (anywhere, if it must) rather than widening the card.
     name: "min-w-0 font-display text-h4 font-black wrap-anywhere text-text-heading",
     priceRow: "m-0 flex max-w-none flex-wrap items-baseline gap-x-2 gap-y-1",
-    price: "font-display text-pricing-card-price text-text-heading",
+    price: "text-pricing-card-price font-display text-text-heading",
     unit: "text-body-sm text-text-muted",
     was: "text-body text-text-muted",
     blurb: "m-0 max-w-none text-body-sm text-text-body",
@@ -6723,7 +6723,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-text-measure-prose">
+      <div className="max-w-text-measure-prose w-full">
         <Story />
       </div>
     ),
@@ -7283,7 +7283,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-text-measure-prose">
+      <div className="max-w-text-measure-prose w-full">
         <Story />
       </div>
     ),
@@ -7497,7 +7497,7 @@ const stickyActionBar = componentVariants({
   slots: {
     root: "sticky bottom-dock-clearance z-raised mt-3 flex items-center justify-between gap-3 rounded-pill bg-surface-inverse py-2 pr-2 pl-5 text-text-body shadow-4",
     summary: "flex min-w-0 flex-col",
-    amount: "font-display text-sticky-action-bar-amount text-text-heading",
+    amount: "text-sticky-action-bar-amount font-display text-text-heading",
     caption: "truncate text-caption text-text-muted",
     action: "shrink-0",
   },
@@ -8227,7 +8227,7 @@ const tableHeaderCell = componentVariants({
   base: "px-3 first:pl-5 last:pr-5",
   variants: {
     isRowHeader: {
-      false: "py-3.5 align-bottom font-display text-table-head text-text-heading",
+      false: "text-table-head py-3.5 align-bottom font-display text-text-heading",
       true: "py-3 align-top font-display font-bold text-text-heading",
     },
     isHighlighted: { true: "", false: "" },
@@ -8382,7 +8382,7 @@ function PriceButton({
       type="button"
       className={
         isHighlighted
-          ? "flex min-h-13 w-full flex-col items-start gap-0.5 rounded-md border border-border-brand bg-pink-50 px-3 py-2.5 text-left shadow-selected"
+          ? "shadow-selected flex min-h-13 w-full flex-col items-start gap-0.5 rounded-md border border-border-brand bg-pink-50 px-3 py-2.5 text-left"
           : "flex min-h-13 w-full flex-col items-start gap-0.5 rounded-md border border-transparent px-3 py-2.5 text-left hover:bg-surface-page-alt"
       }
     >

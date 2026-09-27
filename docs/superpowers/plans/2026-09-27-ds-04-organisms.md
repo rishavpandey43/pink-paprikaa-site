@@ -459,7 +459,7 @@ const ctaBand = componentVariants({
   slots: {
     root: "relative",
     pattern: "absolute inset-0",
-    inner: "relative container-page flex flex-wrap gap-8 py-cta-band-y",
+    inner: "py-cta-band-y relative container-page flex flex-wrap gap-8",
     copy: "flex min-w-0 flex-col gap-2.5",
     action: "flex shrink-0 flex-wrap items-center gap-2.5",
   },
@@ -838,7 +838,7 @@ const statBand = componentVariants({
   slots: {
     root: "relative",
     pattern: "absolute inset-0",
-    grid: "relative container-page grid autogrid-min-sm gap-stat-band-gap py-stat-band-y",
+    grid: "autogrid-min-sm gap-stat-band-gap py-stat-band-y relative container-page grid",
   },
   variants: {
     tone: {
@@ -1151,7 +1151,7 @@ const heroBanner = componentVariants({
   slots: {
     root: "relative",
     pattern: "absolute inset-0",
-    inner: "relative container-page grid items-center gap-hero-banner-gap py-hero-banner-y",
+    inner: "gap-hero-banner-gap py-hero-banner-y relative container-page grid items-center",
     copy: "flex min-w-0 flex-col gap-5",
     badges: "flex flex-wrap gap-2",
     actions: "flex flex-wrap gap-3",
@@ -1934,8 +1934,8 @@ import { SectionHeader } from "../../molecules/section-header/section-header";
 const faqSection = componentVariants({
   slots: {
     root: "section-y",
-    inner: "container-page grid items-start gap-faq-section-gap lg:grid-cols-2",
-    lead: "flex min-w-0 flex-col gap-6 lg:sticky lg:top-faq-section-sticky",
+    inner: "gap-faq-section-gap container-page grid items-start lg:grid-cols-2",
+    lead: "lg:top-faq-section-sticky flex min-w-0 flex-col gap-6 lg:sticky",
   },
 });
 
@@ -2354,12 +2354,12 @@ import { type KeyValueItem, KeyValueList } from "../../molecules/key-value-list/
 
 const quotePanel = componentVariants({
   slots: {
-    root: "relative overflow-hidden rounded-xl p-quote-panel-pad",
+    root: "p-quote-panel-pad relative overflow-hidden rounded-xl",
     pattern: "absolute inset-0",
     body: "relative flex flex-col gap-4",
     header: "flex flex-wrap items-start justify-between gap-3",
     price: "flex flex-wrap items-baseline gap-x-2.5 gap-y-1",
-    amount: "font-display text-quote-panel-amount text-text-heading",
+    amount: "text-quote-panel-amount font-display text-text-heading",
     unit: "text-body-sm text-text-muted",
     was: "text-body-sm text-text-muted line-through",
     lines: "border-t border-border-subtle pt-1.5",
@@ -3300,7 +3300,7 @@ const siteFooter = componentVariants({
   slots: {
     root: "relative",
     pattern: "absolute inset-0",
-    grid: "relative container-page grid autogrid-min-sm gap-site-footer-gap pt-site-footer-top pb-8",
+    grid: "autogrid-min-sm gap-site-footer-gap pt-site-footer-top relative container-page grid pb-8",
     brand: "flex flex-col items-start gap-3.5",
     social: "flex gap-2",
     column: "flex min-w-0 flex-col gap-3.5",
@@ -3867,7 +3867,7 @@ export interface DockAction {
 
 const actionDock = componentVariants({
   slots: {
-    root: "fixed inset-x-0 bottom-0 z-dock flex gap-2 border-t border-border-subtle bg-surface-card px-3 pt-2.5 pb-action-dock-bottom shadow-4 md:inset-x-auto md:right-6 md:bottom-action-dock-float md:border-0 md:bg-transparent md:p-0 md:shadow-none",
+    root: "pb-action-dock-bottom md:bottom-action-dock-float fixed inset-x-0 bottom-0 z-dock flex gap-2 border-t border-border-subtle bg-surface-card px-3 pt-2.5 shadow-4 md:inset-x-auto md:right-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none",
     secondary: "md:hidden",
     primary: "min-w-0 flex-1 shadow-brand md:flex-none",
   },
@@ -4197,10 +4197,10 @@ const tabBar = componentVariants({
     list: "flex h-full",
     item: "flex flex-1",
     control:
-      "flex flex-1 flex-col items-center justify-center gap-1 font-display text-tab-bar-label text-text-subtle no-underline transition-colors duration-fast ease-out hover:text-text-heading",
+      "text-tab-bar-label flex flex-1 flex-col items-center justify-center gap-1 font-display text-text-subtle no-underline transition-colors duration-fast ease-out hover:text-text-heading",
     glyph: "relative inline-flex",
     count:
-      "absolute -top-1 -right-2 grid h-tab-bar-count min-w-tab-bar-count place-items-center rounded-pill bg-surface-brand px-1 font-display text-tab-bar-count text-text-on-brand",
+      "h-tab-bar-count min-w-tab-bar-count text-tab-bar-count absolute -top-1 -right-2 grid place-items-center rounded-pill bg-surface-brand px-1 font-display text-text-on-brand",
   },
   variants: {
     isActive: { true: { control: "font-bold text-text-brand hover:text-text-brand" } },
@@ -4606,13 +4606,13 @@ const dialog = componentVariants({
   slots: {
     overlay: "fixed inset-0 z-overlay flex bg-surface-overlay",
     content:
-      "flex max-h-full w-full flex-col overflow-y-auto bg-surface-card shadow-4 animate-sheet-in",
+      "flex max-h-full w-full animate-sheet-in flex-col overflow-y-auto bg-surface-card shadow-4",
     handle: "flex justify-center pt-2.5",
     handleBar: "h-1 w-10 rounded-pill bg-ink-300",
     header: "flex items-start justify-between gap-4 px-6 pt-5",
-    title: "font-display text-dialog-title text-text-heading",
+    title: "text-dialog-title font-display text-text-heading",
     description: "px-6 pt-1 text-body-sm text-text-muted",
-    body: "px-6 pt-3 pb-5 text-dialog-body text-text-body",
+    body: "text-dialog-body px-6 pt-3 pb-5 text-text-body",
     footer: "flex flex-wrap justify-end gap-2.5 px-6 pb-6",
   },
   variants: {
@@ -5202,7 +5202,7 @@ const drawer = componentVariants({
   slots: {
     overlay: "fixed inset-0 z-overlay bg-surface-overlay",
     content:
-      "fixed inset-x-0 top-0 z-overlay flex max-h-dvh flex-col overflow-y-auto bg-surface-card shadow-4 animate-sheet-in",
+      "fixed inset-x-0 top-0 z-overlay flex max-h-dvh animate-sheet-in flex-col overflow-y-auto bg-surface-card shadow-4",
     bar: "container-page flex h-header-compact shrink-0 items-center justify-end",
     body: "container-page flex flex-col gap-4 pb-5",
   },
@@ -5306,7 +5306,7 @@ const siteHeader = componentVariants({
     navList: "flex flex-nowrap items-center gap-6",
     navItem: "shrink-0",
     navLink:
-      "inline-flex border-b-2 border-transparent py-1.5 font-display text-site-header-link whitespace-nowrap text-text-heading no-underline transition-colors duration-fast ease-out hover:text-text-brand",
+      "text-site-header-link inline-flex border-b-2 border-transparent py-1.5 font-display whitespace-nowrap text-text-heading no-underline transition-colors duration-fast ease-out hover:text-text-brand",
     spacer: "flex-1",
     actions: "hidden shrink-0 items-center gap-2 lg:flex",
     compactActions: "flex shrink-0 items-center gap-2 lg:hidden",
@@ -5947,7 +5947,7 @@ const carouselTrack = componentVariants({
     header: "flex flex-wrap items-end justify-between gap-5",
     controls: "flex shrink-0 items-center gap-2",
     track:
-      "grid auto-cols-review-carousel grid-flow-col gap-5 overflow-x-auto overscroll-x-contain px-1 pt-1 pb-4 snap-x snap-mandatory motion-safe:scroll-smooth *:min-w-0 *:snap-start",
+      "auto-cols-review-carousel grid snap-x snap-mandatory grid-flow-col gap-5 overflow-x-auto overscroll-x-contain px-1 pt-1 pb-4 *:min-w-0 *:snap-start motion-safe:scroll-smooth",
   },
 });
 

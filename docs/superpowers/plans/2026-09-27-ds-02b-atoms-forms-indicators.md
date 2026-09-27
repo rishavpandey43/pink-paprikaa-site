@@ -214,7 +214,7 @@ export function Probe() {
     <label className="group/choice relative has-disabled:text-ink-400">
       Probe
       <input className="peer sr-only" type="checkbox" />
-      <span className="order-last -rotate-45 rotate-45 appearance-none border-6 ps-11 pe-11 font-regular opacity-85 accent-pink-500 ms-auto size-3/4 size-6/7 max-w-none translate-x-4.5 truncate placeholder:text-text-subtle read-only:cursor-default in-aria-invalid:border-status-danger starting:opacity-0 group-has-checked/choice:bg-pink-500 group-has-focus-visible/choice:outline-2 group-has-aria-invalid/choice:border-status-danger group-has-checked/choice:group-has-disabled/choice:text-ink-400 motion-safe:animate-mark-pulse" />
+      <span className="order-last ms-auto size-3/4 size-6/7 max-w-none translate-x-4.5 -rotate-45 rotate-45 appearance-none truncate border-6 ps-11 pe-11 font-regular accent-pink-500 opacity-85 group-has-checked/choice:bg-pink-500 group-has-focus-visible/choice:outline-2 group-has-checked/choice:group-has-disabled/choice:text-ink-400 group-has-aria-invalid/choice:border-status-danger placeholder:text-text-subtle read-only:cursor-default in-aria-invalid:border-status-danger motion-safe:animate-mark-pulse starting:opacity-0" />
     </label>
   );
 }
@@ -640,14 +640,14 @@ import { SymbolMark } from "./symbol-mark";
 export const fieldControlVariants = componentVariants({
   slots: {
     root: [
-      "group/field relative flex w-full min-w-0 items-center gap-2.5 rounded-md border border-border-default bg-surface-card px-3.5 font-body text-text-body transition-control",
+      "group/field transition-control relative flex w-full min-w-0 items-center gap-2.5 rounded-md border border-border-default bg-surface-card px-3.5 font-body text-text-body",
       "has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-100 has-disabled:text-ink-400",
     ],
     icon: "text-ink-500 group-has-disabled/field:text-ink-400",
     control: "bg-transparent outline-none disabled:cursor-not-allowed",
     glyph: "ms-auto",
-    spinner: "ms-auto size-field-spinner shrink-0 text-pink-500 motion-safe:animate-mark-pulse",
-    suffix: "shrink-0 font-mono text-field-suffix text-text-subtle",
+    spinner: "size-field-spinner ms-auto shrink-0 text-pink-500 motion-safe:animate-mark-pulse",
+    suffix: "text-field-suffix shrink-0 font-mono text-text-subtle",
   },
   variants: {
     size: {
@@ -677,17 +677,17 @@ export const fieldControlVariants = componentVariants({
         glyph: "text-ink-500 group-has-disabled/field:text-ink-400",
       },
       error: {
-        root: "border-2 border-status-danger focus-within:shadow-field-ring-danger",
+        root: "focus-within:shadow-field-ring-danger border-2 border-status-danger",
         icon: "text-status-danger",
         glyph: "text-status-danger",
       },
       success: {
-        root: "border-2 border-status-success focus-within:shadow-field-ring-success",
+        root: "focus-within:shadow-field-ring-success border-2 border-status-success",
         icon: "text-status-success",
         glyph: "text-status-success",
       },
       warning: {
-        root: "border-2 border-status-warning focus-within:shadow-field-ring-warning",
+        root: "focus-within:shadow-field-ring-warning border-2 border-status-warning",
         icon: "text-status-warning",
         glyph: "text-status-warning",
       },
@@ -890,7 +890,7 @@ const meta = {
   component: Input,
   args: { "aria-label": "Full name", placeholder: "Your full name" },
   render: (args) => (
-    <div className="w-full max-w-text-measure-prose">
+    <div className="max-w-text-measure-prose w-full">
       <Input {...args} />
     </div>
   ),
@@ -971,7 +971,7 @@ export const SuffixAndTrailing: Story = {
 export const Sizes: Story = {
   name: "size",
   render: () => (
-    <div className="grid w-full max-w-text-measure-prose gap-3">
+    <div className="max-w-text-measure-prose grid w-full gap-3">
       <Input aria-label="Small" size="sm" placeholder="sm — 40px" />
       <Input aria-label="Medium" size="md" placeholder="md — 48px" />
       <Input aria-label="Large" size="lg" placeholder="lg — 56px" />
@@ -1323,7 +1323,7 @@ const meta = {
   component: Select,
   args: { "aria-label": "Pick your outlet", options: OUTLETS },
   render: (args) => (
-    <div className="w-full max-w-text-measure-prose">
+    <div className="max-w-text-measure-prose w-full">
       <Select {...args} />
     </div>
   ),
@@ -1368,7 +1368,7 @@ export const StatusWarning: Story = {
 export const ReadOnlyAndDisabled: Story = {
   name: "readOnly / disabled",
   render: () => (
-    <div className="grid w-full max-w-text-measure-prose gap-3">
+    <div className="max-w-text-measure-prose grid w-full gap-3">
       <Select aria-label="Outlet" readOnly options={OUTLETS} />
       <Select
         aria-label="Delivery slot"
@@ -1382,7 +1382,7 @@ export const ReadOnlyAndDisabled: Story = {
 export const Sizes: Story = {
   name: "size",
   render: () => (
-    <div className="grid w-full max-w-text-measure-prose gap-3">
+    <div className="max-w-text-measure-prose grid w-full gap-3">
       <Select aria-label="Outlet, small" size="sm" options={OUTLETS} />
       <Select aria-label="Outlet, large" size="lg" options={OUTLETS} />
     </div>
@@ -1662,7 +1662,7 @@ export const choiceVariants = componentVariants({
     root: "group/choice relative flex cursor-pointer font-body text-text-body has-disabled:cursor-not-allowed has-disabled:text-ink-400",
     input: "sr-only",
     control: "flex shrink-0",
-    text: "flex min-w-0 flex-1 flex-col gap-0.5 text-control font-medium",
+    text: "text-control flex min-w-0 flex-1 flex-col gap-0.5 font-medium",
     description:
       "text-control-description font-regular text-text-muted group-has-disabled/choice:text-ink-400",
     price:
@@ -1773,7 +1773,7 @@ import { Icon } from "../icon/icon";
 /** 22px, 6px radius, 2px border; checked is pink with a white 14px tick. */
 const box = componentVariants({
   base: [
-    "grid size-choice-box place-items-center rounded-sm border-2 border-border-default bg-ink-000 text-transparent transition-control",
+    "size-choice-box transition-control grid place-items-center rounded-sm border-2 border-border-default bg-ink-000 text-transparent",
     "group-has-checked/choice:border-pink-500 group-has-checked/choice:bg-pink-500 group-has-checked/choice:text-ink-000",
     "group-has-focus-visible/choice:outline-2 group-has-focus-visible/choice:outline-offset-2 group-has-focus-visible/choice:outline-focus",
     "group-has-disabled/choice:border-ink-200 group-has-disabled/choice:bg-ink-200 group-has-checked/choice:group-has-disabled/choice:text-ink-400",
@@ -2451,12 +2451,12 @@ import { componentVariants } from "../../lib/component-variants";
 const toggle = componentVariants({
   slots: {
     track: [
-      "relative flex h-switch-height w-switch-width rounded-pill bg-ink-300 transition-colors duration-base ease-out",
+      "h-switch-height w-switch-width relative flex rounded-pill bg-ink-300 transition-colors duration-base ease-out",
       "group-has-checked/choice:bg-pink-500",
       "group-has-focus-visible/choice:outline-2 group-has-focus-visible/choice:outline-offset-2 group-has-focus-visible/choice:outline-focus",
       "group-has-disabled/choice:bg-ink-200",
     ],
-    knob: "absolute top-0.75 left-0.75 size-switch-knob rounded-pill bg-ink-000 shadow-1 transition-transform duration-base ease-out group-has-checked/choice:translate-x-4.5",
+    knob: "size-switch-knob absolute top-0.75 left-0.75 rounded-pill bg-ink-000 shadow-1 transition-transform duration-base ease-out group-has-checked/choice:translate-x-4.5",
   },
 });
 
@@ -2506,7 +2506,7 @@ const meta = {
   component: Switch,
   args: { label: "Order updates" },
   render: (args) => (
-    <div className="w-full max-w-text-measure-prose">
+    <div className="max-w-text-measure-prose w-full">
       <Switch {...args} />
     </div>
   ),
@@ -2529,7 +2529,7 @@ export const Playground: Story = {};
 export const OnAndOff: Story = {
   name: "on / off",
   render: () => (
-    <div className="grid w-full max-w-text-measure-prose gap-4">
+    <div className="max-w-text-measure-prose grid w-full gap-4">
       <Switch label="Order updates" defaultChecked />
       <Switch label="Marketing texts" />
     </div>
@@ -2720,7 +2720,7 @@ const meta = {
   component: Slider,
   args: { label: "Guests", min: 15, max: 300, step: 5, defaultValue: 60 },
   render: (args) => (
-    <div className="w-full max-w-text-measure-prose">
+    <div className="max-w-text-measure-prose w-full">
       <Slider {...args} />
     </div>
   ),
@@ -2744,7 +2744,7 @@ export const Playground: Story = {};
 export const DawatGuests: Story = {
   name: "dawat guests (white card)",
   render: (args) => (
-    <div className="grid w-full max-w-text-measure-prose gap-2.5 rounded-lg border border-border-subtle bg-surface-card p-6 shadow-1">
+    <div className="max-w-text-measure-prose grid w-full gap-2.5 rounded-lg border border-border-subtle bg-surface-card p-6 shadow-1">
       <span className="font-display text-body-sm font-bold text-text-heading">1. Guests</span>
       <Slider {...args} />
       <span className="font-body text-caption text-text-muted">
@@ -2761,7 +2761,7 @@ export const OfficeMealsOnInk: Story = {
   render: (args) => (
     <div
       data-surface="ink"
-      className="grid w-full max-w-text-measure-prose gap-2 rounded-lg bg-surface-inverse p-6"
+      className="max-w-text-measure-prose grid w-full gap-2 rounded-lg bg-surface-inverse p-6"
     >
       <div className="flex items-baseline justify-between gap-3">
         <span className="font-display font-bold text-text-heading">Meals a day</span>
@@ -3202,7 +3202,7 @@ const meta = {
   title: "Atoms/Skeleton",
   component: Skeleton,
   render: (args) => (
-    <div className="w-full max-w-text-measure-prose">
+    <div className="max-w-text-measure-prose w-full">
       <Skeleton {...args} />
     </div>
   ),
@@ -3239,7 +3239,7 @@ export const Circle: Story = {
 export const CardShape: Story = {
   name: "card shape",
   render: () => (
-    <div className="flex w-full max-w-text-measure-prose gap-3">
+    <div className="max-w-text-measure-prose flex w-full gap-3">
       <Skeleton className="h-17 w-23 shrink-0 rounded-md" />
       <Skeleton variant="text" lines={3} className="flex-1" />
     </div>
@@ -3432,7 +3432,7 @@ import { componentVariants } from "../../lib/component-variants";
 const progressBar = componentVariants({
   slots: {
     root: "grid gap-2",
-    label: "font-body text-progress-label text-text-muted",
+    label: "text-progress-label font-body text-text-muted",
     track: "flex w-full gap-1.25",
     segment: "flex-1 overflow-hidden rounded-pill",
     bar: "block h-full rounded-pill transition-all duration-slow ease-out",
@@ -3548,7 +3548,7 @@ const meta = {
   component: ProgressBar,
   args: { label: "3 more visits and chai's on us", value: 3 },
   render: (args) => (
-    <div className="w-full max-w-text-measure-prose">
+    <div className="max-w-text-measure-prose w-full">
       <ProgressBar {...args} />
     </div>
   ),
@@ -3585,7 +3585,7 @@ export const Inverse: Story = {
   render: () => (
     <div
       data-surface="brand"
-      className="w-full max-w-text-measure-prose rounded-lg bg-surface-brand p-4"
+      className="max-w-text-measure-prose w-full rounded-lg bg-surface-brand p-4"
     >
       <ProgressBar label="4 of 6 visits" segments={6} value={4} tone="inverse" isLabelHidden />
     </div>
@@ -3595,7 +3595,7 @@ export const Inverse: Story = {
 export const Sizes: Story = {
   name: "size",
   render: () => (
-    <div className="grid w-full max-w-text-measure-prose gap-4">
+    <div className="max-w-text-measure-prose grid w-full gap-4">
       <ProgressBar label="Loyalty card, sm" segments={6} value={3} size="sm" />
       <ProgressBar label="Loyalty card, md" segments={6} value={3} size="md" />
     </div>
@@ -3831,7 +3831,7 @@ import { SymbolMark } from "./symbol-mark";
 export const brandDiamondVariants = componentVariants({
   slots: {
     unit: "relative grid shrink-0 place-items-center",
-    diamond: "grid rotate-45 place-items-center overflow-hidden rounded-brand-diamond",
+    diamond: "rounded-brand-diamond grid rotate-45 place-items-center overflow-hidden",
     mark: "-rotate-45",
   },
   variants: {
@@ -3934,8 +3934,8 @@ const rating = componentVariants({
   slots: {
     root: "inline-flex items-center gap-2",
     units: "inline-flex items-center",
-    value: "font-display text-rating-value font-bold text-text-heading",
-    count: "font-body text-rating-count text-text-subtle",
+    value: "text-rating-value font-display font-bold text-text-heading",
+    count: "text-rating-count font-body text-text-subtle",
   },
   variants: {
     variant: {
@@ -4841,8 +4841,8 @@ import { componentVariants } from "../../lib/component-variants";
 const priceTag = componentVariants({
   slots: {
     root: "inline-flex items-baseline gap-2",
-    amount: "font-display text-price-amount font-bold",
-    was: "font-body text-price-was text-text-subtle",
+    amount: "text-price-amount font-display font-bold",
+    was: "text-price-was font-body text-text-subtle",
   },
   variants: {
     size: {

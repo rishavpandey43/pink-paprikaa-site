@@ -2968,7 +2968,7 @@ export const HeadingSteps: Story = {
 
 export const BodySteps: Story = {
   render: () => (
-    <div className="flex max-w-text-measure-prose flex-col gap-4">
+    <div className="max-w-text-measure-prose flex flex-col gap-4">
       <TypeSpecimen step="body-lg" family="body" tone="body">
         We roast our own masala every morning, then build the rest of the day around it.
       </TypeSpecimen>
@@ -3610,7 +3610,7 @@ export const UtilityClasses: Story = {
         </div>
       </SpecimenRow>
       <SpecimenRow label="section-y">
-        <div className="section-y w-full rounded-md bg-surface-page-alt px-4">
+        <div className="w-full rounded-md bg-surface-page-alt px-4 section-y">
           <span className="font-mono text-mono text-text-muted">fluid section rhythm</span>
         </div>
       </SpecimenRow>

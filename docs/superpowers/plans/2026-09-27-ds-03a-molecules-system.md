@@ -842,7 +842,7 @@ const field = componentVariants({
     root: "grid min-w-0",
     label: "flex items-baseline gap-1.5 text-body-sm font-medium text-text-body",
     required: "text-text-brand",
-    optional: "text-caption font-normal text-text-subtle",
+    optional: "font-normal text-caption text-text-subtle",
     control: "grid min-w-0 gap-1.5",
   },
   variants: {
@@ -2298,7 +2298,7 @@ const otpInput = componentVariants({
     field: "relative w-fit max-w-full",
     cells: "flex flex-wrap gap-2.5",
     /** Layered over the shared field box (Plan 2b): a 48×56 cell with a centred mono digit. */
-    cell: "w-12 justify-center px-0 font-mono text-otp-digit text-text-heading",
+    cell: "text-otp-digit w-12 justify-center px-0 font-mono text-text-heading",
     input:
       "absolute inset-0 size-full cursor-text appearance-none border-0 bg-transparent p-0 text-body text-transparent caret-transparent outline-hidden selection:bg-transparent disabled:cursor-not-allowed",
   },
@@ -2746,7 +2746,7 @@ const slotPicker = componentVariants({
     grid: "grid gap-2.5",
     slot: "grid min-h-hit min-w-0 cursor-pointer place-items-center gap-0.5 rounded-md border border-border-default bg-surface-card px-2.5 py-2 text-center font-display text-body-sm font-bold text-ink-700 transition-colors duration-fast ease-out has-checked:border-2 has-checked:border-border-brand has-checked:bg-surface-page-alt has-checked:text-pink-700 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:bg-surface-sunken has-disabled:text-ink-400",
     input: "sr-only",
-    note: "font-body text-slot-picker-note font-normal text-text-subtle",
+    note: "text-slot-picker-note font-normal font-body text-text-subtle",
   },
   variants: {
     status: {
@@ -3186,7 +3186,7 @@ const alert = componentVariants({
     root: "flex items-start gap-3 rounded-md border px-4 py-3.5",
     icon: "mt-px",
     body: "min-w-0 flex-1",
-    title: "m-0 font-display text-alert-title",
+    title: "text-alert-title m-0 font-display",
     content: "text-body-sm text-pretty",
     action: "mt-2.5",
   },
@@ -3783,9 +3783,9 @@ const toastViewport = componentVariants({
 const toast = componentVariants({
   slots: {
     root: "pointer-events-auto inline-flex max-w-full items-center gap-3 rounded-pill px-4 py-3 text-text-body shadow-3",
-    message: "min-w-0 font-body text-toast font-medium text-pretty",
+    message: "text-toast min-w-0 font-body font-medium text-pretty",
     action:
-      "shrink-0 rounded-xs px-0.5 font-display text-toast-action font-bold text-current uppercase",
+      "text-toast-action shrink-0 rounded-xs px-0.5 font-display font-bold text-current uppercase",
   },
   variants: {
     tone: {
@@ -4288,9 +4288,9 @@ const NO_HOTKEY: string[] = [];
 const snackbar = componentVariants({
   slots: {
     anchor: "pointer-events-none inset-x-6 z-toast m-0 flex list-none p-0",
-    root: "pointer-events-auto flex w-full min-w-0 max-w-snackbar animate-sheet-in items-center gap-3 rounded-md py-3.25 pr-3.5 pl-4 text-text-body shadow-3",
-    message: "min-w-0 flex-1 font-body text-snackbar font-medium text-pretty",
-    action: "shrink-0 rounded-xs px-1.5 py-1 font-display text-snackbar-action font-bold uppercase",
+    root: "max-w-snackbar pointer-events-auto flex w-full min-w-0 animate-sheet-in items-center gap-3 rounded-md py-3.25 pr-3.5 pl-4 text-text-body shadow-3",
+    message: "text-snackbar min-w-0 flex-1 font-body font-medium text-pretty",
+    action: "text-snackbar-action shrink-0 rounded-xs px-1.5 py-1 font-display font-bold uppercase",
     dismiss:
       "grid size-6 shrink-0 place-items-center rounded-pill text-current opacity-70 transition-opacity duration-fast ease-out hover:opacity-100",
   },
@@ -4666,7 +4666,7 @@ const emptyState = componentVariants({
     symbol: "mb-1 text-pink-500 opacity-85",
     icon: "mb-1 text-pink-300",
     title: "m-0 font-display text-text-heading",
-    body: "m-0 max-w-text-measure-narrow text-body-sm text-text-muted",
+    body: "max-w-text-measure-narrow m-0 text-body-sm text-text-muted",
     action: "mt-2",
   },
   variants: {
@@ -5015,12 +5015,12 @@ const tabs = componentVariants({
       underline: {
         list: "flex-wrap gap-x-7 gap-y-3 border-b border-border-subtle",
         trigger:
-          "relative pb-3 text-tabs-label text-text-subtle after:absolute after:inset-x-0 after:-bottom-px after:h-0.75 after:rounded-t-xs after:transition-colors after:duration-base after:ease-out hover:text-text-heading aria-selected:text-text-heading aria-selected:after:bg-border-brand",
+          "text-tabs-label relative pb-3 text-text-subtle after:absolute after:inset-x-0 after:-bottom-px after:h-0.75 after:rounded-t-xs after:transition-colors after:duration-base after:ease-out hover:text-text-heading aria-selected:text-text-heading aria-selected:after:bg-border-brand",
       },
       segmented: {
         list: "flex-wrap gap-1 justify-self-start rounded-pill border border-border-subtle bg-surface-card p-1",
         trigger:
-          "min-h-hit rounded-pill px-4 py-2.5 text-body-sm text-tabs-segmented-fg hover:bg-surface-page-alt aria-selected:bg-surface-brand aria-selected:text-text-on-brand aria-selected:hover:bg-brand-hover",
+          "text-tabs-segmented-fg min-h-hit rounded-pill px-4 py-2.5 text-body-sm hover:bg-surface-page-alt aria-selected:bg-surface-brand aria-selected:text-text-on-brand aria-selected:hover:bg-brand-hover",
       },
     },
   },
@@ -6009,7 +6009,7 @@ const sectionHeader = componentVariants({
     root: "flex flex-wrap items-end gap-6",
     copy: "min-w-0",
     overline: "m-0 font-display text-overline text-text-brand uppercase",
-    title: "m-0 font-display text-h2-fluid text-text-heading text-pretty",
+    title: "m-0 font-display text-h2-fluid text-pretty text-text-heading",
     lede: "m-0 mt-3 text-body-lg text-text-muted",
     action: "shrink-0",
   },
@@ -6018,7 +6018,7 @@ const sectionHeader = componentVariants({
       start: { root: "justify-between text-start", copy: "max-w-section-header-measure" },
       center: {
         root: "justify-center text-center",
-        copy: "mx-auto max-w-section-header-measure-centered",
+        copy: "max-w-section-header-measure-centered mx-auto",
       },
     },
     hasOverline: { true: { title: "mt-2.5" } },
@@ -6313,8 +6313,8 @@ const stat = componentVariants({
   slots: {
     root: "grid gap-1",
     icon: "mb-1",
-    value: "font-display text-stat-value",
-    label: "font-body text-stat-label font-medium text-text-body",
+    value: "text-stat-value font-display",
+    label: "text-stat-label font-body font-medium text-text-body",
     sub: "text-stat-sub text-text-subtle",
   },
   variants: {
@@ -6653,11 +6653,11 @@ const accordion = componentVariants({
     root: "border-t border-border-subtle",
     item: "group details-content-motion border-b border-border-subtle",
     summary:
-      "flex cursor-pointer list-none items-center justify-between gap-4 py-4.5 font-display text-accordion-question text-text-heading transition-colors duration-fast ease-out marker:hidden hover:text-text-brand group-open:text-text-brand",
+      "text-accordion-question flex cursor-pointer list-none items-center justify-between gap-4 py-4.5 font-display text-text-heading transition-colors duration-fast ease-out group-open:text-text-brand marker:hidden hover:text-text-brand",
     question: "min-w-0",
     chevron: "transition-transform duration-base ease-out group-open:rotate-180",
     answer:
-      "max-w-accordion-answer-measure pb-4.5 text-accordion-answer text-text-muted text-pretty",
+      "max-w-accordion-answer-measure text-accordion-answer pb-4.5 text-pretty text-text-muted",
   },
 });
 
@@ -7757,7 +7757,7 @@ const stepTracker = componentVariants({
   slots: {
     root: "m-0 list-none p-0",
     step: "flex min-w-0",
-    marker: "relative mt-0.5 size-step-tracker-marker shrink-0",
+    marker: "size-step-tracker-marker relative mt-0.5 shrink-0",
     diamond: "absolute inset-0 grid rotate-45 place-items-center overflow-hidden rounded-xs",
     mark: "size-step-tracker-mark -rotate-45 opacity-50",
     check: "absolute inset-0 grid place-items-center text-ink-000",

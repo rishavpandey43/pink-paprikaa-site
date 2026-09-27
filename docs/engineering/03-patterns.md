@@ -11,16 +11,16 @@ PR (trust the code, fix the doc).
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 
 const button = componentVariants({
-  base: "inline-flex items-center justify-center rounded-6 font-display font-bold transition-colors",
+  base: "rounded-6 inline-flex items-center justify-center font-display font-bold transition-colors",
   variants: {
     variant: {
-      primary: "bg-brand-primary text-text-on-brand not-disabled:hover:bg-brand-primary-hover",
-      secondary: "border-2 border-brand-primary bg-surface-card text-text-link",
+      primary: "bg-brand-primary not-disabled:hover:bg-brand-primary-hover text-text-on-brand",
+      secondary: "border-brand-primary border-2 bg-surface-card text-text-link",
     },
     size: {
-      sm: "h-(--button-h-sm) px-(--button-px-sm) text-body2",
-      md: "h-(--button-h-md) px-(--button-px-md) text-body1",
-      lg: "h-(--button-h-lg) px-(--button-px-lg) text-subtitle1",
+      sm: "text-body2 h-(--button-h-sm) px-(--button-px-sm)",
+      md: "text-body1 h-(--button-h-md) px-(--button-px-md)",
+      lg: "text-subtitle1 h-(--button-h-lg) px-(--button-px-lg)",
     },
   },
   defaultVariants: { variant: "primary", size: "md" },
