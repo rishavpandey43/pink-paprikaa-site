@@ -54,10 +54,9 @@ export function Link({
   ...props
 }: LinkProps) {
   const Component: ElementType = asChild ? Slot.Root : "a";
-  // The outward arrow is the one glyph that speaks: its accessible name tells a screen reader the
-  // link opens a new tab (R36, built-in English). A caller's own `iconAfter` is decorative and
-  // replaces it.
-  const hasExternalArrow = isExternal && iconAfter === undefined;
+  // An external link always announces "Opens in a new tab" (R36, built-in English) on its trailing
+  // glyph: the outward arrow, or the caller's own `iconAfter`, which replaces the arrow's drawing.
+  const after = iconAfter ?? (isExternal ? ArrowUpRight : undefined);
   return (
     <Component
       className={link({ variant, size, className })}
@@ -66,8 +65,9 @@ export function Link({
     >
       {icon ? <Icon icon={icon} size="sm" /> : null}
       <Slot.Slottable child={children}>{(label) => label}</Slot.Slottable>
-      {iconAfter ? <Icon icon={iconAfter} size="sm" /> : null}
-      {hasExternalArrow ? <Icon icon={ArrowUpRight} size="sm" label="Opens in a new tab" /> : null}
+      {after ? (
+        <Icon icon={after} size="sm" label={isExternal ? "Opens in a new tab" : undefined} />
+      ) : null}
     </Component>
   );
 }

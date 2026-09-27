@@ -44,7 +44,7 @@ describe("Link", () => {
     ["inverse", "text-ink-000", "hover:decoration-white-alpha-90"],
     ["quiet", "hover:text-text-link", "decoration-transparent"],
   ] as const)(
-    "gives the %s variant its hover state (%s, %s)",
+    "gives the %s variant its hover colour and underline classes, or the resting one hover keeps (%s, %s)",
     (variant, hoverColour, hoverLine) => {
       render(
         <Link href="/outlets" variant={variant}>
@@ -94,7 +94,7 @@ describe("Link", () => {
     expect(screen.getByRole("img", { name: "Opens in a new tab" })).toBeInTheDocument();
   });
 
-  it("keeps an explicit iconAfter instead of the external arrow", () => {
+  it("draws an explicit iconAfter instead of the external arrow and still announces the new tab", () => {
     render(
       <Link href="https://www.zomato.com" isExternal iconAfter={ArrowRight}>
         Zomato
@@ -103,7 +103,7 @@ describe("Link", () => {
     const link = screen.getByRole("link");
     expect(link.querySelector(".lucide-arrow-right")).not.toBeNull();
     expect(link.querySelector(".lucide-arrow-up-right")).toBeNull();
-    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Opens in a new tab" })).toBeInTheDocument();
   });
 
   it("keeps an internal link in the same tab", () => {
