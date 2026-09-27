@@ -6678,3 +6678,12 @@ If nothing changed, paste the accepted list in the task report instead.
 - **No on-brand variants** for Checkbox/Radio/Switch/Slider (none designed) — YAGNI, accepted.
 - **Read-only Select** renders disabled for the visual, **plus a hidden `<input type="hidden" name={name} value={value}>`** so the value is still submitted (react-hook-form reads it) — add a test.
 - **R21 — field text is 16px.** `lib/field-control.tsx` renders the control value at `text-body` (16px) for every size (sm/md/lg change height and padding only): iOS Safari zooms on focus below 16px, and the handoff fields use `font-size:16px`. Add a test asserting the value text class.
+
+## Controller amendments — routed from Plan 2a's final review
+
+Binding for Task 0's fold list; they override this plan's body where they disagree.
+
+- **Stale body text.** Where the body still expects `SYMBOL_DATA_URI_WHITE`, an inline-SVG `SymbolMark`, or `radius-status-dot`, it is wrong: `SymbolMark` is a `.mask-symbol` span over `var(--pp-symbol-mask)` (R19/R25), and the 2px corner is `radius.diamond` in `tokens/primitive/shape.json`, used as `rounded-diamond` (R47).
+- **Surface-overridden shadows need a guard.** Tailwind 4 inlines `--shadow-*` values into `shadow-*` utilities at build time, so a surface override of a shadow token never reaches the class. Plan 2a fixed `shadow-button-primary` with an `@utility` in `packages/ui/src/styles.css`. Add a spec: every `shadow-*` token that any surface overrides has a matching `@utility shadow-<name>` (this plan's `shadow-focus-ring` is the next one).
+- **R41 covers `src/lib/*`.** Extend the self-package / barrel import lint to `packages/ui/src/lib/**` in the task that adds this plan's lib files.
+- **Every surface restores the base.** Plan 2a's fix wave made every non-light surface resolve to base values plus its own overrides; any token this plan overrides on a surface is covered by that spec — do not hand-restore it in `light.json` only.
