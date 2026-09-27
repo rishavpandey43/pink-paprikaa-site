@@ -13,6 +13,7 @@
 @import "@pink-paprikaa-web/design-tokens/surfaces.css" layer(base);
 
 @source "./";
+@source not "./**/*.{spec,test,stories}.{ts,tsx}";
 
 @theme {
   --animate-skeleton: pp-skeleton 1.2s var(--ease-in-out) infinite;
@@ -137,9 +138,12 @@
     transform: none;
   }
 
+  /* Reduced motion keeps the fade and drops the lift (spec §3.2.4). The attribute selector beats
+     the global `*` reset above at equal importance, so this one transition survives it. */
   @media (prefers-reduced-motion: reduce) {
     [data-pp-reveal] {
       transform: none;
+      transition-duration: var(--duration-slow) !important;
     }
   }
 
@@ -147,6 +151,7 @@
     [data-pp-reveal] {
       opacity: 1;
       transform: none;
+      transition: none;
     }
   }
 }

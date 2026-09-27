@@ -7,8 +7,11 @@ import { createTV, type TWMergeConfig } from "tailwind-variants";
  * tailwind-variants resolves conflicts with tailwind-merge, which classifies a class by its value.
  * The token names are not Tailwind's stock scales, so without these lists tailwind-merge guesses
  * wrong and silently deletes classes: `text-h1` would be read as a text *colour* and dropped next
- * to `text-text-muted`. `component-variants.spec.ts` asserts every list equals the token build
- * (and the stylesheet's animations), so a new token cannot be forgotten here.
+ * to `text-text-muted`, `border-default` as a border colour next to `border-border-subtle`. The
+ * stylesheet's own utilities (`z-header`, `duration-fast`, `scrim-*`, `autogrid*`) are registered
+ * too, so a later one replaces an earlier one. `component-variants.spec.ts` asserts every token
+ * list equals the token build (and the stylesheet's animations), so a new token cannot be
+ * forgotten here.
  */
 const TEXT = [
   "display-1",
@@ -62,6 +65,11 @@ const SPACING = [
   "card-min-wide",
   "dock-clearance",
 ];
+const BORDER_WIDTH = ["default", "strong"];
+const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];
+const DURATION = ["instant", "fast", "base", "slow", "page"];
+/** tailwind-merge keeps a width group per side (`border-w-t` for `border-t-*`, …); all read these. */
+const BORDER_SIDES = ["x", "y", "s", "e", "bs", "be", "t", "r", "b", "l"];
 const ANIMATE = [
   "skeleton",
   "mark-pulse",
@@ -87,6 +95,16 @@ export const twMergeConfig: TWMergeConfig = {
       breakpoint: BREAKPOINT,
       spacing: SPACING,
       animate: ANIMATE,
+    },
+    classGroups: {
+      "border-w": [{ border: BORDER_WIDTH }],
+      ...Object.fromEntries(
+        BORDER_SIDES.map((side) => [`border-w-${side}`, [{ [`border-${side}`]: BORDER_WIDTH }]])
+      ),
+      z: [{ z: Z }],
+      duration: [{ duration: DURATION }],
+      scrim: ["scrim-bottom", "scrim-top"],
+      autogrid: ["autogrid", "autogrid-wide"],
     },
   },
 };

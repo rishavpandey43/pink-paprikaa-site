@@ -25,6 +25,16 @@ function namesIn(namespace: string): string[] {
     .map((e) => e.path.slice(1).join("-"));
 }
 
+/** The values a class group accepts after `prefix-`, e.g. `border-w` / `border` → default, strong. */
+function groupValues(groupId: string, prefix: string): unknown[] {
+  return (twMergeConfig.extend?.classGroups?.[groupId] ?? []).flatMap((definition) =>
+    typeof definition === "object" ? (definition[prefix] ?? []) : []
+  );
+}
+
+/** Every side `border-*` accepts, as tailwind-merge names its width groups. */
+const BORDER_SIDES = ["", "-x", "-y", "-s", "-e", "-bs", "-be", "-t", "-r", "-b", "-l"];
+
 describe("twMergeConfig", () => {
   const theme = twMergeConfig.extend?.theme ?? {};
 
@@ -46,6 +56,18 @@ describe("twMergeConfig", () => {
   it("declares every named spacing token (the 4px unit is Tailwind's multiplier, not a name)", () => {
     const named = namesIn("spacing").filter((name) => name !== "unit");
     expect(new Set(theme.spacing as string[])).toEqual(new Set(named));
+  });
+
+  it.each([
+    { group: "z", prefix: "z", namespace: "z" },
+    { group: "duration", prefix: "duration", namespace: "duration" },
+    ...BORDER_SIDES.map((side) => ({
+      group: `border-w${side}`,
+      prefix: `border${side}`,
+      namespace: "border-width",
+    })),
+  ])("class group $group takes every $namespace token", ({ group, prefix, namespace }) => {
+    expect(new Set(groupValues(group, prefix))).toEqual(new Set(namesIn(namespace)));
   });
 
   it("declares every animation the stylesheet defines", () => {
@@ -76,5 +98,22 @@ describe("componentVariants", () => {
   it("treats a named spacing token like any other spacing value", () => {
     const row = componentVariants({ base: "px-4" });
     expect(row({ className: "px-gutter" })).toBe("px-gutter");
+  });
+
+  it.each(["border-default border-border-subtle", "border-b-strong border-border-brand"])(
+    "keeps a border width and a border colour as separate decisions: %s",
+    (classes) => {
+      expect(componentVariants({ base: classes })()).toBe(classes);
+    }
+  );
+
+  it.each([
+    ["border-default", "border-strong"],
+    ["z-header", "z-overlay"],
+    ["duration-slow", "duration-fast"],
+    ["scrim-bottom", "scrim-top"],
+    ["autogrid", "autogrid-wide"],
+  ])("lets a consumer className replace %s with %s", (base, className) => {
+    expect(componentVariants({ base })({ className })).toBe(className);
   });
 });

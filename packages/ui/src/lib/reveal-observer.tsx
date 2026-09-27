@@ -31,9 +31,12 @@ export function RevealObserver({ selector = "section" }: RevealObserverProps): n
       { rootMargin: REVEAL_ROOT_MARGIN }
     );
 
+    const tagged = new Set<Element>();
     const tagNewSections = () => {
-      for (const element of document.querySelectorAll(`${selector}:not([data-pp-seen])`)) {
+      // `:is()` so a selector list ("section, .reveal") is excluded as a whole, not just its tail.
+      for (const element of document.querySelectorAll(`:is(${selector}):not([data-pp-seen])`)) {
         element.setAttribute("data-pp-seen", "");
+        tagged.add(element);
         if (element.getBoundingClientRect().top < window.innerHeight) continue;
         element.setAttribute("data-pp-reveal", "");
         observer.observe(element);
@@ -47,6 +50,12 @@ export function RevealObserver({ selector = "section" }: RevealObserverProps): n
     return () => {
       mutations.disconnect();
       observer.disconnect();
+      // Untag, so the next setup (StrictMode, Fast Refresh, a remount) takes these over instead of
+      // skipping them — and nothing is left hidden with no observer to reveal it.
+      for (const element of tagged) {
+        element.removeAttribute("data-pp-seen");
+        if (!element.hasAttribute("data-pp-revealed")) element.removeAttribute("data-pp-reveal");
+      }
     };
   }, [selector]);
 
