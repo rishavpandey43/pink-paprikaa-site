@@ -35,7 +35,11 @@
         },
         "hover-tint": { "$value": "{color.pink.50}" }
       },
-      "icon-button": { "ghost": { "fg": { "$value": "{color.ink.700}" } } }
+      "icon-button": { "ghost": { "fg": { "$value": "{color.ink.700}" } } },
+      "tag": {
+        "selected": { "$value": "{color.pink.500}" },
+        "selected-hover": { "$value": "{color.brand.hover}" }
+      }
     },
     "shadow": {
       "$type": "shadow",

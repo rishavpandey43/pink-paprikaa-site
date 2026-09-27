@@ -252,6 +252,35 @@
       "pairs": [["color-icon-button-ghost-fg", "color-surface-brand"]],
       "min": 3,
       "exception": "brand-fill"
+    },
+    {
+      "id": "tag",
+      "surface": null,
+      "pairs": [
+        ["color-ink-700", "color-ink-000"],
+        ["color-ink-700", "color-pink-50"],
+        ["color-pink-700", "color-ink-000"],
+        ["color-pink-700", "color-pink-50"],
+        ["color-text-success", "color-status-success-soft"],
+        ["color-ink-000", "color-tag-selected-hover"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "tag-selected",
+      "surface": null,
+      "pairs": [["color-ink-000", "color-tag-selected"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "tag-selected-on-brand",
+      "surface": "brand",
+      "pairs": [
+        ["color-ink-000", "color-tag-selected"],
+        ["color-ink-000", "color-tag-selected-hover"]
+      ],
+      "min": 4.5
     }
   ]
 }

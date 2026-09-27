@@ -46,6 +46,7 @@ const TEXT = [
   "button-md",
   "button-lg",
   "icon-button-count",
+  "tag",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -101,6 +102,7 @@ const SPACING = [
   "icon-button-md",
   "icon-button-lg",
   "icon-button-count",
+  "tag-h",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];
