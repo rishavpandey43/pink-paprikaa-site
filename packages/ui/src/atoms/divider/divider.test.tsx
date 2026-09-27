@@ -36,6 +36,14 @@ describe("Divider", () => {
     expect(rule.querySelectorAll(".bg-border-subtle")).toHaveLength(2);
   });
 
+  it.each(["", "   "])("treats a blank label %j as no label: a plain, unnamed rule", (label) => {
+    render(<Divider label={label} />);
+    const rule = screen.getByRole("separator");
+    expect(rule).toHaveClass("h-px", "w-full");
+    expect(rule).toBeEmptyDOMElement();
+    expect(rule).not.toHaveAttribute("aria-label");
+  });
+
   it("names a diamond break with its label without printing it", () => {
     render(<Divider variant="diamond" label="Company" />);
     expect(screen.getByRole("separator", { name: "Company" })).toBeInTheDocument();

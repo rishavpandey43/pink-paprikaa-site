@@ -114,11 +114,12 @@ export function ImageSlot({
     );
   }
   const { src: _src, label, ...rest } = props;
-  const isPlaceholder = children === undefined;
+  // A blank label would make an unnamed `img`: without a name the placeholder is plain decoration.
+  const isNamedPlaceholder = children === undefined && label.trim() !== "";
   return (
     <div
-      role={isPlaceholder ? "img" : undefined}
-      aria-label={isPlaceholder ? label : undefined}
+      role={isNamedPlaceholder ? "img" : undefined}
+      aria-label={isNamedPlaceholder ? label : undefined}
       className={slots.root({ className })}
       {...rest}
     >

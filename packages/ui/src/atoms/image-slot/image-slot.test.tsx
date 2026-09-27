@@ -125,6 +125,12 @@ describe("ImageSlot", () => {
     expect(screen.queryByRole("img", { name: "Thali 4:3" })).not.toBeInTheDocument();
   });
 
+  it.each(["", "   "])("never renders an unnamed image for a blank label %j", (label) => {
+    const { container } = render(<ImageSlot label={label} />);
+    expect(screen.queryByRole("img")).toBeNull();
+    expect(container.firstElementChild).not.toHaveAttribute("aria-label");
+  });
+
   it("does not compile a photo without alt, width and height", () => {
     // @ts-expect-error — a real image needs alt (a11y) and intrinsic size (no layout shift)
     render(<ImageSlot src="/photos/thali.jpg" />);

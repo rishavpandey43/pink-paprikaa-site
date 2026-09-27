@@ -49,14 +49,16 @@ export function Divider({
   className,
   ...props
 }: DividerProps) {
-  const layout = layoutOf(variant, label, orientation);
+  // A blank label names nothing: treat it as no label (parity with StatusDot, R48).
+  const name = label?.trim() === "" ? undefined : label;
+  const layout = layoutOf(variant, name, orientation);
   const slots = divider({ layout });
   const hasOrnament = layout === "labelled" || layout === "diamond";
   return (
     <div
       role="separator"
       aria-orientation={orientation === "vertical" ? "vertical" : undefined}
-      aria-label={label}
+      aria-label={name}
       className={slots.root({ className })}
       {...props}
     >
@@ -66,7 +68,7 @@ export function Divider({
           {layout === "diamond" ? (
             <SymbolMark className={slots.mark()} />
           ) : (
-            <span className={slots.label()}>{label}</span>
+            <span className={slots.label()}>{name}</span>
           )}
           <span className={slots.line()} />
         </>
