@@ -10,6 +10,10 @@ const config: StorybookConfig = {
   // globs reach out of this project into `packages/ui` (three levels up: `.storybook/` →
   // `apps/storybook/` → `apps/` → workspace root).
   stories: [
+    // Foundations, kits and docs owned by the Storybook app itself.
+    "../src/**/*.mdx",
+    "../src/**/*.stories.@(ts|tsx)",
+    // Component stories live beside the components in the design system library.
     "../../../packages/ui/src/**/*.mdx",
     "../../../packages/ui/src/**/*.stories.@(js|jsx|ts|tsx)",
   ],
