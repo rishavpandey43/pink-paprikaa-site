@@ -84,6 +84,8 @@ Recorded against `2026-09-27-ds-00-contracts.md` §6. Additive unless stated.
 | 14  | FeatureItem     | Source list includes "Home trust cards"                                                   | The Home trust cards are not a FeatureItem usage: they are three bespoke cards (a DietMark, a mono licence number, a link) composed in the web app from `Card` + `Icon`.                                                                                                                        | Their marks and layout (icon above title, no tile) differ from the tile pattern; promoting them would need a second anatomy for one section.                                                                                                                                                        |
 | 15  | KeyValueList    | Source list includes "Contact rows"                                                       | Contact rows are `ListRow` (Plan 3a: icon + title, link rows via `asChild`).                                                                                                                                                                                                                    | An address or a phone number is not a term/definition pair; the rows are links.                                                                                                                                                                                                                     |
 | 16  | (tokens)        | —                                                                                         | New semantic token `shadow.selected` (`inset 0 0 0 1px` brand pink) shared by ChoiceCardGroup and CheckCard.                                                                                                                                                                                    | "Selected" doubles a 1px brand border to 2px without moving layout; it is one state treatment for every selectable card, so it is semantic, not per component.                                                                                                                                      |
+| 17  | OutletCard      | no `href`                                                                                 | adds `href?: string \| undefined` and `linkAs?: LinkAs \| undefined`: the name becomes a stretched link over the card, which lifts only then; the `action` sits above the link (`z-raised`).                                                                                                    | Spec §9.2's OutletCard row lists `href` (§8.2: navigation `onClick` → `href`); dev parity (contracts §0.0) — the dev OutletCard is a linkable card. Same anatomy as MenuItemCard (deviation 13).                                                                                                    |
+| 18  | LogoLockup      | `tone`, `size`, `hasTagline`, `align`                                                     | adds `isDecorative?: boolean \| undefined` (= `false`), passed to `Logo`.                                                                                                                                                                                                                       | Dev parity (contracts §0.0): artwork that already names the brand in nearby text must not announce it twice. `LogoLockupProps` extends `div` props, whose `title` is the HTML attribute, so the switch is a boolean.                                                                                |
 
 **Cross-plan notes (for the controller).** (1) OfferSeal's `xl` is the 360px feed-post seal, which is what Plan 5's marketing kit passes (`size="xl"`, `bleed="md"`); Plan 4's HeroBanner Home story passes `size="xl"` for the 156px hero seal and should pass `size="md"`. (2) ChoiceCardGroup lives in `molecules/choice-card-group/choice-card-group.tsx` (file named after its export); Plan 5 Task 0's audit item A1 names `molecules/choice-card/`. (3) QuotePanel (Plan 4) renders its own money rows typed with `KeyValueItem` — the type is exported here unchanged.
 
@@ -190,6 +192,7 @@ Each was read from the finished Plans 2a / 2b / 2c; confirm it against the code.
 | i   | `Link` (2a Task 3): `size="sm"` and `isExternal` (target `_blank`, safe rel, arrow glyph).                                                                                                                                                                                                                                                                                                                   | Adjust ReviewCard.                                                                                                              |
 | j   | **R13** — every optional atom prop is declared `?: T \| undefined`, so `was={was}`, `src={avatar}`, `label={countdownLabel}` compile under `exactOptionalPropertyTypes`.                                                                                                                                                                                                                                     | For any atom prop that still lacks `\| undefined`, write `{...(x === undefined ? {} : { x })}` at that call site and report it. |
 | k   | `OnSurfaces({ children })` (2a Task 1) renders its children on page / alt / brand / ink / soft in a `flex flex-wrap` row per ground; `fakeRegister(name)` (2b Task 1) returns `{ name, onChange, onBlur, ref }` as `vi.fn()` spies.                                                                                                                                                                          | Use the real names.                                                                                                             |
+| l   | Dev parity tables present on every ported-component task (contracts §0.0): Tasks 1–9 each carry a `**Dev reference:**` line and a `**Dev parity:**` table; Tasks 10–20 carry `**Dev reference:** none (handoff component)`.                                                                                                                                                                                  | Stop and report the task that lacks one; the controller adds it before dispatch.                                                |
 
 - [ ] **Step 4: Confirm the baseline is green**
 
@@ -208,6 +211,33 @@ Report: the Step 3 table filled in, every Step 2 difference, and for each the ta
 - Create: `packages/design-tokens/tokens/component/menu-item.json`
 - Create: `packages/ui/src/molecules/menu-item-row/menu-item-row.tsx`, `menu-item-row.test.tsx`, `menu-item-row.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`), `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/menu-item-row/menu-item-row.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                    | Ruling  | Where, or the spec clause                                                                             |
+| --------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| Dish name is a heading; price printed                                       | ALREADY | tests "names the dish…", "prints the price…"                                                          |
+| `nameAs` picks the name element (incl. `"p"`)                               | ALREADY | `headingLevel` (spec §8.1 "Titled components take `headingLevel`"; contract §6 has no `nameAs`)       |
+| `was` struck through (`<s>`)                                                | ALREADY | PriceTag owns the `<s>` (Plan 2b PriceTag test); this test asserts both prices                        |
+| `diet` prop, veg default, `egg` mark; `DietMarks` story                     | DROP    | C10 (pure veg, no `diet` prop) — test "takes no diet prop" pins it                                    |
+| Heat named for assistive tech                                               | ALREADY | test "shows the heat…" ("Spice level 3 of 4")                                                         |
+| No heat scale on a dish without heat                                        | ADD     | test "renders no heat scale on a dish without heat"                                                   |
+| Devanagari name `lang="hi"`; badge                                          | ALREADY | tests "marks the Devanagari…", "shows the heat, the badge…"                                           |
+| `onAdd` → built-in Add button                                               | DROP    | spec §9.2 MenuItemRow: "`action` slot (replaces `onAdd`)"                                             |
+| Add button's accessible name carries the dish ("Add Masala Fries")          | ADD     | `action` JSDoc; stories' `addButton(name)` sets `aria-label`; cross-plan: MenuList `renderItemAction` |
+| No control on a menu that cannot take orders                                | ADD     | test "renders no control when the menu cannot take orders"                                            |
+| Labelled placeholder until a photo; photo with its alt                      | ALREADY | test "labels the photo placeholder…"                                                                  |
+| Hairline divider on / off                                                   | ALREADY | test "draws the hairline divider…"                                                                    |
+| Caller `className` replaces the row's own padding                           | ADD     | test "lets a caller className replace its own padding"                                                |
+| axe on the fullest state                                                    | ALREADY | last test                                                                                             |
+| Thumbnail 80px at 360, 104px from `sm`                                      | ADD     | `thumbnail: "size-20 shrink-0 sm:size-26"`                                                            |
+| `min-w-0` so a long name wraps instead of pushing the thumbnail off-screen  | ALREADY | `body: "min-w-0 flex-1"`, header `flex-wrap`; `Narrow` story play                                     |
+| Stories `Default`, `WithDevanagariName`, `Discounted`                       | ALREADY | `Playground` / `Full`, `Devanagari`, `Discount`                                                       |
+| Stories `AsAMenuSection`, `SpiceLevels`, `WithCustomAction`, `Narrow` (360) | ADD     | stories `AsAMenuSection`, `SpiceLevels`, `InCart`, `Narrow`                                           |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -298,6 +328,11 @@ describe("MenuItemRow", () => {
     ).toBeInTheDocument();
   });
 
+  it("renders no heat scale on a dish without heat", () => {
+    render(<MenuItemRow name="Kulhad Chai" price={90} />);
+    expect(screen.queryByRole("img", { name: /Spice level/ })).not.toBeInTheDocument();
+  });
+
   it("labels the photo placeholder until photography exists, then shows the photo", () => {
     const { rerender } = render(<MenuItemRow name="Kulhad Chai" price={90} />);
     expect(screen.getByText("Dish photo")).toBeInTheDocument();
@@ -326,6 +361,11 @@ describe("MenuItemRow", () => {
     expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
   });
 
+  it("renders no control when the menu cannot take orders", () => {
+    render(<MenuItemRow name="Kulhad Chai" price={90} />);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+
   it("draws the hairline divider by default and drops it on request", () => {
     const { rerender } = render(<MenuItemRow name="Kulhad Chai" price={90} />);
     expect(screen.getByRole("article")).toHaveClass("border-b");
@@ -336,6 +376,12 @@ describe("MenuItemRow", () => {
   it("uses the heading level the page needs", () => {
     render(<MenuItemRow name="Kulhad Chai" price={90} headingLevel={4} />);
     expect(screen.getByRole("heading", { level: 4, name: "Kulhad Chai" })).toBeInTheDocument();
+  });
+
+  it("lets a caller className replace its own padding", () => {
+    render(<MenuItemRow name="Kulhad Chai" price={90} className="py-2" />);
+    expect(screen.getByRole("article")).toHaveClass("py-2");
+    expect(screen.getByRole("article")).not.toHaveClass("py-5");
   });
 
   it("has no accessibility violations in its fullest state", async () => {
@@ -394,7 +440,8 @@ const menuItemRow = componentVariants({
     meta: "mt-2 flex items-center gap-3.5",
     description: "max-w-text-measure-narrow mt-2 mb-0 text-body-sm text-text-muted",
     action: "mt-3.5",
-    thumbnail: "size-26 shrink-0",
+    // 80px at 360px, 104px (the design system's size) from `sm` up — the row holds its shape at both.
+    thumbnail: "size-20 shrink-0 sm:size-26",
   },
   variants: {
     hasDivider: { true: { root: "border-b border-border-subtle" }, false: {} },
@@ -415,7 +462,10 @@ export interface MenuItemRowProps extends ComponentProps<"article"> {
   image?: MenuItemImage | undefined;
   /** What photograph belongs in the placeholder. Default "Dish photo". */
   imageLabel?: string | undefined;
-  /** The Add button or a QuantityStepper — the row never owns cart state. */
+  /**
+   * The Add button or a QuantityStepper — the row never owns cart state. Name it with the dish
+   * (`aria-label="Add Masala Fries"`), so a menu is not a list of controls all called "Add".
+   */
   action?: ReactNode | undefined;
   hasDivider?: boolean | undefined;
   headingLevel?: HeadingLevel | undefined;
@@ -478,7 +528,7 @@ export function MenuItemRow({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- menu-item-row 2>&1 | tail -8`
-Expected: PASS (10 tests). The `@ts-expect-error` line must be _used_: `pnpm nx typecheck @pink-paprikaa-web/ui --skip-nx-cache` passes (an unused directive would fail it).
+Expected: PASS (13 tests). The `@ts-expect-error` line must be _used_: `pnpm nx typecheck @pink-paprikaa-web/ui --skip-nx-cache` passes (an unused directive would fail it).
 
 - [ ] **Step 6: Stories — every row of `MenuItemRow.card.html`, plus Playground and OnSurfaces**
 
@@ -488,13 +538,15 @@ Expected: PASS (10 tests). The `@ts-expect-error` line must be _used_: `pnpm nx 
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { Plus } from "lucide-react";
+import { expect } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { MenuItemRow } from "./menu-item-row";
 
-const addButton = (
-  <Button size="sm" variant="secondary" icon={Plus}>
+/** The dish is folded into the name, so a menu is not a list of controls all called "Add". */
+const addButton = (name: string) => (
+  <Button size="sm" variant="secondary" icon={Plus} aria-label={`Add ${name}`}>
     Add
   </Button>
 );
@@ -508,7 +560,7 @@ const meta = {
     spice: 3,
     badge: "Bestseller",
     description: "Amritsari paneer, burnt chilli mayo, potato brioche.",
-    action: addButton,
+    action: addButton("Paprikaa Chilli Paneer"),
   },
   decorators: [
     (Story) => (
@@ -544,6 +596,7 @@ export const Discount: Story = {
     was: 380,
     spice: 2,
     description: "Slow-cooked mushroom keema, buttered pav, pickled onion.",
+    action: addButton("Mushroom Keema Pav"),
   },
 };
 
@@ -555,12 +608,90 @@ export const Devanagari: Story = {
     price: 180,
     spice: 1,
     description: "Rose petal preserve, pistachio, saffron.",
+    action: addButton("Gulkand Kulfi"),
   },
 };
 
 /** Card row "minimal": `hasDivider={false}`, no action. */
 export const Minimal: Story = {
   args: { name: "Kulhad Chai", price: 90, hasDivider: false, action: undefined, badge: undefined },
+};
+
+/** A real section: one hairline between rows, and the last row drops its rule. */
+export const AsAMenuSection: Story = {
+  render: () => (
+    <div>
+      <MenuItemRow
+        name="Paprikaa Chilli Paneer"
+        nameDevanagari="पनीर"
+        price={280}
+        spice={3}
+        badge="Bestseller"
+        description="Amritsari paneer, burnt chilli mayo, potato brioche."
+        action={addButton("Paprikaa Chilli Paneer")}
+      />
+      <MenuItemRow
+        name="Masala Fries"
+        price={190}
+        was={240}
+        spice={4}
+        description="Masala fries, amchur, curry-leaf salt."
+        action={addButton("Masala Fries")}
+      />
+      <MenuItemRow
+        name="Kulhad Chai"
+        price={90}
+        description="Assam leaf, ginger, clay cup."
+        action={addButton("Kulhad Chai")}
+        hasDivider={false}
+      />
+    </div>
+  ),
+};
+
+/** The four heat steps, each named ("Spice level 2 of 4") rather than left to colour. */
+export const SpiceLevels: Story = {
+  render: () => (
+    <div>
+      <MenuItemRow name="Steamed Momos" price={150} spice={1} />
+      <MenuItemRow name="Honey Chilli Potato" price={220} spice={2} />
+      <MenuItemRow name="Paprikaa Chilli Paneer" price={280} spice={3} />
+      <MenuItemRow name="Masala Fries" price={190} spice={4} hasDivider={false} />
+    </div>
+  ),
+};
+
+/** Once the dish is in the cart the page swaps the action; the row never owns cart state. */
+export const InCart: Story = {
+  args: {
+    action: (
+      <Button size="sm" variant="ghost">
+        In cart · 2
+      </Button>
+    ),
+  },
+};
+
+/** 360px: the thumbnail steps down to 80px and a long name wraps instead of widening the row. */
+export const Narrow: Story = {
+  globals: { viewport: { value: "floor360" } },
+  args: {
+    name: "Paprikaa Chilli Paneer With Burnt Garlic",
+    nameDevanagari: "पनीर",
+    was: 320,
+    hasDivider: false,
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-90">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvas }) => {
+    const row = canvas.getByRole("article");
+    await expect(row.scrollWidth).toBeLessThanOrEqual(row.clientWidth);
+  },
 };
 
 export const OnSurfaces: Story = {
@@ -611,6 +742,35 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 - Create: `packages/ui/src/molecules/menu-item-card/menu-item-card.tsx`, `menu-item-card.test.tsx`, `menu-item-card.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/menu-item-card/menu-item-card.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                      | Ruling  | Where, or the spec clause                                                                            |
+| ----------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------- |
+| Dish name is a heading; price printed; `was` struck                           | ALREADY | tests "names the dish…", "prints the price…"; PriceTag owns the `<s>` (Plan 2b)                      |
+| `nameAs` picks the name element                                               | ALREADY | `headingLevel` (spec §8.1)                                                                           |
+| Lifts on hover only when it is a link                                         | ADD     | test "lifts only when it is a link" (Card's `hover:lift`)                                            |
+| Old class asserts `rounded-4`, `shadow-elevation1`, `hover:shadow-elevation3` | DROP    | D4 (token names mirror the design system: `rounded-lg`, `shadow-1`, `shadow-3`)                      |
+| One real stretched link (`after:inset-0`), not a click handler on the card    | ADD     | assertion in test "makes the name a link that covers the card"                                       |
+| Plain card, no link, without `href`                                           | ADD     | test "lifts only when it is a link"                                                                  |
+| `diet` / `egg` mark; `DietMarks` story                                        | DROP    | C10                                                                                                  |
+| Heat named; badge over the photo                                              | ALREADY | test "shows the badge, the heat…"                                                                    |
+| `onAdd` floating button                                                       | DROP    | spec §9.2 MenuItemCard: floating `action` slot                                                       |
+| Floating add named after the dish ("Add Masala Cold Brew")                    | ALREADY | stories' `addAction(name)`; test "keeps the floating action a sibling…"                              |
+| No add button on a card that cannot take an order                             | ADD     | test "draws no action on a card that cannot take an order"                                           |
+| Labelled placeholder                                                          | ALREADY | test "labels the 4:3 photo placeholder…"                                                             |
+| Photograph with its alt once supplied                                         | ADD     | test "shows the photograph once one is supplied"                                                     |
+| Caller `className` replaces the card radius                                   | ADD     | test "lets a caller className replace the card radius"                                               |
+| axe                                                                           | ALREADY | last test                                                                                            |
+| Description clamped to two lines                                              | ADD     | `description` slot `line-clamp-2`; asserted in "shows the badge, the heat…"                          |
+| `h-full` + price row pinned to the bottom so a grid of cards lines up         | ADD     | body `flex flex-1 flex-col`, footer `mt-auto`; story `InAGrid`                                       |
+| `min-w-0` on the name so a long name wraps                                    | ALREADY | `name` slot; story `Narrow` play                                                                     |
+| Stories `Default`, `Variants`                                                 | ALREADY | `Playground`, `Variants`                                                                             |
+| Stories `InAGrid`, `Narrow` (360)                                             | ADD     | stories `InAGrid`, `Narrow` (the width decorator moves off `meta` so a grid can render — see Step 6) |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -667,7 +827,8 @@ describe("MenuItemCard", () => {
     );
     expect(screen.getByText("New")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Spice level 1 of 4" })).toBeInTheDocument();
-    expect(screen.getByText("Cold brew, jaggery, cardamom.")).toBeInTheDocument();
+    // Ingredient-led, 14 words at most — the card clamps it so a grid keeps one rhythm.
+    expect(screen.getByText("Cold brew, jaggery, cardamom.")).toHaveClass("line-clamp-2");
   });
 
   it("labels the 4:3 photo placeholder until photography exists", () => {
@@ -675,12 +836,51 @@ describe("MenuItemCard", () => {
     expect(screen.getByText("Dish photo")).toBeInTheDocument();
   });
 
+  it("shows the photograph once one is supplied", () => {
+    render(
+      <MenuItemCard
+        name="Kulhad Chai"
+        price={90}
+        image={{
+          src: "/menu/kulhad-chai.avif",
+          alt: "Kulhad chai in a clay cup",
+          width: 420,
+          height: 315,
+        }}
+      />
+    );
+    expect(screen.getByRole("img", { name: "Kulhad chai in a clay cup" })).toHaveAttribute(
+      "src",
+      "/menu/kulhad-chai.avif"
+    );
+    expect(screen.queryByText("Dish photo")).not.toBeInTheDocument();
+  });
+
+  it("draws no action on a card that cannot take an order", () => {
+    render(<MenuItemCard name="Kulhad Chai" price={90} />);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+
   it("makes the name a link that covers the card when given an href", () => {
     render(<MenuItemCard name="Kulhad Chai" price={90} href="/menu/kulhad-chai" />);
-    expect(screen.getByRole("link", { name: "Kulhad Chai" })).toHaveAttribute(
-      "href",
-      "/menu/kulhad-chai"
-    );
+    const link = screen.getByRole("link", { name: "Kulhad Chai" });
+    expect(link).toHaveAttribute("href", "/menu/kulhad-chai");
+    // One real, focusable link stretched over the card — never a click handler on the card.
+    expect(link).toHaveClass("after:inset-0");
+  });
+
+  it("lifts only when it is a link — a lift on a plain card promises a click that does nothing", () => {
+    const { rerender } = render(<MenuItemCard name="Kulhad Chai" price={90} />);
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.getByRole("article")).not.toHaveClass("hover:lift");
+    rerender(<MenuItemCard name="Kulhad Chai" price={90} href="/menu/kulhad-chai" />);
+    expect(screen.getByRole("article")).toHaveClass("hover:lift");
+  });
+
+  it("lets a caller className replace the card radius", () => {
+    render(<MenuItemCard name="Kulhad Chai" price={90} className="rounded-md" />);
+    expect(screen.getByRole("article")).toHaveClass("rounded-md");
+    expect(screen.getByRole("article")).not.toHaveClass("rounded-lg");
   });
 
   it("renders the link through the app's router link when given one", () => {
@@ -759,13 +959,14 @@ const menuItemCard = componentVariants({
     badge: "absolute top-3 left-3",
     // Above the stretched link's overlay, so the Add button stays its own target.
     action: "absolute right-3.5 -bottom-4.5 z-raised",
-    body: "grid gap-2 p-4.5",
+    // flex-1 + the footer's mt-auto pin the price row to the bottom, so a grid of cards lines up.
+    body: "flex flex-1 flex-col gap-2 p-4.5",
     header: "flex items-center gap-2",
     name: "text-menu-item-name min-w-0 font-display text-text-heading",
     // Stretched link: the ::after covers the whole card, so the card clicks through to the dish.
     link: "text-inherit no-underline after:absolute after:inset-0",
-    description: "m-0 max-w-none text-body-sm text-text-muted",
-    footer: "mt-0.5 flex items-center justify-between gap-2.5",
+    description: "m-0 line-clamp-2 max-w-none text-body-sm text-text-muted",
+    footer: "mt-auto flex items-center justify-between gap-2.5 pt-0.5",
   },
 });
 
@@ -856,19 +1057,31 @@ export function MenuItemCard({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- menu-item-card 2>&1 | tail -8`
-Expected: PASS (9 tests).
+Expected: PASS (13 tests).
 
-- [ ] **Step 6: Stories — the `MenuItemCard.card.html` "variants" row (three 210px cards), plus Playground and AsLink**
+- [ ] **Step 6: Stories — the `MenuItemCard.card.html` "variants" row (three 210px cards), plus Playground, AsLink, InAGrid and Narrow**
 
 `packages/ui/src/molecules/menu-item-card/menu-item-card.stories.tsx`:
 
 ```tsx
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 
 import { Plus } from "lucide-react";
+import { expect } from "storybook/test";
 
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { MenuItemCard } from "./menu-item-card";
+
+/**
+ * One card at the design system's 210px. A story decorator, not a `meta` one: Storybook
+ * concatenates story and meta decorators (`decorators: []` on a story removes nothing), so a
+ * meta-level width would squeeze the grid stories too.
+ */
+const cardWidth: Decorator = (Story) => (
+  <div className="w-52.5">
+    <Story />
+  </div>
+);
 
 const addAction = (name: string) => (
   <IconButton
@@ -891,13 +1104,6 @@ const meta = {
     description: "Cold brew, jaggery, cardamom.",
     action: addAction("Masala Cold Brew"),
   },
-  decorators: [
-    (Story) => (
-      <div className="w-52.5">
-        <Story />
-      </div>
-    ),
-  ],
   parameters: {
     layout: "padded",
     docs: {
@@ -912,11 +1118,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
+export const Playground: Story = { decorators: [cardWidth] };
 
 /** Card row "variants": badge + add, discount + add, no action. */
 export const Variants: Story = {
-  decorators: [],
   render: () => (
     <div className="flex flex-wrap gap-3.5">
       <div className="w-52.5">
@@ -954,6 +1159,72 @@ export const Variants: Story = {
 /** `href`: the whole card is a link to the dish; the add button stays separate. */
 export const AsLink: Story = {
   args: { href: "#masala-cold-brew" },
+  decorators: [cardWidth],
+};
+
+/** Uneven descriptions still line up: the price row is pinned to the bottom of every card. */
+export const InAGrid: Story = {
+  render: () => (
+    <div className="grid max-w-content grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <MenuItemCard
+        name="Paprikaa Chilli Paneer"
+        price={280}
+        spice={3}
+        badge="Bestseller"
+        description="Amritsari paneer, burnt chilli mayo, potato brioche, house pickle."
+        href="#paprikaa-chilli-paneer"
+        action={addAction("Paprikaa Chilli Paneer")}
+      />
+      <MenuItemCard
+        name="Kulhad Chai"
+        price={90}
+        description="Assam leaf, ginger."
+        href="#kulhad-chai"
+        action={addAction("Kulhad Chai")}
+      />
+      <MenuItemCard
+        name="Masala Cold Brew"
+        price={220}
+        spice={1}
+        description="Cold brew, jaggery, cardamom."
+        href="#masala-cold-brew"
+        action={addAction("Masala Cold Brew")}
+      />
+      <MenuItemCard
+        name="Masala Fries"
+        price={190}
+        was={240}
+        spice={4}
+        description="Masala fries, amchur, curry-leaf salt."
+        href="#masala-fries"
+        action={addAction("Masala Fries")}
+      />
+    </div>
+  ),
+};
+
+/** 360px: a long dish name wraps inside the card instead of pushing the price out of it. */
+export const Narrow: Story = {
+  globals: { viewport: { value: "floor360" } },
+  args: {
+    name: "Paprikaa Chilli Paneer With Burnt Garlic",
+    price: 280,
+    was: 320,
+    badge: "Bestseller",
+    href: "#paprikaa-chilli-paneer",
+    action: addAction("Paprikaa Chilli Paneer With Burnt Garlic"),
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-80">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvas }) => {
+    const card = canvas.getByRole("article");
+    await expect(card.scrollWidth).toBeLessThanOrEqual(card.clientWidth);
+  },
 };
 ```
 
@@ -989,10 +1260,34 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/molecules/outlet-card/outlet-card.tsx`, `outlet-card.test.tsx`, `outlet-card.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/molecules/outlet-card/outlet-card.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                          | Ruling  | Where, or the spec clause                                                                                  |
+| ----------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
+| Outlet name is a heading; city, address, hours printed            | ALREADY | tests "names the outlet…", "puts the address in an address element…"                                       |
+| `nameAs` picks the name element                                   | ALREADY | `headingLevel`; ADD test "uses the heading level the page needs"                                           |
+| Status in words for open / busy / closed; `statusLabel` overrides | ALREADY | `it.each` status test, "lets the page override the status words"                                           |
+| `href` → one stretched link over the card (`after:inset-0`)       | ADD     | `href` + `linkAs` props (deviation 17; spec §9.2 row lists `href`, §8.2 `onClick` → `href`)                |
+| Hover lift only when the card is a link                           | ADD     | `isInteractive={href !== undefined}`; test "becomes one stretched link that lifts only when given an href" |
+| Secondary action stays clickable above the stretched link         | ADD     | `action` slot `relative z-raised`; test "keeps the action outside the stretched link…"                     |
+| Labelled 16:9 placeholder; `hasImage={false}` drops it            | ALREADY | test "shows the labelled 16:9 placeholder…"                                                                |
+| Photograph with its alt once supplied                             | ADD     | test "shows the outlet photograph once one is supplied"                                                    |
+| Caller `className` replaces the card radius                       | ADD     | test "lets a caller className replace the card radius"                                                     |
+| axe                                                               | ALREADY | last test (now with `href`)                                                                                |
+| `h-full` so a locator row of cards shares one height              | ADD     | root `relative flex h-full flex-col`                                                                       |
+| Header wraps so the status drops under a long name at 360         | ALREADY | `top` slot `flex-wrap`; story `Narrow` play                                                                |
+| `StatusDot size="sm"`                                             | DROP    | D2 — the design-system `OutletCard.jsx` renders StatusDot at its default size                              |
+| Stories `Default`, `WithImage`, `CompactWithAction`               | ALREADY | `Playground`, `WithImage`, `WithoutImage`                                                                  |
+| Stories `StatusStates`, `CustomStatusLine`, `Narrow` (360)        | ADD     | stories `StatusStates`, `CustomStatusLine`, `Narrow`                                                       |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
-- Consumes: `Card`, `ImageSlot` (`ratio="16:9"`), `Icon`, `StatusDot` (`tone="open" | "busy" | "closed"`), `headingTag`, `type MenuItemImage`.
-- Produces: `OutletCard`, `type OutletCardProps` (contract §6). Documented defaults: `status = "open"`; status words "Open now" / "Busy" / "Closed" (`statusLabel` overrides); `imageLabel = "Outlet interior 16:9"`; `hasImage = true`.
+- Consumes: `Card` (`isInteractive`), `ImageSlot` (`ratio="16:9"`), `Icon`, `StatusDot` (`tone="open" | "busy" | "closed"`), `headingTag`, `type LinkAs`, `type MenuItemImage`.
+- Produces: `OutletCard`, `type OutletCardProps` (contract §6 + deviation 17: `href`, `linkAs`). Documented defaults: `status = "open"`; status words "Open now" / "Busy" / "Closed" (`statusLabel` overrides); `imageLabel = "Outlet interior 16:9"`; `hasImage = true`.
 
 - [ ] **Step 1: Tokens** — none new (`text-h4`, `text-overline`, `p-4.5`, `gap-2.5` are all on the scales).
 
@@ -1049,6 +1344,59 @@ describe("OutletCard", () => {
     expect(screen.getByRole("link", { name: "Directions" })).toBeInTheDocument();
   });
 
+  it("uses the heading level the page needs", () => {
+    render(<OutletCard name="Sector 57" headingLevel={2} />);
+    expect(screen.getByRole("heading", { level: 2, name: "Sector 57" })).toBeInTheDocument();
+  });
+
+  it("shows the outlet photograph once one is supplied", () => {
+    render(
+      <OutletCard
+        name="Sector 57"
+        image={{
+          src: "/outlets/sector-57.avif",
+          alt: "The dine-in room at Sector 57",
+          width: 640,
+          height: 360,
+        }}
+      />
+    );
+    expect(screen.getByRole("img", { name: "The dine-in room at Sector 57" })).toHaveAttribute(
+      "src",
+      "/outlets/sector-57.avif"
+    );
+  });
+
+  it("becomes one stretched link that lifts only when given an href", () => {
+    const { rerender } = render(<OutletCard name="Sector 57" />);
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.getByRole("article")).not.toHaveClass("hover:lift");
+    rerender(<OutletCard name="Sector 57" href="/outlets/sector-57" />);
+    const link = screen.getByRole("link", { name: "Sector 57" });
+    expect(link).toHaveAttribute("href", "/outlets/sector-57");
+    expect(link).toHaveClass("after:inset-0");
+    expect(screen.getByRole("article")).toHaveClass("hover:lift");
+  });
+
+  it("keeps the action outside the stretched link, raised above its overlay", () => {
+    render(
+      <OutletCard
+        name="Sector 57"
+        href="/outlets/sector-57"
+        action={<a href="https://maps.example">Directions</a>}
+      />
+    );
+    const directions = screen.getByRole("link", { name: "Directions" });
+    expect(screen.getByRole("link", { name: "Sector 57" })).not.toContainElement(directions);
+    expect(directions.parentElement).toHaveClass("z-raised");
+  });
+
+  it("lets a caller className replace the card radius", () => {
+    render(<OutletCard name="Sector 57" className="rounded-md" />);
+    expect(screen.getByRole("article")).toHaveClass("rounded-md");
+    expect(screen.getByRole("article")).not.toHaveClass("rounded-lg");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <OutletCard
@@ -1056,6 +1404,7 @@ describe("OutletCard", () => {
         name="Sector 57"
         address={ADDRESS}
         hours="8am – 11:30pm"
+        href="/outlets/sector-57"
         action={<a href="https://maps.example">Directions</a>}
       />
     );
@@ -1076,6 +1425,7 @@ Expected: FAIL — cannot resolve `./outlet-card`.
 ```tsx
 import type { ComponentProps, ReactNode } from "react";
 
+import type { LinkAs } from "../../lib/link-as";
 import type { MenuItemImage } from "../menu-item-row/menu-item-row";
 
 import { Clock, MapPin } from "lucide-react";
@@ -1098,15 +1448,19 @@ const STATUS_WORD: Readonly<Record<OutletStatus, string>> = {
 
 const outletCard = componentVariants({
   slots: {
-    root: "flex flex-col",
+    // relative anchors the stretched link; h-full lets a locator row of cards share one height.
+    root: "relative flex h-full flex-col",
     body: "grid gap-2.5 p-4.5",
     top: "flex flex-wrap items-start justify-between gap-3",
     titles: "min-w-0",
     city: "m-0 max-w-none font-display text-overline text-text-brand uppercase",
     name: "mt-1 font-display text-h4 text-text-heading",
+    // Stretched link: the ::after covers the whole card, so the card clicks through to the outlet.
+    link: "text-inherit no-underline after:absolute after:inset-0",
     detail: "m-0 flex max-w-none items-start gap-2 text-body-sm text-text-muted not-italic",
     detailIcon: "mt-0.5",
-    action: "mt-1",
+    // Above the stretched link's overlay, so Directions stays its own target.
+    action: "relative z-raised mt-1",
   },
 });
 
@@ -1124,6 +1478,9 @@ export interface OutletCardProps extends ComponentProps<"article"> {
   /** `false` gives the compact list form without imagery. */
   hasImage?: boolean | undefined;
   action?: ReactNode | undefined;
+  /** The outlet's page. The name becomes a link covering the card, which then lifts on hover. */
+  href?: string | undefined;
+  linkAs?: LinkAs | undefined;
   headingLevel?: HeadingLevel | undefined;
 }
 
@@ -1139,6 +1496,8 @@ export function OutletCard({
   imageLabel = "Outlet interior 16:9",
   hasImage = true,
   action,
+  href,
+  linkAs: LinkComponent = "a",
   headingLevel = 3,
   className,
   ...props
@@ -1147,7 +1506,12 @@ export function OutletCard({
   const Heading = headingTag(headingLevel);
 
   return (
-    <Card asChild padding="none" className={styles.root({ className })}>
+    <Card
+      asChild
+      padding="none"
+      isInteractive={href !== undefined}
+      className={styles.root({ className })}
+    >
       <article {...props}>
         {hasImage ? (
           <ImageSlot ratio="16:9" radius="none" {...(image ?? { label: imageLabel })} />
@@ -1156,7 +1520,15 @@ export function OutletCard({
           <div className={styles.top()}>
             <div className={styles.titles()}>
               {city ? <p className={styles.city()}>{city}</p> : null}
-              <Heading className={styles.name()}>{name}</Heading>
+              <Heading className={styles.name()}>
+                {href === undefined ? (
+                  name
+                ) : (
+                  <LinkComponent href={href} className={styles.link()}>
+                    {name}
+                  </LinkComponent>
+                )}
+              </Heading>
             </div>
             <StatusDot tone={status} label={statusLabel ?? STATUS_WORD[status]} />
           </div>
@@ -1183,7 +1555,7 @@ export function OutletCard({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- outlet-card 2>&1 | tail -8`
-Expected: PASS (9 tests).
+Expected: PASS (14 tests).
 
 - [ ] **Step 6: Stories — `OutletCard.card.html` rows "with image" (open + closed) and `image={false}` (busy + Directions), with the real outlet facts (spec C6)**
 
@@ -1193,6 +1565,7 @@ Expected: PASS (9 tests).
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { ArrowUpRight } from "lucide-react";
+import { expect } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
 import { OutletCard } from "./outlet-card";
@@ -1216,7 +1589,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "One café location — the website locator and the app outlet picker. Pass `hasImage={false}` for the compact list variant. Status is a StatusDot with a word, never a coloured pill.",
+          "One café location — the website locator and the app outlet picker. Pass `hasImage={false}` for the compact list variant. Status is a StatusDot with a word, never a coloured pill. Pass `href` and the whole card becomes one real link that lifts on hover; the `action` stays its own control above it.",
       },
     },
   },
@@ -1247,6 +1620,39 @@ export const WithoutImage: Story = {
         <a href="https://maps.google.com/?q=Pink+Paprikaa+Sector+57+Gurgaon">Directions</a>
       </Button>
     ),
+  },
+};
+
+/** The three trading states, each in words — colour never carries it alone. */
+export const StatusStates: Story = {
+  render: (args) => (
+    <div className="grid gap-3.5 md:grid-cols-3">
+      <OutletCard {...args} hasImage={false} status="open" />
+      <OutletCard {...args} hasImage={false} status="busy" />
+      <OutletCard {...args} hasImage={false} status="closed" />
+    </div>
+  ),
+};
+
+/** `statusLabel` when "Open now" is not specific enough. */
+export const CustomStatusLine: Story = {
+  args: { hasImage: false, statusLabel: "Open till 11:30pm" },
+};
+
+/** 360px, linked: the status drops under a long name instead of squeezing it. */
+export const Narrow: Story = {
+  globals: { viewport: { value: "floor360" } },
+  args: { href: "#sector-57", name: "Sector 57 · MKM Market", statusLabel: "Open till 11:30pm" },
+  decorators: [
+    (Story) => (
+      <div className="w-80">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvas }) => {
+    const card = canvas.getByRole("article");
+    await expect(card.scrollWidth).toBeLessThanOrEqual(card.clientWidth);
   },
 };
 ```
@@ -1280,6 +1686,31 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 - Create: `packages/ui/src/molecules/review-card/review-card.tsx`, `review-card.test.tsx`, `review-card.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/review-card/review-card.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                            | Ruling  | Where, or the spec clause                                                                                    |
+| ------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| Quote inside the component's own curly quotes, in a `<blockquote>`  | ALREADY | test "quotes the guest in curly quotes…"                                                                     |
+| Attribution: name and meta                                          | ALREADY | same test (`figcaption`)                                                                                     |
+| Initials stand in for a missing photo                               | ALREADY | test "drops the avatar when asked…" ("VK")                                                                   |
+| No meta line and no score when neither is given                     | ADD     | test "omits the score and the meta line when neither is given"                                               |
+| Score named for assistive tech                                      | ALREADY | test "shows the score…" ("5 out of 5")                                                                       |
+| `default` on the white card                                         | ADD     | test "sits on a white light-island card by default"                                                          |
+| `brand` on the light-pink feature card, name/quote in the pink ramp | ALREADY | test "uses the light-pink feature treatment…" (the soft surface remaps heading → pink-800)                   |
+| `mark="symbol"` drops the diamond                                   | ALREADY | Rating owns the glyph (Plan 2b Rating test); story `SymbolMark`                                              |
+| Old class asserts `bg-surface-card`, `rounded-4`                    | DROP    | D4 / D5 — surfaces are asserted as `data-surface`                                                            |
+| `Rating hasValueLabel={false}`                                      | DROP    | D2 — the design-system `ReviewCard.jsx` shows the value                                                      |
+| Caller `className` replaces the card radius                         | ADD     | test "lets a caller className replace the card radius"                                                       |
+| axe on both variants and both marks                                 | ADD     | last test renders a `brand` + `symbol` card too                                                              |
+| Stories `Default`, `Variants`, `SymbolMark`, `LongQuote`            | ALREADY | `Playground` / `Default` (Raj's long review), `Brand`, `SymbolMark`                                          |
+| Story `WithoutScore`                                                | ADD     | story `WithoutScore`                                                                                         |
+| Story `PartialScore` (4.5 on an invented review)                    | DROP    | spec §10.1 — only the four real Google reviews, never fabricated; Rating's own stories show halves (Plan 2b) |
+| Story `Wall` (three across)                                         | ALREADY | TestimonialWall organism (Plan 4) owns the wall                                                              |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -1317,6 +1748,23 @@ describe("ReviewCard", () => {
     expect(screen.getByRole("img", { name: "5 out of 5" })).toBeInTheDocument();
   });
 
+  it("sits on a white light-island card by default", () => {
+    const { container } = render(<ReviewCard {...REVIEW} />);
+    expect(container.firstElementChild).toHaveAttribute("data-surface", "light");
+  });
+
+  it("omits the score and the meta line when neither is given", () => {
+    const { container } = render(<ReviewCard name={REVIEW.name} quote={REVIEW.quote} />);
+    expect(screen.queryByRole("img", { name: /out of 5/ })).not.toBeInTheDocument();
+    expect(container.querySelector("figcaption")).not.toHaveTextContent(REVIEW.meta);
+  });
+
+  it("lets a caller className replace the card radius", () => {
+    const { container } = render(<ReviewCard {...REVIEW} className="rounded-md" />);
+    expect(container.firstElementChild).toHaveClass("rounded-md");
+    expect(container.firstElementChild).not.toHaveClass("rounded-lg");
+  });
+
   it("uses the light-pink feature treatment for the brand variant", () => {
     const { container } = render(<ReviewCard {...REVIEW} variant="brand" />);
     expect(container.firstElementChild).toHaveAttribute("data-surface", "soft");
@@ -1349,14 +1797,17 @@ describe("ReviewCard", () => {
     expect(container.querySelector("figcaption")).not.toHaveTextContent("VK");
   });
 
-  it("has no accessibility violations with every part shown", async () => {
+  it("has no accessibility violations with every part shown, on both treatments", async () => {
     const { container } = render(
-      <ReviewCard
-        {...REVIEW}
-        rating={5}
-        isVerified
-        source={{ label: "View on Google", href: "https://maps.app.goo.gl/32n6SYDUMejsa3NeA" }}
-      />
+      <>
+        <ReviewCard
+          {...REVIEW}
+          rating={5}
+          isVerified
+          source={{ label: "View on Google", href: "https://maps.app.goo.gl/32n6SYDUMejsa3NeA" }}
+        />
+        <ReviewCard {...REVIEW} rating={4} variant="brand" mark="symbol" />
+      </>
     );
     await expectNoA11yViolations(container);
   });
@@ -1490,7 +1941,7 @@ export function ReviewCard({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- review-card 2>&1 | tail -8`
-Expected: PASS (7 tests).
+Expected: PASS (10 tests).
 
 - [ ] **Step 6: Stories — every `ReviewCard.card.html` row, bound to the four real Google reviews (`rates.js` → `google.reviews`; the card's invented names are replaced, spec §10.1), plus the handoff GoogleReviews treatment**
 
@@ -1604,6 +2055,9 @@ export const GoogleReview: Story = {
     source: { label: "View on Google", href: vikas.href },
   },
 };
+
+/** No `rating`: the quote carries the card on its own. */
+export const WithoutScore: Story = { args: { rating: undefined } };
 ```
 
 - [ ] **Step 7: Export**
@@ -1636,6 +2090,30 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/molecules/loyalty-card/loyalty-card.tsx`, `loyalty-card.test.tsx`, `loyalty-card.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/molecules/loyalty-card/loyalty-card.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                     | Ruling  | Where, or the spec clause                                                                               |
+| ------------------------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------- |
+| Generated sentence: many / one / none left                   | ALREADY | `it.each` "reads naturally at %i of %i visits"                                                          |
+| Reads naturally with an article-first reward ("a kulfi")     | ADD     | test "reads naturally with an article-first reward"                                                     |
+| One stamp per goal visit (segmented, never a percentage)     | ALREADY | test "shows the stamps as a segmented progress bar" (`aria-valuemax` = goal); ProgressBar owns segments |
+| Track named for AT without printing a caption                | ADD     | same test: the "3 of 6 visits" name is `sr-only`                                                        |
+| Stale count clamps to the goal                               | ALREADY | test "never shows more stamps than the goal"                                                            |
+| Negative count clamps to zero                                | ALREADY | throws `RangeError` instead (deviation 11) — test "rejects an impossible count…"                        |
+| Content defaults `goal = 6`, `reward = "chai"`, `visits = 0` | DROP    | D9 (no content inside the system); contract §6 makes them required                                      |
+| `feature` skin on the light-pink card                        | ADD     | test "sits on the light-pink feature card by default" (`data-surface="soft"`)                           |
+| `brand` skin flips the ink and the stamps                    | ALREADY | test "floods pink for the brand variant"                                                                |
+| Brand symbol hidden from assistive tech                      | ADD     | test "hides the brand symbol from assistive tech…"                                                      |
+| Caller `className` replaces the card radius                  | ADD     | test "lets a caller className replace the card radius"                                                  |
+| axe on in-progress, complete and brand                       | ADD     | last test renders all three                                                                             |
+| `min-w-0` so a long reward shrinks the copy column           | ALREADY | `body` slot; story `LongReward`                                                                         |
+| Stories `Default`, `Progress`, `OnBrand`, `Skins`            | ALREADY | `Playground`, `InProgress` / `OneLeft` / `Complete`, `Brand`                                            |
+| Stories `Empty`, `LongReward`                                | ADD     | stories `Empty`, `LongReward`                                                                           |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `Card` (`variant="feature" | "brand"`, `padding="sm"`), `Logo` (`variant="symbol"`, `isDecorative`), `ProgressBar` (`segments`, `tone="brand" | "inverse"`, `size="sm"` = 6px, `label` + `isLabelHidden` — Plan 2b deviation 3: the name stays, the words are not printed).
@@ -1663,6 +2141,11 @@ describe("LoyaltyCard", () => {
     expect(screen.getByText(headline)).toBeInTheDocument();
   });
 
+  it("reads naturally with an article-first reward", () => {
+    render(<LoyaltyCard visits={2} goal={6} reward="a kulfi" />);
+    expect(screen.getByText("4 more visits and a kulfi is on us.")).toBeInTheDocument();
+  });
+
   it("lets the page replace the generated headline", () => {
     render(<LoyaltyCard visits={2} goal={6} reward="a kulfi" headline="Two down, four to go." />);
     expect(screen.getByText("Two down, four to go.")).toBeInTheDocument();
@@ -1673,12 +2156,32 @@ describe("LoyaltyCard", () => {
     const stamps = screen.getByRole("progressbar", { name: "3 of 6 visits" });
     expect(stamps).toHaveAttribute("aria-valuenow", "3");
     expect(stamps).toHaveAttribute("aria-valuemax", "6");
+    // The name is announced, never printed: the sentence above already says it.
+    expect(screen.getByText("3 of 6 visits")).toHaveClass("sr-only");
   });
 
   it("never shows more stamps than the goal", () => {
     render(<LoyaltyCard visits={9} goal={6} reward="chai" />);
     expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "6");
     expect(screen.getByText("Your chai is on us.")).toBeInTheDocument();
+  });
+
+  it("sits on the light-pink feature card by default", () => {
+    const { container } = render(<LoyaltyCard visits={3} goal={6} reward="chai" />);
+    expect(container.firstElementChild).toHaveAttribute("data-surface", "soft");
+  });
+
+  it("hides the brand symbol from assistive tech — the sentence carries the meaning", () => {
+    const { container } = render(<LoyaltyCard visits={3} goal={6} reward="chai" />);
+    expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("lets a caller className replace the card radius", () => {
+    const { container } = render(
+      <LoyaltyCard visits={3} goal={6} reward="chai" className="rounded-lg" />
+    );
+    expect(container.firstElementChild).toHaveClass("rounded-lg");
+    expect(container.firstElementChild).not.toHaveClass("rounded-xl");
   });
 
   it("floods pink for the brand variant", () => {
@@ -1696,8 +2199,14 @@ describe("LoyaltyCard", () => {
     }
   );
 
-  it("has no accessibility violations", async () => {
-    const { container } = render(<LoyaltyCard visits={3} goal={6} reward="chai" />);
+  it("has no accessibility violations in progress, complete and on brand", async () => {
+    const { container } = render(
+      <>
+        <LoyaltyCard visits={3} goal={6} reward="chai" />
+        <LoyaltyCard visits={6} goal={6} reward="chai" />
+        <LoyaltyCard visits={2} goal={6} reward="a kulfi" variant="brand" />
+      </>
+    );
     await expectNoA11yViolations(container);
   });
 });
@@ -1798,7 +2307,7 @@ export function LoyaltyCard({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- loyalty-card 2>&1 | tail -8`
-Expected: PASS (11 tests).
+Expected: PASS (15 tests).
 
 - [ ] **Step 6: Stories — the four `LoyaltyCard.card.html` rows**
 
@@ -1847,6 +2356,12 @@ export const Complete: Story = { args: { visits: 6 } };
 
 /** Card row `variant="brand"`. */
 export const Brand: Story = { args: { variant: "brand", visits: 2, reward: "a kulfi" } };
+
+/** Nothing earned yet: every stamp empty, and the sentence still reads plainly. */
+export const Empty: Story = { args: { visits: 0 } };
+
+/** A longer reward shrinks the copy column instead of pushing the stamps off the card. */
+export const LongReward: Story = { args: { visits: 4, goal: 8, reward: "a gulkand kulfi" } };
 ```
 
 - [ ] **Step 7: Export**
@@ -1878,6 +2393,28 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 - Create: `packages/ui/src/molecules/filter-bar/filter-bar.tsx`, `filter-bar.test.tsx`, `filter-bar.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/filter-bar/filter-bar.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                 | Ruling  | Where, or the spec clause                                                                                        |
+| ---------------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------- |
+| One pill per category inside a named group                                               | ALREADY | named `radiogroup` of `radio` items (test "is a named radio group…")                                             |
+| Default group name "Filter by category"                                                  | ALREADY | `label` is required (contract §6) — no copy default (D9)                                                         |
+| Exactly one pill selected; the pressed value is reported                                 | ALREADY | tests "chooses a filter…", "keeps exactly one filter chosen…"                                                    |
+| An option's value is separate from its label                                             | ALREADY | options are `{ value, label }` (test reports `"sweets"` for "Sweets")                                            |
+| Bare-string options                                                                      | DROP    | spec §8.2 — object lists only (`{ value, label }`)                                                               |
+| Scrolls on one line by default, wraps with `isWrapping`                                  | ALREADY | test "scrolls on one line by default…"                                                                           |
+| The statement badge is not a filter                                                      | ADD     | assertion in "pins the statement badge…": still one radio per option                                             |
+| Trailing control pinned at the end, never squeezed                                       | ADD     | `trailing` wrapper slot `shrink-0` (the badge already has it)                                                    |
+| Without a handler, a press changes nothing                                               | ALREADY | superseded: uncontrolled by default (`defaultValue`), controlled via `value` (test "follows a controlled value") |
+| Caller `className` replaces its own gap                                                  | ADD     | test "lets a caller className replace its own gap"                                                               |
+| axe with note, trailing and icons                                                        | ALREADY | last test                                                                                                        |
+| Stories `Default`, `Wrapping`, `WithStatement`, `Scrolling`, `WithIcons`, `Narrow` (360) | ALREADY | `Playground`, `Wrap` (with the note), `Scroll` (`w-90` = 360px), `Icons`                                         |
+| Story `WithTrailingControl`                                                              | ADD     | story `WithTrailing`                                                                                             |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -1979,7 +2516,17 @@ describe("FilterBar", () => {
       />
     );
     expect(screen.getByText("100% Vegetarian")).toBeInTheDocument();
+    // A standing statement, never a filter: still exactly one radio per option.
+    expect(screen.getAllByRole("radio")).toHaveLength(CATEGORIES.length);
     expect(screen.getByRole("button", { name: "Search" })).toBeInTheDocument();
+  });
+
+  it("lets a caller className replace its own gap", () => {
+    const { container } = render(
+      <FilterBar label="Menu category" options={CATEGORIES} className="gap-1" />
+    );
+    expect(container.firstElementChild).toHaveClass("gap-1");
+    expect(container.firstElementChild).not.toHaveClass("gap-2.5");
   });
 
   it("has no accessibility violations with icons, note and trailing", async () => {
@@ -2046,7 +2593,9 @@ const filterBar = componentVariants({
   slots: {
     root: "flex items-center gap-2.5",
     group: "flex gap-2.5",
+    // Neither the statement badge nor the trailing control is squeezed by a long rail.
     note: "shrink-0",
+    trailing: "shrink-0",
   },
   variants: {
     isWrapping: {
@@ -2105,7 +2654,7 @@ export function FilterBar({
           {note}
         </Badge>
       ) : null}
-      {trailing}
+      {trailing ? <div className={styles.trailing()}>{trailing}</div> : null}
     </div>
   );
 }
@@ -2114,7 +2663,7 @@ export function FilterBar({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- filter-bar 2>&1 | tail -8`
-Expected: PASS (8 tests).
+Expected: PASS (9 tests).
 
 - [ ] **Step 6: Stories — `FilterBar.card.html` rows "wrap" (website), "scroll" (app), "icons", plus Playground, OnSurfaces and a keyboard `play`**
 
@@ -2123,9 +2672,10 @@ Expected: PASS (8 tests).
 ```tsx
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { Clock, Flame, Leaf } from "lucide-react";
+import { Clock, Flame, Leaf, Search } from "lucide-react";
 import { expect } from "storybook/test";
 
+import { Button } from "../../atoms/button/button";
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { FilterBar } from "./filter-bar";
 
@@ -2210,6 +2760,17 @@ export const Icons: Story = {
   },
 };
 
+/** `trailing`: a control pinned to the end of the rail, never squeezed by it. */
+export const WithTrailing: Story = {
+  args: {
+    trailing: (
+      <Button size="sm" variant="ghost" icon={Search}>
+        Search
+      </Button>
+    ),
+  },
+};
+
 export const OnSurfaces: Story = {
   render: (args) => (
     <OnSurfaces>
@@ -2256,10 +2817,33 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/molecules/logo-lockup/logo-lockup.tsx`, `logo-lockup.test.tsx`, `logo-lockup.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/molecules/logo-lockup/logo-lockup.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                | Ruling  | Where, or the spec clause                                                                         |
+| ----------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------- |
+| Mark named for assistive tech                                           | ALREADY | test "signs the artwork…" (Logo's default title)                                                  |
+| Tagline set once, beside the wordmark as text                           | ALREADY | the tagline is drawn into the lockup artwork (spec §7.1), so it scales with the mark              |
+| `tagline` override; story `AlternateTagline`                            | DROP    | spec §7.1 / §9.2 — the tagline is supplied artwork, not copy; contract §6 has no `tagline`        |
+| `hasTagline={false}` → bare wordmark                                    | ALREADY | test "drops to the wordmark…"                                                                     |
+| `label=""` hides the mark when the artwork already names the brand      | ADD     | `isDecorative` (deviation 18); test "hides the logo from assistive tech…"                         |
+| Mark re-heighted per size; 140px wordmark floor                         | ALREADY | widths 200 / 240 / 280 / 360 (deviation 12); 200 is the lockup minimum                            |
+| Clear space per size                                                    | ALREADY | `it.each` size test (`p-8` … `p-15`)                                                              |
+| `hasClearSpace={false}` when the parent already reserves it             | ALREADY | `className="p-0"` replaces the padding (merge); test "drops its clear space…"; story `ClearSpace` |
+| `white` tone; `align="center"`                                          | ALREADY | tests "signs the artwork…", "centres the signature…"                                              |
+| Default tone `brand`                                                    | DROP    | D2 — the design system's default is `white` (deviation 12)                                        |
+| Caller `className` merges                                               | ADD     | test "drops its clear space…" (`p-0` replaces `p-10`)                                             |
+| axe on pink, white-centred-lg and decorative wordmark                   | ADD     | last test renders all three                                                                       |
+| Stories `Default`, `Sizes`, `OnBrand`, `CentredOnInk`, `WithoutTagline` | ALREADY | `Playground` / `Pink`, `Sizes`, `White`, `Centred`, `Wordmark`                                    |
+| Story `ClearSpace`                                                      | ADD     | story `ClearSpace`                                                                                |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
-- Consumes: `Logo` (`variant="lockup" | "wordmark"`, `tone`, width via `className` — Plan 1 Task 7 proves a consumer width class replaces `w-logo-lockup`).
-- Produces: `LogoLockup`, `type LogoLockupProps` (contract §6 + deviation 12). Defaults: `tone = "white"`, `size = "md"`, `hasTagline = true`, `align = "start"`.
+- Consumes: `Logo` (`variant="lockup" | "wordmark"`, `tone`, `isDecorative`, width via `className` — Plan 1 Task 7 proves a consumer width class replaces `w-logo-lockup`).
+- Produces: `LogoLockup`, `type LogoLockupProps` (contract §6 + deviations 12 and 18). Defaults: `tone = "white"`, `size = "md"`, `hasTagline = true`, `align = "start"`, `isDecorative = false`.
 
 - [ ] **Step 1: Tokens** — none new. Widths and clear space are 4px-scale steps:
 
@@ -2313,8 +2897,25 @@ describe("LogoLockup", () => {
     expect(container.firstElementChild).toHaveClass("justify-items-center");
   });
 
+  it("hides the logo from assistive tech when the artwork already names the brand", () => {
+    render(<LogoLockup isDecorative />);
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("drops its clear space when the parent already reserves it", () => {
+    const { container } = render(<LogoLockup className="p-0" />);
+    expect(container.firstElementChild).toHaveClass("p-0");
+    expect(container.firstElementChild).not.toHaveClass("p-10");
+  });
+
   it("has no accessibility violations", async () => {
-    const { container } = render(<LogoLockup tone="pink" />);
+    const { container } = render(
+      <>
+        <LogoLockup tone="pink" />
+        <LogoLockup tone="white" align="center" size="lg" />
+        <LogoLockup tone="pink" size="sm" hasTagline={false} isDecorative />
+      </>
+    );
     await expectNoA11yViolations(container);
   });
 });
@@ -2360,6 +2961,8 @@ export interface LogoLockupProps extends ComponentProps<"div"> {
   /** `false` drops to the wordmark — only where the tagline cannot read. */
   hasTagline?: boolean | undefined;
   align?: "start" | "center" | undefined;
+  /** Hide the logo from assistive tech when the artwork already names the brand in text nearby. */
+  isDecorative?: boolean | undefined;
 }
 
 /**
@@ -2371,13 +2974,19 @@ export function LogoLockup({
   size = "md",
   hasTagline = true,
   align = "start",
+  isDecorative = false,
   className,
   ...props
 }: LogoLockupProps) {
   const styles = logoLockup({ size, align });
   return (
     <div className={styles.root({ className })} {...props}>
-      <Logo variant={hasTagline ? "lockup" : "wordmark"} tone={tone} className={styles.logo()} />
+      <Logo
+        variant={hasTagline ? "lockup" : "wordmark"}
+        tone={tone}
+        isDecorative={isDecorative}
+        className={styles.logo()}
+      />
     </div>
   );
 }
@@ -2386,7 +2995,7 @@ export function LogoLockup({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- logo-lockup 2>&1 | tail -8`
-Expected: PASS (9 tests).
+Expected: PASS (11 tests).
 
 - [ ] **Step 6: Stories — `LogoLockup.card.html` rows pink / white on brand / centred on ink / `hasTagline={false}`, plus Sizes**
 
@@ -2406,7 +3015,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The signature that closes a piece of marketing artwork — a post, a story, an ad. The tagline is part of the supplied logo artwork, so it scales with the mark and can never drift out of sync. Keep the lockup at 200px or wider; below that pass `hasTagline={false}` for the wordmark. On a coloured field use `tone="white"`; on light artwork `tone="pink"`. The padding is the brand\'s clear space (the height of the "P").',
+          'The signature that closes a piece of marketing artwork — a post, a story, an ad. The tagline is part of the supplied logo artwork, so it scales with the mark and can never drift out of sync. Keep the lockup at 200px or wider; below that pass `hasTagline={false}` for the wordmark. On a coloured field use `tone="white"`; on light artwork `tone="pink"`. The padding is the brand\'s clear space (the height of the "P"); pass `className="p-0"` only where the parent already reserves it (a PostFrame\'s canvas pad). `isDecorative` hides the logo from assistive tech when the artwork names the brand in text nearby.',
       },
     },
   },
@@ -2459,6 +3068,20 @@ export const Sizes: Story = {
     </div>
   ),
 };
+
+/** The clear space made visible, then dropped with `className="p-0"` where the parent reserves it. */
+export const ClearSpace: Story = {
+  render: (args) => (
+    <div className="flex flex-wrap items-start gap-4">
+      <div className="rounded-lg bg-surface-page-alt">
+        <LogoLockup {...args} />
+      </div>
+      <div className="rounded-lg bg-surface-page-alt">
+        <LogoLockup {...args} className="p-0" />
+      </div>
+    </div>
+  ),
+};
 ```
 
 - [ ] **Step 7: Calibrate the clear space against the artwork**
@@ -2497,6 +3120,27 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/design-tokens/tokens/component/offer-seal.json`
 - Create: `packages/ui/src/molecules/offer-seal/offer-seal.tsx`, `offer-seal.test.tsx`, `offer-seal.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`, `SPACING`, `RADIUS`), `packages/design-tokens/contrast-pairs.json`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/offer-seal/offer-seal.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                               | Ruling  | Where, or the spec clause                                                                     |
+| ---------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| Value, label and note printed                                          | ALREADY | test "reads as the value, the label and the note"                                             |
+| The value alone when there is nothing else to say                      | ADD     | test "renders the value alone…"                                                               |
+| A rupee value printed as written (`₹99`)                               | ALREADY | story `Values` (`formatRupees(99)`); axe test uses `₹130`                                     |
+| Rotated diamond, text counter-rotated upright                          | ALREADY | test "is a rotated diamond…"                                                                  |
+| Three flat fills, never a gradient                                     | ADD     | `not.toMatch(/gradient/)` in the tone test                                                    |
+| Old classes `bg-brand-primary`, `shadow-elevation3`, `rounded-5`       | DROP    | D4 (design-system token names)                                                                |
+| Fixed side per size (128 / 192 / 280)                                  | ALREADY | `size` sm 110 · md 156 · lg 260 · xl 360 (deviation 7); test "scales the whole seal…"         |
+| Sits in flow until a corner is asked for                               | ALREADY | test "sits in flow when it does not bleed"                                                    |
+| Hangs off each corner by a clamped offset (18% self translate)         | ALREADY | `corner` × `bleed` enum ≤ 0.18 (Review Focus 5); the arbitrary `-translate-x-[18%]` is banned |
+| Caller `className` replaces its own shadow                             | ADD     | test "lets a caller className replace its own shadow"                                         |
+| axe on three tones and sizes                                           | ADD     | last test renders all three                                                                   |
+| Stories `Default`, `Tones`, `Sizes`, `Values`, `WithNote`, `OnACorner` | ALREADY | `Playground`, `Tones`, `Sizes`, `Values` (third seal has the note), `BleedOffCorner`          |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -2623,6 +3267,11 @@ describe("OfferSeal", () => {
     expect(screen.getByText("till 11:30pm")).toBeInTheDocument();
   });
 
+  it("renders the value alone when there is nothing else to say", () => {
+    const { container } = render(<OfferSeal value="1+1" />);
+    expect(container.firstElementChild).toHaveTextContent(/^1\+1$/);
+  });
+
   it("is a rotated diamond, never a circle, with the text counter-rotated upright", () => {
     const { container } = render(<OfferSeal value="1+1" label="Free" />);
     expect(container.firstElementChild).toHaveClass("rotate-45", "rounded-offer-seal");
@@ -2646,6 +3295,8 @@ describe("OfferSeal", () => {
   ] as const)("paints the %s tone", (tone, background, text) => {
     const { container } = render(<OfferSeal value="50%" tone={tone} />);
     expect(container.firstElementChild).toHaveClass(background, text);
+    // One flat fill — never a gradient, never a starburst.
+    expect(container.firstElementChild?.getAttribute("class")).not.toMatch(/gradient/);
   });
 
   it("sits in flow when it does not bleed", () => {
@@ -2670,8 +3321,20 @@ describe("OfferSeal", () => {
     }
   );
 
+  it("lets a caller className replace its own shadow", () => {
+    const { container } = render(<OfferSeal value="50%" className="shadow-2" />);
+    expect(container.firstElementChild).toHaveClass("shadow-2");
+    expect(container.firstElementChild).not.toHaveClass("shadow-3");
+  });
+
   it("has no accessibility violations", async () => {
-    const { container } = render(<OfferSeal value="₹130" label="Launch" tone="brand" size="md" />);
+    const { container } = render(
+      <>
+        <OfferSeal value="₹130" label="Launch" tone="brand" size="md" />
+        <OfferSeal value="50%" label="Off" note="till 11:30pm" tone="light" size="lg" />
+        <OfferSeal value="1+1" label="Free" tone="turmeric" size="sm" />
+      </>
+    );
     await expectNoA11yViolations(container);
   });
 });
@@ -2804,7 +3467,7 @@ export function OfferSeal({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- offer-seal 2>&1 | tail -8`
-Expected: PASS (15 tests).
+Expected: PASS (17 tests).
 
 - [ ] **Step 6: Stories — `OfferSeal.card.html` rows "tone" and "value", the handoff hero seal, sizes, and the bleed geometry check**
 
@@ -2952,6 +3615,34 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/molecules/coupon-ticket/coupon-ticket.tsx`, `coupon-copy-button.tsx`, `coupon-ticket.test.tsx`, `coupon-ticket.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`, `SPACING`), `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/molecules/coupon-ticket/coupon-ticket.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                      | Ruling  | Where, or the spec clause                                                                                               |
+| ----------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Code, headline and terms printed                                              | ALREADY | test "shows the headline, the terms, the code and the logo"                                                             |
+| `terms` optional; story `WithoutTerms`                                        | DROP    | contract §6 `terms: string` (required); the design system: "always state the expiry"                                    |
+| Stub is a copy button named by its code                                       | ALREADY | the button's name is its content, "Use code PAPRIKAA50 Tap to copy"                                                     |
+| Writes the code to the clipboard; `onCopy(code)`                              | ALREADY | test "copies the code from the stub…"                                                                                   |
+| Copied flash on the stub, announced to screen readers                         | ADD     | the hint is already `aria-live="polite"`; the copy test now asserts the announcement                                    |
+| Reachable and operable from the keyboard                                      | ADD     | test "copies from the keyboard"                                                                                         |
+| Nothing tappable and no "Tap to copy" on print artwork                        | ADD     | assertion in "is plain artwork when not copyable"                                                                       |
+| A refused / missing clipboard still flashes "Copied"                          | DROP    | superseded by deviation 8 — a refused copy selects the code instead (test "never claims a copy…")                       |
+| Brand / light skins                                                           | ALREADY | `it.each` surface test                                                                                                  |
+| Headline steps with `size`                                                    | ADD     | test "sets the headline at artwork size for lg"                                                                         |
+| Stacks below `sm`, splits from `sm` (a 360px stub is too narrow for the code) | ADD     | `md` root `flex-col sm:flex-row` with a horizontal perforation below `sm`; `lg` (artwork) always splits; test "stacks…" |
+| Notches match the ground behind the ticket                                    | ALREADY | test "colours the punched notches…"                                                                                     |
+| Press = scale on the copy stub                                                | ADD     | `isCopyable` stub `transition-control active:press-scale`                                                               |
+| Diamond `PatternField` behind the stub                                        | DROP    | D2 — the design-system `CouponTicket.jsx` stub is a flat fill                                                           |
+| Logo hidden (`label=""`)                                                      | ALREADY | the plan names the logo (test asserts `img` "Pink Paprikaa…") — artwork sign-off                                        |
+| Caller `className` replaces the ticket radius                                 | ADD     | test "lets a caller className replace the ticket radius"                                                                |
+| axe on brand-copyable and light-print                                         | ADD     | last test renders both                                                                                                  |
+| Stories `Default`, `Tones`, `CanvasSize`, `ForPrint`                          | ALREADY | `Playground` / `Brand`, `Light`, `OnPinkArtwork` (lg, not copyable)                                                     |
+| Stories `OnATintedPage`, `LongCode`                                           | ADD     | stories `OnTintedPage`, `LongCode`; plus `Narrow` (360, stacked)                                                        |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `Logo` (`tone="white" | "pink"`, height via `h-10 w-auto`), `Icon` (`Copy`, `Check`), semantic surface tokens (brand tone sets `data-surface="brand"`, light sets `light`).
@@ -3064,6 +3755,21 @@ describe("CouponTicket", () => {
     expect(await navigator.clipboard.readText()).toBe(TICKET.code);
     expect(onCopy).toHaveBeenCalledWith(TICKET.code);
     expect(screen.getAllByText("Copied")).not.toHaveLength(0);
+    // The flash is visual; the live hint is what a screen reader hears.
+    expect(
+      screen.getAllByText("Copied").some((node) => node.getAttribute("aria-live") === "polite")
+    ).toBe(true);
+  });
+
+  it("copies from the keyboard", async () => {
+    const user = userEvent.setup();
+    const onCopy = vi.fn();
+    render(<CouponTicket {...TICKET} onCopy={onCopy} />);
+    await user.tab();
+    expect(screen.getByRole("button", { name: /Use code/ })).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(await screen.findAllByText("Copied")).not.toHaveLength(0);
+    expect(onCopy).toHaveBeenCalledWith(TICKET.code);
   });
 
   it("returns to its hint once the confirmation has been seen", async () => {
@@ -3092,6 +3798,7 @@ describe("CouponTicket", () => {
   it("is plain artwork when not copyable — nothing to tap", () => {
     render(<CouponTicket {...TICKET} isCopyable={false} />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.queryByText("Tap to copy")).not.toBeInTheDocument();
     expect(screen.getByText(TICKET.code)).toBeInTheDocument();
   });
 
@@ -3115,8 +3822,37 @@ describe("CouponTicket", () => {
     for (const notch of notches) expect(notch).toHaveClass("bg-surface-brand");
   });
 
-  it("has no accessibility violations", async () => {
-    const { container } = render(<CouponTicket {...TICKET} />);
+  it("sets the headline at artwork size for lg", () => {
+    render(<CouponTicket {...TICKET} size="lg" />);
+    expect(screen.getByText(TICKET.headline)).toHaveClass("text-coupon-ticket-headline-lg");
+  });
+
+  it("stacks at phone width and splits from sm; artwork (lg) always splits", () => {
+    const { container, rerender } = render(<CouponTicket {...TICKET} />);
+    expect(container.firstElementChild).toHaveClass("flex-col", "sm:flex-row");
+    rerender(<CouponTicket {...TICKET} size="lg" />);
+    expect(container.firstElementChild).not.toHaveClass("flex-col");
+  });
+
+  it("lets a caller className replace the ticket radius", () => {
+    const { container } = render(<CouponTicket {...TICKET} className="rounded-lg" />);
+    expect(container.firstElementChild).toHaveClass("rounded-lg");
+    expect(container.firstElementChild).not.toHaveClass("rounded-xl");
+  });
+
+  it("has no accessibility violations, copyable and as print artwork", async () => {
+    const { container } = render(
+      <>
+        <CouponTicket {...TICKET} />
+        <CouponTicket
+          code="CHAI20"
+          headline="20% off all chai, all week"
+          terms="Dine-in only. Till 30 Sep."
+          tone="light"
+          isCopyable={false}
+        />
+      </>
+    );
     await expectNoA11yViolations(container);
   });
 });
@@ -3247,13 +3983,14 @@ const couponTicket = componentVariants({
     logo: "w-auto",
     headline: "mb-0 max-w-none font-display text-balance",
     terms: "max-w-text-measure-narrow mb-0 text-text-muted",
-    // The perforation sits exactly between main and stub, whatever the ticket's width.
-    perforation: "relative w-0 shrink-0",
-    rule: "absolute inset-y-4.5 -left-px border-l-2 border-dashed border-border-default",
-    notchTop:
+    // The perforation sits exactly between main and stub, whatever the ticket's width. Split, it is
+    // a zero-width column with notches on the top and bottom edges; stacked (md below `sm`), a
+    // zero-height row with notches on the two side edges. The size variants set which.
+    perforation: "relative shrink-0",
+    rule: "absolute border-dashed border-border-default",
+    notchStart:
       "size-coupon-ticket-notch absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 rounded-pill",
-    notchBottom:
-      "size-coupon-ticket-notch absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 rounded-pill",
+    notchEnd: "size-coupon-ticket-notch absolute rounded-pill",
     stub: "grid shrink-0 place-items-center p-5 text-center",
     stubInner: "grid justify-items-center gap-2",
     stubLabel: "font-display text-text-muted uppercase",
@@ -3267,18 +4004,27 @@ const couponTicket = componentVariants({
     },
     size: {
       md: {
-        root: "max-w-coupon-ticket-md",
+        // Stacked below `sm`: split at 360px the stub would be too narrow for a mono code.
+        root: "max-w-coupon-ticket-md flex-col sm:flex-row",
+        perforation: "h-0 sm:h-auto sm:w-0",
+        rule: "inset-x-4.5 -top-px border-t-2 sm:inset-x-auto sm:inset-y-4.5 sm:-left-px sm:border-t-0 sm:border-l-2",
+        notchEnd:
+          "top-0 right-0 translate-x-1/2 -translate-y-1/2 sm:top-auto sm:right-auto sm:bottom-0 sm:left-0 sm:-translate-x-1/2 sm:translate-y-1/2",
         main: "p-6",
         logo: "h-10",
         headline: "text-coupon-ticket-headline-md mt-4",
         terms: "mt-3 text-body-sm",
-        stub: "w-coupon-ticket-stub-md",
+        stub: "sm:w-coupon-ticket-stub-md",
         stubLabel: "text-overline",
         code: "text-coupon-ticket-code-md",
         hint: "text-caption",
       },
       lg: {
+        // Artwork is scaled, never reflowed: always split, whatever the viewport.
         root: "max-w-coupon-ticket-lg",
+        perforation: "w-0",
+        rule: "inset-y-4.5 -left-px border-l-2",
+        notchEnd: "bottom-0 left-0 -translate-x-1/2 translate-y-1/2",
         main: "p-10",
         logo: "h-17",
         headline: "text-coupon-ticket-headline-lg mt-7",
@@ -3290,12 +4036,16 @@ const couponTicket = componentVariants({
       },
     },
     notch: {
-      page: { notchTop: "bg-surface-page", notchBottom: "bg-surface-page" },
-      tint: { notchTop: "bg-surface-page-alt", notchBottom: "bg-surface-page-alt" },
-      sunken: { notchTop: "bg-surface-sunken", notchBottom: "bg-surface-sunken" },
-      brand: { notchTop: "bg-surface-brand", notchBottom: "bg-surface-brand" },
+      page: { notchStart: "bg-surface-page", notchEnd: "bg-surface-page" },
+      tint: { notchStart: "bg-surface-page-alt", notchEnd: "bg-surface-page-alt" },
+      sunken: { notchStart: "bg-surface-sunken", notchEnd: "bg-surface-sunken" },
+      brand: { notchStart: "bg-surface-brand", notchEnd: "bg-surface-brand" },
     },
-    isCopyable: { true: { stub: "cursor-pointer" }, false: {} },
+    // Press = the system's scale (Button's treatment).
+    isCopyable: {
+      true: { stub: "transition-control cursor-pointer active:press-scale" },
+      false: {},
+    },
   },
 });
 
@@ -3347,8 +4097,8 @@ export function CouponTicket({
       </div>
       <div aria-hidden="true" className={styles.perforation()}>
         <span className={styles.rule()} />
-        <span className={styles.notchTop()} />
-        <span className={styles.notchBottom()} />
+        <span className={styles.notchStart()} />
+        <span className={styles.notchEnd()} />
       </div>
       {isCopyable ? (
         <CouponCopyButton
@@ -3381,7 +4131,7 @@ export function CouponTicket({
 - [ ] **Step 6: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- coupon-ticket 2>&1 | tail -8`
-Expected: PASS (10 tests).
+Expected: PASS (14 tests).
 
 - [ ] **Step 7: Stories — `CouponTicket.card.html` rows "brand" and "light", the marketing-kit ticket on pink, and a copy `play`**
 
@@ -3391,6 +4141,8 @@ Expected: PASS (10 tests).
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { expect, fn } from "storybook/test";
+
+import { formatRupees } from "@pink-paprikaa-web/utils";
 
 import { CouponTicket } from "./coupon-ticket";
 
@@ -3446,6 +4198,32 @@ export const OnPinkArtwork: Story = {
     </div>
   ),
 };
+
+/** The notches are punched holes: on a tinted page `notch="tint"` keeps them from reading as blobs. */
+export const OnTintedPage: Story = {
+  args: { tone: "light", notch: "tint" },
+  render: (args) => (
+    <div className="bg-surface-page-alt p-8">
+      <CouponTicket {...args} />
+    </div>
+  ),
+};
+
+/** A long code wraps inside the stub instead of widening the ticket. */
+export const LongCode: Story = {
+  args: { code: "PAPRIKAAFIRSTORDER", headline: `${formatRupees(150)} off your first order` },
+};
+
+/** 360px: `md` stacks, the perforation runs across and the notches sit on the side edges. */
+export const Narrow: Story = {
+  globals: { viewport: { value: "floor360" } },
+  play: async ({ canvasElement }) => {
+    const ticket = canvasElement.querySelector("[data-surface]");
+    await expect(ticket).not.toBeNull();
+    if (ticket === null) return;
+    await expect(ticket.scrollWidth).toBeLessThanOrEqual(ticket.clientWidth);
+  },
+};
 ```
 
 - [ ] **Step 8: Export**
@@ -3480,6 +4258,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Modify: `packages/design-tokens/tokens/semantic/shadow.json` (`shadow.selected`), `packages/design-tokens/contrast-pairs.json`, `packages/ui/src/lib/component-variants.ts` (`TEXT`, `SHADOW`)
 - Create: `packages/ui/src/molecules/choice-card-group/choice-card-group.tsx`, `choice-card-group.test.tsx`, `choice-card-group.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** none (handoff component)
 
 **Interfaces:**
 
@@ -4241,6 +5021,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/molecules/check-card/check-card.tsx`, `check-card.test.tsx`, `check-card.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
 
+**Dev reference:** none (handoff component)
+
 **Interfaces:**
 
 - Consumes: native `<input type="checkbox">`; `Icon` (`Check`); `shadow-selected` (Task 10); `transition-control` (Plan 2a); `useId`; `fakeRegister` (Plan 2b, tests).
@@ -4497,6 +5279,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 - Create: `packages/ui/src/molecules/chip-group/chip-group.tsx`, `chip-group.test.tsx`, `chip-group.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** none (handoff component)
 
 **Interfaces:**
 
@@ -5241,6 +6025,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/molecules/key-value-list/key-value-list.tsx`, `key-value-list.test.tsx`, `key-value-list.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
 
+**Dev reference:** none (handoff component)
+
 **Interfaces:**
 
 - Consumes: `componentVariants` only (semantic text/border tokens, so it follows any surface).
@@ -5610,6 +6396,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/molecules/steps/steps.tsx`, `steps.test.tsx`, `steps.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`), `packages/ui/src/index.ts`
 
+**Dev reference:** none (handoff component)
+
 **Interfaces:**
 
 - Consumes: `headingTag`; Plan 2c's `autogrid-min-md` utility (260px tracks; the handoff's 240 snaps up) for the `rule` variant; semantic tokens (`bg-surface-brand` + `text-text-on-brand` disc; `border-border-brand` rule; `text-text-brand` numbers).
@@ -5945,6 +6733,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Modify: `packages/design-tokens/tokens/surface/ink.json`, `packages/design-tokens/tokens/surface/light.json`, `packages/ui/src/lib/component-variants.ts` (`TEXT`)
 - Create: `packages/ui/src/molecules/feature-item/feature-item.tsx`, `feature-item.test.tsx`, `feature-item.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** none (handoff component)
 
 **Interfaces:**
 
@@ -6357,6 +7147,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/design-tokens/tokens/component/pricing-card.json`
 - Create: `packages/ui/src/molecules/pricing-card/pricing-card.tsx`, `pricing-card.test.tsx`, `pricing-card.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`, `SPACING`), `packages/ui/src/index.ts`
+
+**Dev reference:** none (handoff component)
 
 **Interfaces:**
 
@@ -7011,6 +7803,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/molecules/link-card/link-card.tsx`, `link-card.test.tsx`, `link-card.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`), `packages/ui/src/index.ts`
 
+**Dev reference:** none (handoff component)
+
 **Interfaces:**
 
 - Consumes: `Slot` from `radix-ui`, used the way Plan 2a does (verified in `@radix-ui/react-slot`): `const Component: ElementType = asChild ? Slot.Root : "a"`, and `<Slot.Slottable child={children}>{() => content}</Slot.Slottable>` replaces the child's children with the card's media and text, so they land **inside** the consumer's link element. Classes go on the component, never on the slotted child (Slot joins child classes without tailwind-merge). `Icon` (`ArrowRight`, `xs`), `headingTag`; the `lift` utility (Plan 1).
@@ -7402,6 +8196,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/molecules/sticky-action-bar/sticky-action-bar.tsx`, `sticky-action-bar.test.tsx`, `sticky-action-bar.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`), `packages/ui/src/index.ts`
 
+**Dev reference:** none (handoff component)
+
 **Interfaces:**
 
 - Consumes: `--spacing-dock-clearance` (Plan 1: 84px, the handoff's `bottom: 84px`), the `z-raised` utility (the handoff's `z-index: 5`), the ink surface.
@@ -7660,6 +8456,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 - Create: `packages/ui/src/molecules/announcement-bar/announcement-bar.tsx`, `announcement-expiry.tsx`, `announcement-bar.test.tsx`, `announcement-bar.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** none (handoff component)
 
 **Interfaces:**
 
@@ -8031,6 +8829,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Modify: `packages/design-tokens/contrast-pairs.json`, `packages/ui/src/lib/component-variants.ts` (`TEXT`, `SPACING`)
 - Create: `packages/ui/src/molecules/table/table.tsx`, `table.test.tsx`, `table.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** none (handoff component)
 
 **Interfaces:**
 
