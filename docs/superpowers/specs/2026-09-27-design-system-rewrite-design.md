@@ -217,8 +217,10 @@ focus, targets, motion) is uncompromised and gated.
 ### 5.5 Non-contrast requirements (all components)
 
 Semantic HTML first; every interactive element keyboard-operable with visible focus
-(2px `pink-500` outline, 2px offset; fields use the inset focus ring); touch targets ≥44px
-(`--hit-min`) except where the system specifies 36/38px controls (still ≥24px, WCAG 2.5.8 AA);
+(2px `pink-500` outline, 2px offset; fields use the 3px focus ring, `shadow-focus-ring` =
+`0 0 0 3px {color.pink.200}`, an outer spread — _Amended 2026-09-27 (implementation)_, was "the
+inset focus ring"); touch targets ≥44px (`--hit-min`) except where the system specifies 36/38px
+controls (still ≥24px, WCAG 2.5.8 AA);
 accessible names required by the type system (e.g. `IconButton.label: string` is not optional);
 status never by colour alone (message + glyph); `prefers-reduced-motion` honoured globally;
 headings levels configurable (`headingLevel`) on every titled component.
@@ -232,9 +234,9 @@ headings levels configurable (`headingLevel`) on every titled component.
 ```
 packages/design-tokens/
 ├── tokens/
-│   ├── primitive/     color · typography · spacing · radius · border · shadow · effect ·
-│   │                  motion · breakpoint · layout · canvas · pattern · z-index
-│   ├── semantic/      color (surface · text · border · interaction · status · heat · action)
+│   ├── primitive/     color · typography · space · shape · elevation · motion · breakpoint ·
+│   │                  canvas · pattern · z-index
+│   ├── semantic/      color (surface · text · border · brand · status · heat · focus) · shadow
 │   ├── surface/       brand · ink · soft · light   (overrides of semantic + component tokens)
 │   └── component/     one file per component with its own dimensions (button, icon-button, tag,
 │                      badge, field, card, image-slot, logo, … — see 6.4)
@@ -247,6 +249,17 @@ packages/design-tokens/
 Tiers: **primitive** (raw values — the only place a hex or px literal may exist) → **semantic**
 (references primitives) → **component** (references semantic/primitive). **Surface** files redefine
 semantic and component tokens for a scope.
+
+> **Amended 2026-09-27 (implementation):** the tree lists the files as built. The primitive files
+> are `space.json` (spacing, container, aspect), `shape.json` (radius, border-width) and
+> `elevation.json` (shadow, blur, effect), where this tree first said
+> `spacing · radius · border · shadow · effect · layout`. The semantic colour groups include
+> `brand` and `focus`, where it said `interaction` and `action`, and the focus rings are in
+> `semantic/shadow.json`. `component/` holds `icon.json` and `logo.json` so far. On literals: a
+> **hex** exists only in `primitive/color.json`. A **px** literal may also appear in a component
+> file, for that component's own dimensions (`"14px"` in `icon.json`, §6.4 amendment), and inside
+> the focus-ring composites (`0 0 0 3px {color.pink.200}` in `semantic/shadow.json` and
+> `surface/light.json`).
 
 ### 6.2 Outputs
 
@@ -767,18 +780,19 @@ with the §5.4 policy. `apps/storybook/package.json` adds `@pink-paprikaa-web/co
 
 ### 11.2 New or tightened gates (each probe-verified at introduction — handbook 06 §4)
 
-| Gate                                                                                                                                                                                                                                                                  | Where                                          |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| Contrast policy test (§5.4)                                                                                                                                                                                                                                           | `design-tokens:test`                           |
-| `tailwindcss/no-arbitrary-value: error` (bans `text-[13px]`, `bg-[#…]`)                                                                                                                                                                                               | `packages/ui` lint                             |
-| `tailwindcss/no-custom-classname: error` against `src/styles.css`                                                                                                                                                                                                     | `packages/ui` lint                             |
-| atomic-layering: `templates` → `layouts`; atoms may import only `atoms/icon` + `lib`                                                                                                                                                                                  | `tools/eslint-config`                          |
-| naming-convention `warn` → `error` (drift ledger P-08)                                                                                                                                                                                                                | `tools/eslint-config`                          |
-| No hex/rgb literals in `packages/ui/src/**/*.css` (spec test)                                                                                                                                                                                                         | `ui:test`                                      |
-| Founder guard also scans `apps/storybook/storybook-static`                                                                                                                                                                                                            | `scripts/check-founder-names.mjs`, CI `guards` |
-| Brand facts schema: two-`a` literal, GSTIN/FSSAI formats                                                                                                                                                                                                              | `content:test`                                 |
-| `prettier-plugin-tailwindcss` class order (D18); `tailwindcss/classnames-order` off                                                                                                                                                                                   | `nx format:check`, lint-staged                 |
-| RHF compatibility: the "React Hook Form + Zod" story's `play` submits invalid then valid input and asserts messages, focus-on-error and submitted values across Input, Select, Checkbox, Radio, ChoiceCardGroup, QuantityStepper (Controller), ChipGroup (Controller) | `storybook:test`                               |
+| Gate                                                                                                                                                                                                                                                                  | Where                                                                      |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Contrast policy test (§5.4)                                                                                                                                                                                                                                           | `design-tokens:test`                                                       |
+| `tailwindcss/no-arbitrary-value: error` (bans `text-[13px]`, `bg-[#…]`)                                                                                                                                                                                               | `packages/ui` lint                                                         |
+| `tailwindcss/no-custom-classname: error` against `packages/ui/tailwind.css` (the `cssConfigPath`, which imports `tailwindcss` and then `src/styles.css`; _Amended 2026-09-27 (implementation)_, was "against `src/styles.css`")                                       | `packages/ui` lint                                                         |
+| `pink-paprikaa/no-arbitrary-shorthand: error` bans `w-(--x)`, `text-(length:--fs)` and `[mask-type:alpha]` (ruling R23; _Added 2026-09-27 (implementation)_)                                                                                                          | `tools/eslint-config` react preset (`ui`, `web`, `blog`, `storybook` lint) |
+| atomic-layering: `templates` → `layouts`; atoms may import only `atoms/icon` + `lib`                                                                                                                                                                                  | `tools/eslint-config`                                                      |
+| naming-convention `warn` → `error` (drift ledger P-08)                                                                                                                                                                                                                | `tools/eslint-config`                                                      |
+| No hex/rgb literals in `packages/ui/src/**/*.css` (spec test)                                                                                                                                                                                                         | `ui:test`                                                                  |
+| Founder guard also scans `apps/storybook/storybook-static`                                                                                                                                                                                                            | `scripts/check-founder-names.mjs`, CI `guards`                             |
+| Brand facts schema: two-`a` literal, GSTIN/FSSAI formats                                                                                                                                                                                                              | `content:test`                                                             |
+| `prettier-plugin-tailwindcss` class order (D18); `tailwindcss/classnames-order` off                                                                                                                                                                                   | `nx format:check`, lint-staged                                             |
+| RHF compatibility: the "React Hook Form + Zod" story's `play` submits invalid then valid input and asserts messages, focus-on-error and submitted values across Input, Select, Checkbox, Radio, ChoiceCardGroup, QuantityStepper (Controller), ChipGroup (Controller) | `storybook:test`                                                           |
 
 ### 11.3 Repo baseline repairs (today red, required for "done")
 

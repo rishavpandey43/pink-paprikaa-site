@@ -36,10 +36,13 @@ packages/ui/src/<layer>/<kebab-name>/
 
 - **Layers** run `atoms → molecules → organisms → layouts`. A layer may import the layers below it,
   never one above it (LAW, `tools/eslint-config/atomic-layering.js`).
-- **Atoms** (LAW): an atom file imports only `../icon/*`, `../../lib/*`, `../../../vitest.setup`,
-  its own folder and packages. This covers the component, its test and its story. A story never
-  composes another atom: it uses plain elements with token classes. The rule also catches
-  roundabout paths (`../../atoms/text/text`, `../../index`).
+- **Atoms.** The lint (LAW) bans an atom file (component, test or story) from importing any atom
+  but Icon (`../text/text`), a higher layer or the package barrel, including by roundabout paths
+  (`../../atoms/text/text`, `../../index`). Anything else passes, so `../../lib/*`,
+  `../../assets/*`, `../../styles.css` and `../../../vitest.setup` all lint clean (probed). The
+  CONVENTION is narrower: an atom imports only `../icon/*`, `../../lib/*`, `../../../vitest.setup`,
+  its own folder and packages. A story never composes another atom: it uses plain elements with
+  token classes.
 - **`src/lib/`** holds library internals. It is not a layer. Today it has the variant builder
   (`component-variants.ts`), the brand artwork (`brand-artwork.ts`, `brand-artwork.css`) and the
   reveal observer (`reveal-observer.tsx`).
@@ -101,9 +104,11 @@ export function Icon({ icon: Glyph, size = "md", label, className, ...props }: I
   strings.
 - **React 19:** `ref` is a prop, so no `forwardRef`. Use named function exports. No default
   exports (LAW).
-- **Optional props are `?: T | undefined`** (ruling R13). `exactOptionalPropertyTypes` is on, and a
-  composition must be able to forward a value that may be `undefined`. `Icon`, `Logo` and
-  `RevealObserver` were written before R13 and still declare `?: T`. New code follows R13.
+- **Optional props are `?: T | undefined`** (ruling R13). Where the contracts file or a
+  design-system `.d.ts` writes `label?: string`, implement it as `label?: string | undefined`.
+  `exactOptionalPropertyTypes` is on, and a composition must be able to forward a value that may be
+  `undefined`. `Icon`, `Logo` and `RevealObserver` were written before R13 and still declare
+  `?: T`. New code follows R13.
 - **Booleans** read as questions: `is*`, `has*`, `should*`, `can*`. For variables this is LAW
   (naming-convention at `error`). For props it is the §4 table.
 - **Variant props** come from `VariantProps<typeof x>` (as in `Icon` and `Logo`), or are spelled
@@ -113,8 +118,9 @@ export function Icon({ icon: Glyph, size = "md", label, className, ...props }: I
   `import { Slot } from "radix-ui"` and write
   `const Component: ElementType = asChild ? Slot.Root : "button"`. Pass injected glyphs through
   `<Slot.Slottable child={children}>{(content) => …}</Slot.Slottable>`
-  (`@radix-ui/react-slot` 1.3.3). `type` and `disabled` never reach a slotted child, because an
-  `<a>` has neither. Use `aria-disabled` there.
+  (`@radix-ui/react-slot` 1.3.3). Slot merges every prop onto the child (child values win,
+  handlers chain, `style` and `className` combine), so when `asChild` is set, do not pass `type` or
+  `disabled`: an `<a>` has neither. Use `aria-disabled` there.
 - **Slot class rule:** put classes on the component, never on the slotted child. Slot joins the
   child's `className` onto yours with a plain space, not tailwind-merge. So
   `<Card asChild><a className="rounded-xl">` would ship both radii. Write
@@ -173,9 +179,27 @@ scale becomes a token.
   always references a primitive or semantic token (`{color.pink.600}`). A new colour starts life as
   a primitive in `tokens/primitive/color.json`. The brand hex exists once, in that file (LAW,
   `theme.spec.ts`).
-- A **typography** component token must be a full composite
-  (`{ fontSize, lineHeight, letterSpacing, fontWeight }`). An alias such as `{text.body}` emits the
-  size only, with no line height (`declarations()` in `sd.config.mjs`).
+- A **typography** component token must be a full composite with `"$type": "typography"` (on the
+  token or its group). `declarations()` in `sd.config.mjs` emits the `--line-height`,
+  `--letter-spacing` and `--font-weight` sub-properties only for that type. An alias such as
+  `{text.body}` emits the size only.
+
+  ```json
+  {
+    "text": {
+      "$type": "typography",
+      "button-md": {
+        "$value": {
+          "fontSize": "15px",
+          "lineHeight": 1,
+          "letterSpacing": "0",
+          "fontWeight": "{font-weight.semibold}"
+        }
+      }
+    }
+  }
+  ```
+
 - **Register every new name** in the matching list in `src/lib/component-variants.ts`: `SPACING`,
   `TEXT`, `RADIUS`, `SHADOW` and the rest. `component-variants.spec.ts` asserts that each list
   equals the token build, so a missing name fails `ui:test` (LAW). Colours have no list, because
@@ -185,6 +209,13 @@ scale becomes a token.
   `tokens/surface/{brand,ink,soft}.json`. It must also be restored in `tokens/surface/light.json`
   to its exact base value, so a white card inside a pink field shows dark text again (LAW,
   `theme.spec.ts`, "restores, on a light island…").
+- **Pitfall: an aliased component colour does not follow surfaces.** A component token written as a
+  semantic alias (`"$value": "{color.text.link}"`) compiles to
+  `--color-<name>: var(--color-text-link)` in `theme.css`, which Tailwind emits on `:root`. A custom
+  property resolves where it is declared, so the component token keeps the root's link colour inside
+  `data-surface="brand"`. If it must change on a surface, override the component token itself in
+  `tokens/surface/{brand,ink,soft}.json` and restore it in `light.json`. The contrast gate catches a
+  miss only if that pair is listed in `contrast-pairs.json`.
 - **New text/background pairs** go in `packages/design-tokens/contrast-pairs.json`. Each group has a
   `surface`, either `foregrounds` × `backgrounds` or explicit `pairs`, an optional `backdrop`, and
   `min: 4.5`. `min: 3` is allowed only with `exception: "brand-fill"` (white on the brand pink).
@@ -252,7 +283,7 @@ scale becomes a token.
 
 - [ ] Semantic HTML first. Use a native element when one exists.
 - [ ] Keyboard-operable, with visible focus. The base layer draws a 2px `--color-focus` outline at
-      a 2px offset. Fields use the inset ring (`shadow-focus-ring`).
+      a 2px offset. Fields use the 3px focus ring (`shadow-focus-ring`).
 - [ ] Touch targets are at least 44px (`min-h-hit`), except the system's 36/38px controls, which
       are still at least 24px.
 - [ ] Accessible names are required by type (`IconButton.label: string`). A glyph is either named

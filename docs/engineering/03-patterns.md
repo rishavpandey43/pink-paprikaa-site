@@ -61,12 +61,13 @@ Encoded rules. All are CONVENTION unless marked. The full contract is
   and disappears next to `text-text-muted`. `packages/ui/src/lib/component-variants.ts` is the
   configured instance. Its spec asserts every scale list against the token build. Multi-part
   components use `componentVariants()` **slots**.
-- **Only token-backed named utilities** (LAW). Three rules enforce this:
+- **Only token-backed named utilities** (LAW). Four rules enforce this:
   `tailwindcss/no-arbitrary-value` bans `h-[13px]`, `tailwindcss/no-custom-classname` bans a class
-  the stylesheet does not define, and `pink-paprikaa/no-arbitrary-shorthand` bans the `(--x)`
-  shorthand (`h-(--button-h-sm)`) and `[prop:value]`. A value the system lacks becomes a component
-  token, placed in its Tailwind namespace (`spacing.icon-md` → `size-icon-md`). Motion and stacking
-  use the stylesheet's named utilities (`duration-fast`, `z-header`).
+  the stylesheet does not define, `pink-paprikaa/no-arbitrary-shorthand` bans the `(--x)`
+  shorthand (`h-(--button-h-sm)`) and `[prop:value]`, and `pink-paprikaa/no-raw-hex` bans any hex
+  literal. A value the system lacks becomes a component token, placed in its Tailwind namespace
+  (`spacing.icon-md` → `size-icon-md`). Motion and stacking use the stylesheet's named utilities
+  (`duration-fast`, `z-header`).
 - **Surfaces come from `data-surface`, never from an `on` prop.** A component that paints a field
   sets `data-surface` itself. Text colour follows the surface.
 - Extend the native element's props, spread them last, and merge `className` through the variant

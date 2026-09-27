@@ -50,7 +50,9 @@ steps, in order.
 3. Use the generated utility class (`bg-<token>`) — never the value. A new spacing, text, radius or
    shadow name also goes into its list in `packages/ui/src/lib/component-variants.ts`
    (`component-variants.spec.ts` fails until it does). A new text/background pair goes into
-   `packages/design-tokens/contrast-pairs.json`.
+   `packages/design-tokens/contrast-pairs.json`. A token overridden in
+   `tokens/surface/{brand,ink,soft}.json` is also restored to its base value in
+   `tokens/surface/light.json` (`theme.spec.ts` fails until it is).
 4. Gate: `pnpm verify` (consumers recompile), visual check in Storybook.
 
 ## 4. New content type (schema + data)
