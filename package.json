@@ -10,7 +10,7 @@
     "format": "nx format:write",
     "format:check": "nx format:check",
     "guard:founder": "node scripts/check-founder-names.mjs apps/web/out apps/blog/out apps/storybook/storybook-static",
-    "prepare": "husky"
+    "prepare": "husky && nx build @pink-paprikaa-web/design-tokens"
   },
   "private": true,
   "packageManager": "pnpm@10.26.1",

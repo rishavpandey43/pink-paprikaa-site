@@ -88,6 +88,9 @@
   ],
   "analytics": false,
   "targetDefaults": {
+    "lint": {
+      "dependsOn": ["^build"]
+    },
     "test": {
       "dependsOn": ["^build"]
     },
