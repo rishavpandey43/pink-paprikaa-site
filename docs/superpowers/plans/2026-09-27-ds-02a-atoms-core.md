@@ -6925,3 +6925,4 @@ In the report, include the full difference table from Step 3 and the tail of the
 - **Tooltip** opens with `delayDuration={0}` as designed — accepted.
 - **No on-brand variants** for Checkbox/Radio/Switch/Slider (none designed) — YAGNI, accepted.
 - **Read-only Select** renders disabled for the visual, **plus a hidden `<input type="hidden" name={name} value={value}>`** so the value is still submitted (react-hook-form reads it) — add a test.
+- **R25 — no `SYMBOL_DATA_URI_WHITE` export.** Plan 1 removed it (it tempted per-instance inlining). Task 0 must not expect it; PatternField and SymbolMark use `var(--pp-symbol-mask)` / `mask-symbol` only. Logo no longer accepts SVG `width`/`height` props — size it with classes (`w-50`, or `h-12 w-auto` for header sizing).
