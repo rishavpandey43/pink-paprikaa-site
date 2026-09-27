@@ -174,6 +174,7 @@ const names = [
   "spacing","spacing-gutter","spacing-gutter-mobile","spacing-gutter-desktop","spacing-section","spacing-section-mobile",
   "spacing-section-desktop","spacing-grid-gap","spacing-card-min","spacing-card-min-wide",
   "spacing-logo-lockup","spacing-logo-wordmark","spacing-logo-symbol", ...ramp("spacing-icon-", ["xs","sm","md","lg","xl"]),
+  "spacing-header","spacing-header-compact","spacing-tabbar","spacing-hit","spacing-dock-clearance",
   "motion-press-scale","duration-instant","duration-fast","duration-base","duration-slow","ease-out","ease-in-out","ease-entrance","ease-pop",
   ...ramp("text-", ["display-1","display-2","h1","h2","h3","h4","body-lg","body","body-sm","caption","overline","mono"]),
   ...ramp("text-", ["display-1","display-2","h1","h2","h3","h4","body"]).map((n) => n + "-fluid"),
@@ -197,27 +198,29 @@ Expected: `{"missing":[],"empty":[],"surfaces":[],"undescribed":[]}`. A missing 
 
 Read each file named and answer each question in the report. Where the answer differs from this plan, patch the named task's code.
 
-| #   | Read                                                                             | Question — and the task it feeds                                                                                                                                                                                                                                                                                      |
-| --- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A1  | `molecules/choice-card-group/choice-card-group.tsx`                              | Plan 3b deviation 1 says `ChoiceCardGroup` forwards `name`, `onChange`, `onBlur` and `ref` from `{...register("meal")}` to **every** radio `<input>` (spec D17) — confirm in the code and its test. (Task 13; if not, Step 6)                                                                                         |
-| A2  | `molecules/quantity-stepper/quantity-stepper.{tsx,test.tsx}`                     | Exact accessible names of the increase/decrease buttons (e.g. `Increase guests`)? Are they `type="button"`? (Task 13 play)                                                                                                                                                                                            |
-| A3  | `molecules/chip-group/chip-group.tsx`                                            | Plan 3b: `type="single"` renders `role="radiogroup"` with items `role="radio"` + `aria-checked`, named by their label; a single group never deselects; `onBlur` is a prop (deviation 5). Confirm, since the Task 13 play presses ArrowRight then Space. (Task 13)                                                     |
-| A4  | `molecules/field/field.tsx`                                                      | Is the label a `<label htmlFor={id}>`; does the required marker change the accessible name (`Name *` vs `Name`)? The plays use `/^Name/`-style regexes, so either is fine — confirm. (Task 13)                                                                                                                        |
-| A5  | `atoms/radio/radio.tsx`                                                          | `RadioGroup` exported beside `Radio`, props `legend`, `isLegendHidden`, `status`; it spreads fieldset props (`id`, `aria-describedby`). (Tasks 11, 13)                                                                                                                                                                |
-| A6  | `molecules/table/table.tsx`                                                      | Parts and `caption`/`isCaptionVisible`/`minWidth` as the contract; does the scroll wrapper handle `scrollable-region-focusable`? (Task 2)                                                                                                                                                                             |
-| A7  | `layouts/post-frame/post-frame.tsx`                                              | `POST_FORMATS[format]` is `{ width, height, label }`; the frame is `position: relative`; `isFit` fits the parent's width. (Tasks 9, 12)                                                                                                                                                                               |
-| A8  | `molecules/logo-lockup/*`, `molecules/offer-seal/*`, `molecules/coupon-ticket/*` | Plan 3b fixes the scales — LogoLockup `sm` 200 · `md` 240 · `lg` 280 · `xl` 360 (default tone **white**); OfferSeal `sm` 110 · `md` 156 · `lg` 260 · `xl` 360, bleed `sm` = 1/12, `md` = 1/6 of the side; CouponTicket adds `notch="brand"`. Confirm against the component tokens. (Tasks 3, 12)                      |
-| A9  | `layouts/app-shell/app-shell.tsx` + tokens                                       | Width of `size="phone-sm"` — must be ≤ 360px for `Home360`. If it is wider, `Home360` renders the screens without `AppShell` and the report says so. (Task 11)                                                                                                                                                        |
-| A10 | `layouts/cluster/cluster.tsx`                                                    | With `isScrollable`, does Cluster make the rail keyboard-focusable (tabindex + role region)? If not, the App kit passes `tabIndex={0}` + `role="region"` + `aria-label`. (Task 11)                                                                                                                                    |
-| A11 | `organisms/menu-list/menu-list.tsx`                                              | Does it add an "All" category itself (the kits pass only real categories)? (Tasks 10, 11)                                                                                                                                                                                                                             |
-| A12 | `organisms/site-header/*`                                                        | Drawer trigger accessible name equals `menuLabel` (`"Menu"`); desktop `actions` hidden from the accessibility tree below `md`, drawer actions hidden above it. (Task 10 plays)                                                                                                                                        |
-| A13 | `molecules/toast/toast.tsx`                                                      | `ToastProvider` props (`duration`, `label`) and the name of its **contained-viewport** option (Plan 3a); whether `Toast` takes a `portalContainer`, or the provider itself must sit inside `AppShell`'s `overlay` to contain the viewport. The App kit writes `isContained` + `Toast portalContainer`. (Tasks 10, 11) |
-| A14 | `organisms/dialog/dialog.tsx`                                                    | Title is the dialog's accessible name; `footer` renders inside the dialog content; the prop that portals it into a given element is `portalContainer` (Plan 4) and accepts `HTMLElement \| null`. (Tasks 10, 11)                                                                                                      |
-| A15 | `atoms/button/button.tsx`, `atoms/icon-button/icon-button.tsx`                   | `asChild` with an `<a>` child keeps `icon`/`iconAfter`; `IconButton count` keeps the accessible name equal to `label`. (Tasks 10–12)                                                                                                                                                                                  |
-| A16 | `.storybook/preview.tsx`                                                         | Viewport option key `floor360` exists; `a11y.test = "error"`; the storySort order from Plan 1 Task 8. (Tasks 2, 10–12)                                                                                                                                                                                                |
-| A17 | `packages/design-tokens/dist/tokens.json` (container tokens)                     | The utility names for the container steps this plan uses: `max-w-article` (the form) and `max-w-text-measure-prose` (Type → Body). Tailwind's static `max-w-prose` is never used. Patch Tasks 5 and 13 to the built names.                                                                                            |
-| A18 | `layouts/post-frame/post-frame.tsx`                                              | The `alt` tone (pink-50, Plan 2c) exists for the carousel board. (Task 12)                                                                                                                                                                                                                                            |
-| A19 | every component the kits and specimens pass optional values to                   | Optional custom props accept `undefined` (`name?: T \| undefined`, Plans 2–4 ruling R13), so optional fields are passed straight through (`was={item.was}`). If one does not, that component is fixed forward under Step 6, not worked around here.                                                                   |
+| #   | Read                                                                             | Question — and the task it feeds                                                                                                                                                                                                                                                                                                               |
+| --- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A1  | `molecules/choice-card-group/choice-card-group.tsx`                              | Plan 3b deviation 1 says `ChoiceCardGroup` forwards `name`, `onChange`, `onBlur` and `ref` from `{...register("meal")}` to **every** radio `<input>` (spec D17) — confirm in the code and its test. (Task 13; if not, Step 6)                                                                                                                  |
+| A2  | `molecules/quantity-stepper/quantity-stepper.{tsx,test.tsx}`                     | Exact accessible names of the increase/decrease buttons (e.g. `Increase guests`)? Are they `type="button"`? (Task 13 play)                                                                                                                                                                                                                     |
+| A3  | `molecules/chip-group/chip-group.tsx`                                            | Plan 3b: `type="single"` renders `role="radiogroup"` with items `role="radio"` + `aria-checked`, named by their label; a single group never deselects; `onBlur` is a prop (deviation 5). Confirm, since the Task 13 play presses ArrowRight then Space. (Task 13)                                                                              |
+| A4  | `molecules/field/field.tsx`                                                      | Is the label a `<label htmlFor={id}>`; does the required marker change the accessible name (`Name *` vs `Name`)? The plays use `/^Name/`-style regexes, so either is fine — confirm. (Task 13)                                                                                                                                                 |
+| A5  | `atoms/radio/radio.tsx`                                                          | `RadioGroup` exported beside `Radio`, props `legend`, `isLegendHidden`, `status`; it spreads fieldset props (`id`, `aria-describedby`). (Tasks 11, 13)                                                                                                                                                                                         |
+| A6  | `molecules/table/table.tsx`                                                      | Parts and `caption`/`isCaptionVisible`/`minWidth` as the contract; does the scroll wrapper handle `scrollable-region-focusable`? (Task 2)                                                                                                                                                                                                      |
+| A7  | `layouts/post-frame/post-frame.tsx`                                              | `POST_FORMATS[format]` is `{ width, height, label }`; the frame is `position: relative`; `isFit` fits the parent's width. (Tasks 9, 12)                                                                                                                                                                                                        |
+| A8  | `molecules/logo-lockup/*`, `molecules/offer-seal/*`, `molecules/coupon-ticket/*` | Plan 3b fixes the scales — LogoLockup `sm` 200 · `md` 240 · `lg` 280 · `xl` 360 (default tone **white**); OfferSeal `sm` 110 · `md` 156 · `lg` 260 · `xl` 360, bleed `sm` = 1/12, `md` = 1/6 of the side; CouponTicket adds `notch="brand"`. Confirm against the component tokens. (Tasks 3, 12)                                               |
+| A9  | `layouts/app-shell/app-shell.tsx` + tokens                                       | Width of `size="phone-sm"` — must be ≤ 360px for `Home360`. If it is wider, `Home360` renders the screens without `AppShell` and the report says so. (Task 11)                                                                                                                                                                                 |
+| A10 | `layouts/cluster/cluster.tsx`                                                    | With `isScrollable`, does Cluster make the rail keyboard-focusable (tabindex + role region)? If not, the App kit passes `tabIndex={0}` + `role="region"` + `aria-label`. (Task 11)                                                                                                                                                             |
+| A11 | `organisms/menu-list/menu-list.tsx`                                              | Does it add an "All" category itself (the kits pass only real categories)? (Tasks 10, 11)                                                                                                                                                                                                                                                      |
+| A12 | `organisms/site-header/*`                                                        | Drawer trigger accessible name equals `menuLabel` (`"Menu"`); desktop `actions` hidden from the accessibility tree below `md`, drawer actions hidden above it. (Task 10 plays)                                                                                                                                                                 |
+| A13 | `molecules/toast/toast.tsx`                                                      | `ToastProvider` props (`duration`, `label`) and the name of its **contained-viewport** option (Plan 3a); whether `Toast` takes a `portalContainer`, or the provider itself must sit inside `AppShell`'s `overlay` to contain the viewport. The App kit writes `isContained` + `Toast portalContainer`. (Tasks 10, 11)                          |
+| A14 | `organisms/dialog/dialog.tsx`                                                    | Title is the dialog's accessible name; `footer` renders inside the dialog content; the prop that portals it into a given element is `portalContainer` (Plan 4) and accepts `HTMLElement \| null`. (Tasks 10, 11)                                                                                                                               |
+| A15 | `atoms/button/button.tsx`, `atoms/icon-button/icon-button.tsx`                   | `asChild` with an `<a>` child keeps `icon`/`iconAfter`; `IconButton count` keeps the accessible name equal to `label`. (Tasks 10–12)                                                                                                                                                                                                           |
+| A16 | `.storybook/preview.tsx`                                                         | Viewport option key `floor360` exists; `a11y.test = "error"`; the storySort order from Plan 1 Task 8. (Tasks 2, 10–12)                                                                                                                                                                                                                         |
+| A17 | `packages/design-tokens/dist/tokens.json` (container tokens)                     | The utility names for the container steps this plan uses: `max-w-article` (the form) and `max-w-text-measure-prose` (Type → Body). Tailwind's static `max-w-prose` is never used. Patch Tasks 5 and 13 to the built names.                                                                                                                     |
+| A18 | `layouts/post-frame/post-frame.tsx`                                              | The `alt` tone (pink-50, Plan 2c) exists for the carousel board. (Task 12)                                                                                                                                                                                                                                                                     |
+| A19 | every component the kits and specimens pass optional values to                   | Optional custom props accept `undefined` (`name?: T \| undefined`, Plans 2–4 ruling R13), so optional fields are passed straight through (`was={item.was}`). If one does not, that component is fixed forward under Step 6, not worked around here.                                                                                            |
+| A20 | this plan file                                                                   | Dev parity tables present on every ported-component task — here, every task with a dev counterpart (Tasks 1–8, 14, 15) carries a `**Dev parity:**` table, and Tasks 9–13 say `**Dev reference:** none`. Each implementer copies its task's table into the report, extended with anything missed. (contracts §0.0)                              |
+| A21 | `organisms/site-header/*`, `organisms/tab-bar/*`, `layouts/app-shell/*`          | Dev's first `storybook:test` run failed `landmark-unique` (app-shell, site-header, tab-bar) and `landmark-no-duplicate-banner` (site-header). Do these name their landmarks (or take `aria-label`) so a kit page composing SiteHeader, AppShell and TabBar passes axe? If not: stop and report — the kits never work around it. (Tasks 10, 11) |
 
 - [ ] **Step 6: Fix forward only what D17 or the contracts require**
 
@@ -238,7 +241,7 @@ Missing type re-exports found in Step 2 are added to `packages/ui/src/index.ts` 
 
 - [ ] **Step 7: Report**
 
-The Task 0 report lists: Step 1–4 outputs, the A1–A16 answers, every patch made to this plan (task, file, old → new, evidence), and any Step 6 commit. No other commit.
+The Task 0 report lists: Step 1–4 outputs, the A1–A21 answers, every patch made to this plan (task, file, old → new, evidence), and any Step 6 commit. No other commit.
 
 ---
 
@@ -248,6 +251,18 @@ The Task 0 report lists: Step 1–4 outputs, the A1–A16 answers, every patch m
 
 - Create: `packages/design-tokens/src/catalogue.ts`
 - Modify: `packages/design-tokens/src/contrast.ts` (append), `packages/design-tokens/src/policy.spec.ts` (replace), `packages/design-tokens/package.json` (exports)
+
+**Dev reference:** `git show dev:apps/storybook/README.md` (§ "Current state: this target is red") and `git show dev:apps/storybook/.storybook/preview.tsx` (the `color-contrast` comment)
+
+**Dev parity:**
+
+| Dev item                                                                                   | Ruling  | Where / spec clause                                                                                        |
+| ------------------------------------------------------------------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------- |
+| Measured failing-pair table (on-brand 4.04, subtle 3.78, brand-on-soft 3.18, mint 3.15, …) | DROP    | Spec §5.2–§5.3, C13: text tokens re-pointed; this task's evaluator re-measures every pair on every build   |
+| Blanket `color-contrast` OFF, justified by ~460 unactionable failures                      | ALREADY | Spec §5.4: off because axe cannot scope one exception; the token gate replaces it (Plan 1 preview comment) |
+| "White on the brand pink passes large, fails body; the brand fill is not negotiable"       | ALREADY | D3 + the `brand-fill` exception group; Colors → Contrast (Task 4) renders it                               |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -546,6 +561,32 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `apps/storybook/src/docs-kit/{token-files.d.ts,catalogue.ts,dom.ts,specimen.tsx,swatch.tsx,token-table.tsx,type-specimen.tsx,contrast-matrix.tsx,spacing-scale.tsx,radius-scale.tsx,shadow-ladder.tsx,motion-demo.tsx,docs-kit.stories.tsx}`, `apps/storybook/src/kits/fixtures.ts` (seed; replaced in Task 10)
 - Modify: `apps/storybook/package.json` (deps, `serve` dependsOn), `apps/storybook/.storybook/preview.tsx` (nested sort order)
 
+**Dev reference:** `git show dev:apps/storybook/{.storybook/main.ts,.storybook/preview.tsx,.storybook/styles.css,package.json,vite.config.mts,vitest.config.mts}`; the docs helpers in `git show dev:packages/ui/src/docs/{colour,typography,space-shape-motion}.mdx` (`Swatch`, `Grid`, `Row`, `Space`, `Radius`, `Shadow`, the duration/easing tracks)
+
+**Dev parity:**
+
+| Dev item                                                                                      | Ruling  | Where / spec clause                                                                                       |
+| --------------------------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------- |
+| `remark-gfm` in addon-docs `mdxCompileOptions` (tables otherwise render as raw pipes)         | ALREADY | Plan 1 `main.ts`; Task 15 Step 7 now fails a docs page that shows a raw table (ADD there)                 |
+| addon-a11y, addon-vitest (browser mode), `@chromatic-com/storybook` + `chromatic` target      | ALREADY | Plan 1 `main.ts` / `package.json` / `vitest.config.mts`, unchanged here                                   |
+| react-docgen-typescript `include` + `tsconfigPath` + node_modules `propFilter`                | ALREADY | Plan 1 `main.ts`; Task 15 Step 7 now fails an empty component props table (ADD there)                     |
+| Viewports: `floor360` + the five breakpoints + `INITIAL_VIEWPORTS`                            | ALREADY | Plan 1 `preview.tsx` (A16); kits test at `floor360`                                                       |
+| Backgrounds as token references (page, tint, brand, inverse)                                  | ALREADY | Plan 1 `preview.tsx`, plus `soft` (spec §10.2 grounds)                                                    |
+| `a11y.test = "error"`, `color-contrast` off                                                   | ALREADY | Plan 1 `preview.tsx`, with the §5.4 reason                                                                |
+| storySort `Foundations → Atoms → Molecules → Organisms → Templates`                           | DROP    | D13 / spec §10.1: the 13 design-system groups (Step 2); D14 `templates` → `layouts`                       |
+| Decorator `font-body text-body1 leading-body1`                                                | ALREADY | Plan 1 decorator `font-body text-body` (D4 names)                                                         |
+| Google Fonts `@import` in `styles.css`                                                        | DROP    | D11: fonts self-hosted through `@fontsource/*` (`.storybook/fonts.ts`)                                    |
+| `@source` over `packages/ui/src/**/*.{ts,tsx,mdx}`                                            | ALREADY | Spec §6.5: the library scans itself; Storybook adds only its `src/` and the library's stories             |
+| `Swatch` reads the value off the live custom property (no second source of truth)             | ALREADY | `catalogue.ts` reads `tokens.json` and throws on a missing name — stronger (Review Focus 1)               |
+| `Swatch`: click the name or the value to copy it, with "copied" feedback                      | ADD     | Step 7 `swatch.tsx` (copy buttons + `role="status"`); Step 4 `SwatchCopiesNameAndValue`                   |
+| `Swatch` per-swatch usage note                                                                | ALREADY | The token's `description`, printed under the value                                                        |
+| `Grid` auto-fit swatch grid                                                                   | ALREADY | `Swatches` (responsive grid)                                                                              |
+| `Space` / `Radius` / `Shadow` / type `Row` specimens                                          | ALREADY | `SpacingScale`, `RadiusScale`, `ShadowLadder`, `TypeSpecimen`                                             |
+| Duration track per step (hover)                                                               | ALREADY | `MotionDemo`, toggled by a button (keyboard-operable); its label now names the duration too (ADD, Step 7) |
+| Old class names in the helpers (`rounded-3`, `text-body2`, `bg-brand-primary`, `max-w-(--…)`) | DROP    | D4 names; spec §11.2 `no-arbitrary-value` / R23 `no-arbitrary-shorthand`                                  |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: Task 1 exports; `Button`, `Badge`, `Table*` from `@pink-paprikaa-web/ui`; `brand` from `@pink-paprikaa-web/content`.
@@ -633,7 +674,7 @@ Create `apps/storybook/src/docs-kit/docs-kit.stories.tsx`:
 ```tsx
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { expect, within } from "storybook/test";
+import { expect, spyOn, within } from "storybook/test";
 
 import { cssValue, formatValue, rgbOf, token, tokensWithPrefix, typographyOf } from "./catalogue";
 import { ContrastMatrix, VERDICT_LABEL } from "./contrast-matrix";
@@ -693,6 +734,23 @@ export const SwatchPaintsItsToken: Story = {
     await expect(
       canvas.getByText(`→ ${token("color-text-body").reference ?? "no reference"}`)
     ).toBeVisible();
+  },
+};
+
+export const SwatchCopiesNameAndValue: Story = {
+  render: () => <Swatch name="color-pink-500" />,
+  play: async ({ canvas, userEvent }) => {
+    // The play's userEvent (user-event setup()) stubs navigator.clipboard; the spy observes the write.
+    const write = spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
+    const entry = token("color-pink-500");
+    const value = formatValue(entry.value);
+    await userEvent.click(canvas.getByRole("button", { name: entry.cssVar }));
+    await expect(write).toHaveBeenLastCalledWith(entry.cssVar);
+    await expect(canvas.getByRole("status")).toHaveTextContent(`Copied ${entry.cssVar}`);
+    await userEvent.click(canvas.getByRole("button", { name: value }));
+    await expect(write).toHaveBeenLastCalledWith(value);
+    await expect(canvas.getByRole("status")).toHaveTextContent(`Copied ${value}`);
+    write.mockRestore();
   },
 };
 
@@ -767,7 +825,9 @@ export const ShadowLadderPaintsEachStep: Story = {
 export const MotionDemoRunsOnTheTokens: Story = {
   render: () => <MotionDemo ease="out" duration="base" use="state changes" />,
   play: async ({ canvas, canvasElement, userEvent }) => {
-    const play = canvas.getByRole("button", { name: `Play ${token("ease-out").cssVar}` });
+    const play = canvas.getByRole("button", {
+      name: `Play ${token("ease-out").cssVar} over ${token("duration-base").cssVar}`,
+    });
     await userEvent.click(play);
     await expect(play).toHaveAttribute("aria-pressed", "true");
     const dot = getComputedStyle(requireElement(canvasElement, '[data-token="ease-out"]'));
@@ -991,6 +1051,8 @@ export function SpecimenTile({ caption, surface, className, children }: Specimen
 Create `apps/storybook/src/docs-kit/swatch.tsx`:
 
 ```tsx
+import { useState } from "react";
+
 import { formatValue, selectTokens, token, type TokenSelection } from "./catalogue";
 
 export interface SwatchProps {
@@ -998,9 +1060,25 @@ export interface SwatchProps {
   name: string;
 }
 
-/** One colour token: a chip painted with its CSS variable, then its name, value and reference. */
+/**
+ * One colour token: a chip painted with its CSS variable, then its name, value and reference. The
+ * name and the value are buttons that copy themselves (the August port's Colour page did the
+ * same); a status line confirms the copy.
+ */
 export function Swatch({ name }: SwatchProps) {
   const entry = token(name);
+  const value = formatValue(entry.value);
+  const [copied, setCopied] = useState<string | null>(null);
+  const copy = (text: string) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+        setCopied(text);
+      },
+      () => {
+        setCopied(null);
+      }
+    );
+  };
   return (
     <figure className="flex min-w-0 flex-col gap-2">
       <div
@@ -1009,9 +1087,28 @@ export function Swatch({ name }: SwatchProps) {
         className="h-16 rounded-sm border border-border-subtle"
         style={{ backgroundColor: `var(${entry.cssVar})` }}
       />
-      <figcaption className="flex min-w-0 flex-col font-mono text-mono">
-        <span className="wrap-break-word text-text-heading">{entry.cssVar}</span>
-        <span className="text-text-muted">{formatValue(entry.value)}</span>
+      <figcaption className="flex min-w-0 flex-col items-start font-mono text-mono">
+        <button
+          type="button"
+          className="cursor-pointer text-left wrap-break-word text-text-heading hover:text-text-brand"
+          onClick={() => {
+            copy(entry.cssVar);
+          }}
+        >
+          {entry.cssVar}
+        </button>
+        <button
+          type="button"
+          className="cursor-pointer text-left text-text-muted hover:text-text-brand"
+          onClick={() => {
+            copy(value);
+          }}
+        >
+          {value}
+        </button>
+        <span role="status" className="font-body text-caption text-text-brand">
+          {copied === null ? "" : `Copied ${copied}`}
+        </span>
         {entry.reference === null ? null : (
           <span className="text-text-subtle">→ {entry.reference}</span>
         )}
@@ -1404,7 +1501,7 @@ export function MotionDemo({ ease, duration, use }: MotionDemoProps) {
           setIsAtEnd((current) => !current);
         }}
       >
-        Play {easing.cssVar}
+        Play {easing.cssVar} over {time.cssVar}
       </Button>
       <div className="relative h-2.5 w-full max-w-75 rounded-pill bg-ink-200">
         <span
@@ -1464,7 +1561,7 @@ pnpm nx lint @pink-paprikaa-web/storybook --fix 2>&1 | tail -5
 pnpm nx run @pink-paprikaa-web/storybook:test --skip-nx-cache -- docs-kit.stories 2>&1 | tail -15
 ```
 
-Expected: 10 stories pass (axe included).
+Expected: 11 stories pass (axe included).
 
 Probe (Review Focus 1): in `docs-kit.stories.tsx`, change `<Swatch name="color-pink-500" />` to `<Swatch name="color-pink-501" />`; rerun; expect FAIL with `docs-kit: no token "color-pink-501" in @pink-paprikaa-web/design-tokens/tokens.json`. Revert; rerun green. Paste both.
 
@@ -1496,6 +1593,29 @@ Sources: `guidelines/{brand-logo,brand-wordmark,brand-symbol,mark-legibility,bra
 
 - Replace: `apps/storybook/src/docs/introduction.mdx`
 - Create: `apps/storybook/src/foundations/brand/{company-details.tsx,brand.stories.tsx,logo.mdx,pattern.mdx,company-details.mdx,voice-and-content.mdx,iconography.mdx}`
+
+**Dev reference:** `git show dev:packages/ui/src/docs/{introduction,voice-and-accessibility}.mdx`
+
+**Dev parity:**
+
+| Dev item                                                                                                                        | Ruling        | Where / spec clause                                                                                                                                                                                      |
+| ------------------------------------------------------------------------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Intro hero: flooded pink panel, overline, display title, tagline, "pink is the whole identity"                                  | ADD / DROP    | ADD the line as prose (Step 4). DROP the hand-classed panel: D4 names (`rounded-5`, `text-subtitle2`), §11.2 R23 (`max-w-(--…)`); the flooded-pink move is live on Brand → Pattern and Colors → Surfaces |
+| "What this is": pure-veg café, Sector 57 / MKM Market                                                                           | ALREADY       | Brand → Company details binds the outlet from `@pink-paprikaa-web/content` (D12 — a page never retypes a fact)                                                                                           |
+| Personality: loud, warm, young, city-street; one pink, warm neutrals, one accent; restraint                                     | ADD           | Step 4 intro                                                                                                                                                                                             |
+| "How it fits together" layer table + imports only go downward (lint-enforced)                                                   | ADD           | Step 4 intro, with D14 (`layouts`, atoms import only Icon)                                                                                                                                               |
+| "Using it": barrel import + the two-line CSS contract                                                                           | ALREADY       | Step 4 "Consume it"                                                                                                                                                                                      |
+| What `styles.css` pulls in (theme, keyframes, base layer, focus ring, reduced motion)                                           | ADD           | Step 4 "Consume it"                                                                                                                                                                                      |
+| "Stock Tailwind classes do not exist here" (`rounded-lg`, `text-sm`, `bg-red-500`, `shadow-md`, `font-sans`)                    | ADD           | Step 4, re-stated for D4 names (`rounded-lg` is real and 16px; the rest compile to nothing)                                                                                                              |
+| "Before you add a component": tokens first, canonical shape, the trio, the gate                                                 | ADD           | Step 4 "For authors", pointing at AUTHORING.md §5, §3, §2 and spec §11.1                                                                                                                                 |
+| Voice: tone, you/we, the seven Write/Don't rows, casing, numbers, plain labels, no emoji, one "!", never-say, veg once          | ALREADY       | Step 5 `voice-and-content.mdx`                                                                                                                                                                           |
+| Hard rule: **Pink Paprikaa** — two `a`s; a misspelling is a content bug                                                         | ADD           | Step 5 `voice-and-content.mdx` Rules                                                                                                                                                                     |
+| Accessibility: axe in every test and again in every story; `a11y.test = "error"`                                                | ADD           | Step 4 intro "Accessibility"                                                                                                                                                                             |
+| Guarantees: brand focus ring, 44px targets, disabled = real grey fill, behaviour from Radix, global reduced motion              | ADD           | Step 4 intro "Accessibility" — Radix line restated for D7 (native first, Radix for five); 36/38px exception per §5.5                                                                                     |
+| Each use owns: a name (icon-only label, decorative `aria-hidden`), never colour alone (SpiceLevel/DietMark text), heading order | ADD           | Step 4 intro — heading order via `headingLevel` (§5.5), not only `Text as`                                                                                                                               |
+| "`text-muted` only on light grounds; on pink/ink use `text-on-brand`/`text-on-inverse`"                                         | ADD (adapted) | Step 4 intro: D5 — put the content on a `data-surface` field and the tokens remap; Colors → Contrast lists the pairs                                                                                     |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -2040,11 +2160,29 @@ The production design system for pinkpaprikaa.com — tokens, 90 React component
 reference kits, rebuilt from the supplied design-system folder. This Storybook is that folder's
 "Design System tab": the same thirteen groups, in the same order.
 
+The system is loud, warm, young and city-street confident. Pink is not decorative here — it is the
+whole identity: one primary pink used at full strength, warm neutrals tinted toward it, and a single
+accent per screen. Everything else is restraint.
+
 | Group                                                         | What it holds                                                                                                                                     |
 | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Brand · Colors · Type · Spacing · Layout · Motion · Marketing | Foundations — every guideline card as a live page. Values are read from the token build, never retyped.                                           |
 | Atoms · Molecules · Organisms · Layouts                       | One story file per component: every variant, size, tone and state on its design-system card, a Playground, surface stories and interaction tests. |
 | Website · App · Marketing → Kit                               | Reference kits composed only from the library, with real brand facts and verified reviews — each badged "Reference kit — not production copy".    |
+
+## How it fits together
+
+| Layer                              | What lives there                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------ |
+| `@pink-paprikaa-web/design-tokens` | Every value, authored as DTCG JSON and compiled by Style Dictionary            |
+| `@pink-paprikaa-web/ui` — atoms    | Indivisible primitives: `Button` `Text` `Icon` `Input` `SpiceLevel` `DietMark` |
+| — molecules                        | Small compositions: `Field` `MenuItemCard` `Tabs` `Alert`                      |
+| — organisms                        | Page-level regions: `SiteHeader` `HeroBanner` `MenuList` `CtaBand`             |
+| — layouts                          | Spacing, width and frame only: `Container` `Section` `AutoGrid` `PostFrame`    |
+
+A layer composes only the layers below it: a molecule may use atoms, an atom may never reach a
+molecule, and an atom imports nothing but `Icon`. The rule is lint-enforced (`atomic-layering`),
+not advisory.
 
 ## Consume it
 
@@ -2056,9 +2194,21 @@ own sources, so the app adds no `@source` for it.
 @import "@pink-paprikaa-web/ui/styles.css";
 ```
 
+That one import brings the token theme, the `data-surface` remaps, the base layer (element
+defaults, the pink focus ring, the reduced-motion contract), the system's named utilities and its
+seven animations.
+
 Components are named imports from the one barrel — `import { Button, Field, Input } from "@pink-paprikaa-web/ui";` —
 and a Next.js app adds `transpilePackages: ["@pink-paprikaa-web/ui"]`. Fonts are the app's to load
 (Poppins with the Devanagari subset, DM Sans, Space Mono); the font tokens pick them up by name.
+
+## The one thing that will surprise you
+
+**Stock Tailwind scales do not exist here.** The tokens package clears every Tailwind namespace it
+replaces, so `text-sm`, `bg-red-500`, `shadow-md` and `font-sans` compile to nothing — a class
+outside the system fails loudly instead of quietly rendering an off-brand value. Where a name
+matches the design system's own token it is the system's value: `rounded-lg` is the card radius.
+Use `text-body-sm`, `bg-status-danger`, `shadow-2`, `font-body`.
 
 ## Rules the system keeps
 
@@ -2074,12 +2224,54 @@ and a Next.js app adds `transpilePackages: ["@pink-paprikaa-web/ui"]`. Fonts are
 - **Accessibility is gated.** Every story runs axe in headless Chromium. Colour contrast is owned by
   the token contrast policy instead — **Colors → Contrast** shows the one declared exception.
 
+## Accessibility
+
+Every component test ends with an axe check, and every story runs axe again in headless Chromium
+with `a11y.test = "error"` — a violation fails the suite; it does not sit in a panel nobody opens.
+
+### What the system guarantees
+
+- **Focus is a brand decision.** The base layer paints `:focus-visible` as a 2px `--color-focus`
+  outline at a 2px offset, everywhere; fields add the 3px focus ring. No component restates it,
+  and none can quietly drop it.
+- **Touch targets are at least the hit token** (`--spacing-hit`), icon-only buttons included. Only
+  the system's 36/38px controls go smaller, and never below 24px (spec §5.5).
+- **Disabled is a real grey fill**, never a reduced opacity — opacity fails contrast and reads as
+  "loading" rather than "unavailable".
+- **Behaviour is native or Radix, never hand-rolled.** Native `<select>`, `<details>` and inputs
+  come first; Dialog/Sheet, Tabs, Tooltip, Toast and ToggleGroup use Radix, so roles, keyboard
+  handling and focus management come built in.
+- **Reduced motion is global.** `prefers-reduced-motion: reduce` collapses animation and transition
+  durations in the base layer; no component handles it alone.
+
+### What each use owns
+
+- **A name.** An icon-only control takes a `label` (`IconButton` requires one); a decorative icon is
+  `aria-hidden`, so its meaning is not announced twice beside the text it decorates.
+- **Never colour alone.** A status colour always arrives with a message and a glyph. `SpiceLevel`
+  and `DietMark` carry text alternatives — heat and diet are load-bearing information.
+- **Heading order.** A component's look and its document level are separate decisions: every titled
+  component takes `headingLevel` (and `Text` takes `as`); the page owns its outline.
+- **Contrast follows the surface.** Put content that sits on pink or ink inside a `data-surface`
+  field and the text tokens remap; never hand-pick a light text colour. Muted and subtle text are
+  for secondary content only.
+
 ## For authors
 
 The binding authoring contract is `packages/ui/AUTHORING.md`; the decisions are in
 `docs/superpowers/specs/2026-09-27-design-system-rewrite-design.md`. Foundation pages live in
 `apps/storybook/src/foundations`, their helpers in `apps/storybook/src/docs-kit` — docs-only, never
 shipped in `packages/ui`.
+
+Before you add a component:
+
+1. **Tokens first** — a new visual value goes into `packages/design-tokens/tokens/` before any
+   component uses it (AUTHORING §5).
+2. **Read the design-system files and copy the canonical shape** (AUTHORING §1, §3), or run
+   `/new-component`.
+3. **Ship the trio** — component, test (behaviour + axe), stories (every card row) (AUTHORING §2).
+4. **Gate:** `pnpm nx test ui && pnpm nx lint ui && pnpm nx run storybook:build`, then
+   `pnpm nx test storybook` (AUTHORING §12).
 ````
 
 - [ ] **Step 5: The Brand pages**
@@ -2218,7 +2410,7 @@ The design system itself never imports these facts (a boundary rule): components
 props, and only apps and this Storybook bind them.
 ```
 
-Create `apps/storybook/src/foundations/brand/voice-and-content.mdx` (design-system `readme.md` §2, verbatim except the two table-header glyphs, which are words here — the brand uses no emoji):
+Create `apps/storybook/src/foundations/brand/voice-and-content.mdx` (design-system `readme.md` §2, verbatim except the two table-header glyphs, which are words here — the brand uses no emoji — plus the first bullet, the two-`a` rule carried from dev's Voice page):
 
 ```mdx
 import { Meta } from "@storybook/addon-docs/blocks";
@@ -2235,6 +2427,7 @@ Title Case, no punctuation, no hedging. Copy follows that lead.
 
 ## Rules
 
+- **`Pink Paprikaa` — two `a`s**, everywhere. A misspelling is a content bug, not a typo.
 - **Person.** Talk to the guest as **you**; the café speaks as **we**. Never "the customer", never
   "users". _"Your table's ready."_ / _"We roast our own masala."_
 - **Casing.** Title Case for names, claims and buttons of consequence (_"Order Now"_, _"Find a
@@ -2355,6 +2548,28 @@ Sources: `guidelines/{color-primary,color-ink,color-accents,color-heat,color-sem
 **Files:**
 
 - Create: `apps/storybook/src/foundations/colors/{colors.stories.tsx,primary.mdx,ink.mdx,accents.mdx,heat.mdx,semantic.mdx,surfaces.mdx,status.mdx,contrast.mdx}`
+
+**Dev reference:** `git show dev:packages/ui/src/docs/colour.mdx`
+
+**Dev parity:**
+
+| Dev item                                                                                         | Ruling  | Where / spec clause                                                               |
+| ------------------------------------------------------------------------------------------------ | ------- | --------------------------------------------------------------------------------- |
+| One primary at full strength; flat pink fields with white type; the soft pink does the calm work | ALREADY | `primary.mdx`                                                                     |
+| Click any swatch name or value to copy it                                                        | ADD     | Task 2 `Swatch` (every `Swatches` here inherits it)                               |
+| Neutrals warm, tinted toward pink — never blue-grey                                              | ALREADY | `ink.mdx`                                                                         |
+| Max one spice accent per screen; max two backgrounds per composition                             | ALREADY | `accents.mdx`                                                                     |
+| Only two gradients, both legibility scrims                                                       | ALREADY | `accents.mdx` + Layout → Utility classes                                          |
+| Brand swatches with notes (primary, hover, active, soft, tint)                                   | ALREADY | `PinkRamp` + `SemanticTokens` "Interaction" table (`color-brand-hover`/`-active`) |
+| Surface swatches (page, page-alt, card, sunken, brand, brand-soft, inverse, overlay, glass)      | ALREADY | `SemanticTokens` "Surfaces" (every `color-surface-*`) + `FourGrounds`             |
+| "Text colours carry the family name: `text-text-heading`, not `text-heading`"                    | ADD     | Step 2 `semantic.mdx`                                                             |
+| Border swatches (subtle, default, strong, brand, brand-soft)                                     | ALREADY | `SemanticTokens` "Borders"                                                        |
+| Status pairs; never a status colour without a message                                            | ALREADY | `status.mdx`                                                                      |
+| Heat: in order, used only by `SpiceLevel`                                                        | ALREADY | `heat.mdx`                                                                        |
+| Primitives: prefer a semantic token                                                              | ALREADY | `semantic.mdx` ("a component never names a ramp step")                            |
+| August token names (`brand-primary`, `ink-0`, `heat-1`, `border-brand-soft`)                     | DROP    | D4                                                                                |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -2750,6 +2965,9 @@ import * as Specimens from "./colors.stories";
 The aliases to reach for in components. A component never names a ramp step for its field or its
 text — it names what the colour means, and the semantic token points at the step.
 
+Utilities carry the family name twice: `text-text-heading`, not `text-heading`; `border-border-subtle`,
+not `border-subtle`; `bg-surface-card`.
+
 <Canvas of={Specimens.SemanticPanels} meta={Specimens} sourceState="none" />
 
 <Canvas of={Specimens.SemanticTokens} meta={Specimens} sourceState="none" />
@@ -2893,6 +3111,29 @@ Sources: `guidelines/{type-display,type-headings,type-body,type-overline-mono,ty
 **Files:**
 
 - Create: `apps/storybook/src/foundations/type/{type.stories.tsx,display.mdx,headings.mdx,body.mdx,overline-and-mono.mdx,devanagari.mdx,fluid.mdx}`
+
+**Dev reference:** `git show dev:packages/ui/src/docs/typography.mdx`
+
+**Dev parity:**
+
+| Dev item                                                                                          | Ruling  | Where / spec clause                                                                      |
+| ------------------------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------- |
+| Poppins structural (carries Devanagari), DM Sans body/UI, Space Mono codes only; final, no swaps  | ALREADY | `display.mdx`, `overline-and-mono.mdx`                                                   |
+| "Every piece of text goes through `Text`, which locks each step's size, line-height and tracking" | ADD     | Step 2 `headings.mdx`                                                                    |
+| The 12-step ramp, each captioned with size / line-height / tracking / family                      | ALREADY | The six pages' specimens; `TypeSpecimen` prints each step's composite from `tokens.json` |
+| Step names `display1`, `subtitle1`, `subtitle2`, `body1`, `body2`                                 | DROP    | D4 (`display-1`, `h4`, `body-lg`, `body`, `body-sm`)                                     |
+| Seven fluid twins                                                                                 | ALREADY | `FluidTokens`                                                                            |
+| "Set `isFluid` in every responsive layout" + the `<Text isFluid variant="h1">` example            | ADD     | Step 2 `fluid.mdx`                                                                       |
+| Why the small end has no fluid twin (already comfortable; would crowd the hit-target floor)       | ADD     | Step 2 `fluid.mdx`                                                                       |
+| "Resize the panel" h1-fluid demo                                                                  | ALREADY | `FluidSteps` at `floor360`, with a `play` proving the clamp minimum — stronger           |
+| Display: negative tracking, line-height near 1.0; body stays generous                             | ALREADY | `display.mdx`, `body.mdx`                                                                |
+| ALL CAPS only for overlines and heat labels                                                       | ALREADY | `overline-and-mono.mdx`                                                                  |
+| Headlines ≤ 6 words; body avg 12 / max 24; menu descriptions ≤ 14, ingredient-led                 | ALREADY | `headings.mdx`, `body.mdx`, Brand → Voice & content                                      |
+| Line length: `measure` prose for long-form, narrow for pull quotes                                | ADD     | Step 2 `body.mdx` (narrow was missing; `Text measure="prose" \| "narrow"`)               |
+| Headings balance, running text avoids orphans — `Text` does it                                    | ALREADY | `headings.mdx` (`isBalanced`), `body.mdx` (`text-wrap: pretty`)                          |
+| Devanagari only for the logo, display moments, dish names — never a control                       | ALREADY | `devanagari.mdx`                                                                         |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -3103,6 +3344,9 @@ wordmark's bowls.
 
 <Canvas of={Specimens.HeadingSteps} meta={Specimens} sourceState="none" />
 
+Set every piece of text through the `Text` atom (`variant`): each step owns its size, line-height,
+tracking and weight together — one decision, never mixed by hand.
+
 The visual step and the document outline are separate decisions: every titled component takes
 `headingLevel`, so a card title can look like an h4 and still be the page's third-level heading.
 Headlines stay at six words or fewer and use `text-wrap: balance` (`Text isBalanced`).
@@ -3127,7 +3371,8 @@ DM Sans for running text and interface copy, regular and medium, at a generous l
 
 Body sentences stay short — about 12 words on average, never more than 24. Prose uses
 `text-wrap: pretty` and the prose measure (`max-w-text-measure-prose`); helper text drops to `body-sm` in the
-muted tone and fine print to `caption` in the subtle tone.
+muted tone and fine print to `caption` in the subtle tone. Cap line length with `Text measure`:
+`prose` for long-form, `narrow` for pull quotes (Spacing → Layout rhythm lists both widths).
 ```
 
 Create `apps/storybook/src/foundations/type/overline-and-mono.mdx`:
@@ -3173,7 +3418,7 @@ labels or status lines.
 
 Create `apps/storybook/src/foundations/type/fluid.mdx`:
 
-```mdx
+````mdx
 import { Canvas, Meta } from "@storybook/addon-docs/blocks";
 
 import * as Specimens from "./type.stories";
@@ -3191,8 +3436,20 @@ weight.
 
 <Canvas of={Specimens.FluidSteps} meta={Specimens} sourceState="none" />
 
-<Canvas of={Specimens.FluidTokens} meta={Specimens} sourceState="none" />
+**Set `isFluid` in every responsive layout:**
+
+```tsx
+<Text variant="h1" isFluid>
+  Desi at heart. Urban by nature.
+</Text>
 ```
+
+Only the display steps, h1–h4 and body have a twin. The small end — `body-sm`, `caption`,
+`overline`, `mono` — is already comfortable at any width, and scaling it down would crowd the
+hit-target floor.
+
+<Canvas of={Specimens.FluidTokens} meta={Specimens} sourceState="none" />
+````
 
 - [ ] **Step 3: Gate and commit**
 
@@ -3227,10 +3484,28 @@ Sources: `guidelines/{spacing-scale,spacing-layout}.card.html`, readme §3.3, sp
 
 - Create: `apps/storybook/src/foundations/spacing/{spacing.stories.tsx,scale.mdx,layout-rhythm.mdx}`
 
+**Dev reference:** `git show dev:packages/ui/src/docs/space-shape-motion.mdx` (§ Spacing, § Layout)
+
+**Dev parity:**
+
+| Dev item                                                                         | Ruling  | Where / spec clause                                                                                |
+| -------------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------- |
+| 4px base; the step number is the multiple (`p-6` = 24px)                         | ALREADY | `scale.mdx` + `Scale` play (unit is 4, step 6 is 24px)                                             |
+| Steps 1–12, then 14 · 16 · 18 · 20 · 24 · 32; half steps for optical nudges only | ALREADY | `scale.mdx`; `SPACE_STEPS` checked against `StackProps["space"]` at compile time                   |
+| "16 / 24 / 40 do most of the work"                                               | ALREADY | `scale.mdx` ("steps 4, 6 and 10")                                                                  |
+| Container max, fluid gutter, fluid section rhythm                                | ALREADY | `RhythmTokens` (values per C8)                                                                     |
+| Layout table row `--layout-header-h` 72px (SiteHeader)                           | DROP    | C1: header is `spacing-header` (default) / `spacing-header-compact`, both listed in `ChromeTokens` |
+| Layout table rows tab bar height and hit minimum ("every interactive target")    | ADD     | Step 1 `ChromeTokens` + `layout-rhythm.mdx`                                                        |
+| Layout table row card minimum (AutoGrid track)                                   | ALREADY | Layout → AutoGrid `AutoGridTokens`                                                                 |
+| `--layout-*` token names                                                         | DROP    | D4 (`spacing-*`, `container-*`)                                                                    |
+| Grids are honest grids with `gap`, never masonry; columns 1 → 2 → 3 → 4 → 4      | ALREADY | Layout → AutoGrid, Layout → Breakpoints (`COLUMNS`)                                                |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `SpacingScale`, `TokenTable`, `cssValue`, `requireElement` (docs-kit); `AutoGrid`, `Card`, `Section`, `type StackProps` (ui).
-- Produces: `Spacing/Specimens` → `Scale`, `Rhythm`, `RhythmTokens`; pages `Spacing/Scale`, `Spacing/Layout rhythm`.
+- Produces: `Spacing/Specimens` → `Scale`, `Rhythm`, `RhythmTokens`, `ChromeTokens`; pages `Spacing/Scale`, `Spacing/Layout rhythm`.
 
 - [ ] **Step 1: The Spacing specimens**
 
@@ -3280,6 +3555,14 @@ const RHYTHM_TOKENS = [
   "spacing-grid-gap",
 ];
 
+const CHROME_TOKENS = [
+  "spacing-header",
+  "spacing-header-compact",
+  "spacing-tabbar",
+  "spacing-dock-clearance",
+  "spacing-hit",
+];
+
 export const Scale: Story = {
   render: () => <SpacingScale steps={SPACE_STEPS} />,
   play: async ({ canvasElement }) => {
@@ -3314,6 +3597,12 @@ export const RhythmTokens: Story = {
         selection={{ names: RHYTHM_TOKENS }}
       />
     </div>
+  ),
+};
+
+export const ChromeTokens: Story = {
+  render: () => (
+    <TokenTable caption="Fixed chrome and the touch target" selection={{ names: CHROME_TOKENS }} />
   ),
 };
 ```
@@ -3367,6 +3656,12 @@ same for raw markup.
 The gutter and section values are the handoff's (spec C8) — newer than the design system's and used
 on every handoff page; the difference is at most a few pixels of gutter at 360px. Sections breathe:
 never less than the mobile section value, never more than the desktop one.
+
+The fixed chrome — the sticky site header (default and the handoff's compact row), the bottom tab
+bar and the clearance sticky bars keep above the mobile dock — and the minimum touch target every
+interactive element meets:
+
+<Canvas of={Specimens.ChromeTokens} meta={Specimens} sourceState="none" />
 ```
 
 - [ ] **Step 3: Probe the compile-time step check, then gate and commit**
@@ -3398,6 +3693,25 @@ Sources: `guidelines/{breakpoints,autogrid,radii,borders,elevation,card-anatomy}
 **Files:**
 
 - Create: `apps/storybook/src/foundations/layout/{layout.stories.tsx,breakpoints.mdx,autogrid.mdx,radii.mdx,borders.mdx,elevation.mdx,card-anatomy.mdx,utility-classes.mdx}`
+
+**Dev reference:** `git show dev:packages/ui/src/docs/space-shape-motion.mdx` (§ Breakpoints, § Radius, § Elevation, "Cards"); `git show dev:packages/ui/src/docs/voice-and-accessibility.mdx` (focus)
+
+**Dev parity:**
+
+| Dev item                                                                                     | Ruling  | Where / spec clause                                                             |
+| -------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------- |
+| Breakpoints `sm` 480 · `md` 768 · `lg` 1024 · `xl` 1280 · `2xl` 1440                         | ALREADY | `Breakpoints` (read from `breakpoint-*`)                                        |
+| Every design survives 360px — the floor, checked in the `360 — smallest supported` viewport  | ALREADY | `breakpoints.mdx`; `floor360` viewport (Plan 1); kits test at 360               |
+| Radius per job (chips, small controls, inputs/thumbnails, cards, sheets/modals, pill)        | ALREADY | `radii.mdx` + radius token descriptions                                         |
+| "Geometric, so nothing is blobby"                                                            | ALREADY | `radii.mdx`                                                                     |
+| Shadows warm-ink tinted, sparing; `shadow-brand` only for the primary CTA and floating cart  | ALREADY | `elevation.mdx` + shadow token descriptions                                     |
+| Card: white, card radius, 1px subtle border, shadow-1; hover lifts 2px to shadow-3           | ALREADY | `CardAnatomy` + `card-anatomy.mdx` (`isInteractive`)                            |
+| Feature card: soft fill, no border, no shadow, bigger radius; menu rows are rules, not cards | ALREADY | `card-anatomy.mdx`                                                              |
+| No card ever has a coloured left border                                                      | ALREADY | `borders.mdx`, `card-anatomy.mdx`                                               |
+| Focus ring painted by the base layer, 2px pink, 2px offset                                   | ALREADY | `borders.mdx` (fields: the 3px outer `shadow-focus-ring`, spec §5.5 as amended) |
+| `rounded-1`…`rounded-6`, `shadow-elevation1`…`4`                                             | DROP    | D4 (`radius-xs`…`pill`, `shadow-1`…`4`)                                         |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -3747,7 +4061,7 @@ pink focus ring.
 <Canvas of={Specimens.Borders} meta={Specimens} sourceState="none" />
 
 Inputs rest on `border-default`, and on focus take the strong width in `border-brand` plus the
-focus ring (fields use the inset ring). Everything else keyboard-focusable gets a 2px outline in
+3px focus ring (`shadow-focus-ring`, an outer spread). Everything else keyboard-focusable gets a 2px outline in
 `--color-focus` with a 2px offset — white on pink and ink. No card ever gets a coloured left border.
 
 <Canvas of={Specimens.BorderTokens} meta={Specimens} sourceState="none" />
@@ -3864,10 +4178,31 @@ Sources: `guidelines/{motion,states,form-states}.card.html`, readme §3.7, §3.8
 
 - Create: `apps/storybook/src/foundations/motion/{motion.stories.tsx,motion.mdx,states.mdx,form-states.mdx,section-reveal.mdx}`
 
+**Dev reference:** `git show dev:packages/ui/src/docs/space-shape-motion.mdx` (§ Motion, § Reduced motion)
+
+**Dev parity:**
+
+| Dev item                                                                                 | Ruling  | Where / spec clause                                                                                     |
+| ---------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------- |
+| Short and matter-of-fact; fades always pair with a small translate                       | ALREADY | `motion.mdx`                                                                                            |
+| Duration table with "used for" (press, hover, state changes, sheets/pages)               | ALREADY | `MotionTokens` (token descriptions) + `motion.mdx` / `states.mdx` prose                                 |
+| Easing table with "used for"; `ease-pop` has one overshoot, add-to-cart and rewards only | ALREADY | `MotionTokens`, `motion.mdx`                                                                            |
+| "Durations, side by side": one curve, four durations, the same distance                  | ADD     | Step 1 `Durations` + `motion.mdx`                                                                       |
+| "Easings, side by side"                                                                  | ALREADY | `Easings` (each curve on the duration it ships with)                                                    |
+| "Animations, running": every keyframe live, captioned by utility and use                 | ADD     | Step 1 `Animations` (play asserts each block runs its keyframe) + `motion.mdx`                          |
+| August keyframes `pp-spin`, `pp-pulse`, `pp-shimmer`, `pp-rise`, `pp-fade`               | DROP    | D1 / spec §6.5: the design system's seven (`pp-rotate`, `pp-mark-pulse`, `pp-skeleton`, …) replace them |
+| Entrance animations play once on mount — reload to see them again                        | ADD     | Step 2 `motion.mdx`                                                                                     |
+| Reduced motion is global in the base layer; keep the fade, drop the movement             | ALREADY | `motion.mdx`, `section-reveal.mdx`                                                                      |
+| How to check it: turn on the OS "Reduce motion" setting and reload                       | ADD     | Step 2 `motion.mdx`                                                                                     |
+| Tracks animate on hover                                                                  | ALREADY | `MotionDemo` is a button toggle — keyboard-operable, `aria-pressed`                                     |
+| Class names `duration-(--duration-*)`, `translate-x-[calc(…)]`, `rounded-6`              | DROP    | Spec §11.2 `no-arbitrary-value` / R23; D4                                                               |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `MotionDemo`, `TokenTable`, `requireElement` (docs-kit); `Button`, `Field`, `Input`, `RevealObserver` (ui); `OUTLET`.
-- Produces: `Motion/Specimens` → `Easings`, `MotionTokens`, `States`, `StateTokens`, `FormStates`, `SectionReveal`; four pages under `Motion/`.
+- Produces: `Motion/Specimens` → `Durations`, `Easings`, `Animations`, `MotionTokens`, `States`, `StateTokens`, `FormStates`, `SectionReveal`; four pages under `Motion/`.
 
 - [ ] **Step 1: The Motion specimens**
 
@@ -3898,6 +4233,28 @@ type Story = StoryObj<typeof meta>;
 
 const REVEAL_SECTIONS = [1, 2, 3, 4, 5, 6];
 
+/** The design system's seven keyframes (packages/ui styles.css), by the utility that runs each. */
+const ANIMATIONS = [
+  ["animate-rotate", "Button isLoading"],
+  ["animate-mark-pulse", "Spinner, loading fields"],
+  ["animate-spin-pulse", "the diamond pulse"],
+  ["animate-dot-pulse", "StatusDot isPulsing"],
+  ["animate-skeleton", "Skeleton blocks"],
+  ["animate-sheet-in", "sheets, dialogs, snackbars — once"],
+  ["animate-toast-pop", "Toast isPop — once"],
+] as const;
+
+export const Durations: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4">
+      <MotionDemo ease="out" duration="instant" use="press" />
+      <MotionDemo ease="out" duration="fast" use="hovers" />
+      <MotionDemo ease="out" duration="base" use="state changes" />
+      <MotionDemo ease="out" duration="slow" use="sheets, page transitions, section reveal" />
+    </div>
+  ),
+};
+
 export const Easings: Story = {
   render: () => (
     <div className="flex flex-col gap-4">
@@ -3907,6 +4264,31 @@ export const Easings: Story = {
       <MotionDemo ease="pop" duration="base" use="add-to-cart and rewards only" />
     </div>
   ),
+};
+
+export const Animations: Story = {
+  render: () => (
+    <ul aria-label="Animations" className="grid grid-cols-2 gap-6 md:grid-cols-4">
+      {ANIMATIONS.map(([utility, use]) => (
+        <li key={utility} className="flex flex-col items-center gap-2 text-center">
+          <span
+            aria-hidden
+            data-animation={utility}
+            className={`size-10 rounded-md bg-pink-500 ${utility}`}
+          />
+          <span className="font-mono text-mono text-text-heading">{utility}</span>
+          <span className="text-caption text-text-subtle">{use}</span>
+        </li>
+      ))}
+    </ul>
+  ),
+  play: async ({ canvasElement }) => {
+    // A renamed utility or keyframe would leave its block still; fail instead.
+    for (const [utility] of ANIMATIONS) {
+      const block = requireElement(canvasElement, `[data-animation="${utility}"]`);
+      await expect(getComputedStyle(block).animationName).toBe(utility.replace("animate-", "pp-"));
+    }
+  },
 };
 
 export const MotionTokens: Story = {
@@ -4035,6 +4417,13 @@ import * as Specimens from "./motion.stories";
 Short and matter-of-fact. Hovers run on `duration-fast`, state changes on `duration-base`, sheets
 and page transitions on `duration-slow`.
 
+One curve, four durations — each dot travels the same track, so the difference is something you
+feel rather than read:
+
+<Canvas of={Specimens.Durations} meta={Specimens} sourceState="none" />
+
+Each curve on the duration it ships with:
+
 <Canvas of={Specimens.Easings} meta={Specimens} sourceState="none" />
 
 - `ease-out` for anything entering, `ease-in-out` for moves, `ease-entrance` for sheets.
@@ -4047,6 +4436,18 @@ isPop`). Nowhere else; no bouncing UI.
   decision-log entry naming the component and the CSS limit it hit.
 
 <Canvas of={Specimens.MotionTokens} meta={Specimens} sourceState="none" />
+
+## Animations
+
+The system's seven keyframes, running — the loader really is the brand mark pulsing, not a
+borrowed ring. `animate-sheet-in` and `animate-toast-pop` are entrances: they play once on mount,
+so reload the page to see them again.
+
+<Canvas of={Specimens.Animations} meta={Specimens} sourceState="none" />
+
+To check reduced motion, turn on the operating system's **Reduce motion** setting (macOS: System
+Settings → Accessibility → Display) and reload: every specimen on this page goes still, and nothing
+breaks.
 ```
 
 Create `apps/storybook/src/foundations/motion/states.mdx`:
@@ -4070,7 +4471,7 @@ the live buttons.
 - **Hover:** darken pink one step (`--color-brand-hover`); on white surfaces tint toward `pink-50`;
   on imagery, lift the scrim slightly. **Never fade a button on hover.**
 - **Press:** `press-scale` and `--color-brand-active`, both together, on the instant duration.
-- **Focus:** a 2px pink outline with a 2px offset (fields use the inset ring).
+- **Focus:** a 2px pink outline with a 2px offset (fields use the 3px focus ring).
 - **Disabled:** an `ink-200` fill, `ink-400` text, no shadow, `cursor: not-allowed` — a real fill,
   not reduced opacity.
 - **Loading:** the pink diamond symbol pulsing, or a soft pink skeleton block — never a spinner with
@@ -4165,6 +4566,8 @@ Sources: `guidelines/{canvas-formats,canvas-type}.card.html`, readme §4b.
 **Files:**
 
 - Create: `apps/storybook/src/foundations/marketing/{marketing.stories.tsx,canvas-formats.mdx,canvas-type.mdx}`
+
+**Dev reference:** none (dev has no Marketing foundations — `git ls-tree -r --name-only dev packages/ui/src/docs` lists five pages, none on canvases)
 
 **Interfaces:**
 
@@ -4381,6 +4784,8 @@ Sources: `ui_kits/website/{index.html,Sections.jsx,README.md}`; handoff `design/
 
 - Replace: `apps/storybook/src/kits/fixtures.ts`
 - Create: `apps/storybook/src/kits/{kit-notice.tsx,expect-no-overflow.ts}`, `apps/storybook/src/kits/website/{website-kit.tsx,website.stories.tsx}`
+
+**Dev reference:** none (dev has no reference kits). Dev's landmark findings for the components this kit composes are Task 0 A21.
 
 **Interfaces:**
 
@@ -5202,6 +5607,8 @@ Sources: `ui_kits/app/{index.html,Screens.jsx,ItemSheet.jsx,README.md}`. The kit
 
 - Create: `apps/storybook/src/kits/app/{item-sheet.tsx,app-screens.tsx,ordering-app.tsx,app.stories.tsx}`
 
+**Dev reference:** none (dev has no reference kits). Dev's `landmark-unique` (app-shell, tab-bar) and `scrollable-region-focusable` (cluster) findings are Task 0 A21 and A10.
+
 **Interfaces:**
 
 - Consumes: fixtures (Task 10), `KitNotice`, `expectNoHorizontalOverflow`; ui components per the imports; `formatRupees` (utils).
@@ -5872,6 +6279,8 @@ Sources: `ui_kits/marketing/{index.html,FeedArtboards.jsx,AdArtboards.jsx,README
 
 - Create: `apps/storybook/src/kits/marketing/{artboard.tsx,feed-artboards.tsx,ad-artboards.tsx,feed.stories.tsx,ads.stories.tsx}`
 
+**Dev reference:** none (dev has no reference kits)
+
 **Interfaces:**
 
 - Consumes: `POST_FORMATS`, `PostFrame` (tones incl. Plan 2c's `alt`), `PatternField`, `SocialHeadline`, `LogoLockup`, `Logo`, `OfferSeal`, `CouponTicket`, `DietMark`, `SpiceLevel`, `ImageSlot`, `Divider`, `Button` (ui); `token` (docs-kit); `formatRupees`.
@@ -6442,6 +6851,8 @@ A realistic catering enquiry — the handoff's real dawats, services and guest m
 
 - Create: `apps/storybook/src/patterns/{enquiry-form.tsx,forms.stories.tsx}`
 - Modify: `apps/storybook/package.json` (devDependencies via `pnpm add`)
+
+**Dev reference:** none (new in the rewrite, spec D17 — dev has no form-library story)
 
 **Interfaces:**
 
@@ -7046,6 +7457,33 @@ Every edit below is exact text. "Replace section X" means from that heading to t
 - Modify: `docs/engineering/{02-architecture,03-patterns,04-naming-conventions,05-tooling-and-config,06-quality-gates,09-decision-log}.md`, `docs/superpowers/specs/2026-08-07-boilerplate-architecture-design.md`, `docs/superpowers/specs/2026-09-27-design-system-rewrite-design.md` (status line), `CLAUDE.md`, `docs/README.md`
 - Replace: `apps/storybook/README.md`, `packages/ui/README.md`
 
+**Dev reference:** `git show dev:apps/storybook/README.md`
+
+**Dev parity:**
+
+| Dev item                                                                                                        | Ruling  | Where / spec clause                                                                                            |
+| --------------------------------------------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------- |
+| Run every CLI command from `apps/storybook`; the root fails with `SB_CORE-SERVER_0006 MainFileMissingError`     | ADD     | Step 9 README (the error code was dropped)                                                                     |
+| Commands table incl. story tests, watch mode, one story file, Chromatic                                         | ALREADY | Step 9 README                                                                                                  |
+| Story tests: render → `play` → axe; headless Chromium via Playwright, not jsdom, and why; jsdom suite separate  | ADD     | Step 9 README "Story tests"                                                                                    |
+| Watch mode starts a dev server on 6006 so failures deep-link to the story                                       | ADD     | Step 9 README "Story tests"                                                                                    |
+| "Current state: this target is red" — 200/441 failing, the ten failing contrast pairs                           | DROP    | Spec §5.2–§5.4, C13: text tokens re-pointed; `design-tokens:test` measures every pair; the suite must be green |
+| Structural findings `landmark-unique`, `landmark-no-duplicate-banner`, `scrollable-region-focusable`            | ALREADY | Owned by the components (cross-plan); checked before the kits compose them — Task 0 A21, A10                   |
+| "The brand pink is not negotiable; text-on-pink is a separate, one-token decision"                              | ALREADY | D3; Step 9 "Accessibility policy"; Colors → Contrast "Changing it"                                             |
+| Visual tests (Chromatic) section                                                                                | ALREADY | Step 9 README, verbatim                                                                                        |
+| (Plan 1's README, not dev) "The founder guard covers this build" — `relativeDocgenPaths()`, blanked `NODE_PATH` | ADD     | Step 9 README — the replacement would otherwise delete it                                                      |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
+**Nothing vanishes (controller ruling R28).** Steps 9 and 10 _replace_ two READMEs. Before replacing
+either, diff the current file against the replacement. Every paragraph of the current README that
+the replacement lacks is carried over unless it is now false; each one dropped is named in the report
+with the reason. Known carry-overs in `apps/storybook/README.md` that are not in the replacement
+text above:
+
+- the Fontsource / `@source` scope paragraph;
+- the `build` / `serve-static` `nx:noop` alias paragraph.
+
 **Interfaces:** Consumes the built system (Tasks 0–13). Produces the records spec §12 lists.
 
 - [ ] **Step 1: `03-patterns.md` §1 — the canonical component from the real Button**
@@ -7375,7 +7813,8 @@ components in `packages/ui/src`; everything else lives here. Local and static bu
 hosting waits for the Phase 6 cutover (spec D16).
 
 Every Storybook CLI command must run from **this directory** (or be given `--config-dir`); there is
-no `.storybook` at the workspace root. The Nx targets below already set `cwd`.
+no `.storybook` at the workspace root, so `npx storybook <cmd>` from the root fails with
+`SB_CORE-SERVER_0006 MainFileMissingError`. The Nx targets below already set `cwd`.
 
 ## Commands
 
@@ -7390,6 +7829,17 @@ no `.storybook` at the workspace root. The Nx targets below already set `cwd`.
 | Visual tests (Chromatic) — needs a token | `CHROMATIC_PROJECT_TOKEN=… pnpm nx run @pink-paprikaa-web/storybook:chromatic` |
 
 Story tests run in headless Chromium; install it once with `pnpm exec playwright install chromium`.
+
+## Story tests (`@storybook/addon-vitest`)
+
+`vitest.config.mts` turns every story into a Vitest test: it renders the story, runs its `play`
+function if it has one, then runs axe against the rendered DOM. The tests run in **headless
+Chromium via Playwright**, not jsdom, because focus visibility and computed roles and names need
+real layout and a resolved stylesheet. The library's own jsdom suite (`pnpm nx test ui`) is
+separate; the two complement each other and neither config touches the other. The `test` target's
+cache inputs include `^default`, so a change to any `packages/ui` component or story re-runs it.
+Watch mode also starts a Storybook dev server (if none is on port 6006), so failure output can
+deep-link to the failing story.
 
 ## Groups and where they live
 
@@ -7443,6 +7893,18 @@ pair (white on the brand pink, held at the AA-large 3:1 floor). Contrast is owne
 policy instead: `packages/design-tokens/contrast-pairs.json`, measured on every
 `design-tokens:test` run by the same evaluator that renders **Colors → Contrast**. Storybook itself
 disables `region` (stories are fragments, not pages).
+
+## The founder guard covers this build
+
+`pnpm guard:founder` scans `storybook-static` along with the apps' output. Two things would
+otherwise leak the builder's home directory into the build, and `.storybook/main.ts` handles both:
+
+- `relativeDocgenPaths()` rewrites react-docgen-typescript's absolute `filePath` to a
+  workspace-relative one.
+- `env` blanks `NODE_PATH`, which pnpm's bin shims export and Storybook bakes into the manager
+  bundles.
+
+Never narrow the guard to make a build pass.
 
 ## Visual tests (Chromatic)
 
@@ -7567,6 +8029,18 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 **Files:** none planned. Findings are fixed in their own commits (`fix(<scope>): …`), each followed by the affected gate.
 
+**Dev reference:** `git show dev:apps/storybook/.storybook/main.ts` (the `remark-gfm` and react-docgen-typescript comments)
+
+**Dev parity:**
+
+| Dev item                                                                                          | Ruling  | Where / spec clause                                                       |
+| ------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------- |
+| Regression on record: without `remark-gfm` every Foundations table shipped as raw pipe characters | ADD     | Step 7 sweep fails a docs page whose text shows a raw Markdown table      |
+| Regression on record: docgen resolving from the wrong root documented 6 of 69 components          | ADD     | Step 7 sweep fails a `packages/ui` component docs page with no props rows |
+| Story tests with axe `test: "error"` over every story                                             | ALREADY | Step 2 `storybook:test --skip-nx-cache`                                   |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 - [ ] **Step 1: Clean tree, formatting, references**
 
 ```bash
@@ -7661,6 +8135,16 @@ for (const width of [360, 1280]) {
     if (isKit(entry.title) && entry.type !== "docs" && width === 360 && overflow > 0) {
       problems.push(`${entry.id} overflows by ${overflow}px at 360`);
     }
+    if (entry.type === "docs" && width === 1280) {
+      // remark-gfm (main.ts): without it an MDX table renders as literal pipes.
+      if (await page.evaluate(() => /\|\s*-{3,}/.test(document.body.innerText))) {
+        problems.push(`${entry.id} shows a raw Markdown table`);
+      }
+      // react-docgen-typescript include + tsconfigPath (main.ts): a component page lists its props.
+      if (entry.importPath.includes("packages/ui/src/") && (await page.locator(".docblock-argstable-body tr").count()) === 0) {
+        problems.push(`${entry.id} has an empty props table`);
+      }
+    }
     await page.screenshot({ path: `/tmp/pp-visual-sweep/${width}-${entry.id}.png`, fullPage: true });
   }
   await context.close();
@@ -7674,7 +8158,7 @@ SWEEP
 cd - && kill $SERVE_PID
 ```
 
-Expected: every group has ≥ 1 page, `sweep: no page errors, every group present, no kit overflow`. Then **look** at the screenshots (open each PNG; the reviewer from Step 6 may split the load by group) and compare foundation pages with their cards and kits with their source pages, served from the zip:
+Expected: every group has ≥ 1 page, `sweep: no page errors, every group present, no kit overflow` — no raw Markdown table on any docs page, and a props table on every component docs page (a component whose props are all native legitimately has none: list it with that reason; any other hit is a docgen finding). Then **look** at the screenshots (open each PNG; the reviewer from Step 6 may split the load by group) and compare foundation pages with their cards and kits with their source pages, served from the zip:
 
 ```bash
 pnpm exec serve "zip-files/Pink Paprikaa Design System" -l 6008   # guidelines/*.card.html, ui_kits/*/index.html
