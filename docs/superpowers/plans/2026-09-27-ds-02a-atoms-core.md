@@ -6720,6 +6720,7 @@ Source: `components/atoms/StatusDot.{jsx,d.ts,card.html,prompt.md}`, readme §3.
 **Files:**
 
 - Create: `packages/design-tokens/tokens/component/status-dot.json`
+- Modify: `packages/design-tokens/tokens/primitive/shape.json` (`radius.diamond`, shared by every small brand diamond — ruling R47)
 - Create: `packages/ui/src/atoms/status-dot/status-dot.tsx`, `status-dot.test.tsx`, `status-dot.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`SPACING`, `RADIUS`, `TEXT`), `packages/ui/src/index.ts`
 - `contrast-pairs.json`: unchanged. The label is `text-body` (semantic), and the dot is not text: its state is carried by the label or the accessible name.
@@ -6727,11 +6728,18 @@ Source: `components/atoms/StatusDot.{jsx,d.ts,card.html,prompt.md}`, readme §3.
 **Interfaces:**
 
 - Consumes: `SymbolMark`, `componentVariants`; `bg-current`, `animate-dot-pulse`, `text-status-{success,warning,danger}`.
-- Produces: `StatusDot`, `interface StatusDotProps extends ComponentProps<"span">` (contracts §2); tokens `spacing-status-dot-{sm,md}`, `radius-status-dot`, `text-status-dot-label`.
+- Produces: `StatusDot`, `interface StatusDotProps extends ComponentProps<"span">` (contracts §2); tokens `spacing-status-dot-{sm,md}`, `radius-diamond` (primitive), `text-status-dot-label`.
 
 - [ ] **Step 1: Component tokens**
 
-(If Task 0 Step 4 found a `radius-diamond` token from Plan 2b, drop `radius.status-dot` below and use `rounded-diamond` in Step 4.)
+The diamond's 2px corner is the primitive `radius.diamond` (class `rounded-diamond`), created here once and reused by Plan 2b's `lib/brand-diamond.tsx` (rulings R19, R47). There is no `radius-status-dot`. Append to `radius` in `packages/design-tokens/tokens/primitive/shape.json`:
+
+```json
+    "diamond": {
+      "$value": "2px",
+      "$description": "Corner of every small rotated brand diamond (StatusDot, Plan 2b's brand-diamond)."
+    }
+```
 
 `packages/design-tokens/tokens/component/status-dot.json`:
 
@@ -6742,10 +6750,6 @@ Source: `components/atoms/StatusDot.{jsx,d.ts,card.html,prompt.md}`, readme §3.
     "status-dot-sm": { "$value": "14px", "$description": "The default dot, beside a label." },
     "status-dot-md": { "$value": "16px", "$description": "A bare dot." }
   },
-  "radius": {
-    "$type": "dimension",
-    "status-dot": { "$value": "2px", "$description": "Corner of the rotated diamond." }
-  },
   "text": {
     "$type": "typography",
     "status-dot-label": { "$value": { "fontSize": "13.5px", "fontWeight": "{font-weight.medium}" } }
@@ -6753,10 +6757,10 @@ Source: `components/atoms/StatusDot.{jsx,d.ts,card.html,prompt.md}`, readme §3.
 }
 ```
 
-In `component-variants.ts`, append to `SPACING`: `"status-dot-sm", "status-dot-md",`; to `RADIUS`: `"status-dot",`; to `TEXT`: `"status-dot-label",`.
+In `component-variants.ts`, append to `SPACING`: `"status-dot-sm", "status-dot-md",`; to `RADIUS`: `"diamond",`; to `TEXT`: `"status-dot-label",`.
 
-Run: `pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache && rtk proxy grep -n "status-dot" packages/design-tokens/dist/theme.css`
-Expected: `--spacing-status-dot-sm: 14px;`, `--spacing-status-dot-md: 16px;`, `--radius-status-dot: 2px;`, `--text-status-dot-label: 13.5px;` and its weight.
+Run: `pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache && rtk proxy grep -n "status-dot\|radius-diamond" packages/design-tokens/dist/theme.css`
+Expected: `--spacing-status-dot-sm: 14px;`, `--spacing-status-dot-md: 16px;`, `--radius-diamond: 2px;`, `--text-status-dot-label: 13.5px;` and its weight.
 
 - [ ] **Step 2: Write the failing test**
 
@@ -6793,6 +6797,12 @@ describe("StatusDot", () => {
     }
   );
 
+  it("treats a blank label as no label, so the dot is still named by its tone", () => {
+    const { container } = render(<StatusDot tone="busy" label="   " />);
+    expect(screen.getByRole("img", { name: "Busy" })).toBeInTheDocument();
+    expect(container.firstElementChild?.children).toHaveLength(1);
+  });
+
   it("lets a consumer name a bare dot", () => {
     render(<StatusDot tone="open" aria-label="Sector 57 is open" />);
     expect(screen.getByRole("img", { name: "Sector 57 is open" })).toBeInTheDocument();
@@ -6812,8 +6822,8 @@ describe("StatusDot", () => {
   it("draws a rotated diamond carrying the counter-rotated brand mark", () => {
     const { container } = render(<StatusDot />);
     const diamond = container.firstElementChild?.firstElementChild?.lastElementChild;
-    expect(diamond).toHaveClass("rotate-45", "rounded-status-dot", "bg-current", "overflow-hidden");
-    expect(diamond?.querySelector("svg")).toHaveClass(
+    expect(diamond).toHaveClass("rotate-45", "rounded-diamond", "bg-current", "overflow-hidden");
+    expect(diamond?.querySelector(".mask-symbol")).toHaveClass(
       "size-4/5",
       "-rotate-45",
       "text-ink-000",
@@ -6912,9 +6922,9 @@ const statusDot = componentVariants({
   slots: {
     root: "inline-flex items-center gap-2",
     dot: "relative shrink-0",
-    pulse: "rounded-status-dot absolute inset-0 animate-dot-pulse bg-current motion-reduce:hidden",
+    pulse: "absolute inset-0 animate-dot-pulse rounded-diamond bg-current motion-reduce:hidden",
     diamond:
-      "rounded-status-dot absolute inset-0 grid rotate-45 place-items-center overflow-hidden bg-current",
+      "absolute inset-0 grid rotate-45 place-items-center overflow-hidden rounded-diamond bg-current",
     mark: "size-4/5 -rotate-45 text-ink-000 opacity-66",
     label: "font-body text-status-dot-label text-text-body",
   },
@@ -6941,7 +6951,8 @@ export function StatusDot({
   ...props
 }: StatusDotProps) {
   const slots = statusDot({ tone, size });
-  const bareName = label === undefined ? { role: "img", "aria-label": TONE_NAME[tone] } : undefined;
+  const hasLabel = label !== undefined && label.trim() !== "";
+  const bareName = hasLabel ? undefined : { role: "img", "aria-label": TONE_NAME[tone] };
   return (
     <span className={slots.root({ className })} {...bareName} {...props}>
       <span aria-hidden className={slots.dot()}>
@@ -6950,7 +6961,7 @@ export function StatusDot({
           <SymbolMark className={slots.mark()} />
         </span>
       </span>
-      {label === undefined ? null : <span className={slots.label()}>{label}</span>}
+      {hasLabel ? <span className={slots.label()}>{label}</span> : null}
     </span>
   );
 }
@@ -7695,7 +7706,7 @@ In the report, include the full difference table from Step 3 and the tail of the
 ## Controller amendments — ruling R19 and 2b rulings (2026-09-27)
 
 - **R19 — the symbol is one shared CSS mask, never inline SVG per instance.** Plan 1 Task 7 generates `packages/ui/src/lib/brand-artwork.css` (imported by `styles.css`) defining `--pp-symbol-mask` once and the utility `mask-symbol` (`background-color: currentColor` + the mask). `SymbolMark` (Plan 2a Task 1) is therefore `<span aria-hidden="true" className={…"mask-symbol"…} />` sized by className — no path data in the HTML. Its test asserts the class and `aria-hidden`, and that the rendered HTML contains no `<path`. PatternField uses `mask-image: var(--pp-symbol-mask)` (a class or `style={{ maskImage: "var(--pp-symbol-mask)" }}`) instead of inlining `SYMBOL_DATA_URI_WHITE` per instance. Reason: a 20-dish menu with spice levels would otherwise carry ~80 copies of ~5 KB path data (page budget ≤1 MB). Plan 2b's Rating/SpiceLevel/Spinner and `lib/brand-diamond.tsx` build on this `SymbolMark`.
-- **One diamond corner token:** `radius.diamond` (2px) is created once, in Plan 2a (StatusDot's task), and used as `rounded-diamond` by StatusDot and by Plan 2b's `lib/brand-diamond.tsx`; drop `radius-status-dot` / `radius-brand-diamond`.
+- **One diamond corner token:** `radius.diamond` (2px) is created once, in Plan 2a (StatusDot's task) in `primitive/shape.json` (R47), and used as `rounded-diamond` by StatusDot and by Plan 2b's `lib/brand-diamond.tsx`; drop `radius-status-dot` / `radius-brand-diamond`.
 - **Tooltip** opens with `delayDuration={0}` as designed — accepted.
 - **No on-brand variants** for Checkbox/Radio/Switch/Slider (none designed) — YAGNI, accepted.
 - **Read-only Select** renders disabled for the visual, **plus a hidden `<input type="hidden" name={name} value={value}>`** so the value is still submitted (react-hook-form reads it) — add a test.
