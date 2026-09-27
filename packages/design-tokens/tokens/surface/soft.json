@@ -1,0 +1,20 @@
+{
+  "surface-soft": {
+    "color": {
+      "$type": "color",
+      "text": {
+        "heading": { "$value": "{color.pink.800}" },
+        "brand": {
+          "$value": "{color.pink.700}",
+          "$description": "pink-600 on pink-100 measures 4.08:1 (spec §5.3)."
+        },
+        "link": { "$value": "{color.pink.700}" },
+        "link-hover": { "$value": "{color.pink.800}" }
+      },
+      "border": {
+        "subtle": { "$value": "{color.pink.200}" },
+        "default": { "$value": "{color.pink.300}" }
+      }
+    }
+  }
+}

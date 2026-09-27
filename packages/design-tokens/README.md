@@ -1,105 +1,109 @@
 # Design Tokens
 
-**Status: complete.** The full system landed in Phase 1 — 250-odd tokens across primitive,
-semantic and component tiers, every value a final design decision. The two-colour Phase 0 seed is
-gone, along with its `color.surface` / `color.ink` singletons (surfaces are a family of nine, ink a
-ten-step warm ramp).
+The single source of every visual value in the Pink Paprikaa design system — colour, type, space,
+shape, elevation, motion, layout. Tokens are authored in [DTCG](https://tr.designtokens.org/format/)
+JSON and compiled by Style Dictionary 5 into CSS that Tailwind v4 and the component library read.
 
-The single source of truth for the Pink Paprikaa brand palette, and the **only** place the brand
-hex `#EE2C68` may exist in this workspace (see `pink-paprikaa/no-raw-hex` in
-`@pink-paprikaa-web/eslint-config`). Tokens are authored in
-[DTCG](https://tr.designtokens.org/format/) JSON (`$type` / `$value`) across three tiers and
-compiled by [Style Dictionary](https://styledictionary.com) into build artifacts other packages
-consume.
+**The one-hex rule.** The brand pink `#EE2C68` exists once in the workspace: `color.pink.500` in
+`tokens/primitive/color.json`. Everything else references the token. `pink-paprikaa/no-raw-hex`
+fails lint on a literal hex in source, and `theme.spec.ts` fails if a second primitive holds it.
 
-## Token tiers (`tokens/`)
+## Tiers (`tokens/`)
 
-| File                        | Tier      | Contents                                                                   |
-| --------------------------- | --------- | -------------------------------------------------------------------------- |
-| `color.primitive.json`      | Primitive | Pink 50–800, warm ink 0–900, four spice accents, danger, overlay/glass     |
-| `color.semantic.json`       | Semantic  | `brand.*` `surface.*` `text.*` `border.*` `status.*` `heat.*`              |
-| `typography.primitive.json` | Primitive | 4 families, 5 weights, the 12-step ramp + 7 fluid twins, leading, tracking |
-| `spacing.primitive.json`    | Primitive | The 4px scale (step N = N × 4px) + `layout.*`                              |
-| `elevation.primitive.json`  | Primitive | 6 radii, 2 strokes, 4 elevations + brand/inset/focus shadows, blur/scrim   |
-| `motion.primitive.json`     | Primitive | 5 durations, 4 easings, press-scale, lift                                  |
-| `breakpoint.primitive.json` | Primitive | 480 / 768 / 1024 / 1280 / 1440                                             |
-| `canvas.primitive.json`     | Primitive | The 7 marketing artboard sizes, safe margins, canvas type scale            |
-| `button.component.json`     | Component | Button fills, heights, padding, radius                                     |
-| `field.component.json`      | Component | Input height, radius, all 5 border states                                  |
-| `card.component.json`       | Component | Card fills, radii, rest/hover shadows                                      |
+| Folder       | Tier      | What lives there                                                                                                                                     |
+| ------------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `primitive/` | Primitive | Raw values — the only place a hex or px literal may exist. Colour ramps, type, space, radius, shadow, motion, breakpoints, canvas, pattern, z-index. |
+| `semantic/`  | Semantic  | Roles that reference primitives: `color.surface.*`, `color.text.*`, `color.border.*`, `color.status.*`, `color.heat.*`, the focus ring.              |
+| `component/` | Component | One file per component for dimensions that are not a step of a base scale (empty until components land).                                             |
+| `surface/`   | Surface   | `brand`, `ink`, `soft`, `light`: overrides of semantic and component tokens for a scope.                                                             |
 
-The type ramp is `display1` `display2` `h1` `h2` `h3` `subtitle1` `subtitle2` `body1` `body2`
-`caption` `overline` `mono`; radii are numbered `1`–`6` (4/6/10/16/24/pill); shadows are
-`elevation1`–`elevation4` plus the role shadows.
+Every leaf is `{ "$value": … }`; `$type` is set on the group and inherited. Values are CSS-ready
+strings; typography is the one composite (`fontSize`, `lineHeight`, `letterSpacing`, `fontWeight`).
 
-## Build
+## Outputs (`dist/`, generated, gitignored)
+
+| File           | Content                                                                                                                                                                                  | Consumer                          |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| `theme.css`    | One `@theme static { … }` block: `--<ns>-*: initial` resets for every Tailwind namespace the system owns, then every primitive and semantic token. Pure aliases stay `var()` references. | `packages/ui/src/styles.css`      |
+| `surfaces.css` | `[data-surface="…"], .pp-on-… { … }` blocks that redefine semantic tokens for each surface.                                                                                              | `packages/ui/src/styles.css`      |
+| `tokens.json`  | Flat catalogue: `{ name, cssVar, path, value, reference, type, tier, surface, description }`.                                                                                            | Storybook foundation pages; tests |
+
+Package exports: `./theme.css`, `./surfaces.css`, `./tokens.json`, and `./contrast` (the WCAG maths:
+`parseColor`, `composite`, `relativeLuminance`, `contrastRatio`).
+
+The namespace resets delete Tailwind's stock scales, so a class outside the system (`bg-red-500`,
+Tailwind's 8px `rounded-lg`, `shadow-md`) compiles to nothing instead of rendering a near-miss.
+`static` keeps tokens that no scanned class references — surfaces and component CSS read them
+through `var()`. `spacing` is not reset: its multiplier is set to the system's 4px unit.
+
+## Name mapping
+
+A token's CSS name is its path joined by `-`: `color.text.muted` → `--color-text-muted` →
+`text-text-muted`. Two exceptions:
+
+- `spacing.unit` → `--spacing` (Tailwind's multiplier; `p-6` = 24px, no per-step variables).
+- A typography composite → `--text-<step>` plus `--text-<step>--line-height`,
+  `--text-<step>--letter-spacing` and `--text-<step>--font-weight`, so `text-h2` sets all four.
+
+| Design system                                            | CSS custom property                                                          | Utility                              |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------ |
+| `--pink-50 … --pink-800`                                 | `--color-pink-50 … -800`                                                     | `bg-pink-500`                        |
+| `--ink-000 … --ink-900`                                  | `--color-ink-000 … -900`                                                     | `bg-ink-900`                         |
+| `--turmeric(-soft)` (tandoor, mint, kesar alike)         | `--color-turmeric(-soft)`; plus `-strong` text shades                        | `bg-mint-soft`, `text-mint-strong`   |
+| `--surface-*`, `--text-*`, `--border-*` colours          | `--color-surface-*`, `--color-text-*`, `--color-border-*`                    | `bg-surface-card`, `text-text-muted` |
+| `--brand-hover/active`, `--status-*`, `--heat-1…4`       | `--color-brand-*`, `--color-status-*`, `--color-heat-*`                      | `hover:bg-brand-hover`               |
+| `--focus-ring(-inverse)`                                 | `--shadow-focus-ring(-inverse)`                                              | `focus-visible:shadow-focus-ring`    |
+| `--font-*`, `--weight-*`                                 | `--font-*`, `--font-weight-*`                                                | `font-display`, `font-black`         |
+| `--fs-X`, `--lh-X`, `--ls-X`                             | `--text-X` + sub-properties (and `-fluid` twins)                             | `text-h2`, `text-h1-fluid`           |
+| `--space-N`                                              | `--spacing: 4px`                                                             | `p-6`, `gap-1.5`                     |
+| `--gutter-*`, `--section-y-*`, `--header-h`, `--hit-min` | `--spacing-gutter`, `--spacing-section`, `--spacing-header`, `--spacing-hit` | `px-gutter`, `min-h-hit`             |
+| `--container-max`, `--measure-prose`                     | `--container-content`, `--container-prose`                                   | `max-w-content`                      |
+| `--bp-*`, `--radius-*`, `--shadow-*`                     | `--breakpoint-*`, `--radius-*`, `--shadow-*`                                 | `md:`, `rounded-lg`, `shadow-3`      |
+| `--dur-*`, `--ease-*`, `--press-scale`                   | `--duration-*`, `--ease-*`, `--motion-*`                                     | `ease-pop`                           |
+| `--scrim-*`, `--blur-glass`                              | `--effect-scrim-*`, `--blur-glass`                                           | `backdrop-blur-glass`                |
+| canvas, pattern, stacking                                | `--canvas-*`, `--pattern-*`, `--z-*`                                         | component tokens                     |
+
+`text-text-muted` (colour) versus `text-body` (size) is deliberate: the design system's `--text-*`
+colours collide with Tailwind's `--text-*` font sizes, and the `color-` prefix keeps both traceable.
+
+## Surfaces
+
+Put `data-surface="brand"` (or the class `.pp-on-brand`) on a section and every semantic token
+inside it retargets: text turns white, borders turn translucent white, the focus ring inverts. The
+four surfaces are `brand`, `ink`, `soft` and `light`. Each block also sets
+`color: var(--color-text-body)` so inherited text follows.
+
+Only semantic and component tokens are overridden, never primitives. A custom property resolves
+where it is declared, so `--color-text-body: var(--color-ink-800)` declared on `:root` is already
+resolved by the time a surface redefines `--color-ink-800`; redefining the semantic token on the
+surface element is what cascades.
+
+`light` is the **light island**: it restores every token the other surfaces override, to its exact
+base value, so a white card inside a pink panel inside an ink section shows dark text again.
+`theme.spec.ts` enforces that — a new override on `brand`, `ink` or `soft` fails the build until
+`surface/light.json` restores it.
+
+## Contrast policy
+
+`contrast-pairs.json` lists every text/background pair the components paint, in groups: a surface
+(or `null` for the page), foregrounds × backgrounds or explicit pairs, an optional translucent
+`backdrop`, and a minimum ratio. `policy.spec.ts` resolves each token on its surface from
+`dist/tokens.json` and measures it with the WCAG 2.x formula.
+
+- The minimum is **4.5:1** (WCAG AA).
+- The single exception is `"brand-fill"`: white on the brand pink measures 4.04:1 and is held to
+  the **AA-large floor, 3:1**. The policy test rejects any other group below 4.5, and any
+  brand-fill group whose ground is not the brand pink.
+- To add a pair, add it to a group (or a new group) and run the tests. A component that paints a
+  new pair is not done until its pair is here.
+
+**Change text tokens, never fills.** When a pair fails, move the text token to a passing ramp step
+(as `color.text.brand` moved from pink-500 to pink-600). The brand fills are the brand; a fill
+never moves to satisfy a ratio.
+
+## Commands
 
 ```bash
-pnpm nx build design-tokens
+pnpm nx build @pink-paprikaa-web/design-tokens   # style-dictionary build → dist/
+pnpm nx test @pink-paprikaa-web/design-tokens    # builds first, then contrast, policy, theme suites
 ```
-
-Runs `style-dictionary build --config sd.config.mjs`, cached by Nx (`inputs`: `tokens/**/*` +
-`sd.config.mjs`; `outputs`: `dist/`). Produces:
-
-- **`dist/theme.css`** — a Tailwind v4 `@theme` block. CSS custom property names are a contract
-  consumed by later tasks' Tailwind utilities: `--color-brand-primary` → `bg-brand-primary`,
-  `--color-brand-primary-hover` → `hover:bg-brand-primary-hover`, `--color-surface` →
-  `text-surface`, `--color-ink` → `text-ink`.
-- **`dist/tokens.ts`** — a typed `tokens` const (kebab-case keys) for use in TS/JS.
-- **`dist/tokens.json`** — the flat token map as plain JSON.
-
-### The namespace reset
-
-`theme.css` opens by clearing every Tailwind namespace this package replaces:
-
-```css
-@theme static {
-  --color-*: initial;
-  --text-*: initial;
-  --font-*: initial;
-  --tracking-*: initial;
-  --leading-*: initial;
-  --radius-*: initial;
-  --shadow-*: initial;
-  --ease-*: initial;
-  --breakpoint-*: initial;
-  /* … then every token … */
-}
-```
-
-Without it, Tailwind's stock scale survives alongside ours and a wrong class silently renders the
-wrong brand value instead of failing — `rounded-lg` would resolve to Tailwind's 8px rather than the
-brand's 16px (`--radius-4`), and `text-lg` / `bg-red-500` would keep working despite being outside
-the system. Clearing the namespace turns each into a class that does not compile, which is the
-point: the design system becomes the only source of colour, type, radius, shadow and easing.
-
-`spacing` is deliberately **not** cleared — Tailwind's `--spacing` multiplier is a 4px step,
-identical to this system's scale, so the numeric utilities agree with the tokens.
-
-`dist/` is generated and gitignored (covered by the workspace's root `dist` ignore pattern) — never
-edit it or commit it.
-
-## Package exports
-
-```js
-"@pink-paprikaa-web/design-tokens/theme.css"; // -> dist/theme.css
-"@pink-paprikaa-web/design-tokens/tokens.json"; // -> dist/tokens.json
-```
-
-## Style Dictionary config notes (`sd.config.mjs`)
-
-Two custom formats are registered: `css/tailwind-theme` (the `@theme static { ... }` block) and
-`typescript/tokens-const` (the typed const). The built-in `json/flat` format is used as-is for
-`tokens.json`. `static` (not plain `@theme`) is deliberate: Tailwind v4 tree-shakes any theme
-variable it doesn't see referenced by a scanned utility class, which would silently drop tokens
-that exist only for direct `var(--...)` consumption — confirmed by Storybook (`packages/ui`),
-the first real Tailwind consumer of this file, emitting an empty theme block without it.
-
-All three platforms use `transforms: ["attribute/cti", "name/kebab"]` — **not** the `css`/`js`
-built-in `transformGroup`s. Both of those groups include a color value transform (`color/css` /
-`color/hex`) that pipes every color through `tinycolor2`, which lower-cases hex strings
-(`#EE2C68` → `#ee2c68`) and mutates `$value` in place. That breaks the literal-case contract
-required of `dist/theme.css` (`--color-brand-primary: #EE2C68`, uppercase, exactly as authored).
-`attribute/cti` + `name/kebab` give every platform consistent, collision-free kebab-case naming
-without touching token values, so each format's `t.$value ?? t.value` fallback always resolves to
-the value exactly as written in `tokens/*.json`.

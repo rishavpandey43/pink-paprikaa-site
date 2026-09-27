@@ -1,0 +1,70 @@
+{
+  "color": {
+    "$type": "color",
+    "pink": {
+      "50": { "$value": "#FFF5F8" },
+      "100": { "$value": "#FFDBE8", "$description": "Light pink, given by the client." },
+      "200": { "$value": "#FFB9CE" },
+      "300": { "$value": "#FA8BAB" },
+      "400": { "$value": "#F4568A" },
+      "500": {
+        "$value": "#EE2C68",
+        "$description": "The brand pink, given by the client. The only place this hex exists."
+      },
+      "600": { "$value": "#D21E55" },
+      "700": { "$value": "#AB1544" },
+      "800": { "$value": "#7C0E30" }
+    },
+    "ink": {
+      "000": { "$value": "#FFFFFF" },
+      "100": { "$value": "#F7F3F4" },
+      "200": { "$value": "#ECE6E8" },
+      "300": { "$value": "#DCD3D7" },
+      "400": { "$value": "#B8ABB1" },
+      "500": { "$value": "#8F7F86" },
+      "600": { "$value": "#6B5A62" },
+      "700": { "$value": "#46373E" },
+      "800": { "$value": "#2B1F25" },
+      "900": { "$value": "#1A1216" }
+    },
+    "turmeric": { "$value": "#F2B233" },
+    "turmeric-soft": { "$value": "#FDF1D6" },
+    "turmeric-strong": {
+      "$value": "#8A5C00",
+      "$description": "Warning text; from the design-system components."
+    },
+    "tandoor": { "$value": "#E4572E" },
+    "tandoor-soft": { "$value": "#FDEAE3" },
+    "mint": { "$value": "#2FA37C" },
+    "mint-soft": { "$value": "#E2F4ED" },
+    "mint-strong": {
+      "$value": "#186C51",
+      "$description": "Success text; from the design-system components."
+    },
+    "kesar": { "$value": "#7A3EA8" },
+    "kesar-soft": { "$value": "#F1E8F8" },
+    "kesar-strong": {
+      "$value": "#5A2A80",
+      "$description": "Info text; from the design-system components."
+    },
+    "danger": { "$value": "#CF2222" },
+    "danger-soft": { "$value": "#FCE9E9" },
+    "veg": { "$value": "#1A7A3C", "$description": "The statutory vegetarian mark." },
+    "white-alpha": {
+      "06": { "$value": "rgba(255, 255, 255, 0.06)" },
+      "10": { "$value": "rgba(255, 255, 255, 0.1)" },
+      "22": { "$value": "rgba(255, 255, 255, 0.22)" },
+      "25": { "$value": "rgba(255, 255, 255, 0.25)" },
+      "30": { "$value": "rgba(255, 255, 255, 0.3)" },
+      "42": { "$value": "rgba(255, 255, 255, 0.42)" },
+      "50": { "$value": "rgba(255, 255, 255, 0.5)" },
+      "70": { "$value": "rgba(255, 255, 255, 0.7)" },
+      "72": { "$value": "rgba(255, 255, 255, 0.72)" },
+      "85": { "$value": "rgba(255, 255, 255, 0.85)" },
+      "92": { "$value": "rgba(255, 255, 255, 0.92)" }
+    },
+    "ink-alpha": {
+      "56": { "$value": "rgba(26, 18, 22, 0.56)" }
+    }
+  }
+}

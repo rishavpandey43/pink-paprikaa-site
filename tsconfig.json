@@ -32,6 +32,9 @@
     },
     {
       "path": "./apps/storybook"
+    },
+    {
+      "path": "./packages/design-tokens"
     }
   ],
   "compilerOptions": {}

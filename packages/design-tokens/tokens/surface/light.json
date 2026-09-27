@@ -1,0 +1,24 @@
+{
+  "surface-light": {
+    "color": {
+      "$type": "color",
+      "text": {
+        "heading": { "$value": "{color.ink.900}" },
+        "body": { "$value": "{color.ink.800}" },
+        "muted": { "$value": "{color.ink.600}" },
+        "subtle": { "$value": "{color.ink.600}" },
+        "brand": { "$value": "{color.pink.600}" },
+        "link": { "$value": "{color.pink.600}" },
+        "link-hover": { "$value": "{color.pink.700}" }
+      },
+      "border": {
+        "subtle": { "$value": "{color.ink.200}" },
+        "default": { "$value": "{color.ink.300}" },
+        "strong": { "$value": "{color.ink.900}" }
+      },
+      "surface": { "card": { "$value": "{color.ink.000}" } },
+      "focus": { "$value": "{color.pink.500}" }
+    },
+    "shadow": { "$type": "shadow", "focus-ring": { "$value": "0 0 0 3px {color.pink.200}" } }
+  }
+}

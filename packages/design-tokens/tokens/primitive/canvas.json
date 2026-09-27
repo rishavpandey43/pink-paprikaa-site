@@ -1,0 +1,16 @@
+{
+  "canvas": {
+    "$type": "dimension",
+    "post": { "w": { "$value": "1080px" }, "h": { "$value": "1080px" } },
+    "portrait": { "w": { "$value": "1080px" }, "h": { "$value": "1350px" } },
+    "story": { "w": { "$value": "1080px" }, "h": { "$value": "1920px" } },
+    "landscape": { "w": { "$value": "1200px" }, "h": { "$value": "628px" } },
+    "wide": { "w": { "$value": "1920px" }, "h": { "$value": "1080px" } },
+    "mpu": { "w": { "$value": "300px" }, "h": { "$value": "250px" } },
+    "leaderboard": { "w": { "$value": "728px" }, "h": { "$value": "90px" } },
+    "pad": { "$value": "72px" },
+    "pad-tight": { "$value": "48px" },
+    "story-safe-top": { "$value": "250px" },
+    "story-safe-bottom": { "$value": "320px" }
+  }
+}

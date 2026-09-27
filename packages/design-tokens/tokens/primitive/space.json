@@ -1,0 +1,48 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "unit": {
+      "$value": "4px",
+      "$description": "Tailwind's spacing multiplier (emitted as --spacing): p-6 = 24px, the design system's --space-6."
+    },
+    "gutter": { "$value": "clamp(16px, 4vw, 40px)", "$description": "Handoff value (spec C8)." },
+    "gutter-mobile": { "$value": "16px" },
+    "gutter-desktop": { "$value": "40px" },
+    "section": { "$value": "clamp(48px, 8vw, 96px)", "$description": "Handoff value (spec C8)." },
+    "section-mobile": { "$value": "48px" },
+    "section-desktop": { "$value": "96px" },
+    "grid-gap": { "$value": "clamp(16px, 2vw, 24px)" },
+    "header": { "$value": "88px" },
+    "header-compact": {
+      "$value": "64px",
+      "$description": "The handoff site header row (spec C1)."
+    },
+    "tabbar": { "$value": "64px" },
+    "hit": { "$value": "44px", "$description": "Minimum touch target." },
+    "card-min": { "$value": "260px" },
+    "card-min-wide": { "$value": "320px" },
+    "dock-clearance": {
+      "$value": "84px",
+      "$description": "Sticky bars sit this far above the viewport bottom so the mobile action dock never covers them."
+    }
+  },
+  "container": {
+    "$type": "dimension",
+    "content": { "$value": "1200px" },
+    "wide": { "$value": "1440px" },
+    "narrow": { "$value": "960px" },
+    "article": { "$value": "760px" },
+    "prose": { "$value": "64ch" },
+    "prose-narrow": { "$value": "44ch" }
+  },
+  "aspect": {
+    "$type": "number",
+    "square": { "$value": "1 / 1" },
+    "4-3": { "$value": "4 / 3" },
+    "3-4": { "$value": "3 / 4" },
+    "4-5": { "$value": "4 / 5" },
+    "16-9": { "$value": "16 / 9" },
+    "16-10": { "$value": "16 / 10" },
+    "wide": { "$value": "21 / 9" }
+  }
+}

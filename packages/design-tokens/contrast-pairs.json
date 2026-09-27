@@ -1,0 +1,132 @@
+{
+  "$comment": "Contrast policy — design system spec §5. Every semantic text/background pair the components use. min 4.5 = WCAG AA. min 3 is allowed only with exception \"brand-fill\" (white on the brand pink, spec D3).",
+  "groups": [
+    {
+      "id": "light-text",
+      "surface": null,
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger",
+        "color-text-info"
+      ],
+      "backgrounds": [
+        "color-surface-page",
+        "color-surface-page-alt",
+        "color-surface-sunken",
+        "color-surface-card"
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "status-on-soft",
+      "surface": null,
+      "pairs": [
+        ["color-text-success", "color-status-success-soft"],
+        ["color-text-warning", "color-status-warning-soft"],
+        ["color-text-danger", "color-status-danger-soft"],
+        ["color-text-info", "color-status-info-soft"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "soft-surface",
+      "surface": "soft",
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover"
+      ],
+      "backgrounds": ["color-surface-brand-soft"],
+      "min": 4.5
+    },
+    {
+      "id": "ink-surface",
+      "surface": "ink",
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover"
+      ],
+      "backgrounds": ["color-surface-inverse"],
+      "min": 4.5
+    },
+    {
+      "id": "ink-card",
+      "surface": "ink",
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover"
+      ],
+      "backgrounds": ["color-surface-card"],
+      "backdrop": "color-surface-inverse",
+      "min": 4.5
+    },
+    {
+      "id": "brand-surface",
+      "surface": "brand",
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover"
+      ],
+      "backgrounds": ["color-surface-brand"],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "brand-card",
+      "surface": "brand",
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover"
+      ],
+      "backgrounds": ["color-surface-card"],
+      "backdrop": "color-surface-brand",
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "on-inverse",
+      "surface": null,
+      "pairs": [["color-text-on-inverse", "color-surface-inverse"]],
+      "min": 4.5
+    },
+    {
+      "id": "on-brand-fill",
+      "surface": null,
+      "pairs": [["color-text-on-brand", "color-surface-brand"]],
+      "min": 3,
+      "exception": "brand-fill"
+    }
+  ]
+}

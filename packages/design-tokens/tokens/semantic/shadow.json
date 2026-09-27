@@ -1,0 +1,7 @@
+{
+  "shadow": {
+    "$type": "shadow",
+    "focus-ring": { "$value": "0 0 0 3px {color.pink.200}" },
+    "focus-ring-inverse": { "$value": "0 0 0 3px {color.white-alpha.50}" }
+  }
+}

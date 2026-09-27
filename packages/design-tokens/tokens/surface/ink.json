@@ -1,0 +1,24 @@
+{
+  "surface-ink": {
+    "color": {
+      "$type": "color",
+      "text": {
+        "heading": { "$value": "{color.ink.000}" },
+        "body": { "$value": "{color.ink.000}" },
+        "muted": { "$value": "{color.white-alpha.92}" },
+        "subtle": { "$value": "{color.white-alpha.85}" },
+        "brand": { "$value": "{color.pink.300}" },
+        "link": { "$value": "{color.ink.000}" },
+        "link-hover": { "$value": "{color.ink.000}" }
+      },
+      "border": {
+        "subtle": { "$value": "{color.white-alpha.22}" },
+        "default": { "$value": "{color.white-alpha.42}" },
+        "strong": { "$value": "{color.ink.000}" }
+      },
+      "surface": { "card": { "$value": "{color.white-alpha.06}" } },
+      "focus": { "$value": "{color.ink.000}" }
+    },
+    "shadow": { "$type": "shadow", "focus-ring": { "$value": "{shadow.focus-ring-inverse}" } }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "duration": {
+    "$type": "duration",
+    "instant": { "$value": "80ms" },
+    "fast": { "$value": "140ms", "$description": "Hovers." },
+    "base": { "$value": "220ms", "$description": "State changes." },
+    "slow": { "$value": "340ms", "$description": "Sheets, page transitions, section reveal." },
+    "page": { "$value": "480ms" }
+  },
+  "ease": {
+    "$type": "cubicBezier",
+    "out": { "$value": "cubic-bezier(0.2, 0.8, 0.2, 1)", "$description": "Anything entering." },
+    "in-out": { "$value": "cubic-bezier(0.4, 0, 0.2, 1)", "$description": "Moves." },
+    "entrance": { "$value": "cubic-bezier(0.16, 1, 0.3, 1)", "$description": "Sheets." },
+    "pop": {
+      "$value": "cubic-bezier(0.34, 1.4, 0.64, 1)",
+      "$description": "One overshoot — add-to-cart and reward confirmations only."
+    }
+  },
+  "motion": {
+    "press-scale": { "$type": "number", "$value": 0.97 },
+    "lift-y": { "$type": "dimension", "$value": "-2px" },
+    "reveal-distance": { "$type": "dimension", "$value": "12px" }
+  }
+}
