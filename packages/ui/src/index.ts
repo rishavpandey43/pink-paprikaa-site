@@ -8,6 +8,7 @@ export {
   YoutubeGlyph,
   type GlyphProps,
 } from "./atoms/icon/brand-glyphs";
+export { Link, type LinkProps } from "./atoms/link/link";
 export { Logo, type LogoProps } from "./atoms/logo/logo";
 export { Text, type TextProps, type TextTone, type TextVariant } from "./atoms/text/text";
 export { RevealObserver, type RevealObserverProps } from "./lib/reveal-observer";

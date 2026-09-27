@@ -127,6 +127,40 @@
       "pairs": [["color-text-on-brand", "color-surface-brand"]],
       "min": 3,
       "exception": "brand-fill"
+    },
+    {
+      "id": "link",
+      "surface": null,
+      "pairs": [
+        ["color-link-quiet", "color-surface-page"],
+        ["color-link-quiet", "color-surface-page-alt"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "link-on-soft",
+      "surface": "soft",
+      "pairs": [["color-link-quiet", "color-surface-brand-soft"]],
+      "min": 4.5
+    },
+    {
+      "id": "link-on-ink",
+      "surface": "ink",
+      "pairs": [
+        ["color-link-quiet", "color-surface-inverse"],
+        ["color-ink-000", "color-surface-inverse"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "link-on-brand",
+      "surface": "brand",
+      "pairs": [
+        ["color-link-quiet", "color-surface-brand"],
+        ["color-ink-000", "color-surface-brand"]
+      ],
+      "min": 3,
+      "exception": "brand-fill"
     }
   ]
 }

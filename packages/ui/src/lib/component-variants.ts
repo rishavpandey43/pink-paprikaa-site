@@ -39,6 +39,9 @@ const TEXT = [
   "canvas-body",
   "canvas-caption",
   "canvas-overline",
+  "link-sm",
+  "link-md",
+  "link-lg",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];

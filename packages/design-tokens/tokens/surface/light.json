@@ -11,6 +11,10 @@
         "link": { "$value": "{color.pink.600}" },
         "link-hover": { "$value": "{color.pink.700}" }
       },
+      "link": {
+        "underline": { "$value": "{color.pink.200}" },
+        "quiet": { "$value": "{color.ink.700}" }
+      },
       "border": {
         "subtle": { "$value": "{color.ink.200}" },
         "default": { "$value": "{color.ink.300}" },
