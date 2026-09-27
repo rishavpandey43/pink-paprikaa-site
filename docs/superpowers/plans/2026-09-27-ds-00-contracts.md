@@ -176,14 +176,13 @@ interface DividerProps extends ComponentProps<"div"> {
   orientation?: "horizontal" | "vertical";
 }
 // image-slot — discriminated: a real image, or a labelled placeholder
-interface ImageSlotBase {
+interface ImageSlotBase extends Omit<ComponentProps<"div">, "children" | "role" | "aria-label"> {
   ratio?: "square" | "4:3" | "3:4" | "4:5" | "16:9" | "16:10" | "wide";
   radius?: "none" | "md" | "lg" | "xl";
   tone?: "soft" | "strong" | "ink";
   isFill?: boolean;
-  className?: string;
   children?: ReactNode; /* a <picture> from the image pipeline */
-}
+} // R35: native div props spread on the root (role/aria-label are set on the placeholder)
 type ImageSlotProps = ImageSlotBase &
   (
     | {
@@ -255,7 +254,7 @@ interface CheckboxProps extends Omit<ComponentProps<"input">, "type" | "size"> {
   description?: ReactNode;
   price?: number /* renders +₹60 */;
   isInvalid?: boolean;
-}
+} // R29: no indeterminate prop (would make every Checkbox a client file); `:indeterminate` is styled and a client consumer sets it via `ref`
 interface RadioProps extends Omit<ComponentProps<"input">, "type" | "size"> {
   label: ReactNode;
   description?: ReactNode;
@@ -309,6 +308,9 @@ interface SkeletonProps extends ComponentProps<"div"> {
 interface TooltipProps {
   label: string;
   side?: "top" | "bottom" | "left" | "right";
+  open?: boolean; /* R30 */
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
   children: ReactElement;
 }
 // diet-mark — veg only (the kitchen is egg-free)
@@ -346,7 +348,16 @@ type ContainerSize = "content" | "wide" | "narrow" | "article" | "prose" | "full
 interface ContainerProps extends ComponentProps<"div"> {
   size?: ContainerSize /* = "content" */;
   isBleed?: boolean;
-  as?: "div" | "main" | "section" | "article" | "header" | "footer" | "nav";
+  as?:
+    | "div"
+    | "main"
+    | "section"
+    | "article"
+    | "header"
+    | "footer"
+    | "nav"
+    | "ul"
+    | "ol"; /* ul/ol: dev parity */
 }
 interface SectionProps extends ComponentProps<"section"> {
   tone?: "page" | "alt" | "sunken" | "soft" | "brand" | "ink" /* sets data-surface */;
@@ -382,7 +393,7 @@ interface AppShellProps extends ComponentProps<"div"> {
   time?: string /* = "9:41" */;
   tabBar?: ReactNode;
   overlay?: ReactNode;
-  size?: "phone" | "phone-sm";
+  size?: "phone" | "phone-sm" | "fluid"; /* fluid = h-full w-full max-w-app-shell-w (dev parity) */
 }
 type PostFormat = "post" | "portrait" | "story" | "landscape" | "wide" | "mpu" | "leaderboard";
 const POST_FORMATS: Readonly<Record<PostFormat, { width: number; height: number; label: string }>>;
@@ -669,6 +680,8 @@ interface OutletCardProps extends ComponentProps<"article"> {
   hasImage?: boolean /* = true */;
   action?: ReactNode;
   headingLevel?: HeadingLevel;
+  href?: string; /* R31: spec §9.2 — stretched name link, lift only when linked */
+  linkAs?: LinkAs;
 }
 interface ReviewCardProps extends ComponentProps<"figure"> {
   name: string;
@@ -699,6 +712,8 @@ interface FilterBarProps {
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
+  name?: string; /* R32: spec D17 — RHF <Controller> */
+  onBlur?: () => void;
   isWrapping?: boolean;
   note?: ReactNode;
   trailing?: ReactNode;
@@ -709,6 +724,7 @@ interface LogoLockupProps extends ComponentProps<"div"> {
   size?: "sm" | "md" | "lg" | "xl";
   hasTagline?: boolean /* = true */;
   align?: "start" | "center";
+  isDecorative?: boolean /* = false; R31, forwarded to Logo */;
 }
 interface OfferSealProps extends ComponentProps<"div"> {
   value: string;
@@ -929,6 +945,8 @@ interface MenuListProps extends ComponentProps<"section"> {
   getItemHref?: (item: MenuListItem) => string;
   linkAs?: LinkAs;
   headingLevel?: HeadingLevel;
+  defaultCategory?: string; /* R33: falls back to the all option when not among categories */
+  lede?: ReactNode; /* R33: forwarded to SectionHeader */
 } // C (filter)
 interface CtaBandProps extends Omit<ComponentProps<"section">, "title"> {
   overline?: ReactNode;
@@ -947,6 +965,7 @@ interface StatBandProps extends ComponentProps<"section"> {
 interface TestimonialWallProps extends Omit<ComponentProps<"section">, "title"> {
   overline?: ReactNode;
   title: ReactNode;
+  lede?: ReactNode; /* R33 */
   reviews: ReviewCardProps[];
   variant?: "default" | "brand";
   headingLevel?: HeadingLevel;
@@ -957,6 +976,7 @@ interface FaqSectionProps extends Omit<ComponentProps<"section">, "title"> {
   lede?: ReactNode;
   items: AccordionItem[];
   isMultiple?: boolean;
+  defaultOpen?: string[]; /* R33: forwarded to Accordion; [] opens none; default = first item */
   aside?: ReactNode;
   headingLevel?: HeadingLevel;
 }
@@ -985,6 +1005,8 @@ interface DialogProps {
   footer?: ReactNode;
   variant?: "modal" | "sheet";
   size?: "sm" | "md" | "lg";
+  hasCloseButton?: boolean /* = true; R33 — Escape and the scrim still close */;
+  className?: string; /* R33: merged into the content slot */
 } // C, Radix Dialog
 interface CartLine {
   id: string;
@@ -1011,6 +1033,7 @@ interface OrderTrackerProps extends ComponentProps<"section"> {
   payment?: string;
   action?: ReactNode;
   variant?: "flush" | "card";
+  progressLabel?: string /* = "Order progress"; R33 — aria-label of the StepTracker */;
 }
 interface ReviewCarouselProps extends Omit<ComponentProps<"section">, "title"> {
   eyebrow?: ReactNode;
