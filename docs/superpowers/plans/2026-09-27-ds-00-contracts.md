@@ -11,6 +11,27 @@ reason — never silently.
 §9 inventory) and Plan 1 `docs/superpowers/plans/2026-09-27-ds-01-foundation.md` (tokens,
 utilities, `componentVariants`, Icon, Logo, test helpers, conventions).
 
+## 0.0 Dev parity — the `dev` branch is the starting point (owner directive, 2026-09-27)
+
+`dev` (and `origin/dev`) holds the August port: 74 design-system components, each with an
+implementation, a `*.test.tsx` and a `*.stories.tsx`, under
+`packages/ui/src/{atoms,molecules,organisms,templates}/<name>/`, plus Foundations MDX in
+`packages/ui/src/docs/`. The 74 design-system components of this rewrite are **ported and
+upgraded** from it; the 16 handoff components (spec §9.5) are new.
+
+- **Read, never restore.** Read the dev files with `git show dev:<path>`. Never check out, merge,
+  cherry-pick or copy them into the tree: they use the old token names and the `templates/` folder,
+  and would break the gates.
+- **The target does not change.** Spec, this contracts file and the owning plan's code win every
+  conflict. The dev code is a floor for coverage, not an authority on shape.
+- **Parity floor.** Every behaviour, edge case, a11y affordance, test case and story state on dev
+  exists in the rewrite. The exception is one the spec contradicts (spec D1, D4, D9, C1–C16: old
+  token names, fake content defaults, the `diet` prop, the 72px header). Each dropped item is named
+  with its spec reason.
+- **Evidence.** Every component task report carries a parity table: dev item → where the rewrite
+  covers it, or which spec clause drops it. The task reviewer checks the table against
+  `git show dev:…`.
+
 ## 0. Conventions every contract assumes
 
 - Every `…Props` interface **extends the native props of its root element** (`ComponentProps<"el">`,
