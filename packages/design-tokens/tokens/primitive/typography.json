@@ -150,13 +150,43 @@
       }
     },
     "canvas-hero": {
-      "$value": { "fontSize": "132px" },
-      "$description": "Marketing canvas type (1080px artboards) — never on screens."
+      "$value": {
+        "fontSize": "132px",
+        "lineHeight": 0.96,
+        "letterSpacing": "-0.035em",
+        "fontWeight": "{font-weight.black}"
+      },
+      "$description": "Marketing canvas type (1080px artboards) — never on screens. Set through SocialHeadline."
     },
-    "canvas-h1": { "$value": { "fontSize": "96px" } },
-    "canvas-h2": { "$value": { "fontSize": "72px" } },
-    "canvas-body": { "$value": { "fontSize": "34px" } },
-    "canvas-caption": { "$value": { "fontSize": "26px" } },
-    "canvas-overline": { "$value": { "fontSize": "24px" } }
+    "canvas-h1": {
+      "$value": {
+        "fontSize": "96px",
+        "lineHeight": 1,
+        "letterSpacing": "-0.03em",
+        "fontWeight": "{font-weight.black}"
+      }
+    },
+    "canvas-h2": {
+      "$value": {
+        "fontSize": "72px",
+        "lineHeight": 1.05,
+        "letterSpacing": "-0.025em",
+        "fontWeight": "{font-weight.black}"
+      }
+    },
+    "canvas-body": {
+      "$value": { "fontSize": "34px", "lineHeight": 1.45, "fontWeight": "{font-weight.medium}" }
+    },
+    "canvas-caption": {
+      "$value": { "fontSize": "26px", "lineHeight": 1.4, "fontWeight": "{font-weight.medium}" }
+    },
+    "canvas-overline": {
+      "$value": {
+        "fontSize": "24px",
+        "lineHeight": 1.2,
+        "letterSpacing": "0.14em",
+        "fontWeight": "{font-weight.bold}"
+      }
+    }
   }
 }

@@ -1,0 +1,17 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "social-headline-tight": {
+      "$value": "12ch",
+      "$description": "measure=\"tight\" — hero statements, 2–3 balanced lines."
+    },
+    "social-headline-default": {
+      "$value": "18ch",
+      "$description": "measure=\"default\" — the design system's default cap."
+    },
+    "social-headline-wide": {
+      "$value": "30ch",
+      "$description": "measure=\"wide\" — body and caption copy on a canvas."
+    }
+  }
+}
