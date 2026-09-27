@@ -7,17 +7,25 @@ in the same PR (and say so in [09](09-decision-log.md)).
 
 ## 1. New design-system component
 
-1. Create `packages/ui/src/<layer>/<name>/<name>.tsx` — copy the canonical shape
-   ([03 §1](03-patterns.md)). Layer per the atomic table; when torn between layers, the lower
-   one wins until composition proves otherwise.
-2. `<name>.test.tsx` beside it: render + each variant's observable behaviour + axe
-   (`expect(await axe(container)).toHaveNoViolations()`).
-3. `<name>.stories.tsx`: one story per variant, controls for the rest.
-4. Export from `packages/ui/src/index.ts` (the single public barrel).
-5. Tokens first: any new visual value goes into `packages/design-tokens/tokens/` (recipe 3)
-   BEFORE the component uses its utility class.
-6. Gate: `pnpm nx test ui && pnpm nx lint ui && pnpm nx run storybook:build`, then
-   `pnpm verify`.
+The binding contract is [`packages/ui/AUTHORING.md`](../../packages/ui/AUTHORING.md). These are its
+steps, in order.
+
+1. Read the four design-system files for the component (`.d.ts`, `.jsx`, `.card.html`,
+   `.prompt.md` in `zip-files/Pink Paprikaa Design System/components/<tier>/`), then its row in spec
+   §9 and its entry in the contracts file.
+2. Tokens first: any value the token build lacks becomes a component token in
+   `packages/design-tokens/tokens/component/<name>.json`, in its Tailwind namespace (recipe 3,
+   AUTHORING §5), BEFORE the component uses its utility class.
+3. Create `packages/ui/src/<layer>/<name>/<name>.tsx` with the canonical shape
+   ([03 §1](03-patterns.md)): `componentVariants`, native props, `className` merged. When torn
+   between layers, the lower one wins until composition proves otherwise.
+4. `<name>.test.tsx` beside it: behaviour by role and label, each variant's observable effect,
+   keyboard paths, and `await expectNoA11yViolations(container)`.
+5. `<name>.stories.tsx`: card parity (every `.card.html` row), `Playground`, `OnSurfaces` where
+   surface-aware, `play` for client components.
+6. Export from `packages/ui/src/index.ts` (the single public barrel).
+7. Gate: `pnpm nx test ui && pnpm nx lint ui && pnpm nx run storybook:build`, then
+   `pnpm nx test storybook` and `pnpm verify`.
 
 ## 2. New feature module (in an app)
 
@@ -33,11 +41,16 @@ in the same PR (and say so in [09](09-decision-log.md)).
 
 ## 3. New design token
 
-1. Add to the right tier in `packages/design-tokens/tokens/*.json` — primitive (raw value,
-   only place a hex may exist), semantic (references primitive), component (references
-   semantic). DTCG format (`$type`/`$value`).
+1. Add to the right tier in `packages/design-tokens/tokens/*.json`. Primitive holds raw values and
+   is the only place a hex may exist. Semantic references primitives. Component holds one
+   component's own values, under the Tailwind namespace of their kind (`spacing`, `text`, `color`,
+   `radius`, `shadow`); its colours reference primitive or semantic tokens. DTCG format
+   (`$type`/`$value`).
 2. `pnpm nx build design-tokens`; grep `dist/theme.css` for the emitted `--` property.
-3. Use the generated utility class (`bg-<token>`) — never the value.
+3. Use the generated utility class (`bg-<token>`) — never the value. A new spacing, text, radius or
+   shadow name also goes into its list in `packages/ui/src/lib/component-variants.ts`
+   (`component-variants.spec.ts` fails until it does). A new text/background pair goes into
+   `packages/design-tokens/contrast-pairs.json`.
 4. Gate: `pnpm verify` (consumers recompile), visual check in Storybook.
 
 ## 4. New content type (schema + data)

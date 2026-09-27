@@ -6,55 +6,95 @@ PR (trust the code, fix the doc).
 
 ## 1. Component (the base form)
 
+This is the real `Icon` atom (`packages/ui/src/atoms/icon/icon.tsx`), condensed. The `STROKE_WIDTH`
+map and the `IconComponent` type are omitted. Plan 5 replaces this excerpt with the real Button once
+Button exists, because Button shows `asChild` and slots.
+
 ```tsx
-// packages/ui/src/atoms/button/button.tsx — the reference shape
+import type { ComponentProps } from "react";
+
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 
-const button = componentVariants({
-  base: "rounded-6 inline-flex items-center justify-center font-display font-bold transition-colors",
+const icon = componentVariants({
+  base: "inline-flex shrink-0 items-center justify-center leading-none",
   variants: {
-    variant: {
-      primary: "bg-brand-primary not-disabled:hover:bg-brand-primary-hover text-text-on-brand",
-      secondary: "border-brand-primary border-2 bg-surface-card text-text-link",
-    },
     size: {
-      sm: "text-body2 h-(--button-h-sm) px-(--button-px-sm)",
-      md: "text-body1 h-(--button-h-md) px-(--button-px-md)",
-      lg: "text-subtitle1 h-(--button-h-lg) px-(--button-px-lg)",
+      xs: "size-icon-xs",
+      sm: "size-icon-sm",
+      md: "size-icon-md",
+      lg: "size-icon-lg",
+      xl: "size-icon-xl",
     },
   },
-  defaultVariants: { variant: "primary", size: "md" },
+  defaultVariants: { size: "md" },
 });
 
-export interface ButtonProps
-  extends React.ComponentPropsWithoutRef<"button">, VariantProps<typeof button> {}
+export interface IconProps
+  extends Omit<ComponentProps<"span">, "children">, VariantProps<typeof icon> {
+  icon: IconComponent;
+  /** Accessible name. Omit for a decorative icon (then it is hidden from assistive tech). */
+  label?: string;
+}
 
-export function Button({ className, variant, size, ...props }: ButtonProps) {
-  return <button className={button({ variant, size, className })} {...props} />;
+/** A Lucide-style glyph in the system's sizes, painted with `currentColor`. */
+export function Icon({ icon: Glyph, size = "md", label, className, ...props }: IconProps) {
+  return (
+    <span
+      className={icon({ size, className })}
+      role={label === undefined ? undefined : "img"}
+      aria-label={label}
+      aria-hidden={label === undefined ? true : undefined}
+      {...props}
+    >
+      <Glyph size="100%" strokeWidth={STROKE_WIDTH[size]} aria-hidden focusable="false" />
+    </span>
+  );
 }
 ```
 
-Encoded rules — all CONVENTION unless marked:
+Encoded rules. All are CONVENTION unless marked. The full contract is
+[`packages/ui/AUTHORING.md`](../../packages/ui/AUTHORING.md).
 
-- `componentVariants()` owns every class decision; no conditional string concatenation in JSX.
-  **Never import `tv` from `tailwind-variants` directly** (LAW-in-practice): the bare instance
-  merges against stock Tailwind scales and silently deletes token classes — `text-h1` is read as a
-  colour and disappears next to `text-text-muted`. `packages/ui/src/lib/component-variants.ts`
-  is the configured instance, and its spec asserts the scale lists against the generated tokens.
-- **Only token classes exist.** `packages/design-tokens` clears the stock Tailwind scales it
-  replaces, so `rounded-lg`, `text-sm`, `shadow-md`, `bg-red-500` and `font-sans` compile to
-  nothing. The full contract is `packages/ui/AUTHORING.md` §3.
-- Extend native element props; spread last; `className` merges through `componentVariants()`.
-- `ref` is a plain prop (React 19) — **no `forwardRef`** (R-03: the reference codebase's
+- **`componentVariants()` owns every class decision.** No conditional string concatenation in JSX.
+  **Never import the bare `tv`** from `tailwind-variants` (LAW-in-practice). The bare instance merges
+  against Tailwind's stock scales and silently deletes token classes: `text-h1` is read as a colour
+  and disappears next to `text-text-muted`. `packages/ui/src/lib/component-variants.ts` is the
+  configured instance. Its spec asserts every scale list against the token build. Multi-part
+  components use `componentVariants()` **slots**.
+- **Only token-backed named utilities** (LAW). Three rules enforce this:
+  `tailwindcss/no-arbitrary-value` bans `h-[13px]`, `tailwindcss/no-custom-classname` bans a class
+  the stylesheet does not define, and `pink-paprikaa/no-arbitrary-shorthand` bans the `(--x)`
+  shorthand (`h-(--button-h-sm)`) and `[prop:value]`. A value the system lacks becomes a component
+  token, placed in its Tailwind namespace (`spacing.icon-md` → `size-icon-md`). Motion and stacking
+  use the stylesheet's named utilities (`duration-fast`, `z-header`).
+- **Surfaces come from `data-surface`, never from an `on` prop.** A component that paints a field
+  sets `data-surface` itself. Text colour follows the surface.
+- Extend the native element's props, spread them last, and merge `className` through the variant
+  function (`icon({ size, className })`).
+- **Optional props are `?: T | undefined`** (ruling R13), because `exactOptionalPropertyTypes` is on
+  and compositions forward values that may be `undefined`. `Icon` predates the ruling. New code
+  follows it.
+- **`asChild` uses Radix Slot** (`import { Slot } from "radix-ui"`, rendered as `<Slot.Root>`), on
+  the components spec §9 marks "Slot". Classes go on the component, never on the slotted child:
+  Slot joins class names without tailwind-merge.
+- **Lists of links take `linkAs`** (default `"a"`), so an app can pass `next/link`. The system never
+  imports a router.
+- **Field wiring is a render prop**: `children: (control) => ReactNode` receives the id, the
+  `aria-describedby`, `aria-invalid` and `required`. It is RSC-safe and needs no context.
+- **Native elements first**: `<select>`, `<input type="range|date|checkbox|radio">`,
+  `<details name>`. Use Radix only where the platform has no accessible primitive (Dialog, Tabs,
+  Tooltip, Toast, ToggleGroup).
+- **Server-first**: `"use client"` goes only in a file that owns state, effects or browser APIs, as
+  a small client leaf beside a static component (§3).
+- `ref` is a plain prop (React 19), so there is **no `forwardRef`** (R-03: the reference codebase's
   `forwardRef` wrappers are obsolete boilerplate on this React version).
-- **Named exports, function declarations. No default exports** (R-02) — except Next.js
-  framework contracts (`page.tsx`, `layout.tsx`, config files).
-- No boolean render forks — `{isX ? <A/> : <B/>}` spanning whole render paths means two
+- **Named exports and function declarations. No default exports** (R-02), except Next.js framework
+  contracts (`page.tsx`, `layout.tsx`, config files).
+- No boolean render forks. When `{isX ? <A/> : <B/>}` spans whole render paths, that is two
   components or a variant.
-- Behavioural complexity (dialog, menu, tabs, focus, keyboard) → Radix primitives, never
-  hand-rolled (LAW-in-practice: a11y gates will fail you anyway).
-- Multi-part components use `componentVariants()` **slots** (the reason tailwind-variants was
-  chosen over CVA).
+- **Tests that read files** join paths with `join(import.meta.dirname, …)`, never
+  `new URL(…, import.meta.url)` (ruling R15). Vite rewrites the `URL` form into an asset URL under
+  jsdom.
 
 ## 2. Component file set
 
