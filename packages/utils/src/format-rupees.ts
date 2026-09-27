@@ -13,9 +13,15 @@ function assertFinite(value: number, caller: string): void {
   }
 }
 
+/** Half away from zero (`Math.round` alone takes −499.5 up to −499), and never −0. */
+function roundHalfAwayFromZero(value: number): number {
+  const rounded = Math.sign(value) * Math.round(Math.abs(value));
+  return rounded === 0 ? 0 : rounded;
+}
+
 export function formatRupees(amount: number): string {
   assertFinite(amount, "formatRupees");
-  const rounded = Math.round(amount);
+  const rounded = roundHalfAwayFromZero(amount);
   const sign = rounded < 0 ? MINUS_SIGN : "";
   return `${sign}₹${INDIAN_INTEGER.format(Math.abs(rounded))}`;
 }
@@ -31,5 +37,5 @@ export function formatRupeeRange(from: number, to: number): string {
 
 export function formatCount(value: number): string {
   assertFinite(value, "formatCount");
-  return INDIAN_INTEGER.format(Math.round(value));
+  return INDIAN_INTEGER.format(roundHalfAwayFromZero(value));
 }

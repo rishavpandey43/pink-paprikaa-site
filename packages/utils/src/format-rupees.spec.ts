@@ -24,6 +24,13 @@ describe("formatRupees", () => {
     expect(formatRupees(-0.4)).toBe("₹0");
   });
 
+  it.each([
+    [-499.5, "−₹500"],
+    [49.5, "₹50"],
+  ])("rounds the half in %d away from zero, to %s", (amount, expected) => {
+    expect(formatRupees(amount)).toBe(expected);
+  });
+
   it.each([Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY])(
     "rejects the non-finite amount %d instead of printing it",
     (amount) => {
@@ -46,5 +53,10 @@ describe("formatCount", () => {
   it("groups counts the Indian way", () => {
     expect(formatCount(1_234_567)).toBe("12,34,567");
     expect(formatCount(2500)).toBe("2,500");
+  });
+
+  it("rounds halves away from zero and never prints a negative zero", () => {
+    expect(formatCount(-2.5)).toBe("-3");
+    expect(formatCount(-0.4)).toBe("0");
   });
 });
