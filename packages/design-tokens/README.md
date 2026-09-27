@@ -84,6 +84,11 @@ base value, so a white card inside a pink panel inside an ink section shows dark
 `theme.spec.ts` enforces that — a new override on `brand`, `ink` or `soft` fails the build until
 `surface/light.json` restores it.
 
+Surfaces nest the other way too (a soft card inside a pink panel), and a custom property a block
+leaves unset inherits the outer surface's value. So `sd.config.mjs` emits every surface as the
+light block with that surface's own overrides applied: each block declares every overridden
+token, and `theme.spec.ts` ("declares, on every surface…") enforces it.
+
 ## Contrast policy
 
 `contrast-pairs.json` lists every text/background pair the components paint, in groups: a surface

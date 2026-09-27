@@ -210,7 +210,9 @@ scale becomes a token.
 - **Surface overrides:** a token that changes on a surface is overridden in
   `tokens/surface/{brand,ink,soft}.json`. It must also be restored in `tokens/surface/light.json`
   to its exact base value, so a white card inside a pink field shows dark text again (LAW,
-  `theme.spec.ts`, "restores, on a light island…").
+  `theme.spec.ts`, "restores, on a light island…"). The build then emits every other surface as
+  the light block plus its own overrides, so a soft card nested in a brand field gets base body
+  text and focus, not brand's (`theme.spec.ts`, "declares, on every surface…").
 - **Pitfall: an aliased component colour does not follow surfaces.** A component token written as a
   semantic alias (`"$value": "{color.text.link}"`) compiles to
   `--color-<name>: var(--color-text-link)` in `theme.css`, which Tailwind emits on `:root`. A custom

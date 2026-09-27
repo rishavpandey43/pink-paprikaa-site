@@ -89,11 +89,21 @@ StyleDictionary.registerFormat({
 
 StyleDictionary.registerFormat({
   name: "pp/surfaces",
+  // Surfaces nest (a soft Card inside a brand field), and a custom property a block leaves unset
+  // inherits the outer surface's value. So every block is the light (base) block with its own
+  // overrides applied: a token added to any surface is restored everywhere via light.json, whose
+  // completeness theme.spec.ts enforces.
   format: ({ dictionary }) => {
+    const tokensOf = (surface) => dictionary.allTokens.filter((t) => surfaceOf(t) === surface);
+    const base = tokensOf("light");
     const blocks = Object.entries(SURFACE_SELECTORS).map(([surface, selector]) => {
-      const lines = dictionary.allTokens
-        .filter((t) => surfaceOf(t) === surface)
-        .flatMap(declarations);
+      const key = (t) => cssName(localPath(t));
+      const own = new Map(tokensOf(surface).map((t) => [key(t), t]));
+      const baseKeys = new Set(base.map(key));
+      const lines = [
+        ...base.map((t) => own.get(key(t)) ?? t),
+        ...[...own.values()].filter((t) => !baseKeys.has(key(t))),
+      ].flatMap(declarations);
       return `${selector} {\n${indent([...lines, "color: var(--color-text-body);"])}\n}`;
     });
     return `${HEADER}${blocks.join("\n\n")}\n`;

@@ -78,6 +78,34 @@ describe("surfaces.css", () => {
   it("paints inherited text in each surface's body colour", () => {
     expect(surfaces.match(/color: var\(--color-text-body\);/g)).toHaveLength(4);
   });
+
+  // Surfaces nest (a soft Card inside a brand PatternField). A custom property a surface leaves
+  // unset inherits the OUTER surface's value, so every block must declare every token any surface
+  // overrides, falling back to the light (base) value where it has no override of its own.
+  it("declares, on every surface, every token any surface overrides — base value by default", () => {
+    const blocks = new Map(
+      [...surfaces.matchAll(/\[data-surface="(\w+)"\][^{]*\{([^}]*)\}/g)].map(([, name, body]) => [
+        name,
+        new Map(
+          [...(body ?? "").matchAll(/(--[\w-]+): ([^;]+);/g)].map(([, prop, value]) => [
+            prop,
+            value,
+          ])
+        ),
+      ])
+    );
+    const every = new Set([...blocks.values()].flatMap((block) => [...block.keys()]));
+    for (const [surface, block] of blocks) {
+      const missing = [...every].filter((prop) => !block.has(prop));
+      expect(missing, `${surface ?? ""} surface leaves unset`).toEqual([]);
+    }
+    const light = blocks.get("light");
+    expect(blocks.get("soft")?.get("--color-text-body")).toBe(light?.get("--color-text-body"));
+    expect(blocks.get("soft")?.get("--color-focus")).toBe(light?.get("--color-focus"));
+    expect(blocks.get("ink")?.get("--color-button-primary-bg")).toBe(
+      light?.get("--color-button-primary-bg")
+    );
+  });
 });
 
 describe("tokens.json", () => {

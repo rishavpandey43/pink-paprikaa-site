@@ -151,3 +151,37 @@ export const LightIsland: Story = {
     );
   },
 };
+
+/** A non-light surface nested in another resolves to the base values plus its own overrides. */
+export const SoftInsideBrand: Story = {
+  name: "soft card inside a brand field",
+  render: () => (
+    <div className="grid gap-3">
+      <div data-surface="brand" className="rounded-xl bg-surface-brand p-6">
+        <Card variant="feature" className="w-60">
+          <p data-testid="nested-copy" className="m-0 font-body text-caption">
+            8am – 11:30pm
+          </p>
+          <span data-testid="nested-focus" className="text-focus">
+            focus
+          </span>
+        </Card>
+      </div>
+      <div data-surface="light" className="p-6">
+        <p data-testid="base-copy" className="m-0 font-body text-caption">
+          8am – 11:30pm
+        </p>
+        <span data-testid="base-focus" className="text-focus">
+          focus
+        </span>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const color = (id: string) => getComputedStyle(canvas.getByTestId(id)).color;
+    await expect(color("nested-copy")).toBe(color("base-copy"));
+    await expect(color("nested-focus")).toBe(color("base-focus"));
+    await expect(color("nested-copy")).not.toBe("rgb(255, 255, 255)");
+  },
+};
