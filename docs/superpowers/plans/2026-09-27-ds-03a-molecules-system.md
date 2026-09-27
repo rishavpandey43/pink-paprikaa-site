@@ -91,6 +91,7 @@ Recorded against `2026-09-27-ds-00-contracts.md` §5. Every one is additive or a
 | Breadcrumb      | `Breadcrumb` (overridable via `aria-label`)                                      | nav name                                                           |
 | Pagination      | `Pagination` (`label`), `Previous page`, `Next page`, `Page N`                   | nav, arrow and page link names                                     |
 | PriceSummary    | `Total` (`totalLabel`)                                                           | total term                                                         |
+| StepTracker     | `Done` / `In progress` / `Not started yet`                                       | visually hidden state text per step (dev parity)                   |
 
 **Open questions for the owner (defaults applied, nothing blocks):**
 
@@ -264,7 +265,17 @@ rtk proxy grep -n -E "viewports|mobile1|defaultViewport" apps/storybook/.storybo
 
 Expected: `storybook/test` resolves (root devDependency) and earlier stories already import it; note the id of the 360px viewport (Task 12's `Long` story uses `mobile1`).
 
-- [ ] **Step 7: Record and commit the reconciliation**
+- [ ] **Step 7: Dev parity tables present on every ported-component task**
+
+Contracts §0.0: every molecule here is ported from `dev`. Run:
+
+```bash
+rtk proxy grep -n -E "^### Task|^\*\*Dev (reference|parity)" docs/superpowers/plans/2026-09-27-ds-03a-molecules-system.md
+```
+
+Expected: Tasks 2–19 each carry a `**Dev reference:**` line and a `**Dev parity:**` table (Task 1 carries the `FieldMessage` table). A missing one means the task was edited after the dev-parity audit — restore it from `.superpowers/sdd/dev-parity/03a-audit.md` before executing. Rows ruled `DELTA` wait on the controller's contract ruling: implement them only if the contracts file has gained the prop.
+
+- [ ] **Step 8: Record and commit the reconciliation**
 
 Append a `**Reconciliation notes:**` list under this task (one line per patch made, or "none"). If this file changed, commit it:
 
@@ -284,6 +295,21 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/lib/use-controllable-state.ts`, `packages/ui/src/lib/use-controllable-state.test.tsx`
 - Create: `packages/ui/src/lib/assign-ref.ts`, `packages/ui/src/lib/assign-ref.spec.ts`
 - Create: `packages/ui/src/lib/field-message.tsx`, `packages/ui/src/lib/field-message.test.tsx`
+
+**Dev reference:** `FieldMessage` lives in `git show dev:packages/ui/src/molecules/field/field.{tsx,test.tsx}`; `useControllableState` and `assignRef` have no dev counterpart (dev's molecules each kept their own `useState`).
+
+**Dev parity (FieldMessage):**
+
+| Dev item                                                                        | Ruling  | Where / why                                                                                   |
+| ------------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| error message is `role="alert"` (announced without focus)                       | ADD     | `FieldMessage` + test "announces an error message…"                                           |
+| a `message` on the `default` status still shows, neutral, no glyph, over a hint | ADD     | `FieldMessage` / `hasFieldMessage` + test "shows a message on the default status…"            |
+| renders nothing without hint or message                                         | ALREADY | test "renders nothing without a hint or a status message"                                     |
+| per-status colour + glyph; message replaces hint                                | ALREADY | `it.each` status test                                                                         |
+| `loading` status → Spinner beside the message; `disabled`/`readOnly` statuses   | DROP    | contracts §1 `FieldStatus` has four values; modes are control props (spec §8.2, Input/Select) |
+| exported `FIELD_STATUS_TONE` map                                                | DROP    | contracts §1 exports only `FieldStatus` + `FIELD_STATUS_ICON`; tone lives in the variant      |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -445,6 +471,25 @@ describe("FieldMessage", () => {
     expect(container.querySelector("svg")).toBeInTheDocument();
   });
 
+  it("announces an error message without waiting for focus; success and warning stay polite", () => {
+    const { rerender } = render(
+      <FieldMessage id="m" status="error" message="That code has expired." />
+    );
+    expect(screen.getByRole("alert")).toHaveTextContent("That code has expired.");
+    rerender(<FieldMessage id="m" status="success" message="PAPRIKAA50 applied." />);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("shows a message on the default status in the neutral tone, without a glyph, over the hint", () => {
+    const { container } = render(
+      <FieldMessage id="m" message="Two slots left at 7:30pm." hint="Hint." />
+    );
+    expect(screen.getByText("Two slots left at 7:30pm.")).toHaveClass("text-text-subtle");
+    expect(screen.queryByText("Hint.")).not.toBeInTheDocument();
+    expect(container.querySelector("svg")).not.toBeInTheDocument();
+    expect(hasFieldMessage({ message: "Two slots left at 7:30pm." })).toBe(true);
+  });
+
   it("falls back to the hint when a status has no message — never a colour without words", () => {
     render(<FieldMessage id="m" status="error" hint="You can change this later." />);
     expect(screen.getByText("You can change this later.")).toHaveClass("text-text-subtle");
@@ -557,18 +602,16 @@ function isShown(node: ReactNode): boolean {
 }
 
 /** True when `FieldMessage` renders a line — a control references its id only then. */
-export function hasFieldMessage({
-  status = "default",
-  message,
-  hint,
-}: FieldMessageContent): boolean {
-  return (status !== "default" && isShown(message)) || isShown(hint);
+export function hasFieldMessage({ message, hint }: FieldMessageContent): boolean {
+  return isShown(message) || isShown(hint);
 }
 
 /**
  * The line under a control — one system for every control (spec §3.8): a status (error, success,
- * warning) shows its glyph and its message in the status colour and replaces the hint; otherwise
- * the hint shows, muted. A status without a message keeps the hint: never a colour without words.
+ * warning) shows its glyph and its message in the status colour and replaces the hint; an error
+ * is `role="alert"`, so it is announced without waiting for focus (dev parity). Otherwise the
+ * message (or else the hint) shows, muted. A status without a message keeps the hint: never a
+ * colour without words.
  */
 export function FieldMessage({
   id,
@@ -579,16 +622,21 @@ export function FieldMessage({
 }: FieldMessageProps) {
   if (status !== "default" && isShown(message)) {
     return (
-      <p id={id} className={fieldMessage({ status, className })}>
+      <p
+        id={id}
+        role={status === "error" ? "alert" : undefined}
+        className={fieldMessage({ status, className })}
+      >
         <Icon icon={FIELD_STATUS_ICON[status]} size="xs" className="mt-px" />
         <span className="min-w-0">{message}</span>
       </p>
     );
   }
-  if (isShown(hint)) {
+  const text = isShown(message) ? message : hint;
+  if (isShown(text)) {
     return (
       <p id={id} className={fieldMessage({ className })}>
-        {hint}
+        {text}
       </p>
     );
   }
@@ -635,6 +683,28 @@ Design-system sources: `components/molecules/Field.{jsx,d.ts,card.html,prompt.md
 - Create: `packages/design-tokens/tokens/component/field-layout.json`
 - Create: `packages/ui/src/molecules/field/field.tsx`, `field.test.tsx`, `field.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/field/field.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                               | Ruling  | Where / why                                                                                                       |
+| -------------------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
+| `side` splits into two columns from 480px (`sm`) only; stacks on a 360px screen        | ADD     | `side` variant `sm:grid-cols-field-side` / `sm:pt-3.25` + side test                                               |
+| label mutes while the control is disabled (`status="disabled"` on dev)                 | ADD     | CSS, no prop: `group/form-field` + `group-has-disabled/form-field:text-text-subtle` + test + `ControlModes` story |
+| required marker is brand-coloured                                                      | ADD     | class assertion in the required test                                                                              |
+| caller `className` replaces the root gap                                               | ADD     | test "merges a caller className…"                                                                                 |
+| story states readOnly / loading / disabled / multiline notes                           | ADD     | `ControlModes` story (the modes are the control's props)                                                          |
+| error message `role="alert"`; message on `default` status shown neutral                | ADD     | Task 1 `FieldMessage`                                                                                             |
+| `status` values `loading` / `disabled` / `readOnly` (+ loading-diamond message)        | DROP    | contracts §1 `FieldStatus` has four values; modes are control props (spec §8.2)                                   |
+| label as plain text when no `htmlFor`; `AroundABareControl` story (Field around chips) | DROP    | spec §9.2 render-prop wiring always labels one control; groups carry their own legend + message (deviation 1)     |
+| `side` collapses to `stack` without a label                                            | ALREADY | `label` is required by type                                                                                       |
+| `layout` / `htmlFor` props                                                             | ALREADY | renamed `orientation` / `id` (contracts §5, deviation 9)                                                          |
+| hint; message replaces hint; per-status colour + one glyph; optional; hidden `*`       | ALREADY | tests "describes…", "replaces the hint…", `it.each` success/warning, "marks an optional…", "marks a required…"    |
+| message id the control points at                                                       | ALREADY | wired automatically by the render prop (`aria-describedby`)                                                       |
+| axe over required, error, side + optional                                              | ALREADY | axe test (rest + error)                                                                                           |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -752,6 +822,7 @@ describe("Field", () => {
     );
     expect(screen.getByRole("textbox", { name: "Mobile number" })).toBeRequired();
     expect(screen.getByText("*")).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByText("*")).toHaveClass("text-text-brand");
   });
 
   it("marks an optional control in its label", () => {
@@ -772,14 +843,37 @@ describe("Field", () => {
     expect(screen.getByRole("textbox", { name: "Outlet" })).toHaveAttribute("id", "outlet");
   });
 
-  it("puts the label in a column beside the control when orientation is side", () => {
+  it("puts the label in a column beside the control from 480px up when orientation is side", () => {
     const { container } = render(
       <Field label="Outlet" orientation="side">
         {renderInput}
       </Field>
     );
-    expect(container.firstElementChild).toHaveClass("grid-cols-field-side");
-    expect(screen.getByText("Outlet").closest("label")).toHaveClass("pt-3.25");
+    // Below `sm` it stacks: a 160px label column leaves a 360px screen's control too narrow.
+    expect(container.firstElementChild).toHaveClass("sm:grid-cols-field-side");
+    expect(container.firstElementChild).not.toHaveClass("grid-cols-field-side");
+    expect(screen.getByText("Outlet").closest("label")).toHaveClass("sm:pt-3.25");
+  });
+
+  it("mutes the label while the control it labels is disabled", () => {
+    const { container } = render(
+      <Field label="Pickup time">{(control) => <input {...control} disabled />}</Field>
+    );
+    // jsdom cannot evaluate `:has()`; the class is the contract, the story shows the effect.
+    expect(container.firstElementChild).toHaveClass("group/form-field");
+    expect(screen.getByText("Pickup time").closest("label")).toHaveClass(
+      "group-has-disabled/form-field:text-text-subtle"
+    );
+  });
+
+  it("merges a caller className over its own gap", () => {
+    const { container } = render(
+      <Field label="Outlet" className="gap-6">
+        {renderInput}
+      </Field>
+    );
+    expect(container.firstElementChild).toHaveClass("gap-6");
+    expect(container.firstElementChild).not.toHaveClass("gap-1.5");
   });
 
   it("keeps its wiring when a react-hook-form register() result is spread after it", async () => {
@@ -839,8 +933,11 @@ import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
 
 const field = componentVariants({
   slots: {
-    root: "grid min-w-0",
-    label: "flex items-baseline gap-1.5 text-body-sm font-medium text-text-body",
+    // `group/form-field` + `group-has-disabled/form-field:` mute the label while the control is
+    // disabled (dev parity) — CSS, no prop. Named apart from Plan 2b's `group/field` (the box).
+    root: "group/form-field grid min-w-0",
+    label:
+      "flex items-baseline gap-1.5 text-body-sm font-medium text-text-body group-has-disabled/form-field:text-text-subtle",
     required: "text-text-brand",
     optional: "font-normal text-caption text-text-subtle",
     control: "grid min-w-0 gap-1.5",
@@ -848,7 +945,11 @@ const field = componentVariants({
   variants: {
     orientation: {
       stack: { root: "gap-1.5" },
-      side: { root: "grid-cols-field-side items-start gap-4", label: "pt-3.25" },
+      // Two columns from `sm` (480px) up only; below it the field stacks (dev parity).
+      side: {
+        root: "sm:grid-cols-field-side gap-1.5 sm:items-start sm:gap-4",
+        label: "sm:pt-3.25",
+      },
     },
   },
   defaultVariants: { orientation: "stack" },
@@ -872,7 +973,7 @@ export interface FieldProps extends Omit<ComponentProps<"div">, "children" | "id
   isRequired?: boolean | undefined;
   /** Mark the optional fields rather than starring the required ones. */
   isOptional?: boolean | undefined;
-  /** `stack` puts the label above; `side` gives it a 160px column. */
+  /** `stack` puts the label above; `side` gives it a 160px column from 480px up (stacks below). */
   orientation?: "stack" | "side" | undefined;
   /** The control's id (default: generated). The wrapper itself takes no id. */
   id?: string | undefined;
@@ -936,7 +1037,7 @@ export function Field({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/field 2>&1 | tail -8`
-Expected: PASS (11 tests). If the react-hook-form test fails on `aria-invalid`, Task 0 Step 3's Input row was skipped — fix Input, not the test.
+Expected: PASS (13 tests). If the react-hook-form test fails on `aria-invalid`, Task 0 Step 3's Input row was skipped — fix Input, not the test.
 
 - [ ] **Step 6: Stories**
 
@@ -1045,7 +1146,7 @@ export const Optional: Story = {
   },
 };
 
-/** Card row `layout="side"` — `orientation="side"`: a 160px label column. */
+/** Card row `layout="side"` — `orientation="side"`: a 160px label column from 480px up; it stacks below. */
 export const Side: Story = {
   args: {
     label: "Outlet",
@@ -1053,6 +1154,26 @@ export const Side: Story = {
     hint: "Pickup only for now.",
     children: (control) => <Input {...control} defaultValue="Sector 57" />,
   },
+};
+
+/** Dev parity: the control's own modes inside a Field — read-only, loading, disabled (label mutes). */
+export const ControlModes: Story = {
+  render: () => (
+    <div className="flex max-w-120 flex-col gap-6">
+      <Field label="Outlet" hint="Pickup only for now.">
+        {(control) => <Input {...control} defaultValue="Sector 57" readOnly />}
+      </Field>
+      <Field label="Promo code" hint="Checking that code.">
+        {(control) => <Input {...control} defaultValue="PAPRIKAA50" isLoading />}
+      </Field>
+      <Field label="Table size" hint="Table booking opens at 11am.">
+        {(control) => <Input {...control} disabled placeholder="Choose a table size" />}
+      </Field>
+      <Field label="Notes for the kitchen" isOptional>
+        {(control) => <Input {...control} isMultiline rows={3} placeholder="Less oil, no onion" />}
+      </Field>
+    </div>
+  ),
 };
 ```
 
@@ -1100,6 +1221,33 @@ SearchField renders inside Plan 2b's `FieldControl` — the one field box every 
 - Create: `packages/ui/src/molecules/search-field/search-field.tsx`, `search-field.test.tsx`, `search-field.stories.tsx`
 - Modify: `packages/ui/src/styles.css` (`@utility search-reset`), `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/molecules/search-field/search-field.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                    | Ruling  | Where / why                                                                                            |
+| --------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------ |
+| clear button hit area 40px (`min-h-10 min-w-10`)                            | ADD     | `clear` slot `relative before:absolute before:-inset-2` (24px glyph, 40px hit) + assertion             |
+| fixed heights per size (40 / 48)                                            | ADD     | `it.each` size test (`h-field-sm` / `h-field-md`, Plan 2b)                                             |
+| status raises the border to 2px and hangs a trailing glyph                  | ADD     | assertions in the status test (drawn by Plan 2b's `FieldControl`)                                      |
+| disabled takes no typing, grey fill, never opacity                          | ADD     | disabled test                                                                                          |
+| loading shows the pulsing diamond                                           | ADD     | assertion in the loading test                                                                          |
+| read-only hides the clear button                                            | ADD     | test "never offers to clear a read-only box"                                                           |
+| caller `className` merges                                                   | ADD     | test "merges a caller className…"                                                                      |
+| axe over a disabled `sm` box                                                | ADD     | axe test                                                                                               |
+| stories: success / error / read-only statuses; `Narrow` (w-80, long query)  | ADD     | `Statuses`, `Narrow` stories                                                                           |
+| `clearLabel` override (default "Clear Search")                              | DELTA   | not in contracts §5; fixed "Clear search" per deviation 15 — proposed contract delta, see the 3a audit |
+| default `label` "Search the menu" and dish placeholder                      | DROP    | spec D9 (no content defaults); contracts §5 makes `label` required                                     |
+| `status` `loading` / `disabled` / `readOnly`                                | DROP    | contracts §1 `FieldStatus`; `isLoading`, `disabled`, `readOnly` props cover them                       |
+| separate `message` prop beside `hint`                                       | DROP    | contracts §5 SearchField has one `hint` line that becomes the status message                           |
+| native `onChange` as the value API                                          | ALREADY | `onValueChange` (spec §8.2, D17)                                                                       |
+| clear only with a query; `onClear` called; hidden while loading             | ALREADY | tests "offers a clear button only…", "clears, reports…", "is busy…" (shows without `onClear`, dev. 10) |
+| `aria-invalid` only on error; hint replaced; describedby → the showing line | ALREADY | status and describedby tests                                                                           |
+| glass turns brand on focus                                                  | ALREADY | Plan 2b `FieldControl` (`group-focus-within/field:text-pink-500`)                                      |
+| `Default`, `Interactive`, `Sizes` stories                                   | ALREADY | `Playground`, `WithValue` (play), `Small`                                                              |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `useControllableState`, `assignRef`, `FieldMessage`, `hasFieldMessage` (Task 1); `FieldControl` (`lib/field-control.tsx`), `joinIds` (`lib/choice-control.tsx`) — both Plan 2b; `Icon`.
@@ -1144,6 +1292,14 @@ describe("SearchField", () => {
     expect(box.parentElement).toHaveAttribute("data-surface", "light");
   });
 
+  it.each([
+    ["sm", "h-field-sm"],
+    ["md", "h-field-md"],
+  ] as const)("renders the %s size at its fixed height", (size, height) => {
+    render(<SearchField label="Search the menu" size={size} />);
+    expect(screen.getByRole("searchbox").parentElement).toHaveClass(height);
+  });
+
   it("keeps and reports what is typed when uncontrolled", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
@@ -1167,7 +1323,9 @@ describe("SearchField", () => {
     render(<SearchField label="Search the menu" />);
     expect(screen.queryByRole("button", { name: "Clear search" })).not.toBeInTheDocument();
     await user.type(screen.getByRole("searchbox"), "kulfi");
-    expect(screen.getByRole("button", { name: "Clear search" })).toBeInTheDocument();
+    const clear = screen.getByRole("button", { name: "Clear search" });
+    // A 24px glyph button with a 40px hit area (dev parity; spec §5.5 floor is 24px).
+    expect(clear).toHaveClass("size-6", "before:-inset-2");
   });
 
   it("clears, reports, notifies onClear and puts focus back in the box", async () => {
@@ -1191,9 +1349,12 @@ describe("SearchField", () => {
     expect(screen.queryByRole("button", { name: "Clear search" })).not.toBeInTheDocument();
   });
 
-  it("is busy, and offers no clear button, while results load", () => {
-    render(<SearchField label="Search the menu" defaultValue="kulfi" isLoading />);
+  it("is busy, pulses the brand mark and offers no clear button while results load", () => {
+    const { container } = render(
+      <SearchField label="Search the menu" defaultValue="kulfi" isLoading />
+    );
     expect(screen.getByRole("searchbox")).toHaveAttribute("aria-busy", "true");
+    expect(container.querySelector('[class*="animate-mark-pulse"]')).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Clear search" })).not.toBeInTheDocument();
   });
 
@@ -1210,6 +1371,9 @@ describe("SearchField", () => {
     expect(box).toHaveAccessibleDescription("Nothing matches that. Try another dish.");
     expect(box).not.toHaveAttribute("aria-invalid");
     expect(container.querySelectorAll("p svg")).toHaveLength(1);
+    // The box raises its border to 2px and hangs the status glyph: glass, glyph and clear X.
+    expect(box.parentElement).toHaveClass("border-2", "border-status-warning");
+    expect(box.parentElement?.querySelectorAll("svg")).toHaveLength(3);
     rerender(
       <SearchField
         label="Search the menu"
@@ -1233,10 +1397,35 @@ describe("SearchField", () => {
     );
   });
 
-  it("never offers to clear a disabled box", () => {
-    render(<SearchField label="Search the menu" defaultValue="chai" disabled />);
-    expect(screen.getByRole("searchbox")).toBeDisabled();
+  it("takes no typing and never offers to clear a disabled box, greyed by a fill, not opacity", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <SearchField
+        label="Search the menu"
+        defaultValue="chai"
+        disabled
+        onValueChange={onValueChange}
+      />
+    );
+    const box = screen.getByRole("searchbox");
+    await user.type(box, "paneer");
+    expect(box).toBeDisabled();
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(box.parentElement?.className).not.toMatch(/opacity-/);
     expect(screen.queryByRole("button", { name: "Clear search" })).not.toBeInTheDocument();
+  });
+
+  it("never offers to clear a read-only box", () => {
+    render(<SearchField label="Search the menu" defaultValue="chai" readOnly />);
+    expect(screen.getByRole("searchbox")).toHaveAttribute("readonly");
+    expect(screen.queryByRole("button", { name: "Clear search" })).not.toBeInTheDocument();
+  });
+
+  it("merges a caller className over its own gap", () => {
+    const { container } = render(<SearchField label="Search the menu" className="gap-4" />);
+    expect(container.firstElementChild).toHaveClass("gap-4");
+    expect(container.firstElementChild).not.toHaveClass("gap-1.5");
   });
 
   it("forwards ref, name and onBlur for react-hook-form's Controller", async () => {
@@ -1263,6 +1452,7 @@ describe("SearchField", () => {
           status="warning"
           hint="Nothing matches that."
         />
+        <SearchField label="Search unavailable" size="sm" disabled />
       </>
     );
     await expectNoA11yViolations(container);
@@ -1303,8 +1493,9 @@ const searchField = componentVariants({
     /** The design system's search box is a pill with a 16px inset, not the 10px-radius field. */
     box: "rounded-pill px-4",
     input: "search-reset",
+    // 24px to see, 40px to hit (`before:-inset-2`, dev parity): the pseudo-element takes the tap.
     clear:
-      "grid size-6 shrink-0 place-items-center rounded-pill text-text-subtle transition-colors duration-fast ease-out hover:text-text-heading",
+      "relative grid size-6 shrink-0 place-items-center rounded-pill text-text-subtle transition-colors duration-fast ease-out before:absolute before:-inset-2 hover:text-text-heading",
     message: "px-4",
   },
 });
@@ -1423,7 +1614,7 @@ export function SearchField({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/search-field 2>&1 | tail -8`
-Expected: PASS (11 tests).
+Expected: PASS (14 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -1494,6 +1685,39 @@ export const Disabled: Story = { args: { disabled: true, placeholder: "Search un
 export const Small: Story = {
   args: { size: "sm", label: "Search outlets", placeholder: "Search outlets" },
 };
+
+/** Dev parity: every status carries a sentence — success, error and read-only beside the card's warning. */
+export const Statuses: Story = {
+  render: (args) => (
+    <div className="flex max-w-120 flex-col gap-5">
+      <SearchField {...args} defaultValue="kulfi" status="success" hint="Showing 6 matches." />
+      <SearchField
+        {...args}
+        defaultValue="chai"
+        status="error"
+        hint="Search is down for a moment."
+      />
+      <SearchField
+        {...args}
+        defaultValue="paneer"
+        readOnly
+        hint="Filtered by the outlet you picked."
+      />
+    </div>
+  ),
+};
+
+/** Dev parity: the narrowest supported width — the pill keeps its height and a long query scrolls inside it. */
+export const Narrow: Story = {
+  args: { defaultValue: "paneer butter masala with extra gravy", hint: "34 dishes match." },
+  decorators: [
+    (Story) => (
+      <div className="w-80">
+        <Story />
+      </div>
+    ),
+  ],
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -1537,6 +1761,29 @@ Design-system sources: `components/molecules/QuantityStepper.*`; handoff `PlanCa
 - Create: `packages/design-tokens/tokens/component/quantity-stepper.json`
 - Create: `packages/ui/src/molecules/quantity-stepper/quantity-stepper.tsx`, `quantity-stepper.test.tsx`, `quantity-stepper.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`SPACING`), `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/quantity-stepper/quantity-stepper.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                 | Ruling  | Where / why                                                                                                    |
+| ------------------------------------------------------------------------ | ------- | -------------------------------------------------------------------------------------------------------------- |
+| count announced as it changes (`aria-live="polite"`)                     | ADD     | `role="status"` `sr-only` region, filled after a button press, cleared when the spin button takes focus + test |
+| `min={0}` reaches zero (removes the line)                                | ADD     | test "reaches zero…"                                                                                           |
+| fixed size per `size`                                                    | ADD     | `it.each` size test (`size-8` / `size-10`)                                                                     |
+| end-of-range button is a real grey glyph, never opacity                  | ADD     | test "greys a button…"                                                                                         |
+| caller `className` merges                                                | ADD     | test "merges a caller className…"                                                                              |
+| `InACartRow` story                                                       | ADD     | `InACartRow` story                                                                                             |
+| `decrementLabel` / `incrementLabel` overrides (name the dish)            | DELTA   | not in contracts §5; fixed names per deviation 15 — proposed contract delta, see the 3a audit                  |
+| default `label` "Quantity"                                               | DROP    | spec D9; contracts §5 makes `label` required                                                                   |
+| `max` default 20                                                         | DROP    | contracts §5 gives defaults for `min` (0) and `step` (1) only; calculators pass their own `max`                |
+| 36 / 44px buttons (dev's hit-target bump)                                | DROP    | spec D2: the design system's `QuantityStepper.jsx` sizes are 32 / 40; §5.5 floor ≥24px holds                   |
+| native `<div>` props spread on the root                                  | DROP    | contracts §5 `QuantityStepperProps` takes `className` only                                                     |
+| `onChange(value)`                                                        | ALREADY | `onValueChange` (spec §8.2)                                                                                    |
+| named group; counts up/down; controlled; stops + disables at min and max | ALREADY | tests "is a named spin button…", "steps up and down…", "reports but keeps…", "disables − at the minimum…"      |
+| `Sizes`, `AtTheEndsOfTheRange` stories                                   | ALREADY | `Sizes`, `AtMin`, `MinZero`, `AtMax`                                                                           |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -1609,6 +1856,47 @@ describe("QuantityStepper", () => {
     await user.click(screen.getByRole("button", { name: "Remove one" }));
     expect(screen.getByRole("spinbutton")).toHaveValue("1");
     expect(onValueChange.mock.calls).toEqual([[3], [2], [1]]);
+  });
+
+  it("announces the count after a button press (focus stays on the button)", async () => {
+    const user = userEvent.setup();
+    render(<QuantityStepper label="Plates" defaultValue={2} min={1} />);
+    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+    await user.click(screen.getByRole("button", { name: "Add one" }));
+    expect(screen.getByRole("status")).toHaveTextContent("3");
+    // Typing or arrowing in the spin button announces itself; the region steps aside.
+    await user.click(screen.getByRole("spinbutton"));
+    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+  });
+
+  it("reaches zero when zero removes the line item (min defaults to 0)", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<QuantityStepper label="Plates" value={1} onValueChange={onValueChange} />);
+    await user.click(screen.getByRole("button", { name: "Remove one" }));
+    expect(onValueChange).toHaveBeenCalledWith(0);
+  });
+
+  it.each([
+    ["sm", "size-8"],
+    ["md", "size-10"],
+  ] as const)("renders the %s buttons at their fixed size", (size, expected) => {
+    render(<QuantityStepper label="Plates" size={size} />);
+    expect(screen.getByRole("button", { name: "Add one" })).toHaveClass(expected);
+  });
+
+  it("greys a button at the end of the range with a real colour, never opacity", () => {
+    render(<QuantityStepper label="Plates" value={1} min={1} onValueChange={vi.fn()} />);
+    const minus = screen.getByRole("button", { name: "Remove one" });
+    expect(minus).toHaveClass("disabled:text-ink-400");
+    expect(minus.className).not.toMatch(/opacity-/);
+  });
+
+  it("merges a caller className over its own", () => {
+    render(<QuantityStepper label="Plates" className="rounded-md" />);
+    const group = screen.getByRole("group", { name: "Plates" });
+    expect(group).toHaveClass("rounded-md");
+    expect(group).not.toHaveClass("rounded-pill");
   });
 
   it("names its buttons by the step they take", async () => {
@@ -1843,6 +2131,9 @@ export function QuantityStepper({
     onChange: onValueChange,
   });
   const [draft, setDraft] = useState<string | null>(null);
+  // A button press keeps focus on the button, so the new count is announced (dev parity); the
+  // spin button speaks for itself once focused, so focusing it clears the region.
+  const [hasStepped, setHasStepped] = useState(false);
   const styles = quantityStepper({ size });
   const stepName = step === 1 ? "one" : String(step);
 
@@ -1896,6 +2187,11 @@ export function QuantityStepper({
     onBlur?.();
   }
 
+  function stepBy(delta: number): void {
+    commit(settled() + delta);
+    setHasStepped(true);
+  }
+
   return (
     <div
       role="group"
@@ -1908,7 +2204,7 @@ export function QuantityStepper({
         aria-label={`Remove ${stepName}`}
         disabled={disabled || quantity <= min}
         onClick={() => {
-          commit(settled() - step);
+          stepBy(-step);
         }}
         className={styles.button()}
       >
@@ -1933,6 +2229,9 @@ export function QuantityStepper({
           setDraft(event.currentTarget.value.replace(/\D/g, ""));
         }}
         onKeyDown={handleKeyDown}
+        onFocus={() => {
+          setHasStepped(false);
+        }}
         onBlur={handleBlur}
         className={styles.count()}
       />
@@ -1941,12 +2240,15 @@ export function QuantityStepper({
         aria-label={`Add ${stepName}`}
         disabled={disabled || (max !== undefined && quantity >= max)}
         onClick={() => {
-          commit(settled() + step);
+          stepBy(step);
         }}
         className={styles.button()}
       >
         <Icon icon={Plus} size={size} />
       </button>
+      <span role="status" className="sr-only">
+        {hasStepped ? String(quantity) : null}
+      </span>
     </div>
   );
 }
@@ -1955,7 +2257,7 @@ export function QuantityStepper({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/quantity-stepper 2>&1 | tail -8`
-Expected: PASS (18 tests, the typed-entry table included).
+Expected: PASS (24 tests, the typed-entry and size tables included).
 
 - [ ] **Step 6: Stories**
 
@@ -2011,6 +2313,22 @@ export const MinZero: Story = { args: { defaultValue: 0, min: 0 } };
 
 /** Card row "at max". */
 export const AtMax: Story = { args: { defaultValue: 5, min: 0, max: 5 } };
+
+/** Dev parity: in a cart row — the stepper holds its width while the dish name takes the rest. */
+export const InACartRow: Story = {
+  args: { label: "Paneer Butter Masala quantity" },
+  render: (args) => (
+    <div className="flex w-full max-w-120 items-center gap-4 rounded-lg bg-surface-card p-4">
+      <div className="flex min-w-0 flex-col gap-0.5">
+        <span className="font-display text-body font-bold text-text-heading">
+          Paneer Butter Masala
+        </span>
+        <span className="text-body-sm text-text-muted">Medium · ₹280</span>
+      </div>
+      <QuantityStepper {...args} className="ms-auto" />
+    </div>
+  ),
+};
 
 /** Handoff Dawat calculator: 15–2000 guests in fives — a typed 5000 settles at 2000. */
 export const TypedGuests: Story = {
@@ -2072,6 +2390,32 @@ One `<input autocomplete="one-time-code" inputmode="numeric">` sits transparentl
 - Create: `packages/design-tokens/tokens/component/otp-input.json`
 - Create: `packages/ui/src/molecules/otp-input/otp-input.tsx`, `otp-input.test.tsx`, `otp-input.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`), `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/otp-input/otp-input.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                 | Ruling  | Where / why                                                                                                          |
+| ------------------------------------------------------------------------ | ------- | -------------------------------------------------------------------------------------------------------------------- |
+| filled cell takes the 2px brand border; empty stays thin                 | ADD     | test "gives a filled cell the brand border…"                                                                         |
+| a status border outranks the filled border                               | ADD     | same test (the compound only paints brand on `default`)                                                              |
+| `hint` line under the cells ("The code lasts 10 minutes.")               | ADD     | via `message` on the default status (Task 1 `FieldMessage`) + test + `WithHint` story; no `hint` prop (contracts §5) |
+| disabled takes no typing; grey fill, never opacity                       | ADD     | disabled test                                                                                                        |
+| caller `className` merges                                                | ADD     | test "merges a caller className…"                                                                                    |
+| axe over a disabled code                                                 | ADD     | axe test                                                                                                             |
+| `Narrow` story (six cells wrap at 360px)                                 | ADD     | `Narrow` story                                                                                                       |
+| error message announced (`role="alert"`)                                 | ADD     | Task 1 `FieldMessage`                                                                                                |
+| default `label` "One-time code"                                          | DROP    | spec D9; contracts §5 makes `label` required                                                                         |
+| `status` `readOnly` / `disabled` / `loading` (+ loading story)           | DROP    | contracts §1 `FieldStatus`; contracts §5 has `disabled` only                                                         |
+| one input per digit, "Digit N of M" names, ArrowLeft/Right between cells | DROP    | deviation 3: one `one-time-code` input behind decorative cells — one labelled field, caret moves natively            |
+| native `<div>` props on the root                                         | DROP    | contracts §5 `OtpInputProps` takes `className` only                                                                  |
+| `onChange(code)`                                                         | ALREADY | `onValueChange` (spec §8.2)                                                                                          |
+| 6 / 4 cells; one digit per cell; whole code reported; uncontrolled       | ALREADY | tests "is one labelled code field…", "fills the cells…", "renders four cells…", "shows the caller's code…"           |
+| paste spills across cells; non-digits ignored; Backspace walks back      | ALREADY | paste, letters and Backspace tests (Review Focus 1)                                                                  |
+| `aria-invalid` only on error; describedby → the showing line             | ALREADY | status test                                                                                                          |
+| `Default`, `FourDigits`, `PartlyEntered`, `Statuses` stories             | ALREADY | `Playground`, `Complete`, `Partial`, `Verified` / `Expired` / `Disabled`                                             |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -2230,6 +2574,39 @@ describe("OtpInput", () => {
     expect(cells(container)).toHaveLength(4);
   });
 
+  it("gives a filled cell the brand border, and lets a status outrank it", () => {
+    const { container, rerender } = render(
+      <OtpInput label="Login code" length={4} defaultValue="4" />
+    );
+    const [first, second] = cells(container);
+    expect(first).toHaveClass("border-2", "border-border-brand");
+    expect(second).not.toHaveClass("border-border-brand");
+    // The whole code is wrong, not one cell: the status colour wins over the filled border.
+    rerender(
+      <OtpInput
+        label="Login code"
+        length={4}
+        defaultValue="4"
+        status="error"
+        message="That code has expired."
+      />
+    );
+    expect(cells(container)[0]).toHaveClass("border-status-danger");
+    expect(cells(container)[0]).not.toHaveClass("border-border-brand");
+  });
+
+  it("shows a hint as its message on the default status, describing the field politely", () => {
+    render(<OtpInput label="Login code" message="The code lasts 10 minutes." />);
+    expect(screen.getByRole("textbox")).toHaveAccessibleDescription("The code lasts 10 minutes.");
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("merges a caller className over its own gap", () => {
+    const { container } = render(<OtpInput label="Login code" className="gap-6" />);
+    expect(container.firstElementChild).toHaveClass("gap-6");
+    expect(container.firstElementChild).not.toHaveClass("gap-2");
+  });
+
   it("gives react-hook-form's Controller a name, onBlur and a focusable ref", async () => {
     const user = userEvent.setup();
     const ref = createRef<HTMLInputElement>();
@@ -2243,12 +2620,26 @@ describe("OtpInput", () => {
     expect(onBlur).toHaveBeenCalledTimes(1);
   });
 
-  it("greys every cell and the field when disabled", () => {
+  it("takes no typing and greys every cell with a fill, never opacity, when disabled", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
     const { container } = render(
-      <OtpInput label="Login code" length={4} defaultValue="48" disabled />
+      <OtpInput
+        label="Login code"
+        length={4}
+        defaultValue="48"
+        disabled
+        onValueChange={onValueChange}
+      />
     );
-    expect(screen.getByRole("textbox")).toBeDisabled();
-    for (const cell of cells(container)) expect(cell).toHaveClass("bg-ink-100");
+    const input = screen.getByRole("textbox");
+    await user.type(input, "2");
+    expect(input).toBeDisabled();
+    expect(onValueChange).not.toHaveBeenCalled();
+    for (const cell of cells(container)) {
+      expect(cell).toHaveClass("bg-ink-100");
+      expect(cell.className).not.toMatch(/opacity-/);
+    }
   });
 
   it("has no accessibility violations empty or in error", async () => {
@@ -2262,6 +2653,7 @@ describe("OtpInput", () => {
           status="error"
           message="That code has expired. Send a new one?"
         />
+        <OtpInput label="Expired code" length={4} defaultValue="48" disabled />
       </>
     );
     await expectNoA11yViolations(container);
@@ -2329,7 +2721,10 @@ export interface OtpInputProps {
   onValueChange?: ((value: string) => void) | undefined;
   onBlur?: (() => void) | undefined;
   status?: FieldStatus | undefined;
-  /** Shown under the cells while a status is set, e.g. "Verified. Signing you in." */
+  /**
+   * The line under the cells: on the default status a neutral hint ("The code lasts 10
+   * minutes."), with a status its message and glyph ("Verified. Signing you in.").
+   */
   message?: ReactNode;
   disabled?: boolean | undefined;
   name?: string | undefined;
@@ -2424,7 +2819,7 @@ export function OtpInput({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/otp-input 2>&1 | tail -8`
-Expected: PASS (13 tests).
+Expected: PASS (16 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -2494,6 +2889,21 @@ export const Expired: Story = {
 
 /** Card row "disabled". */
 export const Disabled: Story = { args: { length: 4, defaultValue: "48", disabled: true } };
+
+/** Dev parity: a neutral hint under the cells — `message` on the default status. */
+export const WithHint: Story = { args: { length: 4, message: "The code lasts 10 minutes." } };
+
+/** Dev parity: a 360px screen less its gutters (320px) — six cells wrap to a second row, never overflow. */
+export const Narrow: Story = {
+  args: { defaultValue: "4821" },
+  decorators: [
+    (Story) => (
+      <div className="w-80">
+        <Story />
+      </div>
+    ),
+  ],
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -2537,6 +2947,32 @@ Design-system sources: `components/molecules/SlotPicker.*`. Card rows: auto-fit 
 - Create: `packages/design-tokens/tokens/component/slot-picker.json`
 - Create: `packages/ui/src/molecules/slot-picker/slot-picker.tsx`, `slot-picker.test.tsx`, `slot-picker.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`), `packages/design-tokens/contrast-pairs.json`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/slot-picker/slot-picker.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                  | Ruling  | Where / why                                                                                           |
+| ------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| arrow keys move between slots (and skip sold-out)                         | ADD     | test "moves between slots with the arrow keys…" (native radio group behaviour)                        |
+| clicking a sold-out slot reports nothing; disabled is a fill, not opacity | ADD     | sold-out test                                                                                         |
+| label mutes when the group is disabled                                    | ADD     | `group/slot-picker` + legend `group-disabled/slot-picker:text-text-subtle` + disabled test            |
+| success / warning paint the slot border (dev: all three statuses)         | ADD     | `status` variant + `it.each` border test                                                              |
+| invalid only on error; error announced (`role="alert"`)                   | ADD     | test "marks the slots invalid only on the error status" + alert assertion (Task 1 `FieldMessage`)     |
+| `hint` line under the grid                                                | ADD     | via `message` on the default status (Task 1) + test + `Statuses` story; no `hint` prop (contracts §5) |
+| caller `className` merges                                                 | ADD     | test "merges a caller className…"                                                                     |
+| axe over a disabled group                                                 | ADD     | axe test                                                                                              |
+| `Statuses` and `Narrow` stories                                           | ADD     | `Statuses`, `Narrow` stories                                                                          |
+| bare-string slots (`"7:30pm"`)                                            | DROP    | spec §8.2: object lists only                                                                          |
+| Radix RadioGroup (`role="radiogroup"`, roving focus)                      | DROP    | spec D7 / §9.2: native radios in a `<fieldset>`                                                       |
+| `status` `disabled` / `readOnly` / `loading`                              | DROP    | contracts §1 `FieldStatus`; the native `disabled` prop covers disabled                                |
+| `InsideAField` story                                                      | DROP    | deviation 1: a fieldset cannot sit inside `Field` (a `<label>` cannot name a group)                   |
+| optional visible `label`                                                  | ALREADY | required `legend` + `isLegendHidden` (deviation 1)                                                    |
+| name "ASAP, 12 min"                                                       | ALREADY | named "ASAP", described "12 min"                                                                      |
+| chosen slot; reports pick; uncontrolled; group disabled; columns/auto-fit | ALREADY | tests "starts at defaultValue…", "reports the picked slot…", "disables every slot…", "lays slots…"    |
+| `Default`, `FixedColumns`, `SoldOut` stories                              | ALREADY | `Playground` (sold-out 9:00pm included), `Columns`                                                    |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -2658,16 +3094,86 @@ describe("SlotPicker", () => {
     expect(screen.getByRole("radio", { name: "ASAP" })).toBeChecked();
   });
 
-  it("strikes through and disables a sold-out slot — never hides it", () => {
-    render(<SlotPicker name="pickup" legend="Pickup time" slots={SLOTS} />);
+  it("moves between slots with the arrow keys, skipping a sold-out one", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <SlotPicker
+        name="pickup"
+        legend="Pickup time"
+        slots={SLOTS}
+        defaultValue="8:30pm"
+        onValueChange={onValueChange}
+      />
+    );
+    await user.click(screen.getByRole("radio", { name: "8:30pm" }));
+    await user.keyboard("{ArrowRight}");
+    // 9:00pm is sold out, so the native group wraps round to the first slot.
+    expect(screen.getByRole("radio", { name: "ASAP" })).toHaveFocus();
+    expect(screen.getByRole("radio", { name: "ASAP" })).toBeChecked();
+    expect(onValueChange).toHaveBeenLastCalledWith("asap");
+  });
+
+  it("strikes through and disables a sold-out slot — never hides it, never fades it", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <SlotPicker name="pickup" legend="Pickup time" slots={SLOTS} onValueChange={onValueChange} />
+    );
     const soldOut = screen.getByRole("radio", { name: "9:00pm" });
     expect(soldOut).toBeDisabled();
     expect(soldOut.closest("label")).toHaveClass("line-through");
+    expect(soldOut.closest("label")?.className).not.toMatch(/opacity-/);
+    await user.click(screen.getByText("9:00pm"));
+    expect(onValueChange).not.toHaveBeenCalled();
   });
 
-  it("disables every slot when the group is disabled", () => {
+  it("disables every slot and mutes the legend when the group is disabled", () => {
     render(<SlotPicker name="pickup" legend="Pickup time" slots={SLOTS} disabled />);
     for (const radio of screen.getAllByRole("radio")) expect(radio).toBeDisabled();
+    // jsdom cannot evaluate `:disabled` on the fieldset for styling; the class is the contract.
+    expect(screen.getByText("Pickup time")).toHaveClass(
+      "group-disabled/slot-picker:text-text-subtle"
+    );
+  });
+
+  it.each([
+    ["error", "border-status-danger"],
+    ["success", "border-status-success"],
+    ["warning", "border-status-warning"],
+  ] as const)("paints the slots with the %s border", (status, border) => {
+    render(
+      <SlotPicker
+        name="pickup"
+        legend="Pickup time"
+        slots={SLOTS}
+        status={status}
+        message="Pick a slot to continue."
+      />
+    );
+    expect(screen.getByRole("radio", { name: "7:30pm" }).closest("label")).toHaveClass(border);
+  });
+
+  it("shows a hint as its message on the default status, describing the group politely", () => {
+    render(
+      <SlotPicker
+        name="pickup"
+        legend="Pickup time"
+        slots={SLOTS}
+        message="Slots open 30 minutes ahead."
+      />
+    );
+    expect(screen.getByRole("group", { name: "Pickup time" })).toHaveAccessibleDescription(
+      "Slots open 30 minutes ahead."
+    );
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("merges a caller className over its own gap", () => {
+    render(<SlotPicker name="pickup" legend="Pickup time" slots={SLOTS} className="gap-6" />);
+    const group = screen.getByRole("group", { name: "Pickup time" });
+    expect(group).toHaveClass("gap-6");
+    expect(group).not.toHaveClass("gap-2.5");
   });
 
   it("describes the group with its error message and marks the slots invalid", () => {
@@ -2684,6 +3190,20 @@ describe("SlotPicker", () => {
       "Pick a slot to continue."
     );
     expect(screen.getByRole("radio", { name: "ASAP" })).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByRole("alert")).toHaveTextContent("Pick a slot to continue.");
+  });
+
+  it("marks the slots invalid only on the error status", () => {
+    render(
+      <SlotPicker
+        name="pickup"
+        legend="Pickup time"
+        slots={SLOTS}
+        status="warning"
+        message="That slot is nearly full."
+      />
+    );
+    expect(screen.getByRole("radio", { name: "ASAP" })).not.toHaveAttribute("aria-invalid");
   });
 
   it("lays slots in fixed columns, or auto-fits them without columns", () => {
@@ -2711,6 +3231,13 @@ describe("SlotPicker", () => {
           slots={SLOTS}
           status="error"
           message="Pick a slot to continue."
+        />
+        <SlotPicker
+          name="booking"
+          legend="Booking time"
+          slots={SLOTS}
+          disabled
+          message="Table booking opens at 11am."
         />
       </>
     );
@@ -2741,8 +3268,10 @@ import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
 
 const slotPicker = componentVariants({
   slots: {
-    root: "m-0 grid min-w-0 gap-2.5 border-0 p-0",
-    legend: "mb-2.5 p-0 text-body-sm font-medium text-text-body",
+    // `group/slot-picker` lets the legend mute while the fieldset is disabled (dev parity).
+    root: "group/slot-picker m-0 grid min-w-0 gap-2.5 border-0 p-0",
+    legend:
+      "mb-2.5 p-0 text-body-sm font-medium text-text-body group-disabled/slot-picker:text-text-subtle",
     grid: "grid gap-2.5",
     slot: "grid min-h-hit min-w-0 cursor-pointer place-items-center gap-0.5 rounded-md border border-border-default bg-surface-card px-2.5 py-2 text-center font-display text-body-sm font-bold text-ink-700 transition-colors duration-fast ease-out has-checked:border-2 has-checked:border-border-brand has-checked:bg-surface-page-alt has-checked:text-pink-700 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:bg-surface-sunken has-disabled:text-ink-400",
     input: "sr-only",
@@ -2752,8 +3281,9 @@ const slotPicker = componentVariants({
     status: {
       default: {},
       error: { slot: "border-status-danger" },
-      success: {},
-      warning: {},
+      // The design system draws only the error border; dev parity paints all three statuses.
+      success: { slot: "border-status-success" },
+      warning: { slot: "border-status-warning" },
     },
     isSoldOut: { true: { slot: "line-through" } },
     isLegendHidden: { true: { legend: "sr-only" } },
@@ -2794,7 +3324,10 @@ export interface SlotPickerProps extends Omit<
   /** Fixed column count; omit to auto-fit at a 96px minimum. */
   columns?: keyof typeof COLUMN_CLASS | undefined;
   status?: FieldStatus | undefined;
-  /** Shown under the slots while a status is set, e.g. "Pick a slot to continue." */
+  /**
+   * The line under the slots: on the default status a neutral hint ("Slots open 30 minutes
+   * ahead."), with a status its message and glyph ("Pick a slot to continue.").
+   */
   message?: ReactNode;
 }
 
@@ -2882,7 +3415,7 @@ export function SlotPicker({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/slot-picker 2>&1 | tail -8`
-Expected: PASS (11 tests).
+Expected: PASS (16 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -2951,6 +3484,39 @@ export const Columns: Story = {
     ],
   },
 };
+
+/** Dev parity: every status carries a sentence — hint, warning and success beside the card's error. */
+export const Statuses: Story = {
+  render: (args) => (
+    <div className="flex max-w-120 flex-col gap-6">
+      <SlotPicker {...args} name="pickup-hint" message="Slots open 30 minutes ahead." />
+      <SlotPicker
+        {...args}
+        name="pickup-warning"
+        status="warning"
+        message="That slot is nearly full."
+      />
+      <SlotPicker
+        {...args}
+        name="pickup-success"
+        status="success"
+        defaultValue="7:30pm"
+        message="Held for you until 7:15pm."
+      />
+    </div>
+  ),
+};
+
+/** Dev parity: the narrowest supported width — the grid reflows instead of overflowing. */
+export const Narrow: Story = {
+  decorators: [
+    (Story) => (
+      <div className="w-80">
+        <Story />
+      </div>
+    ),
+  ],
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -2998,6 +3564,25 @@ Design-system sources: `components/molecules/Alert.*`; handoff `PlanCalculator.d
 - Create: `packages/design-tokens/tokens/component/alert.json`
 - Create: `packages/ui/src/molecules/alert/alert.tsx`, `alert-dismiss.tsx`, `alert.test.tsx`, `alert.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`), `packages/design-tokens/contrast-pairs.json`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/alert/alert.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                | Ruling  | Where / why                                                                                            |
+| ----------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------ |
+| each tone fills its soft ground                                         | ADD     | fill column in the tone `it.each`                                                                      |
+| full 1px border, never a coloured left edge                             | ADD     | test "carries a full border…"                                                                          |
+| dismiss hit area ≥ 36px (dev: IconButton `sm`)                          | ADD     | `AlertDismiss` `relative before:absolute before:-inset-2` (24px glyph, 40px hit) + assertion           |
+| caller `className` merges                                               | ADD     | test "merges a caller className…"                                                                      |
+| `Narrow` story (360px, title + dismiss wrap)                            | ADD     | `Narrow` story                                                                                         |
+| `role="status"` for every tone                                          | ALREADY | `status` for all but `danger`, which is `alert` (deviation 11 — better)                                |
+| title above message; flush one-liner without title; one action; dismiss | ALREADY | tests "is a polite status…", "renders its action slot…", "offers a dismiss button only…"               |
+| glyph not overridable ("the tone is the mark")                          | DROP    | contracts §5 `AlertProps.icon` (the handoff PG hint uses its own glyph)                                |
+| warning glyph in tandoor, body text heading-coloured                    | DROP    | spec D4 / §5.3: the tone's `text-text-*` token paints glyph and text (turmeric-strong passes AA)       |
+| `Tones`, `WithAction`, `MessageOnly`, `Dismissible` stories             | ALREADY | `InfoAndSuccess`, `WarningAndDanger`, `BrandWithAction`, `Nudge` / `Neutral` (no title), `Dismissible` |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -3068,16 +3653,28 @@ describe("Alert", () => {
   });
 
   it.each([
-    ["info", "lucide-info", "text-text-info"],
-    ["success", "lucide-check", "text-text-success"],
-    ["warning", "lucide-triangle-alert", "text-text-warning"],
-    ["danger", "lucide-circle-alert", "text-text-danger"],
-    ["brand", "lucide-megaphone", "text-pink-800"],
-    ["neutral", "lucide-info", "text-text-heading"],
-  ] as const)("paints the %s tone with its glyph", (tone, glyph, colour) => {
+    ["info", "lucide-info", "text-text-info", "bg-status-info-soft"],
+    ["success", "lucide-check", "text-text-success", "bg-status-success-soft"],
+    ["warning", "lucide-triangle-alert", "text-text-warning", "bg-status-warning-soft"],
+    ["danger", "lucide-circle-alert", "text-text-danger", "bg-status-danger-soft"],
+    ["brand", "lucide-megaphone", "text-pink-800", "bg-surface-brand-soft"],
+    ["neutral", "lucide-info", "text-text-heading", "bg-surface-sunken"],
+  ] as const)("paints the %s tone with its glyph and soft ground", (tone, glyph, colour, fill) => {
     const { container } = render(<Alert tone={tone}>Message.</Alert>);
-    expect(container.firstElementChild).toHaveClass(colour);
+    expect(container.firstElementChild).toHaveClass(colour, fill);
     expect(container.querySelector(`svg.${glyph}`)).toBeInTheDocument();
+  });
+
+  it("carries a full border rather than a coloured left edge", () => {
+    const { container } = render(<Alert tone="danger">Try another card or pay by UPI.</Alert>);
+    expect(container.firstElementChild).toHaveClass("border", "border-status-danger");
+    expect(container.firstElementChild).not.toHaveClass("border-l-4");
+  });
+
+  it("merges a caller className over its own radius", () => {
+    const { container } = render(<Alert className="rounded-lg">We now take UPI.</Alert>);
+    expect(container.firstElementChild).toHaveClass("rounded-lg");
+    expect(container.firstElementChild).not.toHaveClass("rounded-md");
   });
 
   it("takes a glyph of its own", () => {
@@ -3108,7 +3705,10 @@ describe("Alert", () => {
     const { rerender } = render(<Alert>We now take UPI at every counter.</Alert>);
     expect(screen.queryByRole("button", { name: "Dismiss" })).not.toBeInTheDocument();
     rerender(<Alert onDismiss={onDismiss}>We now take UPI at every counter.</Alert>);
-    await user.click(screen.getByRole("button", { name: "Dismiss" }));
+    const dismiss = screen.getByRole("button", { name: "Dismiss" });
+    // A 24px glyph button with a 40px hit area (dev parity; spec §5.5 floor is 24px).
+    expect(dismiss).toHaveClass("size-6", "before:-inset-2");
+    await user.click(dismiss);
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
@@ -3162,7 +3762,8 @@ export function AlertDismiss({ onDismiss }: AlertDismissProps) {
       type="button"
       aria-label="Dismiss"
       onClick={onDismiss}
-      className="grid size-6 shrink-0 place-items-center rounded-pill text-current transition-opacity duration-fast ease-out hover:opacity-70"
+      // 24px to see, 40px to hit (`before:-inset-2`, dev parity): the pseudo-element takes the tap.
+      className="relative grid size-6 shrink-0 place-items-center rounded-pill text-current transition-opacity duration-fast ease-out before:absolute before:-inset-2 hover:opacity-70"
     >
       <Icon icon={X} size="sm" />
     </button>
@@ -3271,7 +3872,7 @@ export function Alert({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/alert 2>&1 | tail -8`
-Expected: PASS (12 tests).
+Expected: PASS (14 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -3382,6 +3983,23 @@ export const Neutral: Story = {
   },
 };
 
+/** Dev parity: 360px, the floor — title, message and dismiss wrap; the glyphs hold their size. */
+export const Narrow: Story = {
+  args: {
+    tone: "danger",
+    title: "That card didn't go through",
+    children: "Try another card or pay by UPI at the counter.",
+    onDismiss: fn(),
+  },
+  decorators: [
+    (Story) => (
+      <div className="max-w-90">
+        <Story />
+      </div>
+    ),
+  ],
+};
+
 /** Handoff Dawat calculator warning on the ink quote panel — a light island on every surface. */
 export const OnSurfaces: Story = {
   args: { title: undefined, children: "Full setup and service starts at 50 guests." },
@@ -3437,6 +4055,25 @@ Design-system sources: `components/molecules/Toast.*`; UI kits `ui_kits/website/
 - Create: `packages/ui/src/lib/notification.ts` (shared with Snackbar, Task 9)
 - Create: `packages/ui/src/molecules/toast/toast.tsx`, `toast.test.tsx`, `toast.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`), `packages/design-tokens/contrast-pairs.json`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/toast/toast.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                           | Ruling  | Where / why                                                                                                           |
+| ------------------------------------------------------------------ | ------- | --------------------------------------------------------------------------------------------------------------------- |
+| confirmation announced politely, failure assertively               | ADD     | Radix `type={tone === "danger" ? "foreground" : "background"}` + announcer `it.each` (Radix default: all assertive)   |
+| action has a 44px hit target and press feedback                    | ADD     | `action` slot `-my-3 inline-flex min-h-hit … active:press-scale` + assertion                                          |
+| caller `className` merges                                          | ADD     | test "merges a caller className…"                                                                                     |
+| danger toast with an action (`Retry`); `CustomGlyph` story         | ADD     | `Status` story action, `CustomGlyph` story                                                                            |
+| every toast rises in (`animate-pp-rise`), pop only swaps the curve | DROP    | spec D2: the design system's `Toast.jsx` animates only `pop` (`pp-toast-pop`); §8.1 reserves the entrance for `isPop` |
+| `action` string + `onAction`                                       | ALREADY | contracts §5 `action: { label, altText, onClick }` (Radix `altText` for screen readers)                               |
+| four tone fills; brand white on pink; one glyph, overridable; pill | ALREADY | tone `it.each`, "takes a glyph of its own"                                                                            |
+| no action without a handler                                        | ALREADY | the action object carries its handler by type                                                                         |
+| `InContext` story (bottom-centre above the tab bar, 360px)         | ALREADY | `Contained` story (`isContained`, deviation 4a) + the page-edge viewport test                                         |
+| `Default`, `Tones`, `WithAction`, `Pop` stories                    | ALREADY | `Playground`, `Tones`, `Status`, `Pop`, `AddToOrder`                                                                  |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -3601,6 +4238,37 @@ describe("Toast", () => {
     ).toBeInTheDocument();
   });
 
+  it.each([
+    ["brand", "polite"],
+    ["ink", "polite"],
+    ["success", "polite"],
+    ["danger", "assertive"],
+  ] as const)(
+    "announces a %s toast %sly — a failure interrupts, a confirmation waits",
+    (tone, politeness) => {
+      render(
+        <ToastProvider>
+          <Toast tone={tone}>Order update.</Toast>
+        </ToastProvider>
+      );
+      // Radix portals its announcer into the body: `type` "background" → polite, "foreground" → assertive.
+      expect(
+        document.body.querySelector(`[role="status"][aria-live="${politeness}"]`)
+      ).toBeInTheDocument();
+    }
+  );
+
+  it("merges a caller className over the pill", () => {
+    render(
+      <ToastProvider>
+        <Toast className="rounded-lg">Added to your order.</Toast>
+      </ToastProvider>
+    );
+    const item = within(notifications()).getByRole("listitem");
+    expect(item).toHaveClass("rounded-lg");
+    expect(item).not.toHaveClass("rounded-pill");
+  });
+
   it("runs its action, then closes and reports it", async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
@@ -3612,7 +4280,10 @@ describe("Toast", () => {
         </Toast>
       </ToastProvider>
     );
-    await user.click(screen.getByRole("button", { name: "View Cart" }));
+    const viewCart = screen.getByRole("button", { name: "View Cart" });
+    // A 44px hit height inside the pill (dev parity), its margin pulled back into the padding.
+    expect(viewCart).toHaveClass("min-h-hit", "-my-3");
+    await user.click(viewCart);
     expect(onClick).toHaveBeenCalledTimes(1);
     expect(onOpenChange).toHaveBeenCalledWith(false);
     expect(within(notifications()).queryByRole("listitem")).not.toBeInTheDocument();
@@ -3784,8 +4455,9 @@ const toast = componentVariants({
   slots: {
     root: "pointer-events-auto inline-flex max-w-full items-center gap-3 rounded-pill px-4 py-3 text-text-body shadow-3",
     message: "text-toast min-w-0 font-body font-medium text-pretty",
+    // `min-h-hit` + `-my-3`: a 44px target that does not grow the pill (dev parity).
     action:
-      "text-toast-action shrink-0 rounded-xs px-0.5 font-display font-bold text-current uppercase",
+      "text-toast-action -my-3 inline-flex min-h-hit shrink-0 items-center rounded-xs px-0.5 font-display font-bold text-current uppercase active:press-scale",
   },
   variants: {
     tone: {
@@ -3857,6 +4529,8 @@ export function Toast({
     <RadixToast.Root
       open={isOpen}
       onOpenChange={setIsOpen}
+      // Severity picks the politeness (dev parity): a failure interrupts, a confirmation waits.
+      type={tone === "danger" ? "foreground" : "background"}
       {...(duration === undefined ? {} : { duration })}
       data-surface={NOTIFICATION_SURFACE[tone]}
       className={styles.root({ className })}
@@ -3880,7 +4554,7 @@ export function Toast({
 - [ ] **Step 6: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/toast 2>&1 | tail -8`
-Expected: PASS (13 tests, the hydration test included). If the hydration test logs a mismatch, the cause is render-time state that differs between server and client — never silence `console.error`; find the value (e.g. a `typeof window` branch) and move it into an effect.
+Expected: PASS (15 tests, the hydration test included). If the hydration test logs a mismatch, the cause is render-time state that differs between server and client — never silence `console.error`; find the value (e.g. a `typeof window` branch) and move it into an effect.
 
 - [ ] **Step 7: Stories**
 
@@ -3889,6 +4563,7 @@ Expected: PASS (13 tests, the hydration test included). If the hydration test lo
 ```tsx
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { Gift } from "lucide-react";
 import { useState } from "react";
 import { expect, fn } from "storybook/test";
 
@@ -3943,7 +4618,11 @@ export const Status: Story = {
       <Toast tone="success" duration={Infinity}>
         Order confirmed.
       </Toast>
-      <Toast tone="danger" duration={Infinity}>
+      <Toast
+        tone="danger"
+        duration={Infinity}
+        action={{ label: "Retry", altText: "Try the payment again", onClick: fn() }}
+      >
         That card didn&apos;t go through.
       </Toast>
     </ToastProvider>
@@ -3952,6 +4631,11 @@ export const Status: Story = {
 
 /** Card row "pop" — add-to-cart only. */
 export const Pop: Story = { args: { isPop: true, children: "Chilli Paneer added." } };
+
+/** Dev parity: `icon` overrides the tone's glyph. */
+export const CustomGlyph: Story = {
+  args: { icon: Gift, action: undefined, children: "You earned a free masala chai." },
+};
 
 function AddToOrderDemo() {
   const [added, setAdded] = useState(0);
@@ -4046,6 +4730,25 @@ A Snackbar owns its own Radix provider and viewport, mounted **only while open**
 - Create: `packages/design-tokens/tokens/component/snackbar.json`
 - Create: `packages/ui/src/molecules/snackbar/snackbar.tsx`, `snackbar.test.tsx`, `snackbar.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`SPACING`, `TEXT`), `packages/design-tokens/contrast-pairs.json`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/snackbar/snackbar.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                             | Ruling  | Where / why                                                                                 |
+| -------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------- |
+| confirmation announced politely, failure assertively                 | ADD     | Radix `type` by tone + announcer `it.each` (as Toast)                                       |
+| action 44px hit target + press feedback; dismiss hit ≥ 36px          | ADD     | `action` `-my-3 min-h-hit … active:press-scale`; `dismiss` `before:-inset-2` (40px) + test  |
+| caller `className` merges                                            | ADD     | test "merges a caller className over the bar" (on the bar, not the anchor)                  |
+| stories: brand tone, `top-center` / `bottom-right` anchors, `Narrow` | ADD     | `Brand`, `TopCenter`, `BottomRight`, `Narrow` stories                                       |
+| dismiss only when `onClose` is given                                 | DROP    | deviation 6: the design system defines Snackbar as a bar "with a text action and a dismiss" |
+| `duration={0}` keeps the bar up                                      | ALREADY | `duration={Infinity}` (Radix) — test "stays until dismissed…"                               |
+| `isOpen` / `onClose` / `onAction`                                    | ALREADY | `open` / `onOpenChange` (spec §8.2), `action: { label, altText, onClick }` (contracts §5)   |
+| renders nothing closed; four tone fills; brand white; five positions | ALREADY | tests "leaves nothing behind…", tone and position `it.each`                                 |
+| auto-hide after 3.2s; dismiss/action close and report                | ALREADY | tests "hides itself after 3.2 seconds…", "closes from its dismiss…", "runs its action…"     |
+| `Default`, `Tones` (danger + Retry), `UndoAndDismiss` stories        | ALREADY | `Playground`, `Success`, `DangerWithRetry`, `UndoAndDismiss`, `LiveCopy`, `TopRight`        |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -4176,6 +4879,36 @@ describe("Snackbar", () => {
     expect(within(bar).getByRole("button", { name: "Undo" })).toHaveClass(actionColour);
   });
 
+  it.each([
+    ["ink", "polite"],
+    ["success", "polite"],
+    ["danger", "assertive"],
+  ] as const)(
+    "announces a %s bar %sly — a failure interrupts, a confirmation waits",
+    (tone, politeness) => {
+      render(<Snackbar tone={tone}>Code copied.</Snackbar>);
+      expect(
+        document.body.querySelector(`[role="status"][aria-live="${politeness}"]`)
+      ).toBeInTheDocument();
+    }
+  );
+
+  it("gives the action a 44px hit height and the dismiss a 40px one, without growing the bar", () => {
+    render(<Snackbar action={{ ...UNDO, onClick: vi.fn() }}>Chilli Paneer removed.</Snackbar>);
+    expect(screen.getByRole("button", { name: "Undo" })).toHaveClass("min-h-hit", "-my-3");
+    expect(screen.getByRole("button", { name: "Dismiss" })).toHaveClass(
+      "size-6",
+      "before:-inset-2"
+    );
+  });
+
+  it("merges a caller className over the bar", () => {
+    render(<Snackbar className="rounded-lg">Code copied.</Snackbar>);
+    const bar = within(messages()).getByRole("listitem");
+    expect(bar).toHaveClass("rounded-lg");
+    expect(bar).not.toHaveClass("rounded-md");
+  });
+
   it("runs its action, then closes and reports it", async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
@@ -4290,9 +5023,12 @@ const snackbar = componentVariants({
     anchor: "pointer-events-none inset-x-6 z-toast m-0 flex list-none p-0",
     root: "max-w-snackbar pointer-events-auto flex w-full min-w-0 animate-sheet-in items-center gap-3 rounded-md py-3.25 pr-3.5 pl-4 text-text-body shadow-3",
     message: "text-snackbar min-w-0 flex-1 font-body font-medium text-pretty",
-    action: "text-snackbar-action shrink-0 rounded-xs px-1.5 py-1 font-display font-bold uppercase",
+    // Hit areas (dev parity): the action is 44px tall (`min-h-hit`, margin pulled into the 13px
+    // padding by `-my-3`); the 24px dismiss takes taps over 40px through `before:-inset-2`.
+    action:
+      "text-snackbar-action -my-3 inline-flex min-h-hit shrink-0 items-center rounded-xs px-1.5 font-display font-bold uppercase active:press-scale",
     dismiss:
-      "grid size-6 shrink-0 place-items-center rounded-pill text-current opacity-70 transition-opacity duration-fast ease-out hover:opacity-100",
+      "relative grid size-6 shrink-0 place-items-center rounded-pill text-current opacity-70 transition-opacity duration-fast ease-out before:absolute before:-inset-2 hover:opacity-100",
   },
   variants: {
     isContained: {
@@ -4376,6 +5112,8 @@ export function Snackbar({
       <RadixToast.Root
         open={isOpen}
         onOpenChange={setIsOpen}
+        // Severity picks the politeness (dev parity): a failure interrupts, a confirmation waits.
+        type={tone === "danger" ? "foreground" : "background"}
         data-surface={NOTIFICATION_SURFACE[tone]}
         className={styles.root({ className })}
       >
@@ -4405,7 +5143,7 @@ export function Snackbar({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/snackbar 2>&1 | tail -8`
-Expected: PASS (16 tests).
+Expected: PASS (21 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -4502,6 +5240,29 @@ export const LiveCopy: Story = {
 
 /** `position="top-right"`. */
 export const TopRight: Story = { args: { position: "top-right", children: "Order updated." } };
+
+/** Dev parity: the other anchors, one open bar per story. */
+export const TopCenter: Story = { args: { position: "top-center", children: "Order updated." } };
+
+export const BottomRight: Story = {
+  args: { position: "bottom-right", children: "Order updated." },
+};
+
+/** Dev parity: the brand tone. */
+export const Brand: Story = { args: { tone: "brand", children: "Added to your order." } };
+
+/** Dev parity: 360px is the floor — the bar caps at 420px and shrinks with the 24px gutter. */
+export const Narrow: Story = {
+  args: {
+    children: "Chilli Paneer removed from your order.",
+    action: { label: "Undo", altText: "Undo removing Chilli Paneer", onClick: fn() },
+  },
+  render: (args) => (
+    <div className="relative h-28 max-w-90 rounded-lg border border-border-subtle bg-surface-page-alt">
+      <Snackbar {...args} />
+    </div>
+  ),
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -4546,6 +5307,24 @@ Design-system sources: `components/molecules/EmptyState.*`. Card rows: symbol ·
 - Create: `packages/design-tokens/tokens/component/empty-state.json`
 - Create: `packages/ui/src/molecules/empty-state/empty-state.tsx`, `empty-state.test.tsx`, `empty-state.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`SPACING`), `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/empty-state/empty-state.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                   | Ruling  | Where / why                                                                       |
+| ---------------------------------------------------------- | ------- | --------------------------------------------------------------------------------- |
+| glyph drawn at 32px in pink-300                            | ADD     | assertions in the glyph test                                                      |
+| `md` padding (`py-10`) as well as `lg`                     | ADD     | size test                                                                         |
+| caller `className` merges                                  | ADD     | test "merges a caller className…"                                                 |
+| `InCart` story (inside a cart panel, one action)           | ADD     | `InCart` story                                                                    |
+| default title "Nothing here yet." / body "Let's fix that." | DROP    | spec D9 (no content defaults); contracts §5 makes `title` required                |
+| `hasSymbol` boolean                                        | ALREADY | `variant="symbol"` (spec §8.2, contracts §5)                                      |
+| title as a `<p>`                                           | ALREADY | a real heading at `headingLevel` (default 3, deviation 14)                        |
+| caller copy; symbol hidden from AT; one action; axe        | ALREADY | tests "titles itself…", "shows the brand diamond…", "renders its one action", axe |
+| `Default`, `Symbol`, `WithIcon`, `Sizes` stories           | ALREADY | `Playground` (symbol + action), `WithIcon`, `Large`                               |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -4598,11 +5377,13 @@ describe("EmptyState", () => {
     expect(screen.getByRole("heading", { level: 2, name: "No orders yet." })).toBeInTheDocument();
   });
 
-  it("shows the utensils glyph by default, or the glyph it is given", () => {
+  it("shows the utensils glyph by default, or the glyph it is given, at 32px in pink-300", () => {
     const { container, rerender } = render(<EmptyState title="Nothing here yet." />);
     expect(container.querySelector("svg.lucide-utensils")).toBeInTheDocument();
     rerender(<EmptyState title="Nothing matches that yet." icon={Search} />);
-    expect(container.querySelector("svg.lucide-search")).toBeInTheDocument();
+    const glyph = container.querySelector("svg.lucide-search");
+    expect(glyph).toBeInTheDocument();
+    expect(glyph?.parentElement).toHaveClass("size-icon-xl", "text-pink-300");
   });
 
   it("shows the brand diamond, hidden from assistive tech, for the symbol variant", () => {
@@ -4620,8 +5401,16 @@ describe("EmptyState", () => {
     expect(screen.getByRole("link", { name: "Browse the Menu" })).toBeInTheDocument();
   });
 
+  it("merges a caller className over its padding", () => {
+    const { container } = render(<EmptyState title="Nothing here yet." className="py-2" />);
+    expect(container.firstElementChild).toHaveClass("py-2");
+    expect(container.firstElementChild).not.toHaveClass("py-10");
+  });
+
   it("grows for size lg", () => {
-    const { container } = render(<EmptyState title="No orders yet." size="lg" variant="symbol" />);
+    const { container, rerender } = render(<EmptyState title="No orders yet." variant="symbol" />);
+    expect(container.firstElementChild).toHaveClass("py-10");
+    rerender(<EmptyState title="No orders yet." size="lg" variant="symbol" />);
     expect(container.firstElementChild).toHaveClass("py-16");
     expect(screen.getByRole("heading")).toHaveClass("text-h3");
     expect(container.querySelector(".mask-symbol")).toHaveClass("size-empty-state-symbol-lg");
@@ -4733,7 +5522,7 @@ export function EmptyState({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/empty-state 2>&1 | tail -8`
-Expected: PASS (7 tests).
+Expected: PASS (8 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -4742,7 +5531,7 @@ Expected: PASS (7 tests).
 ```tsx
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { Search } from "lucide-react";
+import { Search, ShoppingBag } from "lucide-react";
 
 import { Button } from "../../atoms/button/button";
 import { EmptyState } from "./empty-state";
@@ -4792,6 +5581,20 @@ export const Large: Story = {
     action: undefined,
   },
 };
+
+/** Dev parity: in place — inside a cart panel, with the single action that fills it. */
+export const InCart: Story = {
+  args: {
+    title: "Your cart is empty.",
+    body: "Add something from the menu and it will show up here.",
+    action: <Button icon={ShoppingBag}>Browse the Menu</Button>,
+  },
+  render: (args) => (
+    <div className="max-w-90 rounded-lg border border-border-subtle bg-surface-card">
+      <EmptyState {...args} />
+    </div>
+  ),
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -4834,6 +5637,27 @@ Design-system sources: `components/molecules/Tabs.*` (underline); handoff `ThisW
 - Create: `packages/design-tokens/tokens/component/tabs.json`
 - Create: `packages/ui/src/molecules/tabs/tabs.tsx`, `tabs.test.tsx`, `tabs.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`), `packages/design-tokens/contrast-pairs.json`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/tabs/tabs.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                               | Ruling  | Where / why                                                                                                      |
+| ---------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------- |
+| underline trigger has a 44px hit height                                | ADD     | `min-h-hit` on the underline trigger (spec §5.5) + assertion                                                     |
+| active tab underlined in brand pink                                    | ADD     | assertion `aria-selected:after:bg-border-brand`                                                                  |
+| leading glyph beside a tab label                                       | ADD     | trigger `inline-flex items-center gap-2`; the glyph rides in the ReactNode `label` + test + `WithIcons` story    |
+| caller `className` merges                                              | ADD     | test "merges a caller className…"                                                                                |
+| `Narrow` story (360px)                                                 | ADD     | `Narrow` story                                                                                                   |
+| per-tab `isDisabled` (inert "off today" section)                       | DELTA   | contracts §5 `TabItem` is `{ value, label, content }` — proposed contract delta, see the 3a audit                |
+| `isFullWidth` (equal shares across a card)                             | DELTA   | not in contracts §5 `TabsProps` — proposed contract delta, see the 3a audit                                      |
+| underline row scrolls sideways instead of wrapping                     | ALREADY | the row wraps (`flex-wrap gap-y-3`): never clips or overflows at 360px — covered differently (see audit concern) |
+| `icon?: LucideIcon` on `TabItem`                                       | ALREADY | `label: ReactNode` carries the glyph (contracts §5)                                                              |
+| optional `label`                                                       | ALREADY | `label: string` required (contracts §5) — an unnamed tab list is an a11y gap                                     |
+| named list; first tab default; defaultValue; click; arrows; controlled | ALREADY | tests "is a named tab list…", "starts at defaultValue", "selects a tab…", "moves and selects…", "reports but…"   |
+| `Default`, `TwoSections` stories                                       | ALREADY | `Playground`, `TwoItems`                                                                                         |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -4888,8 +5712,10 @@ Rebuild and run the token tests. Expected: PASS (pink-700 on white ≈ 7.0).
 ```tsx
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Soup } from "lucide-react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
+import { Icon } from "../../atoms/icon/icon";
 import { type TabItem, Tabs } from "./tabs";
 
 const MENU: TabItem[] = [
@@ -4957,11 +5783,46 @@ describe("Tabs", () => {
   it("draws the underline rail by default and the segmented rail as a light island of pills", () => {
     const { rerender } = render(<Tabs label="Menu sections" items={MENU} />);
     expect(screen.getByRole("tablist")).toHaveClass("border-b");
+    // A 44px target (spec §5.5, dev parity) with the 3px pink underline under the active tab.
+    expect(screen.getByRole("tab", { name: "All Day" })).toHaveClass(
+      "min-h-hit",
+      "aria-selected:after:bg-border-brand"
+    );
     rerender(<Tabs label="Menu sections" items={MENU} variant="segmented" />);
     const rail = screen.getByRole("tablist");
     expect(rail).toHaveAttribute("data-surface", "light");
     expect(rail).toHaveClass("rounded-pill");
     expect(screen.getByRole("tab", { name: "All Day" })).toHaveClass("min-h-hit");
+  });
+
+  it("lays a glyph passed in the label beside its text", () => {
+    render(
+      <Tabs
+        label="Menu sections"
+        items={[
+          {
+            value: "all-day",
+            label: (
+              <>
+                <Icon icon={Soup} size="sm" />
+                All Day
+              </>
+            ),
+            content: <p>The all-day menu.</p>,
+          },
+          ...MENU.slice(1),
+        ]}
+      />
+    );
+    const tab = screen.getByRole("tab", { name: "All Day" });
+    expect(tab).toHaveClass("inline-flex", "gap-2");
+    expect(tab.querySelector("svg.lucide-soup")).toBeInTheDocument();
+  });
+
+  it("merges a caller className over its own gap", () => {
+    const { container } = render(<Tabs label="Menu sections" items={MENU} className="gap-2" />);
+    expect(container.firstElementChild).toHaveClass("gap-2");
+    expect(container.firstElementChild).not.toHaveClass("gap-6");
   });
 
   it("has no accessibility violations in either variant", async () => {
@@ -5006,8 +5867,9 @@ const tabs = componentVariants({
   slots: {
     root: "grid min-w-0 gap-6",
     list: "flex min-w-0",
+    // `inline-flex gap-2`: a glyph passed in a ReactNode `label` sits beside its text (dev parity).
     trigger:
-      "shrink-0 font-display font-bold whitespace-nowrap transition-colors duration-fast ease-out",
+      "inline-flex shrink-0 items-center justify-center gap-2 font-display font-bold whitespace-nowrap transition-colors duration-fast ease-out",
     panel: "min-w-0",
   },
   variants: {
@@ -5015,7 +5877,7 @@ const tabs = componentVariants({
       underline: {
         list: "flex-wrap gap-x-7 gap-y-3 border-b border-border-subtle",
         trigger:
-          "text-tabs-label relative pb-3 text-text-subtle after:absolute after:inset-x-0 after:-bottom-px after:h-0.75 after:rounded-t-xs after:transition-colors after:duration-base after:ease-out hover:text-text-heading aria-selected:text-text-heading aria-selected:after:bg-border-brand",
+          "text-tabs-label relative min-h-hit pb-3 text-text-subtle after:absolute after:inset-x-0 after:-bottom-px after:h-0.75 after:rounded-t-xs after:transition-colors after:duration-base after:ease-out hover:text-text-heading aria-selected:text-text-heading aria-selected:after:bg-border-brand",
       },
       segmented: {
         list: "flex-wrap gap-1 justify-self-start rounded-pill border border-border-subtle bg-surface-card p-1",
@@ -5102,7 +5964,7 @@ export function Tabs({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/tabs 2>&1 | tail -8`
-Expected: PASS (8 tests).
+Expected: PASS (10 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -5111,8 +5973,10 @@ Expected: PASS (8 tests).
 ```tsx
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { Croissant, IceCreamCone, Soup } from "lucide-react";
 import { expect, fn } from "storybook/test";
 
+import { Icon } from "../../atoms/icon/icon";
 import { type TabItem, Tabs } from "./tabs";
 
 function panel(text: string) {
@@ -5183,6 +6047,55 @@ export const Segmented: Story = {
     );
   },
 };
+
+/** Dev parity: a glyph before each label — pass it inside the ReactNode `label`. */
+export const WithIcons: Story = {
+  args: {
+    items: [
+      {
+        value: "all-day",
+        label: (
+          <>
+            <Icon icon={Soup} size="sm" />
+            All Day
+          </>
+        ),
+        content: panel("All-day plates, 8am – 11:30pm."),
+      },
+      {
+        value: "breakfast",
+        label: (
+          <>
+            <Icon icon={Croissant} size="sm" />
+            Breakfast
+          </>
+        ),
+        content: panel("Breakfast plates."),
+      },
+      {
+        value: "sweets",
+        label: (
+          <>
+            <Icon icon={IceCreamCone} size="sm" />
+            Sweets
+          </>
+        ),
+        content: panel("Kulfi, halwa and bakes."),
+      },
+    ],
+  },
+};
+
+/** Dev parity: the smallest supported width (320px of content) — the rail wraps, it never clips. */
+export const Narrow: Story = {
+  decorators: [
+    (Story) => (
+      <div className="w-full max-w-80">
+        <Story />
+      </div>
+    ),
+  ],
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -5226,6 +6139,22 @@ Design-system sources: `components/molecules/Breadcrumb.*`. Card rows: 3 levels 
 - Create: `packages/design-tokens/tokens/component/breadcrumb.json`
 - Create: `packages/ui/src/molecules/breadcrumb/breadcrumb.tsx`, `breadcrumb.test.tsx`, `breadcrumb.stories.tsx`
 - Modify: `packages/design-tokens/tokens/surface/{brand,ink,light}.json`, `packages/ui/src/lib/component-variants.ts` (`TEXT`), `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/breadcrumb/breadcrumb.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                               | Ruling  | Where / why                                                                                   |
+| ---------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| caller `className` merges with its own                                 | ADD     | test "merges a caller className…"                                                             |
+| `UnlinkedLevel` story                                                  | ADD     | `UnlinkedLevel` story                                                                         |
+| `tone="inverse"` (white trail on brand / ink)                          | DROP    | spec D5, deviation 7 — the chevron is a surface-overridden token; `OnSurfaces` story shows it |
+| `label` prop for the landmark name                                     | ALREADY | native `aria-label` (default "Breadcrumb", deviation 15)                                      |
+| named nav + `<ol>`; links all but current; last current even with href | ALREADY | tests "is a named navigation landmark…", "links every crumb…", "marks the last crumb…"        |
+| mid crumb without href is text; chevrons between, none after the last  | ALREADY | tests "writes a middle crumb…", "separates crumbs…"                                           |
+| `Default`, `TwoLevels`, `LongTrail`, `OnBrand`, `Narrow` stories       | ALREADY | `Playground`, `TwoLevels`, `Long` (360px viewport), `OnSurfaces`                              |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -5351,6 +6280,12 @@ describe("Breadcrumb", () => {
     expect(screen.getByRole("navigation", { name: "You are here" })).toBeInTheDocument();
   });
 
+  it("merges a caller className and keeps its own", () => {
+    render(<Breadcrumb items={MENU_TRAIL} className="max-w-96" />);
+    const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
+    expect(nav).toHaveClass("max-w-96", "min-w-0");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(<Breadcrumb items={MENU_TRAIL} />);
     await expectNoA11yViolations(container);
@@ -5455,7 +6390,7 @@ export function Breadcrumb({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/breadcrumb 2>&1 | tail -8`
-Expected: PASS (8 tests).
+Expected: PASS (9 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -5505,6 +6440,11 @@ export const Long: Story = {
     ],
   },
   parameters: { viewport: { defaultViewport: "mobile1" } },
+};
+
+/** Dev parity: a grouping level with no page of its own stays plain text. */
+export const UnlinkedLevel: Story = {
+  args: { items: [{ label: "Home", href: "#" }, { label: "Company" }, { label: "Press" }] },
 };
 
 export const OnSurfaces: Story = {
@@ -5563,6 +6503,26 @@ Design-system sources: `components/molecules/Pagination.*`. Card rows: many page
 - Create: `packages/ui/src/molecules/pagination/pagination.tsx`, `pagination.test.tsx`, `pagination.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/molecules/pagination/pagination.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                               | Ruling  | Where / why                                                                                                   |
+| ---------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| the pages are an ordered list (`<ol>`)                                 | ADD     | `<ol>` (was `<ul>`) + landmark test                                                                           |
+| caller `className` merges with its own                                 | ADD     | test "merges a caller className…"                                                                             |
+| `ManyPages` (6 of 24) and `Narrow` stories                             | ADD     | `ManyPages`, `Narrow` stories                                                                                 |
+| `onPageChange(page, event)` for a client router                        | DROP    | contracts §5 "links, not callbacks", spec §8.2 (`onClick` for navigation → `href`); `linkAs` takes the router |
+| a single page still renders (layout does not jump); `SinglePage` story | DROP    | deviation 13: `pages < 2` renders nothing — a plan ruling, not a spec clause (see audit concern)              |
+| 44px pills (`h-11 min-w-11`)                                           | DROP    | spec D2: the design system's `Pagination.jsx` pills are 40px; §5.5 floor ≥24px holds                          |
+| optional `page` / `pages` (default 1)                                  | ALREADY | required by contracts §5                                                                                      |
+| real links; current flooded + `aria-current`; ±1 collapse; clamp       | ALREADY | tests "links each page…", "shows the first, the last…", "keeps an out-of-range page…"                         |
+| no previous on page 1, no next on the last (inert spans)               | ALREADY | test "has no previous link…"                                                                                  |
+| Enter on Next follows it                                               | ALREADY | native `<a href>` (no callback to observe)                                                                    |
+| `Default`, `FirstPage`, `LastPage`, `ThreePages` stories               | ALREADY | `Playground`, `FirstPage`, `LastPage`, `ThreePages`                                                           |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `Icon`; `LinkAs`, `LinkAsProps` (Plan 2a).
@@ -5601,9 +6561,18 @@ function RouterLink({ href, className, children, "aria-current": ariaCurrent }: 
 }
 
 describe("Pagination", () => {
-  it("is a navigation landmark named Pagination", () => {
-    render(<Pagination page={4} pages={12} getPageHref={hrefFor} />);
+  it("is a navigation landmark named Pagination, holding an ordered list", () => {
+    const { container } = render(<Pagination page={4} pages={12} getPageHref={hrefFor} />);
     expect(screen.getByRole("navigation", { name: "Pagination" })).toBeInTheDocument();
+    expect(container.querySelector("nav > ol")).toBeInTheDocument();
+  });
+
+  it("merges a caller className and keeps its own", () => {
+    render(<Pagination page={1} pages={3} getPageHref={hrefFor} className="max-w-96" />);
+    expect(screen.getByRole("navigation", { name: "Pagination" })).toHaveClass(
+      "max-w-96",
+      "min-w-0"
+    );
   });
 
   it("shows the first, the last and one either side of the current page, with gaps between", () => {
@@ -5755,7 +6724,8 @@ export function Pagination({
 
   return (
     <nav aria-label={label} className={styles.root({ className })} {...props}>
-      <ul data-surface="light" className={styles.list()}>
+      {/* An ordered list: the pages are a sequence (dev parity). */}
+      <ol data-surface="light" className={styles.list()}>
         {current > 1 ? (
           <li>
             <LinkComponent href={getPageHref(current - 1)} className={styles.item()}>
@@ -5800,7 +6770,7 @@ export function Pagination({
             </span>
           </li>
         )}
-      </ul>
+      </ol>
     </nav>
   );
 }
@@ -5811,7 +6781,7 @@ export function Pagination({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/pagination 2>&1 | tail -8`
-Expected: PASS (9 tests).
+Expected: PASS (10 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -5850,6 +6820,20 @@ export const ThreePages: Story = { args: { page: 2, pages: 3 } };
 
 /** The last page — Next is inert. */
 export const LastPage: Story = { args: { page: 12, pages: 12 } };
+
+/** Dev parity: deep in a long listing — both runs collapse to a gap. */
+export const ManyPages: Story = { args: { page: 6, pages: 24 } };
+
+/** Dev parity: the smallest supported width — the row wraps onto two lines. */
+export const Narrow: Story = {
+  decorators: [
+    (Story) => (
+      <div className="w-full max-w-80">
+        <Story />
+      </div>
+    ),
+  ],
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -5893,6 +6877,24 @@ Design-system sources: `components/molecules/SectionHeader.*`; handoff (every pa
 - Create: `packages/design-tokens/tokens/component/section-header.json`
 - Create: `packages/ui/src/molecules/section-header/section-header.tsx`, `section-header.test.tsx`, `section-header.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`SPACING`), `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/section-header/section-header.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                          | Ruling  | Where / why                                                                               |
+| ----------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------- |
+| every heading level 1, 3–6 renders, keeping the h2 look           | ADD     | `it.each` level test                                                                      |
+| overline and lede omitted when not given (no stray top margin)    | ADD     | test "omits the overline and the lede…"                                                   |
+| caller `className` merges                                         | ADD     | test "merges a caller className…"                                                         |
+| `HeadingLevels` and `Narrow` (360px, action wraps) stories        | ADD     | `HeadingLevels`, `Narrow` stories                                                         |
+| `on="brand"` (eyebrow, heading, lede to white)                    | DROP    | spec D5 — semantic text tokens follow the surface; `OnBrand` / `Surfaces` stories show it |
+| lede at a fluid body step (`text-body1-fluid`)                    | DROP    | spec D4 / D2: the design system's lede is `--fs-body-lg` (`text-body-lg`)                 |
+| default level 2 at the fluid h2 step; overline + lede; action     | ALREADY | tests "titles a section…", "sets the overline…", "renders its action…"                    |
+| action dropped and prose centred when `align="center"`            | ALREADY | test "drops the action when centred"                                                      |
+| `Default`, `WithAction`, `WithLede`, `Centred`, `OnBrand` stories | ALREADY | `Playground`, `WithLede`, `Centred`, `OnBrand`, `Surfaces`                                |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -5939,9 +6941,26 @@ describe("SectionHeader", () => {
     );
   });
 
-  it("takes the heading level its page needs, keeping the look", () => {
-    render(<SectionHeader title="Starters, platters and snacks." headingLevel={3} />);
-    expect(screen.getByRole("heading", { level: 3 })).toHaveClass("text-h2-fluid");
+  it.each([1, 3, 4, 5, 6] as const)(
+    "takes heading level %i when its page needs it, keeping the look",
+    (level) => {
+      render(<SectionHeader title="Starters, platters and snacks." headingLevel={level} />);
+      expect(screen.getByRole("heading", { level })).toHaveClass("text-h2-fluid");
+    }
+  );
+
+  it("omits the overline and the lede when they are not given", () => {
+    const { container } = render(<SectionHeader title="Most ordered this week" />);
+    expect(container.querySelectorAll("p")).toHaveLength(0);
+    expect(screen.getByRole("heading")).not.toHaveClass("mt-2.5");
+  });
+
+  it("merges a caller className over its own gap", () => {
+    const { container } = render(
+      <SectionHeader title="Most ordered this week" className="gap-2" />
+    );
+    expect(container.firstElementChild).toHaveClass("gap-2");
+    expect(container.firstElementChild).not.toHaveClass("gap-6");
   });
 
   it("sets the overline right above the title and the lede below it", () => {
@@ -6075,7 +7094,7 @@ export function SectionHeader({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/section-header 2>&1 | tail -8`
-Expected: PASS (6 tests).
+Expected: PASS (12 tests, the heading-level table included).
 
 - [ ] **Step 6: Stories**
 
@@ -6151,6 +7170,29 @@ export const Surfaces: Story = {
     </OnSurfaces>
   ),
 };
+
+/** Dev parity: the outline changes, the type step never does — no skipping from h1 to h3. */
+export const HeadingLevels: Story = {
+  render: (args) => (
+    <div className="grid gap-10">
+      <SectionHeader {...args} headingLevel={2} title="Rendered as an h2" />
+      <SectionHeader {...args} headingLevel={3} title="Rendered as an h3" />
+      <SectionHeader {...args} headingLevel={4} title="Rendered as an h4" />
+    </div>
+  ),
+};
+
+/** Dev parity: at 360px the action wraps under the heading rather than squeezing it. */
+export const Narrow: Story = {
+  args: { lede: "One kitchen, one grinder and a menu that changes with the season." },
+  decorators: [
+    (Story) => (
+      <div className="w-full max-w-80">
+        <Story />
+      </div>
+    ),
+  ],
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -6194,6 +7236,22 @@ Design-system sources: `components/molecules/Stat.*`; organism `StatBand.jsx` (p
 - Create: `packages/design-tokens/tokens/component/stat.json`
 - Create: `packages/ui/src/molecules/stat/stat.tsx`, `stat.test.tsx`, `stat.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`TEXT`), `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/stat/stat.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                           | Ruling  | Where / why                                                                               |
+| ------------------------------------------------------------------ | ------- | ----------------------------------------------------------------------------------------- |
+| no sub line and no glyph unless given                              | ADD     | test "renders no sub line and no glyph…"                                                  |
+| caller `className` merges                                          | ADD     | test "merges a caller className…"                                                         |
+| `WithSub`, `Row` (three across) and `Narrow` stories               | ADD     | `WithSub`, `Row`, `Narrow` stories                                                        |
+| inverse label / sub at 85% / 65% white (`text-text-on-inverse/85`) | DROP    | spec D5 / §3.2.2: label and sub are semantic text that the ink surface remaps (.92 / .85) |
+| number fluid (`text-h1-fluid`, extrabold)                          | ALREADY | `text-stat-value` fluid clamp at font-weight black (design system `Stat.jsx`)             |
+| label and value; three tones; centre; decorative glyph             | ALREADY | tests "reads number, label and sub…", tone `it.each`, "centres…", glyph `it.each`         |
+| `Default`, `WithIcon`, `Tones`, `OnInk`, `Centred` stories         | ALREADY | `Playground`, `Default`, `IconBrand`, `InverseCentre`                                     |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -6285,6 +7343,18 @@ describe("Stat", () => {
     expect(container.firstElementChild).toHaveClass("justify-items-center", "text-center");
   });
 
+  it("renders no sub line and no glyph unless given", () => {
+    const { container } = render(<Stat value="6" label="outlets" />);
+    expect(container.firstElementChild?.children).toHaveLength(2);
+    expect(container.querySelector("svg")).not.toBeInTheDocument();
+  });
+
+  it("merges a caller className over its own gap", () => {
+    const { container } = render(<Stat value="6" label="outlets" className="gap-4" />);
+    expect(container.firstElementChild).toHaveClass("gap-4");
+    expect(container.firstElementChild).not.toHaveClass("gap-1");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <Stat value="4.6" label="average guest rating" icon={Heart} tone="brand" />
@@ -6369,7 +7439,7 @@ export function Stat({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/stat 2>&1 | tail -8`
-Expected: PASS (9 tests).
+Expected: PASS (11 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -6425,6 +7495,34 @@ export const InverseCentre: Story = {
     </div>
   ),
 };
+
+/** Dev parity: the sub line carries the detail behind the number. */
+export const WithSub: Story = {
+  args: { value: "100%", label: "vegetarian kitchen", sub: "No meat, no egg, ever." },
+};
+
+/** Dev parity: three across, the most a row should carry; one column each below 480px. */
+export const Row: Story = {
+  render: () => (
+    <div className="grid gap-8 sm:grid-cols-3">
+      <Stat value="100%" label="vegetarian kitchen" />
+      <Stat value="18" label="spices ground in-house, daily" />
+      <Stat value="2025" label="the year we started" />
+    </div>
+  ),
+};
+
+/** Dev parity: at 360px the fluid number steps down rather than pushing the column open. */
+export const Narrow: Story = {
+  args: { value: "4.6", label: "average guest rating", sub: "Across every ordering channel" },
+  decorators: [
+    (Story) => (
+      <div className="w-full max-w-80">
+        <Story />
+      </div>
+    ),
+  ],
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -6469,6 +7567,27 @@ The platform does everything: `<details>` in one `name` group is an exclusive ac
 - Create: `packages/design-tokens/tokens/component/accordion.json`
 - Create: `packages/ui/src/molecules/accordion/accordion.tsx`, `accordion.test.tsx`, `accordion.stories.tsx`
 - Modify: `packages/ui/src/styles.css` (`@utility details-content-motion`), `packages/ui/src/lib/component-variants.ts` (`SPACING`, `TEXT`), `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/accordion/accordion.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                   | Ruling  | Where / why                                                                                                                        |
+| -------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| clicking a question reveals its answer; a second click hides it            | ADD     | test "reveals an answer when its question is clicked…" (jsdom toggles `<details>` on summary activation)                           |
+| keyboard toggling                                                          | ADD     | `Playground` play presses Enter on the focused summary (real Chromium)                                                             |
+| caller `className` merges                                                  | ADD     | test "merges a caller className…"                                                                                                  |
+| `Narrow` story                                                             | ADD     | `Narrow` story                                                                                                                     |
+| per-item `isDisabled` (inert row "not live yet") + `WithDisabledRow` story | DELTA   | contracts §5 `AccordionItem` is `{ value, question, answer }`; a native `<details>` cannot be disabled — proposed delta, see audit |
+| questions rendered as h2–h4 headings (`headingLevel`) + story              | DROP    | spec D7 / §3.3: native `<summary>` — its children are presentational, so a heading inside loses its role; not in contracts §5      |
+| Radix roving focus (ArrowDown between questions)                           | DROP    | spec §3.3 rejects Radix Accordion for `<details name>`; summaries are in the Tab order                                             |
+| all collapsed by default; `value` defaults to the question                 | DROP    | contracts §5: `defaultOpen = [items[0].value]`, `value` required                                                                   |
+| egg-containing bakes in the FAQ fixture                                    | DROP    | spec C10: pure veg, no egg                                                                                                         |
+| one open at a time; `isMultiple`; `defaultOpen`                            | ALREADY | shared `name` tests + `Playground` play (real exclusivity), `isMultiple` and `defaultOpen` tests                                   |
+| open question brand pink; chevron rotates                                  | ALREADY | `group-open:text-text-brand`, chevron test                                                                                         |
+| `Default`, `FirstOpen`, `Multiple` stories                                 | ALREADY | `Playground` (first open), `Multiple`, `Surfaces`                                                                                  |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -6540,6 +7659,7 @@ Rebuild tokens and run the variant spec.
 
 ```tsx
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { Accordion, type AccordionItem } from "./accordion";
@@ -6587,6 +7707,22 @@ describe("Accordion", () => {
   it("opens the first item by default and nothing else", () => {
     const { container } = render(<Accordion items={FAQ} />);
     expect(detailsOf(container).map((d) => d.open)).toEqual([true, false, false]);
+  });
+
+  it("reveals an answer when its question is clicked, and hides it on a second click", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<Accordion items={FAQ} defaultOpen={[]} />);
+    const delivery = detailsOf(container)[1];
+    await user.click(screen.getByText("Do you deliver?"));
+    expect(delivery?.open).toBe(true);
+    await user.click(screen.getByText("Do you deliver?"));
+    expect(delivery?.open).toBe(false);
+  });
+
+  it("merges a caller className over its own top rule", () => {
+    const { container } = render(<Accordion items={FAQ} className="border-t-0" />);
+    expect(container.firstElementChild).toHaveClass("border-t-0");
+    expect(container.firstElementChild).not.toHaveClass("border-t");
   });
 
   it("opens the items it is told to, or none", () => {
@@ -6719,7 +7855,7 @@ export function Accordion({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/accordion 2>&1 | tail -8`
-Expected: PASS (9 tests).
+Expected: PASS (11 tests).
 
 - [ ] **Step 6: Stories — the `play` proves real exclusivity in Chromium, which jsdom cannot**
 
@@ -6777,6 +7913,9 @@ export const Playground: Story = {
     await userEvent.click(canvas.getByText("Do you deliver?"));
     await expect(second).toHaveAttribute("open");
     await expect(first).not.toHaveAttribute("open");
+    // Keyboard (dev parity): the focused summary toggles on Enter, natively.
+    await userEvent.keyboard("{Enter}");
+    await expect(second).not.toHaveAttribute("open");
   },
 };
 
@@ -6791,6 +7930,17 @@ export const Surfaces: Story = {
       <Accordion {...args} className="w-full" />
     </OnSurfaces>
   ),
+};
+
+/** Dev parity: the smallest supported width — long questions wrap, the chevron never moves. */
+export const Narrow: Story = {
+  decorators: [
+    (Story) => (
+      <div className="w-full max-w-80">
+        <Story />
+      </div>
+    ),
+  ],
 };
 ```
 
@@ -6841,6 +7991,26 @@ Design-system sources: `components/molecules/ListRow.*`; UI kit `ui_kits/app/Scr
 - Create: `packages/ui/src/molecules/list-row/list-row.tsx`, `list-row.test.tsx`, `list-row.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/molecules/list-row/list-row.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                       | Ruling  | Where / why                                                                                   |
+| ---------------------------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| a static row carries no button semantics                                                       | ADD     | assertion in "shows its title…"                                                               |
+| Space as well as Enter operates an action row                                                  | ADD     | asChild-button test                                                                           |
+| chevron only when asked                                                                        | ADD     | chevron test                                                                                  |
+| press feedback on an interactive row (`active:scale`)                                          | ADD     | `isInteractive` row `active:press-scale` + assertion                                          |
+| caller `className` merges                                                                      | ADD     | test "merges a caller className…"                                                             |
+| axe over a danger action row                                                                   | ADD     | axe test                                                                                      |
+| `Narrow` story                                                                                 | ADD     | `Narrow` story                                                                                |
+| `onClick` turns the row into a `<button>`                                                      | ALREADY | `asChild` + `<button>` / `<a>` / `next/link` (spec D8, contracts §5)                          |
+| description clamps to 2; value; trailing; leading over icon; danger                            | ALREADY | tests "shows its title…", "puts a leading element…", "renders a trailing control…", "paints…" |
+| hairline, none on the last row; 44px hit                                                       | ALREADY | divider test; `min-h-hit` in the asChild-link test                                            |
+| `Default`, `WithValueAndChevron`, `WithDescription`, `WithTrailing`, `Danger`, `Group` stories | ALREADY | `Playground`, `WithDescription`, `TrailingBadge`, `TrailingControl`, `Danger`, `AccountList`  |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `Icon`; `radix-ui` → `Slot` (`Slot.Root`, `Slot.Slottable` with the `child` render form — verified in `@radix-ui/react-slot` 1.3.3); `Switch`, `Badge` (stories).
@@ -6875,10 +8045,15 @@ describe("ListRow", () => {
     expect(screen.getByText("Default outlet")).toHaveClass("text-text-heading");
     expect(screen.getByText("Where your pickups go.")).toHaveClass("line-clamp-2");
     expect(screen.getByText("Sector 57")).toHaveClass("text-text-muted");
+    // A static row is only text: no button or link semantics.
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
-  it("draws its glyph and chevron decoratively", () => {
-    const { container } = render(<ListRow icon={MapPin} title="Default outlet" hasChevron />);
+  it("draws its glyph and chevron decoratively, and the chevron only when asked", () => {
+    const { container, rerender } = render(<ListRow icon={MapPin} title="Default outlet" />);
+    expect(container.querySelector("svg.lucide-chevron-right")).not.toBeInTheDocument();
+    rerender(<ListRow icon={MapPin} title="Default outlet" hasChevron />);
     for (const glyph of container.querySelectorAll("svg")) {
       expect(glyph.closest("[aria-hidden='true']")).not.toBeNull();
     }
@@ -6938,8 +8113,19 @@ describe("ListRow", () => {
     );
     await user.tab();
     await user.keyboard("{Enter}");
-    expect(onClick).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole("button", { name: "Sign out" })).toHaveClass("w-full", "text-start");
+    await user.keyboard(" ");
+    expect(onClick).toHaveBeenCalledTimes(2);
+    expect(screen.getByRole("button", { name: "Sign out" })).toHaveClass(
+      "w-full",
+      "text-start",
+      "active:press-scale"
+    );
+  });
+
+  it("merges a caller className over its own", () => {
+    const { container } = render(<ListRow title="Loyalty" className="mx-0" />);
+    expect(container.firstElementChild).toHaveClass("mx-0");
+    expect(container.firstElementChild).not.toHaveClass("-mx-3");
   });
 
   it("has no accessibility violations as a static row and as a link", async () => {
@@ -6948,6 +8134,9 @@ describe("ListRow", () => {
         <ListRow icon={Bell} title="Order updates" description="Texts when your food is ready." />
         <ListRow asChild icon={MapPin} title="Default outlet" value="Sector 57" hasChevron>
           <a href="/account/outlet" />
+        </ListRow>
+        <ListRow asChild icon={LogOut} title="Delete my account" isDanger hasDivider={false}>
+          <button type="button" onClick={vi.fn()} />
         </ListRow>
       </>
     );
@@ -6990,7 +8179,8 @@ const listRow = componentVariants({
     isDanger: { true: { icon: "text-text-danger", title: "text-text-danger" } },
     isInteractive: {
       true: {
-        row: "cursor-pointer no-underline transition-colors duration-fast ease-out hover:bg-surface-page-alt",
+        // Hover tint and press feedback (dev parity) on a row rendered into a link or button.
+        row: "cursor-pointer no-underline transition-colors duration-fast ease-out hover:bg-surface-page-alt active:press-scale",
       },
     },
   },
@@ -7074,7 +8264,7 @@ export function ListRow({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/list-row 2>&1 | tail -8`
-Expected: PASS (9 tests).
+Expected: PASS (10 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -7194,6 +8384,21 @@ export const AccountList: Story = {
     </div>
   ),
 };
+
+/** Dev parity: at 360px the description clamps and the value keeps its place. */
+export const Narrow: Story = {
+  args: {
+    title: "Default outlet for pickup orders",
+    description: "MKM Market, Sector 57, Gurgaon.",
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-full max-w-80">
+        <Story />
+      </div>
+    ),
+  ],
+};
 ```
 
 (`Switch` takes `isLabelHidden` — Plan 2b deviation 4 — so the row's title stays the only visible label while the switch keeps its name.)
@@ -7240,6 +8445,25 @@ Design-system sources: `components/molecules/PriceSummary.*`; organism `CartPane
 - Create: `packages/design-tokens/tokens/component/price-summary.json`
 - Create: `packages/ui/src/molecules/price-summary/price-summary.tsx`, `price-summary.test.tsx`, `price-summary.stories.tsx`
 - Modify: `packages/design-tokens/tokens/surface/{brand,ink,light}.json`, `packages/design-tokens/contrast-pairs.json`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/price-summary/price-summary.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                   | Ruling  | Where / why                                                                                               |
+| -------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------- |
+| Indian digit grouping (`₹1,20,000`)                                        | ADD     | test "groups digits the Indian way"                                                                       |
+| a total with no lines; note only when given                                | ADD     | test "renders a total with no lines…" (`lines={[]}`) + `TotalOnly` story                                  |
+| caller `className` merges                                                  | ADD     | test "merges a caller className…"                                                                         |
+| `WithStrongLine`, `Receipt` (renamed total + fine print), `Narrow` stories | ADD     | `WithStrongLine`, `Receipt`, `Narrow` stories                                                             |
+| figures in Space Mono so digits line up                                    | ALREADY | `tabular-nums` + assertion; the design system's `PriceSummary.jsx` sets amounts in body-sm, not mono (D2) |
+| `tone="inverse"` (75% / 90% white lines, soft-mint saving on ink)          | DROP    | spec D5, deviation 7 — lines follow the surface; the discount is a surface-overridden token               |
+| `lines` optional (default `[]`)                                            | DROP    | contracts §5 `lines: PriceLine[]` is required; `[]` is covered                                            |
+| rupee sign, no space, no decimals; discount minus in mint; strong line     | ALREADY | tests "lists each line…", "prints a discount…", "emphasises a strong line"                                |
+| total label renamed; fine print                                            | ALREADY | test "takes another total label and a note"                                                               |
+| `Default`, `WithDiscount`, `OnInk` stories                                 | ALREADY | `Playground`, `WithDiscount`, `OnInk`, `Surfaces`                                                         |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -7331,6 +8555,27 @@ describe("PriceSummary", () => {
     const amounts = screen.getAllByRole("definition").map((amount) => amount.textContent);
     expect(terms).toEqual(["Subtotal", "GST (5%)", "First order", "Total"]);
     expect(amounts.slice(0, 3)).toEqual(["₹1,180", "₹59", "−₹100"]);
+    // Tabular figures, so the column's digits line up.
+    expect(screen.getByText("₹1,180")).toHaveClass("tabular-nums");
+  });
+
+  it("groups digits the Indian way", () => {
+    render(<PriceSummary lines={[{ label: "Subtotal", amount: 120000 }]} total={126000} />);
+    expect(screen.getByText("₹1,20,000")).toBeInTheDocument();
+  });
+
+  it("renders a total with no lines, and a note only when given", () => {
+    const { rerender } = render(<PriceSummary lines={[]} total={280} />);
+    expect(screen.getAllByRole("term").map((term) => term.textContent)).toEqual(["Total"]);
+    expect(screen.queryByText("Inclusive of all taxes.")).not.toBeInTheDocument();
+    rerender(<PriceSummary lines={[]} total={280} note="Inclusive of all taxes." />);
+    expect(screen.getByText("Inclusive of all taxes.")).toBeInTheDocument();
+  });
+
+  it("merges a caller className over its own gap", () => {
+    const { container } = render(<PriceSummary lines={LINES} total={1139} className="gap-4" />);
+    expect(container.firstElementChild).toHaveClass("gap-4");
+    expect(container.firstElementChild).not.toHaveClass("gap-2");
   });
 
   it("prints a discount with a true minus in the discount colour, whatever sign it is given", () => {
@@ -7470,7 +8715,7 @@ export function PriceSummary({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/price-summary 2>&1 | tail -8`
-Expected: PASS (6 tests).
+Expected: PASS (9 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -7536,6 +8781,49 @@ export const Surfaces: Story = {
     </OnSurfaces>
   ),
 };
+
+/** Dev parity: `isStrong` pulls a running subtotal up to heading weight above the taxes. */
+export const WithStrongLine: Story = {
+  args: {
+    total: 1239,
+    lines: [
+      { label: "Two thalis", amount: 560 },
+      { label: "Paneer tikka masala", amount: 320 },
+      { label: "Chilli garlic momos", amount: 300 },
+      { label: "Items", amount: 1180, isStrong: true },
+      { label: "GST (5%)", amount: 59 },
+    ],
+  },
+};
+
+/** Dev parity: the receipt shape — a renamed total and the fine print under it. */
+export const Receipt: Story = {
+  args: { totalLabel: "Amount paid", note: "Inclusive of all taxes. Paid by UPI." },
+};
+
+/** Dev parity: a total with no lines — the smallest useful summary. */
+export const TotalOnly: Story = {
+  args: { lines: [], total: 280, note: "Inclusive of all taxes." },
+};
+
+/** Dev parity: at 360px the label gives way first; the amount never wraps. */
+export const Narrow: Story = {
+  args: {
+    total: 1139,
+    lines: [
+      { label: "Subtotal before the counter discount", amount: 1180 },
+      { label: "GST (5%)", amount: 59 },
+      { label: "First order", amount: 100, isDiscount: true },
+    ],
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-full max-w-80">
+        <Story />
+      </div>
+    ),
+  ],
+};
 ```
 
 - [ ] **Step 7: Export**
@@ -7583,6 +8871,26 @@ Design-system sources: `components/molecules/StepTracker.*`; organism `OrderTrac
 - Create: `packages/design-tokens/tokens/component/step-tracker.json`
 - Create: `packages/ui/src/molecules/step-tracker/step-tracker.tsx`, `step-tracker.test.tsx`, `step-tracker.stories.tsx`
 - Modify: `packages/design-tokens/tokens/surface/{brand,ink,light}.json`, `packages/ui/src/lib/component-variants.ts` (`SPACING`), `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/molecules/step-tracker/step-tracker.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                      | Ruling  | Where / why                                                                                           |
+| --------------------------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| each step's state spelled out for screen readers ("Done" / "In progress" / "Not started yet") | ADD     | `sr-only` `STATE_TEXT` per step + test; strings added to the accessible-defaults table (deviation 15) |
+| nothing started (`current={-1}`) → all upcoming                                               | ADD     | test "leaves every step upcoming…" + `NotStarted` story                                               |
+| the list takes an accessible name                                                             | ADD     | native `aria-label` asserted in the state-text test (dev: `label` default "Progress")                 |
+| caller `className` merges                                                                     | ADD     | test "merges a caller className…"                                                                     |
+| vertical tracker on a brand field; `Narrow` story                                             | ADD     | `VerticalSurfaces`, `Narrow` stories                                                                  |
+| `tone="inverse"` (white markers and bars on brand)                                            | DROP    | spec D5, deviation 7 — the bar is a surface-overridden token; markers keep their own fills            |
+| bare-string steps (`["Cart", "Details"]`)                                                     | DROP    | spec §8.2: object lists only                                                                          |
+| `label` prop default "Progress"                                                               | DROP    | spec D9 / deviation 15: no default copy; the native `aria-label` names it when a page needs it        |
+| named `<ol>`; `aria-current="step"`; notes vertical only; check on done                       | ALREADY | tests "is an ordered list…", "draws a diamond per step…", "shows the notes…", "draws the horizontal…" |
+| flood up to the current step                                                                  | ALREADY | `data-state` + state variants                                                                         |
+| `Default`, `Complete`, `Horizontal`, `OnBrand`, `HorizontalOnBrand` stories                   | ALREADY | `Playground`, `Complete`, `Horizontal`, `OnBrand` (horizontal on pink), `Surfaces`                    |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -7684,6 +8992,30 @@ describe("StepTracker", () => {
     render(<StepTracker steps={ORDER} current={3} />);
     expect(states()).toEqual(["complete", "complete", "complete"]);
     expect(screen.queryByRole("listitem", { current: "step" })).not.toBeInTheDocument();
+  });
+
+  it("leaves every step upcoming when nothing has started", () => {
+    render(<StepTracker steps={ORDER} current={-1} />);
+    expect(states()).toEqual(["upcoming", "upcoming", "upcoming"]);
+    expect(screen.getAllByText("Not started yet")).toHaveLength(3);
+  });
+
+  it("spells each step's state out for assistive tech — never by colour alone", () => {
+    render(<StepTracker steps={ORDER} current={1} aria-label="Order progress" />);
+    expect(screen.getByRole("list", { name: "Order progress" })).toBeInTheDocument();
+    expect(screen.getByText("Done")).toHaveClass("sr-only");
+    expect(screen.getByText("In progress")).toHaveClass("sr-only");
+    expect(screen.getByText("Not started yet")).toHaveClass("sr-only");
+    expect(screen.getByText("On the tandoor").closest("li")).toHaveTextContent(
+      "In progressOn the tandoor"
+    );
+  });
+
+  it("merges a caller className over its own gap", () => {
+    render(<StepTracker steps={ORDER} current={0} className="gap-8" />);
+    const list = screen.getByRole("list");
+    expect(list).toHaveClass("gap-8");
+    expect(list).not.toHaveClass("gap-3.5");
   });
 
   it("draws a diamond per step with a check on the completed ones, all decorative", () => {
@@ -7800,6 +9132,13 @@ function stateOf(index: number, current: number): StepState {
   return index === current ? "current" : "upcoming";
 }
 
+/** What a screen reader hears before each step's label (dev parity: state never by colour alone). */
+const STATE_TEXT: Readonly<Record<StepState, string>> = {
+  complete: "Done",
+  current: "In progress",
+  upcoming: "Not started yet",
+};
+
 export interface TrackerStep {
   label: string;
   /** Vertical only: one line of brand voice, e.g. "Chilli paneer is charring." */
@@ -7853,6 +9192,7 @@ export function StepTracker({
             ) : (
               <span aria-hidden="true" className={styles.bar({ state })} />
             )}
+            <span className="sr-only">{STATE_TEXT[state]}</span>
             <span className={styles.copy()}>
               <span className={styles.label({ state })}>{step.label}</span>
               {isVertical && step.note !== undefined ? (
@@ -7870,7 +9210,7 @@ export function StepTracker({
 - [ ] **Step 5: Run to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- src/molecules/step-tracker 2>&1 | tail -8`
-Expected: PASS (7 tests).
+Expected: PASS (10 tests).
 
 - [ ] **Step 6: Stories**
 
@@ -7940,6 +9280,29 @@ export const Surfaces: Story = {
       <StepTracker {...args} className="w-full" />
     </OnSurfaces>
   ),
+};
+
+/** Dev parity: nothing has started yet — every diamond stays grey. */
+export const NotStarted: Story = { args: { current: -1 } };
+
+/** Dev parity: the vertical markers on every field — filled diamonds keep their own colours. */
+export const VerticalSurfaces: Story = {
+  render: (args) => (
+    <OnSurfaces>
+      <StepTracker {...args} />
+    </OnSurfaces>
+  ),
+};
+
+/** Dev parity: the smallest supported width — labels wrap, the diamonds hold their column. */
+export const Narrow: Story = {
+  decorators: [
+    (Story) => (
+      <div className="w-full max-w-80">
+        <Story />
+      </div>
+    ),
+  ],
 };
 ```
 
@@ -8049,7 +9412,8 @@ Expected differences (reasons already recorded — list them, do not "fix" them)
 - Snackbar: tone rows show the dismiss button (deviation 6); the inset is fixed at 24px (the card passes `inset={0}`).
 - Toast / Snackbar success: the fill is the strong mint (deviation 12).
 - Alert: the Dawat warning on ink is the opaque warning panel, not the handoff's translucent tint (deviation 11, open question 1).
-- Tabs underline: the underline may sit on (not over) the hairline where the tablist wraps.
+- Tabs underline: the underline may sit on (not over) the hairline where the tablist wraps; triggers are 44px tall (spec §5.5 target, dev parity), so the row is taller than the card's ~33px.
+- Field `side`: stacks below 480px (dev parity) — the 360px screenshot shows the label above the control.
 - Pagination: Previous/Next at the ends are inert placeholders, not dead buttons (deviation 13).
 - StepTracker: the check glyph is 12px as drawn; on the pink row the reached segments are white (they were invisible pink-on-pink).
 - EmptyState `lg`: body copy changed from the card's "Your first one is on us." (an offer the brand has not made).

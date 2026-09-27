@@ -438,6 +438,7 @@ interface SearchFieldProps extends Omit<
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   onClear?: () => void;
+  clearLabel?: string; /* = "Clear search"; R39 */
   size?: "sm" | "md";
   status?: FieldStatus;
   isLoading?: boolean;
@@ -453,6 +454,8 @@ interface QuantityStepperProps {
   min?: number /* = 0 */;
   max?: number;
   step?: number /* = 1 */;
+  decrementLabel?: string; /* = "Remove one" / "Remove N"; R39 — e.g. "Remove one Paneer Tikka" */
+  incrementLabel?: string; /* = "Add one" / "Add N" */
   size?: "sm" | "md";
   name?: string;
   disabled?: boolean;
@@ -532,6 +535,7 @@ interface TabItem {
   value: string;
   label: ReactNode;
   content: ReactNode;
+  isDisabled?: boolean; /* R39: Radix Trigger disabled — visible, inert, out of the arrow order */
 }
 interface TabsProps {
   label: string;
@@ -540,6 +544,7 @@ interface TabsProps {
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   variant?: "underline" | "segmented";
+  isFullWidth?: boolean; /* R39: equal-share triggers */
   className?: string;
 }
 // breadcrumb
