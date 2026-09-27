@@ -1,9 +1,12 @@
 import type { StorybookConfig } from "@storybook/react-vite";
+import type { Plugin } from "vite";
 
 import tailwindcss from "@tailwindcss/vite";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import remarkGfm from "remark-gfm";
+
+const WORKSPACE_ROOT = fileURLToPath(new URL("../../../", import.meta.url));
 
 const config: StorybookConfig = {
   // Storybook is its own app; the stories it renders live in the design system library, so the
@@ -72,13 +75,36 @@ const config: StorybookConfig = {
       tsconfigPath: "../../packages/ui/tsconfig.lib.json",
     },
   },
+  // pnpm's bin shims export `NODE_PATH` (absolute store paths under the builder's home directory),
+  // and Storybook bakes its `env` preset into the addon manager bundles as `process.env`. Nothing in
+  // the browser reads it, so it is blanked rather than shipped.
+  env: (config) => ({ ...config, NODE_PATH: "" }),
   viteFinal(config) {
     return {
       ...config,
-      plugins: [...(config.plugins ?? []), tailwindcss()],
+      plugins: [...(config.plugins ?? []), tailwindcss(), relativeDocgenPaths()],
     };
   },
 };
+
+/**
+ * react-docgen-typescript stamps each component's *absolute* source path into its `__docgenInfo`
+ * (`filePath`), and neither it nor its Vite plugin has an option to change that — so every build
+ * would carry the builder's home directory (and trip the founder-name guard). This rewrites the
+ * path to workspace-relative after the docgen plugin has appended its JSON.
+ */
+function relativeDocgenPaths(): Plugin {
+  const absolute = `"filePath":${JSON.stringify(WORKSPACE_ROOT).slice(0, -1)}`;
+  return {
+    name: "pink-paprikaa:relative-docgen-paths",
+    enforce: "post",
+    transform(code) {
+      return code.includes(absolute)
+        ? { code: code.replaceAll(absolute, '"filePath":"'), map: null }
+        : null;
+    },
+  };
+}
 
 function getAbsolutePath(value: string): string {
   return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));

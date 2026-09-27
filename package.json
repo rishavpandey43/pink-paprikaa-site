@@ -9,7 +9,7 @@
     "commit": "cz",
     "format": "nx format:write",
     "format:check": "nx format:check",
-    "guard:founder": "node scripts/check-founder-names.mjs apps/web/out apps/blog/out",
+    "guard:founder": "node scripts/check-founder-names.mjs apps/web/out apps/blog/out apps/storybook/storybook-static",
     "prepare": "husky"
   },
   "private": true,
