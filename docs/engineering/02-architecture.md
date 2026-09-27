@@ -24,9 +24,11 @@ violations — cross-package traffic goes through the package's public surface o
 
 `atoms → molecules → organisms → layouts`. These are the design system's own tier names, and
 `templates` was renamed `layouts` (spec D14). A layer may import the layers below it, never one
-above it. An **atom** imports no other atom but Icon, and never the package barrel: the design
-system's tier rule, now LAW (`tools/eslint-config/atomic-layering.js`). By convention it imports
-only the Icon atom, `src/lib/` and packages (AUTHORING §2 separates the two).
+above it, and no layer imports the package barrel, by any spelling (`..`, `../..`, `../../`,
+`../../index`, `../../index.ts`). An **atom** also imports no other atom but Icon, directly or by
+the roundabout `../../atoms/…` path: the design system's tier rule, now LAW
+(`tools/eslint-config/atomic-layering.js`, pinned by `atomic-layering.test.mjs`). By convention it
+imports only the Icon atom, `src/lib/` and packages (AUTHORING §2 separates the two).
 
 `packages/ui/src/lib/` holds library internals, and it is not a layer. Today it has the variant
 builder (`component-variants.ts`), the brand artwork (`brand-artwork.ts`, `brand-artwork.css`) and

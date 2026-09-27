@@ -1,9 +1,12 @@
 const layerOrder = ["atoms", "molecules", "organisms", "layouts"];
 
 /**
- * no-restricted-imports zones: a layer may not import from any layer above it (spec §7 rule 2),
- * over the design system's four tiers — atoms → molecules → organisms → layouts — plus the atom
- * tier's own rule: an atom imports nothing but the Icon atom (and `../../lib`, and packages).
+ * no-restricted-imports zones over the design system's four tiers — atoms → molecules →
+ * organisms → layouts. In every tier a file may not import a layer above it (spec §7 rule 2) nor
+ * the package barrel, by any spelling (`..`, `../..`, `../../`, `../../index`, `../../index.ts`).
+ * An atom also imports no other atom but Icon, directly (`../text/text`) or by the roundabout
+ * path (`../../atoms/text/text`). Everything else passes: `../../lib/*`, `../../assets/*`,
+ * `../../styles.css`, `../../../vitest.setup`, packages. `atomic-layering.test.mjs` pins each case.
  *
  * Exported separately from `react.js` (not folded into the default react preset) because the
  * `files` pattern below — `src/<layer>` — is project-local, not workspace-global: ESLint's flat
@@ -24,6 +27,14 @@ const upperLayerPatterns = (layer) =>
     message: `Atomic layering: ${layer} cannot import from ${upper} (layers only go upward).`,
   }));
 
+/** `src/index.ts` from inside `src/<tier>/<name>/`: import the component's own file instead. */
+const barrelPattern = {
+  regex: "^(?:\\.\\./)*\\.\\.(?:/(?:index(?:\\.[jt]sx?)?)?)?$",
+  message: "Atomic layering: never import the package barrel from inside the package.",
+};
+
+const tierPatterns = (layer) => [...upperLayerPatterns(layer), barrelPattern];
+
 const atomicLayering = [
   {
     files: ["**/src/atoms/**/*"],
@@ -32,7 +43,7 @@ const atomicLayering = [
         "error",
         {
           patterns: [
-            ...upperLayerPatterns("atoms"),
+            ...tierPatterns("atoms"),
             {
               // Design system tier rule: "an atom imports nothing but Icon". A regex, not a
               // gitignore `group`: `../*` also matches `../..`, which flagged `../../lib/*` (probed).
@@ -42,8 +53,8 @@ const atomicLayering = [
                 "Atomic layering: an atom may import only the Icon atom (plus ../../lib and packages).",
             },
             {
-              // The same rule by the roundabout path: `../../atoms/text/text`, `../../index`.
-              regex: "^(?:\\.\\./)+(?:atoms/(?!icon(?:/|$))|index$)",
+              // The same rule by the roundabout path: `../../atoms/text/text`.
+              regex: "^(?:\\.\\./)+atoms/(?!icon(?:/|$))",
               message:
                 "Atomic layering: an atom may import only the Icon atom (plus ../../lib and packages).",
             },
@@ -52,9 +63,9 @@ const atomicLayering = [
       ],
     },
   },
-  ...["molecules", "organisms"].map((layer) => ({
+  ...["molecules", "organisms", "layouts"].map((layer) => ({
     files: [`**/src/${layer}/**/*`],
-    rules: { "no-restricted-imports": ["error", { patterns: upperLayerPatterns(layer) }] },
+    rules: { "no-restricted-imports": ["error", { patterns: tierPatterns(layer) }] },
   })),
 ];
 

@@ -34,15 +34,16 @@ packages/ui/src/<layer>/<kebab-name>/
   <kebab-name>.stories.tsx   card parity
 ```
 
-- **Layers** run `atoms → molecules → organisms → layouts`. A layer may import the layers below it,
-  never one above it (LAW, `tools/eslint-config/atomic-layering.js`).
-- **Atoms.** The lint (LAW) bans an atom file (component, test or story) from importing any atom
-  but Icon (`../text/text`), a higher layer or the package barrel, including by roundabout paths
-  (`../../atoms/text/text`, `../../index`). Anything else passes, so `../../lib/*`,
-  `../../assets/*`, `../../styles.css` and `../../../vitest.setup` all lint clean (probed). The
-  CONVENTION is narrower: an atom imports only `../icon/*`, `../../lib/*`, `../../../vitest.setup`,
-  its own folder and packages. A story never composes another atom: it uses plain elements with
-  token classes.
+- **Layers** run `atoms → molecules → organisms → layouts`. The lint (LAW,
+  `tools/eslint-config/atomic-layering.js`) bans every file in a layer (component, test or story)
+  from importing a layer above it, and from importing the package barrel by any spelling (`..`,
+  `../..`, `../../`, `../../index`, `../../index.ts`): import the component's own file instead.
+- **Atoms.** The lint (LAW) also bans an atom file from importing any atom but Icon, directly
+  (`../text/text`) or by the roundabout path (`../../atoms/text/text`). Anything else passes, so
+  `../../lib/*`, `../../assets/*`, `../../styles.css` and `../../../vitest.setup` all lint clean
+  (`tools/eslint-config/atomic-layering.test.mjs` pins each case). The CONVENTION is narrower: an
+  atom imports only `../icon/*`, `../../lib/*`, `../../../vitest.setup`, its own folder and
+  packages. A story never composes another atom: it uses plain elements with token classes.
 - **`src/lib/`** holds library internals. It is not a layer. Today it has the variant builder
   (`component-variants.ts`), the brand artwork (`brand-artwork.ts`, `brand-artwork.css`) and the
   reveal observer (`reveal-observer.tsx`).
