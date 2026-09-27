@@ -1,0 +1,13 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "text-measure-prose": {
+      "$value": "{container.prose}",
+      "$description": "Text measure=\"prose\" (64ch). A spacing token because Tailwind's static max-w-prose (65ch) shadows --container-prose."
+    },
+    "text-measure-narrow": {
+      "$value": "{container.prose-narrow}",
+      "$description": "Text measure=\"narrow\" (44ch)."
+    }
+  }
+}

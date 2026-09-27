@@ -72,6 +72,8 @@ const SPACING = [
   "logo-lockup",
   "logo-wordmark",
   "logo-symbol",
+  "text-measure-prose",
+  "text-measure-narrow",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];
