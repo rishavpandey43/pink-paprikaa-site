@@ -46,8 +46,8 @@ export default tseslint.config(
           caughtErrorsIgnorePattern: "^_",
         },
       ],
-      // "warn" until Phase 1 lands real code, then promote to "error".
-      "@typescript-eslint/naming-convention": ["warn", ...namingConvention],
+      // LAW since the design system rewrite (drift ledger P-08 closed).
+      "@typescript-eslint/naming-convention": ["error", ...namingConvention],
     },
   },
   {

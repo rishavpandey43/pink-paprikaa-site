@@ -92,7 +92,7 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <div className="font-body text-body1 leading-body1 text-text-body">
+      <div className="font-body text-body text-text-body">
         <Story />
       </div>
     ),

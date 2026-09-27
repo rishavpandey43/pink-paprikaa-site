@@ -84,4 +84,20 @@ export default [
   // its `lint` target will fail immediately, not just once it writes a
   // classname.
   tailwindcss.configs.recommended,
+  {
+    files: ["**/*.tsx", "**/*.jsx", "**/*.ts"],
+    settings: {
+      tailwindcss: {
+        // `componentVariants` is the design system's configured tailwind-variants instance.
+        functions: ["componentVariants", "tv", "cn", "clsx"],
+      },
+    },
+    rules: {
+      // Prettier (prettier-plugin-tailwindcss) owns class order; two sorters would fight.
+      "tailwindcss/classnames-order": "off",
+      // Only token-backed utilities: a missing value becomes a token, never an arbitrary value.
+      "tailwindcss/no-arbitrary-value": "error",
+      "tailwindcss/no-custom-classname": "error",
+    },
+  },
 ];
