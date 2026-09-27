@@ -248,6 +248,10 @@ scale becomes a token.
 - **Class order** belongs to Prettier (`prettier-plugin-tailwindcss`), including inside
   `componentVariants(…)`. Do not hand-sort. Run `pnpm exec prettier --write <your files>` before
   the gates.
+- **Never `max-w-prose`.** Tailwind's built-in `max-w-prose` is a static `65ch` and wins over the
+  system's `--container-prose` (`64ch`), so it lints clean and renders the wrong measure (compiled
+  against `tailwindcss@4.3.3`). Use `max-w-text-measure-prose`, the `text-measure-prose` spacing
+  token over `--container-prose`, which Plan 2a Task 2 adds.
 - **Field text is 16px** (ruling R21). Text-entry controls render their value at `text-body`
   (16px), because iOS zooms the page when a focused field is smaller.
 - **The brand symbol** is painted only by the `mask-symbol` utility or `var(--pp-symbol-mask)`.

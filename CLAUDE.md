@@ -136,11 +136,10 @@ workspace: the app owns `.storybook/` and the Tailwind entry, the library owns t
 `stories` globs reach across into `packages/ui/src`. `packages/ui/tailwind.css` exists solely so
 the library's ESLint config has a resolvable `tailwindcss.cssConfigPath` — nothing bundles it.
 
-`nx affected` compares against `main` by default. Because none of Phase 0 has merged to `main`
-yet, it currently reports every project as affected on this branch regardless of what the latest
-commit touched — that stops once `feat/phase-0-foundation` merges, after which a docs-only commit
-will affect zero projects as intended. CI instead uses `nrwl/nx-set-shas` to diff against the last
-successful run, so it does not have this problem.
+`nx affected` compares against `main` by default. `main` is the live site's own history and shares
+no commit with this workspace, so locally every project is always affected, whatever the latest
+commit touched (`pnpm verify` and the pre-push hook run everything). Pass `--base=dev` for a real
+diff. CI instead uses `nrwl/nx-set-shas` to diff against the last successful run.
 
 ## Conventions
 
@@ -155,11 +154,16 @@ successful run, so it does not have this problem.
 
 ## Current state
 
-**Phase 0 (foundation) is complete, pending merge of `feat/phase-0-foundation` into `main`.**
+**Phase 0 (foundation) is complete and lives on `dev`**, together with the August port of the
+design system (74 components). **The design system is being rewritten on `feat/design-system`**,
+branched from `dev`: spec `docs/superpowers/specs/2026-09-27-design-system-rewrite-design.md`, plans
+`docs/superpowers/plans/2026-09-27-ds-*.md`. Plan 1 (foundation: tokens, formatters, brand facts,
+`componentVariants`, `Icon`, `Logo`, `RevealObserver`, `packages/ui/AUTHORING.md`) is done; the
+later plans build the components.
 
-The item-by-item record of what is built and what is deferred lives in **§15 of the architecture
-spec** ("Phase 0 progress"). Read it before planning the next phase, and update it as items
-land — it is the only place that state is tracked, so do not duplicate it here.
+The item-by-item record of Phase 0, built and deferred, lives in **§15 of the architecture spec**
+("Phase 0 progress"). Read it before planning the next phase, and update it as items land — it is
+the only place that state is tracked, so do not duplicate it here.
 
 The working tree is authoritative if it and that table disagree. To establish ground truth:
 
@@ -169,14 +173,19 @@ pnpm nx show projects                         # 13 projects
 git log --oneline                             # commit messages carry the reasoning
 ```
 
-Three more facts that are easy to trip on, all verified against the working tree:
+More facts that are easy to trip on, all verified with git:
 
-- **No git remote is configured.** The workspace was initialised locally; the remote is pointed at
-  GitHub in Phase 6. Nothing pushes anywhere yet, and CI has never actually executed — every
-  workflow command in `.github/workflows/ci.yml` was verified locally instead.
-- **`main` is no longer the only branch.** This work landed on `feat/phase-0-foundation`; `main`
-  still points at the pre-Phase-0 state until that branch is merged. The spec's `dev` integration
-  branch (§3) still does not exist.
+- **`origin` is the GitHub repository** (`git remote -v`). `main` and `origin/main` are the live
+  site's own history and share no commit with this workspace (`git merge-base main dev` finds
+  none). `ci.yml` runs only on pushes to `main` and on pull requests, so treat the workflow as
+  unexercised; its commands were verified locally.
+- **`dev` (and `origin/dev`) holds Phase 0 and the August port**, and it is the dev-parity source
+  for the rewrite (contracts §0.0, `docs/superpowers/plans/2026-09-27-ds-00-contracts.md`): read its
+  files with `git show dev:<path>`, never check out, merge or restore them. `feat/design-system`
+  has no upstream yet. `feat/phase-0-foundation` no longer exists.
+- **SDD records** (ledgers, briefs, reports) are copied from `.superpowers/sdd/` to
+  `docs/superpowers/records/sdd/`. That folder's own `.gitignore` (`*`) keeps them out of git, so
+  they exist only in this working copy.
 - **Root `package.json` `scripts` is now real**: `verify`, `verify:all`, `commit` (`cz`), `format`,
   `format:check`, `guard:founder`, `prepare`. `pnpm verify`, `pnpm commit` and `pnpm format` all
   work as described in the architecture spec.

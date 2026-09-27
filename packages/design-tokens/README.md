@@ -6,27 +6,28 @@ JSON and compiled by Style Dictionary 5 into CSS that Tailwind v4 and the compon
 
 **The one-hex rule.** The brand pink `#EE2C68` exists once in the workspace: `color.pink.500` in
 `tokens/primitive/color.json`. Everything else references the token. `pink-paprikaa/no-raw-hex`
-fails lint on a literal hex in source, and `theme.spec.ts` fails if a second primitive holds it.
+fails lint on a literal hex in source, and `theme.spec.ts` scans every token source file (all four
+tiers) and fails if the hex is written more than once.
 
 ## Tiers (`tokens/`)
 
-| Folder       | Tier      | What lives there                                                                                                                                     |
-| ------------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `primitive/` | Primitive | Raw values — the only place a hex or px literal may exist. Colour ramps, type, space, radius, shadow, motion, breakpoints, canvas, pattern, z-index. |
-| `semantic/`  | Semantic  | Roles that reference primitives: `color.surface.*`, `color.text.*`, `color.border.*`, `color.status.*`, `color.heat.*`, the focus ring.              |
-| `component/` | Component | One file per component for dimensions that are not a step of a base scale (empty until components land).                                             |
-| `surface/`   | Surface   | `brand`, `ink`, `soft`, `light`: overrides of semantic and component tokens for a scope.                                                             |
+| Folder       | Tier      | What lives there                                                                                                                                                                                                                         |
+| ------------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `primitive/` | Primitive | Raw values — the only place a colour literal may exist. Colour ramps, type, space, radius, shadow, motion, breakpoints, canvas, pattern, z-index.                                                                                        |
+| `semantic/`  | Semantic  | Roles that reference primitives: `color.surface.*`, `color.text.*`, `color.border.*`, `color.status.*`, `color.heat.*`, the focus ring (a composite: its `3px` spread is a literal, its colour a reference).                             |
+| `component/` | Component | One file per component for values that are not a step of a base scale: `icon.json` (`size-icon-*`), `logo.json` (`w-logo-*`). A dimension may be a px literal here (`"14px"`); a colour always references a primitive or semantic token. |
+| `surface/`   | Surface   | `brand`, `ink`, `soft`, `light`: overrides of semantic and component tokens for a scope.                                                                                                                                                 |
 
 Every leaf is `{ "$value": … }`; `$type` is set on the group and inherited. Values are CSS-ready
 strings; typography is the one composite (`fontSize`, `lineHeight`, `letterSpacing`, `fontWeight`).
 
 ## Outputs (`dist/`, generated, gitignored)
 
-| File           | Content                                                                                                                                                                                  | Consumer                          |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| `theme.css`    | One `@theme static { … }` block: `--<ns>-*: initial` resets for every Tailwind namespace the system owns, then every primitive and semantic token. Pure aliases stay `var()` references. | `packages/ui/src/styles.css`      |
-| `surfaces.css` | `[data-surface="…"], .pp-on-… { … }` blocks that redefine semantic tokens for each surface.                                                                                              | `packages/ui/src/styles.css`      |
-| `tokens.json`  | Flat catalogue: `{ name, cssVar, path, value, reference, type, tier, surface, description }`.                                                                                            | Storybook foundation pages; tests |
+| File           | Content                                                                                                                                                                                             | Consumer                          |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| `theme.css`    | One `@theme static { … }` block: `--<ns>-*: initial` resets for every Tailwind namespace the system owns, then every primitive, semantic and component token. Pure aliases stay `var()` references. | `packages/ui/src/styles.css`      |
+| `surfaces.css` | `[data-surface="…"], .pp-on-… { … }` blocks that redefine semantic tokens for each surface.                                                                                                         | `packages/ui/src/styles.css`      |
+| `tokens.json`  | Flat catalogue: `{ name, cssVar, path, value, reference, type, tier, surface, description }`.                                                                                                       | Storybook foundation pages; tests |
 
 Package exports: `./theme.css`, `./surfaces.css`, `./tokens.json`, and `./contrast` (the WCAG maths:
 `parseColor`, `composite`, `relativeLuminance`, `contrastRatio`).
