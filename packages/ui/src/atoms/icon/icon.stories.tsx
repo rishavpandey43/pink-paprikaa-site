@@ -105,6 +105,11 @@ export const Glyphs: Story = {
   ),
 };
 
+/** A labelled icon is announced as an image (`role="img"`); a decorative one is skipped. */
+export const Labelled: Story = {
+  args: { icon: MessageCircle, label: "Chat on WhatsApp", size: "lg" },
+};
+
 /** Card row "on dark": on an ink panel the surface's text colour carries the icon to white. */
 export const OnInk: Story = {
   render: () => (

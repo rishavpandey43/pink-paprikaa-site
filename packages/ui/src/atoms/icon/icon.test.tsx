@@ -9,6 +9,8 @@ describe("Icon", () => {
   it("is hidden from assistive tech when it has no label", () => {
     const { container } = render(<Icon icon={MessageCircle} />);
     expect(container.firstElementChild).toHaveAttribute("aria-hidden", "true");
+    // `hidden: true` so a role on an aria-hidden element would still be found.
+    expect(screen.queryByRole("img", { hidden: true })).not.toBeInTheDocument();
   });
 
   it("is announced as an image with its label when given one", () => {
@@ -26,6 +28,12 @@ describe("Icon", () => {
     const { container } = render(<Icon icon={MessageCircle} size={size} />);
     expect(container.firstElementChild).toHaveClass(sizeClass);
     expect(container.querySelector("svg")).toHaveAttribute("stroke-width", stroke);
+  });
+
+  it("lets a caller's className replace the size class", () => {
+    const { container } = render(<Icon icon={MessageCircle} size="md" className="size-8" />);
+    expect(container.firstElementChild).toHaveClass("size-8");
+    expect(container.firstElementChild).not.toHaveClass("size-icon-md");
   });
 
   it.each([InstagramGlyph, YoutubeGlyph, LinkedinGlyph])(

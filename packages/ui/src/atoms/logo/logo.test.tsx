@@ -20,6 +20,11 @@ describe("Logo", () => {
     expect(screen.getByRole("img", { name })).toHaveClass(widthClass);
   });
 
+  it("names itself with a caller's title instead of the default", () => {
+    render(<Logo title="Pink Paprikaa home" />);
+    expect(screen.getByRole("img", { name: "Pink Paprikaa home" })).toBeInTheDocument();
+  });
+
   it("paints the white tone for pink and ink fields", () => {
     render(<Logo tone="white" />);
     expect(screen.getByRole("img")).toHaveClass("text-ink-000");
@@ -30,6 +35,12 @@ describe("Logo", () => {
     expect(container.querySelector("svg")).toHaveAttribute("viewBox", "0 0 100 100");
     expect(container.querySelector("rect")).toHaveClass("fill-pink-500");
     expect(container.querySelector("svg svg")).toHaveAttribute("fill", "currentColor");
+  });
+
+  it.each(["pink", "white"] as const)("leaves the plate off the transparent %s tone", (tone) => {
+    const { container } = render(<Logo tone={tone} />);
+    expect(container.querySelector("rect")).not.toBeInTheDocument();
+    expect(container.querySelector("svg svg")).not.toBeInTheDocument();
   });
 
   it("insets the symbol badge's artwork 20 units on every side (60 of 100)", () => {
@@ -89,8 +100,14 @@ describe("Logo", () => {
     expectTypeOf<LogoProps>().not.toHaveProperty("dangerouslySetInnerHTML");
   });
 
-  it("has no accessibility violations", async () => {
-    const { container } = render(<Logo />);
+  it("has no accessibility violations: default, badge and decorative", async () => {
+    const { container } = render(
+      <>
+        <Logo />
+        <Logo tone="badge" variant="symbol" />
+        <Logo tone="white" isDecorative />
+      </>
+    );
     await expectNoA11yViolations(container);
   });
 });
