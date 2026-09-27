@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><title>Pink Paprikaa Menu · Pure Veg Restaurant, MKM Market Sector 57</title><meta name="description" content="Full menu of Pink Paprikaa, a pure veg restaurant at MKM Market, Sector 57 Gurgaon. Order online, on Swiggy or Zomato."><script src="./ds-base.js"></script><style>body{margin:0}a{color:var(--text-link);text-decoration:none}a:hover{color:var(--text-link-hover)}</style></helmet>
+<div style="min-height:100vh;background:var(--surface-page);font-family:var(--font-body);color:var(--text-body)">
+  <dc-import name="PPHeader" active="menu" page="Menu" hint-size="100%,100px"></dc-import>
+
+  <section data-screen-label="Menu header" style="background:var(--pink-50)">
+    <div style="max-width:960px;margin:0 auto;padding:clamp(28px,5vw,64px) clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:14px">
+      <span style="display:inline-flex;align-self:flex-start;align-items:center;gap:6px;background:#fff;border:1px solid var(--border-subtle);color:#1d6e52;font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:var(--radius-pill)"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.DietMark" type="veg" size="{{ 14 }}" hint-size="14px,14px"></x-import>100% vegetarian kitchen</span>
+      <h1 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-display-2-fluid);line-height:1.05;letter-spacing:-.03em;color:var(--ink-900)">Restaurant menu</h1>
+      <p style="margin:0;font-size:16px;line-height:1.6">Dine in with AC seating at MKM Market, Sector 57, or order in. 8am – 11:30pm, every day. We accept UPI, cards and Pluxee (Sodexo).</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:8px;max-width:640px">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="primary" size="md" icon="shopping-bag" full-width="{{ true }}" on-click="{{ orderOnline }}" hint-size="100%,44px">Order online</x-import>
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="secondary" size="md" full-width="{{ true }}" on-click="{{ swiggy }}" hint-size="100%,44px">Swiggy</x-import>
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="secondary" size="md" full-width="{{ true }}" on-click="{{ zomato }}" hint-size="100%,44px">Zomato</x-import>
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="secondary" size="md" icon="map-pin" full-width="{{ true }}" on-click="{{ directions }}" hint-size="100%,44px">Directions</x-import>
+      </div>
+    </div>
+  </section>
+
+  <nav style="position:sticky;top:100px;z-index:10;background:#fff;border-bottom:1px solid var(--border-subtle)">
+    <div style="max-width:960px;margin:0 auto;padding:10px clamp(16px,4vw,40px);display:flex;gap:6px;overflow-x:auto">
+      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
+        <a href="{{ c.href }}" style="background:var(--pink-50);color:var(--pink-700);font-family:var(--font-display);font-weight:600;font-size:14px;padding:9px 14px;border-radius:var(--radius-pill);white-space:nowrap;flex:0 0 auto">{{ c.name }}</a>
+      </sc-for>
+    </div>
+  </nav>
+
+  <div style="max-width:960px;margin:0 auto;padding:clamp(28px,5vw,56px) clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:40px">
+    <sc-for list="{{ menu }}" as="cat" hint-placeholder-count="4">
+      <section id="{{ cat.id }}" style="display:flex;flex-direction:column;scroll-margin-top:170px">
+        <h2 style="margin:0 0 8px;font-family:var(--font-display);font-weight:800;font-size:var(--fs-h2-fluid);color:var(--ink-900);letter-spacing:-.02em">{{ cat.name }}</h2>
+        <sc-for list="{{ cat.items }}" as="it" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:16px minmax(0,1fr) auto;gap:12px;align-items:baseline;padding:14px 0;border-top:1px solid var(--border-subtle)">
+            <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.DietMark" type="veg" size="{{ 14 }}" hint-size="14px,14px"></x-import>
+            <div style="display:flex;flex-direction:column;gap:3px;min-width:0">
+              <span style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--ink-900)">{{ it.name }}</span>
+              <span style="font-size:14px;color:var(--text-muted)">{{ it.desc }}</span>
+            </div>
+            <span style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--ink-900);white-space:nowrap">{{ it.price }}</span>
+          </div>
+        </sc-for>
+      </section>
+    </sc-for>
+    <span style="font-size:13px;color:var(--text-muted)">Prices include GST. Sample menu — replace with the current restaurant menu.</span>
+    <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.PatternField" tone="brand" tile="{{ 64 }}" base="assets" radius="var(--radius-xl)" hint-size="100%,200px"><div data-surface="brand" style="background:transparent;border-radius:var(--radius-xl);padding:clamp(20px,4vw,32px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;color:#fff">
+      <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+        <span style="font-family:var(--font-display);font-weight:800;font-size:var(--fs-h2-fluid);letter-spacing:-.02em">Eat from this kitchen every day?</span>
+        <span>{{ homelyLine }}</span>
+      </div>
+      <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="inverse" size="lg" on="brand" icon-after="arrow-right" on-click="{{ goHomely }}" hint-size="180px,54px">Homely Meals</x-import>
+    </div></x-import>
+  </div>
+
+  <dc-import name="PPFooter" page="Menu" cta="Order on WhatsApp" wa-msg="Restaurant order: " hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount() { if (!window.PP_RATES) this._t = setInterval(() => { if (window.PP_RATES) { clearInterval(this._t); this.forceUpdate(); } }, 40); }
+  componentWillUnmount() { clearInterval(this._t); }
+  renderVals() {
+    const R = window.PP_RATES;
+    const M = [
+      { id: 'thalis', name: 'Thalis', items: [
+        { name: 'Paprikaa Special Thali', price: '₹249', desc: 'Dal makhani, paneer, seasonal sabzi, rice, 3 rotis, raita, sweet.' },
+        { name: 'Mini Thali', price: '₹169', desc: 'Dal, sabzi, rice, 2 rotis, salad.' },
+        { name: 'Chhole Bhature', price: '₹189', desc: 'Pindi chhole, two bhature, pickled onion.' } ] },
+      { id: 'mains', name: 'Mains', items: [
+        { name: 'Paneer Butter Masala', price: '₹279', desc: 'Paneer, tomato-butter gravy, kasuri methi.' },
+        { name: 'Dal Makhani', price: '₹219', desc: 'Black urad, slow-cooked overnight, white butter.' },
+        { name: 'Kadhai Mushroom', price: '₹249', desc: 'Mushroom, capsicum, crushed kadhai masala.' },
+        { name: 'Veg Biryani', price: '₹239', desc: 'Basmati, seasonal veg, whole spices, raita.' } ] },
+      { id: 'snacks', name: 'Snacks & Chaat', items: [
+        { name: 'Paneer Tikka', price: '₹269', desc: 'Tandoor-charred paneer, mint chutney.' },
+        { name: 'Pav Bhaji', price: '₹169', desc: 'Buttered pav, bhaji, onion, lemon.' },
+        { name: 'Dahi Bhalla', price: '₹129', desc: 'Urad bhalla, sweet curd, tamarind, roasted jeera.' } ] },
+      { id: 'breads', name: 'Breads & Rice', items: [
+        { name: 'Butter Naan', price: '₹59', desc: 'Tandoor naan, white butter.' },
+        { name: 'Laccha Paratha', price: '₹69', desc: 'Layered whole-wheat paratha.' },
+        { name: 'Jeera Rice', price: '₹129', desc: 'Basmati, cumin, ghee.' } ] },
+      { id: 'sweets', name: 'Sweets & Drinks', items: [
+        { name: 'Gulab Jamun (2)', price: '₹79', desc: 'Khoya jamun, warm syrup.' },
+        { name: 'Kulhad Chai', price: '₹49', desc: 'Assam leaf, ginger, clay cup.' },
+        { name: 'Masala Chaas', price: '₹69', desc: 'Buttermilk, roasted jeera, mint.' } ] }
+    ];
+    const open = k => () => R && window.open(R.links[k], '_blank');
+    return {
+      menu: M, cats: M.map(c => ({ name: c.name, href: '#' + c.id })),
+      orderOnline: open('orderOnline'), swiggy: open('swiggy'), zomato: open('zomato'), directions: open('directions'),
+      homelyLine: R ? `Homely Meals from ${window.ppRs(R.homely.from)} a meal. Plan members get 10% off this menu.` : '',
+      goHomely: () => { window.location.href = 'HomelyMeals.dc.html'; }
+    };
+  }
+}
+</script>
+</body>
+</html>

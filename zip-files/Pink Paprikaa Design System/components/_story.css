@@ -1,0 +1,20 @@
+html,body{margin:0}
+body{padding:18px 22px;background:var(--surface-page);font-family:var(--font-body)}
+.rows{display:grid;gap:0}
+.row{display:grid;grid-template-columns:minmax(0,128px) minmax(0,1fr);gap:18px;align-items:center;padding:13px 0;border-bottom:1px solid var(--border-subtle)}
+.row:last-child{border-bottom:none}
+.rk{display:grid;gap:2px;min-width:0}
+.rk b{font-family:var(--font-mono);font-size:10.5px;font-weight:400;letter-spacing:.04em;color:var(--text-heading);word-break:break-word}
+.rk span{font-family:var(--font-body);font-size:11px;line-height:1.35;color:var(--text-subtle)}
+.rv{display:flex;flex-wrap:wrap;gap:12px;align-items:center;min-width:0}
+.rv.top{align-items:flex-start}
+.rv.col{flex-direction:column;align-items:stretch;gap:10px}
+.pad{padding:14px;border-radius:var(--radius-lg)}
+.on-brand{background:var(--pink-500)}
+.on-ink{background:var(--ink-900)}
+.on-soft{background:var(--pink-50)}
+.note{font-family:var(--font-mono);font-size:10.5px;color:var(--text-subtle);padding-top:10px}
+@keyframes pp-toast-pop{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes pp-skeleton{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes pp-spin-pulse{0%,100%{transform:rotate(45deg) scale(.7);opacity:.25}50%{transform:rotate(45deg) scale(1.15);opacity:1}}
+@keyframes pp-dot-pulse{0%{transform:rotate(45deg) scale(1);opacity:.6}100%{transform:rotate(45deg) scale(2.4);opacity:0}}

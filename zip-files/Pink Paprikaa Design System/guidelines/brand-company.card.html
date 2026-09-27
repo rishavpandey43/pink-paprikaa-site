@@ -1,0 +1,31 @@
+<!-- @dsCard group="Brand" viewport="700x520" name="Company details" subtitle="brand.js — the single source for name, legal, GST, contact, outlets and billing. Every design reads from it." -->
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<script src="../brand.js"></script>
+<style>html,body{margin:0}body{padding:20px 24px;font-family:var(--font-body);background:var(--surface-page)}
+.g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.b{border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:14px 16px;min-width:0}
+.h{font-family:var(--font-display);font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-brand);margin-bottom:10px}
+.r{display:grid;grid-template-columns:78px minmax(0,1fr);gap:8px;font-size:12.5px;line-height:1.45;padding:3px 0}
+.r b{font-family:var(--font-mono);font-size:10.5px;font-weight:400;color:var(--text-subtle);padding-top:2px}
+.r span{color:var(--text-body);word-break:break-word}
+.todo{color:var(--status-danger);font-family:var(--font-mono);font-size:11px}
+.note{font-family:var(--font-mono);font-size:10.5px;color:var(--text-subtle);margin-top:16px;line-height:1.6}
+code{font-family:var(--font-mono);font-size:10.5px;background:var(--surface-sunken);padding:1px 5px;border-radius:4px}</style></head><body>
+<div class="g" id="g"></div>
+<div class="note" id="n"></div>
+<script>
+const B=window.PP_BRAND;
+const v=(x)=>String(x).startsWith('TODO')||String(x).includes('TODO')?'<span class="todo">'+x+'</span>':x;
+const row=(k,x)=>'<div class="r"><b>'+k+'</b><span>'+v(x)+'</span></div>';
+const box=(h,rows)=>'<div class="b"><div class="h">'+h+'</div>'+rows.join('')+'</div>';
+document.getElementById('g').innerHTML=[
+ box('Identity',[row('name',B.name+' · '+B.nameDevanagari),row('tagline',B.tagline),row('statement',B.statement),row('veg',B.vegStatement),row('est',B.est)]),
+ box('Legal',[row('entity',B.legal.entity),row('cin',B.legal.cin),row('gstin',B.legal.gstin),row('fssai',B.legal.fssai),row('pan',B.legal.pan)]),
+ box('Contact',[row('web',B.contact.website),row('phone',B.contact.phoneDisplay),row('whatsapp',B.contact.whatsapp),row('email',B.contact.email),row('franchise',B.contact.franchiseEmail)]),
+ box('Billing',[row('gst',(B.billing.gstRate*100)+'% (CGST '+(B.billing.gstSplit.cgst*100)+' + SGST '+(B.billing.gstSplit.sgst*100)+')'),row('note',B.billing.taxNote),row('prefix',B.billing.invoicePrefix+'-0000'),row('upi',B.billing.upi),row('ifsc',B.billing.ifsc)]),
+ box('Social',Object.values(B.social).map(s=>row(s.icon,s.handle))),
+ box('Outlets · '+B.lines.cities,B.outlets.map(o=>row(o.city,o.name+' — '+o.hours))),
+].join('');
+const todos=JSON.stringify(B).match(/TODO/g)||[];
+document.getElementById('n').innerHTML='Load <code>brand.js</code> before the bundle (or <code>import { PP_BRAND } from "./tokens/brand.module.js"</code>). SiteFooter, invoices and contact blocks read it automatically. Derived lines: <code>PP_BRAND.lines.copyright</code>, <code>.lines.fssai</code>, <code>.lines.gstin</code>, <code>.lines.footerPolicies</code>. <span class="todo">'+todos.length+' placeholders</span> still read TODO — fill them once in brand.js.';
+</script></body></html>

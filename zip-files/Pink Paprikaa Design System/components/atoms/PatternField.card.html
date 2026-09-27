@@ -1,0 +1,19 @@
+<!-- @dsCard group="Atoms" viewport="700x300" name="PatternField" subtitle="The tiled diamond texture - the brand&#39;s only pattern." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+</head><body><div id="root"></div><script type="text/babel">
+const { PatternField, Text } = window.PinkPaprikaaDesignSystem_23ef63;
+function Demo(){const inner=(t)=><div style={{padding:16}}><Text variant="h4" as="div" tone={t}>Flooded field</Text><Text variant="caption" as="div" tone={t}>tile 64 - opacity .08</Text></div>;
+return(<Rows>
+<Row label="brand" col><PatternField tone="brand" tile={64} base="../../assets" radius="var(--radius-lg)">{inner('inverse')}</PatternField></Row>
+<Row label="ink" col><PatternField tone="ink" tile={64} base="../../assets" radius="var(--radius-lg)">{inner('inverse')}</PatternField></Row>
+<Row label="soft" col><PatternField tone="soft" tile={64} base="../../assets" radius="var(--radius-lg)">{inner('var(--pink-800)')}</PatternField></Row>
+</Rows>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

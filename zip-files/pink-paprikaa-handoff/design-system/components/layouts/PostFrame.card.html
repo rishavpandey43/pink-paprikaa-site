@@ -1,0 +1,55 @@
+<!-- @dsCard group="Layouts" viewport="900x800" name="PostFrame" subtitle="The seven marketing canvases, shown to scale." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{padding:18px 22px;background:var(--ink-100)}</style>
+</head><body><div id="root"></div><script type="text/babel">
+const { PostFrame, PatternField, SocialHeadline, LogoLockup, OfferSeal, Logo, Button } = window.PinkPaprikaaDesignSystem_23ef63;
+function Demo(){const cap=(t)=><div className="note" style={{paddingTop:8}}>{t}</div>;
+return(<div style={{display:'flex',gap:20,alignItems:'flex-start',flexWrap:'wrap'}}>
+<div><PostFrame format="post" scale={0.2} background="var(--pink-500)">
+<PatternField tone="brand" tile={96} base="../../assets" style={{position:'absolute',inset:0}}/>
+<div style={{position:'relative',display:'flex',flexDirection:'column',height:'100%',justifyContent:'space-between'}}>
+<SocialHeadline size="overline" on="brand">Tonight Only</SocialHeadline>
+<SocialHeadline size="hero" on="brand" max="13ch">Chai first, decisions later.</SocialHeadline>
+<LogoLockup tone="white" size={260} base="../../assets"/></div>
+<div style={{position:'absolute',right:-70,top:-70}}><OfferSeal value="50%" label="Off" size={300}/></div>
+</PostFrame>{cap('post 1080x1080')}</div>
+<div><PostFrame format="portrait" scale={0.16} background="var(--ink-900)">
+<PatternField tone="ink" tile={96} base="../../assets" style={{position:'absolute',inset:0}}/>
+<div style={{position:'relative',display:'flex',flexDirection:'column',height:'100%',justifyContent:'space-between'}}>
+<SocialHeadline size="overline" on="ink" style={{color:'var(--pink-300)'}}>Since 2025</SocialHeadline>
+<SocialHeadline size="hero" on="ink" max="11ch">Desi at heart. Urban by nature.</SocialHeadline>
+<LogoLockup tone="white" size={240} base="../../assets"/></div>
+</PostFrame>{cap('portrait 1080x1350')}</div>
+<div><PostFrame format="story" scale={0.115} background="var(--pink-500)" safeArea>
+<div style={{display:'flex',flexDirection:'column',height:'100%',justifyContent:'center',gap:40}}>
+<SocialHeadline size="overline" on="brand">First Order</SocialHeadline>
+<SocialHeadline size="h1" on="brand" max="10ch">Half off, on us.</SocialHeadline></div>
+</PostFrame>{cap('story 1080x1920 + safeArea')}</div>
+<div style={{display:'grid',gap:16}}>
+<div><PostFrame format="landscape" scale={0.28} background="var(--pink-100)" padding={48}>
+<div style={{display:'flex',flexDirection:'column',height:'100%',justifyContent:'space-between'}}>
+<SocialHeadline size="h2" on="soft" max="16ch">One kitchen. One grinder.</SocialHeadline>
+<LogoLockup tone="pink" size={200} base="../../assets"/></div>
+</PostFrame>{cap('landscape 1200x628')}</div>
+<div><PostFrame format="leaderboard" scale={0.46} background="var(--pink-500)" padding={0}>
+<div style={{height:'100%',display:'flex',alignItems:'center',gap:18,padding:'0 18px'}}>
+<Logo base="../../assets" tone="white" height={44}/>
+<span style={{flex:1,minWidth:0,fontFamily:'var(--font-display)',fontWeight:800,fontSize:22,color:'#fff',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>50% off your first order</span>
+<Button on="brand" size="sm">Order Now</Button></div>
+</PostFrame>{cap('leaderboard 728x90')}</div>
+<div><PostFrame format="mpu" scale={0.6} background="var(--ink-900)" padding={0}>
+<div style={{height:'100%',padding:18,display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
+<Logo base="../../assets" tone="white" height={40}/>
+<span style={{fontFamily:'var(--font-display)',fontWeight:800,fontSize:26,lineHeight:1.05,color:'#fff'}}>Chai first, decisions later.</span>
+<Button size="sm" fullWidth>Order Now</Button></div>
+</PostFrame>{cap('mpu 300x250')}</div>
+</div></div>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

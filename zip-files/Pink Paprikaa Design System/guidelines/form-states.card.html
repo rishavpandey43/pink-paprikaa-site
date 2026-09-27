@@ -1,0 +1,18 @@
+<!-- @dsCard group="Layout" viewport="700x300" name="Form states" subtitle="One status system across every control: default, error, success, warning, disabled, read-only." -->
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>html,body{margin:0}body{padding:20px 24px;font-family:var(--font-body);background:var(--surface-page)}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th{text-align:left;font-family:var(--font-display);font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-subtle);padding:0 12px 10px 0}
+td{padding:9px 12px 9px 0;border-top:1px solid var(--border-subtle);color:var(--text-body);vertical-align:middle}
+.sw{display:inline-block;width:34px;height:14px;border-radius:3px;vertical-align:middle;margin-right:8px}
+code{font-family:var(--font-mono);font-size:11px;color:var(--text-heading)}</style></head><body>
+<table><tr><th>State</th><th>Border</th><th>Message</th><th>Applies to</th></tr>
+<tr><td><code>default</code></td><td><span class="sw" style="background:var(--border-default)"></span>1px border-default</td><td>hint, subtle</td><td>all</td></tr>
+<tr><td><code>focus</code></td><td><span class="sw" style="background:var(--pink-500)"></span>2px pink + ring</td><td>&mdash;</td><td>all</td></tr>
+<tr><td><code>error</code></td><td><span class="sw" style="background:var(--status-danger)"></span>2px danger</td><td>says what to do next</td><td>Input, Select, SearchField, OtpInput, Checkbox, Radio, SlotPicker, Field</td></tr>
+<tr><td><code>success</code></td><td><span class="sw" style="background:var(--status-success)"></span>2px mint</td><td>confirms the result</td><td>Input, Select, SearchField, OtpInput, Field</td></tr>
+<tr><td><code>warning</code></td><td><span class="sw" style="background:var(--status-warning)"></span>2px turmeric</td><td>flags a caveat</td><td>Input, Select, SearchField, Field</td></tr>
+<tr><td><code>disabled</code></td><td><span class="sw" style="background:var(--ink-200)"></span>ink-100 fill, ink-400 text</td><td>&mdash;</td><td>all &mdash; a real fill, never opacity</td></tr>
+<tr><td><code>readOnly</code></td><td><span class="sw" style="background:var(--surface-sunken)"></span>sunken fill + lock glyph</td><td>&mdash;</td><td>Input, Select</td></tr>
+<tr><td><code>loading</code></td><td>unchanged</td><td>trailing Spinner</td><td>Input, SearchField</td></tr>
+</table></body></html>

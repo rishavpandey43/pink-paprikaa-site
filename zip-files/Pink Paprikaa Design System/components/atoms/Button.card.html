@@ -1,0 +1,34 @@
+<!-- @dsCard group="Atoms" viewport="700x900" name="Button" subtitle="4 variants × 3 sizes, leading and trailing icons, on-brand, states, full width." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+</head><body><div id="root"></div><script type="text/babel">
+const { Button, IconButton } = window.PinkPaprikaaDesignSystem_23ef63;
+function Demo(){return(<Rows>
+<Row label="variant" note="primary / secondary / ghost / inverse"><Button>Order Now</Button><Button variant="secondary">See Menu</Button><Button variant="ghost">Find Us</Button><Button variant="inverse">Book</Button></Row>
+<Row label="size" note="sm 36 / md 44 / lg 54"><Button size="sm">Small</Button><Button size="md">Medium</Button><Button size="lg">Large</Button></Row>
+
+<Row label="icon" note="leading — the default place for one"><Button icon="shopping-bag">Order Now</Button><Button variant="secondary" icon="map-pin">Directions</Button><Button variant="ghost" icon="search">Search Menu</Button></Row>
+<Row label="iconAfter" note="trailing — for onward motion"><Button iconAfter="arrow-right">Full Menu</Button><Button variant="secondary" iconAfter="arrow-right">Our Story</Button><Button variant="ghost" iconAfter="arrow-up-right">Zomato</Button></Row>
+<Row label="both" note="only when each means something"><Button icon="map-pin" iconAfter="arrow-up-right">Directions</Button><Button variant="secondary" icon="calendar" iconAfter="chevron-down">Pick a Date</Button></Row>
+
+<Row label="icon × size" note="glyph 16 at sm, 20 at md/lg"><Button size="sm" icon="shopping-bag">Small</Button><Button size="md" icon="shopping-bag">Medium</Button><Button size="lg" icon="shopping-bag">Large</Button></Row>
+<Row label="iconAfter × size"><Button size="sm" variant="secondary" iconAfter="arrow-right">Small</Button><Button size="md" variant="secondary" iconAfter="arrow-right">Medium</Button><Button size="lg" variant="secondary" iconAfter="arrow-right">Large</Button></Row>
+
+<Row label="icon on brand" className="pad on-brand"><Button on="brand" icon="shopping-bag">Order Now</Button><Button on="brand" variant="secondary" iconAfter="arrow-right">Our Story</Button></Row>
+
+<Row label="icon-only" note="use IconButton, never a Button"><IconButton icon="shopping-bag" label="Your order" variant="primary" size="lg"/><IconButton icon="search" label="Search" variant="secondary"/><IconButton icon="heart" label="Save" variant="ghost"/></Row>
+
+<Row label="loading" note="glyph swaps for a spinner"><Button loading icon="shopping-bag">Placing order</Button><Button variant="secondary" loading>Checking code</Button></Row>
+<Row label="disabled" note="icon dims with the label"><Button disabled icon="shopping-bag">Sold Out</Button><Button variant="secondary" disabled iconAfter="arrow-right">Closed</Button></Row>
+
+<Row label="fullWidth" col><Button fullWidth size="lg" icon="shopping-bag">Pay &#8377;1,240</Button><Button fullWidth variant="secondary" iconAfter="arrow-right">See the Full Menu</Button></Row>
+<Note>Leading icons name the action (bag, pin, search). Trailing icons mean onward motion (arrow-right for navigation, arrow-up-right for leaving the site, chevron-down for a picker). One icon per button unless both carry distinct meaning. Labels never wrap — buttons are nowrap and never shrink.</Note>
+</Rows>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

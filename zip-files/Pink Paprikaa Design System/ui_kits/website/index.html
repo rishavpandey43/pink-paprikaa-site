@@ -1,0 +1,124 @@
+<!-- @dsCard group="Website" viewport="1440x900" name="Homepage" subtitle="Marketing site composed entirely from the component library" -->
+<!doctype html><html><head><meta charset="utf-8"><title>Pink Paprikaa — India's First Desi Urban Café</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>html,body{margin:0;height:100%}#site-scroll{height:100vh;overflow-y:auto;position:relative}</style>
+</head><body><div id="root"></div>
+<script type="text/babel" src="Sections.jsx"></script>
+<script type="text/babel">
+const NS = window.PinkPaprikaaDesignSystem_23ef63;
+const { SiteHeader, SiteFooter, HeroBanner, MenuList, TestimonialWall, FaqSection, StatBand, CtaBand,
+        Button, Toast, Dialog, Select, Input, SlotPicker, Field } = NS;
+const BASE = "../../assets";
+
+const MENU = [
+  { name: "Paprikaa Chilli Paneer", price: 280, spice: 3, cat: "Small Plates", badge: "Bestseller", description: "Amritsari paneer, burnt chilli mayo, potato brioche." },
+  { name: "Mushroom Keema Pav", price: 340, was: 380, spice: 2, cat: "Small Plates", description: "Slow-cooked mushroom keema, buttered pav, pickled onion." },
+  { name: "Masala Cold Brew", price: 220, spice: 1, cat: "Chai & Coffee", badge: "New", description: "Cold brew, jaggery, cardamom." },
+  { name: "Kulhad Chai", price: 90, spice: 1, cat: "Chai & Coffee", description: "Assam leaf, ginger, clay cup." },
+  { name: "Bombay Toastie", price: 240, spice: 2, cat: "All Day", description: "Green chutney, potato, amul butter, coal-grilled." },
+  { name: "Tandoori Paneer Bowl", price: 420, spice: 3, cat: "All Day", description: "Charred paneer, burnt garlic rice, pickled slaw." },
+  { name: "Gulkand Kulfi", price: 180, spice: 1, cat: "Sweets", description: "Rose petal preserve, pistachio, saffron." },
+  { name: "Masala Fries", price: 190, spice: 4, cat: "Small Plates", description: "Masala fries, amchur, curry-leaf salt." },
+];
+
+const REVIEWS = [
+  { name: "Aditi Rao", rating: 5, meta: "Sector 57 - March", quote: "The chilli paneer is the whole reason I drive to Sector 57." },
+  { name: "Kabir Shah", rating: 4.5, meta: "Sector 57 - April", quote: "Finally a cafe that doesn't apologise for tasting Indian." },
+  { name: "Meera Iyer", rating: 5, meta: "Sector 57 - April", quote: "Chai at 8am, chilli paneer at midnight. They mean it." },
+];
+
+const FAQS = [
+  { q: "Is everything vegetarian?", a: "Yes - the whole kitchen is pure veg. A few bakes contain egg and are marked on the menu." },
+  { q: "Do you deliver?", a: "Pickup only for now. Delivery starts in 2027." },
+  { q: "Can I book a table?", a: "Up to 6 guests online. Larger groups, give us a call." },
+  { q: "Do you do private events?", a: "Yes, at our Sector 57 café. Write to us." },
+];
+
+function Site() {
+  const [cart, setCart] = React.useState(0);
+  const [toast, setToast] = React.useState(null);
+  const [book, setBook] = React.useState(false);
+  const [booked, setBooked] = React.useState(false);
+  const [slot, setSlot] = React.useState("8:00pm");
+  const [scrolled, setScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const el = document.getElementById("site-scroll");
+    if (!el) return undefined;
+    const f = () => setScrolled(el.scrollTop > 24);
+    el.addEventListener("scroll", f);
+    return () => el.removeEventListener("scroll", f);
+  }, []);
+  React.useEffect(() => {
+    if (!toast) return undefined;
+    const t = setTimeout(() => setToast(null), 2600);
+    return () => clearTimeout(t);
+  }, [toast]);
+
+  const add = (m) => { setCart((c) => c + 1); setToast(m.name + " added to your order."); };
+  const toMenu = () => {
+    const el = document.getElementById("menu");
+    const sc = document.getElementById("site-scroll");
+    if (el && sc) sc.scrollTo({ top: el.offsetTop - 80, behavior: "smooth" });
+  };
+
+  return (
+    <div id="site-scroll">
+      <SiteHeader base={BASE} cart={cart} scrolled={scrolled} onOrder={toMenu} onCart={toMenu}
+        onBook={() => { setBooked(false); setBook(true); }} />
+
+      <HeroBanner base={BASE}
+        overline="India&rsquo;s First Desi Urban Caf&eacute;"
+        title="Desi at heart. Urban by nature."
+        body="We roast our own masala every morning, then build the rest of the day around it. Chai at 8am, chilli paneer at midnight."
+        meta={["Est. 2025", "Sector 57, Gurgaon", "Open till 11:30pm"]}
+        imageLabel="Hero food photography 4:5 - warm, close-cropped"
+        actions={<><Button on="brand" size="lg" icon="shopping-bag" onClick={toMenu}>Order Now</Button><Button on="brand" variant="secondary" size="lg" iconAfter="arrow-right">See Full Menu</Button></>} />
+
+      <div id="menu"><MenuList base={BASE} items={MENU} gridCount={4} onAdd={add}
+        action={<Button variant="ghost" iconAfter="arrow-right">See Full Menu</Button>} /></div>
+
+      <Story />
+      <StatBand base={BASE} stats={[
+        { value: "18", label: "spices ground in-house, daily" },
+        { value: "100%", label: "vegetarian kitchen" },
+        { value: "4.6", label: "average guest rating" }]} />
+      <TestimonialWall base={BASE} reviews={REVIEWS} />
+      <Outlets />
+      <FaqSection items={FAQS} lede="Everything guests ask us at the counter." />
+      <CtaBand base={BASE} overline="Franchise" title="Bring Pink Paprikaa to your city"
+        body="One kitchen, one playbook. Franchise applications are open."
+        action={<Button size="lg" iconAfter="arrow-right">Apply to Franchise</Button>} />
+      <SiteFooter base={BASE} />
+
+      {toast ? (
+        <div style={{ position: "fixed", left: "50%", bottom: 32, transform: "translateX(-50%)", zIndex: 50 }}>
+          <Toast tone="brand" pop action="View Cart">{toast}</Toast>
+        </div>
+      ) : null}
+
+      {book ? (
+        <Dialog title={booked ? "Table held for 10 minutes" : "Book a table"} onClose={() => setBook(false)} width={440}
+          footer={booked
+            ? <Button onClick={() => setBook(false)}>Done</Button>
+            : <><Button variant="ghost" onClick={() => setBook(false)}>Cancel</Button><Button onClick={() => setBooked(true)}>Hold My Table</Button></>}>
+          {booked ? <span>We&rsquo;ll text you the confirmation. See you at Sector 57.</span> : (
+            <div style={{ display: "grid", gap: 14 }}>
+              <Select label="Outlet" options={["Sector 57, Gurgaon"]} />
+              <Select label="Guests" options={["2 guests", "3 guests", "4 guests", "6 guests"]} />
+              <Field label="Time"><SlotPicker value={slot} onChange={setSlot} slots={["7:30pm", "8:00pm", "8:30pm", { value: "9pm", label: "9:00pm", disabled: true }]} /></Field>
+              <Input label="Mobile number" icon="phone" placeholder="98765 43210" required />
+            </div>
+          )}
+        </Dialog>
+      ) : null}
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<Site />);
+</script></body></html>

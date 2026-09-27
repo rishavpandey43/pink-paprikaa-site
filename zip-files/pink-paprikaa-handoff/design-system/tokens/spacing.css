@@ -1,0 +1,35 @@
+:root{
+  /* Spacing — step N is N x 4px. --space-6 is 24px, always. */
+  --space-0:0; /* @kind spacing */
+  --space-0-5:2px; /* @kind spacing */
+  --space-1:4px; /* @kind spacing */
+  --space-1-5:6px; /* @kind spacing */
+  --space-2:8px; /* @kind spacing */
+  --space-3:12px; /* @kind spacing */
+  --space-4:16px; /* @kind spacing */
+  --space-5:20px; /* @kind spacing */
+  --space-6:24px; /* @kind spacing */
+  --space-7:28px; /* @kind spacing */
+  --space-8:32px; /* @kind spacing */
+  --space-9:36px; /* @kind spacing */
+  --space-10:40px; /* @kind spacing */
+  --space-11:44px; /* @kind spacing */
+  --space-12:48px; /* @kind spacing */
+  --space-14:56px; /* @kind spacing */
+  --space-16:64px; /* @kind spacing */
+  --space-18:72px; /* @kind spacing */
+  --space-20:80px; /* @kind spacing */
+  --space-24:96px; /* @kind spacing */
+  --space-32:128px; /* @kind spacing */
+
+  /* Layout */
+  --container-max:1200px; /* @kind spacing */
+  --container-wide:1440px; /* @kind spacing */
+  --gutter-mobile:20px; /* @kind spacing */
+  --gutter-desktop:40px; /* @kind spacing */
+  --section-y-mobile:56px; /* @kind spacing */
+  --section-y-desktop:96px; /* @kind spacing */
+  --header-h:88px; /* @kind spacing */
+  --tabbar-h:64px; /* @kind spacing */
+  --hit-min:44px; /* @kind spacing */
+}

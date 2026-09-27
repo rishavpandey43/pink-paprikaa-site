@@ -1,0 +1,33 @@
+:root{
+  /* Marketing canvas sizes — the exact pixel artboards the brand ships.
+     Use with the PostFrame component; never invent a size outside this list. */
+  --canvas-post-w:1080px;      /* @kind spacing */
+  --canvas-post-h:1080px;      /* @kind spacing */
+  --canvas-portrait-w:1080px;  /* @kind spacing */
+  --canvas-portrait-h:1350px;  /* @kind spacing */
+  --canvas-story-w:1080px;     /* @kind spacing */
+  --canvas-story-h:1920px;     /* @kind spacing */
+  --canvas-landscape-w:1200px; /* @kind spacing */
+  --canvas-landscape-h:628px;  /* @kind spacing */
+  --canvas-wide-w:1920px;      /* @kind spacing */
+  --canvas-wide-h:1080px;      /* @kind spacing */
+  --canvas-mpu-w:300px;        /* @kind spacing */
+  --canvas-mpu-h:250px;        /* @kind spacing */
+  --canvas-leaderboard-w:728px;/* @kind spacing */
+  --canvas-leaderboard-h:90px; /* @kind spacing */
+
+  /* Safe margins on a 1080 canvas. Nothing important outside these. */
+  --canvas-pad:72px;        /* @kind spacing */
+  --canvas-pad-tight:48px;  /* @kind spacing */
+  /* Story safe area: platform chrome eats the top 250px and bottom 320px. */
+  --story-safe-top:250px;   /* @kind spacing */
+  --story-safe-bottom:320px;/* @kind spacing */
+
+  /* Canvas display type — these are for 1080px artboards, not for screens. */
+  --fs-canvas-hero:132px;  /* @kind font */
+  --fs-canvas-h1:96px;     /* @kind font */
+  --fs-canvas-h2:72px;     /* @kind font */
+  --fs-canvas-body:34px;   /* @kind font */
+  --fs-canvas-caption:26px;/* @kind font */
+  --fs-canvas-overline:24px;/* @kind font */
+}

@@ -1,0 +1,33 @@
+:root{
+  --font-display:"Poppins","Segoe UI",system-ui,sans-serif;
+  --font-body:"DM Sans","Segoe UI",system-ui,sans-serif;
+  --font-devanagari:"Poppins","Nirmala UI",sans-serif;
+  --font-mono:"Space Mono",ui-monospace,monospace;
+
+  --weight-regular:400; /* @kind other */
+  --weight-medium:500; /* @kind other */
+  --weight-semibold:600; /* @kind other */
+  --weight-bold:700; /* @kind other */
+  --weight-black:800; /* @kind other */
+
+  /* Display — Poppins 800, tight and optically kerned */
+  --fs-display-1:72px; /* @kind font */ --lh-display-1:1.02; /* @kind other */ --ls-display-1:-.03em; /* @kind other */
+  --fs-display-2:56px; /* @kind font */ --lh-display-2:1.05; /* @kind other */ --ls-display-2:-.025em; /* @kind other */
+  /* Headings — Poppins 700 */
+  --fs-h1:40px; /* @kind font */ --lh-h1:1.1; /* @kind other */  --ls-h1:-.02em; /* @kind other */
+  --fs-h2:32px; /* @kind font */ --lh-h2:1.15; /* @kind other */ --ls-h2:-.015em; /* @kind other */
+  --fs-h3:25px; /* @kind font */ --lh-h3:1.2; /* @kind other */  --ls-h3:-.01em; /* @kind other */
+  --fs-h4:20px; /* @kind font */ --lh-h4:1.3; /* @kind other */  --ls-h4:-.005em; /* @kind other */
+  /* Body — DM Sans 400/500 */
+  --fs-body-lg:18px; /* @kind font */ --lh-body-lg:1.6; /* @kind other */
+  --fs-body:16px; /* @kind font */    --lh-body:1.6; /* @kind other */
+  --fs-body-sm:14px; /* @kind font */ --lh-body-sm:1.55; /* @kind other */
+  --fs-caption:12.5px; /* @kind font */ --lh-caption:1.45; /* @kind other */
+  /* Overline / eyebrow — Poppins 700, all caps, wide */
+  --fs-overline:11.5px; /* @kind font */ --lh-overline:1.2; /* @kind other */ --ls-overline:.14em; /* @kind other */
+  /* Mono — order codes, prices on receipts */
+  --fs-mono:13px; /* @kind font */ --lh-mono:1.5; /* @kind other */ --ls-mono:.02em; /* @kind other */
+
+  --measure-prose:64ch; /* @kind other */
+  --measure-narrow:44ch; /* @kind other */
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="max-width:1200px;margin:0 auto;padding:clamp(48px,8vw,96px) clamp(16px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:clamp(28px,4vw,56px);align-items:start;font-family:var(--font-body)">
+  <div style="display:flex;flex-direction:column;gap:24px;position:sticky;top:120px;min-width:0">
+    <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.SectionHeader" overline="{{ overline }}" title="{{ title }}" lede="{{ lede }}" hint-size="100%,110px"></x-import>
+    <div style="background:#fff;border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);padding:clamp(18px,3vw,24px);display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;gap:12px;align-items:center">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Logo" variant="symbol" tone="badge" width="{{ 44 }}" base="assets" hint-size="44px,44px"></x-import>
+        <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+          <span style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--ink-900)">Still have a question?</span>
+          <span style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted)"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.StatusDot" tone="success" base="assets" hint-size="8px,8px"></x-import>A real person replies, 8am – 11:30pm</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Tap to ask on WhatsApp</span>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ quick }}" as="q" hint-placeholder-count="3">
+            <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" icon="message-circle" on-click="{{ q.onClick }}" hint-size="auto,38px">{{ q.label }}</x-import>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="primary" size="md" icon="message-circle" full-width="{{ true }}" on-click="{{ openWa }}" hint-size="100%,44px">WhatsApp</x-import>
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="secondary" size="md" icon="phone" full-width="{{ true }}" on-click="{{ call }}" hint-size="100%,44px">Call</x-import>
+      </div>
+    </div>
+  </div>
+  <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Accordion" items="{{ items }}" default-open="{{ open }}" hint-size="100%,420px"></x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:640},&quot;title&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Before you order&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;overline&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Questions&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;lede&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;The things people ask us most. Anything else, just message us.&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;page&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Home&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;items&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{q:string,a:string}[]&quot;},&quot;quick&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string[]&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const page = this.props.page || 'Home';
+    const items = this.props.items || [];
+    const Q = this.props.quick || ['Do you deliver to my area?', 'Can I pause for a week?', 'Can you make it less spicy?'];
+    const wa = m => window.ppWa && window.ppWa(page, m);
+    return {
+      overline: this.props.overline || 'Questions',
+      title: this.props.title || 'Before you order',
+      lede: this.props.lede || 'The things people ask us most. Anything else, just message us.',
+      items, open: items[0] ? [items[0].q] : [],
+      quick: Q.map(q => ({ label: q, onClick: () => wa(q) })),
+      openWa: () => wa('Hi, I have a question: '),
+      call: () => { window.location.href = 'tel:+919090704001'; }
+    };
+  }
+}
+</script>
+</body>
+</html>

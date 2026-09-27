@@ -1,0 +1,26 @@
+<!-- @dsCard group="Organisms" viewport="1000x900" name="MenuList" subtitle="Grid variant with overflow list, and the app list variant." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{padding:0}.frame{border-bottom:1px solid var(--border-subtle)}.cap{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.05em;color:var(--text-subtle);padding:10px 22px 0}</style>
+</head><body><div id="root"></div><script type="text/babel">
+const { MenuList, Button } = window.PinkPaprikaaDesignSystem_23ef63;
+function Frame({label,children}){return(<div className="frame"><div className="cap">{label}</div>{children}</div>);}
+const MENU=[
+{name:"Paprikaa Chilli Paneer",price:280,spice:3,cat:"Small Plates",badge:"Bestseller",description:"Amritsari paneer, burnt chilli mayo, potato brioche."},
+{name:"Mushroom Keema Pav",price:340,was:380,spice:2,cat:"Small Plates",description:"Slow-cooked mushroom keema, buttered pav, pickled onion."},
+{name:"Masala Cold Brew",price:220,spice:1,cat:"Chai & Coffee",badge:"New",description:"Cold brew, jaggery, cardamom."},
+{name:"Kulhad Chai",price:90,spice:1,cat:"Chai & Coffee",description:"Assam leaf, ginger, clay cup."},
+{name:"Bombay Toastie",price:240,spice:2,cat:"All Day",description:"Green chutney, potato, amul butter, coal-grilled."},
+{name:"Gulkand Kulfi",price:180,spice:1,cat:"Sweets",description:"Rose petal preserve, pistachio, saffron."}];
+function Demo(){return(<div>
+<Frame label='variant="grid" (website)'><MenuList base="../../assets" items={MENU} gridCount={4} onAdd={()=>{}} action={<Button variant="ghost" size="sm" iconAfter="arrow-right">See Full Menu</Button>}/></Frame>
+<Frame label='variant="list" (app)'><MenuList base="../../assets" items={MENU} variant="list" title={null} onAdd={()=>{}}/></Frame>
+</div>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

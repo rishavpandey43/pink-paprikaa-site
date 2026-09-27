@@ -1,0 +1,21 @@
+<!-- @dsCard group="Molecules" viewport="700x700" name="ReviewCard" subtitle="Brand-mark score, default and brand treatments." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style></style>
+</head><body><div id="root"></div><script type="text/babel">
+const { ReviewCard } = window.PinkPaprikaaDesignSystem_23ef63;
+function Demo(){return(<Rows>
+<Row label="default" top><span style={{display:'flex',gap:14,width:'100%'}}>
+<ReviewCard base="../../assets" style={{flex:1}} rating={5} quote="The chilli paneer is the whole reason I drive to Sector 57." name="Aditi Rao" meta="Sector 57 - March"/>
+<ReviewCard base="../../assets" style={{flex:1}} rating={4.5} quote="Finally a cafe that doesn't apologise for tasting Indian." name="Kabir Shah" meta="Sector 57 - April"/></span></Row>
+<Row label='variant="brand"' col><ReviewCard base="../../assets" variant="brand" rating={5} quote="Chai at 8am, chilli paneer at midnight. They mean it." name="Meera Iyer" meta="Sector 57"/></Row>
+<Row label="symbol" note="bare mark" col><ReviewCard base="../../assets" symbol rating={4.3} quote="Good coffee, better fries." name="Rhea D" meta="Sector 57"/></Row>
+</Rows>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

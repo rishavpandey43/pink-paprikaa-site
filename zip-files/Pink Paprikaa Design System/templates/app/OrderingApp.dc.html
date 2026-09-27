@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Ordering app screen" description="390×844 app frame with tab bar, menu list and cart — the starting point for any Pink Paprikaa app screen." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--pink-50);display:flex;align-items:flex-start;justify-content:center;gap:28px;padding:28px;flex-wrap:wrap">
+  <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.AppShell" tab-bar="{{ tabBar }}" hint-size="390px,844px">
+    <div style="flex:1;overflow-y:auto">
+      <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.MenuList" items="{{ menu }}" variant="list" title="{{ null }}" style="padding:4px 20px 20px" hint-size="100%,700px"></x-import>
+    </div>
+  </x-import>
+
+  <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.AppShell" tab-bar="{{ cartTabBar }}" hint-size="390px,844px">
+    <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.CartPanel" base="../../assets" lines="{{ lines }}" hint-size="100%,700px"></x-import>
+  </x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: "menu" };
+
+  tabs(active, count) {
+    const NS = window.PinkPaprikaaDesignSystem_23ef63;
+    return React.createElement(NS.TabBar, {
+      value: active,
+      onChange: (t) => this.setState({ tab: t }),
+      items: [
+        { value: "home", label: "Home", icon: "house" },
+        { value: "menu", label: "Menu", icon: "utensils" },
+        { value: "cart", label: "Cart", icon: "shopping-bag", count: count || undefined },
+        { value: "you", label: "You", icon: "user" }
+      ]
+    });
+  }
+
+  renderVals() {
+    return {
+      tabBar: this.tabs("menu", 3),
+      cartTabBar: this.tabs("cart", 3),
+      menu: [
+        { name: "Paprikaa Chilli Paneer", price: 280, spice: 3, cat: "Small Plates", badge: "Bestseller", description: "Amritsari paneer, burnt chilli mayo, potato brioche." },
+        { name: "Mushroom Keema Pav", price: 340, was: 380, spice: 2, cat: "Small Plates", description: "Slow-cooked mushroom keema, buttered pav, pickled onion." },
+        { name: "Masala Cold Brew", price: 220, spice: 1, cat: "Chai & Coffee", badge: "New", description: "Cold brew, jaggery, cardamom." },
+        { name: "Kulhad Chai", price: 90, spice: 1, cat: "Chai & Coffee", description: "Assam leaf, ginger, clay cup." },
+        { name: "Gulkand Kulfi", price: 180, spice: 1, cat: "Sweets", diet: "egg", description: "Rose petal preserve, pistachio, saffron." }
+      ],
+      lines: [
+        { name: "Paprikaa Chilli Paneer", price: 280, qty: 2, note: "Sharing · Hot" },
+        { name: "Masala Cold Brew", price: 220, qty: 1, note: "Regular" }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

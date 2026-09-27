@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><title>This Week's Homely Meals Menu · Pink Paprikaa</title><meta name="description" content="Day-by-day pure veg lunch and dinner menu for Homely Meals by Pink Paprikaa, Sector 57 Gurgaon. Updated every Sunday."><script src="./ds-base.js"></script><style>body{margin:0}a{color:var(--text-link);text-decoration:none}a:hover{color:var(--text-link-hover)}</style></helmet>
+<div style="min-height:100vh;background:var(--surface-page);font-family:var(--font-body);color:var(--text-body)">
+  <dc-import name="PPHeader" active="homely" page="ThisWeek" hint-size="100%,100px"></dc-import>
+
+  <section data-screen-label="Header" style="background:var(--pink-50)">
+    <div style="max-width:960px;margin:0 auto;padding:clamp(28px,5vw,64px) clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:14px">
+      <a href="HomelyMeals.dc.html" style="font-size:14px;display:flex;align-items:center;gap:4px;font-weight:600"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="arrow-left" size="{{ 14 }}" hint-size="14px,14px"></x-import>Homely Meals</a>
+      <h1 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-display-2-fluid);line-height:1.05;letter-spacing:-.03em;color:var(--ink-900)">This week&rsquo;s menu</h1>
+      <span style="font-size:14px;color:var(--text-muted)">Updated every Sunday · Lunch 12:00 – 1:30pm · Dinner 7:30 – 9:00pm</span>
+      <div style="display:flex;gap:4px;background:#fff;border:1px solid var(--border-subtle);padding:4px;border-radius:var(--radius-pill);align-self:flex-start;flex-wrap:wrap">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ t.sel }}" disabled="{{ t.dis }}" on-click="{{ t.onClick }}" hint-size="auto,38px">{{ t.label }}</x-import></sc-for>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="primary" size="md" icon="message-circle" on-click="{{ tryWeek }}" hint-size="230px,44px">{{ trialCta }}</x-import>
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="secondary" size="md" icon="share-2" on-click="{{ share }}" hint-size="170px,44px">Share this menu</x-import>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Days" style="max-width:960px;margin:0 auto;padding:clamp(28px,5vw,56px) clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:12px">
+    <sc-for list="{{ days }}" as="d" hint-placeholder-count="7">
+      <div style="{{ d.card }}">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--ink-900)">{{ d.name }}</span>
+          <sc-if value="{{ d.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="background:var(--pink-500);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:var(--radius-pill)">{{ d.badge }}</span></sc-if>
+          <sc-if value="{{ d.hasTag }}" hint-placeholder-val="{{ false }}"><span style="background:var(--pink-100);color:var(--pink-700);font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:var(--radius-pill)">{{ d.tag }}</span></sc-if>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:16px">
+          <sc-for list="{{ d.meals }}" as="m" hint-placeholder-count="2">
+            <div style="display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px 14px">
+              <span style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink-500)">{{ m.label }} · {{ m.slot }}</span>
+              <sc-for list="{{ m.parts }}" as="pt" hint-placeholder-count="5">
+                <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:10px;font-size:15px;align-items:baseline;padding:4px 0;border-top:1px solid var(--border-subtle)">
+                  <span style="font-size:12px;color:var(--text-muted)">{{ pt.k }}</span>
+                  <span style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;color:var(--ink-900);line-height:1.4">{{ pt.v }}<sc-if value="{{ pt.hasTag }}" hint-placeholder-val="{{ false }}"><span style="{{ pt.tagStyle }}">{{ pt.tag }}</span></sc-if></span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+    <span style="font-size:13px;color:var(--text-muted);margin-top:8px">{{ note }}</span>
+  </section>
+
+  <dc-import name="PPFooter" page="ThisWeek" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 0 };
+  componentDidMount() { if (!window.PP_RATES) this._t = setInterval(() => { if (window.PP_RATES) { clearInterval(this._t); this.forceUpdate(); } }, 40); }
+  componentWillUnmount() { clearInterval(this._t); }
+  renderVals() {
+    const R = window.PP_RATES; if (!R || !window.ppHomelyPrice) return {};
+    const H = R.homely, rs = window.ppRs, wa = m => window.ppWa('ThisWeek', m), s = this.state;
+    const today = (new Date().getDay() + 6) % 7, tm = (today + 1) % 7;
+    const full = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' };
+    const W = s.tab === 0 ? H.menu.weekClassic : H.menu.weekEveryday;
+    const seg = a => ({ padding: '10px 16px', minHeight: 44, border: 0, borderRadius: 'var(--radius-pill)', cursor: 'pointer', background: a ? 'var(--pink-500)' : 'transparent', color: a ? '#fff' : 'var(--pink-700)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14, whiteSpace: 'nowrap' });
+    const card = a => ({ background: a ? 'var(--pink-50)' : '#fff', border: a ? '2px solid var(--pink-500)' : '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', padding: 'clamp(16px,3vw,24px)', display: 'flex', flexDirection: 'column', gap: 14 });
+    const trialC = window.ppHomelyPrice('classic', {}).price * 5;
+    return {
+      tabs: ['Classic & Signature', 'Everyday'].map((l, i) => ({ label: l, style: seg(s.tab === i), sel: s.tab === i, onClick: () => this.setState({ tab: i }) })),
+      trialPrice: rs(trialC), trialCta: `Start a trial, ${rs(trialC)}`,
+      days: W.map((d, i) => ({ name: full[d.day], meals: [{ label: 'Lunch', slot: '12:00–1:30pm', parts: window.ppMealParts(d.lunch, i, s.tab === 0, false) }, { label: 'Dinner', slot: '7:30–9:00pm', parts: window.ppMealParts(d.dinner, i, s.tab === 0, true) }], tag: d.tag, hasTag: !!d.tag, hasBadge: i === today || i === tm, badge: i === today ? 'Today' : 'Tomorrow', card: card(i === today) })),
+      note: s.tab === 0 ? 'Rows tagged Signature only come with the Signature plate, which also adds soup twice a week. Everything else is on both Classic and Signature.' : 'Everyday: lunch and dinner always carry a different dal. Home-style Matar Paneer on Sunday.',
+      tryWeek: () => wa(`Classic trial, 5 meals on any days this week, ${rs(trialC)}. My area: `),
+      share: () => { const t = 'This week on Homely Meals by Pink Paprikaa: https://pinkpaprikaa.com/homely-meals-gurgaon/this-week'; if (navigator.share) navigator.share({ text: t }).catch(() => {}); else window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank'); }
+    };
+  }
+}
+</script>
+</body>
+</html>

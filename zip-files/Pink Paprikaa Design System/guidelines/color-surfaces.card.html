@@ -1,0 +1,18 @@
+<!-- @dsCard group="Colors" viewport="700x360" name="Text on surfaces" subtitle="data-surface remaps every text token — the same h2, p and link on four grounds, no overrides." -->
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>html,body{margin:0}body{padding:20px 24px;font-family:var(--font-body);background:var(--surface-page)}
+.g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.t{border-radius:var(--radius-lg);padding:18px 16px;min-height:150px}
+.t h2{font-size:22px;line-height:1.15;margin:0}
+.t p{font-size:13.5px;margin:8px 0 0;max-width:none}
+.t a{font-size:13px;display:inline-block;margin-top:10px}
+.k{font-family:var(--font-mono);font-size:10px;color:var(--text-subtle);margin-top:8px}
+.note{font-family:var(--font-mono);font-size:10.5px;color:var(--text-subtle);margin-top:16px;line-height:1.6}</style></head><body>
+<div class="g">
+<div><div class="t" style="background:var(--surface-page);border:1px solid var(--border-subtle)"><h2>Find a Paprikaa</h2><p>Sector 57, Gurgaon. Chai at 8am.</p><a href="#">Get directions</a></div><div class="k">page &middot; no attribute</div></div>
+<div><div class="t" data-surface="soft" style="background:var(--pink-100)"><h2>Find a Paprikaa</h2><p>Sector 57, Gurgaon. Chai at 8am.</p><a href="#">Get directions</a></div><div class="k">data-surface="soft"</div></div>
+<div><div class="t" data-surface="brand" style="background:var(--pink-500)"><h2>Find a Paprikaa</h2><p>Sector 57, Gurgaon. Chai at 8am.</p><a href="#">Get directions</a></div><div class="k">data-surface="brand"</div></div>
+<div><div class="t" data-surface="ink" style="background:var(--ink-900)"><h2>Find a Paprikaa</h2><p>Sector 57, Gurgaon. Chai at 8am.</p><a href="#">Get directions</a></div><div class="k">data-surface="ink"</div></div>
+</div>
+<div class="note">Identical markup in all four. Card, Section, PatternField, SiteFooter and PostFrame set the attribute for you; in raw HTML add it (or .pp-on-brand / .pp-on-ink / .pp-on-soft) to the flooded container. Never hard-code #fff on a heading.</div>
+</body></html>

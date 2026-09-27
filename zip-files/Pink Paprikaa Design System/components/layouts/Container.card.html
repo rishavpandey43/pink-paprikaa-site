@@ -1,0 +1,20 @@
+<!-- @dsCard group="Layouts" viewport="700x220" name="Container" subtitle="Three width caps with fluid gutters." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style></style>
+</head><body><div id="root"></div><script type="text/babel">
+const { Container, Text } = window.PinkPaprikaaDesignSystem_23ef63;
+function Demo(){const box=(t)=><div style={{background:'var(--pink-100)',border:'1px dashed var(--pink-300)',borderRadius:'var(--radius-md)',padding:12}}><Text variant="caption" as="div" tone="var(--pink-800)">{t}</Text></div>;
+return(<Rows>
+<Row label='size="default"' note="1200px" col><Container bleed>{box('max-width 1200, gutter clamp(20,4vw,40)')}</Container></Row>
+<Row label='size="prose"' note="64ch" col><Container size="prose" bleed>{box('long-form copy')}</Container></Row>
+<Row label='size="wide"' note="1440px" col><Container size="wide" bleed>{box('wide layouts')}</Container></Row>
+</Rows>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

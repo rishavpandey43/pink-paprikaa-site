@@ -1,0 +1,24 @@
+:root{
+  /* Radii — geometric, never fully soft. Diamond motif keeps corners crisp. */
+  --radius-xs:4px;
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:16px;
+  --radius-xl:24px;
+  --radius-pill:999px;
+
+  --border-width:1px; /* @kind other */
+  --border-width-strong:2px; /* @kind other */
+
+  /* Shadows — warm ink tint, never neutral grey */
+  --shadow-1:0 1px 2px rgba(43,31,37,.06),0 1px 3px rgba(43,31,37,.05);
+  --shadow-2:0 4px 12px rgba(43,31,37,.08);
+  --shadow-3:0 12px 32px -8px rgba(43,31,37,.16);
+  --shadow-4:0 24px 56px -16px rgba(43,31,37,.22);
+  --shadow-brand:0 8px 24px -6px rgba(238,44,104,.38);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.5);
+
+  --blur-glass:blur(14px); /* @kind other */
+  --scrim-bottom:linear-gradient(to top,rgba(26,18,22,.78) 0%,rgba(26,18,22,.32) 46%,rgba(26,18,22,0) 100%); /* @kind other */
+  --scrim-top:linear-gradient(to bottom,rgba(26,18,22,.6) 0%,rgba(26,18,22,0) 100%); /* @kind other */
+}

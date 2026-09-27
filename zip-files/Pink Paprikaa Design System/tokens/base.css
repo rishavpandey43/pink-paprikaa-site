@@ -1,0 +1,36 @@
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-body);font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-body);background:var(--surface-page);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-display);color:var(--text-heading);margin:0;font-weight:var(--weight-bold)}
+h1{font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--ls-h1)}
+h2{font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--ls-h2)}
+h3{font-size:var(--fs-h3);line-height:var(--lh-h3);letter-spacing:var(--ls-h3)}
+h4{font-size:var(--fs-h4);line-height:var(--lh-h4);letter-spacing:var(--ls-h4)}
+p{margin:0 0 var(--space-4);text-wrap:pretty;max-width:var(--measure-prose)}
+a{color:var(--text-link);text-decoration-color:var(--pink-200);text-decoration-thickness:1.5px;text-underline-offset:3px;transition:color var(--dur-fast) var(--ease-out)}
+a:hover{color:var(--text-link-hover);text-decoration-color:currentColor}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--pink-500);outline-offset:2px;border-radius:var(--radius-xs)}
+.pp-display-1{font-family:var(--font-display);font-weight:var(--weight-black);font-size:var(--fs-display-1);line-height:var(--lh-display-1);letter-spacing:var(--ls-display-1);color:var(--text-heading)}
+.pp-display-2{font-family:var(--font-display);font-weight:var(--weight-black);font-size:var(--fs-display-2);line-height:var(--lh-display-2);letter-spacing:var(--ls-display-2);color:var(--text-heading)}
+.pp-overline{font-family:var(--font-display);font-weight:var(--weight-bold);font-size:var(--fs-overline);line-height:var(--lh-overline);letter-spacing:var(--ls-overline);text-transform:uppercase}
+.pp-mono{font-family:var(--font-mono);font-size:var(--fs-mono);letter-spacing:var(--ls-mono)}
+.pp-fluid-display-1{font-family:var(--font-display);font-weight:var(--weight-black);font-size:var(--fs-display-1-fluid);line-height:var(--lh-display-1);letter-spacing:var(--ls-display-1)}
+.pp-fluid-display-2{font-family:var(--font-display);font-weight:var(--weight-black);font-size:var(--fs-display-2-fluid);line-height:var(--lh-display-2);letter-spacing:var(--ls-display-2)}
+.pp-fluid-h1{font-family:var(--font-display);font-weight:var(--weight-bold);font-size:var(--fs-h1-fluid);line-height:var(--lh-h1);letter-spacing:var(--ls-h1)}
+.pp-fluid-h2{font-family:var(--font-display);font-weight:var(--weight-bold);font-size:var(--fs-h2-fluid);line-height:var(--lh-h2);letter-spacing:var(--ls-h2)}
+.pp-fluid-h3{font-family:var(--font-display);font-weight:var(--weight-bold);font-size:var(--fs-h3-fluid);line-height:var(--lh-h3);letter-spacing:var(--ls-h3)}
+.pp-container{width:100%;max-width:var(--container-max);margin-inline:auto;padding-inline:var(--gutter-fluid)}
+.pp-section{padding-block:var(--section-y-fluid)}
+.pp-autogrid{display:grid;gap:var(--gap-grid);grid-template-columns:repeat(auto-fit,minmax(min(var(--card-min),100%),1fr))}
+.pp-autogrid-wide{display:grid;gap:var(--gap-grid);grid-template-columns:repeat(auto-fit,minmax(min(var(--card-min-wide),100%),1fr))}
+.pp-cluster{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center}
+.pp-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pp-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+img,svg,video{max-width:100%}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+@keyframes pp-toast-pop{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes pp-skeleton{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes pp-spin-pulse{0%,100%{transform:rotate(45deg) scale(.7);opacity:.25}50%{transform:rotate(45deg) scale(1.15);opacity:1}}
+@keyframes pp-dot-pulse{0%{transform:rotate(45deg) scale(1);opacity:.6}100%{transform:rotate(45deg) scale(2.4);opacity:0}}
+@keyframes pp-rotate{to{transform:rotate(360deg)}}
+@keyframes pp-sheet-in{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes pp-mark-pulse{0%,100%{transform:scale(.72);opacity:.35}50%{transform:scale(1.1);opacity:1}}

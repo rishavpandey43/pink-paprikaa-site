@@ -1,0 +1,104 @@
+<!-- @dsCard group="App" viewport="760x900" name="Ordering app" subtitle="Home, menu, item sheet, cart, tracking and account — composed from the library" -->
+<!doctype html><html><head><meta charset="utf-8"><title>Pink Paprikaa — Ordering app</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>html,body{margin:0;min-height:100%}body{background:var(--pink-50);display:grid;place-items:center;padding:28px 0}</style>
+</head><body><div id="root"></div>
+<script type="text/babel" src="Screens.jsx"></script>
+<script type="text/babel" src="ItemSheet.jsx"></script>
+<script type="text/babel">
+const NS = window.PinkPaprikaaDesignSystem_23ef63;
+const { AppShell, TabBar, MenuList, CartPanel, OrderTracker, Toast, Snackbar } = NS;
+const BASE = "../../assets";
+
+const MENU = [
+  { name: "Paprikaa Chilli Paneer", price: 280, spice: 3, cat: "Small Plates", badge: "Bestseller", description: "Amritsari paneer, burnt chilli mayo, potato brioche." },
+  { name: "Mushroom Keema Pav", price: 340, was: 380, spice: 2, cat: "Small Plates", description: "Slow-cooked mushroom keema, buttered pav, pickled onion." },
+  { name: "Masala Cold Brew", price: 220, spice: 1, cat: "Chai & Coffee", badge: "New", description: "Cold brew, jaggery, cardamom." },
+  { name: "Kulhad Chai", price: 90, spice: 1, cat: "Chai & Coffee", description: "Assam leaf, ginger, clay cup." },
+  { name: "Bombay Toastie", price: 240, spice: 2, cat: "All Day", description: "Green chutney, potato, amul butter, coal-grilled." },
+  { name: "Tandoori Paneer Bowl", price: 420, spice: 3, cat: "All Day", description: "Charred paneer, burnt garlic rice, pickled slaw." },
+  { name: "Gulkand Kulfi", price: 180, spice: 1, cat: "Sweets", diet: "egg", description: "Rose petal preserve, pistachio, saffron." },
+  { name: "Masala Fries", price: 190, spice: 4, cat: "Small Plates", description: "Masala fries, amchur, curry-leaf salt." },
+];
+
+function App() {
+  const [tab, setTab] = React.useState("home");
+  const [item, setItem] = React.useState(null);
+  const [lines, setLines] = React.useState([]);
+  const [toast, setToast] = React.useState(null);
+  const [placed, setPlaced] = React.useState(false);
+  const [step, setStep] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!toast) return undefined;
+    const t = setTimeout(() => setToast(null), 2400);
+    return () => clearTimeout(t);
+  }, [toast]);
+  React.useEffect(() => {
+    if (!placed || step >= 2) return undefined;
+    const t = setTimeout(() => setStep((s) => s + 1), 2600);
+    return () => clearTimeout(t);
+  }, [placed, step]);
+
+  const count = lines.reduce((n, l) => n + l.qty, 0);
+  const total = lines.reduce((n, l) => n + l.price * l.qty, 0);
+  const grand = total + Math.round(total * 0.05);
+
+  const add = (it, price) => {
+    setLines((ls) => {
+      const f = ls.find((l) => l.name === it.name);
+      return f ? ls.map((l) => (l.name === it.name ? { ...l, qty: l.qty + 1 } : l))
+               : [...ls, { name: it.name, diet: it.diet, price: price || it.price, qty: 1 }];
+    });
+    setItem(null);
+    setToast(it.name + " added to your order.");
+  };
+  const setQty = (name, n) => setLines((ls) => (n <= 0 ? ls.filter((l) => l.name !== name) : ls.map((l) => (l.name === name ? { ...l, qty: n } : l))));
+
+  let body, statusTone = "ink", showTabs = true;
+  if (placed) {
+    body = <OrderTracker base={BASE} current={step} total={grand}
+      onDone={() => { setPlaced(false); setStep(0); setLines([]); setTab("home"); }} />;
+    statusTone = "light"; showTabs = false;
+  } else if (tab === "home") {
+    body = <HomeScreen menu={MENU} onOpen={setItem} onSeeMenu={() => setTab("menu")} />;
+    statusTone = "light";
+  } else if (tab === "menu") {
+    body = <div style={{ flex: 1, overflowY: "auto" }}>
+      <MenuList base={BASE} items={MENU} variant="list" title={null} onAdd={setItem}
+        style={{ padding: "4px 20px 20px" }} />
+    </div>;
+  } else if (tab === "cart") {
+    body = <CartPanel base={BASE} lines={lines} onQty={setQty} onBrowse={() => setTab("menu")} onPlace={() => setPlaced(true)} />;
+  } else {
+    body = <YouScreen />;
+  }
+
+  return (
+    <AppShell statusTone={statusTone}
+      tabBar={showTabs ? (
+        <TabBar value={tab} onChange={setTab} items={[
+          { value: "home", label: "Home", icon: "house" },
+          { value: "menu", label: "Menu", icon: "utensils" },
+          { value: "cart", label: "Cart", icon: "shopping-bag", count: count || undefined },
+          { value: "you", label: "You", icon: "user" }]} />
+      ) : null}
+      overlay={<>
+        {item ? <ItemSheet item={item} onClose={() => setItem(null)} onAdd={add} /> : null}
+        {toast ? (
+          <div style={{ position: "absolute", left: 0, right: 0, bottom: showTabs ? 92 : 40, display: "grid", placeItems: "center", zIndex: 70 }}>
+            <Toast tone="brand" pop action="View Cart" onAction={() => { setTab("cart"); setToast(null); }}>{toast}</Toast>
+          </div>
+        ) : null}
+      </>}>
+      {body}
+    </AppShell>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script></body></html>

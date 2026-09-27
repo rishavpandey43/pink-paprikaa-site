@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="display:flex;flex-direction:column;font-family:var(--font-body);color:var(--text-body)">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:20px;align-items:start">
+  <div style="background:#fff;border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);padding:clamp(16px,3vw,28px);display:flex;flex-direction:column;gap:28px;min-width:0">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">1. Guests</span>
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.QuantityStepper" value="{{ guests }}" min="{{ 15 }}" max="{{ 2000 }}" on-change="{{ setGuestsNum }}" hint-size="140px,44px"></x-import>
+      </div>
+      <input type="range" min="15" max="300" step="5" value="{{ guests }}" onChange="{{ setGuests }}" aria-label="Guests slider" style="width:100%;accent-color:var(--pink-500);height:32px"></input>
+      <span style="font-size:12px;color:var(--text-muted)">Minimum 15 guests · Royal Dawat from 50</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">2. Dawat</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));gap:8px">
+        <sc-for list="{{ dawats }}" as="o" hint-placeholder-count="4">
+          <button onClick="{{ o.onClick }}" style="{{ o.style }}">
+            <span style="font-family:var(--font-display);font-weight:700;font-size:14px">{{ o.label }}</span>
+            <span style="font-family:var(--font-display);font-weight:800;font-size:20px">{{ o.price }}</span>
+            <span style="font-size:12px">{{ o.sub }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <button onClick="{{ noDawat }}" style="{{ noDawatStyle }}">No Dawat — just starters, platters or snacks</button>
+      <sc-if value="{{ hasDawat }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:12px;background:var(--pink-50);border-radius:var(--radius-md);padding:14px">
+          <span style="font-size:13px;color:var(--ink-900);line-height:1.6">{{ dawatItems }}</span>
+          <sc-for list="{{ choices }}" as="c" hint-placeholder-count="1">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--ink-900)">{{ c.label }}</span>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ c.opts }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ o.sel }}" disabled="{{ o.dis }}" on-click="{{ o.onClick }}" hint-size="auto,38px">{{ o.label }}</x-import></sc-for>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ hasUpgrades }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--ink-900)">Upgrades, per head</span>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ upgrades }}" as="o" hint-placeholder-count="4"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ o.sel }}" disabled="{{ o.dis }}" on-click="{{ o.onClick }}" hint-size="auto,38px">{{ o.label }}</x-import></sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">3. Starters <span style="font-weight:400;color:var(--text-muted);font-size:13px">(combo of any 3, per head)</span></span>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ starterCombos }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ o.sel }}" disabled="{{ o.dis }}" on-click="{{ o.onClick }}" hint-size="auto,38px">{{ o.label }}</x-import></sc-for>
+      </div>
+      <sc-if value="{{ hasStarter }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:13px;color:var(--text-muted)">{{ pickHint }}</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ starterItems }}" as="o" hint-placeholder-count="7"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ o.sel }}" disabled="{{ o.dis }}" on-click="{{ o.onClick }}" hint-size="auto,38px">{{ o.label }}</x-import></sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">4. Platter <span style="font-weight:400;color:var(--text-muted);font-size:13px">(per head, on its own or alongside)</span></span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:8px">
+        <sc-for list="{{ platters }}" as="o" hint-placeholder-count="6">
+          <button onClick="{{ o.onClick }}" style="{{ o.style }}">
+            <span style="display:flex;justify-content:space-between;width:100%;gap:8px"><span style="font-family:var(--font-display);font-weight:700;font-size:14px">{{ o.label }}</span><span style="font-family:var(--font-display);font-weight:700;font-size:14px">{{ o.price }}</span></span>
+            <span style="font-size:12px">{{ o.items }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ isMomo }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <sc-for list="{{ momoUps }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ o.sel }}" disabled="{{ o.dis }}" on-click="{{ o.onClick }}" hint-size="auto,38px">{{ o.label }}</x-import></sc-for>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button onClick="{{ toggleSnacks }}" style="display:flex;justify-content:space-between;align-items:center;gap:12px;background:transparent;border:0;padding:0;cursor:pointer;min-height:44px;text-align:left">
+        <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">5. Snacks by the piece <span style="font-weight:400;color:var(--text-muted);font-size:13px">({{ snackCount }} pcs · min 50)</span></span>
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="{{ snackIcon }}" size="{{ 20 }}" style="color:var(--ink-900)" hint-size="20px,20px"></x-import>
+      </button>
+      <sc-if value="{{ showSnacks }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column">
+          <sc-for list="{{ snacks }}" as="o" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--border-subtle)">
+              <div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:14px;color:var(--ink-900);font-weight:600">{{ o.name }} · {{ o.price }}</span><span style="font-size:12px;color:var(--text-muted)">{{ o.d }}</span></div>
+              <div style="display:flex;align-items:center;gap:2px">
+                <button onClick="{{ o.dec }}" aria-label="Less" style="width:36px;height:36px;border:1px solid var(--border-default);border-radius:50%;background:#fff;color:var(--ink-900);font-size:18px;cursor:pointer">−</button>
+                <span style="min-width:36px;text-align:center;font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">{{ o.qty }}</span>
+                <button onClick="{{ o.inc }}" aria-label="More" style="width:36px;height:36px;border:0;border-radius:50%;background:var(--pink-500);color:#fff;font-size:18px;cursor:pointer">+</button>
+              </div>
+            </div>
+          </sc-for>
+          <span style="font-size:12px;color:var(--text-muted);padding-top:8px">Steps of 10. Red and green chutney free with every snack order.</span>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">6. Extras <span style="font-weight:400;color:var(--text-muted);font-size:13px">(one per guest)</span></span>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <sc-for list="{{ extras }}" as="o" hint-placeholder-count="7"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ o.sel }}" disabled="{{ o.dis }}" on-click="{{ o.onClick }}" hint-size="auto,38px">{{ o.label }}</x-import></sc-for>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">7. How you want it served</span>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ services }}" as="o" hint-placeholder-count="3">
+          <button onClick="{{ o.onClick }}" style="{{ o.style }}">
+            <span style="display:flex;justify-content:space-between;gap:12px;width:100%"><span style="font-family:var(--font-display);font-weight:700;font-size:15px">{{ o.label }}</span><span style="font-family:var(--font-display);font-weight:700;font-size:13px">{{ o.price }}</span></span>
+            <span style="font-size:13px">{{ o.desc }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:12px">
+      <label style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--ink-900)">Occasion</span>
+        <select value="{{ occ }}" onChange="{{ setOcc }}" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-md);padding:0 12px;font-family:var(--font-body);font-size:16px;color:var(--ink-900);background:#fff">
+          <sc-for list="{{ occasions }}" as="o" hint-placeholder-count="8"><option value="{{ o }}">{{ o }}</option></sc-for>
+        </select>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--ink-900)">Date</span>
+        <input type="date" value="{{ date }}" min="{{ minDate }}" onChange="{{ setDate }}" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-md);padding:0 12px;font-family:var(--font-body);font-size:16px;color:var(--ink-900);background:#fff"></input>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--ink-900)">Referred by <span style="font-weight:400;color:var(--text-muted)">(optional)</span></span>
+        <input type="text" value="{{ referrer }}" onChange="{{ setReferrer }}" placeholder="Friend’s name" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-md);padding:0 12px;font-family:var(--font-body);font-size:16px;color:var(--ink-900);background:#fff"></input>
+      </label>
+    </div>
+    <span style="font-size:12px;color:var(--text-muted);margin-top:-16px">{{ noticeLine }}</span>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;position:sticky;top:112px;min-width:0">
+    <div data-surface="ink" style="background:var(--ink-900);color:#fff;border-radius:var(--radius-xl);padding:clamp(18px,3vw,28px);display:flex;flex-direction:column;gap:16px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink-300)">Your Dawat estimate</span>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <span style="font-family:var(--font-display);font-weight:800;font-size:clamp(40px,6vw,56px);line-height:1;letter-spacing:-.03em">{{ total }}</span>
+        <span style="font-size:14px;color:var(--text-muted)">{{ perHead }} a head · {{ guests }} guests · incl. GST</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;font-family:var(--font-mono);border-top:1px solid var(--border-subtle);padding-top:14px">
+        <sc-for list="{{ lines }}" as="ln" hint-placeholder-count="5">
+          <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:var(--text-muted)">{{ ln.k }}</span><span style="text-align:right;white-space:nowrap">{{ ln.v }}</span></div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ hasWarn }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:6px;background:rgba(242,178,51,.14);border:1px solid var(--turmeric);border-radius:var(--radius-md);padding:10px 12px;font-size:13px">
+          <sc-for list="{{ warns }}" as="w" hint-placeholder-count="1"><span style="display:flex;gap:8px;align-items:flex-start"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="alert-triangle" size="{{ 14 }}" style="color:var(--turmeric);flex:0 0 auto;margin-top:2px" hint-size="14px,14px"></x-import>{{ w }}</span></sc-for>
+        </div>
+      </sc-if>
+      <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.08);border-radius:var(--radius-md);padding:12px;font-size:13px;line-height:1.5">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="utensils" size="{{ 16 }}" style="color:var(--pink-300);flex:0 0 auto;margin-top:2px" hint-size="16px,16px"></x-import>
+        <span>Taste first: one Dawat at {{ trialPrice }}, credited in full when you confirm.</span>
+      </div>
+      <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="primary" size="lg" icon="message-circle" full-width="{{ true }}" on-click="{{ send }}" hint-size="100%,54px">Check my date on WhatsApp</x-import>
+      <span style="font-size:12px;text-align:center;color:var(--text-muted)">We confirm within the hour. 50% holds the date, balance on delivery.</span>
+    </div>
+  </div>
+</div>
+<sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+  <div style="position:sticky;bottom:84px;z-index:5;margin-top:12px;background:var(--ink-900);color:#fff;border-radius:var(--radius-pill);padding:8px 8px 8px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:var(--shadow-4)">
+    <div style="display:flex;flex-direction:column;min-width:0"><span style="font-family:var(--font-display);font-weight:800;font-size:18px">{{ total }}</span><span style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ perHead }}/head · {{ guests }} guests</span></div>
+    <button onClick="{{ send }}" style="height:44px;padding:0 18px;border:0;border-radius:var(--radius-pill);background:var(--pink-500);color:#fff;font-family:var(--font-display);font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap">Check date</button>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1100,&quot;height&quot;:1400},&quot;page&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Catering&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { guests: 30, dawat: 'signature', ch: 0, ch2: 0, ups: [], starter: '', picks: [], platter: '', momoUp: '', snacks: {}, showSnacks: false, extras: [], svc: 'delivered', occ: 'House party', date: '', referrer: '', w: typeof window !== 'undefined' ? window.innerWidth : 1280 };
+  componentDidMount() {
+    try { const v = JSON.parse(localStorage.getItem('pp-dawat-calc-v3')); if (v) this.setState({ ...v, w: window.innerWidth }); } catch (e) {}
+    if (!window.PP_RATES) this._t = setInterval(() => { if (window.PP_RATES) { clearInterval(this._t); this.forceUpdate(); } }, 40);
+    this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR);
+    this.onSel = e => this.setState({ ch: 0, ch2: 0, ups: [], ...(e.detail || {}) }); window.addEventListener('pp-dawat-select', this.onSel);
+  }
+  componentWillUnmount() { clearInterval(this._t); window.removeEventListener('resize', this.onR); window.removeEventListener('pp-dawat-select', this.onSel); }
+  componentDidUpdate() { try { const { w, ...rest } = this.state; localStorage.setItem('pp-dawat-calc-v3', JSON.stringify(rest)); } catch (e) {} }
+  renderVals() {
+    const R = window.PP_RATES; if (!R) return {};
+    const C = R.catering, s = this.state, rs = window.ppRs, page = this.props.page || 'Catering';
+    const on = 'var(--pink-500)';
+    const card = a => ({ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 3, padding: '12px', minHeight: 64, borderRadius: 'var(--radius-md)', cursor: 'pointer', textAlign: 'left', border: a ? '2px solid ' + on : '1px solid var(--border-default)', background: a ? 'var(--pink-50)' : '#fff', color: a ? 'var(--pink-700)' : 'var(--ink-900)', fontFamily: 'var(--font-body)', width: '100%' });
+    const pill = (a, dis) => ({ padding: '9px 13px', minHeight: 40, borderRadius: 'var(--radius-pill)', cursor: dis ? 'not-allowed' : 'pointer', border: a ? '2px solid ' + on : '1px solid var(--border-default)', background: dis ? 'var(--ink-100)' : a ? 'var(--pink-500)' : '#fff', color: dis ? 'var(--ink-400)' : a ? '#fff' : 'var(--ink-900)', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap', flex: '0 0 auto' });
+    const tog = (arr, id) => arr.includes(id) ? arr.filter(x => x !== id) : [...arr, id];
+    const g = s.guests;
+    const d = C.dawats.find(x => x.id === s.dawat);
+    const upList = d ? C.upgrades.filter(u => d.upgrades.includes(u.id)) : [];
+    const upSel = upList.filter(u => s.ups.includes(u.id));
+    const upSum = upSel.reduce((t, u) => t + u.price, 0);
+    const sc = C.starterCombos.find(x => x.id === s.starter);
+    const pl = C.platters.find(x => x.id === s.platter);
+    const isMomo = pl && pl.group === 'Momos';
+    const mu = isMomo ? C.momoUpgrades.find(x => x.id === s.momoUp) : null;
+    const snackRows = C.snacks.map(x => ({ ...x, qty: s.snacks[x.id] || 0 }));
+    const snackCount = snackRows.reduce((t, x) => t + x.qty, 0);
+    const snackSum = snackRows.reduce((t, x) => t + x.qty * x.price, 0);
+    const ex = C.extras.filter(x => s.extras.includes(x.id));
+    const exSum = ex.reduce((t, x) => t + x.price, 0);
+    const svc = C.service.find(x => x.id === s.svc) || C.service[0];
+    const L = [];
+    if (d) L.push({ k: `${d.name} ${rs(d.price)} × ${g}`, v: rs(d.price * g) });
+    if (upSum) L.push({ k: `Upgrades +${rs(upSum)} × ${g}`, v: rs(upSum * g) });
+    if (sc) L.push({ k: `${sc.name.replace(' Starter Combo', ' starters')} × ${g}`, v: rs(sc.price * g) });
+    if (pl) L.push({ k: `${pl.name}${mu ? ' + ' + mu.name.split(' ')[0] : ''} × ${g}`, v: rs((pl.price + (mu ? mu.price : 0)) * g) });
+    if (snackCount) L.push({ k: `Snacks, ${snackCount} pcs`, v: rs(snackSum) });
+    if (exSum) L.push({ k: `Extras +${rs(exSum)} × ${g}`, v: rs(exSum * g) });
+    if (svc.price) L.push({ k: `Disposables ${rs(svc.price)} × ${g}`, v: rs(svc.price * g) });
+    if (svc.price === null) L.push({ k: 'Setup & service', v: 'Quoted' });
+    const food = (d ? d.price * g : 0) + upSum * g + (sc ? sc.price * g : 0) + (pl ? (pl.price + (mu ? mu.price : 0)) * g : 0) + snackSum + exSum * g + (svc.price ? svc.price * g : 0);
+    const refOk = s.referrer.trim() && g >= C.referral.min && food > 0;
+    if (refOk) L.push({ k: `Referral (${s.referrer.trim()})`, v: '−' + rs(C.referral.off) });
+    const sub = Math.max(0, food - (refOk ? C.referral.off : 0)), gst = Math.round(sub * R.gst), total = sub + gst;
+    L.push({ k: 'GST 5%', v: rs(gst) }, { k: '50% to hold the date', v: rs(total / 2) });
+    const minG = d && d.minGuests ? d.minGuests : C.minGuests;
+    const warns = [];
+    if (g < minG) warns.push(`${d ? d.name : 'A Dawat'} needs at least ${minG} guests.`);
+    if (svc.min && g < svc.min) warns.push(`Full setup and service starts at ${svc.min} guests.`);
+    if (snackCount > 0 && snackCount < C.snackMin) warns.push(`Snacks by the piece start at ${C.snackMin} pieces — add ${C.snackMin - snackCount} more.`);
+    if (sc && s.picks.length !== C.starterPick) warns.push(`Pick ${C.starterPick - s.picks.length > 0 ? C.starterPick - s.picks.length + ' more' : 'only ' + C.starterPick} starters.`);
+    if (!food) warns.push('Pick a Dawat, platter or snacks to see your price.');
+    if (s.referrer.trim() && g < C.referral.min) warns.push(`Referral ₹${C.referral.off} off applies from ${C.referral.min} guests.`);
+    const hours = g > 50 ? 48 : 24;
+    const md = new Date(Date.now() + hours * 36e5);
+    const fmt = x => x.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+    const dateLabel = s.date ? fmt(new Date(s.date)) : 'date TBD';
+    const setG = v => this.setState({ guests: Math.max(C.minGuests, Math.min(2000, v || C.minGuests)) });
+    const choiceSets = d ? [d.choice && { key: 'ch', c: d.choice }, d.choice2 && { key: 'ch2', c: d.choice2 }].filter(Boolean) : [];
+    const summary = [
+      d ? `${d.name}${d.choice ? ' (' + d.choice.options[s.ch] + (d.choice2 ? ', ' + d.choice2.options[s.ch2] + ' soup' : '') + ')' : ''}` : '',
+      upSel.length ? 'upgrades: ' + upSel.map(u => u.name).join(', ') : '',
+      sc ? `${sc.name}: ${s.picks.join(', ')}` : '',
+      pl ? pl.name + (mu ? ' + ' + mu.name : '') : '',
+      snackCount ? 'snacks: ' + snackRows.filter(x => x.qty).map(x => `${x.name} ×${x.qty}`).join(', ') : '',
+      ex.length ? 'extras: ' + ex.map(x => x.name).join(', ') : ''
+    ].filter(Boolean).join('; ');
+    return {
+      narrow: true,
+      guests: g,
+      setGuests: e => setG(+e.target.value), setGuestsTyped: e => setG(parseInt(e.target.value, 10)),
+      inc: () => setG(g + 5), dec: () => setG(g - 5), setGuestsNum: v => setG(v),
+      dawats: [...C.dawats.map(x => ({ label: x.name.replace(' Dawat', ''), price: rs(x.price), sub: x.minGuests ? `a head · ${x.minGuests}+ guests` : x.tag ? 'a head · ' + x.tag.toLowerCase() : 'a head', style: card(s.dawat === x.id), onClick: () => this.setState({ dawat: x.id, ch: 0, ch2: 0, ups: [] }) }))],
+      noDawat: () => this.setState({ dawat: '', ups: [] }), noDawatStyle: { ...pill(!s.dawat), alignSelf: 'flex-start', whiteSpace: 'normal', textAlign: 'left' },
+      hasDawat: !!d, dawatItems: d ? d.items.join(' · ') : '',
+      choices: choiceSets.map(cs => ({ label: cs.c.label, opts: cs.c.options.map((o, i) => ({ label: o, style: pill(s[cs.key] === i), sel: s[cs.key] === i, onClick: () => this.setState({ [cs.key]: i }) })) })),
+      hasUpgrades: upList.length > 0,
+      upgrades: upList.map(u => ({ label: u.price ? `${u.name} +${rs(u.price)}` : `${u.name} · free`, style: pill(s.ups.includes(u.id)), sel: s.ups.includes(u.id), onClick: () => this.setState(x => ({ ups: tog(x.ups, u.id) })) })),
+      starterCombos: [{ id: '', label: 'No starters' }, ...C.starterCombos.map(x => ({ id: x.id, label: `${x.name.replace(' Starter Combo', '')} · ${rs(x.price)}` }))].map(o => ({ label: o.label, style: pill(s.starter === o.id), sel: s.starter === o.id, onClick: () => this.setState({ starter: o.id, picks: [] }) })),
+      hasStarter: !!sc, pickHint: `Pick ${C.starterPick} · ${s.picks.length} picked`,
+      starterItems: sc ? sc.items.map(it => { const a = s.picks.includes(it), full = !a && s.picks.length >= C.starterPick; return { label: it, style: pill(a, full), sel: a, dis: full, onClick: () => !full && this.setState(x => ({ picks: tog(x.picks, it) })) }; }) : [],
+      platters: [{ id: '', label: 'No platter', price: '', items: '' }, ...C.platters.map(x => ({ id: x.id, label: x.name, price: rs(x.price), items: x.items }))].map(o => ({ ...o, style: card(s.platter === o.id), onClick: () => this.setState({ platter: o.id, momoUp: '' }) })),
+      isMomo: !!isMomo,
+      momoUps: [{ id: '', label: 'Classic mix' }, ...C.momoUpgrades.map(m => ({ id: m.id, label: `${m.name} +${rs(m.price)}` }))].map(o => ({ label: o.label, style: pill(s.momoUp === o.id), sel: s.momoUp === o.id, onClick: () => this.setState({ momoUp: o.id }) })),
+      toggleSnacks: () => this.setState(x => ({ showSnacks: !x.showSnacks })), showSnacks: s.showSnacks, snackIcon: s.showSnacks ? 'chevron-up' : 'chevron-down', snackCount,
+      snacks: snackRows.map(x => ({ name: x.name, d: x.d, price: rs(x.price), qty: x.qty, inc: () => this.setState(y => ({ snacks: { ...y.snacks, [x.id]: (y.snacks[x.id] || 0) + 10 } })), dec: () => this.setState(y => ({ snacks: { ...y.snacks, [x.id]: Math.max(0, (y.snacks[x.id] || 0) - 10) } })) })),
+      extras: C.extras.map(x => ({ label: `${x.name} +${rs(x.price)}`, style: pill(s.extras.includes(x.id)), sel: s.extras.includes(x.id), onClick: () => this.setState(y => ({ extras: tog(y.extras, x.id) })) })),
+      services: C.service.map(x => ({ label: x.name, price: x.price === null ? 'Quoted · 25+ guests' : x.price ? '+' + rs(x.price) + ' a head' : 'Included', desc: x.desc, style: card(s.svc === x.id), onClick: () => this.setState({ svc: x.id }) })),
+      occasions: ['House party', 'Birthday', 'Pooja / havan', 'Office lunch', 'Corporate event', 'Kitty party', 'Anniversary', 'Festival', 'Family function', 'Other'],
+      occ: s.occ, setOcc: e => this.setState({ occ: e.target.value }),
+      date: s.date, minDate: md.toISOString().slice(0, 10), setDate: e => this.setState({ date: e.target.value }),
+      referrer: s.referrer, setReferrer: e => this.setState({ referrer: e.target.value }),
+      noticeLine: `We need ${hours} hours’ notice for ${g > 50 ? 'more than' : 'up to'} 50 guests. Earliest date: ${fmt(md)}. Referral: mention a friend and get ₹${C.referral.off} off at ${C.referral.min}+ guests.`,
+      total: rs(total), perHead: rs(g ? total / g : 0),
+      lines: L, warns, hasWarn: warns.length > 0,
+      trialPrice: d ? rs(d.price) : rs(C.dawatFrom),
+      send: () => window.ppWa(page, `${summary || 'Catering enquiry'} — ${g} people, ${dateLabel}, ${s.occ}, ${svc.name}${refOk ? ', referred by ' + s.referrer.trim() : ''}. Estimate ${rs(total)} incl. GST. Is this date open?`)
+    };
+  }
+}
+</script>
+</body>
+</html>

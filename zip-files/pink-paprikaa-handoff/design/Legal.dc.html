@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><title>Policies · Pink Paprikaa</title><script src="./ds-base.js"></script><style>body{margin:0}a{color:var(--text-link);text-decoration:none}a:hover{color:var(--text-link-hover)}</style></helmet>
+<div style="min-height:100vh;background:var(--surface-page);font-family:var(--font-body);color:var(--text-body)">
+  <dc-import name="PPHeader" page="Legal" hint-size="100%,100px"></dc-import>
+  <div style="max-width:760px;margin:0 auto;padding:clamp(32px,6vw,72px) clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:40px">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <h1 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-display-2-fluid);letter-spacing:-.03em;color:var(--ink-900)">Policies</h1>
+      <span style="font-size:14px;color:var(--text-muted)">Summary of our rules. Full policy text to follow — it will match our rate cards.</span>
+    </div>
+    <section id="privacy" style="display:flex;flex-direction:column;gap:10px;scroll-margin-top:120px">
+      <h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-h2-fluid);color:var(--ink-900)">Privacy Policy</h2>
+      <p style="margin:0;font-size:16px;line-height:1.7">We collect your name, phone number and delivery address only to take and deliver your order. We never sell or share them.</p>
+    </section>
+    <section id="terms" style="display:flex;flex-direction:column;gap:10px;scroll-margin-top:120px">
+      <h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-h2-fluid);color:var(--ink-900)">Terms of Service</h2>
+      <p style="margin:0;font-size:16px;line-height:1.7">General terms for restaurant orders, Homely Meals plans, office plans and catering.</p>
+    </section>
+    <section id="refunds" style="display:flex;flex-direction:column;gap:10px;scroll-margin-top:120px">
+      <h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-h2-fluid);color:var(--ink-900)">Refund &amp; Cancellation</h2>
+      <ul style="margin:0;padding-left:20px;font-size:16px;line-height:1.8">
+        <li>Meal plans: 7 days&rsquo; notice. Unused meals are refunded.</li>
+        <li>The trial (5 meals) is paid at its own price and not credited to your first plan.</li>
+        <li>Catering: 50% advance to confirm. Changes are free up to 24 hours before.</li>
+      </ul>
+    </section>
+    <section id="delivery" style="display:flex;flex-direction:column;gap:10px;scroll-margin-top:120px">
+      <h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-h2-fluid);color:var(--ink-900)">Delivery Policy</h2>
+      <ul style="margin:0;padding-left:20px;font-size:16px;line-height:1.8">
+        <li>Free within 3&nbsp;km of our Sector 57 kitchen.</li>
+        <li>Beyond 3&nbsp;km, the charge is agreed per customer.</li>
+        <li>Catering delivery is included up to 8&nbsp;km.</li>
+      </ul>
+    </section>
+  </div>
+  <dc-import name="PPFooter" page="Legal" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+</body>
+</html>

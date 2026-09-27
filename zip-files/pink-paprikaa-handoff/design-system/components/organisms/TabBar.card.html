@@ -1,0 +1,21 @@
+<!-- @dsCard group="Organisms" viewport="700x240" name="TabBar" subtitle="Four and five destinations, with a cart count." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style></style>
+</head><body><div id="root"></div><script type="text/babel">
+const { TabBar } = window.PinkPaprikaaDesignSystem_23ef63;
+function Demo(){const [a,setA]=React.useState('menu');const [b,setB]=React.useState('home');
+const four=[{value:'home',label:'Home',icon:'house'},{value:'menu',label:'Menu',icon:'utensils'},{value:'cart',label:'Cart',icon:'shopping-bag',count:2},{value:'you',label:'You',icon:'user'}];
+const five=[...four.slice(0,3).map(x=>({...x,count:undefined})),{value:'orders',label:'Orders',icon:'receipt'},{value:'you',label:'You',icon:'user'}];
+return(<Rows>
+<Row label="4 tabs + count" col><div style={{width:390,border:'1px solid var(--border-subtle)',borderRadius:'var(--radius-lg)',overflow:'hidden'}}><TabBar items={four} value={a} onChange={setA}/></div></Row>
+<Row label="5 tabs" col><div style={{width:390,border:'1px solid var(--border-subtle)',borderRadius:'var(--radius-lg)',overflow:'hidden'}}><TabBar items={five} value={b} onChange={setB}/></div></Row>
+</Rows>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

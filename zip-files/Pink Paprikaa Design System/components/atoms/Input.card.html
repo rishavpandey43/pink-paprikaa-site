@@ -1,0 +1,28 @@
+<!-- @dsCard group="Atoms" viewport="700x1820" name="Input" subtitle="Every state: rest, filled, focus, disabled, read-only, loading, error, success, warning." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style></style>
+</head><body><div id="root"></div><script type="text/babel">
+const { Input, Button } = window.PinkPaprikaaDesignSystem_23ef63;
+function Demo(){const [v,setV]=React.useState('98765 43210');return(<Rows>
+<Row label="rest" col><Input label="Full name" placeholder="Aditi Rao"/></Row>
+<Row label="filled + icon" col><Input label="Mobile number" icon="phone" value={v} onChange={e=>setV(e.target.value)}/></Row>
+<Row label="hint" col><Input label="Company GSTIN" icon="building" optional hint="We only need this for corporate billing."/></Row>
+<Row label="error" col><Input label="Card" icon="credit-card" value="4242 4242" onChange={()=>{}} error="That card didn't go through. Try another?"/></Row>
+<Row label="success" col><Input label="Promo code" value="PAPRIKAA50" onChange={()=>{}} success="Applied. 50% off this order."/></Row>
+<Row label="warning" col><Input label="Pickup time" value="11:25pm" onChange={()=>{}} warning="Kitchen closes at 11:30pm."/></Row>
+<Row label="loading" col><Input label="Promo code" value="CHAI20" onChange={()=>{}} loading hint="Checking that code..."/></Row>
+<Row label="readOnly" col><Input label="Outlet" value="Sector 57" readOnly/></Row>
+<Row label="disabled" col><Input label="Delivery address" placeholder="Delivery starts in 2027" disabled/></Row>
+<Row label="suffix / trailing" col><Input label="Table size" suffix="guests" placeholder="4" trailing={<Button size="sm" variant="ghost">Check</Button>}/></Row>
+<Row label="size" col><Input size="sm" placeholder="sm - 40px"/><Input size="md" placeholder="md - 48px"/><Input size="lg" placeholder="lg - 56px"/></Row>
+<Row label="multiline" col><Input label="Any notes for the kitchen?" multiline rows={3} placeholder="No onion, extra hot."/></Row>
+</Rows>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

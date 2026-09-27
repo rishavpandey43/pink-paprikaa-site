@@ -1,0 +1,17 @@
+<!-- @dsCard group="Explore" viewport="700x300" name="Mark legibility" subtitle="How the embedded mark scales and strengthens as the diamond shrinks." -->
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>html,body{margin:0}body{padding:20px 24px;font-family:var(--font-body);background:var(--surface-page)}
+.r{display:flex;align-items:flex-end;gap:26px;flex-wrap:wrap}
+.c{text-align:center}
+.d{display:grid;place-items:center;transform:rotate(45deg);border-radius:2px;background:var(--pink-500);overflow:hidden;margin:0 auto}
+.d img{transform:rotate(-45deg);object-fit:contain}
+.k{font-family:var(--font-mono);font-size:10px;color:var(--text-subtle);margin-top:12px;line-height:1.5}
+.note{font-family:var(--font-mono);font-size:10.5px;color:var(--text-subtle);padding-top:18px;line-height:1.6;border-top:1px solid var(--border-subtle);margin-top:18px}</style></head><body>
+<div class="r" id="r"></div>
+<div class="note">Mark size and opacity both ramp with the diamond: below 14px it is 86% of the square at 85% white, 14&ndash;19px is 80% at 66%, 20px and up is 74% at 50%. Without the ramp a 12px dot renders a 8.9px glyph at 42% &mdash; below the threshold where its strokes resolve, which is why small marks looked missing.</div>
+<script>
+const scale=s=>s<14?0.86:s<20?0.8:0.74, alpha=s=>s<14?0.85:s<20?0.66:0.5;
+document.getElementById('r').innerHTML=[10,12,14,16,20,26,34,44].map(s=>
+ '<div class="c"><div class="d" style="width:'+s+'px;height:'+s+'px"><img src="../assets/symbol-white.svg" style="width:'+(scale(s)*100)+'%;height:'+(scale(s)*100)+'%;opacity:'+alpha(s)+'"></div>'+
+ '<div class="k">'+s+'px<br>'+Math.round(scale(s)*100)+'% &middot; '+Math.round(alpha(s)*100)+'%</div></div>').join('');
+</script></body></html>

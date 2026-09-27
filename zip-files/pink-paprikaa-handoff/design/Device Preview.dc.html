@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><title>Device preview · Pink Paprikaa</title><script src="./ds-base.js"></script><style>body{margin:0}</style></helmet>
+<div style="min-height:100vh;background:var(--ink-100);font-family:var(--font-body);display:flex;flex-direction:column">
+  <div style="position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--border-subtle);padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center">
+    <span style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--ink-900)">Device preview</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <sc-for list="{{ devices }}" as="d" hint-placeholder-count="4">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ d.sel }}" icon="{{ d.icon }}" on-click="{{ d.onClick }}" hint-size="auto,38px">{{ d.label }}</x-import>
+      </sc-for>
+    </div>
+    <select value="{{ page }}" onChange="{{ setPage }}" style="height:40px;border:1px solid var(--border-default);border-radius:var(--radius-md);padding:0 10px;font-family:var(--font-body);font-size:14px;color:var(--ink-900);background:#fff">
+      <sc-for list="{{ pages }}" as="p" hint-placeholder-count="9"><option value="{{ p.file }}">{{ p.label }}</option></sc-for>
+    </select>
+    <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">{{ sizeLabel }}</span>
+    <a href="{{ page }}" target="_blank" style="margin-left:auto;font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--pink-600);text-decoration:none">Open full page ↗</a>
+  </div>
+  <div ref="{{ stage }}" style="flex:1;display:flex;justify-content:center;padding:20px 12px;overflow:hidden">
+    <div style="{{ bezel }}">
+      <div style="{{ frameWrap }}">
+        <iframe title="Page preview" src="{{ page }}" style="{{ frameStyle }}"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  stage = React.createRef();
+  state = { dev: 0, page: 'Home.dc.html', avail: 1200 };
+  componentDidMount() {
+    try { const v = JSON.parse(localStorage.getItem('pp-device-preview')); if (v) this.setState(v); } catch (e) {}
+    this.measure = () => { const el = this.stage.current; if (el) this.setState({ avail: el.clientWidth - 24 }); };
+    this.measure(); window.addEventListener('resize', this.measure);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.measure); }
+  componentDidUpdate() { try { localStorage.setItem('pp-device-preview', JSON.stringify({ dev: this.state.dev, page: this.state.page })); } catch (e) {} }
+  renderVals() {
+    const D = [{ label: 'Phone', icon: 'smartphone', w: 390, h: 844 }, { label: 'Small phone', icon: 'smartphone', w: 360, h: 740 }, { label: 'Tablet', icon: 'tablet', w: 768, h: 1024 }, { label: 'Desktop', icon: 'monitor', w: 1280, h: 800 }];
+    const d = D[this.state.dev] || D[0];
+    const scale = Math.min(1, (this.state.avail - 24) / d.w);
+    const phone = d.w < 700;
+    return {
+      stage: this.stage,
+      devices: D.map((x, i) => ({ label: x.label, icon: x.icon, sel: this.state.dev === i, onClick: () => this.setState({ dev: i }) })),
+      pages: [['Home', 'Home.dc.html'], ['Homely Meals', 'HomelyMeals.dc.html'], ['This week’s menu', 'ThisWeek.dc.html'], ['Catering', 'Catering.dc.html'], ['Office & PG Lunch', 'OfficeLunch.dc.html'], ['Restaurant Menu', 'Menu.dc.html'], ['About', 'About.dc.html'], ['Contact', 'Contact.dc.html'], ['Policies', 'Legal.dc.html']].map(([label, file]) => ({ label, file })),
+      page: this.state.page, setPage: e => this.setState({ page: e.target.value }),
+      sizeLabel: `${d.w} × ${d.h}${scale < 1 ? ' · ' + Math.round(scale * 100) + '%' : ''}`,
+      bezel: phone ? { flex: '0 0 auto', alignSelf: 'flex-start', background: 'var(--ink-900)', padding: `${Math.round(18 * scale)}px ${Math.round(10 * scale)}px`, borderRadius: Math.round(44 * scale), boxShadow: 'var(--shadow-4)' } : { flex: '0 0 auto', alignSelf: 'flex-start', boxShadow: 'var(--shadow-4)', borderRadius: 12 },
+      frameWrap: { width: d.w * scale, height: d.h * scale, borderRadius: phone ? Math.round(10 * scale) : 12, border: phone ? '0' : '1px solid var(--border-default)', overflow: 'hidden', background: '#fff', transition: 'width 220ms, height 220ms' },
+      frameStyle: { width: d.w, height: d.h, border: 0, transform: `scale(${scale})`, transformOrigin: '0 0', display: 'block' }
+    };
+  }
+}
+</script>
+</body>
+</html>

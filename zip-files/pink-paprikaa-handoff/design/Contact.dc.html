@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><title>Contact &amp; Directions · Pink Paprikaa Sector 57</title><meta name="description" content="Pink Paprikaa, Booth No. 67P, MKM Market, Sector 57 Gurgaon. Hours, WhatsApp, phone, email and delivery zones."><script type="application/ld+json">{"@context":"https://schema.org","@type":"Restaurant","name":"Pink Paprikaa","servesCuisine":["North Indian","Vegetarian"],"priceRange":"₹120–₹549","telephone":"+91-90907-04001","email":"business@pinkpaprikaa.com","url":"https://pinkpaprikaa.com","address":{"@type":"PostalAddress","streetAddress":"Booth No. 67P, HSVP Market (MKM Market), Sector 57","addressLocality":"Gurugram","addressRegion":"Haryana","postalCode":"122003","addressCountry":"IN"},"openingHours":"Mo-Su 08:00-23:30","hasMenu":"https://pinkpaprikaa.com/menu","acceptsReservations":false}</script><script src="./ds-base.js"></script><style>body{margin:0}a{color:var(--text-link);text-decoration:none}a:hover{color:var(--text-link-hover)}</style></helmet>
+<div style="min-height:100vh;background:var(--surface-page);font-family:var(--font-body);color:var(--text-body)">
+  <dc-import name="PPHeader" active="contact" page="Contact" hint-size="100%,100px"></dc-import>
+
+  <section data-screen-label="Contact" style="max-width:1200px;margin:0 auto;padding:clamp(32px,6vw,80px) clamp(16px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:clamp(24px,4vw,48px);align-items:start">
+    <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+      <h1 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-display-2-fluid);line-height:1.05;letter-spacing:-.03em;color:var(--ink-900)">Contact &amp; directions</h1>
+      <div style="display:flex;flex-direction:column">
+        <div style="display:grid;grid-template-columns:24px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid var(--border-subtle)"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="map-pin" size="{{ 20 }}" style="color:var(--pink-500)" hint-size="20px,20px"></x-import><span style="font-size:16px;line-height:1.6;color:var(--ink-900)">Booth No. 67P, HSVP Market (MKM Market), Sector 57, Gurgaon 122003</span></div>
+        <div style="display:grid;grid-template-columns:24px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid var(--border-subtle)"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="clock" size="{{ 20 }}" style="color:var(--pink-500)" hint-size="20px,20px"></x-import><span style="font-size:16px;color:var(--ink-900)">8am – 11:30pm, every day</span></div>
+        <a href="tel:+919090704001" style="display:grid;grid-template-columns:24px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid var(--border-subtle);color:var(--ink-900)"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="phone" size="{{ 20 }}" style="color:var(--pink-500)" hint-size="20px,20px"></x-import><span style="font-size:16px">+91 90907 04001</span></a>
+        <a href="mailto:business@pinkpaprikaa.com" style="display:grid;grid-template-columns:24px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid var(--border-subtle);color:var(--ink-900)"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="mail" size="{{ 20 }}" style="color:var(--pink-500)" hint-size="20px,20px"></x-import><span style="font-size:16px">business@pinkpaprikaa.com</span></a>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="primary" size="lg" icon="message-circle" full-width="{{ true }}" on-click="{{ openWa }}" hint-size="100%,54px">WhatsApp</x-import>
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="secondary" size="lg" icon="navigation" full-width="{{ true }}" on-click="{{ directions }}" hint-size="100%,54px">Directions</x-import>
+      </div>
+    </div>
+    <div style="border-radius:var(--radius-xl);overflow:hidden;border:1px solid var(--border-subtle);box-shadow:var(--shadow-3);aspect-ratio:4 / 3;background:var(--pink-50)">
+      <iframe title="Map to Pink Paprikaa" src="https://www.google.com/maps?q=MKM+Market+Sector+57+Gurgaon&amp;output=embed" style="width:100%;height:100%;border:0" loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <section data-screen-label="Delivery zones" style="background:var(--pink-50)">
+    <div style="max-width:1200px;margin:0 auto;padding:clamp(48px,8vw,80px) clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:20px">
+      <h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-h1-fluid);color:var(--ink-900);letter-spacing:-.02em">Delivery zones</h2>
+      <p style="margin:0;font-size:16px;line-height:1.6;max-width:640px">Homely Meals: free within 3&nbsp;km. Catering: free up to 8&nbsp;km. Beyond that, we agree the charge with you.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ zones }}" as="z" hint-placeholder-count="12">
+          <span style="{{ z.style }}">{{ z.name }}</span>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--text-muted)">
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:50%;background:var(--mint)"></span>Free Homely Meals delivery</span>
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:50%;background:var(--pink-300)"></span>We deliver, small charge</span>
+      </div>
+    </div>
+  </section>
+
+  <dc-import name="PPFooter" page="Contact" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount() { if (!window.PP_RATES) this._t = setInterval(() => { if (window.PP_RATES) { clearInterval(this._t); this.forceUpdate(); } }, 40); }
+  componentWillUnmount() { clearInterval(this._t); }
+  renderVals() {
+    const R = window.PP_RATES; if (!R) return {};
+    return {
+      zones: R.zones.map(z => { const f = z.free; return { name: z.name, style: { background: f ? 'var(--mint-soft)' : '#fff', color: f ? '#1d6e52' : 'var(--pink-700)', border: '1px solid ' + (f ? 'var(--mint)' : 'var(--pink-200)'), fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 14, padding: '8px 14px', borderRadius: 'var(--radius-pill)', whiteSpace: 'nowrap' } }; }),
+      openWa: () => window.ppWa('Contact', 'Hi Pink Paprikaa, I have a question.'),
+      directions: () => window.open(R.links.directions, '_blank')
+    };
+  }
+}
+</script>
+</body>
+</html>

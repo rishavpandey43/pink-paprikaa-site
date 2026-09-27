@@ -1,0 +1,19 @@
+<!-- @dsCard group="Atoms" viewport="700x380" name="Avatar" subtitle="Five sizes, initials, glyph fallback and the signed-in ring." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+</head><body><div id="root"></div><script type="text/babel">
+const { Avatar } = window.PinkPaprikaaDesignSystem_23ef63;
+function Demo(){return(<Rows>
+<Row label="size" note="xs sm md lg xl">{['xs','sm','md','lg','xl'].map(s=><Avatar key={s} name="Aditi Rao" size={s}/>)}</Row>
+<Row label="initials"><Avatar name="Aditi Rao"/><Avatar name="Kabir"/><Avatar name="Meera S Iyer"/></Row>
+<Row label="icon fallback"><Avatar icon="user"/><Avatar icon="user" size="lg"/></Row>
+<Row label="ring" note="signed-in guest"><Avatar name="Aditi Rao" size="lg" ring/></Row>
+</Rows>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

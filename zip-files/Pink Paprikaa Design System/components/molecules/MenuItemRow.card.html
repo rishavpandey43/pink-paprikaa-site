@@ -1,0 +1,19 @@
+<!-- @dsCard group="Molecules" viewport="700x870" name="MenuItemRow" subtitle="Badges, discounts, heat, add button and the no-image list form." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+</head><body><div id="root"></div><script type="text/babel">
+const { MenuItemRow, Button } = window.PinkPaprikaaDesignSystem_23ef63;
+function Demo(){return(<Rows>
+<Row label="full" col><MenuItemRow base="../../assets" name="Paprikaa Chilli Paneer" price={280} spice={3} badge="Bestseller" description="Amritsari paneer, burnt chilli mayo, potato brioche." onAdd={()=>{}}/></Row>
+<Row label="discount" col><MenuItemRow base="../../assets" name="Mushroom Keema Pav" price={340} was={380} spice={2} description="Slow-cooked mushroom keema, buttered pav, pickled onion." onAdd={()=>{}}/></Row>
+<Row label="devanagari + egg" col><MenuItemRow base="../../assets" name="Gulkand Kulfi" nameDevanagari="&#2325;&#2369;&#2354;&#2381;&#2347;&#2368;" diet="egg" price={180} spice={1} description="Rose petal preserve, pistachio, saffron." onAdd={()=>{}}/></Row>
+<Row label="minimal" note="no divider, no action" col><MenuItemRow base="../../assets" name="Kulhad Chai" price={90} divider={false}/></Row>
+</Rows>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

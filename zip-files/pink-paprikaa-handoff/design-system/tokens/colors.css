@@ -1,0 +1,113 @@
+:root{
+  /* ── Brand pink (primary) ───────────────────────────── */
+  --pink-50:#fff5f8;
+  --pink-100:#ffdbe8;
+  --pink-200:#ffb9ce;
+  --pink-300:#fa8bab;
+  --pink-400:#f4568a;
+  --pink-500:#ee2c68; /* PRIMARY — logo pink */
+  --pink-600:#d21e55;
+  --pink-700:#ab1544;
+  --pink-800:#7c0e30;
+
+  /* ── Warm ink neutrals ──────────────────────────────── */
+  --ink-900:#1a1216;
+  --ink-800:#2b1f25;
+  --ink-700:#46373e;
+  --ink-600:#6b5a62;
+  --ink-500:#8f7f86;
+  --ink-400:#b8abb1;
+  --ink-300:#dcd3d7;
+  --ink-200:#ece6e8;
+  --ink-100:#f7f3f4;
+  --ink-000:#ffffff;
+
+  /* ── Desi spice accents (secondary, use sparingly) ──── */
+  --turmeric:#f2b233;
+  --turmeric-soft:#fdf1d6;
+  --tandoor:#e4572e;
+  --tandoor-soft:#fdeae3;
+  --mint:#2fa37c;
+  --mint-soft:#e2f4ed;
+  --kesar:#7a3ea8;
+  --kesar-soft:#f1e8f8;
+
+  /* ── Semantic surfaces ──────────────────────────────── */
+  --surface-page:var(--ink-000);
+  --surface-page-alt:var(--pink-50);
+  --surface-card:var(--ink-000);
+  --surface-sunken:var(--ink-100);
+  --surface-brand:var(--pink-500);
+  --surface-brand-soft:var(--pink-100);
+  --surface-inverse:var(--ink-900);
+  --surface-overlay:rgba(26,18,22,.56);
+  --surface-glass:rgba(255,255,255,.72);
+
+  /* ── Semantic text ──────────────────────────────────── */
+  --text-body:var(--ink-800);
+  --text-heading:var(--ink-900);
+  --text-muted:var(--ink-600);
+  --text-subtle:var(--ink-500);
+  --text-brand:var(--pink-500);
+  --text-on-brand:var(--ink-000);
+  --text-on-inverse:var(--ink-000);
+  --text-link:var(--pink-600);
+  --text-link-hover:var(--pink-700);
+
+  /* ── Semantic borders ───────────────────────────────── */
+  --border-subtle:var(--ink-200);
+  --border-default:var(--ink-300);
+  --border-strong:var(--ink-900);
+  --border-brand:var(--pink-500);
+  --border-brand-soft:var(--pink-200);
+
+  /* ── Interaction ────────────────────────────────────── */
+  --brand-hover:var(--pink-600);
+  --brand-active:var(--pink-700);
+  --focus-ring:0 0 0 3px var(--pink-200);
+  --focus-ring-inverse:0 0 0 3px rgba(255,255,255,.5);
+
+  /* ── Status ─────────────────────────────────────────── */
+  --status-success:var(--mint);
+  --status-success-soft:var(--mint-soft);
+  --status-warning:var(--turmeric);
+  --status-warning-soft:var(--turmeric-soft);
+  --status-danger:#cf2222;
+  --status-danger-soft:#fce9e9;
+  --status-info:var(--kesar);
+  --status-info-soft:var(--kesar-soft);
+
+  /* ── Spice heat scale (menu) ────────────────────────── */
+  --heat-1:var(--mint);
+  --heat-2:var(--turmeric);
+  --heat-3:var(--tandoor);
+  --heat-4:var(--pink-600);
+}
+
+/* ── Surface contexts ───────────────────────────────────
+   Any element carrying data-surface (or the matching pp-on-* class) remaps the
+   semantic text/border tokens for everything inside it. Headings, paragraphs,
+   links and Text tones all read these tokens, so nothing has to be recoloured
+   by hand when it sits on a flooded pink or ink field. */
+[data-surface="brand"],[data-surface="ink"],.pp-on-brand,.pp-on-ink{
+  --text-heading:var(--ink-000);
+  --text-body:rgba(255,255,255,.9);
+  --text-muted:rgba(255,255,255,.76);
+  --text-subtle:rgba(255,255,255,.62);
+  --text-link:var(--ink-000);
+  --text-link-hover:var(--ink-000);
+  --border-subtle:rgba(255,255,255,.22);
+  --border-default:rgba(255,255,255,.42);
+  --border-strong:var(--ink-000);
+  --focus-ring:var(--focus-ring-inverse);
+  color:var(--text-body);
+}
+[data-surface="brand"],.pp-on-brand{--text-brand:var(--pink-100);--surface-card:rgba(255,255,255,.1)}
+[data-surface="ink"],.pp-on-ink{--text-brand:var(--pink-300);--surface-card:rgba(255,255,255,.06)}
+[data-surface="soft"],.pp-on-soft{
+  --text-heading:var(--pink-800);
+  --text-brand:var(--pink-600);
+  --text-link:var(--pink-700);
+  --border-subtle:var(--pink-200);
+  --border-default:var(--pink-300);
+}

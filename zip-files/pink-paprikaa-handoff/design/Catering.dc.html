@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><title>Veg Caterers in Gurgaon, Sector 57 · House Party &amp; Office Catering with Price</title><meta name="description" content="Pink Paprikaa Catering — pure veg catering from our own restaurant kitchen in Sector 57, Gurgaon. Dawats from ₹149 a head, snacks from ₹99. Taste it first, free if you order."><script src="./ds-base.js"></script><style>body{margin:0}a{color:var(--text-link);text-decoration:none}a:hover{color:var(--text-link-hover)}</style></helmet>
+<div style="min-height:100vh;background:var(--surface-page);font-family:var(--font-body);color:var(--text-body)">
+  <dc-import name="PPHeader" active="catering" page="Catering" hint-size="100%,100px"></dc-import>
+
+  <section data-screen-label="Hero" data-surface="brand" style="background:var(--pink-500);position:relative;overflow:hidden">
+    <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.PatternField" tone="brand" tile="{{ 72 }}" base="assets" hint-size="100%,200px">
+    <div style="position:relative;max-width:1200px;margin:0 auto;padding:clamp(28px,6vw,80px) clamp(16px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:clamp(24px,5vw,56px);align-items:center">
+      <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Badge" tone="ink" hint-size="auto,24px">Pink Paprikaa Catering</x-import>
+          <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Badge" tone="success" hint-size="auto,24px"><span style="display:inline-flex;align-items:center;gap:6px"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.DietMark" type="veg" size="{{ 14 }}" hint-size="14px,14px"></x-import>100% Pure Veg</span></x-import>
+        </div>
+        <h1 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-display-2-fluid);line-height:1.05;letter-spacing:-.03em;color:#fff;text-wrap:balance">Feeding thirty people? It has to be right the first time.</h1>
+        <p style="margin:0;font-size:17px;line-height:1.6;color:#fff;max-width:540px">We cook it in our own restaurant kitchen in Sector 57 — the same tandoor, the same cooks, the same food our dine-in guests eat every day. Tell us the date and headcount. We take it from there.</p>
+        <p style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-h2-fluid);color:#fff">From {{ from }} per person.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="inverse" size="lg" on="brand" icon-after="arrow-right" on-click="{{ toBuilder }}" hint-size="210px,54px">Build your Dawat</x-import>
+          <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="secondary" size="lg" on="brand" icon="utensils" on-click="{{ tasting }}" hint-size="190px,54px">Taste it first</x-import>
+        </div>
+        <span style="font-size:14px;color:#fff;line-height:1.5">One kitchen, no shared surfaces, pure vegetarian — ever. Jain and satvik menus on request.</span>
+      </div>
+      <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.ImageSlot" ratio="4:3" radius="var(--radius-xl)" tone="strong" label="PHOTO: Real Dawat spread from our kitchen — tandoori roti, paneer, dal" hint-size="100%,400px"></x-import>
+    </div>
+    </x-import>
+  </section>
+
+  <section data-screen-label="Why us" style="max-width:1200px;margin:0 auto;padding:clamp(48px,8vw,96px) clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:32px">
+    <h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-display-2-fluid);line-height:1.05;letter-spacing:-.03em;color:var(--ink-900)">Why people call us back.</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:24px 36px">
+      <sc-for list="{{ why }}" as="p" hint-placeholder-count="6">
+        <div style="display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:start">
+          <span style="width:44px;height:44px;border-radius:var(--radius-md);background:var(--pink-100);color:var(--pink-600);display:grid;place-items:center"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="{{ p.icon }}" size="{{ 20 }}" hint-size="20px,20px"></x-import></span>
+          <div style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--ink-900)">{{ p.t }}</span><span style="font-size:15px;line-height:1.6;color:var(--text-muted)">{{ p.d }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="dawats" data-screen-label="Dawat packages" style="background:var(--pink-50)">
+    <div style="max-width:1200px;margin:0 auto;padding:clamp(48px,8vw,96px) clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:28px">
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:720px">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.SectionHeader" overline="Dawat packages" title="Everything one guest eats, in one price." lede="Per head, plus GST at 5%. Minimum 15 guests. Food, packing and delivery up to 8&nbsp;km are inside the price." hint-size="100%,110px"></x-import>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr));gap:14px;align-items:stretch">
+        <sc-for list="{{ dawats }}" as="d" hint-placeholder-count="4">
+          <div style="{{ d.card }}" style-hover="transform:translateY(-2px);box-shadow:var(--shadow-4)">
+            <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.ImageSlot" ratio="16:10" radius="var(--radius-md)" label="{{ d.photo }}" hint-size="100%,150px"></x-import>
+            <sc-if value="{{ d.hasTag }}" hint-placeholder-val="{{ false }}"><span style="{{ d.tagStyle }}">{{ d.tag }}</span></sc-if>
+            <span style="font-family:var(--font-display);font-weight:800;font-size:19px">{{ d.name }}</span>
+            <span style="font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1;letter-spacing:-.03em">{{ d.price }}<span style="font-size:13px;font-weight:600"> a head</span></span>
+            <span style="font-size:14px;line-height:1.5">{{ d.blurb }}</span>
+            <div style="display:flex;flex-direction:column;flex:1">
+              <sc-for list="{{ d.items }}" as="it" hint-placeholder-count="8"><span style="{{ d.rowStyle }}"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="check" size="{{ 14 }}" style="flex:0 0 auto;margin-top:3px" hint-size="14px,14px"></x-import>{{ it }}</span></sc-for>
+            </div>
+            <span style="font-size:13px;line-height:1.5"><strong>Best for</strong> — {{ d.bestFor }}</span>
+            <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="{{ d.btn }}" on="{{ d.on }}" size="md" full-width="{{ true }}" icon-after="arrow-right" on-click="{{ d.pick }}" hint-size="100%,44px">Build this Dawat</x-import>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:16px;align-items:start">
+        <div style="background:#fff;border:1px solid var(--border-subtle);border-radius:var(--radius-xl);overflow:hidden;min-width:0">
+          <div style="overflow-x:auto"><div style="min-width:480px">
+            <div style="display:grid;grid-template-columns:80px repeat(3,minmax(0,1fr));gap:10px;padding:12px 18px;background:var(--pink-100);font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--ink-900)"><span>At a glance</span><span>Classic ₹149</span><span style="color:var(--pink-700)">Signature ₹199</span><span>Maharaja ₹269</span></div>
+            <sc-for list="{{ glance }}" as="r" hint-placeholder-count="7">
+              <div style="display:grid;grid-template-columns:80px repeat(3,minmax(0,1fr));gap:10px;padding:10px 18px;border-top:1px solid var(--border-subtle);font-size:13px"><strong style="color:var(--ink-900)">{{ r.k }}</strong><span>{{ r.a }}</span><span style="color:var(--ink-900);font-weight:600">{{ r.b }}</span><span>{{ r.c }}</span></div>
+            </sc-for>
+          </div></div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border-subtle);border-radius:var(--radius-xl);padding:clamp(16px,3vw,22px);display:flex;flex-direction:column;min-width:0">
+          <span style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--ink-900);padding-bottom:6px">Upgrades, per head</span>
+          <sc-for list="{{ upgrades }}" as="u" hint-placeholder-count="5"><div style="display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--border-subtle);font-size:14px"><span style="color:var(--ink-900)">{{ u.name }}</span><span style="font-family:var(--font-mono);color:var(--pink-700)">{{ u.price }}</span></div></sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Taste first" data-surface="ink" style="background:var(--ink-900)"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.PatternField" tone="ink" tile="{{ 80 }}" opacity="{{ 0.04 }}" base="assets" hint-size="100%,200px">
+    <div style="max-width:1200px;margin:0 auto;padding:clamp(40px,6vw,72px) clamp(16px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:24px;align-items:center">
+      <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.SectionHeader" overline="Taste it first" title="If you order, the tasting is free." lede="{{ trialText }} You only pay if you decide not to go ahead." on="brand" hint-size="100%,110px"></x-import>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="primary" size="lg" icon="message-circle" on-click="{{ tasting }}" hint-size="220px,54px">Book a trial Dawat</x-import>
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="secondary" size="lg" on="brand" icon="map-pin" on-click="{{ directions }}" hint-size="180px,54px">Eat at the restaurant</x-import>
+      </div>
+    </div>
+  </x-import></section>
+
+  <section id="more" data-screen-label="Starters, platters, snacks" style="max-width:1200px;margin:0 auto;padding:clamp(48px,8vw,96px) clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:28px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:640px;min-width:0">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.SectionHeader" overline="Beyond the Dawat" title="Starters, platters and snacks." hint-size="100%,110px"></x-import>
+      </div>
+      <div style="display:flex;gap:4px;background:var(--pink-50);padding:4px;border-radius:var(--radius-pill);flex-wrap:wrap">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ t.sel }}" disabled="{{ t.dis }}" on-click="{{ t.onClick }}" hint-size="auto,38px">{{ t.label }}</x-import></sc-for>
+      </div>
+    </div>
+    <span style="font-size:15px;line-height:1.6;max-width:720px">{{ tabIntro }}</span>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:16px">
+      <sc-for list="{{ tabCards }}" as="c" hint-placeholder-count="3">
+        <div style="background:#fff;border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);padding:20px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><span style="font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--ink-900)">{{ c.name }}</span><span style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--pink-500)">{{ c.price }}</span></div>
+          <span style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700">{{ c.unit }}</span>
+          <sc-for list="{{ c.items }}" as="it" hint-placeholder-count="5"><span style="display:flex;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--border-subtle);font-size:14px"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.DietMark" type="veg" size="{{ 12 }}" hint-size="12px,12px"></x-import>{{ it }}</span></sc-for>
+        </div>
+      </sc-for>
+    </div>
+    <sc-if value="{{ showTable }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid var(--border-subtle);border-radius:var(--radius-xl);padding:4px clamp(14px,3vw,22px)">
+        <sc-for list="{{ tableRows }}" as="r" hint-placeholder-count="10">
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:12px 0;border-top:1px solid var(--border-subtle);align-items:center">
+            <div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:15px;color:var(--ink-900);font-weight:600">{{ r.name }}</span><span style="font-size:13px;color:var(--text-muted)">{{ r.d }}</span></div>
+            <span style="font-family:var(--font-mono);font-size:14px;color:var(--ink-900);white-space:nowrap">{{ r.price }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <span style="font-size:13px;color:var(--text-muted)">{{ tabNote }}</span>
+  </section>
+
+  <section data-screen-label="How served" style="background:var(--pink-50)">
+    <div style="max-width:1200px;margin:0 auto;padding:clamp(48px,8vw,96px) clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:24px">
+      <h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-display-2-fluid);line-height:1.05;letter-spacing:-.03em;color:var(--ink-900)">How you want it served.</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:16px">
+        <sc-for list="{{ services }}" as="s" hint-placeholder-count="3">
+          <div style="background:#fff;border-radius:var(--radius-xl);padding:24px;display:flex;flex-direction:column;gap:10px;border:1px solid var(--border-subtle)">
+            <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="{{ s.icon }}" size="{{ 26 }}" style="color:var(--pink-600)" hint-size="26px,26px"></x-import>
+            <span style="font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--ink-900)">{{ s.name }}</span>
+            <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--pink-700)">{{ s.price }}</span>
+            <span style="font-size:14px;line-height:1.6">{{ s.desc }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="builder" data-screen-label="Dawat builder" style="max-width:1200px;margin:0 auto;padding:clamp(48px,8vw,96px) clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:680px">
+      <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.SectionHeader" overline="Dawat builder" title="Price your whole party. Then send it." lede="Pick a Dawat, add starters, platters or snacks. Your estimate updates as you go, with GST and the 50% advance." hint-size="100%,110px"></x-import>
+    </div>
+    <dc-import name="DawatCalculator" page="Catering" hint-size="100%,1400px"></dc-import>
+  </section>
+
+  <section data-screen-label="How to book" data-surface="ink" style="background:var(--ink-900)"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.PatternField" tone="ink" tile="{{ 80 }}" opacity="{{ 0.04 }}" base="assets" hint-size="100%,200px">
+    <div style="max-width:1200px;margin:0 auto;padding:clamp(48px,8vw,96px) clamp(16px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:clamp(24px,4vw,48px);align-items:start">
+      <div style="display:flex;flex-direction:column;gap:22px;min-width:0">
+        <h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:var(--fs-display-2-fluid);line-height:1.05;letter-spacing:-.03em;color:#fff">Three steps and it&rsquo;s done.</h2>
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+          <div style="display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:start">
+            <span style="width:44px;height:44px;border-radius:50%;background:var(--pink-500);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:800">{{ s.n }}</span>
+            <div style="display:flex;flex-direction:column;gap:4px"><span style="font-family:var(--font-display);font-weight:700;font-size:17px;color:#fff">{{ s.t }}</span><span style="font-size:15px;line-height:1.5">{{ s.d }}</span></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:var(--ink-800);border-radius:var(--radius-xl);padding:4px clamp(16px,3vw,24px)">
+        <sc-for list="{{ rules }}" as="r" hint-placeholder-count="6">
+          <div style="display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;padding:13px 0;border-top:1px solid var(--border-subtle);font-size:14px"><strong style="font-family:var(--font-display);color:#fff">{{ r.k }}</strong><span>{{ r.v }}</span></div>
+        </sc-for>
+      </div>
+    </div>
+  </x-import></section>
+
+  <section data-screen-label="Referral" style="max-width:1200px;margin:0 auto;padding:clamp(40px,6vw,64px) clamp(16px,4vw,40px)">
+    <div style="background:var(--pink-100);border-radius:var(--radius-xl);padding:clamp(20px,4vw,36px);display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
+      <div style="display:flex;flex-direction:column;gap:6px;min-width:0;max-width:640px">
+        <span style="font-family:var(--font-display);font-weight:800;font-size:var(--fs-h1-fluid);color:var(--ink-900);letter-spacing:-.02em;line-height:1.1">Guests always ask who cooked it.</span>
+        <span style="font-size:15px;line-height:1.6">Send them our way. If they book a Dawat for 25+ guests and mention your name, we take ₹500 off their order — and put ₹500 aside for your next one.</span>
+      </div>
+      <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="primary" size="lg" icon="share-2" on-click="{{ refer }}" hint-size="180px,54px">Share us</x-import>
+    </div>
+  </section>
+
+  <section data-screen-label="Reviews" style="max-width:1200px;margin:0 auto;padding:0 clamp(16px,4vw,40px) clamp(48px,8vw,96px)">
+    <dc-import name="GoogleReviews" heading="Hosts who got the compliments." filter="catering" hint-size="100%,380px"></dc-import>
+  </section>
+
+  <section id="faq" data-screen-label="FAQ" style="background:var(--pink-50)">
+    <dc-import name="FaqBlock" title="Questions we get asked" page="Catering" items="{{ faqs }}" quick="{{ faqQuick }}" hint-size="100%,560px"></dc-import>
+  </section>
+
+  <dc-import name="PPFooter" page="Catering" cta="Check my date" wa-msg="Catering enquiry. Date: , Headcount: , Dawat: " hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 0 };
+  componentDidMount() { if (!window.PP_RATES) this._t = setInterval(() => { if (window.PP_RATES) { clearInterval(this._t); this.forceUpdate(); } }, 40); }
+  componentWillUnmount() { clearInterval(this._t); }
+  renderVals() {
+    const R = window.PP_RATES; if (!R) return {};
+    const C = R.catering, rs = window.ppRs, wa = m => window.ppWa('Catering', m), s = this.state;
+    const go = id => { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' }); };
+    const seg = a => ({ padding: '10px 16px', minHeight: 44, border: 0, borderRadius: 'var(--radius-pill)', cursor: 'pointer', background: a ? 'var(--pink-500)' : 'transparent', color: a ? '#fff' : 'var(--pink-700)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14, whiteSpace: 'nowrap' });
+    const TABS = [
+      { label: 'Starters', intro: 'Sold as combos — pick your top three, we plate it for the room. Mixing across the two is fine; tell us your three and we price it.', unit: 'per head · any 3',
+        cards: C.starterCombos.map(x => ({ name: x.name, price: rs(x.price), unit: 'per head · choose any 3', items: x.items })), table: null, note: '' },
+      { label: 'Platters', intro: 'A mixed plate, priced per head — alongside a Dawat or on its own.',
+        cards: C.platters.map(x => ({ name: x.name, price: rs(x.price), unit: 'per head', items: x.items.split(' · ') })), table: null, note: 'Momos: Tandoori instead +₹30 a head, Afghani Paneer +₹40. Platter prices are estimates until confirmed.' },
+      { label: 'Snacks', intro: 'For tea-time rounds, office snack service and poojas. Per piece, minimum 50 pieces. Red and green chutney free.',
+        cards: [], table: C.snacks.map(x => ({ name: x.name, d: x.d, price: rs(x.price) + ' / pc' })), note: 'Never cheaper than 15% below our walk-in price, so a party order is never a lesser plate.' },
+      { label: 'Mains & extras', intro: 'Per portion. A bulk portion, not our standalone dine-in plate size.',
+        cards: [], table: C.extras.map(x => ({ name: x.name, d: '', price: rs(x.price) })).concat([{ name: 'Premium Packaging', d: 'Plates, cutlery, napkins, sealed containers', price: '₹25 / head' }, { name: 'Full Setup & Service', d: 'Buffet tables, chafing dishes, serving staff', price: 'Quoted' }]), note: '' }
+    ];
+    const T = TABS[s.tab];
+    const icons = { delivered: 'truck', disposables: 'package', setup: 'users' };
+    return {
+      from: rs(C.from),
+      toBuilder: () => go('builder'),
+      tasting: () => wa('Trial Dawat request. Dawat: , Tasting for how many: , Pickup or delivery: '),
+      directions: () => window.open(R.links.directions, '_blank'),
+      why: C.why,
+      dawats: C.dawats.map(d => { const hi = !!d.tag; return {
+        name: d.name, price: rs(d.price), blurb: d.blurb, items: d.items, bestFor: d.bestFor, hasTag: !!(d.tag || d.minGuests), tag: d.tag || (d.minGuests ? d.minGuests + '+ guests' : ''), photo: 'PHOTO: ' + d.name + ' plated',
+        card: { position: 'relative', background: hi ? 'var(--pink-500)' : '#fff', color: hi ? '#fff' : 'var(--ink-900)', border: hi ? '0' : '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', boxShadow: hi ? 'var(--shadow-4)' : 'var(--shadow-1)', padding: 14, display: 'flex', flexDirection: 'column', gap: 12, transition: 'transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms' },
+        tagStyle: { position: 'absolute', top: 24, right: 24, zIndex: 1, background: hi ? '#fff' : 'var(--ink-900)', color: hi ? 'var(--pink-600)' : '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11, letterSpacing: '.08em', textTransform: 'uppercase', padding: '4px 10px', borderRadius: 'var(--radius-pill)' },
+        rowStyle: { display: 'flex', gap: 8, alignItems: 'flex-start', padding: '7px 0', borderTop: '1px solid ' + (hi ? 'rgba(255,255,255,.25)' : 'var(--border-subtle)'), fontSize: 13, lineHeight: 1.45 },
+        btn: hi ? 'inverse' : 'secondary', on: hi ? 'brand' : 'light',
+        pick: () => { window.dispatchEvent(new CustomEvent('pp-dawat-select', { detail: { dawat: d.id, guests: Math.max(d.minGuests || 30, 30) } })); setTimeout(() => go('builder'), 30); }
+      }; }),
+      glance: C.glance.map(r => ({ k: r.k, a: r.v[0], b: r.v[1], c: r.v[2] })),
+      upgrades: C.upgrades.map(u => ({ name: u.name, price: u.price ? '+' + rs(u.price) : 'Free' })),
+      trialText: C.trial,
+      tabs: TABS.map((t, i) => ({ label: t.label, style: seg(s.tab === i), sel: s.tab === i, onClick: () => this.setState({ tab: i }) })),
+      tabIntro: T.intro, tabCards: T.cards, showTable: !!T.table, tableRows: T.table || [], tabNote: T.note,
+      services: C.service.map(x => ({ name: x.name, price: x.price === null ? 'Quoted for your venue · 25+ guests' : x.price ? '+' + rs(x.price) + ' a head' : 'Included up to 8 km', desc: x.desc, icon: icons[x.id] })),
+      steps: [
+        { n: '1', t: 'Send us a message', d: 'Date, rough headcount and the Dawat you like. A WhatsApp line is enough — or send it from the builder.' },
+        { n: '2', t: 'We confirm within the hour', d: 'Final price, delivery slot, and anything we’d change. Ask for a trial Dawat here.' },
+        { n: '3', t: 'Pay 50% to hold the date', d: 'Balance on delivery. Menu changes stay free up to 24 hours before.' }
+      ],
+      rules: [
+        { k: 'Minimum', v: '15 guests for a Dawat · 50 pieces for snacks · 25 guests for setup and service' },
+        { k: 'Notice', v: '24 hours up to 50 guests · 48 hours above 50' },
+        { k: 'Advance', v: '50% to confirm the date, balance on delivery' },
+        { k: 'GST', v: 'Prices exclude GST, charged at 5%' },
+        { k: 'Changes', v: 'Menu and headcount free up to 24 hours before' },
+        { k: 'Trial Dawat', v: 'Normal per-head rate, credited in full when you confirm' }
+      ],
+      refer: () => { const t = 'We got our party food from Pink Paprikaa Catering — pure veg, from their own restaurant kitchen in Sector 57. Mention my name for ₹500 off 25+ guests.'; if (navigator.share) navigator.share({ text: t }).catch(() => {}); else window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank'); },
+      faqQuick: ['Is my date available?', 'Can we do a tasting?', 'Can you make it Jain?'],
+      faqs: C.faqs
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!-- @dsCard group="Atoms" viewport="700x810" name="Text" subtitle="12 ramp steps, 8 tones, fluid sizing and line clamping." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+</head><body><div id="root"></div><script type="text/babel">
+const { Text } = window.PinkPaprikaaDesignSystem_23ef63;
+function Demo(){return(<Rows>
+<Row label="display-1" note="72 / 1.02 / -.03em"><Text variant="display-1" style={{fontSize:44}}>Desi at heart.</Text></Row>
+<Row label="display-2" note="56 / 1.05"><Text variant="display-2" style={{fontSize:34}}>Urban by nature.</Text></Row>
+<Row label="h1 h2 h3 h4" note="Poppins 700"><Text variant="h1">Our Menu</Text><Text variant="h2">Chai</Text><Text variant="h3">Small Plates</Text><Text variant="h4">Add-ons</Text></Row>
+<Row label="body-lg body body-sm" note="DM Sans, 1.6"><Text variant="body-lg" as="span">Large</Text><Text variant="body" as="span">Regular</Text><Text variant="body-sm" as="span">Small</Text></Row>
+<Row label="caption overline mono"><Text variant="caption" as="span">Caption</Text><Text variant="overline" as="span" tone="brand">Overline</Text><Text variant="mono" as="span">PPK-4821</Text></Row>
+<Row label="tone" note="8 semantic tones">{['heading','body','muted','subtle','brand','danger'].map(t=><Text key={t} variant="body-sm" tone={t} as="span">{t}</Text>)}</Row>
+<Row label="tone inverse" className="pad on-ink"><Text variant="body-sm" tone="inverse" as="span">inverse</Text></Row>
+<Row label="clamp={2}" top><Text variant="body-sm" tone="muted" clamp={2} style={{maxWidth:280}}>Amritsari paneer, burnt chilli mayo, potato brioche, masala fries and a side of pickled onion that nobody asked for but everybody finishes.</Text></Row>
+<Row label="measure" note="prose 64ch / narrow 44ch" top><Text variant="body-sm" tone="muted" measure="narrow">We roast our own masala every morning, then build the rest of the day around it.</Text></Row>
+</Rows>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

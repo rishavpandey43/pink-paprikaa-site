@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="display:flex;flex-direction:column;gap:0;font-family:var(--font-body);color:var(--text-body)">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:20px;align-items:start">
+  <div style="background:#fff;border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);padding:clamp(16px,3vw,28px);display:flex;flex-direction:column;gap:28px;min-width:0">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">1. Your plate</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(130px,100%),1fr));gap:8px">
+        <sc-for list="{{ plates }}" as="o" hint-placeholder-count="3">
+          <button onClick="{{ o.onClick }}" style="{{ o.style }}">
+            <span style="display:flex;justify-content:space-between;width:100%;gap:6px;align-items:center"><span style="font-family:var(--font-display);font-weight:700;font-size:15px">{{ o.label }}</span><sc-if value="{{ o.rec }}" hint-placeholder-val="{{ false }}"><span style="background:var(--pink-500);color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:var(--radius-pill)">Pick</span></sc-if></span>
+            <span style="display:flex;align-items:baseline;gap:6px"><span style="font-family:var(--font-display);font-weight:800;font-size:22px">{{ o.price }}</span><sc-if value="{{ o.hasWas }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;text-decoration:line-through">{{ o.was }}</span></sc-if></span>
+            <span style="font-size:12px;line-height:1.4">{{ o.blurb }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">2. Which meals</span>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ slots }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ o.sel }}" disabled="{{ o.dis }}" on-click="{{ o.onClick }}" hint-size="auto,38px">{{ o.label }}</x-import></sc-for>
+      </div>
+      <sc-if value="{{ bothHint }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--pink-700)">Classic drops to ₹120 a meal when you take both.</span></sc-if>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">3. How many meals</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));gap:8px">
+        <sc-for list="{{ lengths }}" as="o" hint-placeholder-count="3">
+          <button onClick="{{ o.onClick }}" style="{{ o.style }}">
+            <span style="font-family:var(--font-display);font-weight:700;font-size:15px">{{ o.label }}</span>
+            <span style="font-size:12px">{{ o.sub }}</span>
+            <sc-if value="{{ o.hasBonus }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:700;color:#1d6e52;background:var(--mint-soft);padding:2px 8px;border-radius:var(--radius-pill);margin-top:2px">{{ o.bonus }}</span></sc-if>
+          </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ showUpfront }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleUpfront }}" style="{{ upfrontStyle }}">
+          <span style="{{ upfrontBox }}"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="check" size="{{ 14 }}" hint-size="14px,14px"></x-import></span>
+          <span style="display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left"><strong style="font-family:var(--font-display);font-size:14px">Pay 3 months upfront</strong><span style="font-size:12px">Classic at ₹125 a meal, locked for 3 cycles</span></span>
+        </button>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+          <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">4. People at one address</span>
+          <span style="font-size:13px;color:var(--text-muted)">Household and PG prices drop per meal</span>
+        </div>
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.QuantityStepper" value="{{ people }}" min="{{ 1 }}" max="{{ 40 }}" on-change="{{ setPeople }}" hint-size="140px,44px"></x-import>
+      </div>
+      <sc-if value="{{ hasNudge }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:10px;align-items:center;background:var(--pink-50);color:var(--pink-700);border-radius:var(--radius-md);padding:10px 12px;font-size:14px;line-height:1.45">
+          <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="trending-down" size="{{ 18 }}" style="flex:0 0 auto" hint-size="18px,18px"></x-import><span>{{ nudge }}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ pgHint }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:10px;align-items:center;background:var(--ink-100);color:var(--ink-900);border-radius:var(--radius-md);padding:10px 12px;font-size:14px;line-height:1.45">
+          <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="building-2" size="{{ 18 }}" style="flex:0 0 auto;color:var(--pink-600)" hint-size="18px,18px"></x-import><span>Ordering for a PG, hostel or office of 20+? Talk to us about group pricing.</span>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">5. Make it yours</span>
+        <span style="font-size:13px;color:var(--text-muted)">Free, if you tell us 3–4 hours before your slot. The price never drops when you leave something out.</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ breads }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ o.sel }}" disabled="{{ o.dis }}" on-click="{{ o.onClick }}" hint-size="auto,38px">{{ o.label }}</x-import></sc-for>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ spices }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ o.sel }}" disabled="{{ o.dis }}" on-click="{{ o.onClick }}" hint-size="auto,38px">{{ o.label }}</x-import></sc-for>
+      </div>
+      <button onClick="{{ toggleNog }}" style="{{ nogStyle }}">
+        <span style="{{ nogBox }}"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="check" size="{{ 14 }}" hint-size="14px,14px"></x-import></span>
+        <span style="display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left"><strong style="font-family:var(--font-display);font-size:14px">No onion, no garlic · +₹30 a meal</strong><span style="font-size:12px">Cooked in a separate pan, off the main batch</span></span>
+      </button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900)">6. Standing add-ons</span>
+        <span style="font-size:13px;color:var(--text-muted)">Added to every meal on your plan. Or order one-off on WhatsApp.</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ addons }}" as="a" hint-placeholder-count="8"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Tag" selected="{{ a.sel }}" disabled="{{ a.dis }}" on-click="{{ a.onClick }}" hint-size="auto,38px">{{ a.label }}</x-import></sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;position:sticky;top:112px;min-width:0">
+    <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.PatternField" tone="brand" tile="{{ 64 }}" base="assets" radius="var(--radius-xl)" hint-size="100%,200px"><div data-surface="brand" style="background:transparent;color:#fff;border-radius:var(--radius-xl);padding:clamp(18px,3vw,28px);display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
+        <span style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase">{{ planTitle }}</span>
+        <span style="background:#fff;color:var(--pink-600);font-family:var(--font-display);font-weight:700;font-size:12px;padding:4px 10px;border-radius:var(--radius-pill);white-space:nowrap">{{ why }}</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+        <span style="font-family:var(--font-display);font-weight:800;font-size:clamp(44px,6vw,60px);line-height:1;letter-spacing:-.03em">{{ perMeal }}</span>
+        <span style="font-size:15px">a meal</span>
+        <sc-if value="{{ hasWas }}" hint-placeholder-val="{{ false }}"><span style="font-size:15px;text-decoration:line-through">{{ was }}</span></sc-if>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:14px;border-top:1px solid rgba(255,255,255,.3);padding-top:14px">
+        <sc-for list="{{ lines }}" as="ln" hint-placeholder-count="5">
+          <div style="display:flex;justify-content:space-between;gap:12px"><span>{{ ln.k }}</span><strong style="text-align:right;white-space:nowrap">{{ ln.v }}</strong></div>
+        </sc-for>
+        <div style="display:flex;justify-content:space-between;gap:12px;font-size:20px;font-family:var(--font-display);font-weight:800;border-top:1px solid rgba(255,255,255,.3);padding-top:10px;margin-top:4px"><span>Total</span><span>{{ total }}</span></div>
+        <span style="font-size:13px">{{ perPerson }}</span>
+      </div>
+      <sc-if value="{{ hasSave }}" hint-placeholder-val="{{ false }}"><span style="background:#fff;color:var(--ink-900);border-radius:var(--radius-md);padding:10px 12px;font-size:14px;font-weight:600">{{ saveLine }}</span></sc-if>
+      <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Button" variant="inverse" size="lg" on="brand" icon="message-circle" full-width="{{ true }}" on-click="{{ send }}" hint-size="100%,54px">Send this plan on WhatsApp</x-import>
+    </div></x-import>
+    <div style="background:#fff;border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:clamp(16px,3vw,22px);display:flex;flex-direction:column;gap:2px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-900);padding-bottom:6px;display:flex;align-items:center;gap:8px"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="package-open" size="{{ 18 }}" style="color:var(--pink-500)" hint-size="18px,18px"></x-import>Your box</span>
+      <sc-for list="{{ box }}" as="b" hint-placeholder-count="7">
+        <div style="display:grid;grid-template-columns:88px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid var(--border-subtle);font-size:14px"><span style="color:var(--text-muted)">{{ b.k }}</span><span style="{{ b.style }}">{{ b.v }}</span></div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+<sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+  <div style="position:sticky;bottom:84px;z-index:5;margin-top:12px;background:var(--ink-900);color:#fff;border-radius:var(--radius-pill);padding:8px 8px 8px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:var(--shadow-4)">
+    <div style="display:flex;flex-direction:column;min-width:0"><span style="font-family:var(--font-display);font-weight:800;font-size:18px">{{ total }}</span><span style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ perMeal }}/meal · {{ planShort }}</span></div>
+    <button onClick="{{ send }}" style="height:44px;padding:0 18px;border:0;border-radius:var(--radius-pill);background:var(--pink-500);color:#fff;font-family:var(--font-display);font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap">Send plan</button>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1100,&quot;height&quot;:1100},&quot;page&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;HomelyMeals&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { plate: 'classic', slot: 0, len: 'weekday', upfront: false, people: 1, bread: 0, spice: 0, nog: false, addons: [], w: typeof window !== 'undefined' ? window.innerWidth : 1280 };
+  componentDidMount() {
+    try { const v = JSON.parse(localStorage.getItem('pp-plan-calc-v4')); if (v) this.setState({ ...v, w: window.innerWidth }); } catch (e) {}
+    if (!window.PP_RATES) this._t = setInterval(() => { if (window.PP_RATES) { clearInterval(this._t); this.forceUpdate(); } }, 40);
+    this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR);
+    this.onSel = e => this.setState(e.detail || {}); window.addEventListener('pp-plan-select', this.onSel);
+  }
+  componentWillUnmount() { clearInterval(this._t); window.removeEventListener('resize', this.onR); window.removeEventListener('pp-plan-select', this.onSel); }
+  componentDidUpdate() { try { const { w, ...rest } = this.state; localStorage.setItem('pp-plan-calc-v4', JSON.stringify(rest)); } catch (e) {} }
+  renderVals() {
+    const R = window.PP_RATES; if (!R || !window.ppHomelyPrice) return {};
+    const H = R.homely, s = this.state, rs = window.ppRs, page = this.props.page || 'HomelyMeals';
+    const on = 'var(--pink-500)';
+    const card = a => ({ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 3, padding: '12px', minHeight: 72, borderRadius: 'var(--radius-md)', cursor: 'pointer', textAlign: 'left', border: a ? '2px solid ' + on : '1px solid var(--border-default)', background: a ? 'var(--pink-50)' : '#fff', color: a ? 'var(--pink-700)' : 'var(--ink-900)', fontFamily: 'var(--font-body)', width: '100%' });
+    const pill = a => ({ padding: '10px 14px', minHeight: 44, borderRadius: 'var(--radius-pill)', cursor: 'pointer', border: a ? '2px solid ' + on : '1px solid var(--border-default)', background: a ? 'var(--pink-50)' : '#fff', color: a ? 'var(--pink-700)' : 'var(--ink-900)', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 14, whiteSpace: 'nowrap', flex: '0 0 auto' });
+    const check = a => ({ display: 'flex', gap: 12, alignItems: 'center', padding: '12px 14px', minHeight: 52, borderRadius: 'var(--radius-md)', cursor: 'pointer', border: a ? '2px solid ' + on : '1px solid var(--border-default)', background: a ? 'var(--pink-50)' : '#fff', color: 'var(--ink-900)', fontFamily: 'var(--font-body)', width: '100%' });
+    const tick = a => ({ width: 22, height: 22, borderRadius: 6, border: '2px solid var(--pink-500)', display: 'grid', placeItems: 'center', background: a ? 'var(--pink-500)' : '#fff', color: '#fff', flex: '0 0 auto' });
+    const SLOT = [{ label: 'Lunch', both: false }, { label: 'Dinner', both: false }, { label: 'Lunch + Dinner', both: true }];
+    const slot = SLOT[s.slot] || SLOT[0];
+    const L = H.lengths.find(x => x.id === s.len) || H.lengths[1];
+    const trial = L.id === 'trial';
+    const plateObj = H.plates.find(x => x.id === s.plate) || H.plates[1];
+    const canUpfront = !!plateObj.upfront && !trial;
+    const upfront = canUpfront && s.upfront;
+    const pr = window.ppHomelyPrice(s.plate, { both: slot.both, people: s.people, upfront, trial });
+    const cycles = upfront ? 3 : 1;
+    const perPersonPaid = L.meals * (slot.both ? 2 : 1) * cycles;
+    const offerOn = window.ppFreeMealOn && window.ppFreeMealOn();
+    const welcome = trial || !offerOn ? 0 : L.welcome * (slot.both ? 2 : 1) * cycles;
+    const picked = H.addons.filter(a => s.addons.includes(a.id));
+    const addSum = picked.reduce((t, a) => t + a.price, 0);
+    const nog = s.nog ? H.noOnionGarlic : 0;
+    const food = pr.price * perPersonPaid * s.people;
+    const extras = (addSum + nog) * perPersonPaid * s.people;
+    const sub = food + extras, gst = Math.round(sub * R.gst), total = sub + gst;
+    const delivered = (perPersonPaid + welcome);
+    const save = (H.appMeal - pr.price) * perPersonPaid * s.people;
+    const BREAD = ['Rice + roti', 'Rice only (300g)', 'Roti only (+2 roti)'];
+    const SPICE = ['Regular spice', 'Less spicy', 'No chilli'];
+    const P = plateObj;
+    const riceV = s.bread === 2 ? '—' : (s.bread === 1 ? '300g' : P.rice + 'g') + (P.id !== 'everyday' ? ' · jeera rice Tue & Wed' : ' steamed');
+    const rotiV = s.bread === 1 ? '—' : (P.roti + (s.bread === 2 ? 2 : 0)) + ' fresh tawa roti';
+    const hl = { color: 'var(--pink-700)', fontWeight: 600 }, nm = { color: 'var(--ink-900)' };
+    const box = [
+      { k: 'Dal', v: P.box.dal + (s.addons.includes('makhani') ? ' → Dal Makhani' : '') },
+      { k: 'Sabji', v: P.box.sabji + (s.addons.includes('paneer') ? ' → paneer gravy' : '') },
+      { k: 'Rice', v: riceV }, { k: 'Roti', v: rotiV },
+      { k: 'Salad', v: 'Salad + chutney' }, { k: 'Raita', v: P.box.raita },
+      { k: 'Paneer', v: P.box.paneer },
+      ...(P.box.soup ? [{ k: 'Soup', v: P.box.soup }] : []),
+      ...(P.box.dessert ? [{ k: 'Dessert', v: P.box.dessert }] : []),
+      ...(P.box.biryani ? [{ k: 'Biryani', v: 'Veg Dum Biryani, ' + P.box.biryani }] : []),
+      ...(s.spice || s.nog ? [{ k: 'Cooked', v: [s.spice ? SPICE[s.spice] : '', s.nog ? 'No onion, no garlic' : ''].filter(Boolean).join(' · '), hi: true }] : []),
+      ...picked.filter(a => a.id !== 'paneer' && a.id !== 'makhani').map(a => ({ k: 'Add-on', v: a.name, hi: true }))
+    ].map(b => ({ ...b, style: b.hi || b.v.includes('→') ? hl : nm }));
+    const planShort = `${P.name} · ${L.label}${upfront ? ' ×3' : ''} · ${slot.label}${s.people > 1 ? ' · ' + s.people + ' people' : ''}`;
+    return {
+      narrow: true,
+      plates: H.plates.map(p => { const pp = window.ppHomelyPrice(p.id, {}); return { label: p.name, price: rs(pp.price), hasWas: pp.price < p.price, was: rs(p.price), blurb: p.blurb, rec: !!p.recommended, style: card(s.plate === p.id), onClick: () => this.setState({ plate: p.id }) }; }),
+      slots: SLOT.map((o, i) => ({ label: o.label, style: pill(s.slot === i), sel: s.slot === i, onClick: () => this.setState({ slot: i }) })),
+      bothHint: s.plate === 'classic' && !slot.both,
+      lengths: H.lengths.map(l => { const n = l.meals * (slot.both ? 2 : 1), w = l.welcome * (slot.both ? 2 : 1); return { label: l.label, sub: `${n} meals · ` + l.sub.split('· ')[1], hasBonus: !!l.welcome && offerOn, bonus: `Offer: +${w} free / month`, style: card(s.len === l.id), onClick: () => this.setState({ len: l.id }) }; }),
+      showUpfront: canUpfront, toggleUpfront: () => this.setState(x => ({ upfront: !x.upfront })), upfrontStyle: check(upfront), upfrontBox: tick(upfront),
+      people: s.people,
+      setPeople: v => this.setState({ people: Math.max(1, Math.min(40, v)) }),
+      inc: () => this.setState(x => ({ people: Math.min(40, x.people + 1) })),
+      dec: () => this.setState(x => ({ people: Math.max(1, x.people - 1) })),
+      hasNudge: !!pr.next, nudge: pr.next ? `Add ${pr.next.min - s.people} more ${pr.next.min - s.people > 1 ? 'people' : 'person'} and every meal drops to ${rs(pr.next.price)}.` : '',
+      applyNudge: () => pr.next && this.setState({ people: pr.next.min }),
+      pgHint: !!pr.pgHint,
+      pgWa: () => window.ppWa(page, 'Group pricing for a PG / hostel / office of 20+. Name: , Headcount: , Area: '),
+      breads: BREAD.map((l, i) => ({ label: l, style: pill(s.bread === i), sel: s.bread === i, onClick: () => this.setState({ bread: i }) })),
+      spices: SPICE.map((l, i) => ({ label: l, style: pill(s.spice === i), sel: s.spice === i, onClick: () => this.setState({ spice: i }) })),
+      toggleNog: () => this.setState(x => ({ nog: !x.nog })), nogStyle: check(s.nog), nogBox: tick(s.nog),
+      addons: H.addons.map(a => ({ label: a.name + ' +' + rs(a.price), style: pill(s.addons.includes(a.id)), sel: s.addons.includes(a.id), onClick: () => this.setState(x => ({ addons: x.addons.includes(a.id) ? x.addons.filter(i => i !== a.id) : [...x.addons, a.id] })) })),
+      planTitle: `${P.name} · ${L.label}${upfront ? ' × 3 months' : ''}`,
+      planShort,
+      why: pr.why,
+      perMeal: rs(pr.price), hasWas: pr.price < pr.regular, was: rs(pr.regular),
+      lines: [
+        { k: `${rs(pr.price)} × ${perPersonPaid} meals${s.people > 1 ? ' × ' + s.people : ''}`, v: rs(food) },
+        ...(welcome ? [{ k: `Offer: free meals (${welcome}${s.people > 1 ? ' each' : ''})`, v: '₹0' }] : []),
+        ...(extras ? [{ k: 'Add-ons & custom', v: rs(extras) }] : []),
+        { k: 'GST 5%', v: rs(gst) },
+        { k: 'Meals delivered', v: `${delivered}${s.people > 1 ? ' each' : ''}` }
+      ],
+      total: rs(total),
+      perPerson: s.people > 1 ? `${rs(total / s.people)} per person · delivery free within 3 km` : 'Delivery free within 3 km · no packaging or platform fee',
+      hasSave: save > 0, saveLine: `You save ${rs(save)} vs ordering the same meals on a food app at ${rs(H.appMeal)}+.`,
+      box,
+      send: () => window.ppWa(page, `${planShort}. ${rs(pr.price)}/meal (${pr.why}). ${delivered} meals delivered${s.people > 1 ? ' each' : ''}. ${BREAD[s.bread]}, ${SPICE[s.spice]}${s.nog ? ', no onion-garlic' : ''}${picked.length ? '. Add-ons: ' + picked.map(a => a.name).join(', ') : ''}. Total ${rs(total)} incl. GST. My area: `)
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script></helmet>
+<footer data-surface="ink" style="background:var(--ink-900);color:var(--text-body);font-family:var(--font-body)"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.PatternField" tone="ink" tile="{{ 80 }}" opacity="{{ 0.04 }}" base="assets" hint-size="100%,400px">
+  <div style="max-width:1200px;margin:0 auto;padding:56px clamp(20px,4vw,40px) 32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:36px">
+    <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start">
+      <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Logo" variant="lockup" tone="white" width="{{ 200 }}" base="assets" hint-size="200px,105px"></x-import>
+      <span style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#1d6e52;font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:var(--radius-pill)">
+        <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.DietMark" type="veg" size="{{ 14 }}" hint-size="14px,14px"></x-import>100% Pure Veg Kitchen
+      </span>
+      <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">FSSAI Lic. 10825005001702</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink-300)">Eat with us</span>
+      <a href="HomelyMeals.dc.html" style="color:#fff">Homely Meals</a>
+      <a href="ThisWeek.dc.html" style="color:#fff">This week&rsquo;s menu</a>
+      <a href="Catering.dc.html" style="color:#fff">Catering &amp; Bulk Orders</a>
+      <a href="OfficeLunch.dc.html" style="color:#fff">Office &amp; PG Lunch</a>
+      <a href="Menu.dc.html" style="color:#fff">Restaurant Menu</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink-300)">Talk to us</span>
+      <button onClick="{{ openWa }}" style="all:unset;cursor:pointer;color:#fff;display:flex;gap:8px;align-items:center"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="message-circle" size="{{ 16 }}" hint-size="16px,16px"></x-import>WhatsApp +91 90907 04001</button>
+      <a href="tel:+919090704001" style="color:#fff;display:flex;gap:8px;align-items:center"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="phone" size="{{ 16 }}" hint-size="16px,16px"></x-import>Call +91 90907 04001</a>
+      <a href="mailto:business@pinkpaprikaa.com" style="color:#fff;display:flex;gap:8px;align-items:center"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="mail" size="{{ 16 }}" hint-size="16px,16px"></x-import>business@pinkpaprikaa.com</a>
+      <a href="About.dc.html" style="color:#fff">About us</a>
+      <a href="Contact.dc.html" style="color:#fff">Contact &amp; directions</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink-300)">Kitchen &amp; restaurant</span>
+      <span style="line-height:1.6;color:#fff">Booth No. 67P, HSVP Market (MKM Market), Sector 57, Gurgaon 122003</span>
+      <span>8am – 11:30pm, every day</span>
+      <span style="display:flex;gap:8px;align-items:center"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="credit-card" size="{{ 16 }}" hint-size="16px,16px"></x-import>UPI, cards, Pluxee (Sodexo)</span>
+      <a href="https://instagram.com/pinkpaprikaa" style="color:#fff">Instagram @pinkpaprikaa</a>
+    </div>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;padding:20px clamp(20px,4vw,40px) 110px;border-top:1px solid var(--border-subtle);display:flex;flex-wrap:wrap;gap:10px 24px;font-size:13px;color:var(--text-subtle)">
+    <span>© 2026 Paprikaa Culinary Ventures Private Limited</span>
+    <a href="Legal.dc.html#privacy" style="color:var(--text-muted)">Privacy Policy</a>
+    <a href="Legal.dc.html#terms" style="color:var(--text-muted)">Terms of Service</a>
+    <a href="Legal.dc.html#refunds" style="color:var(--text-muted)">Refund &amp; Cancellation</a>
+    <a href="Legal.dc.html#delivery" style="color:var(--text-muted)">Delivery Policy</a>
+    <span>GSTIN 06AAPCP9130L1ZW</span>
+  </div>
+</x-import></footer>
+<sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;border-top:1px solid var(--border-subtle);box-shadow:var(--shadow-4);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px">
+    <a href="tel:+919090704001" aria-label="Call" style="width:52px;height:52px;border-radius:var(--radius-pill);border:1px solid var(--border-default);display:grid;place-items:center;color:var(--ink-900)"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="phone" size="{{ 20 }}" hint-size="20px,20px"></x-import></a>
+    <button onClick="{{ openWa }}" style="height:52px;border:0;border-radius:var(--radius-pill);background:var(--pink-500);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:16px;box-shadow:var(--shadow-brand);cursor:pointer"><x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="message-circle" size="{{ 20 }}" hint-size="20px,20px"></x-import>{{ ctaLabel }}</button>
+  </div>
+</sc-if>
+<sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+  <button onClick="{{ openWa }}" aria-label="WhatsApp us" style="position:fixed;right:24px;bottom:24px;z-index:60;height:56px;padding:0 22px 0 18px;border:0;border-radius:var(--radius-pill);background:var(--pink-500);color:#fff;display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:15px;box-shadow:var(--shadow-brand);cursor:pointer;white-space:nowrap" style-hover="background:var(--pink-600)">
+    <x-import component-from-global-scope="PinkPaprikaaDesignSystem_23ef63.Icon" name="message-circle" size="{{ 22 }}" hint-size="22px,22px"></x-import>{{ ctaLabel }}
+  </button>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:480},&quot;page&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Home&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;cta&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;WhatsApp us&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;waMsg&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Hi Pink Paprikaa, I have a question.&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { w: typeof window !== 'undefined' ? window.innerWidth : 1280 };
+  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); }
+  renderVals() {
+    const page = this.props.page || 'Home';
+    const mobile = this.state.w < 768;
+    return {
+      mobile, desktop: !mobile,
+      ctaLabel: this.props.cta || 'WhatsApp us',
+      openWa: () => window.ppWa && window.ppWa(page, this.props.waMsg || 'Hi Pink Paprikaa, I have a question.')
+    };
+  }
+}
+</script>
+</body>
+</html>
