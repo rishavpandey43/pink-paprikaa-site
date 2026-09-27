@@ -58,7 +58,7 @@
         ],
         "options": {
           "cwd": "apps/storybook",
-          "command": "chromatic --storybook-build-dir storybook-static --storybook-base-dir apps/storybook"
+          "command": "node ../../scripts/check-founder-names.mjs storybook-static && chromatic --storybook-build-dir storybook-static --storybook-base-dir apps/storybook"
         }
       }
     }

@@ -58,9 +58,8 @@ const config: StorybookConfig = {
       shouldRemoveUndefinedFromOptional: true,
       // Without this, every prop inherited from React's HTML element types floods the table.
       propFilter: (prop) => !(prop.parent?.fileName ?? "").includes("node_modules"),
-      // The two settings below are the only thing the move out of `packages/ui` changed; the rest
-      // of this config is verbatim. Both exist because the docgen plugin resolves everything
-      // relative to the *Vite root* — which is now this app, not the library:
+      // The two settings below exist because the docgen plugin resolves everything relative to
+      // the *Vite root*, which is this app, not the library that owns the components:
       //
       //   `include`      — its default is `**/*.tsx` globbed from the Vite root, which matches
       //                    nothing here. Left alone, the plugin skips every component with
@@ -69,8 +68,8 @@ const config: StorybookConfig = {
       //   `tsconfigPath` — its default is the Vite root's `tsconfig.json`. Both this app's and the
       //                    library's are solution-style (`files: []`), so the program the parser
       //                    builds has no real sources in it and falls back to whatever stale
-      //                    declarations sit in `packages/ui/dist` — 6 components documented out of
-      //                    69. Pointing at the library's leaf config documents all 69.
+      //                    declarations sit in `packages/ui/dist`, documenting only the components
+      //                    that happen to be there. The library's leaf config documents every one.
       include: ["../../packages/ui/src/**/*.tsx"],
       tsconfigPath: "../../packages/ui/tsconfig.lib.json",
     },
@@ -92,6 +91,10 @@ const config: StorybookConfig = {
  * (`filePath`), and neither it nor its Vite plugin has an option to change that — so every build
  * would carry the builder's home directory (and trip the founder-name guard). This rewrites the
  * path to workspace-relative after the docgen plugin has appended its JSON.
+ *
+ * `generateBundle` is the rewrite's self-check: if the workspace path still reaches any emitted
+ * chunk or asset (a docgen format change, a new plugin), the build fails here instead of shipping
+ * it to `storybook-static` and Chromatic.
  */
 function relativeDocgenPaths(): Plugin {
   const absolute = `"filePath":${JSON.stringify(WORKSPACE_ROOT).slice(0, -1)}`;
@@ -102,6 +105,18 @@ function relativeDocgenPaths(): Plugin {
       return code.includes(absolute)
         ? { code: code.replaceAll(absolute, '"filePath":"'), map: null }
         : null;
+    },
+    generateBundle(_options, bundle) {
+      const decoder = new TextDecoder();
+      for (const file of Object.values(bundle)) {
+        const source = file.type === "chunk" ? file.code : file.source;
+        const text = typeof source === "string" ? source : decoder.decode(source);
+        if (text.includes(WORKSPACE_ROOT)) {
+          this.error(
+            `${file.fileName} contains the absolute workspace path; keep it out of builds.`
+          );
+        }
+      }
     },
   };
 }
