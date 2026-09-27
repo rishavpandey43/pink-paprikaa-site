@@ -47,6 +47,7 @@ const TEXT = [
   "button-lg",
   "icon-button-count",
   "tag",
+  "image-slot-label",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];

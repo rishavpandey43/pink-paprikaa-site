@@ -12,6 +12,7 @@ export {
   YoutubeGlyph,
   type GlyphProps,
 } from "./atoms/icon/brand-glyphs";
+export { ImageSlot, type ImageSlotBase, type ImageSlotProps } from "./atoms/image-slot/image-slot";
 export { Link, type LinkProps } from "./atoms/link/link";
 export { Logo, type LogoProps } from "./atoms/logo/logo";
 export { PatternField, type PatternFieldProps } from "./atoms/pattern-field/pattern-field";

@@ -281,6 +281,16 @@
         ["color-ink-000", "color-tag-selected-hover"]
       ],
       "min": 4.5
+    },
+    {
+      "id": "image-slot",
+      "surface": null,
+      "pairs": [
+        ["color-pink-700", "color-pink-100"],
+        ["color-pink-800", "color-pink-200"],
+        ["color-ink-600", "color-ink-200"]
+      ],
+      "min": 4.5
     }
   ]
 }
