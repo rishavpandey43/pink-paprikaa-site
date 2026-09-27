@@ -39,7 +39,8 @@
       "tag": {
         "selected": { "$value": "{color.ink.900}" },
         "selected-hover": { "$value": "{color.ink.800}" }
-      }
+      },
+      "divider": { "mark": { "$value": "{color.ink.000}" } }
     },
     "shadow": {
       "$type": "shadow",

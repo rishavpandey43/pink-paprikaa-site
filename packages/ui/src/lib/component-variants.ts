@@ -103,6 +103,7 @@ const SPACING = [
   "icon-button-lg",
   "icon-button-count",
   "tag-h",
+  "divider-mark",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];
