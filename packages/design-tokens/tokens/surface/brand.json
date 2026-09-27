@@ -34,7 +34,8 @@
           "border": { "$value": "{color.white-alpha.70}" }
         },
         "hover-tint": { "$value": "{color.white-alpha.16}" }
-      }
+      },
+      "icon-button": { "ghost": { "fg": { "$value": "{color.ink.000}" } } }
     },
     "shadow": {
       "$type": "shadow",

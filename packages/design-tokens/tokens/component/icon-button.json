@@ -1,0 +1,35 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "icon-button-sm": {
+      "$value": "32px",
+      "$description": "Drawn size; a ::before keeps the 44px hit area."
+    },
+    "icon-button-md": {
+      "$value": "40px",
+      "$description": "Drawn size; a ::before keeps the 44px hit area."
+    },
+    "icon-button-lg": { "$value": "48px", "$description": "The app size (touch surfaces)." },
+    "icon-button-count": {
+      "$value": "18px",
+      "$description": "Cart-count bubble height and minimum width."
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "icon-button-count": {
+      "$value": { "fontSize": "10.5px", "lineHeight": 1, "fontWeight": "{font-weight.bold}" }
+    }
+  },
+  "color": {
+    "$type": "color",
+    "icon-button": {
+      "ghost": {
+        "fg": {
+          "$value": "{color.ink.700}",
+          "$description": "Ghost glyph; white on pink and ink fields."
+        }
+      }
+    }
+  }
+}

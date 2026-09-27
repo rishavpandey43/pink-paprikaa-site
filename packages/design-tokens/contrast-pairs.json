@@ -214,6 +214,44 @@
       "pairs": [["color-text-link", "color-button-hover-tint"]],
       "backdrop": "color-surface-inverse",
       "min": 4.5
+    },
+    {
+      "id": "icon-button",
+      "surface": null,
+      "pairs": [
+        ["color-icon-button-ghost-fg", "color-surface-page"],
+        ["color-icon-button-ghost-fg", "color-button-hover-tint"],
+        ["color-pink-600", "color-ink-000"],
+        ["color-pink-600", "color-pink-50"],
+        ["color-ink-900", "color-surface-glass"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "icon-button-count",
+      "surface": null,
+      "pairs": [["color-ink-000", "color-pink-500"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "icon-button-on-soft",
+      "surface": "soft",
+      "pairs": [["color-icon-button-ghost-fg", "color-surface-brand-soft"]],
+      "min": 4.5
+    },
+    {
+      "id": "icon-button-on-ink",
+      "surface": "ink",
+      "pairs": [["color-icon-button-ghost-fg", "color-surface-inverse"]],
+      "min": 4.5
+    },
+    {
+      "id": "icon-button-on-brand",
+      "surface": "brand",
+      "pairs": [["color-icon-button-ghost-fg", "color-surface-brand"]],
+      "min": 3,
+      "exception": "brand-fill"
     }
   ]
 }
