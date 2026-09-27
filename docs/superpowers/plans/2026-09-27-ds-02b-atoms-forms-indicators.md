@@ -5886,3 +5886,4 @@ If nothing changed, paste the accepted list in the task report instead.
 - **Tooltip** opens with `delayDuration={0}` as designed — accepted.
 - **No on-brand variants** for Checkbox/Radio/Switch/Slider (none designed) — YAGNI, accepted.
 - **Read-only Select** renders disabled for the visual, **plus a hidden `<input type="hidden" name={name} value={value}>`** so the value is still submitted (react-hook-form reads it) — add a test.
+- **R21 — field text is 16px.** `lib/field-control.tsx` renders the control value at `text-body` (16px) for every size (sm/md/lg change height and padding only): iOS Safari zooms on focus below 16px, and the handoff fields use `font-size:16px`. Add a test asserting the value text class.
