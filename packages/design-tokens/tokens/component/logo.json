@@ -1,0 +1,14 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "logo-lockup": {
+      "$value": "240px",
+      "$description": "Default lockup width. Minimum 200px (below it, use the wordmark)."
+    },
+    "logo-wordmark": {
+      "$value": "180px",
+      "$description": "Default wordmark width. Minimum 140px."
+    },
+    "logo-symbol": { "$value": "40px" }
+  }
+}

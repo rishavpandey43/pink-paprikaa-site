@@ -11,6 +11,8 @@
 /* In the base layer so a utility on the same element (text-text-muted) still wins over the
    surface's inherited colour. */
 @import "@pink-paprikaa-web/design-tokens/surfaces.css" layer(base);
+/* The brand symbol, defined once: `--pp-symbol-mask` and the `mask-symbol` utility. */
+@import "./lib/brand-artwork.css";
 
 @source "./";
 @source not "./**/*.{spec,test,stories}.{ts,tsx}";

@@ -47,8 +47,6 @@ export default defineConfig({
     // is what makes a plain `nx test` a single run — same convention as `packages/ui`. Pass
     // `--watch` on the command line to opt back in.
     watch: false,
-    // Temporary: no stories exist until plan 1 task 7 (Icon, Logo). Remove with that task.
-    passWithNoTests: true,
     browser: {
       enabled: true,
       headless: true,

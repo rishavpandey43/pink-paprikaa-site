@@ -64,6 +64,14 @@ const SPACING = [
   "card-min",
   "card-min-wide",
   "dock-clearance",
+  "icon-xs",
+  "icon-sm",
+  "icon-md",
+  "icon-lg",
+  "icon-xl",
+  "logo-lockup",
+  "logo-wordmark",
+  "logo-symbol",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];

@@ -1,0 +1,10 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "icon-xs": { "$value": "14px" },
+    "icon-sm": { "$value": "16px", "$description": "Inline with body text." },
+    "icon-md": { "$value": "20px", "$description": "Buttons, list rows." },
+    "icon-lg": { "$value": "24px", "$description": "Nav, tab bar." },
+    "icon-xl": { "$value": "32px", "$description": "Empty states." }
+  }
+}
