@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 
 interface CatalogueEntry {
   name: string;
@@ -109,5 +109,27 @@ describe("tokens.json", () => {
       (e) => e.tier === "primitive" && typeof e.value === "string" && e.value.toLowerCase() === hex
     );
     expect(holders.map((e) => e.name)).toEqual(["color-pink-500"]);
+  });
+});
+
+describe("token sources", () => {
+  // The catalogue only shows resolved values; this reads the authored JSON, so a literal brand hex
+  // in any tier or inside a composite string (`0 0 0 3px #…`) fails. ESLint's no-raw-hex rule
+  // does not lint JSON, so this is the only guard on hard rule 3.
+  it("writes the brand hex exactly once across every token source file", () => {
+    const hex = brandPink.toLowerCase();
+    const holders = readdirSync(new URL("../tokens/", import.meta.url), {
+      encoding: "utf8",
+      recursive: true,
+    })
+      .filter((file) => file.endsWith(".json"))
+      .sort()
+      .flatMap((file) => {
+        const count = read(`../tokens/${file}`).toLowerCase().split(hex).length - 1;
+        return count === 0 ? [] : [`${file} ×${String(count)}`];
+      });
+    expect(holders, `files holding the brand hex ${brandPink}`).toEqual([
+      "primitive/color.json ×1",
+    ]);
   });
 });
