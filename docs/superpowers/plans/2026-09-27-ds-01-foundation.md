@@ -25,7 +25,7 @@
 - Files kebab-case; one primary export per file; booleans prefixed `is/has/should/can/did/will/does`.
 - Imports inside `packages/{utils,content,design-tokens}` use `nodenext` resolution → relative imports end in `.js`. Inside `packages/ui` (bundler resolution) relative imports have **no** extension.
 - Class names: **only token-backed utilities** — no arbitrary values (`h-[13px]`, `bg-[#…]`, `w-(--x)`); a missing value becomes a token first.
-- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. **Never `--no-verify`**, never `eslint-disable` a LAW rule.
+- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with the `Co-Authored-By:` trailer the harness supplies for the model actually running (the `Claude <model>` in the examples below is a placeholder — substitute it, never commit it literally). **Never `--no-verify`**, never `eslint-disable` a LAW rule.
 - Verify APIs against the **installed** package (`node_modules/<pkg>`), never memory.
 - A task is done only when its gate command output is green and pasted in the report.
 
@@ -225,13 +225,13 @@ Prettier ignores zip-files/ (reference material), blog lint depends on the
 build that generates Content Collections types, and the verify job installs
 Chromium for the Storybook browser tests.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 git add -A packages/ui apps/storybook
 git commit -m "chore(ui): remove the August design system port
 
 The rewrite follows docs/superpowers/specs/2026-09-27-design-system-rewrite-design.md.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1708,7 +1708,7 @@ is measured on build; white on the brand pink is the single exception, held
 at the AA-large floor. Text tokens that failed AA moved to passing ramp
 steps; no fill changed.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1852,7 +1852,7 @@ Expected: PASS.
 git add -A packages/utils
 git commit -m "feat(utils): format rupees, ranges and counts the brand way
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2226,7 +2226,7 @@ git commit -m "feat(content): validated brand facts from the design system's bra
 
 Founded 2025; facts the owner has not supplied are null, not TODO strings.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3034,7 +3034,7 @@ the design system's base rules, named utilities for motion and stacking (so
 components never need arbitrary values), the seven animations and the
 section-reveal motion adopted from the handoff.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3174,7 +3174,7 @@ Expected: lint green across all projects. If the naming rule now errors in exist
 git add -A -- ':!*.md'   # formatting changes from prettier-plugin-tailwindcss only
 git commit -m "style: sort Tailwind classes with prettier-plugin-tailwindcss
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" || true
+Co-Authored-By: Claude <model> <noreply@anthropic.com>" || true
 git add -A tools/eslint-config .prettierrc package.json pnpm-lock.yaml
 git commit -m "feat(tools): token-only classes, strict naming and the layouts tier
 
@@ -3185,7 +3185,7 @@ Each rule was probed with a deliberate violation (outputs below).
 
 <paste the six probe outputs, one line each>
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 (If Step 6 produced no formatting changes, the first commit is skipped — that is what `|| true` allows.)
@@ -3858,7 +3858,7 @@ The nine brand SVGs compile once into currentColor path data with
 instance-safe ids, so a header and footer logo never share a clip path.
 Brand social glyphs are Lucide 0.408's own, matching every other icon.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3983,7 +3983,7 @@ design system's thirteen tab groups as the sidebar order, and the contrast
 policy documented in place of the old blanket exemption. The founder guard
 now scans the Storybook build too.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4038,5 +4038,5 @@ Expected: every task green; guard clean. Paste the summary lines.
 git add -A docs packages/ui/AUTHORING.md packages/ui/README.md .claude/commands/new-component.md
 git commit -m "docs: the design system authoring contract and plan 1 records
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```

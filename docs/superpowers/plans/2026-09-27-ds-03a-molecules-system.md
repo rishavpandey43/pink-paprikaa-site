@@ -27,7 +27,7 @@
 - Files kebab-case; one primary export per file; booleans prefixed `is/has/should/can/did/will/does`.
 - Imports inside `packages/{utils,content,design-tokens}` use `nodenext` resolution → relative imports end in `.js`. Inside `packages/ui` (bundler resolution) relative imports have **no** extension.
 - Class names: **only token-backed utilities** — no arbitrary values (`h-[13px]`, `bg-[#…]`, `w-(--x)`); a missing value becomes a token first.
-- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. **Never `--no-verify`**, never `eslint-disable` a LAW rule.
+- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with the `Co-Authored-By:` trailer the harness supplies for the model actually running (the `Claude <model>` in the examples below is a placeholder — substitute it, never commit it literally). **Never `--no-verify`**, never `eslint-disable` a LAW rule.
 - Verify APIs against the **installed** package (`node_modules/<pkg>`), never memory.
 - A task is done only when its gate command output is green and pasted in the report.
 
@@ -283,7 +283,7 @@ Append a `**Reconciliation notes:**` list under this task (one line per patch ma
 git add docs/superpowers/plans/2026-09-27-ds-03a-molecules-system.md
 git commit -m "docs: reconcile plan 3a with the code as built
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -669,7 +669,7 @@ value-based molecule (reports once, synchronously, only on a real change);
 FieldMessage owns the hint-or-status line under every control; assignRef
 forwards a consumer's ref beside a component's own.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1205,7 +1205,7 @@ hands the control its id and only the aria-describedby, aria-invalid and
 required that apply, so Field is RSC-safe and a react-hook-form register()
 spread keeps them.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1747,7 +1747,7 @@ Pill-shaped FieldControl with a controlled query, a clear button that
 returns focus to the input, the pulsing loading mark and a status hint.
 Ref, name and onBlur reach the input for react-hook-form.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2063,7 +2063,7 @@ const quantityStepper = componentVariants({
   slots: {
     root: "inline-flex items-center rounded-pill border border-border-brand-soft bg-surface-page-alt",
     button:
-      "transition-control grid shrink-0 place-items-center rounded-pill text-text-brand not-disabled:hover:bg-surface-brand-soft not-disabled:active:press-scale disabled:cursor-not-allowed disabled:text-ink-400",
+      "grid shrink-0 place-items-center rounded-pill text-text-brand transition-control not-disabled:hover:bg-surface-brand-soft not-disabled:active:press-scale disabled:cursor-not-allowed disabled:text-ink-400",
     count:
       "min-w-quantity-stepper-count rounded-xs border-0 bg-transparent p-0 text-center font-display font-bold text-text-heading tabular-nums disabled:text-ink-400",
   },
@@ -2374,7 +2374,7 @@ git commit -m "feat(ui): QuantityStepper molecule with typed entry
 Enter, snapped to step and clamped to min/max, so a typed 5000 on the Dawat
 guest count settles at 2000. Name, onBlur and ref serve react-hook-form.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2933,7 +2933,7 @@ One real input behind decorative cells, so SMS autofill, paste and
 Backspace are the platform's. Digits are extracted before the code is cut
 to length: a pasted 48-21 93 fills all six cells.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3550,7 +3550,7 @@ A fieldset of real radios styled by has-checked, so a server-rendered
 picker selects and posts with no JavaScript. Sold-out slots are struck
 through, not hidden; a status shows its message under the grid.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4040,7 +4040,7 @@ Six tones (the handoff adds neutral), title, action slot and an optional
 dismiss button in its own client file. Danger interrupts as an alert; the
 panel is a light island so its action keeps light skins on pink or ink.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4714,7 +4714,7 @@ the page edge or contained in a positioned frame (the App kit's phone).
 Success fills with the strong mint: white on mint fails the policy.
 A server-rendered page hydrates the provider without a mismatch.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -5293,7 +5293,7 @@ anchored to its positioned ancestor (or the window) at five positions.
 Its provider mounts only while open, so an idle snackbar leaves no empty
 landmark and never takes the app's F8 hotkey.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -5455,7 +5455,7 @@ const emptyState = componentVariants({
     symbol: "mb-1 text-pink-500 opacity-85",
     icon: "mb-1 text-pink-300",
     title: "m-0 font-display text-text-heading",
-    body: "max-w-text-measure-narrow m-0 text-body-sm text-text-muted",
+    body: "m-0 max-w-text-measure-narrow text-body-sm text-text-muted",
     action: "mt-2",
   },
   variants: {
@@ -5623,7 +5623,7 @@ git commit -m "feat(ui): EmptyState molecule
 Brand diamond or Lucide glyph, a titled heading at the page's level, one
 line of what to do next and a single action. No default copy.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6125,7 +6125,7 @@ Underline tabs from the design system and the handoff's segmented pill
 rail. Every panel stays mounted (inactive ones hidden), so the whole menu
 is in the server HTML and every aria-controls resolves.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6489,7 +6489,7 @@ Ordered trail in a named nav; the last crumb is the current page, a crumb
 without href is text, never a dead link. Router links via linkAs. The
 chevron is a surface-aware component token, so there is no tone prop.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6863,7 +6863,7 @@ First, last and one either side of the current page, gaps between; every
 page is a link from getPageHref, the current one marked aria-current.
 Nothing renders for a single page.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -7222,7 +7222,7 @@ Overline, fluid heading at any level, lede and a trailing action that is
 dropped when centred. Semantic text tokens follow the surface, so the
 design system's on=\"brand\" prop is not needed.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -7551,7 +7551,7 @@ git commit -m "feat(ui): Stat molecule
 A fluid Poppins 800 number with one line under it; tone colours the number
 only, so the label and sub follow whatever surface the band sets.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -7977,7 +7977,7 @@ One name group per accordion gives single-open with zero JavaScript; every
 answer stays in the DOM for find-in-page and search engines. The height
 animates through ::details-content where supported and snaps elsewhere.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -8431,7 +8431,7 @@ glyph, text, value and chevron into the consumer's link or button, which
 takes the row's classes and hover; inner wrappers are spans, so the markup
 stays valid inside either.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -8857,7 +8857,7 @@ Money lines as a definition list, formatted by formatRupees, discounts
 with a true minus, the total as a large PriceTag under a hairline. The
 discount colour is a surface component token, so there is no tone prop.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -9338,7 +9338,7 @@ horizontal bar, in an ordered list with aria-current on the current step.
 The bar's colours flip on pink and ink fields, which the design system's
 own pink row lost; there is no tone prop.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -9451,7 +9451,7 @@ Fixed:
 Expected differences:
 <paste the Step 3 list, one line each>
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 (If the review changed nothing, commit nothing and paste the list into the report instead.)

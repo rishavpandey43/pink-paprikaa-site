@@ -29,7 +29,7 @@ Plan 1's constraints, verbatim:
 - Files kebab-case; one primary export per file; booleans prefixed `is/has/should/can/did/will/does`.
 - Imports inside `packages/{utils,content,design-tokens}` use `nodenext` resolution → relative imports end in `.js`. Inside `packages/ui` (bundler resolution) relative imports have **no** extension.
 - Class names: **only token-backed utilities** — no arbitrary values (`h-[13px]`, `bg-[#…]`, `w-(--x)`); a missing value becomes a token first.
-- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. **Never `--no-verify`**, never `eslint-disable` a LAW rule.
+- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with the `Co-Authored-By:` trailer the harness supplies for the model actually running (the `Claude <model>` in the examples below is a placeholder — substitute it, never commit it literally). **Never `--no-verify`**, never `eslint-disable` a LAW rule.
 - Verify APIs against the **installed** package (`node_modules/<pkg>`), never memory.
 - A task is done only when its gate command output is green and pasted in the report.
 
@@ -234,7 +234,7 @@ react-hook-form's register() hands a group one name/onChange/onBlur/ref set;
 spec D17 requires the native radios to receive it so the group works
 unmodified.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 Missing type re-exports found in Step 2 are added to `packages/ui/src/index.ts` (named re-exports beside their component) and committed as `fix(ui): export the <Type> type from the barrel`.
@@ -549,7 +549,7 @@ different verdicts. The catalogue entry type and contrast-pairs.json become
 package exports (a relative import across packages is a boundary violation).
 Probe: muted text on ink-400 fails the gate; reverted.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1580,7 +1580,7 @@ missing name throws, so a renamed token fails storybook:test on the page that
 asked for it. Contract tests are hidden stories in a real browser, where a
 computed colour or width can actually be asserted.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2536,7 +2536,7 @@ design system's cards and readme. Company details binds the validated brand
 facts and lists every fact the owner has not supplied, counted from the data.
 No egg mark: the kitchen is egg-free.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3099,7 +3099,7 @@ system's cards, every swatch painted from its token. The Contrast page renders
 the gate's own evaluator: white on the brand pink shows as the declared
 exception with its measured ratio, and no pair fails.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3209,7 +3209,7 @@ export const HeadingSteps: Story = {
 
 export const BodySteps: Story = {
   render: () => (
-    <div className="max-w-text-measure-prose flex flex-col gap-4">
+    <div className="flex max-w-text-measure-prose flex-col gap-4">
       <TypeSpecimen step="body-lg" family="body" tone="body">
         We roast our own masala every morning, then build the rest of the day around it.
       </TypeSpecimen>
@@ -3471,7 +3471,7 @@ Display, Headings, Body, Overline and mono, Devanagari and Fluid, each step
 set from its own tokens and captioned with the values the build emits. The
 fluid specimen proves a heading sits at its clamp minimum on a 360px screen.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3681,7 +3681,7 @@ The scale is drawn from the spacing unit and asserted (step 6 is 24px); the
 step list is checked against the layouts' space type in both directions, so a
 new step cannot be left off the page.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4165,7 +4165,7 @@ Breakpoints, AutoGrid, Radii, Borders, Elevation and Card anatomy from the
 design system's cards, and the map from its .pp-* classes to this system's
 utilities — each utility used live so a rename fails lint.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4554,7 +4554,7 @@ live Button, form states show every status on real Fields, and the reveal
 demo proves a section below the fold waits for the scroll while one above it
 is never touched.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4769,7 +4769,7 @@ Canvas formats drawn to scale from PostFrame's formats, with a test that they
 still equal the canvas tokens, and the canvas type scale set through
 SocialHeadline. All 33 guideline cards now map to a foundation page.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -5594,7 +5594,7 @@ toast and the two-step booking dialog. Facts come from the brand module; the
 invented testimonials, rating and spice count are replaced by the four
 verified Google reviews and real brand facts. Tested at the 360px floor.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6266,7 +6266,7 @@ tracking and account, with the sheet and pop toast inside the phone frame.
 The egg flag and the invented account holder are gone; closing time and the
 outlet come from the brand facts. Tested at the 360px floor.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6838,7 +6838,7 @@ Feed boards (offer, dish launch, statement, carousel) and story and ad boards
 PostFrame at its true canvas and fitted for preview, signed with the lockup or
 the wordmark. Statement facts come from the brand module. Tested at 360px.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -7443,7 +7443,7 @@ first invalid field), then completes the form from the keyboard and asserts
 the parsed values. RHF, the resolvers and Zod are Storybook devDependencies
 only (spec D17).
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -8018,7 +8018,7 @@ registry, Plan 5 decisions and the closed drift items), the architecture
 spec's section 8 amendment and Phase 1 progress, CLAUDE.md's current state,
 the Storybook and ui READMEs, and the spec marked implemented.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---

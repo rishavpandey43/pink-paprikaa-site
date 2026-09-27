@@ -29,7 +29,7 @@ Plan 1's list, verbatim:
 - Files kebab-case; one primary export per file; booleans prefixed `is/has/should/can/did/will/does`.
 - Imports inside `packages/{utils,content,design-tokens}` use `nodenext` resolution → relative imports end in `.js`. Inside `packages/ui` (bundler resolution) relative imports have **no** extension.
 - Class names: **only token-backed utilities** — no arbitrary values (`h-[13px]`, `bg-[#…]`, `w-(--x)`); a missing value becomes a token first.
-- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. **Never `--no-verify`**, never `eslint-disable` a LAW rule.
+- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with the `Co-Authored-By:` trailer the harness supplies for the model actually running (the `Claude <model>` in the examples below is a placeholder — substitute it, never commit it literally). **Never `--no-verify`**, never `eslint-disable` a LAW rule.
 - Verify APIs against the **installed** package (`node_modules/<pkg>`), never memory.
 - A task is done only when its gate command output is green and pasted in the report.
 
@@ -234,7 +234,7 @@ Run the gate. Expected: green — so any later red is this plan's.
 git add docs/superpowers/plans/2026-09-27-ds-02b-atoms-forms-indicators.md
 git commit -m "docs: reconcile plan 2b with the code plans 1 and 2a produced
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -354,7 +354,7 @@ Field.jsx draws them). fakeRegister mirrors what react-hook-form's
 register() returns, so control tests prove RHF compatibility without the
 library depending on it.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -686,7 +686,7 @@ import { SymbolMark } from "./symbol-mark";
 export const fieldControlVariants = componentVariants({
   slots: {
     root: [
-      "group/field transition-control relative flex w-full min-w-0 items-center gap-2.5 rounded-md border border-border-default bg-surface-card px-3.5 font-body text-text-body",
+      "group/field relative flex w-full min-w-0 items-center gap-2.5 rounded-md border border-border-default bg-surface-card px-3.5 font-body text-text-body transition-control",
       "has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-100 has-disabled:text-ink-400",
     ],
     icon: "text-ink-500 group-has-disabled/field:text-ink-400",
@@ -939,7 +939,7 @@ const meta = {
   args: { "aria-label": "Full name", placeholder: "Your full name" },
   argTypes: { icon: { control: false }, trailing: { control: false } },
   render: (args) => (
-    <div className="max-w-text-measure-prose w-full">
+    <div className="w-full max-w-text-measure-prose">
       <Input {...args} />
     </div>
   ),
@@ -1020,7 +1020,7 @@ export const SuffixAndTrailing: Story = {
 export const Sizes: Story = {
   name: "size",
   render: () => (
-    <div className="max-w-text-measure-prose grid w-full gap-3">
+    <div className="grid w-full max-w-text-measure-prose gap-3">
       <Input aria-label="Small" size="sm" placeholder="sm — 40px" />
       <Input aria-label="Medium" size="md" placeholder="md — 48px" />
       <Input aria-label="Large" size="lg" placeholder="lg — 56px" />
@@ -1078,7 +1078,7 @@ Every prop but className lands on the native control, so register() works
 unmodified; the box sets data-surface=light so a field on pink or ink keeps
 its own tokens.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1447,7 +1447,7 @@ const meta = {
   args: { "aria-label": "Pick your outlet", options: OUTLETS },
   argTypes: { icon: { control: false } },
   render: (args) => (
-    <div className="max-w-text-measure-prose w-full">
+    <div className="w-full max-w-text-measure-prose">
       <Select {...args} />
     </div>
   ),
@@ -1492,7 +1492,7 @@ export const StatusWarning: Story = {
 export const ReadOnlyAndDisabled: Story = {
   name: "readOnly / disabled",
   render: () => (
-    <div className="max-w-text-measure-prose grid w-full gap-3">
+    <div className="grid w-full max-w-text-measure-prose gap-3">
       <Select aria-label="Outlet" readOnly options={OUTLETS} />
       <Select
         aria-label="Delivery slot"
@@ -1506,7 +1506,7 @@ export const ReadOnlyAndDisabled: Story = {
 export const Sizes: Story = {
   name: "size",
   render: () => (
-    <div className="max-w-text-measure-prose grid w-full gap-3">
+    <div className="grid w-full max-w-text-measure-prose gap-3">
       <Select aria-label="Outlet, small" size="sm" options={OUTLETS} />
       <Select aria-label="Outlet, medium" size="md" options={OUTLETS} />
       <Select aria-label="Outlet, large" size="lg" options={OUTLETS} />
@@ -1577,7 +1577,7 @@ a long option label truncates instead of widening the layout (measured at
 renders the lock and the sunken fill; a native select cannot be read-only,
 so it is disabled.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1934,7 +1934,7 @@ import { Icon } from "../icon/icon";
 /** 22px, 6px radius, 2px border; checked is pink with a white 14px tick. */
 const box = componentVariants({
   base: [
-    "size-choice-box transition-control grid place-items-center rounded-sm border-2 border-border-default bg-ink-000 text-transparent",
+    "size-choice-box grid place-items-center rounded-sm border-2 border-border-default bg-ink-000 text-transparent transition-control",
     "group-has-checked/choice:border-pink-500 group-has-checked/choice:bg-pink-500 group-has-checked/choice:text-ink-000",
     "group-has-focus-visible/choice:outline-2 group-has-focus-visible/choice:outline-offset-2 group-has-focus-visible/choice:outline-focus",
     "group-has-disabled/choice:border-ink-200 group-has-disabled/choice:bg-ink-200 group-has-checked/choice:group-has-disabled/choice:text-ink-400",
@@ -2095,7 +2095,7 @@ Checked, focus, disabled and invalid are CSS off the native input, so the
 controls stay server components and register() works unmodified. The
 description is announced as a description, not folded into the name.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2629,7 +2629,7 @@ absolute price. RadioGroup is a fieldset exposed as a radiogroup, so a
 group error sets aria-invalid once and every ring turns red through CSS; its
 message carries the status glyph and is read as the group's description.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2883,7 +2883,7 @@ const meta = {
   component: Switch,
   args: { label: "Order updates" },
   render: (args) => (
-    <div className="max-w-text-measure-prose w-full">
+    <div className="w-full max-w-text-measure-prose">
       <Switch {...args} />
     </div>
   ),
@@ -2906,7 +2906,7 @@ export const Playground: Story = {};
 export const OnAndOff: Story = {
   name: "on / off",
   render: () => (
-    <div className="max-w-text-measure-prose grid w-full gap-4">
+    <div className="grid w-full max-w-text-measure-prose gap-4">
       <Switch label="Order updates" defaultChecked />
       <Switch label="Marketing texts" />
     </div>
@@ -2932,7 +2932,7 @@ export const LabelHidden: Story = {
 export const PreferencesPanel: Story = {
   name: "preferences panel",
   render: () => (
-    <div className="max-w-text-measure-prose grid w-full gap-5 rounded-lg border border-border-subtle p-5">
+    <div className="grid w-full max-w-text-measure-prose gap-5 rounded-lg border border-border-subtle p-5">
       <Switch
         label="Order updates"
         description="Order confirmations and pickup times."
@@ -2980,7 +2980,7 @@ so a column of switches aligns. The track fills and the knob slides through
 CSS off the native state; isLabelHidden keeps the name for a switch inside
 a row that already labels it.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3116,7 +3116,7 @@ const meta = {
   component: Slider,
   args: { label: "Guests", min: 15, max: 300, step: 5, defaultValue: 60 },
   render: (args) => (
-    <div className="max-w-text-measure-prose w-full">
+    <div className="w-full max-w-text-measure-prose">
       <Slider {...args} />
     </div>
   ),
@@ -3140,7 +3140,7 @@ export const Playground: Story = {};
 export const DawatGuests: Story = {
   name: "dawat guests (white card)",
   render: (args) => (
-    <div className="max-w-text-measure-prose grid w-full gap-2.5 rounded-lg border border-border-subtle bg-surface-card p-6 shadow-1">
+    <div className="grid w-full max-w-text-measure-prose gap-2.5 rounded-lg border border-border-subtle bg-surface-card p-6 shadow-1">
       <span className="font-display text-body-sm font-bold text-text-heading">1. Guests</span>
       <Slider {...args} />
       <span className="font-body text-caption text-text-muted">
@@ -3157,7 +3157,7 @@ export const OfficeMealsOnInk: Story = {
   render: (args) => (
     <div
       data-surface="ink"
-      className="max-w-text-measure-prose grid w-full gap-2 rounded-lg bg-surface-inverse p-6"
+      className="grid w-full max-w-text-measure-prose gap-2 rounded-lg bg-surface-inverse p-6"
     >
       <div className="flex items-baseline justify-between gap-3">
         <span className="font-display font-bold text-text-heading">Meals a day</span>
@@ -3196,7 +3196,7 @@ native range, full width, 32px, brand accent, named by label. Native props
 pass straight through, so register() works and keyboard and touch are the
 platform's.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3468,7 +3468,7 @@ git commit -m "feat(ui): add the Spinner atom — the pulsing brand mark
 The loader is the shared SymbolMark in three sizes and three tones, a
 status named Loading by default, still under reduced motion.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3663,7 +3663,7 @@ const meta = {
   title: "Atoms/Skeleton",
   component: Skeleton,
   render: (args) => (
-    <div className="max-w-text-measure-prose w-full">
+    <div className="w-full max-w-text-measure-prose">
       <Skeleton {...args} />
     </div>
   ),
@@ -3705,7 +3705,7 @@ export const CardShape: Story = {
       role="status"
       aria-label="Loading the menu"
       aria-busy="true"
-      className="max-w-text-measure-prose flex w-full gap-3"
+      className="flex w-full max-w-text-measure-prose gap-3"
     >
       <Skeleton className="h-17 w-23 shrink-0 rounded-md" />
       <Skeleton variant="text" lines={3} className="flex-1" />
@@ -3737,7 +3737,7 @@ git commit -m "feat(ui): add the Skeleton atom
 Light-pink block, circle and text placeholders whose lines vary in width,
 sized by className, hidden from assistive tech, still under reduced motion.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4077,7 +4077,7 @@ const meta = {
   component: ProgressBar,
   args: { label: "3 more visits and chai's on us", value: 3 },
   render: (args) => (
-    <div className="max-w-text-measure-prose w-full">
+    <div className="w-full max-w-text-measure-prose">
       <ProgressBar {...args} />
     </div>
   ),
@@ -4114,7 +4114,7 @@ export const Inverse: Story = {
   render: () => (
     <div
       data-surface="brand"
-      className="max-w-text-measure-prose grid w-full gap-4 rounded-lg bg-surface-brand p-4"
+      className="grid w-full max-w-text-measure-prose gap-4 rounded-lg bg-surface-brand p-4"
     >
       <ProgressBar label="4 of 6 visits" segments={6} value={4} tone="inverse" isLabelHidden />
       <ProgressBar label="Uploading your photo" value={70} tone="inverse" />
@@ -4135,7 +4135,7 @@ export const Narrow: Story = {
 export const Sizes: Story = {
   name: "size",
   render: () => (
-    <div className="max-w-text-measure-prose grid w-full gap-4">
+    <div className="grid w-full max-w-text-measure-prose gap-4">
       <ProgressBar label="Loyalty card, sm" segments={6} value={3} size="sm" />
       <ProgressBar label="Loyalty card, md" segments={6} value={3} size="md" />
     </div>
@@ -4168,7 +4168,7 @@ width-driven fill, a stamp bar is N segments with the earned ones filled.
 Named by its label, clamped into range, and a value it cannot draw throws.
 Adds white-alpha-28, the design system's inverse track.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4729,7 +4729,7 @@ export const OnAnOutletCard: Story = {
   render: () => (
     <div
       data-surface="light"
-      className="max-w-text-measure-prose grid gap-2 rounded-lg bg-surface-card p-4 shadow-1"
+      className="grid max-w-text-measure-prose gap-2 rounded-lg bg-surface-card p-4 shadow-1"
     >
       <p className="m-0 font-display text-h4 font-bold text-text-heading">
         Pink Paprikaa · Sector 57
@@ -4767,7 +4767,7 @@ box fills an exact fraction in screen space (4.3 fills 30% of the fifth
 diamond). Rating is one image named with the score and count; an impossible
 score throws.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -5050,7 +5050,7 @@ export const Sizes: Story = {
 export const InContext: Story = {
   name: "in a menu row",
   render: () => (
-    <div className="max-w-text-measure-prose grid gap-1">
+    <div className="grid max-w-text-measure-prose gap-1">
       <p className="m-0 font-display text-h4 font-bold text-text-heading">Paprikaa Chilli Paneer</p>
       <p className="m-0 font-body text-body-sm text-text-muted">
         Wok-tossed cottage cheese, capsicum, spring onion.
@@ -5094,7 +5094,7 @@ Four brand diamonds on the heat ramp, the filled ones in the level's colour
 with a white mark, the rest ink-200 with a pink one; an optional plain label
 (Mild to Extra Hot). One image named with the level.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -5342,7 +5342,7 @@ The statutory green square and dot, drawn once as an SVG with a
 non-scaling stroke, named Vegetarian. The design system's egg variant is
 not built: the kitchen is pure veg, not even egg.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -5755,7 +5755,7 @@ and the parts are em-relative, so the canvas size (56px, the artboard
 price) and any text class scale the whole price. Adds the white-on-brand-
 fill pair for the inverse tone.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6176,7 +6176,7 @@ focus, closing on Escape, and describing its trigger. It stacks on a new
 z-tooltip level above dialogs and toasts and fades in with @starting-style,
 so no animation library is involved.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6545,7 +6545,7 @@ never mismatches and a static page never bakes in a stale time. It renders
 the fallback (nothing by default) the second the offer ends, clears its
 interval on unmount, and rejects an end time without an offset.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6665,7 +6665,7 @@ Side-by-side review at 360 and 1280 against the design-system cards and
 the handoff pages (spec §11.4). Accepted differences, each by decision:
 <paste the final accepted list, one line each>
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 If nothing changed, paste the accepted list in the task report instead.

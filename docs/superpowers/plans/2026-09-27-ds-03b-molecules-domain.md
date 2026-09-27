@@ -27,7 +27,7 @@
 - Files kebab-case; one primary export per file; booleans prefixed `is/has/should/can/did/will/does`.
 - Imports inside `packages/{utils,content,design-tokens}` use `nodenext` resolution → relative imports end in `.js`. Inside `packages/ui` (bundler resolution) relative imports have **no** extension.
 - Class names: **only token-backed utilities** — no arbitrary values (`h-[13px]`, `bg-[#…]`, `w-(--x)`); a missing value becomes a token first.
-- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. **Never `--no-verify`**, never `eslint-disable` a LAW rule.
+- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with the `Co-Authored-By:` trailer the harness supplies for the model actually running (the `Claude <model>` in the examples below is a placeholder — substitute it, never commit it literally). **Never `--no-verify`**, never `eslint-disable` a LAW rule.
 - Verify APIs against the **installed** package (`node_modules/<pkg>`), never memory.
 - A task is done only when its gate command output is green and pasted in the report.
 
@@ -438,7 +438,7 @@ const menuItemRow = componentVariants({
     name: "text-menu-item-name font-display text-text-heading",
     nameDevanagari: "text-menu-item-devanagari font-devanagari text-text-brand",
     meta: "mt-2 flex items-center gap-3.5",
-    description: "max-w-text-measure-narrow mt-2 mb-0 text-body-sm text-text-muted",
+    description: "mt-2 mb-0 max-w-text-measure-narrow text-body-sm text-text-muted",
     action: "mt-3.5",
     // 80px at 360px, 104px (the design system's size) from `sm` up — the row holds its shape at both.
     thumbnail: "size-20 shrink-0 sm:size-26",
@@ -731,7 +731,7 @@ placeholder until photography exists. Every dish is vegetarian, so the
 DietMark always shows and there is no diet prop — a test pins that it
 does not compile.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1248,7 +1248,7 @@ Image-first dish card with a floating action slot. With href the dish
 name becomes a stretched link covering the card, so the add button is
 never nested inside a link; the card lifts only when it is a link.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1675,7 +1675,7 @@ A café location with its city, status in words, address (in an address
 element), hours and an action slot; hasImage={false} gives the compact
 list form.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1842,7 +1842,7 @@ const reviewCard = componentVariants({
     root: "flex flex-col gap-3.5",
     header: "flex flex-wrap items-center justify-between gap-3",
     quote: "m-0",
-    quoteText: "max-w-text-measure-narrow m-0 text-body",
+    quoteText: "m-0 max-w-text-measure-narrow text-body",
     footer: "flex items-center gap-2.5",
     person: "grid min-w-0 flex-1",
     name: "text-body-sm font-medium text-text-heading",
@@ -2078,7 +2078,7 @@ A real guest review as figure/blockquote/figcaption with score, avatar,
 the brand (feature) treatment and the handoff's verified chip and source
 link. Stories bind the four verified Google reviews verbatim.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2324,7 +2324,7 @@ const meta = {
   args: { visits: 3, goal: 6, reward: "chai" },
   decorators: [
     (Story) => (
-      <div className="max-w-text-measure-prose w-full">
+      <div className="w-full max-w-text-measure-prose">
         <Story />
       </div>
     ),
@@ -2382,7 +2382,7 @@ Stamp card with segmented progress and the design system's generated
 sentence (many / one / zero left), overridable by headline. Impossible
 counts throw instead of drawing nonsense.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2805,7 +2805,7 @@ styled with the Tag skin, never a nested Tag button. Exactly one filter
 stays chosen; scrolls on one line or wraps; statement badge and
 trailing slot.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3108,7 +3108,7 @@ tagline's legible size.
 
 <paste the P-height measurement from Step 7>
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3602,7 +3602,7 @@ that keeps the value on the board is guaranteed by the type; a story
 play checks the geometry in Chromium. Label and note keep full colour
 for AA.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3982,7 +3982,7 @@ const couponTicket = componentVariants({
     main: "min-w-0 flex-1",
     logo: "w-auto",
     headline: "mb-0 max-w-none font-display text-balance",
-    terms: "max-w-text-measure-narrow mb-0 text-text-muted",
+    terms: "mb-0 max-w-text-measure-narrow text-text-muted",
     // The perforation sits exactly between main and stub, whatever the ticket's width. Split, it is
     // a zero-width column with notches on the top and bottom edges; stacked (md below `sm`), a
     // zero-height row with notches on the two side edges. The size variants set which.
@@ -4043,7 +4043,7 @@ const couponTicket = componentVariants({
     },
     // Press = the system's scale (Button's treatment).
     isCopyable: {
-      true: { stub: "transition-control cursor-pointer active:press-scale" },
+      true: { stub: "cursor-pointer transition-control active:press-scale" },
       false: {},
     },
   },
@@ -4245,7 +4245,7 @@ on the perforation at any width. The copy stub is the only client code:
 onCopy fires only after the clipboard accepted the code, and a refused
 copy leaves the code selected instead of flashing a false Copied.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4579,7 +4579,7 @@ const choiceCardGroup = componentVariants({
     root: "min-w-0",
     legend: "text-choice-card-title mb-2.5 font-display text-text-heading",
     list: "grid gap-2",
-    card: "transition-control relative flex min-h-16 cursor-pointer rounded-md p-3 text-left has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400",
+    card: "relative flex min-h-16 cursor-pointer rounded-md p-3 text-left transition-control has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400",
     input: "",
     body: "flex min-w-0 flex-1 flex-col items-start gap-1",
     head: "flex w-full flex-wrap items-center justify-between gap-1.5",
@@ -5009,7 +5009,7 @@ the brand-surface trial selector. ref/onChange/onBlur reach every radio,
 so react-hook-form's register() works unmodified. Adds the semantic
 shadow.selected (a 2px selected border that never shifts layout).
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -5129,7 +5129,7 @@ import { componentVariants } from "../../lib/component-variants";
 
 const checkCard = componentVariants({
   slots: {
-    root: "transition-control has-checked:shadow-selected flex min-h-13 cursor-pointer items-center gap-3 rounded-md border border-border-default bg-surface-card px-3.5 py-3 text-text-heading has-checked:border-border-brand has-checked:bg-pink-50 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400",
+    root: "has-checked:shadow-selected flex min-h-13 cursor-pointer items-center gap-3 rounded-md border border-border-default bg-surface-card px-3.5 py-3 text-text-heading transition-control has-checked:border-border-brand has-checked:bg-pink-50 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400",
     // The native checkbox, restyled, with the tick stacked on it in the same grid cell.
     box: "grid shrink-0 place-items-center",
     input:
@@ -5207,7 +5207,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="max-w-text-measure-prose w-full">
+      <div className="w-full max-w-text-measure-prose">
         <Story />
       </div>
     ),
@@ -5268,7 +5268,7 @@ Card-sized toggle on a restyled native checkbox (the handoff's upfront
 and no-onion-garlic options). Native props go to the input, so
 react-hook-form's register() works unmodified.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6013,7 +6013,7 @@ by making the rest focusable-but-unavailable, with a live status line
 the group is described by, so no keyboard path can exceed the limit.
 Segmented pill-track variant; value/onValueChange/onBlur/name for RHF.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6249,7 +6249,7 @@ const meta = {
   args: { items: YOUR_BOX, keyWidth: "sm", density: "compact" },
   decorators: [
     (Story) => (
-      <div className="max-w-text-measure-prose w-full">
+      <div className="w-full max-w-text-measure-prose">
         <Story />
       </div>
     ),
@@ -6383,7 +6383,7 @@ rules, customisations, price lists and quote lines: fixed key column or
 split row, muted-key or strong-key emphasis, an emphasised value, and
 semantic tokens so it reads on every surface.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6720,7 +6720,7 @@ Numbered steps as an ordered list: pink discs stacked (Home, Catering)
 or a brand rule with 01/02/03 in a grid (Homely Meals). Titles are
 headings at the page's level; semantic tokens follow every surface.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -7135,7 +7135,7 @@ Icon tile + title + line for Catering's why-us, the office perks and
 Homely Meals' what-you-get. The tile skin is a component token the ink
 surface remaps (ink-800 / pink-300) and the light island restores.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -7515,7 +7515,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="max-w-text-measure-prose w-full">
+      <div className="w-full max-w-text-measure-prose">
         <Story />
       </div>
     ),
@@ -7790,7 +7790,7 @@ tag, top-edge badge, media, ticked points and a footer that pins to the
 bottom. Long names wrap inside the card; a story play measures it at
 360px in Chromium.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -8077,7 +8077,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="max-w-text-measure-prose w-full">
+      <div className="w-full max-w-text-measure-prose">
         <Story />
       </div>
     ),
@@ -8183,7 +8183,7 @@ Whole-card link for Home's doors (row, 88px media) and About's CTA cards
 card into next/link or an external anchor via Radix Slottable, so the
 content lands inside the consumer's link.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -8445,7 +8445,7 @@ The calculators' ink pill (total, caption, action), sticky at the dock
 clearance so the mobile ActionDock never covers it, hidden once the
 calculator is two-column.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -8816,7 +8816,7 @@ while the page is open — via a tiny client gate on useSyncExternalStore,
 so the bar stays server-rendered and linkAs works from a server layout.
 An unreadable endsAt throws instead of never expiring.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -9519,7 +9519,7 @@ th scope col/row, a highlighted column marked cell by cell, and a
 minWidth that turns the frame into a named, focusable scroll region so
 360px scrolls the table instead of squashing it.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -9625,7 +9625,7 @@ Fixed:
 Accepted:
 <one line per accepted difference: component — difference — reason>
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ## Controller amendments (2026-09-27)

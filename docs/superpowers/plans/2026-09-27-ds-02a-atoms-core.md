@@ -25,7 +25,7 @@
 - Files kebab-case; one primary export per file; booleans prefixed `is/has/should/can/did/will/does`.
 - Imports inside `packages/{utils,content,design-tokens}` use `nodenext` resolution → relative imports end in `.js`. Inside `packages/ui` (bundler resolution) relative imports have **no** extension.
 - Class names: **only token-backed utilities** — no arbitrary values (`h-[13px]`, `bg-[#…]`, `w-(--x)`); a missing value becomes a token first.
-- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. **Never `--no-verify`**, never `eslint-disable` a LAW rule.
+- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with the `Co-Authored-By:` trailer the harness supplies for the model actually running (the `Claude <model>` in the examples below is a placeholder — substitute it, never commit it literally). **Never `--no-verify`**, never `eslint-disable` a LAW rule.
 - Verify APIs against the **installed** package (`node_modules/<pkg>`), never memory.
 - A task is done only when its gate command output is green and pasted in the report.
 
@@ -585,7 +585,7 @@ Quoted ARIA keys in prop types are exempt from camelCase (probe outputs below).
 
 <paste the two naming-rule probe outputs and the two alias-guard probe outputs>
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1272,7 +1272,7 @@ Twelve steps, eight semantic tones that follow the surface, fluid twins,
 line clamping and the two measures. Measures are spacing tokens because
 Tailwind's static max-w-prose (65ch) shadows the 64ch container token.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1896,7 +1896,7 @@ Four variants, three sizes, glyphs, external links and asChild for router
 links. Default and quiet links flip to white on pink and ink fields through
 surface tokens restored on light islands; new pairs are in the contrast gate.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2351,7 +2351,7 @@ paints white on pink and ink and pink on soft and light, server-rendered with
 no second asset. Tile size and opacity are named utilities over the tokens;
 the field sets data-surface so its content follows it.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2777,7 +2777,7 @@ design system sets for marketing type, so one class sets a canvas step. The
 on prop is gone: colour follows the artboard's surface. Three measures cap
 the balanced lines.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3703,7 +3703,7 @@ white outline through surface tokens restored on light islands; inverse stays
 ink (spec C9). asChild slots glyphs into an anchor without button attributes,
 and long labels truncate inside the pill instead of overflowing.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4292,7 +4292,7 @@ transparent ::before. The label is required by type and the cart count joins
 the accessible name. Primary and the hover tint reuse Button's surface tokens;
 the ghost glyph turns white on pink and ink. Disabled is the grey fill.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4893,7 +4893,7 @@ static chip. Static success and brand tones carry the handoff's delivery-zone
 chips. The selected fill turns ink on a pink field so it never vanishes, and
 tagVariants is exported for ToggleGroup-based molecules.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -5380,7 +5380,7 @@ Default and quiet cards are light islands, feature is soft, brand and ink
 remap their content, so text inside needs no colour props. Four paddings,
 the hover lift when interactive, and asChild to make the card a link.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -5759,7 +5759,7 @@ A separator in three forms (hairline, labelled, diamond) plus a vertical
 rule. The rule and label follow the surface through semantic tokens and the
 drawn mark through its own surface token; the label names the separator.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6258,7 +6258,7 @@ img covering the box; a placeholder names the crop it needs. Either way the
 box keeps its aspect ratio, so a missing photo cannot collapse a layout.
 Placeholder labels are re-pointed to AA-passing steps.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6675,7 +6675,7 @@ Status tones use the AA text tokens on their soft fills; the brand tone turns
 white on a pink field through a surface token so it never vanishes. Labels
 never wrap and truncate inside the pill.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -7070,7 +7070,7 @@ because its keyframes rotate it, and hidden under reduced motion so it never
 lingers as a square. A bare dot is announced by its tone, so state is never
 colour alone.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -7545,7 +7545,7 @@ Five sizes with initials sized as the design system computes them, a photo
 that fills the circle, a half-size glyph fallback and the signed-in ring.
 A named avatar is an image named by the person; an unnamed one is decorative.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -7680,7 +7680,7 @@ Accepted differences (font rasterisation, card-scaled specimens, readme 3.8
 disabled fills, AA label re-pointing, pill truncation) are listed in the
 plan 2a parity table.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 In the report, include the full difference table from Step 3 and the tail of the Step 4 and Step 5 outputs.

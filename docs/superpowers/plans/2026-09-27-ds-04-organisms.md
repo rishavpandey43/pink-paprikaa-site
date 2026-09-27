@@ -64,7 +64,7 @@ Plan 1's constraints, verbatim:
 - Files kebab-case; one primary export per file; booleans prefixed `is/has/should/can/did/will/does`.
 - Imports inside `packages/{utils,content,design-tokens}` use `nodenext` resolution → relative imports end in `.js`. Inside `packages/ui` (bundler resolution) relative imports have **no** extension.
 - Class names: **only token-backed utilities** — no arbitrary values (`h-[13px]`, `bg-[#…]`, `w-(--x)`); a missing value becomes a token first.
-- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. **Never `--no-verify`**, never `eslint-disable` a LAW rule.
+- Commits: Conventional Commits, author with `git commit -m` (commitlint runs in the `commit-msg` hook). Allowed scopes: `web blog storybook ui tokens content seo utils tools ci deps`. Every commit message ends with the `Co-Authored-By:` trailer the harness supplies for the model actually running (the `Claude <model>` in the examples below is a placeholder — substitute it, never commit it literally). **Never `--no-verify`**, never `eslint-disable` a LAW rule.
 - Verify APIs against the **installed** package (`node_modules/<pkg>`), never memory.
 - A task is done only when its gate command output is green and pasted in the report.
 
@@ -244,7 +244,7 @@ git commit -m "docs: reconcile plan 4 with the built atoms and molecules
 
 <one line per delta: task — assumed — actual — patch>
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 If there are no deltas, skip the commit and say so in the report.
@@ -803,7 +803,7 @@ tiled diamond at the default or the handoff's faint density. Story fixtures
 hold the real brand facts and the four verified Google reviews, so no
 component ever needs a content default.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1155,7 +1155,7 @@ Three or four stats on an auto-fitting grid over the tiled diamond, in the
 soft, brand and ink tones; numbers go brand pink on soft and white on the
 flooded fields.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -1842,7 +1842,7 @@ tint; split or centred; fluid display-1 or display-2 headline at any heading
 level; a badge row, diamond-separated facts and a positioned media column
 for the photo and its OfferSeal.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2117,7 +2117,7 @@ A section header over an auto-fitting grid of review cards in one variant;
 stories show the verified Google reviews verbatim instead of the design
 system's invented guests.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -2523,7 +2523,7 @@ the first answer opens by default, one at a time unless isMultiple. The
 aside slot sits under the heading and the column sticks clear of the
 header, as the handoff's FAQ block does.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3041,7 +3041,7 @@ ink, and a white light island — with the big amount, a screen-reader-named
 struck price, money lines and total as a definition list, and slots for
 alerts, the action and a footnote.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -3453,7 +3453,7 @@ the step tracker, and the receipt with the total in rupees; flush for the
 app screen or framed as a light card. Status chip, code label and payment
 line are the app's copy.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4170,7 +4170,7 @@ linkAs. It carries no company facts: the test proves a footer given only a
 column prints only that column — the August port's fake FSSAI default
 cannot come back. hasDockClearance pads it clear of the ActionDock.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4488,7 +4488,7 @@ bottom bar with the call icon on phones, a floating pill from md. Both
 offsets include the iOS safe-area inset, and the test pins that
 SiteFooter's dock clearance keeps the legal links uncovered.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -4946,7 +4946,7 @@ linkAs or button tabs that report onValueChange, the current one marked
 aria-current in brand pink, counts shown as a pill and read with the label.
 Labels use the passing ink-600 and pink-600 text tokens.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -5494,7 +5494,7 @@ optionally described, focus-trapped, closed by Escape, the scrim or a named
 close button, with focus returned and page scroll locked. Sizes come from
 component tokens; portalContainer keeps it inside a phone frame.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -6429,7 +6429,7 @@ useSyncExternalStore, and the menu drawer is a Radix sheet that traps
 focus, locks the page, closes on Escape or any link and returns focus.
 Adds the glass-bar text pairs to the contrast policy.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -7049,7 +7049,7 @@ focusable (aria-disabled) at the ends. No auto-advance; smooth scrolling is
 motion-safe CSS; one review drops the controls, none shows the empty state.
 Lint now lets a scrolling region take focus, as WCAG 2.1.1 requires.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -7745,7 +7745,7 @@ each category, and per-category panels of cards and overflow rows (grid) or
 rows only (list). Dishes, their actions and links render on the server; a
 tiny client leaf holds only the chosen category.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -8414,7 +8414,7 @@ note, totals through PriceSummary and a pay bar, and its own symbol empty
 state with the app's copy. The money maths is a pure cartTotals export the
 app reuses to label the pay button.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 ---
@@ -8628,7 +8628,7 @@ Parity against the design-system cards and handoff components at 360 and
 1280. Fixed: <one line per fix>. Deliberate differences: <one line each,
 with its reason>.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
 
 If the review found fixes in organism code, use `fix(ui): …` as the type instead of `test(ui): …`.
