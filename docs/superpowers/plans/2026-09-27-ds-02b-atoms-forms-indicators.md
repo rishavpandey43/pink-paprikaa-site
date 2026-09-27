@@ -203,6 +203,7 @@ Apply, then note each decision in the report:
 - If a token name this plan adds already exists in a list (a Plan 2a collision), prefix this plan's token with its component name in every task that uses it — never let one token carry two meanings.
 - Plan 2a's StatusDot owns `radius-status-dot` (2px); this plan's `radius-brand-diamond` is the same corner for the diamonds Rating and SpiceLevel draw. Keep both (one meaning each) and record it in the report for a later consolidation.
 - Append this plan's export lines where Plan 2a's `index.ts` convention puts them (grouped by tier, sorted by path).
+- **Dev parity tables present on every ported-component task** (contracts §0.0). `rtk proxy grep -c '^\*\*Dev parity:\*\*' docs/superpowers/plans/2026-09-27-ds-02b-atoms-forms-indicators.md` prints `13` (Tasks 2–6, 8–15) and `rtk proxy grep -c '^\*\*Dev reference:\*\* none' docs/superpowers/plans/2026-09-27-ds-02b-atoms-forms-indicators.md` prints `2` (Slider, Countdown). A missing table stops the plan until it is written.
 
 - [ ] **Step 4: Probe the class vocabulary this plan relies on**
 
@@ -214,7 +215,7 @@ export function Probe() {
     <label className="group/choice relative has-disabled:text-ink-400">
       Probe
       <input className="peer sr-only" type="checkbox" />
-      <span className="order-last ms-auto size-3/4 size-6/7 max-w-none translate-x-4.5 -rotate-45 rotate-45 appearance-none truncate border-6 ps-11 pe-11 font-regular accent-pink-500 opacity-85 group-has-checked/choice:bg-pink-500 group-has-focus-visible/choice:outline-2 group-has-checked/choice:group-has-disabled/choice:text-ink-400 group-has-aria-invalid/choice:border-status-danger placeholder:text-text-subtle read-only:cursor-default in-aria-invalid:border-status-danger motion-safe:animate-mark-pulse starting:opacity-0" />
+      <span className="order-last ms-auto size-3/4 size-6/7 max-w-56 max-w-none translate-x-4.5 -rotate-45 rotate-45 appearance-none truncate border-6 ps-11 pe-11 font-regular tabular-nums accent-pink-500 opacity-85 group-has-checked/choice:bg-pink-500 group-has-focus-visible/choice:outline-2 group-has-checked/choice:group-has-disabled/choice:text-ink-400 group-has-aria-invalid/choice:border-status-danger placeholder:text-text-subtle read-only:cursor-default in-aria-invalid:border-status-danger motion-safe:animate-mark-pulse starting:opacity-0" />
     </label>
   );
 }
@@ -367,6 +368,34 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/atoms/input/input.tsx`, `input.test.tsx`, `input.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts`, `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/atoms/input/input.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                              | Ruling  | Where / clause                                                                                                             |
+| --------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
+| input `type` defaults to `"text"`                                     | ADD     | Step 4 `input.tsx` (`type="text"` before the spread); Step 2 first test                                                    |
+| typing reaches `onChange`                                             | ALREADY | Step 2 register() test                                                                                                     |
+| no typing while disabled (`onChange` silent)                          | ADD     | Step 2 disabled test                                                                                                       |
+| fixed heights 40 / 48 / 56                                            | ALREADY | Step 2 size test (`h-field-*`)                                                                                             |
+| status: 2px border + trailing glyph                                   | ALREADY | Step 2 status test                                                                                                         |
+| `aria-invalid` on error only                                          | ALREADY | Step 2                                                                                                                     |
+| leading icon, mono suffix, `trailing` slot                            | ALREADY | Step 2                                                                                                                     |
+| multiline: textarea, `rows`, drag-resizable                           | ALREADY | Step 2                                                                                                                     |
+| loading: pulsing mark on the trailing edge                            | ALREADY | Step 2 (SymbolMark + `aria-busy`)                                                                                          |
+| read-only: lock + sunken fill                                         | ALREADY | Step 2                                                                                                                     |
+| disabled: real grey fill, never opacity                               | ALREADY | Step 2 (+ no-`opacity-` assertion added)                                                                                   |
+| disabled wins over a status (dev: 1px subtle border)                  | ALREADY | `has-disabled:border-border-subtle` out-specifies the status colour; the width stays 2px as `Input.jsx` draws it (spec D2) |
+| caller `className` replaces a conflicting class                       | ALREADY | Step 2 (`w-60` replaces `w-full`)                                                                                          |
+| glyphs and mark shrink to 16px at size sm                             | DROP    | `Input.jsx` draws the icon, glyph and 18px mark at one size for every field size (spec D2)                                 |
+| axe over rest, error, read-only and multiline                         | ADD     | Step 2 second a11y test                                                                                                    |
+| `icon` / `trailing` controls off in Storybook                         | ADD     | Step 6 `argTypes`                                                                                                          |
+| stories: sizes, statuses, icons, suffix + trailing, states, multiline | ALREADY | Step 6 (one story per card row)                                                                                            |
+| docs: the control is label-less, Field owns label / hint / message    | ALREADY | Step 6 docs                                                                                                                |
+| `onChange` typed for input and textarea                               | ALREADY | discriminated `InputProps` union                                                                                           |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `FieldStatus`, `FIELD_STATUS_ICON`, `fakeRegister` (Task 1); `SymbolMark`, `OnSurfaces`, `transition-control` (Plan 2a); `Icon`, `IconComponent`; `componentVariants`; `expectNoA11yViolations`.
@@ -458,6 +487,7 @@ const markIn = (root: HTMLElement) =>
 describe("Input", () => {
   it("is a md text field on its own light island by default", () => {
     render(<Input aria-label="Full name" />);
+    expect(screen.getByRole("textbox", { name: "Full name" })).toHaveAttribute("type", "text");
     const box = screen.getByRole("textbox", { name: "Full name" }).parentElement;
     expect(box).toHaveAttribute("data-surface", "light");
     expect(box).toHaveClass("h-field-md", "text-control", "border", "border-border-default");
@@ -559,11 +589,16 @@ describe("Input", () => {
     expect(container.querySelector(".lucide-circle-alert")).not.toBeInTheDocument();
   });
 
-  it("disables through the native attribute, painted with a real fill (never opacity)", () => {
-    render(<Input aria-label="Delivery address" disabled />);
+  it("disables through the native attribute, painted with a real fill (never opacity)", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<Input aria-label="Delivery address" disabled onChange={onChange} />);
     const input = screen.getByRole("textbox");
     expect(input).toBeDisabled();
     expect(input.parentElement).toHaveClass("has-disabled:bg-ink-100", "has-disabled:text-ink-400");
+    expect(input.parentElement?.className).not.toMatch(/opacity-/);
+    await user.type(input, "98");
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   it("renders a leading icon, a mono suffix and a trailing slot", () => {
@@ -603,6 +638,17 @@ describe("Input", () => {
   it("has no accessibility violations in its richest state", async () => {
     const { container } = render(
       <Input aria-label="Mobile number" icon={Phone} status="error" suffix="+91" isLoading />
+    );
+    await expectNoA11yViolations(container);
+  });
+
+  it("has no accessibility violations at rest, read-only and multiline", async () => {
+    const { container } = render(
+      <>
+        <Input aria-label="Full name" />
+        <Input aria-label="Outlet" defaultValue="Sector 57" readOnly />
+        <Input aria-label="Notes for the kitchen" isMultiline />
+      </>
     );
     await expectNoA11yViolations(container);
   });
@@ -860,7 +906,9 @@ export function Input({
   const { isMultiline = false, ...input } = control;
   return (
     <FieldControl {...box} isMultiline={isMultiline}>
-      {(controlClassName) => <input className={controlClassName} {...state} {...input} />}
+      {(controlClassName) => (
+        <input type="text" className={controlClassName} {...state} {...input} />
+      )}
     </FieldControl>
   );
 }
@@ -889,6 +937,7 @@ const meta = {
   title: "Atoms/Input",
   component: Input,
   args: { "aria-label": "Full name", placeholder: "Your full name" },
+  argTypes: { icon: { control: false }, trailing: { control: false } },
   render: (args) => (
     <div className="max-w-text-measure-prose w-full">
       <Input {...args} />
@@ -1041,6 +1090,35 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/atoms/select/select.tsx`, `select.test.tsx`, `select.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/atoms/select/select.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                                | Ruling  | Where / clause                                                |
+| --------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------- |
+| Radix Select popover (portalled listbox, item tick, scroll buttons, `contentClassName`) | DROP    | spec §3.3 (Radix Select rejected), D7 (native `<select>`)     |
+| `onValueChange(value)`                                                                  | DROP    | D17 + contracts §0: native `onChange`, so `register()` works  |
+| `placeholder` defaults to "Choose one"                                                  | DROP    | D9 (no content defaults)                                      |
+| bare-string options                                                                     | DROP    | spec §8.2 (object lists only)                                 |
+| option `disabled`                                                                       | ALREADY | contract `SelectOption.isDisabled`; Step 2 first test         |
+| placeholder until chosen; a value wins                                                  | ALREADY | Step 2                                                        |
+| opens and picks from pointer and keyboard                                               | ALREADY | native select; Step 2 register() test (Tab + `selectOptions`) |
+| fixed heights                                                                           | ALREADY | Task 2's `FieldControl`                                       |
+| status border; its glyph replaces the chevron                                           | ALREADY | Step 2                                                        |
+| `aria-invalid` on error only (warning is not invalid)                                   | ADD     | Step 2 invalid test                                           |
+| leading icon                                                                            | ALREADY | Step 2                                                        |
+| read-only cannot open + lock                                                            | ALREADY | Step 2 (disabled + lock)                                      |
+| disabled: real grey fill, never opacity                                                 | ADD     | Step 2 new test                                               |
+| `id` for Field's label (`htmlFor`), plus describedby / required                         | ADD     | Step 2 new test                                               |
+| caller `className` on the box, replacing a conflict                                     | ADD     | Step 2 new test                                               |
+| axe over placeholder, icon + error, disabled                                            | ADD     | Step 2 a11y test (adds disabled and read-only)                |
+| `icon` control off in Storybook                                                         | ADD     | Step 6 `argTypes`                                             |
+| sizes story shows md too                                                                | ADD     | Step 6 `Sizes`                                                |
+| a disabled option in a story                                                            | ADD     | Step 6 `SLOTS`                                                |
+| stories chosen / statuses / read-only + disabled                                        | ALREADY | Step 6                                                        |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `FieldControl` (Task 2), `FieldStatus`, `IconComponent`, `fakeRegister`, `OnSurfaces` (Plan 2a).
@@ -1135,8 +1213,48 @@ describe("Select", () => {
   });
 
   it("marks only an error invalid", () => {
-    render(<Select aria-label="Pickup time" status="error" options={SLOTS} />);
-    expect(screen.getByRole("combobox")).toHaveAttribute("aria-invalid", "true");
+    render(
+      <>
+        <Select aria-label="Pickup time" status="error" options={SLOTS} />
+        <Select aria-label="Outlet" status="warning" options={SLOTS} />
+      </>
+    );
+    expect(screen.getByRole("combobox", { name: "Pickup time" })).toHaveAttribute(
+      "aria-invalid",
+      "true"
+    );
+    expect(screen.getByRole("combobox", { name: "Outlet" })).not.toHaveAttribute("aria-invalid");
+  });
+
+  it("disables with a real fill, never opacity", () => {
+    render(<Select aria-label="Delivery slot" disabled options={SLOTS} />);
+    const select = screen.getByRole("combobox");
+    expect(select).toBeDisabled();
+    expect(select.parentElement).toHaveClass(
+      "has-disabled:bg-ink-100",
+      "has-disabled:text-ink-400"
+    );
+    expect(select.parentElement?.className).not.toMatch(/opacity-/);
+  });
+
+  it("puts Field's wiring on the select and className on the box", () => {
+    render(
+      <Select
+        id="slot"
+        aria-label="Pickup time"
+        aria-describedby="slot-hint"
+        required
+        className="w-60"
+        options={SLOTS}
+      />
+    );
+    const select = screen.getByRole("combobox", { name: "Pickup time" });
+    expect(select).toHaveAttribute("id", "slot");
+    expect(select).toHaveAttribute("aria-describedby", "slot-hint");
+    expect(select).toBeRequired();
+    expect(select).not.toHaveClass("w-60");
+    expect(select.parentElement).toHaveClass("w-60");
+    expect(select.parentElement).not.toHaveClass("w-full");
   });
 
   it("locks when read-only: sunken fill, a lock, and the value cannot change", () => {
@@ -1175,15 +1293,19 @@ describe("Select", () => {
     expect(select.parentElement).toHaveClass("w-full", "min-w-0");
   });
 
-  it("has no accessibility violations with an icon, a placeholder and an error", async () => {
+  it("has no accessibility violations with an icon, a placeholder and an error, disabled or read-only", async () => {
     const { container } = render(
-      <Select
-        aria-label="Guests"
-        icon={Users}
-        placeholder="Choose a size"
-        status="error"
-        options={SLOTS}
-      />
+      <>
+        <Select
+          aria-label="Guests"
+          icon={Users}
+          placeholder="Choose a size"
+          status="error"
+          options={SLOTS}
+        />
+        <Select aria-label="Delivery slot" disabled options={SLOTS} />
+        <Select aria-label="Outlet" readOnly defaultValue="20:00" options={SLOTS} />
+      </>
     );
     await expectNoA11yViolations(container);
   });
@@ -1316,12 +1438,14 @@ const GUESTS = [
 const SLOTS = [
   { value: "19:30", label: "7:30pm" },
   { value: "20:00", label: "8:00pm" },
+  { value: "20:30", label: "8:30pm", isDisabled: true },
 ];
 
 const meta = {
   title: "Atoms/Select",
   component: Select,
   args: { "aria-label": "Pick your outlet", options: OUTLETS },
+  argTypes: { icon: { control: false } },
   render: (args) => (
     <div className="max-w-text-measure-prose w-full">
       <Select {...args} />
@@ -1384,6 +1508,7 @@ export const Sizes: Story = {
   render: () => (
     <div className="max-w-text-measure-prose grid w-full gap-3">
       <Select aria-label="Outlet, small" size="sm" options={OUTLETS} />
+      <Select aria-label="Outlet, medium" size="md" options={OUTLETS} />
       <Select aria-label="Outlet, large" size="lg" options={OUTLETS} />
     </div>
   ),
@@ -1466,6 +1591,31 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/lib/choice-control.tsx`
 - Create: `packages/ui/src/atoms/checkbox/checkbox.tsx`, `checkbox.test.tsx`, `checkbox.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/checkbox/checkbox.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                       | Ruling                          | Where / clause                                                                                                                                                                               |
+| ------------------------------------------------------------------------------ | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Radix Checkbox + `onCheckedChange(checked)`                                    | DROP                            | D7, D17, contract §3: native `checked` / `onChange` (see "Reconciliations")                                                                                                                  |
+| indeterminate (`checked="indeterminate"`, `aria-checked="mixed"`, minus glyph) | DROP — contract delta P1 raised | not in `Checkbox.d.ts` / `.card.html` (spec D2) or contract §3; a native mixed state is a DOM property only JS can set, so every checkbox would turn client (D6). The controller rules on P1 |
+| unchecked, named by its label                                                  | ALREADY                         | Step 2                                                                                                                                                                                       |
+| add-on price folded into the name (`+₹40`)                                     | ALREADY                         | Step 2                                                                                                                                                                                       |
+| click toggles and reports the state                                            | ALREADY                         | Step 2 first + register() tests                                                                                                                                                              |
+| space bar after Tab                                                            | ALREADY                         | Step 2                                                                                                                                                                                       |
+| disabled ignores clicks                                                        | ADD                             | Step 2 disabled test                                                                                                                                                                         |
+| second line as the accessible description                                      | ALREADY                         | Step 2                                                                                                                                                                                       |
+| checked floods the box pink                                                    | ALREADY                         | Step 2                                                                                                                                                                                       |
+| error (`hasError`)                                                             | ALREADY                         | contract `isInvalid`; Step 2                                                                                                                                                                 |
+| disabled: real grey fill, never opacity                                        | ALREADY                         | Step 2                                                                                                                                                                                       |
+| caller `className` on the row, replacing a conflict                            | ADD                             | Step 2 className test (`gap-6` replaces `gap-3`)                                                                                                                                             |
+| axe over plain, priced + described + checked, disabled, invalid                | ADD                             | Step 2 a11y test (adds a disabled row)                                                                                                                                                       |
+| `label` typed `string`                                                         | ALREADY                         | `ReactNode` (wider)                                                                                                                                                                          |
+| stories default / checked / price / description / states                       | ALREADY                         | Step 6                                                                                                                                                                                       |
+| story: add-on list in a fieldset, with a disabled priced row                   | ADD                             | Step 6 `AddOnList`                                                                                                                                                                           |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -1603,8 +1753,12 @@ describe("Checkbox", () => {
     expect(field.onBlur).toHaveBeenCalledTimes(1);
   });
 
-  it("disables the whole row with a real fill, never opacity", () => {
-    render(<Checkbox label="Truffle oil" description="Sold out today." disabled />);
+  it("disables the whole row with a real fill, never opacity, and ignores clicks", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <Checkbox label="Truffle oil" description="Sold out today." disabled onChange={onChange} />
+    );
     const checkbox = screen.getByRole("checkbox", { name: "Truffle oil" });
     expect(checkbox).toBeDisabled();
     expect(checkbox.closest("label")).toHaveClass(
@@ -1612,24 +1766,31 @@ describe("Checkbox", () => {
       "has-disabled:text-ink-400"
     );
     expect(boxOf(checkbox)).toHaveClass("group-has-disabled/choice:bg-ink-200");
+    await user.click(screen.getByText("Truffle oil"));
+    expect(checkbox).not.toBeChecked();
+    expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("puts className on the row, not the input", () => {
-    render(<Checkbox label="Extra mayo" className="w-full" />);
+  it("puts className on the row, not the input, replacing a conflicting class", () => {
+    render(<Checkbox label="Extra mayo" className="w-full gap-6" />);
     const checkbox = screen.getByRole("checkbox");
     expect(checkbox).not.toHaveClass("w-full");
-    expect(checkbox.closest("label")).toHaveClass("w-full");
+    expect(checkbox.closest("label")).toHaveClass("w-full", "gap-6");
+    expect(checkbox.closest("label")).not.toHaveClass("gap-3");
   });
 
-  it("has no accessibility violations checked, priced, described and invalid", async () => {
+  it("has no accessibility violations checked, priced, described, invalid and disabled", async () => {
     const { container } = render(
-      <Checkbox
-        label="Make it a meal"
-        description="Adds fries and a kulhad chai."
-        price={120}
-        defaultChecked
-        isInvalid
-      />
+      <>
+        <Checkbox
+          label="Make it a meal"
+          description="Adds fries and a kulhad chai."
+          price={120}
+          defaultChecked
+          isInvalid
+        />
+        <Checkbox label="Truffle oil" description="Sold out today." price={60} disabled />
+      </>
     );
     await expectNoA11yViolations(container);
   });
@@ -1873,6 +2034,26 @@ export const Disabled: Story = {
   args: { label: "Truffle oil", description: "Sold out today.", disabled: true },
 };
 
+/** The real shape: an add-on list in an item sheet (a plain fieldset — an atom story composes no atom). */
+export const AddOnList: Story = {
+  name: "add-on list",
+  render: () => (
+    <fieldset className="grid gap-3 rounded-lg border border-border-subtle p-5">
+      <legend className="px-1 font-display text-h4 font-bold text-text-heading">
+        Add to your order
+      </legend>
+      <Checkbox label="Extra burnt chilli mayo" price={40} defaultChecked />
+      <Checkbox label="Masala fries on the side" price={90} />
+      <Checkbox
+        label="Make it a meal"
+        description="Adds masala fries and a kulhad chai."
+        price={120}
+      />
+      <Checkbox label="Truffle oil" description="Sold out today." price={60} disabled />
+    </fieldset>
+  ),
+};
+
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
@@ -1925,6 +2106,31 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 - Create: `packages/ui/src/atoms/radio/radio.tsx`, `radio.test.tsx`, `radio.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/radio/radio.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                       | Ruling  | Where / clause                                                                            |
+| ------------------------------------------------------------------------------ | ------- | ----------------------------------------------------------------------------------------- |
+| Radix RadioGroup (roving focus; `defaultValue` / `onValueChange` on the group) | DROP    | D7, D17, contract §3: native radios sharing a `name`; RadioGroup is `fieldset` + `legend` |
+| group named by `aria-label`                                                    | ALREADY | required `legend` + `isLegendHidden` (contract §3)                                        |
+| the chosen option is checked; a click moves the choice and unchecks the last   | ADD     | Step 2 new click test                                                                     |
+| price folded into the name (`₹280`, absolute)                                  | ALREADY | Step 2                                                                                    |
+| arrow keys move the choice                                                     | ALREADY | Step 2 (native)                                                                           |
+| second line as the description                                                 | ALREADY | Step 2                                                                                    |
+| a disabled option ignores clicks                                               | ADD     | Step 2 new disabled test                                                                  |
+| chosen = 6px pink ring, never a filled disc                                    | ALREADY | Step 2                                                                                    |
+| one option invalid (`hasError`)                                                | ADD     | contract `isInvalid`; Step 2 new test (the group-level error is already tested)           |
+| disabled: real grey fill, never opacity                                        | ADD     | Step 2 same disabled test                                                                 |
+| horizontal orientation                                                         | ALREADY | Step 2                                                                                    |
+| caller `className` on the group and on an option                               | ADD     | Step 2 new tests                                                                          |
+| axe incl. a horizontal group with a disabled option                            | ADD     | Step 2 a11y test                                                                          |
+| stories default / prices / horizontal                                          | ALREADY | Step 6 group, no price, horizontal                                                        |
+| story: states (chosen, not chosen, invalid, disabled)                          | ADD     | Step 6 `States`                                                                           |
+| story: portion picker — visible legend, priced, described, a disabled option   | ADD     | Step 6 `PortionPicker`                                                                    |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -1986,6 +2192,49 @@ describe("Radio", () => {
     expect(screen.getByRole("radio", { name: "Regular ₹280" })).toHaveFocus();
     await user.keyboard("{ArrowDown}");
     expect(screen.getByRole("radio", { name: "Sharing ₹440" })).toBeChecked();
+  });
+
+  it("moves the choice on click and unchecks the last one", async () => {
+    const user = userEvent.setup();
+    render(<Portion />);
+    await user.click(screen.getByRole("radio", { name: "Sharing ₹440" }));
+    expect(screen.getByRole("radio", { name: "Sharing ₹440" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "Regular ₹280" })).not.toBeChecked();
+  });
+
+  it("ignores clicks on a disabled option, painted with a real fill (never opacity)", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { container } = render(
+      <Radio
+        name="platter"
+        value="family"
+        label="Family platter"
+        description="Weekends only."
+        disabled
+        onChange={onChange}
+      />
+    );
+    const radio = screen.getByRole("radio", { name: "Family platter" });
+    await user.click(screen.getByText("Family platter"));
+    expect(radio).not.toBeChecked();
+    expect(onChange).not.toHaveBeenCalled();
+    expect(ringOf(radio)).toHaveClass("group-has-disabled/choice:bg-ink-200");
+    expect(container.innerHTML).not.toMatch(/opacity-/);
+  });
+
+  it("marks one option invalid and rings it red", () => {
+    render(<Radio name="size" value="regular" label="Regular" isInvalid />);
+    const radio = screen.getByRole("radio", { name: "Regular" });
+    expect(radio).toHaveAttribute("aria-invalid", "true");
+    expect(ringOf(radio)).toHaveClass("group-has-aria-invalid/choice:border-status-danger");
+  });
+
+  it("puts className on the option's row, replacing a conflicting class", () => {
+    render(<Radio name="heat" value="hot" label="Hot" className="gap-6" />);
+    const row = screen.getByRole("radio").closest("label");
+    expect(row).toHaveClass("gap-6");
+    expect(row).not.toHaveClass("gap-3");
   });
 
   it("takes react-hook-form's register() on every option of the field", async () => {
@@ -2054,8 +2303,28 @@ describe("RadioGroup", () => {
     for (const radio of screen.getAllByRole("radio")) expect(radio).toBeDisabled();
   });
 
-  it("has no accessibility violations with an error and a message", async () => {
-    const { container } = render(<Portion status="error" message="Pick a portion to continue." />);
+  it("puts className on the fieldset", () => {
+    render(<Portion className="mt-6" />);
+    expect(screen.getByRole("radiogroup")).toHaveClass("mt-6", "min-w-0");
+  });
+
+  it("has no accessibility violations with an error and a message, or in a row with a disabled option", async () => {
+    const { container } = render(
+      <>
+        <Portion status="error" message="Pick a portion to continue." />
+        <RadioGroup legend="Heat" orientation="horizontal">
+          <Radio name="heat" value="hot" label="Hot" />
+          <Radio name="heat" value="extra-hot" label="Extra Hot" />
+          <Radio
+            name="heat"
+            value="kitchen-special"
+            label="Kitchen special"
+            description="Weekends only."
+            disabled
+          />
+        </RadioGroup>
+      </>
+    );
     await expectNoA11yViolations(container);
   });
 });
@@ -2272,6 +2541,57 @@ export const Horizontal: Story = {
   ),
 };
 
+/** Every option state in one group: chosen, not chosen, invalid, disabled. */
+export const States: Story = {
+  name: "states",
+  render: () => (
+    <RadioGroup legend="States" isLegendHidden>
+      <Radio name="states" value="chosen" label="Chosen" defaultChecked />
+      <Radio name="states" value="not-chosen" label="Not chosen" />
+      <Radio name="states" value="invalid" label="Group unanswered" isInvalid />
+      <Radio
+        name="states"
+        value="family"
+        label="Family platter"
+        description="Weekends only."
+        disabled
+      />
+    </RadioGroup>
+  ),
+};
+
+/** The real shape: the portion step of an item sheet — a visible legend, priced and described. */
+export const PortionPicker: Story = {
+  name: "portion picker",
+  render: () => (
+    <RadioGroup legend="Choose a portion">
+      <Radio
+        name="portion-pick"
+        value="regular"
+        label="Regular"
+        price={280}
+        description="One plate."
+        defaultChecked
+      />
+      <Radio
+        name="portion-pick"
+        value="sharing"
+        label="Sharing"
+        price={440}
+        description="Feeds two."
+      />
+      <Radio
+        name="portion-pick"
+        value="family"
+        label="Family platter"
+        price={720}
+        description="Weekends only."
+        disabled
+      />
+    </RadioGroup>
+  ),
+};
+
 /** Unnamed radios, so each of the five grounds keeps its own checked option. */
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
@@ -2321,6 +2641,28 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/design-tokens/tokens/component/switch.json`
 - Create: `packages/ui/src/atoms/switch/switch.tsx`, `switch.test.tsx`, `switch.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/switch/switch.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                            | Ruling  | Where / clause                                                |
+| --------------------------------------------------- | ------- | ------------------------------------------------------------- |
+| Radix Switch + `onCheckedChange`                    | DROP    | D7, D17, contract §3: `<input type="checkbox" role="switch">` |
+| off by default, named by its label                  | ALREADY | Step 2                                                        |
+| click turns it on and reports the state             | ALREADY | Step 2 click + register() tests                               |
+| space bar after Tab, with a visible focus ring      | ADD     | Step 2 new test                                               |
+| disabled ignores clicks                             | ADD     | Step 2 disabled test                                          |
+| second line as the description                      | ALREADY | Step 2                                                        |
+| on: track floods pink, knob slides                  | ALREADY | Step 2                                                        |
+| disabled: real grey track, never opacity            | ALREADY | Step 2 (+ no-`opacity-` assertion added)                      |
+| label left, track right, so knobs align             | ALREADY | Step 2 (`order-last`, text `flex-1`)                          |
+| caller `className` on the row, replacing a conflict | ADD     | Step 2 new test                                               |
+| axe over off, on + described, disabled              | ADD     | Step 2 a11y test                                              |
+| stories default / on / description / states         | ALREADY | Step 6                                                        |
+| story: preferences panel (the real shape)           | ADD     | Step 6 `PreferencesPanel`                                     |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -2382,6 +2724,24 @@ describe("Switch", () => {
     expect(toggle).not.toBeChecked();
   });
 
+  it("toggles from the space bar after Tab, ringing its track", async () => {
+    const user = userEvent.setup();
+    render(<Switch label="Jain preferences" />);
+    await user.tab();
+    const toggle = screen.getByRole("switch");
+    expect(toggle).toHaveFocus();
+    await user.keyboard(" ");
+    expect(toggle).toBeChecked();
+    expect(trackOf(toggle)).toHaveClass("group-has-focus-visible/choice:outline-2");
+  });
+
+  it("puts className on the row, replacing a conflicting class", () => {
+    render(<Switch label="Order updates" className="gap-8" />);
+    const row = screen.getByRole("switch").closest("label");
+    expect(row).toHaveClass("gap-8");
+    expect(row).not.toHaveClass("gap-3.5");
+  });
+
   it("fills the track and slides the knob when on — CSS off the native state", () => {
     render(<Switch label="Order updates" defaultChecked />);
     const track = trackOf(screen.getByRole("switch"));
@@ -2416,16 +2776,33 @@ describe("Switch", () => {
     expect(field.onBlur).toHaveBeenCalledTimes(1);
   });
 
-  it("disables with a real fill", () => {
-    render(<Switch label="Delivery updates" description="Delivery starts in 2027." disabled />);
+  it("disables with a real fill (never opacity) and ignores clicks", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { container } = render(
+      <Switch
+        label="Delivery updates"
+        description="Delivery starts in 2027."
+        disabled
+        onChange={onChange}
+      />
+    );
     const toggle = screen.getByRole("switch");
     expect(toggle).toBeDisabled();
     expect(trackOf(toggle)).toHaveClass("group-has-disabled/choice:bg-ink-200");
+    expect(container.innerHTML).not.toMatch(/opacity-/);
+    await user.click(screen.getByText("Delivery updates"));
+    expect(toggle).not.toBeChecked();
+    expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("has no accessibility violations on, described", async () => {
+  it("has no accessibility violations off, on and described, or disabled", async () => {
     const { container } = render(
-      <Switch label="Jain preferences" description="Hides onion and garlic." defaultChecked />
+      <>
+        <Switch label="Order updates" />
+        <Switch label="Jain preferences" description="Hides onion and garlic." defaultChecked />
+        <Switch label="Delivery updates" description="Delivery starts in 2027." disabled />
+      </>
     );
     await expectNoA11yViolations(container);
   });
@@ -2551,6 +2928,23 @@ export const LabelHidden: Story = {
   args: { label: "Order updates", isLabelHidden: true, defaultChecked: true },
 };
 
+/** The real shape: a preferences panel where every row takes effect immediately. */
+export const PreferencesPanel: Story = {
+  name: "preferences panel",
+  render: () => (
+    <div className="max-w-text-measure-prose grid w-full gap-5 rounded-lg border border-border-subtle p-5">
+      <Switch
+        label="Order updates"
+        description="Order confirmations and pickup times."
+        defaultChecked
+      />
+      <Switch label="Marketing texts" description="Offers and new dishes, at most once a week." />
+      <Switch label="Jain preferences" description="Hides onion and garlic." defaultChecked />
+      <Switch label="Delivery updates" description="Delivery starts in 2027." disabled />
+    </div>
+  ),
+};
+
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
@@ -2599,6 +2993,8 @@ Derived from the handoff calculators, which have no design-system card: `DawatCa
 
 - Create: `packages/ui/src/atoms/slider/slider.tsx`, `slider.test.tsx`, `slider.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** none (handoff component)
 
 **Interfaces:**
 
@@ -2813,6 +3209,27 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/atoms/spinner/spinner.tsx`, `spinner.test.tsx`, `spinner.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts`, `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/atoms/spinner/spinner.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                        | Ruling  | Where / clause                                                                                                                          |
+| ----------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| no `label` → `aria-hidden`, no status           | DROP    | contract §3 + `Spinner.jsx`: `label` = "Loading", always `role="status"`; in-control loaders (Input, Button) draw `SymbolMark` directly |
+| labelled → announced politely                   | ALREADY | Step 2                                                                                                                                  |
+| pulses the brand mark, never a ring             | ALREADY | Step 2                                                                                                                                  |
+| paints with `currentColor`                      | ALREADY | `SymbolMark` (R19 `mask-symbol`, `currentColor`)                                                                                        |
+| sizes xs–xl (16–64), default 32                 | DROP    | `Spinner.card.html` 24 / 36 / 52 → contract sm / md / lg (plan "Decisions"; spec §8.2)                                                  |
+| tones muted / subtle / onBrand / current        | DROP    | contract §3 tone brand / ink / inverse; D5 (a surface, not an `onBrand` tone)                                                           |
+| brand tone by default                           | ALREADY | Step 2                                                                                                                                  |
+| caller `className` merges and wins              | ADD     | Step 2 new test                                                                                                                         |
+| axe                                             | ALREADY | Step 2                                                                                                                                  |
+| stories default / sizes / labelled              | ALREADY | Step 6                                                                                                                                  |
+| story: inverse on an ink panel as well as brand | ADD     | Step 6 `Inverse`                                                                                                                        |
+| story: inheriting the parent colour             | DROP    | goes with `tone="current"`                                                                                                              |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `SymbolMark` (Plan 2a — inline SVG in `currentColor`, so the tone is a `text-*` class), `animate-mark-pulse` (Plan 1), `componentVariants`.
@@ -2883,6 +3300,13 @@ describe("Spinner", () => {
   ] as const)("paints tone %s with %s", (tone, colour) => {
     const { container } = render(<Spinner tone={tone} />);
     expect(markIn(container)).toHaveClass(colour);
+  });
+
+  it("merges a caller className onto the status, replacing a conflicting class", () => {
+    render(<Spinner className="flex" />);
+    const status = screen.getByRole("status");
+    expect(status).toHaveClass("flex");
+    expect(status).not.toHaveClass("inline-flex");
   });
 
   it("has no accessibility violations", async () => {
@@ -3009,8 +3433,13 @@ export const Tones: Story = {
 export const Inverse: Story = {
   name: "inverse",
   render: () => (
-    <div data-surface="brand" className="rounded-lg bg-surface-brand p-4">
-      <Spinner tone="inverse" />
+    <div className="flex gap-4">
+      <div data-surface="brand" className="rounded-lg bg-surface-brand p-4">
+        <Spinner tone="inverse" label="Loading, on brand" />
+      </div>
+      <div data-surface="ink" className="rounded-lg bg-surface-inverse p-4">
+        <Spinner tone="inverse" label="Loading, on ink" />
+      </div>
     </div>
   ),
 };
@@ -3050,6 +3479,26 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 - Create: `packages/ui/src/atoms/skeleton/skeleton.tsx`, `skeleton.test.tsx`, `skeleton.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/skeleton/skeleton.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                   | Ruling                | Where / clause                                                                                                                                                              |
+| ---------------------------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| soft pink, a straight pulse, never grey or a gradient      | ALREADY               | Step 2                                                                                                                                                                      |
+| hidden from assistive tech without a label                 | ALREADY               | always `aria-hidden`                                                                                                                                                        |
+| `label` → `role="status"`, announced                       | ALREADY (differently) | contract §3 `SkeletonProps` has no `label`: the loading region is named once and its placeholders stay hidden. ADD that pattern to the `card shape` story and the a11y test |
+| variants text / block / circle                             | ALREADY               | Step 2                                                                                                                                                                      |
+| block floor `h-20 rounded-3`                               | DROP                  | `Skeleton.jsx` default 16px, `radius-sm` (spec D2); height comes from `className`                                                                                           |
+| stacked lines, varied widths, cycling past four            | ALREADY               | Step 2                                                                                                                                                                      |
+| `lines` forces the text shape                              | ALREADY               | `lines` belongs to `variant="text"` (contract §3)                                                                                                                           |
+| caller `className` on a single block                       | ALREADY               | Step 2                                                                                                                                                                      |
+| caller `className` on the stack (`gap-6` replaces `gap-2`) | ADD                   | Step 2 new test                                                                                                                                                             |
+| axe over block, lines and circle                           | ADD                   | Step 2 a11y test                                                                                                                                                            |
+| stories block / lines / circle / menu row                  | ALREADY               | Step 6 (`card shape` is the menu row)                                                                                                                                       |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -3119,8 +3568,20 @@ describe("Skeleton", () => {
     ]);
   });
 
-  it("has no accessibility violations", async () => {
-    const { container } = render(<Skeleton variant="text" lines={3} />);
+  it("spaces text lines by className too", () => {
+    const { container } = render(<Skeleton variant="text" lines={2} className="gap-6" />);
+    expect(container.firstElementChild).toHaveClass("gap-6");
+    expect(container.firstElementChild).not.toHaveClass("gap-2");
+  });
+
+  it("has no accessibility violations as block, lines and circle in a named loading region", async () => {
+    const { container } = render(
+      <div role="status" aria-label="Loading the menu" aria-busy="true">
+        <Skeleton className="h-18 rounded-lg" />
+        <Skeleton variant="text" lines={3} />
+        <Skeleton variant="circle" />
+      </div>
+    );
     await expectNoA11yViolations(container);
   });
 });
@@ -3236,10 +3697,16 @@ export const Circle: Story = {
   ),
 };
 
+/** The loading region is named once (`role="status"`); its placeholders stay hidden. */
 export const CardShape: Story = {
   name: "card shape",
   render: () => (
-    <div className="max-w-text-measure-prose flex w-full gap-3">
+    <div
+      role="status"
+      aria-label="Loading the menu"
+      aria-busy="true"
+      className="max-w-text-measure-prose flex w-full gap-3"
+    >
       <Skeleton className="h-17 w-23 shrink-0 rounded-md" />
       <Skeleton variant="text" lines={3} className="flex-1" />
     </div>
@@ -3284,10 +3751,38 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/atoms/progress-bar/progress-bar.tsx`, `progress-bar.test.tsx`, `progress-bar.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts`, `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/atoms/progress-bar/progress-bar.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                | Ruling  | Where / clause                                                                                   |
+| ------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------ |
+| Radix Progress                                          | DROP    | D7 (Radix only for Dialog/Sheet, Tabs, Tooltip, Toast, ToggleGroup): native `role="progressbar"` |
+| `aria-valuenow` / `aria-valuemax`                       | ALREADY | Step 2                                                                                           |
+| named by the visible label                              | ALREADY | Step 2                                                                                           |
+| no caption → `aria-label`                               | ALREADY | `label` is required (contract §3); `isLabelHidden` (deviation 3)                                 |
+| fills by the real share of any `max`                    | ADD     | Step 2 new test (`max={200}`)                                                                    |
+| an overshooting value clamps                            | ALREADY | Step 2                                                                                           |
+| one stamp per segment, earned ones filled               | ALREADY | Step 2                                                                                           |
+| the segment count is the scale, ignoring `max`          | ADD     | Step 2 new test                                                                                  |
+| a fractional segment count (dev rounds it)              | ADD     | Step 4 throws `RangeError` (plan rule: impossible input throws); Step 2 test                     |
+| a segmented track gaps, a continuous one clips          | ALREADY | one segment shape                                                                                |
+| tones brand / mint / inverse                            | ALREADY | Step 2                                                                                           |
+| size lg (12px)                                          | DROP    | contract §3 `size?: "sm" \| "md"` (plan "Decisions")                                             |
+| inverse label on the on-brand colour                    | ALREADY | the label is `text-text-muted`, which follows the surface (D5)                                   |
+| `value` optional (= 0)                                  | DROP    | contract §3 `value: number` is required                                                          |
+| caller `className` on the root, replacing a conflict    | ADD     | Step 2 new test                                                                                  |
+| axe over stamps, continuous, mint                       | ADD     | Step 2 a11y test                                                                                 |
+| stories default / segments / continuous / tones / sizes | ALREADY | Step 6                                                                                           |
+| story: an inverse continuous bar beside the stamps      | ADD     | Step 6 `Inverse`                                                                                 |
+| story: six stamps fit the 360px floor                   | ADD     | Step 6 `Narrow`                                                                                  |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `componentVariants`, `useId`.
-- Produces: `ProgressBar`, `ProgressBarProps` as contract §3, plus `isLabelHidden?: boolean` (deviation 3). `role="progressbar"` named by the label (`aria-labelledby`); with `segments`, `value` counts stamps, the max is `segments` and `aria-valuetext` reads "3 of 6"; values clamp into `0…max`; a non-finite value or a max ≤ 0 throws `RangeError`.
+- Produces: `ProgressBar`, `ProgressBarProps` as contract §3, plus `isLabelHidden?: boolean` (deviation 3). `role="progressbar"` named by the label (`aria-labelledby`); with `segments`, `value` counts stamps, the max is `segments` and `aria-valuetext` reads "3 of 6"; values clamp into `0…max`; a non-finite value, a max ≤ 0 or a fractional `segments` throws `RangeError`.
 
 - [ ] **Step 1: Component tokens**
 
@@ -3377,6 +3872,32 @@ describe("ProgressBar", () => {
     );
   });
 
+  it("rejects a segment count that is not a whole number", () => {
+    expect(() => renderToString(<ProgressBar label="Visits" value={1} segments={2.5} />)).toThrow(
+      RangeError
+    );
+  });
+
+  it("fills by the real share of any max", () => {
+    render(<ProgressBar label="Upload" value={50} max={200} />);
+    const bar = screen.getByRole("progressbar");
+    expect(bar).toHaveAttribute("aria-valuemax", "200");
+    expect(bar.querySelector("[style]")).toHaveAttribute("style", "width: 25%;");
+  });
+
+  it("makes the segment count the scale, ignoring max", () => {
+    render(<ProgressBar label="Visits" max={100} segments={6} value={4} />);
+    const bar = screen.getByRole("progressbar");
+    expect(bar).toHaveAttribute("aria-valuemax", "6");
+    expect(bar).toHaveAttribute("aria-valuenow", "4");
+  });
+
+  it("merges a caller className onto the root, replacing a conflicting class", () => {
+    const { container } = render(<ProgressBar label="Upload" value={50} className="gap-6" />);
+    expect(container.firstElementChild).toHaveClass("gap-6");
+    expect(container.firstElementChild).not.toHaveClass("gap-2");
+  });
+
   it("can hide its label visually and keep the name", () => {
     render(<ProgressBar label="Upload" value={45} isLabelHidden />);
     expect(screen.getByText("Upload")).toHaveClass("sr-only");
@@ -3402,9 +3923,13 @@ describe("ProgressBar", () => {
     expect(screen.getByRole("progressbar")).toHaveClass(height);
   });
 
-  it("has no accessibility violations", async () => {
+  it("has no accessibility violations as stamps, continuous and a hidden-label mint bar", async () => {
     const { container } = render(
-      <ProgressBar label="3 more visits and chai's on us" segments={6} value={3} />
+      <>
+        <ProgressBar label="3 more visits and chai's on us" segments={6} value={3} />
+        <ProgressBar label="Uploading your photo" value={70} />
+        <ProgressBar label="Kitchen prep" value={45} tone="mint" isLabelHidden />
+      </>
     );
     await expectNoA11yViolations(container);
   });
@@ -3485,9 +4010,13 @@ export function ProgressBar({
 }: ProgressBarProps) {
   const labelId = useId();
   const total = segments ?? max;
-  if (!Number.isFinite(value) || !(total > 0)) {
+  if (
+    !Number.isFinite(value) ||
+    !(total > 0) ||
+    (segments !== undefined && !Number.isInteger(segments))
+  ) {
     throw new RangeError(
-      `ProgressBar: needs a finite value and a max above 0, got ${String(value)} of ${String(total)}`
+      `ProgressBar: needs a finite value, a max above 0 and whole segments, got ${String(value)} of ${String(total)}`
     );
   }
   const current = Math.min(Math.max(value, 0), total);
@@ -3585,9 +4114,20 @@ export const Inverse: Story = {
   render: () => (
     <div
       data-surface="brand"
-      className="max-w-text-measure-prose w-full rounded-lg bg-surface-brand p-4"
+      className="max-w-text-measure-prose grid w-full gap-4 rounded-lg bg-surface-brand p-4"
     >
       <ProgressBar label="4 of 6 visits" segments={6} value={4} tone="inverse" isLabelHidden />
+      <ProgressBar label="Uploading your photo" value={70} tone="inverse" />
+    </div>
+  ),
+};
+
+/** The smallest supported width: six stamps still fit a 320px column without wrapping. */
+export const Narrow: Story = {
+  name: "six stamps at 360px",
+  render: () => (
+    <div className="w-80">
+      <ProgressBar label="3 more visits and chai's on us" segments={6} value={3} />
     </div>
   ),
 };
@@ -3641,6 +4181,31 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/lib/brand-diamond.tsx`
 - Create: `packages/ui/src/atoms/rating/rating.tsx`, `rating.test.tsx`, `rating.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/rating/rating.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                                          | Ruling                | Where / clause                                                  |
+| --------------------------------------------------------------------------------- | --------------------- | --------------------------------------------------------------- |
+| named "Rated 4.6 out of 5"                                                        | ALREADY               | spec §9.1 wording "4.5 out of 5"; Step 2                        |
+| count in the name and in brackets, Indian grouping                                | ALREADY               | Step 2 (`formatCount`)                                          |
+| score to one decimal; hide it (`hasValueLabel`)                                   | ALREADY               | contract `hasValue`; Step 2                                     |
+| one mark per point; a shorter scale                                               | ALREADY               | Step 2                                                          |
+| whole marks full, the fraction by real percentage, no fill layer on an empty mark | ALREADY               | Step 2 (clip in screen space)                                   |
+| an overshooting score clamps                                                      | ALREADY (differently) | throws `RangeError` (plan Global Constraints; Review Focus 5)   |
+| size xs                                                                           | DROP                  | `Rating.card.html` 12 / 16 / 24 → contract sm / md / lg         |
+| rotated diamond by default; `symbol` variant                                      | ALREADY               | Step 2                                                          |
+| small sizes step the mark's opacity up                                            | ALREADY               | Step 2                                                          |
+| caller `className` on the root, replacing a conflict                              | ADD                   | Step 2 new test                                                 |
+| tabular numerals on the score and the count                                       | ADD                   | Step 4 `value` / `count` slots; Step 2 assertions; Task 0 probe |
+| axe over a count, symbols at lg, sm without the score                             | ADD                   | Step 2 a11y test                                                |
+| story: a 0 score among the values                                                 | ADD                   | Step 6 `Values`                                                 |
+| story: a count without the score at sm                                            | ADD                   | Step 6 `Count`                                                  |
+| story: on an outlet card (the real shape)                                         | ADD                   | Step 6 `OnAnOutletCard`                                         |
+| stories sizes / variants / partial fill                                           | ALREADY               | Step 6                                                          |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -3725,12 +4290,16 @@ describe("Rating", () => {
   it("adds the review count to the name and prints it with Indian grouping", () => {
     render(<Rating value={4.6} count={2184} />);
     expect(screen.getByRole("img", { name: "4.6 out of 5, 2,184 reviews" })).toBeInTheDocument();
-    expect(screen.getByText("(2,184)")).toHaveClass("text-rating-count", "text-text-subtle");
+    expect(screen.getByText("(2,184)")).toHaveClass(
+      "text-rating-count",
+      "text-text-subtle",
+      "tabular-nums"
+    );
   });
 
   it("shows the score to one decimal, or hides it", () => {
     const { rerender } = render(<Rating value={5} />);
-    expect(screen.getByText("5.0")).toHaveClass("font-display", "font-bold");
+    expect(screen.getByText("5.0")).toHaveClass("font-display", "font-bold", "tabular-nums");
     rerender(<Rating value={5} hasValue={false} />);
     expect(screen.queryByText("5.0")).not.toBeInTheDocument();
   });
@@ -3801,8 +4370,21 @@ describe("Rating", () => {
     expect(clips(container)).toEqual(["clip-path: inset(0 50% 0 0);"]);
   });
 
-  it("has no accessibility violations", async () => {
-    const { container } = render(<Rating value={4.6} count={2184} />);
+  it("merges a caller className onto the root, replacing a conflicting class", () => {
+    render(<Rating value={4.6} className="gap-6" />);
+    const rating = screen.getByRole("img", { name: "4.6 out of 5" });
+    expect(rating).toHaveClass("gap-6");
+    expect(rating).not.toHaveClass("gap-2");
+  });
+
+  it("has no accessibility violations with a count, as symbols, and without the score", async () => {
+    const { container } = render(
+      <>
+        <Rating value={4.6} count={2184} />
+        <Rating value={5} variant="symbol" size="lg" />
+        <Rating value={4.3} size="sm" hasValue={false} />
+      </>
+    );
     await expectNoA11yViolations(container);
   });
 });
@@ -3934,8 +4516,8 @@ const rating = componentVariants({
   slots: {
     root: "inline-flex items-center gap-2",
     units: "inline-flex items-center",
-    value: "text-rating-value font-display font-bold text-text-heading",
-    count: "text-rating-count font-body text-text-subtle",
+    value: "text-rating-value font-display font-bold text-text-heading tabular-nums",
+    count: "text-rating-count font-body text-text-subtle tabular-nums",
   },
   variants: {
     variant: {
@@ -4093,6 +4675,7 @@ export const Values: Story = {
       <Rating value={4.6} />
       <Rating value={4.3} />
       <Rating value={2.5} />
+      <Rating value={0} />
     </div>
   ),
 };
@@ -4113,6 +4696,7 @@ export const Count: Story = {
     <div className="flex flex-wrap items-center gap-6">
       <Rating value={4.6} count={2184} />
       <Rating value={4.8} variant="symbol" count={912} />
+      <Rating value={4.4} count={106} size="sm" hasValue={false} />
     </div>
   ),
 };
@@ -4135,6 +4719,23 @@ export const PartialFill: Story = {
       <Rating value={4.1} size="lg" />
       <Rating value={4.5} size="lg" />
       <Rating value={4.9} size="lg" />
+    </div>
+  ),
+};
+
+/** Where it usually lands: under an outlet name (plain elements — an atom story composes no atom). */
+export const OnAnOutletCard: Story = {
+  name: "on an outlet card",
+  render: () => (
+    <div
+      data-surface="light"
+      className="max-w-text-measure-prose grid gap-2 rounded-lg bg-surface-card p-4 shadow-1"
+    >
+      <p className="m-0 font-display text-h4 font-bold text-text-heading">
+        Pink Paprikaa · Sector 57
+      </p>
+      <Rating value={4.6} count={2184} size="sm" />
+      <p className="m-0 font-body text-caption text-text-muted">100% vegetarian kitchen</p>
     </div>
   ),
 };
@@ -4177,6 +4778,29 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 - Create: `packages/ui/src/atoms/spice-level/spice-level.tsx`, `spice-level.test.tsx`, `spice-level.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/spice-level/spice-level.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                         | Ruling  | Where / clause                                                        |
+| ---------------------------------------------------------------- | ------- | --------------------------------------------------------------------- |
+| `level` defaults to 1 (Mild)                                     | DROP    | contract §3 `level` is required (D9: no content defaults)             |
+| named "Spice level: Mild"                                        | DROP    | spec §9.1 `role="img"` "Spice level 3 of 4"                           |
+| the whole four-diamond scale                                     | ALREADY | Step 2                                                                |
+| a shorter scale (`max` 1–3)                                      | DROP    | contract §3 `max?: 4`                                                 |
+| lit diamonds take the level's colour, replacing the neutral base | ALREADY | `BrandDiamond` `fill` (a lit diamond carries no `bg-ink-200`); Step 2 |
+| diamonds above the level stay ink-200                            | ALREADY | Step 2                                                                |
+| the printed heat name is not announced twice                     | ALREADY | inside `role="img"` the label is presentational                       |
+| heat name only on request                                        | ALREADY | Step 2                                                                |
+| size xs                                                          | DROP    | contract sm / md / lg (plan "Decisions": 12 / 14 / 20)                |
+| caller `className` on the root, replacing a conflict             | ADD     | Step 2 new test                                                       |
+| axe over a plain level 1 and a labelled level                    | ADD     | Step 2 a11y test                                                      |
+| stories levels / with label / sizes                              | ALREADY | Step 6                                                                |
+| story: a shorter scale                                           | DROP    | goes with `max` 1–3                                                   |
+| story: in a menu row (the real shape)                            | ADD     | Step 6 `InContext`                                                    |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -4248,8 +4872,20 @@ describe("SpiceLevel", () => {
     expect(container.querySelector(".bg-ink-200 > svg")).toHaveClass("text-pink-500");
   });
 
+  it("merges a caller className onto the root, replacing a conflicting class", () => {
+    render(<SpiceLevel level={2} className="gap-6" />);
+    const spice = screen.getByRole("img");
+    expect(spice).toHaveClass("gap-6");
+    expect(spice).not.toHaveClass("gap-2");
+  });
+
   it("has no accessibility violations", async () => {
-    const { container } = render(<SpiceLevel level={4} hasLabel />);
+    const { container } = render(
+      <>
+        <SpiceLevel level={1} />
+        <SpiceLevel level={4} hasLabel />
+      </>
+    );
     await expectNoA11yViolations(container);
   });
 });
@@ -4410,6 +5046,20 @@ export const Sizes: Story = {
   ),
 };
 
+/** How it appears: under the dish name in a menu row (plain elements — an atom story composes no atom). */
+export const InContext: Story = {
+  name: "in a menu row",
+  render: () => (
+    <div className="max-w-text-measure-prose grid gap-1">
+      <p className="m-0 font-display text-h4 font-bold text-text-heading">Paprikaa Chilli Paneer</p>
+      <p className="m-0 font-body text-body-sm text-text-muted">
+        Wok-tossed cottage cheese, capsicum, spring onion.
+      </p>
+      <SpiceLevel level={3} size="sm" hasLabel />
+    </div>
+  ),
+};
+
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
@@ -4458,6 +5108,23 @@ The kitchen is pure veg — not even egg (spec C10, owner 2026-09-27). The desig
 - Create: `packages/design-tokens/tokens/component/diet-mark.json`
 - Create: `packages/ui/src/atoms/diet-mark/diet-mark.tsx`, `diet-mark.test.tsx`, `diet-mark.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/diet-mark/diet-mark.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                 | Ruling  | Where / clause                                         |
+| -------------------------------------------------------- | ------- | ------------------------------------------------------ |
+| the veg mark by default, named "Vegetarian"              | ALREADY | Step 2                                                 |
+| `variant="egg"` ("Contains egg", turmeric) + its stories | DROP    | C10 — pure veg, not even egg                           |
+| outline in the veg green, dot from `currentColor`        | ALREADY | Step 2                                                 |
+| size xs (sizes 14 / 16 / 20 / 24)                        | DROP    | contract sm / md / lg (plan "Decisions": 14 / 16 / 20) |
+| a caller label                                           | ALREADY | Step 2                                                 |
+| caller `className` replaces a conflict                   | ADD     | Step 2 new test                                        |
+| axe                                                      | ALREADY | Step 2                                                 |
+| stories default / sizes / in context                     | ALREADY | Step 6 (egg rows dropped, C10)                         |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -4521,6 +5188,12 @@ describe("DietMark", () => {
   it("takes another label", () => {
     render(<DietMark label="Pure vegetarian" />);
     expect(screen.getByRole("img", { name: "Pure vegetarian" })).toBeInTheDocument();
+  });
+
+  it("merges a caller className, replacing a conflicting size", () => {
+    render(<DietMark className="size-6" />);
+    expect(screen.getByRole("img")).toHaveClass("size-6");
+    expect(screen.getByRole("img")).not.toHaveClass("size-diet-mark-md");
   });
 
   it("has no accessibility violations", async () => {
@@ -4683,6 +5356,30 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `packages/ui/src/atoms/price-tag/price-tag.tsx`, `price-tag.test.tsx`, `price-tag.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts`, `packages/ui/src/index.ts`
 
+**Dev reference:** `git show dev:packages/ui/src/atoms/price-tag/price-tag.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                            | Ruling  | Where / clause                                      |
+| ------------------------------------------------------------------- | ------- | --------------------------------------------------- |
+| whole rupees: `₹`, no space, no decimals                            | ALREADY | Step 2                                              |
+| lakh grouping (`₹1,25,000`)                                         | ADD     | Step 2 amounts table                                |
+| paise kept on a fraction (`₹99.5`)                                  | DROP    | spec §7.4: `formatRupees` is "rounded, no decimals" |
+| en-dash range                                                       | ALREADY | Step 2                                              |
+| struck original, "was" for assistive tech                           | ALREADY | Step 2                                              |
+| no struck price without a discount                                  | ADD     | Step 2 new test                                     |
+| sizes and tones                                                     | ALREADY | Step 2 (values from `PriceTag.jsx`)                 |
+| display face, bold, at every size                                   | ALREADY | Step 2                                              |
+| caller `className` replaces a conflict                              | ALREADY | Step 2 (`text-canvas-h2` replaces `text-price-md`)  |
+| wraps (`flex-wrap`), so a struck price drops under in a narrow cell | ADD     | Step 4 root; Step 2 new test                        |
+| axe over plain, discounted, a small range                           | ADD     | Step 2 a11y test                                    |
+| story: `₹1,25,000` among the amounts                                | ADD     | Step 6 `Amounts`                                    |
+| story: tones ink and brand, each with `was`                         | ADD     | Step 6 `tone`                                       |
+| story: inverse with a struck price on brand                         | ADD     | Step 6 `tone`                                       |
+| stories discounted / range / sizes                                  | ALREADY | Step 6                                              |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
+
 **Interfaces:**
 
 - Consumes: `formatRupees`, `formatRupeeRange` (`@pink-paprikaa-web/utils`; the range already throws on a backwards range), `componentVariants`, `OnSurfaces` (Plan 2a).
@@ -4746,6 +5443,7 @@ describe("PriceTag", () => {
   it.each([
     [280, "₹280"],
     [1240, "₹1,240"],
+    [125000, "₹1,25,000"],
     [90, "₹90"],
   ])("prints %d as %s — rupee sign, no space, no decimals, Indian grouping", (amount, text) => {
     render(<PriceTag amount={amount} />);
@@ -4759,6 +5457,17 @@ describe("PriceTag", () => {
     expect(struck).toHaveTextContent("was ₹320");
     expect(screen.getByText("was")).toHaveClass("sr-only");
     expect(struck).toHaveClass("text-price-was", "text-text-subtle");
+  });
+
+  it("prints no struck price without a discount", () => {
+    const { container } = render(<PriceTag amount={240} />);
+    expect(container.querySelector("s")).not.toBeInTheDocument();
+    expect(screen.queryByText("was")).not.toBeInTheDocument();
+  });
+
+  it("wraps, so a struck price drops under the price in a narrow cell instead of overflowing", () => {
+    render(<PriceTag amount={240} was={320} />);
+    expect(screen.getByText("₹240").parentElement).toHaveClass("flex-wrap");
   });
 
   it("joins a range with an en dash and no spaces", () => {
@@ -4815,7 +5524,13 @@ describe("PriceTag", () => {
   });
 
   it("has no accessibility violations", async () => {
-    const { container } = render(<PriceTag amount={240} was={320} />);
+    const { container } = render(
+      <>
+        <PriceTag amount={280} />
+        <PriceTag amount={240} was={320} />
+        <PriceTag amount={180} to={320} size="sm" />
+      </>
+    );
     await expectNoA11yViolations(container);
   });
 });
@@ -4840,7 +5555,7 @@ import { componentVariants } from "../../lib/component-variants";
 /** Size on the tag, amount and struck price in em — one class scales the whole price. */
 const priceTag = componentVariants({
   slots: {
-    root: "inline-flex items-baseline gap-2",
+    root: "inline-flex flex-wrap items-baseline gap-2",
     amount: "text-price-amount font-display font-bold",
     was: "text-price-was font-body text-text-subtle",
   },
@@ -4951,6 +5666,7 @@ export const Amounts: Story = {
     <div className="flex flex-wrap items-baseline gap-6">
       <PriceTag amount={280} />
       <PriceTag amount={1240} />
+      <PriceTag amount={125000} />
       <PriceTag amount={90} />
     </div>
   ),
@@ -4974,8 +5690,18 @@ export const Sizes: Story = {
 export const Inverse: Story = {
   name: "tone",
   render: () => (
-    <div data-surface="brand" className="rounded-lg bg-surface-brand p-4">
-      <PriceTag amount={280} tone="inverse" size="lg" />
+    <div className="grid gap-4">
+      <div className="flex flex-wrap items-baseline gap-6">
+        <PriceTag amount={280} was={320} tone="ink" />
+        <PriceTag amount={280} was={320} tone="brand" />
+      </div>
+      <div
+        data-surface="brand"
+        className="flex flex-wrap items-baseline gap-6 rounded-lg bg-surface-brand p-4"
+      >
+        <PriceTag amount={280} tone="inverse" size="lg" />
+        <PriceTag amount={240} was={320} tone="inverse" />
+      </div>
     </div>
   ),
 };
@@ -5041,6 +5767,29 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Modify: `packages/design-tokens/tokens/primitive/z-index.json`, `packages/ui/src/styles.css`
 - Create: `packages/ui/src/atoms/tooltip/tooltip.tsx`, `tooltip.test.tsx`, `tooltip.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts`, `packages/ui/src/index.ts`
+
+**Dev reference:** `git show dev:packages/ui/src/atoms/tooltip/tooltip.{tsx,test.tsx,stories.tsx}`
+
+**Dev parity:**
+
+| Dev item                                                         | Ruling                         | Where / clause                                                                                                                                       |
+| ---------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| a separate `TooltipProvider` (shared delay, skip-delay sweep)    | DROP                           | spec §9.1 / contract §3 "provider included"; with a 0ms open delay there is no delay to skip                                                         |
+| closed until the trigger is reached                              | ALREADY                        | Step 2                                                                                                                                               |
+| opens on keyboard focus                                          | ALREADY                        | Step 2                                                                                                                                               |
+| closes when focus leaves                                         | ADD                            | Step 2 new test                                                                                                                                      |
+| closes on Escape                                                 | ALREADY                        | Step 2                                                                                                                                               |
+| describes its trigger (`aria-describedby`)                       | ALREADY                        | Step 2                                                                                                                                               |
+| uses the caller's control and adds no button                     | ADD                            | Step 2 handlers test                                                                                                                                 |
+| four sides (`data-side`)                                         | ALREADY                        | `side` story `play` (real placement in Chromium)                                                                                                     |
+| `isDefaultOpen` / `isOpen` / `onOpenChange`                      | ADD — contract delta P2 raised | spec §8.1 names them `defaultOpen` / `open` / `onOpenChange`; contract §3 `TooltipProps` has none. Not in this plan until the controller rules on P2 |
+| ink pill, not a bordered box                                     | ALREADY                        | Step 2                                                                                                                                               |
+| caller `className` on the pill                                   | DROP                           | contract §3 `TooltipProps` takes no native props                                                                                                     |
+| a long hint wraps at a cap instead of running off a 360px screen | ADD                            | Step 4 `max-w-56` (in place of `whitespace-nowrap`; ≤5-word hints still sit on one line); Step 2; Step 6 `LongHint`                                  |
+| axe                                                              | ALREADY                        | Step 2 (while open)                                                                                                                                  |
+| stories default / sides / on a button                            | ALREADY                        | Step 6                                                                                                                                               |
+
+Implementer: copy this table into your report, extended with anything the plan missed.
 
 **Interfaces:**
 
@@ -5135,12 +5884,32 @@ describe("Tooltip", () => {
     });
   });
 
-  it("is an ink pill stacked above dialogs and toasts", async () => {
+  it("closes when focus leaves the trigger", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Tooltip label="Contains dairy">
+          <button type="button">Dairy</button>
+        </Tooltip>
+        <button type="button">Elsewhere</button>
+      </>
+    );
+    await user.tab();
+    await screen.findByRole("tooltip");
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Elsewhere" })).toHaveFocus();
+    await waitFor(() => {
+      expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    });
+  });
+
+  it("is an ink pill stacked above dialogs and toasts, capped so a long hint wraps", async () => {
     const user = userEvent.setup();
     renderDairy();
     await user.tab();
     expect(contentOf(await screen.findByRole("tooltip"))).toHaveClass(
       "z-tooltip",
+      "max-w-56",
       "rounded-sm",
       "bg-surface-inverse",
       "text-text-on-inverse",
@@ -5175,6 +5944,7 @@ describe("Tooltip", () => {
     );
     await user.click(screen.getByRole("button", { name: "Delivery" }));
     expect(onClick).toHaveBeenCalledTimes(1);
+    expect(screen.getAllByRole("button")).toHaveLength(1);
   });
 
   it("has no accessibility violations while open", async () => {
@@ -5213,9 +5983,13 @@ const OPEN_DELAY_MS = 0;
 /** 8px from the trigger (Tooltip.jsx `calc(100% + 8px)`). Radix takes the offset in px. */
 const SIDE_OFFSET_PX = 8;
 
-/** Ink pill, 12.5px, 6px radius, no arrow; fades in over 140ms (instantly with reduced motion). */
+/**
+ * Ink pill, 12.5px, 6px radius, no arrow; fades in over 140ms (instantly with reduced motion).
+ * Radix sizes the content to its max-content width, so a ≤5-word hint stays on one line as
+ * Tooltip.jsx's `nowrap` does; `max-w-56` only makes a longer one wrap instead of leaving a phone.
+ */
 const tooltip = componentVariants({
-  base: "z-tooltip rounded-sm bg-surface-inverse px-2.5 py-1.5 font-body text-caption whitespace-nowrap text-text-on-inverse shadow-2 transition-opacity duration-fast ease-out starting:opacity-0",
+  base: "z-tooltip max-w-56 rounded-sm bg-surface-inverse px-2.5 py-1.5 font-body text-caption text-text-on-inverse shadow-2 transition-opacity duration-fast ease-out starting:opacity-0",
 });
 
 export interface TooltipProps {
@@ -5346,6 +6120,21 @@ export const Sides: Story = {
   },
 };
 
+/** A hint past ~5 words wraps at a 224px cap instead of running off a 360px screen. */
+export const LongHint: Story = {
+  name: "long hint",
+  args: {
+    label: "Cooked to order, so it takes about twelve minutes",
+    children: <Trigger icon={Info} label="Prep time" />,
+  },
+  play: async ({ canvas, canvasElement }) => {
+    const page = within(canvasElement.ownerDocument.body);
+    await userEvent.hover(canvas.getByRole("button", { name: "Prep time" }));
+    const tooltip = await page.findByRole("tooltip");
+    await expect(tooltip.parentElement?.getBoundingClientRect().width).toBeLessThanOrEqual(224);
+  },
+};
+
 export const OnAButton: Story = {
   name: "on a button",
   args: {
@@ -5374,7 +6163,7 @@ export { Tooltip, type TooltipProps } from "./atoms/tooltip/tooltip";
 pnpm exec prettier --write packages/ui/src/atoms/tooltip packages/ui/src/styles.css packages/design-tokens/tokens/primitive/z-index.json
 ```
 
-Run the gate, then `pnpm nx test @pink-paprikaa-web/storybook --skip-nx-cache 2>&1 | tail -10`. Expected: green; `Atoms/Tooltip › Playground` and `› side` pass in Chromium.
+Run the gate, then `pnpm nx test @pink-paprikaa-web/storybook --skip-nx-cache 2>&1 | tail -10`. Expected: green; `Atoms/Tooltip › Playground`, `› side` and `› long hint` pass in Chromium.
 
 - [ ] **Step 9: Commit**
 
@@ -5400,6 +6189,8 @@ Derived from `zip-files/pink-paprikaa-handoff/design/PPHeader.dc.html`, which ha
 
 - Create: `packages/ui/src/atoms/countdown/countdown.tsx`, `countdown.test.tsx`, `countdown.stories.tsx`
 - Modify: `packages/ui/src/index.ts`
+
+**Dev reference:** none (handoff component)
 
 **Interfaces:**
 
