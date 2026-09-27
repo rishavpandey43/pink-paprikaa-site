@@ -1650,10 +1650,10 @@ const link = componentVariants({
   variants: {
     variant: {
       default:
-        "decoration-link-underline text-text-link hover:text-text-link-hover hover:decoration-current",
+        "text-text-link decoration-link-underline hover:text-text-link-hover hover:decoration-current",
       subtle:
         "text-text-muted decoration-transparent hover:text-text-heading hover:decoration-border-default",
-      inverse: "decoration-white-alpha-40 hover:decoration-white-alpha-90 text-ink-000",
+      inverse: "text-ink-000 decoration-white-alpha-40 hover:decoration-white-alpha-90",
       quiet: "text-link-quiet decoration-transparent hover:text-text-link",
     },
     size: { sm: "text-link-sm", md: "text-link-md", lg: "text-link-lg" },
@@ -3334,15 +3334,15 @@ export const buttonVariants = componentVariants({
         root: "bg-button-primary-bg text-button-primary-fg shadow-button-primary hover:bg-button-primary-bg-hover active:bg-button-primary-bg-active",
       },
       secondary: {
-        root: "border-button-secondary-border bg-button-secondary-bg hover:bg-button-hover-tint border-2 text-text-link",
+        root: "border-2 border-button-secondary-border bg-button-secondary-bg text-text-link hover:bg-button-hover-tint",
       },
-      ghost: { root: "hover:bg-button-hover-tint bg-transparent text-text-link" },
+      ghost: { root: "bg-transparent text-text-link hover:bg-button-hover-tint" },
       inverse: { root: "bg-ink-900 text-ink-000 shadow-2" },
     },
     size: {
-      sm: { root: "h-button-h-sm min-w-button-h-sm text-button-sm gap-1.5 px-3.5" },
-      md: { root: "h-button-h-md min-w-button-h-md text-button-md gap-2 px-5" },
-      lg: { root: "h-button-h-lg min-w-button-h-lg text-button-lg gap-2 px-7" },
+      sm: { root: "h-button-h-sm min-w-button-h-sm gap-1.5 px-3.5 text-button-sm" },
+      md: { root: "h-button-h-md min-w-button-h-md gap-2 px-5 text-button-md" },
+      lg: { root: "h-button-h-lg min-w-button-h-lg gap-2 px-7 text-button-lg" },
     },
     isFullWidth: { true: { root: "flex w-full" } },
   },
@@ -4053,7 +4053,7 @@ const iconButton = componentVariants({
       "relative inline-flex shrink-0 items-center justify-center rounded-pill active:press-scale",
     ],
     count:
-      "h-icon-button-count min-w-icon-button-count text-icon-button-count pointer-events-none absolute -top-0.5 -right-0.5 grid place-items-center rounded-pill bg-pink-500 px-1.25 font-display text-ink-000",
+      "pointer-events-none absolute -top-0.5 -right-0.5 grid h-icon-button-count min-w-icon-button-count place-items-center rounded-pill bg-pink-500 px-1.25 font-display text-icon-button-count text-ink-000",
   },
   variants: {
     variant: {
@@ -4062,7 +4062,7 @@ const iconButton = componentVariants({
         root: "bg-button-primary-bg text-button-primary-fg hover:bg-button-primary-bg-hover active:bg-button-primary-bg-active",
       },
       secondary: { root: "border border-ink-300 bg-ink-000 text-pink-600 hover:bg-pink-50" },
-      ghost: { root: "text-icon-button-ghost-fg hover:bg-button-hover-tint bg-transparent" },
+      ghost: { root: "bg-transparent text-icon-button-ghost-fg hover:bg-button-hover-tint" },
       glass: { root: "bg-surface-glass text-ink-900 backdrop-blur-glass" },
     },
     size: {
@@ -4649,7 +4649,7 @@ export const tagVariants = componentVariants({
   slots: {
     root: [
       controlStates(),
-      "h-tag-h text-tag inline-flex max-w-full shrink-0 items-center gap-1.5 rounded-pill border px-4 font-body whitespace-nowrap",
+      "inline-flex h-tag-h max-w-full shrink-0 items-center gap-1.5 rounded-pill border px-4 font-body text-tag whitespace-nowrap",
     ],
     label: "min-w-0 truncate",
   },
@@ -5575,7 +5575,7 @@ const divider = componentVariants({
     root: "",
     line: "h-px flex-1 bg-border-subtle",
     label: "shrink-0 font-display text-overline text-text-subtle uppercase",
-    mark: "size-divider-mark text-divider-mark shrink-0 opacity-90",
+    mark: "size-divider-mark shrink-0 text-divider-mark opacity-90",
   },
   variants: {
     layout: {
@@ -6057,7 +6057,7 @@ const imageSlot = componentVariants({
   slots: {
     root: "relative grid w-full place-items-center overflow-hidden",
     image: "size-full object-cover",
-    label: "text-image-slot-label px-3 text-center font-display text-balance uppercase",
+    label: "px-3 text-center font-display text-image-slot-label text-balance uppercase",
   },
   variants: {
     ratio: {
