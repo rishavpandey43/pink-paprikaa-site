@@ -161,6 +161,59 @@
       ],
       "min": 3,
       "exception": "brand-fill"
+    },
+    {
+      "id": "button",
+      "surface": null,
+      "pairs": [
+        ["color-button-primary-fg", "color-button-primary-bg-hover"],
+        ["color-button-primary-fg", "color-button-primary-bg-active"],
+        ["color-text-link", "color-button-secondary-bg"],
+        ["color-text-link", "color-button-hover-tint"],
+        ["color-ink-000", "color-ink-900"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "button-primary-fill",
+      "surface": null,
+      "pairs": [["color-button-primary-fg", "color-button-primary-bg"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "button-on-soft",
+      "surface": "soft",
+      "pairs": [
+        ["color-text-link", "color-button-secondary-bg"],
+        ["color-text-link", "color-button-hover-tint"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "button-on-brand",
+      "surface": "brand",
+      "pairs": [
+        ["color-button-primary-fg", "color-button-primary-bg"],
+        ["color-button-primary-fg", "color-button-primary-bg-hover"],
+        ["color-button-primary-fg", "color-button-primary-bg-active"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "button-tint-on-brand",
+      "surface": "brand",
+      "pairs": [["color-text-link", "color-button-hover-tint"]],
+      "backdrop": "color-surface-brand",
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "button-tint-on-ink",
+      "surface": "ink",
+      "pairs": [["color-text-link", "color-button-hover-tint"]],
+      "backdrop": "color-surface-inverse",
+      "min": 4.5
     }
   ]
 }

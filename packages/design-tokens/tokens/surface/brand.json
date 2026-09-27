@@ -21,8 +21,25 @@
         "strong": { "$value": "{color.ink.000}" }
       },
       "surface": { "card": { "$value": "{color.white-alpha.10}" } },
-      "focus": { "$value": "{color.ink.000}" }
+      "focus": { "$value": "{color.ink.000}" },
+      "button": {
+        "primary": {
+          "bg": { "$value": "{color.ink.000}" },
+          "bg-hover": { "$value": "{color.pink.50}" },
+          "bg-active": { "$value": "{color.ink.100}" },
+          "fg": { "$value": "{color.pink.600}" }
+        },
+        "secondary": {
+          "bg": { "$value": "transparent" },
+          "border": { "$value": "{color.white-alpha.70}" }
+        },
+        "hover-tint": { "$value": "{color.white-alpha.16}" }
+      }
     },
-    "shadow": { "$type": "shadow", "focus-ring": { "$value": "{shadow.focus-ring-inverse}" } }
+    "shadow": {
+      "$type": "shadow",
+      "focus-ring": { "$value": "{shadow.focus-ring-inverse}" },
+      "button-primary": { "$value": "{shadow.2}" }
+    }
   }
 }

@@ -21,8 +21,25 @@
         "strong": { "$value": "{color.ink.900}" }
       },
       "surface": { "card": { "$value": "{color.ink.000}" } },
-      "focus": { "$value": "{color.pink.500}" }
+      "focus": { "$value": "{color.pink.500}" },
+      "button": {
+        "primary": {
+          "bg": { "$value": "{color.surface.brand}" },
+          "bg-hover": { "$value": "{color.brand.hover}" },
+          "bg-active": { "$value": "{color.brand.active}" },
+          "fg": { "$value": "{color.text.on-brand}" }
+        },
+        "secondary": {
+          "bg": { "$value": "{color.ink.000}" },
+          "border": { "$value": "{color.pink.500}" }
+        },
+        "hover-tint": { "$value": "{color.pink.50}" }
+      }
     },
-    "shadow": { "$type": "shadow", "focus-ring": { "$value": "0 0 0 3px {color.pink.200}" } }
+    "shadow": {
+      "$type": "shadow",
+      "focus-ring": { "$value": "0 0 0 3px {color.pink.200}" },
+      "button-primary": { "$value": "{shadow.brand}" }
+    }
   }
 }

@@ -42,11 +42,24 @@ const TEXT = [
   "link-sm",
   "link-md",
   "link-lg",
+  "button-sm",
+  "button-md",
+  "button-lg",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
 const RADIUS = ["xs", "sm", "md", "lg", "xl", "pill"];
-const SHADOW = ["1", "2", "3", "4", "brand", "inset", "focus-ring", "focus-ring-inverse"];
+const SHADOW = [
+  "1",
+  "2",
+  "3",
+  "4",
+  "brand",
+  "inset",
+  "focus-ring",
+  "focus-ring-inverse",
+  "button-primary",
+];
 const BLUR = ["glass"];
 const EASE = ["out", "in-out", "entrance", "pop"];
 const CONTAINER = ["content", "wide", "narrow", "article", "prose", "prose-narrow"];
@@ -80,6 +93,9 @@ const SPACING = [
   "social-headline-tight",
   "social-headline-default",
   "social-headline-wide",
+  "button-h-sm",
+  "button-h-md",
+  "button-h-lg",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];

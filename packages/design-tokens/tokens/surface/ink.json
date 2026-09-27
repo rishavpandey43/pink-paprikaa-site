@@ -21,7 +21,14 @@
         "strong": { "$value": "{color.ink.000}" }
       },
       "surface": { "card": { "$value": "{color.white-alpha.06}" } },
-      "focus": { "$value": "{color.ink.000}" }
+      "focus": { "$value": "{color.ink.000}" },
+      "button": {
+        "secondary": {
+          "bg": { "$value": "transparent" },
+          "border": { "$value": "{color.white-alpha.70}" }
+        },
+        "hover-tint": { "$value": "{color.white-alpha.16}" }
+      }
     },
     "shadow": { "$type": "shadow", "focus-ring": { "$value": "{shadow.focus-ring-inverse}" } }
   }
