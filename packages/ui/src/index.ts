@@ -2,6 +2,7 @@
  * Public surface of @pink-paprikaa-web/ui — the only barrel in the package. Named re-exports only.
  */
 export { Button, type ButtonProps, buttonVariants } from "./atoms/button/button";
+export { Card, type CardProps } from "./atoms/card/card";
 export { IconButton, type IconButtonProps } from "./atoms/icon-button/icon-button";
 export { Icon, type IconComponent, type IconProps } from "./atoms/icon/icon";
 export {
