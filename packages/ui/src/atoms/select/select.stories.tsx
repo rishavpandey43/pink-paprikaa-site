@@ -42,6 +42,20 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** A token painted by a probe inside the same field box: the expected value in the browser's own format. */
+function paint(
+  select: HTMLElement,
+  property: "color" | "borderColor" | "backgroundColor",
+  token: string
+) {
+  const probe = document.createElement("span");
+  probe.style[property] = `var(${token})`;
+  select.parentElement?.append(probe);
+  const expected = getComputedStyle(probe)[property];
+  probe.remove();
+  return expected;
+}
+
 export const Playground: Story = {};
 
 export const Rest: Story = { name: "rest", args: { defaultValue: "sector-57" } };
@@ -54,6 +68,19 @@ export const PlaceholderAndIcon: Story = {
 export const StatusError: Story = {
   name: "error",
   args: { "aria-label": "Time", placeholder: "Choose a slot", status: "error", options: SLOTS },
+  // The placeholder and 8:30pm are disabled <option>s: they must not paint the field disabled.
+  play: async ({ canvas }) => {
+    const select = canvas.getByRole("combobox", { name: "Time" });
+    const box = select.parentElement;
+    if (box === null) throw new Error("The select renders inside its field box.");
+    await expect(getComputedStyle(box).backgroundColor).toBe(
+      paint(select, "backgroundColor", "--color-surface-card")
+    );
+    await expect(getComputedStyle(box).borderColor).toBe(
+      paint(select, "borderColor", "--color-status-danger")
+    );
+    await expect(getComputedStyle(select).color).toBe(paint(select, "color", "--color-text-body"));
+  },
 };
 
 export const StatusSuccess: Story = {
@@ -83,14 +110,6 @@ export const ReadOnlyAndDisabled: Story = {
   // default border, while a disabled one greys. A probe painted with the token inside the same
   // field box gives the expected value in the browser's own format.
   play: async ({ canvas }) => {
-    const paint = (select: HTMLElement, property: "color" | "borderColor", token: string) => {
-      const probe = document.createElement("span");
-      probe.style[property] = `var(${token})`;
-      select.parentElement?.append(probe);
-      const expected = getComputedStyle(probe)[property];
-      probe.remove();
-      return expected;
-    };
     const readOnly = canvas.getByRole("combobox", { name: "Outlet" });
     const disabled = canvas.getByRole("combobox", { name: "Delivery slot" });
     const box = readOnly.parentElement;

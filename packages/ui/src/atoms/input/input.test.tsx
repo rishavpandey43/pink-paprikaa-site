@@ -119,7 +119,10 @@ describe("Input", () => {
     render(<Input aria-label="Delivery address" disabled onChange={onChange} />);
     const input = screen.getByRole("textbox");
     expect(input).toBeDisabled();
-    expect(input.parentElement).toHaveClass("has-disabled:bg-ink-100", "has-disabled:text-ink-400");
+    expect(input.parentElement).toHaveClass(
+      "has-[>:disabled]:bg-ink-100",
+      "has-[>:disabled]:text-ink-400"
+    );
     expect(input.parentElement?.className).not.toMatch(/opacity-/);
     await user.type(input, "98");
     expect(onChange).not.toHaveBeenCalled();
