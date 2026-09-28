@@ -37,6 +37,7 @@ export { Switch, type SwitchProps } from "./atoms/switch/switch";
 export { Tag, type TagProps, tagVariants } from "./atoms/tag/tag";
 export { Text, type TextProps, type TextTone, type TextVariant } from "./atoms/text/text";
 export { Tooltip, type TooltipProps } from "./atoms/tooltip/tooltip";
+export { Container, type ContainerProps, type ContainerSize } from "./layouts/container/container";
 export { RevealObserver, type RevealObserverProps } from "./lib/reveal-observer";
 export type { FieldStatus } from "./lib/field-status";
 export { type HeadingLevel, headingTag } from "./lib/heading";
