@@ -1,0 +1,10 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "quantity-stepper-count": {
+      "$value": "22px",
+      "$description": "Minimum width of the count between − and +. A longer count widens with its digits (the input's size attribute).",
+      "$extensions": { "pink-paprikaa": { "utility": ["min-w"] } }
+    }
+  }
+}

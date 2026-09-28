@@ -182,6 +182,7 @@ const SPACING = [
   "canvas-pad-tight",
   "story-safe-top",
   "story-safe-bottom",
+  "quantity-stepper-count",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];
