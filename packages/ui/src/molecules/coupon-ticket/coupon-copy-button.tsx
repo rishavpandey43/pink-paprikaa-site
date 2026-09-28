@@ -37,16 +37,15 @@ export function CouponCopyButton({
 }: CouponCopyButtonProps) {
   const [isCopied, setIsCopied] = useState(false);
   const codeRef = useRef<HTMLSpanElement>(null);
+  const flashTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  useEffect(() => {
-    if (!isCopied) return undefined;
-    const timer = setTimeout(() => {
-      setIsCopied(false);
-    }, COPIED_FLASH_MS);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [isCopied]);
+  // Unmounting mid-flash drops the pending reset.
+  useEffect(
+    () => () => {
+      clearTimeout(flashTimer.current);
+    },
+    []
+  );
 
   /** Recovery when the browser refuses the copy: leave the code selected to copy by hand. */
   const selectCode = () => {
@@ -67,6 +66,12 @@ export function CouponCopyButton({
     }
     navigator.clipboard.writeText(code).then(
       () => {
+        // Armed with the copy, not in an effect: the flash always lasts COPIED_FLASH_MS from the
+        // copy, and a second copy restarts it.
+        clearTimeout(flashTimer.current);
+        flashTimer.current = setTimeout(() => {
+          setIsCopied(false);
+        }, COPIED_FLASH_MS);
         setIsCopied(true);
         onCopy?.(code);
       },
