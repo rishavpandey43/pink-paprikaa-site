@@ -62,6 +62,11 @@ function toAllowed(raw: number, { min, max, step }: Bounds): number {
   return Math.max(min, Math.min(snapped, highest));
 }
 
+/** A blank label ("" or whitespace) counts as absent (R48), so a button never loses its name. */
+function orDefault(label: string | undefined, fallback: string): string {
+  return label === undefined || label.trim() === "" ? fallback : label;
+}
+
 /** −/+ quantity with typed entry: cart rows, item detail, calculator guest counts. */
 export function QuantityStepper({
   label,
@@ -157,7 +162,7 @@ export function QuantityStepper({
     >
       <button
         type="button"
-        aria-label={decrementLabel ?? `Remove ${stepName}`}
+        aria-label={orDefault(decrementLabel, `Remove ${stepName}`)}
         disabled={disabled || quantity <= min}
         onClick={() => {
           stepBy(-step);
@@ -193,7 +198,7 @@ export function QuantityStepper({
       />
       <button
         type="button"
-        aria-label={incrementLabel ?? `Add ${stepName}`}
+        aria-label={orDefault(incrementLabel, `Add ${stepName}`)}
         disabled={disabled || (max !== undefined && quantity >= max)}
         onClick={() => {
           stepBy(step);

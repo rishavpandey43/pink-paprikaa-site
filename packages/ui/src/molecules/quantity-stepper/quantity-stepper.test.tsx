@@ -103,6 +103,22 @@ describe("QuantityStepper", () => {
     expect(screen.getByRole("button", { name: "Remove one Paneer Tikka" })).toBeEnabled();
   });
 
+  it.each(["", "   "])(
+    "falls back to the default button names when a label is blank (%j)",
+    (blank) => {
+      render(
+        <QuantityStepper
+          label="Guests"
+          defaultValue={2}
+          decrementLabel={blank}
+          incrementLabel={blank}
+        />
+      );
+      expect(screen.getByRole("button", { name: "Remove one" })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Add one" })).toBeInTheDocument();
+    }
+  );
+
   it("disables − at the minimum and + at the maximum", () => {
     const { rerender } = render(
       <QuantityStepper label="Plates" value={1} min={1} max={5} onValueChange={vi.fn()} />
