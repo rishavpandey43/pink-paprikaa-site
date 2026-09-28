@@ -51,8 +51,38 @@ function usesOf(step: string): string[] {
  * `size-icon-sm` instead of `p-icon-sm`; a token it uses for padding or a gap carries none. A token
  * it does not use yet MAY carry one — the primitive chrome sizes are marked by their documented use
  * (`h-header`, `min-h-hit`, `bottom-dock-clearance`) before any component reaches for them. Once
- * the library uses a marked token, its marker must equal those uses.
+ * the library uses a marked token, its marker must equal those uses, whatever they are
+ * (`bottom-dock-clearance` → `["bottom"]`); an unmarked token must not be used only as a size.
  */
+function markerMismatch(
+  marker: readonly string[] | undefined,
+  uses: readonly string[]
+): string | undefined {
+  if (uses.length === 0) return undefined;
+  if (marker === undefined) {
+    return uses.every((use) => SIZING.has(use))
+      ? `used only as a size (${uses.join(", ")}) but carries no marker`
+      : undefined;
+  }
+  const marked = [...marker].sort();
+  return marked.join() === uses.join()
+    ? undefined
+    : `marked ${marked.join(", ")} but used as ${uses.join(", ")}`;
+}
+
+describe("markerMismatch", () => {
+  it.each<[string, readonly string[] | undefined, readonly string[], boolean]>([
+    ["an unused token, marked or not", ["bottom"], [], true],
+    ["a marker equal to a non-sizing use", ["bottom"], ["bottom"], true],
+    ["a marker equal to the sizing uses, in any order", ["w", "h"], ["h", "w"], true],
+    ["an unmarked padding token", undefined, ["gap", "p"], true],
+    ["a marker that differs from the uses", ["bottom"], ["bottom", "p"], false],
+    ["an unmarked token used only as a size", undefined, ["size"], false],
+  ])("judges %s", (_, marker, uses, isValid) => {
+    expect(markerMismatch(marker, uses) === undefined).toBe(isValid);
+  });
+});
+
 describe("R61 sizing markers", () => {
   it.each(
     BASE.filter((entry) => entry.name.startsWith("spacing-")).map((entry) => [entry.name, entry])
@@ -63,12 +93,8 @@ describe("R61 sizing markers", () => {
     for (const utility of marker ?? []) {
       expect(SPACING_READER.test(utility), `${utility} reads the spacing namespace`).toBe(true);
     }
-    if (uses.length === 0) return;
-    const isSizingOnly = uses.every((use) => SIZING.has(use));
-    expect(marker === undefined ? undefined : [...marker].sort()).toEqual(
-      isSizingOnly ? uses : undefined
-    );
-    if (isSizingOnly) {
+    expect(markerMismatch(marker, uses)).toBeUndefined();
+    if (marker !== undefined && uses.length > 0) {
       expect(utilitiesOf(name)).toEqual(uses.map((use) => `${use}-${step}`));
     }
   });
