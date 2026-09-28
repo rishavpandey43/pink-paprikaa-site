@@ -13,7 +13,7 @@ const quantityStepper = componentVariants({
   slots: {
     root: "inline-flex items-center rounded-pill border border-border-brand-soft bg-surface-page-alt",
     button:
-      "grid shrink-0 place-items-center rounded-pill text-text-brand transition-control not-disabled:hover:bg-surface-brand-soft not-disabled:active:press-scale disabled:cursor-not-allowed disabled:text-ink-400",
+      "grid shrink-0 place-items-center rounded-pill text-text-brand transition-control not-disabled:not-aria-disabled:hover:bg-surface-brand-soft not-disabled:not-aria-disabled:active:press-scale disabled:cursor-not-allowed disabled:text-ink-400 aria-disabled:cursor-not-allowed aria-disabled:text-ink-400",
     count:
       "min-w-quantity-stepper-count rounded-xs border-0 bg-transparent p-0 text-center font-display font-bold text-text-heading tabular-nums disabled:text-ink-400",
   },
@@ -97,6 +97,10 @@ export function QuantityStepper({
   const [hasStepped, setHasStepped] = useState(false);
   const styles = quantityStepper({ size });
   const stepName = step === 1 ? "one" : String(step);
+  // The ends of the range are aria-disabled, not disabled: a press that reaches min or max keeps
+  // focus on the button (a disabled button drops it to <body>). `disabled` still disables all.
+  const isAtMin = quantity <= min;
+  const isAtMax = max !== undefined && quantity >= max;
 
   /** What the field stands for right now: a typed draft that parses, else the value. */
   function settled(): number {
@@ -163,9 +167,10 @@ export function QuantityStepper({
       <button
         type="button"
         aria-label={orDefault(decrementLabel, `Remove ${stepName}`)}
-        disabled={disabled || quantity <= min}
+        aria-disabled={isAtMin ? true : undefined}
+        disabled={disabled}
         onClick={() => {
-          stepBy(-step);
+          if (!isAtMin) stepBy(-step);
         }}
         className={styles.button()}
       >
@@ -199,9 +204,10 @@ export function QuantityStepper({
       <button
         type="button"
         aria-label={orDefault(incrementLabel, `Add ${stepName}`)}
-        disabled={disabled || (max !== undefined && quantity >= max)}
+        aria-disabled={isAtMax ? true : undefined}
+        disabled={disabled}
         onClick={() => {
-          stepBy(step);
+          if (!isAtMax) stepBy(step);
         }}
         className={styles.button()}
       >

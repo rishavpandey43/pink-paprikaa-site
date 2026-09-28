@@ -67,7 +67,7 @@ describe("QuantityStepper", () => {
   it("greys a button at the end of the range with a real colour, never opacity", () => {
     render(<QuantityStepper label="Plates" value={1} min={1} onValueChange={vi.fn()} />);
     const minus = screen.getByRole("button", { name: "Remove one" });
-    expect(minus).toHaveClass("disabled:text-ink-400");
+    expect(minus).toHaveClass("aria-disabled:text-ink-400", "disabled:text-ink-400");
     expect(minus.className).not.toMatch(/opacity-/);
   });
 
@@ -119,14 +119,34 @@ describe("QuantityStepper", () => {
     }
   );
 
-  it("disables − at the minimum and + at the maximum", () => {
+  it("marks − at the minimum and + at the maximum aria-disabled, and they step no further", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
     const { rerender } = render(
-      <QuantityStepper label="Plates" value={1} min={1} max={5} onValueChange={vi.fn()} />
+      <QuantityStepper label="Plates" value={1} min={1} max={5} onValueChange={onValueChange} />
     );
-    expect(screen.getByRole("button", { name: "Remove one" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Add one" })).toBeEnabled();
-    rerender(<QuantityStepper label="Plates" value={5} min={1} max={5} onValueChange={vi.fn()} />);
-    expect(screen.getByRole("button", { name: "Add one" })).toBeDisabled();
+    const minus = screen.getByRole("button", { name: "Remove one" });
+    expect(minus).toHaveAttribute("aria-disabled", "true");
+    expect(screen.getByRole("button", { name: "Add one" })).not.toHaveAttribute("aria-disabled");
+    await user.click(minus);
+    expect(onValueChange).not.toHaveBeenCalled();
+    rerender(
+      <QuantityStepper label="Plates" value={5} min={1} max={5} onValueChange={onValueChange} />
+    );
+    const plus = screen.getByRole("button", { name: "Add one" });
+    expect(plus).toHaveAttribute("aria-disabled", "true");
+    await user.click(plus);
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  it("keeps focus on − when a press reaches the minimum (a disabled button would drop it)", async () => {
+    const user = userEvent.setup();
+    render(<QuantityStepper label="Plates" defaultValue={2} min={1} />);
+    const minus = screen.getByRole("button", { name: "Remove one" });
+    await user.click(minus);
+    expect(minus).toHaveAttribute("aria-disabled", "true");
+    expect(minus).toBeEnabled();
+    expect(minus).toHaveFocus();
   });
 
   it("reports but keeps the caller's value when controlled", async () => {

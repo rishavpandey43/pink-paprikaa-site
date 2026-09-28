@@ -39,8 +39,21 @@ export const Sizes: Story = {
   ),
 };
 
-/** Card row "at min" — minus disabled. */
-export const AtMin: Story = { args: { defaultValue: 1, min: 1 } };
+/**
+ * Card row "at min" — minus disabled. It is `aria-disabled`, not `disabled`, so a press that
+ * reaches the minimum keeps focus on the button.
+ */
+export const AtMin: Story = {
+  args: { defaultValue: 1, min: 1 },
+  play: async ({ canvas, userEvent }) => {
+    const minus = canvas.getByRole("button", { name: "Remove one" });
+    await userEvent.click(canvas.getByRole("button", { name: "Add one" }));
+    await userEvent.click(minus);
+    await expect(minus).toHaveAttribute("aria-disabled", "true");
+    await expect(minus).toHaveFocus();
+    await expect(getComputedStyle(minus).cursor).toBe("not-allowed");
+  },
+};
 
 /** Card row `min={0}` — zero removes the line. */
 export const MinZero: Story = { args: { defaultValue: 0, min: 0 } };
