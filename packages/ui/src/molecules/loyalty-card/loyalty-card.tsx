@@ -32,9 +32,12 @@ function assertCount(value: number, minimum: number, name: string): void {
   }
 }
 
-/** Design-system copy: reads naturally at many, one and zero visits left. */
+/**
+ * Design-system copy: reads naturally at many, one and zero visits left. "Your" replaces a leading
+ * article, so an earned "a kulfi" reads "Your kulfi is on us.", never "Your a kulfi".
+ */
 function defaultHeadline(remaining: number, reward: string): string {
-  if (remaining === 0) return `Your ${reward} is on us.`;
+  if (remaining === 0) return `Your ${reward.replace(/^an? /i, "")} is on us.`;
   const visits = remaining === 1 ? "visit" : "visits";
   return `${String(remaining)} more ${visits} and ${reward} is on us.`;
 }
@@ -69,7 +72,8 @@ export function LoyaltyCard({
           value={stamped}
           max={goal}
           segments={goal}
-          label={`${String(stamped)} of ${String(goal)} visits`}
+          // "Visits", not "3 of 6 visits" (R97): the bar's value text already says "3 of 6".
+          label="Visits"
           isLabelHidden
           tone={isBrand ? "inverse" : "brand"}
           size="sm"

@@ -18,6 +18,22 @@ describe("LoyaltyCard", () => {
     expect(screen.getByText("4 more visits and a kulfi is on us.")).toBeInTheDocument();
   });
 
+  it("drops the article once an article-first reward is earned", () => {
+    render(<LoyaltyCard visits={6} goal={6} reward="a kulfi" />);
+    expect(screen.getByText("Your kulfi is on us.")).toBeInTheDocument();
+  });
+
+  it('drops an "an" too, but keeps a word that only starts with one', () => {
+    render(
+      <>
+        <LoyaltyCard visits={6} goal={6} reward="an iced chai" />
+        <LoyaltyCard visits={6} goal={6} reward="anjeer barfi" />
+      </>
+    );
+    expect(screen.getByText("Your iced chai is on us.")).toBeInTheDocument();
+    expect(screen.getByText("Your anjeer barfi is on us.")).toBeInTheDocument();
+  });
+
   it("lets the page replace the generated headline", () => {
     render(<LoyaltyCard visits={2} goal={6} reward="a kulfi" headline="Two down, four to go." />);
     expect(screen.getByText("Two down, four to go.")).toBeInTheDocument();
@@ -25,11 +41,15 @@ describe("LoyaltyCard", () => {
 
   it("shows the stamps as a segmented progress bar", () => {
     render(<LoyaltyCard visits={3} goal={6} reward="chai" />);
-    const stamps = screen.getByRole("progressbar", { name: "3 of 6 visits" });
+    // Named "Visits" (R97): the value text carries the count, so it is not read twice.
+    const stamps = screen.getByRole("progressbar", { name: "Visits" });
     expect(stamps).toHaveAttribute("aria-valuenow", "3");
     expect(stamps).toHaveAttribute("aria-valuemax", "6");
+    expect(stamps).toHaveAttribute("aria-valuetext", "3 of 6");
+    // One stamp segment per visit the goal asks for.
+    expect(stamps.children).toHaveLength(6);
     // The name is announced, never printed: the sentence above already says it.
-    expect(screen.getByText("3 of 6 visits")).toHaveClass("sr-only");
+    expect(screen.getByText("Visits")).toHaveClass("sr-only");
   });
 
   it("never shows more stamps than the goal", () => {
