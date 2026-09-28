@@ -3275,7 +3275,7 @@ const slotPicker = componentVariants({
     grid: "grid gap-2.5",
     slot: "grid min-h-hit min-w-0 cursor-pointer place-items-center gap-0.5 rounded-md border border-border-default bg-surface-card px-2.5 py-2 text-center font-display text-body-sm font-bold text-ink-700 transition-colors duration-fast ease-out has-checked:border-2 has-checked:border-border-brand has-checked:bg-surface-page-alt has-checked:text-pink-700 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:bg-surface-sunken has-disabled:text-ink-400",
     input: "sr-only",
-    note: "text-slot-picker-note font-normal font-body text-text-subtle",
+    note: "font-normal font-body text-slot-picker-note text-text-subtle",
   },
   variants: {
     status: {
