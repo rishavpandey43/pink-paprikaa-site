@@ -67,6 +67,7 @@ const TEXT = [
   "price-amount",
   "price-was",
   "app-shell-status",
+  "otp-digit",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
