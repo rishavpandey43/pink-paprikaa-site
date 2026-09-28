@@ -27,6 +27,7 @@ export { Select, type SelectOption, type SelectProps } from "./atoms/select/sele
 export { Skeleton, type SkeletonProps } from "./atoms/skeleton/skeleton";
 export { Slider, type SliderProps } from "./atoms/slider/slider";
 export { SocialHeadline, type SocialHeadlineProps } from "./atoms/social-headline/social-headline";
+export { SpiceLevel, type SpiceLevelProps } from "./atoms/spice-level/spice-level";
 export { Spinner, type SpinnerProps } from "./atoms/spinner/spinner";
 export { StatusDot, type StatusDotProps } from "./atoms/status-dot/status-dot";
 export { Switch, type SwitchProps } from "./atoms/switch/switch";
