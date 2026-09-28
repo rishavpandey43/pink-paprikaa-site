@@ -21,13 +21,13 @@ describe("EmptyState", () => {
     expect(screen.getByRole("heading", { level: 2, name: "No orders yet." })).toBeInTheDocument();
   });
 
-  it("shows the utensils glyph by default, or the glyph it is given, at 32px in pink-300", () => {
+  it("shows the utensils glyph by default, or the glyph it is given, at 32px in its soft tint", () => {
     const { container, rerender } = render(<EmptyState title="Nothing here yet." />);
     expect(container.querySelector("svg.lucide-utensils")).toBeInTheDocument();
     rerender(<EmptyState title="Nothing matches that yet." icon={Search} />);
     const glyph = container.querySelector("svg.lucide-search");
     expect(glyph).toBeInTheDocument();
-    expect(glyph?.parentElement).toHaveClass("size-icon-xl", "text-pink-300");
+    expect(glyph?.parentElement).toHaveClass("size-icon-xl", "text-empty-state-icon");
   });
 
   it("shows the brand diamond, hidden from assistive tech, for the symbol variant", () => {
@@ -35,7 +35,7 @@ describe("EmptyState", () => {
     expect(container.querySelector("svg")).not.toBeInTheDocument();
     const symbol = container.querySelector(".mask-symbol");
     expect(symbol).toHaveAttribute("aria-hidden", "true");
-    expect(symbol).toHaveClass("text-pink-500", "size-10");
+    expect(symbol).toHaveClass("text-empty-state-symbol", "size-10");
     expect(container.innerHTML).not.toContain("<path");
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });

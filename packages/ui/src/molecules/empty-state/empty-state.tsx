@@ -11,8 +11,8 @@ import { SymbolMark } from "../../lib/symbol-mark";
 const emptyState = componentVariants({
   slots: {
     root: "grid justify-items-center gap-2.5 text-center",
-    symbol: "mb-1 text-pink-500 opacity-85",
-    icon: "mb-1 text-pink-300",
+    symbol: "mb-1 text-empty-state-symbol opacity-85",
+    icon: "mb-1 text-empty-state-icon",
     title: "m-0 font-display text-text-heading",
     body: "m-0 max-w-text-measure-narrow text-body-sm text-text-muted",
     action: "mt-2",

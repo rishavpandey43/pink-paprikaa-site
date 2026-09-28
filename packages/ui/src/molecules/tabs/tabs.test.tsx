@@ -83,7 +83,7 @@ describe("Tabs", () => {
     // A 44px target (spec §5.5, dev parity) with the 3px pink underline under the active tab.
     expect(screen.getByRole("tab", { name: "All Day" })).toHaveClass(
       "min-h-hit",
-      "aria-selected:after:bg-border-brand"
+      "aria-selected:after:bg-tabs-indicator"
     );
     rerender(<Tabs label="Menu sections" items={MENU} variant="segmented" />);
     const rail = screen.getByRole("tablist");

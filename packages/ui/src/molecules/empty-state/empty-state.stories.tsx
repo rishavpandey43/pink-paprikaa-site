@@ -1,8 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { Search, ShoppingBag } from "lucide-react";
+import { expect } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
+import { groundOf } from "../../lib/story-paint";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { EmptyState } from "./empty-state";
 
 const meta = {
@@ -63,4 +66,24 @@ export const InCart: Story = {
       <EmptyState {...args} />
     </div>
   ),
+};
+
+/** On every field: the symbol and the glyph turn white on pink, where pink would vanish (R89). */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  args: { action: undefined },
+  render: (args) => (
+    <OnSurfaces>
+      <EmptyState {...args} size="md" />
+      <EmptyState {...args} variant="icon" size="md" />
+    </OnSurfaces>
+  ),
+  play: async ({ canvasElement }) => {
+    const marks = [...canvasElement.querySelectorAll(".mask-symbol, svg.lucide")];
+    // A symbol and a glyph on each of the 5 grounds.
+    await expect(marks).toHaveLength(10);
+    for (const mark of marks) {
+      await expect(getComputedStyle(mark).color).not.toBe(groundOf(mark));
+    }
+  },
 };

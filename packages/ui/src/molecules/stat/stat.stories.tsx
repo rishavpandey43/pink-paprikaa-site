@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { Heart } from "lucide-react";
+import { expect } from "storybook/test";
 
+import { groundOf } from "../../lib/story-paint";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Stat } from "./stat";
 
 const meta = {
@@ -74,4 +77,24 @@ export const Narrow: Story = {
       </div>
     ),
   ],
+};
+
+/** The ink and brand tones on every field: the glyph turns white on pink (R89). */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  args: { value: "4.6", label: "average guest rating", icon: Heart },
+  render: (args) => (
+    <OnSurfaces>
+      <Stat {...args} tone="ink" />
+      <Stat {...args} tone="brand" />
+    </OnSurfaces>
+  ),
+  play: async ({ canvasElement }) => {
+    const glyphs = [...canvasElement.querySelectorAll("svg.lucide-heart")];
+    // Two tones on each of the 5 grounds.
+    await expect(glyphs).toHaveLength(10);
+    for (const glyph of glyphs) {
+      await expect(getComputedStyle(glyph).color).not.toBe(groundOf(glyph));
+    }
+  },
 };

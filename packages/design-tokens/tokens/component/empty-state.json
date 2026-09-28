@@ -10,5 +10,16 @@
         }
       }
     }
+  },
+  "color": {
+    "$type": "color",
+    "empty-state-symbol": {
+      "$value": "{color.pink.500}",
+      "$description": "EmptyState brand symbol. White on a pink field (R89)."
+    },
+    "empty-state-icon": {
+      "$value": "{color.pink.300}",
+      "$description": "EmptyState glyph, a soft pink. White at 70% on a pink field (R89)."
+    }
   }
 }

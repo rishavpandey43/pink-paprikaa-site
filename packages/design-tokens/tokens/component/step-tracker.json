@@ -29,6 +29,22 @@
     "step-tracker-bar-off": {
       "$value": "{color.ink.200}",
       "$description": "Horizontal StepTracker: a segment still to come. White at 25% on pink and ink fields."
+    },
+    "step-tracker-marker-on": {
+      "$value": "{color.pink.500}",
+      "$description": "Vertical StepTracker: a reached marker's diamond. White on a pink field, where pink would vanish (R89)."
+    },
+    "step-tracker-marker-off": {
+      "$value": "{color.ink.200}",
+      "$description": "Vertical StepTracker: a marker still to come. White at 25% on a pink field, so it reads weaker than a reached one."
+    },
+    "step-tracker-mark-on": {
+      "$value": "{color.ink.000}",
+      "$description": "The brand mark and check inside a reached marker. Pink on a pink field (the diamond is white there)."
+    },
+    "step-tracker-mark-off": {
+      "$value": "{color.pink.500}",
+      "$description": "The brand mark inside a marker still to come. White on a pink field."
     }
   }
 }

@@ -13,8 +13,8 @@ const stat = componentVariants({
   },
   variants: {
     tone: {
-      ink: { icon: "text-pink-500", value: "text-text-heading" },
-      brand: { icon: "text-pink-500", value: "text-text-brand" },
+      ink: { icon: "text-stat-icon", value: "text-text-heading" },
+      brand: { icon: "text-stat-icon", value: "text-text-brand" },
       inverse: { icon: "text-white-alpha-70", value: "text-text-on-inverse" },
     },
     align: {

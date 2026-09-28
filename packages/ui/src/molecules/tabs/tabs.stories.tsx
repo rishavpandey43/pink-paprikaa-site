@@ -4,6 +4,8 @@ import { Croissant, IceCreamCone, Soup } from "lucide-react";
 import { expect, fn } from "storybook/test";
 
 import { Icon } from "../../atoms/icon/icon";
+import { groundOf } from "../../lib/story-paint";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { type TabItem, Tabs } from "./tabs";
 
 function panel(text: string) {
@@ -164,4 +166,22 @@ export const Narrow: Story = {
       </div>
     ),
   ],
+};
+
+/** The underline rail on every field: the active bar turns white on pink (R89, spec §10.2). */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: (args) => (
+    <OnSurfaces>
+      <Tabs {...args} className="min-w-0 flex-1" />
+    </OnSurfaces>
+  ),
+  play: async ({ canvas }) => {
+    const active = canvas.getAllByRole("tab", { selected: true });
+    // One selected tab on each of the 5 grounds.
+    await expect(active).toHaveLength(5);
+    for (const tab of active) {
+      await expect(getComputedStyle(tab, "::after").backgroundColor).not.toBe(groundOf(tab));
+    }
+  },
 };

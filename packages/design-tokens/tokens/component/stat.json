@@ -1,4 +1,11 @@
 {
+  "color": {
+    "$type": "color",
+    "stat-icon": {
+      "$value": "{color.pink.500}",
+      "$description": "Stat glyph for the ink and brand tones. White on a pink field (R89)."
+    }
+  },
   "text": {
     "$type": "typography",
     "stat-value": {

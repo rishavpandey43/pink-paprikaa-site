@@ -4,6 +4,10 @@
     "tabs-segmented-fg": {
       "$value": "{color.pink.700}",
       "$description": "Idle label on the handoff's segmented tab rail (white fill)."
+    },
+    "tabs-indicator": {
+      "$value": "{color.pink.500}",
+      "$description": "The 3px bar under the active underline tab. White on a pink field (R89)."
     }
   },
   "text": {

@@ -14,3 +14,15 @@ export function paint(
   probe.remove();
   return expected;
 }
+
+/**
+ * Stories only. The first painted background behind `element` — the ground it must stand out
+ * from (R89: a pink mark on the pink field vanishes). Transparent ancestors are skipped.
+ */
+export function groundOf(element: Element) {
+  for (let node = element.parentElement; node !== null; node = node.parentElement) {
+    const colour = getComputedStyle(node).backgroundColor;
+    if (colour !== "rgba(0, 0, 0, 0)") return colour;
+  }
+  return getComputedStyle(document.body).backgroundColor;
+}

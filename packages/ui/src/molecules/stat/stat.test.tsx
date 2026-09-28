@@ -31,7 +31,7 @@ describe("Stat", () => {
   });
 
   it.each([
-    ["ink", "text-pink-500"],
+    ["ink", "text-stat-icon"],
     ["inverse", "text-white-alpha-70"],
   ] as const)("draws a decorative %s-tone glyph above the number", (tone, colour) => {
     const { container } = render(

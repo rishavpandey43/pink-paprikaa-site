@@ -21,7 +21,7 @@ const tabs = componentVariants({
       underline: {
         list: "flex-wrap gap-x-7 gap-y-3 border-b border-border-subtle",
         trigger:
-          "relative min-h-hit pb-3 text-tabs-label text-text-subtle after:absolute after:inset-x-0 after:-bottom-px after:h-0.75 after:rounded-t-xs after:transition-colors after:duration-base after:ease-out not-disabled:hover:text-text-heading aria-selected:text-text-heading aria-selected:after:bg-border-brand",
+          "relative min-h-hit pb-3 text-tabs-label text-text-subtle after:absolute after:inset-x-0 after:-bottom-px after:h-0.75 after:rounded-t-xs after:transition-colors after:duration-base after:ease-out not-disabled:hover:text-text-heading aria-selected:text-text-heading aria-selected:after:bg-tabs-indicator",
       },
       segmented: {
         list: "flex-wrap gap-1 justify-self-start rounded-pill border border-border-subtle bg-surface-card p-1",
