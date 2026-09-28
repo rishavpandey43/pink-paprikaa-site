@@ -70,7 +70,8 @@ async function expectChipCopies(
 export const Scale: Story = {
   render: () => <SpacingScale steps={SPACE_STEPS} />,
   play: async ({ canvas, canvasElement, userEvent }) => {
-    await expect(isEveryStepShown).toBe(true);
+    // The check is the type above; referencing it keeps the constant (and so the check) alive.
+    void isEveryStepShown;
     // Design-system rule: step N is N × 4px, so step 6 is always 24px.
     const unit = Number.parseFloat(cssValue("spacing"));
     await expect(unit).toBe(4);
