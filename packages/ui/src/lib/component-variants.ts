@@ -131,6 +131,9 @@ const SPACING = [
   "field-lg",
   "field-spinner",
   "choice-box",
+  "switch-width",
+  "switch-height",
+  "switch-knob",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];

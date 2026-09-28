@@ -24,6 +24,7 @@ export { Radio, RadioGroup, type RadioGroupProps, type RadioProps } from "./atom
 export { Select, type SelectOption, type SelectProps } from "./atoms/select/select";
 export { SocialHeadline, type SocialHeadlineProps } from "./atoms/social-headline/social-headline";
 export { StatusDot, type StatusDotProps } from "./atoms/status-dot/status-dot";
+export { Switch, type SwitchProps } from "./atoms/switch/switch";
 export { Tag, type TagProps, tagVariants } from "./atoms/tag/tag";
 export { Text, type TextProps, type TextTone, type TextVariant } from "./atoms/text/text";
 export { RevealObserver, type RevealObserverProps } from "./lib/reveal-observer";

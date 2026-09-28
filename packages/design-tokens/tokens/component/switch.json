@@ -1,0 +1,8 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "switch-width": { "$value": "46px", "$description": "Track width." },
+    "switch-height": { "$value": "28px", "$description": "Track height." },
+    "switch-knob": { "$value": "22px" }
+  }
+}
