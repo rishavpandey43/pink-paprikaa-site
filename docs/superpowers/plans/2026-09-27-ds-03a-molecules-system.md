@@ -9089,7 +9089,7 @@ const stepTracker = componentVariants({
   slots: {
     root: "m-0 list-none p-0",
     step: "flex min-w-0",
-    marker: "size-step-tracker-marker relative mt-0.5 shrink-0",
+    marker: "relative mt-0.5 size-step-tracker-marker shrink-0",
     diamond: "absolute inset-0 grid rotate-45 place-items-center overflow-hidden rounded-xs",
     mark: "size-step-tracker-mark -rotate-45 opacity-50",
     check: "absolute inset-0 grid place-items-center text-ink-000",
