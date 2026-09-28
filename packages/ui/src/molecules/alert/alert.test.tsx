@@ -69,6 +69,11 @@ describe("Alert", () => {
     expect(screen.getByRole("button", { name: "See the Menu" })).toBeInTheDocument();
   });
 
+  it("draws no action wrapper for a null action", () => {
+    render(<Alert action={null}>Doors open Friday, 8am.</Alert>);
+    expect(screen.getByRole("status").querySelector(".mt-2\\.5")).toBeNull();
+  });
+
   it("offers a dismiss button only when onDismiss is given", async () => {
     const user = userEvent.setup();
     const onDismiss = vi.fn();

@@ -85,7 +85,9 @@ export function Alert({
         {children === undefined || children === null ? null : (
           <div className={styles.content()}>{children}</div>
         )}
-        {action === undefined ? null : <div className={styles.action()}>{action}</div>}
+        {action === undefined || action === null ? null : (
+          <div className={styles.action()}>{action}</div>
+        )}
       </div>
       {onDismiss === undefined ? null : <AlertDismiss onDismiss={onDismiss} />}
     </div>
