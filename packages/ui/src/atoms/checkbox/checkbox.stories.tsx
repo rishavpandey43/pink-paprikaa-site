@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Multi-select choice — menu add-ons, dietary preferences, consent. Pass `price` for add-ons; it right-aligns as `+₹40` in Poppins 700 and is part of the accessible name. `description` is announced as the description. `isInvalid` paints the box red and sets `aria-invalid`; the message that says what to do next belongs to Field. Disabled is a real fill, never opacity. Use Radio when exactly one option must be chosen.",
+          "Multi-select choice — menu add-ons, dietary preferences, consent. Pass `price` for add-ons; it right-aligns as `+₹40` in Poppins 700 and is part of the accessible name. `description` is announced as the description. `isInvalid` paints the box red and sets `aria-invalid`; the message that says what to do next belongs to Field. Disabled is a real fill, never opacity. Use Radio when exactly one option must be chosen. There is no on-brand skin: keep it off the brand (pink) ground.",
       },
     },
   },
@@ -73,10 +73,11 @@ export const AddOnList: Story = {
   ),
 };
 
+/** The brand ground is left out on purpose (no on-brand skin). */
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
-    <OnSurfaces>
+    <OnSurfaces grounds={["page", "alt", "ink", "soft"]}>
       <Checkbox
         label="Make it a meal"
         description="Adds fries and a kulhad chai."

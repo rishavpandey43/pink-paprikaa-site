@@ -73,14 +73,21 @@ export const Sizes: Story = {
   ),
 };
 
-/** The label is `text-text-muted`, which follows `data-surface`; the default tone on every ground. */
+/** The label is `text-text-muted`, which follows `data-surface`. The pink panel takes `tone="inverse"`. */
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
     <OnSurfaces>
-      <div className="min-w-0 flex-1">
-        <ProgressBar label="3 more visits and chai's on us" segments={6} value={3} />
-      </div>
+      {(ground) => (
+        <div className="min-w-0 flex-1">
+          <ProgressBar
+            label="3 more visits and chai's on us"
+            segments={6}
+            value={3}
+            tone={ground === "brand" ? "inverse" : undefined}
+          />
+        </div>
+      )}
     </OnSurfaces>
   ),
 };

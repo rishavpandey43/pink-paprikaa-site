@@ -14,7 +14,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Exactly-one choice — portion size, spice level, payment method. Put radios in a **RadioGroup** (a `fieldset` + `legend`, 12px apart) and always give them a shared `name`. The dot is drawn as a 6px pink ring — do not swap in a filled circle. `price` is the option's absolute price. A group `status` marks every ring and reads its `message` as the group's description; a disabled group disables every option.",
+          "Exactly-one choice — portion size, spice level, payment method. Put radios in a **RadioGroup** (a `fieldset` + `legend`, 12px apart) and always give them a shared `name`. The dot is drawn as a 6px pink ring — do not swap in a filled circle. `price` is the option's absolute price. A group `status` marks every ring and reads its `message` as the group's description; a disabled group disables every option. There is no on-brand skin: keep it off the brand (pink) ground.",
       },
     },
   },
@@ -167,11 +167,14 @@ export const PortionPicker: Story = {
   ),
 };
 
-/** Unnamed radios, so each ground keeps its own checked option; the errored group shows its message. */
+/**
+ * Unnamed radios, so each ground keeps its own checked option; the errored group shows its message.
+ * The brand ground is left out on purpose (no on-brand skin).
+ */
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
-    <OnSurfaces>
+    <OnSurfaces grounds={["page", "alt", "ink", "soft"]}>
       <Radio value="regular" label="Regular" price={280} defaultChecked />
       <Radio value="sharing" label="Sharing" price={440} />
       <RadioGroup legend="Portion" isLegendHidden status="error" message="Pick a portion.">

@@ -6,6 +6,10 @@ import { componentVariants } from "./component-variants";
  * Stories only — never exported from the barrel. Renders its children on each ground a
  * surface-aware component must survive (spec §10.2: page, alt, brand, ink, soft). Brand, ink and
  * soft set `data-surface`, exactly as Section, Card and PatternField do in product code.
+ *
+ * `grounds` narrows the rows to the grounds a component is designed for (R67: the choice controls
+ * have no on-brand skin, so they leave `brand` out). A function child renders per ground, for a
+ * component whose prop changes with it (ProgressBar's `tone="inverse"` on brand).
  */
 const GROUNDS = [
   { ground: "page", surface: undefined },
@@ -14,6 +18,8 @@ const GROUNDS = [
   { ground: "ink", surface: "ink" },
   { ground: "soft", surface: "soft" },
 ] as const;
+
+export type Ground = (typeof GROUNDS)[number]["ground"];
 
 const stage = componentVariants({
   slots: {
@@ -31,15 +37,22 @@ const stage = componentVariants({
   },
 });
 
-export function OnSurfaces({ children }: { children: ReactNode }) {
+export function OnSurfaces({
+  grounds,
+  children,
+}: {
+  grounds?: readonly Ground[] | undefined;
+  children: ReactNode | ((ground: Ground) => ReactNode);
+}) {
+  const shown = grounds === undefined ? GROUNDS : GROUNDS.filter((g) => grounds.includes(g.ground));
   return (
     <div className="grid w-full gap-3">
-      {GROUNDS.map(({ ground, surface }) => {
+      {shown.map(({ ground, surface }) => {
         const slots = stage({ ground });
         return (
           <div key={ground} data-surface={surface} className={slots.row()}>
             <span className={slots.label()}>{ground}</span>
-            {children}
+            {typeof children === "function" ? children(ground) : children}
           </div>
         );
       })}

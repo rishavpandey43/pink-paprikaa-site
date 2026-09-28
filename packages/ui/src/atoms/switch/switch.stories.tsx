@@ -17,7 +17,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Toggle for settings that take effect immediately — never inside a save-on-submit form. The label sits left and the control right, so a column of switches aligns. 46×28 track, 22px knob, 220ms slide. `isLabelHidden` keeps the label as the accessible name when the row around it already shows one.",
+          "Toggle for settings that take effect immediately — never inside a save-on-submit form. The label sits left and the control right, so a column of switches aligns. 46×28 track, 22px knob, 220ms slide. `isLabelHidden` keeps the label as the accessible name when the row around it already shows one. There is no on-brand skin: keep it off the brand (pink) ground.",
       },
     },
   },
@@ -70,10 +70,11 @@ export const PreferencesPanel: Story = {
   ),
 };
 
+/** The brand ground is left out on purpose (no on-brand skin). */
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
-    <OnSurfaces>
+    <OnSurfaces grounds={["page", "alt", "ink", "soft"]}>
       <Switch label="Jain preferences" description="Hides onion and garlic." defaultChecked />
     </OnSurfaces>
   ),
