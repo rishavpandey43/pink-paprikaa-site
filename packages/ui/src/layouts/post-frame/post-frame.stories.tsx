@@ -236,7 +236,9 @@ export const Mpu: Story = {
       <PostFrame format="mpu" scale={0.6} tone="ink" padding="none">
         <div className="flex h-full flex-col justify-between p-4">
           <Logo tone="white" className="w-19" />
-          <SocialHeadline size="caption">Chai first, decisions later.</SocialHeadline>
+          <Text variant="h3" as="span" weight="black">
+            Chai first, decisions later.
+          </Text>
           <Button size="sm" isFullWidth>
             Order Now
           </Button>
