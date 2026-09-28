@@ -192,6 +192,49 @@ describe("ChoiceCardGroup", () => {
     expect(group).not.toHaveAttribute("aria-describedby");
   });
 
+  it.each(["light", "on-brand"] as const)(
+    "reddens the checked card's border too when the group is in error (%s)",
+    (tone) => {
+      render(
+        <ChoiceCardGroup
+          name="plate"
+          legend="Your plate"
+          options={PLATES}
+          defaultValue="classic"
+          tone={tone}
+          status="error"
+          message="Choose a plate to see your total."
+        />
+      );
+      // The checked brand/ink border would otherwise out-rank the error red (Radio precedent).
+      const checked = screen.getByRole("radio", { name: /Classic/ }).closest("label");
+      expect(checked).toHaveClass(
+        "in-aria-invalid:border-status-danger",
+        "in-aria-invalid:has-checked:border-status-danger"
+      );
+    }
+  );
+
+  it("keeps its own invalid state over a caller's aria-invalid", () => {
+    const { rerender } = render(
+      <ChoiceCardGroup name="plate" legend="Your plate" options={PLATES} aria-invalid />
+    );
+    const group = screen.getByRole("group", { name: "Your plate" });
+    // No words, no red: a bare aria-invalid cannot mark the group by colour alone.
+    expect(group).not.toHaveAttribute("aria-invalid");
+    rerender(
+      <ChoiceCardGroup
+        name="plate"
+        legend="Your plate"
+        options={PLATES}
+        aria-invalid={false}
+        status="error"
+        message="Choose a plate to see your total."
+      />
+    );
+    expect(group).toHaveAttribute("aria-invalid", "true");
+  });
+
   it("reads a plain message as the group's hint", () => {
     render(
       <ChoiceCardGroup

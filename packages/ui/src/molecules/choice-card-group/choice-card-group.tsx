@@ -91,11 +91,13 @@ const choiceCardGroup = componentVariants({
     tone: {
       light: {
         // 1px border + the inset `selected` shadow = a 2px border that never shifts the layout.
-        card: "border border-border-default bg-surface-card text-text-heading in-aria-invalid:border-status-danger has-checked:border-border-brand has-checked:bg-pink-50 has-checked:text-pink-700 has-checked:shadow-selected",
+        // In error the checked card turns red too (its brand border would out-rank the red), and
+        // drops the pink inset so the red is not lined with pink.
+        card: "border border-border-default bg-surface-card text-text-heading in-aria-invalid:border-status-danger has-checked:border-border-brand has-checked:bg-pink-50 has-checked:text-pink-700 has-checked:shadow-selected in-aria-invalid:has-checked:border-status-danger in-aria-invalid:has-checked:shadow-none",
         input: "sr-only",
       },
       "on-brand": {
-        card: "border-2 border-transparent bg-white-alpha-92 text-text-heading in-aria-invalid:border-status-danger has-checked:border-ink-900 has-checked:bg-ink-000",
+        card: "border-2 border-transparent bg-white-alpha-92 text-text-heading in-aria-invalid:border-status-danger has-checked:border-ink-900 has-checked:bg-ink-000 in-aria-invalid:has-checked:border-status-danger",
         input:
           "size-4.5 shrink-0 cursor-pointer appearance-none rounded-pill border-2 border-ink-600 bg-ink-000 checked:border-pink-600 checked:bg-pink-600 checked:shadow-choice-card-radio focus-visible:outline-none",
       },
@@ -134,6 +136,8 @@ export function ChoiceCardGroup({
   message,
   className,
   "aria-describedby": describedBy,
+  // Dropped: the group's own invalid state wins, so a bare aria-invalid cannot mark it by colour alone.
+  "aria-invalid": _callerInvalid,
   ...props
 }: ChoiceCardGroupProps) {
   const baseId = useId();

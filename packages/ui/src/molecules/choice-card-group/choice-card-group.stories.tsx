@@ -74,10 +74,30 @@ export const Plates: Story = {
 /** A status always comes with words: the error is announced and describes the group. */
 export const WithError: Story = {
   args: { defaultValue: undefined, status: "error", message: "Choose a plate to see your total." },
-  play: async ({ canvas }) => {
+  play: async ({ canvas, canvasElement, userEvent }) => {
     await expect(canvas.getByRole("group", { name: "1. Your plate" })).toHaveAccessibleDescription(
       "Choose a plate to see your total."
     );
+    // Real layout: every card's border is the danger red, the checked one too.
+    const probe = document.createElement("span");
+    probe.style.color = "var(--color-status-danger)";
+    canvasElement.append(probe);
+    const danger = getComputedStyle(probe).color;
+    probe.remove();
+    await userEvent.click(canvas.getByRole("radio", { name: /Classic/ }));
+    const cardOf = (name: RegExp) =>
+      canvas.getByRole("radio", { name }).closest("label") ?? canvasElement;
+    // Let transition-control finish, or the checked card still reads its old colour mid-fade.
+    await Promise.all(
+      cardOf(/Classic/)
+        .getAnimations()
+        .map(async (animation) => animation.finished)
+    );
+    const borderOf = (name: RegExp) => getComputedStyle(cardOf(name)).borderTopColor;
+    await expect(borderOf(/Classic/)).toBe(danger);
+    // …and loses the pink `selected` inset: every layer of its shadow is transparent.
+    await expect(getComputedStyle(cardOf(/Classic/)).boxShadow).not.toMatch(/rgb\(/);
+    await expect(borderOf(/Everyday/)).toBe(danger);
   },
 };
 
