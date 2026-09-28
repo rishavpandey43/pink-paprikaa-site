@@ -163,6 +163,20 @@ describe("RadioGroup", () => {
     expect(screen.getByRole("radiogroup")).toHaveAttribute("aria-invalid", "true");
   });
 
+  it.each(["", "   ", false] as const)("treats the blank message %j as none (R48)", (message) => {
+    const { container } = render(<Portion message={message} />);
+    expect(screen.getByRole("radiogroup")).not.toHaveAttribute("aria-describedby");
+    expect(container.querySelector("p")).not.toBeInTheDocument();
+  });
+
+  it("will not take a boolean as a status message", () => {
+    render(
+      // @ts-expect-error — a status message is words or an element, never a boolean
+      <Portion status="error" message={false} />
+    );
+    expect(screen.getByRole("radiogroup")).toHaveAttribute("aria-invalid", "true");
+  });
+
   it("shows a message without a status as a plain hint", () => {
     const { container } = render(<Portion message="Both come with rice." />);
     expect(screen.getByRole("radiogroup")).not.toHaveAttribute("aria-invalid");

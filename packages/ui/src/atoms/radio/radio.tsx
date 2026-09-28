@@ -1,4 +1,4 @@
-import { type ComponentProps, type ReactNode, useId } from "react";
+import { type ComponentProps, type ReactElement, type ReactNode, useId } from "react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
@@ -80,8 +80,11 @@ export type RadioGroupProps = RadioGroupOwnProps &
     | {
         /** `error` marks the group invalid and turns every ring red, a chosen one too. */
         status: Exclude<FieldStatus, "default">;
-        /** Shown under the options with the status glyph, and read as the group's description. */
-        message: NonNullable<ReactNode>;
+        /**
+         * Shown under the options with the status glyph, and read as the group's description. Words
+         * or an element — a blank string still renders no message (R48), so never pass one.
+         */
+        message: string | ReactElement;
       }
   );
 
@@ -100,23 +103,28 @@ export function RadioGroup({
   const messageId = useId();
   const styles = radioGroup({ orientation, status, isLegendHidden });
   const statusIcon = status === "default" ? undefined : FIELD_STATUS_ICON[status];
+  // R48: a blank message is no message — an empty line would describe the group as nothing.
+  const hasMessage =
+    typeof message === "string"
+      ? message.trim() !== ""
+      : message !== undefined && message !== null && typeof message !== "boolean";
 
   return (
     <fieldset
       role="radiogroup"
       aria-invalid={status === "error" ? true : undefined}
-      aria-describedby={joinIds(message === undefined ? undefined : messageId, describedBy)}
+      aria-describedby={joinIds(hasMessage ? messageId : undefined, describedBy)}
       className={styles.root({ className })}
       {...props}
     >
       <legend className={styles.legend()}>{legend}</legend>
       <div className={styles.options()}>{children}</div>
-      {message === undefined ? null : (
+      {hasMessage ? (
         <p id={messageId} className={styles.message()}>
           {statusIcon === undefined ? null : <Icon icon={statusIcon} size="xs" />}
           {message}
         </p>
-      )}
+      ) : null}
     </fieldset>
   );
 }
