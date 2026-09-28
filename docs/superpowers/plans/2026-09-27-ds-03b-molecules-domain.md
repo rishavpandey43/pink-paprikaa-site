@@ -3356,11 +3356,11 @@ import { componentVariants } from "../../lib/component-variants";
 
 const offerSeal = componentVariants({
   slots: {
-    root: "size-offer-seal rounded-offer-seal grid shrink-0 rotate-45 place-items-center shadow-3",
+    root: "grid size-offer-seal shrink-0 rotate-45 place-items-center rounded-offer-seal shadow-3",
     content: "grid -rotate-45 gap-0.5 text-center",
-    value: "text-offer-seal-value font-display",
-    label: "text-offer-seal-label font-display uppercase",
-    note: "text-offer-seal-note font-body",
+    value: "font-display text-offer-seal-value",
+    label: "font-display text-offer-seal-label uppercase",
+    note: "font-body text-offer-seal-note",
   },
   variants: {
     size: {
