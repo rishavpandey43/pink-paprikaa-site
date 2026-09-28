@@ -5877,12 +5877,12 @@ const tabs = componentVariants({
       underline: {
         list: "flex-wrap gap-x-7 gap-y-3 border-b border-border-subtle",
         trigger:
-          "text-tabs-label relative min-h-hit pb-3 text-text-subtle after:absolute after:inset-x-0 after:-bottom-px after:h-0.75 after:rounded-t-xs after:transition-colors after:duration-base after:ease-out hover:text-text-heading aria-selected:text-text-heading aria-selected:after:bg-border-brand",
+          "relative min-h-hit pb-3 text-tabs-label text-text-subtle after:absolute after:inset-x-0 after:-bottom-px after:h-0.75 after:rounded-t-xs after:transition-colors after:duration-base after:ease-out hover:text-text-heading aria-selected:text-text-heading aria-selected:after:bg-border-brand",
       },
       segmented: {
         list: "flex-wrap gap-1 justify-self-start rounded-pill border border-border-subtle bg-surface-card p-1",
         trigger:
-          "text-tabs-segmented-fg min-h-hit rounded-pill px-4 py-2.5 text-body-sm hover:bg-surface-page-alt aria-selected:bg-surface-brand aria-selected:text-text-on-brand aria-selected:hover:bg-brand-hover",
+          "min-h-hit rounded-pill px-4 py-2.5 text-body-sm text-tabs-segmented-fg hover:bg-surface-page-alt aria-selected:bg-surface-brand aria-selected:text-text-on-brand aria-selected:hover:bg-brand-hover",
       },
     },
   },
