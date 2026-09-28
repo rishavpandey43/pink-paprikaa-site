@@ -293,8 +293,8 @@ semantic token a surface overrides — the alias resolves once, at `:root`
 ## 8. Server-first
 
 - Add `"use client"` only to a file that owns state, effects, refs or browser APIs. Keep that file
-  as small as possible: a static component plus a tiny client leaf file. `RevealObserver` is the
-  only client file today. `Logo` calls `useId` and stays a server component.
+  as small as possible: a static component plus a tiny client leaf file. The client files are
+  `RevealObserver`, `Tooltip` (Radix) and `Countdown` (a clock). `Logo` calls `useId` and stays a server component.
 - Hover, press and focus are CSS. No `window` or `document` during render. Responsiveness comes
   from media or container queries on the token breakpoints.
 

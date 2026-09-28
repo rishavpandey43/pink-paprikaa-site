@@ -6,6 +6,7 @@ export { Badge, type BadgeProps } from "./atoms/badge/badge";
 export { Button, type ButtonProps, buttonVariants } from "./atoms/button/button";
 export { Card, type CardProps } from "./atoms/card/card";
 export { Checkbox, type CheckboxProps } from "./atoms/checkbox/checkbox";
+export { Countdown, type CountdownProps } from "./atoms/countdown/countdown";
 export { DietMark, type DietMarkProps } from "./atoms/diet-mark/diet-mark";
 export { Divider, type DividerProps } from "./atoms/divider/divider";
 export { IconButton, type IconButtonProps } from "./atoms/icon-button/icon-button";
