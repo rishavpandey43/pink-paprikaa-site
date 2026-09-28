@@ -1,0 +1,182 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+import { expectNoA11yViolations, fakeRegister } from "../../../vitest.setup";
+import { Radio, RadioGroup, type RadioGroupProps } from "./radio";
+
+const ringOf = (input: HTMLElement) => input.nextElementSibling?.firstElementChild;
+
+/** The card's "group" row as a fixture: the legend and options are fixed, the rest is the test's. */
+function Portion(props: Omit<RadioGroupProps, "legend" | "children">) {
+  return (
+    <RadioGroup legend="Portion" {...props}>
+      <Radio name="size" value="regular" label="Regular" price={280} defaultChecked />
+      <Radio name="size" value="sharing" label="Sharing" price={440} description="Feeds two." />
+    </RadioGroup>
+  );
+}
+
+describe("Radio", () => {
+  it("is a native radio named by its label and absolute price", () => {
+    render(<Radio name="size" value="regular" label="Regular" price={280} />);
+    expect(screen.getByRole("radio", { name: "Regular ₹280" })).toBeInTheDocument();
+  });
+
+  it("draws checked as a 6px pink ring, not a filled dot", () => {
+    render(<Radio name="heat" value="hot" label="Hot" defaultChecked />);
+    expect(ringOf(screen.getByRole("radio"))).toHaveClass(
+      "group-has-checked/choice:border-6",
+      "group-has-checked/choice:border-pink-500"
+    );
+  });
+
+  it("describes an option with its description", () => {
+    render(<Portion />);
+    expect(screen.getByRole("radio", { name: "Sharing ₹440" })).toHaveAccessibleDescription(
+      "Feeds two."
+    );
+  });
+
+  it("moves the choice with the arrow keys, as native radios do", async () => {
+    const user = userEvent.setup();
+    render(<Portion />);
+    await user.tab();
+    expect(screen.getByRole("radio", { name: "Regular ₹280" })).toHaveFocus();
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByRole("radio", { name: "Sharing ₹440" })).toBeChecked();
+  });
+
+  it("moves the choice on click and unchecks the last one", async () => {
+    const user = userEvent.setup();
+    render(<Portion />);
+    await user.click(screen.getByRole("radio", { name: "Sharing ₹440" }));
+    expect(screen.getByRole("radio", { name: "Sharing ₹440" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "Regular ₹280" })).not.toBeChecked();
+  });
+
+  it("ignores clicks on a disabled option, painted with a real fill (never opacity)", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { container } = render(
+      <Radio
+        name="platter"
+        value="family"
+        label="Family platter"
+        description="Weekends only."
+        disabled
+        onChange={onChange}
+      />
+    );
+    const radio = screen.getByRole("radio", { name: "Family platter" });
+    await user.click(screen.getByText("Family platter"));
+    expect(radio).not.toBeChecked();
+    expect(onChange).not.toHaveBeenCalled();
+    expect(ringOf(radio)).toHaveClass("group-has-disabled/choice:bg-ink-200");
+    expect(container.innerHTML).not.toMatch(/opacity-/);
+  });
+
+  it("marks one option invalid and rings it red", () => {
+    render(<Radio name="size" value="regular" label="Regular" isInvalid />);
+    const radio = screen.getByRole("radio", { name: "Regular" });
+    expect(radio).toHaveAttribute("aria-invalid", "true");
+    expect(ringOf(radio)).toHaveClass("group-has-aria-invalid/choice:border-status-danger");
+  });
+
+  it("puts className on the option's row, replacing a conflicting class", () => {
+    render(<Radio name="heat" value="hot" label="Hot" className="gap-6" />);
+    const row = screen.getByRole("radio").closest("label");
+    expect(row).toHaveClass("gap-6");
+    expect(row).not.toHaveClass("gap-3");
+  });
+
+  it("takes react-hook-form's register() on every option of the field", async () => {
+    const user = userEvent.setup();
+    const field = fakeRegister("size");
+    render(
+      <RadioGroup legend="Portion">
+        <Radio value="regular" label="Regular" {...field} />
+        <Radio value="sharing" label="Sharing" {...field} />
+      </RadioGroup>
+    );
+    const [regular, sharing] = screen.getAllByRole("radio");
+
+    expect(field.ref).toHaveBeenCalledWith(regular);
+    expect(field.ref).toHaveBeenCalledWith(sharing);
+    expect(sharing).toHaveAttribute("name", "size");
+    await user.click(screen.getByText("Sharing"));
+    expect(field.onChange).toHaveBeenCalledTimes(1);
+    await user.tab();
+    expect(field.onBlur).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("RadioGroup", () => {
+  it("is a radiogroup named by its legend", () => {
+    render(<Portion />);
+    expect(screen.getByRole("radiogroup", { name: "Portion" })).toBeInTheDocument();
+  });
+
+  it("can hide the legend visually and keep the name", () => {
+    render(<Portion isLegendHidden />);
+    expect(screen.getByText("Portion")).toHaveClass("sr-only");
+    expect(screen.getByRole("radiogroup", { name: "Portion" })).toBeInTheDocument();
+  });
+
+  it.each([
+    ["vertical", "flex-col"],
+    ["horizontal", "flex-row"],
+  ] as const)("lays options out %s", (orientation, layout) => {
+    render(<Portion orientation={orientation} />);
+    expect(
+      screen.getByRole("radio", { name: "Regular ₹280" }).closest("label")?.parentElement
+    ).toHaveClass(layout);
+  });
+
+  it("carries an error for the whole group: aria-invalid, red rings, glyph and message", () => {
+    const { container } = render(<Portion status="error" message="Pick a portion to continue." />);
+    const group = screen.getByRole("radiogroup", { name: "Portion" });
+    expect(group).toHaveAttribute("aria-invalid", "true");
+    expect(group).toHaveAccessibleDescription("Pick a portion to continue.");
+    expect(container.querySelector(".lucide-circle-alert")).toBeInTheDocument();
+    expect(ringOf(screen.getByRole("radio", { name: "Regular ₹280" }))).toHaveClass(
+      "in-aria-invalid:border-status-danger"
+    );
+  });
+
+  it("shows a message without a status as a plain hint", () => {
+    const { container } = render(<Portion message="Both come with rice." />);
+    expect(screen.getByRole("radiogroup")).not.toHaveAttribute("aria-invalid");
+    expect(screen.getByText("Both come with rice.")).toHaveClass("text-text-subtle");
+    expect(container.querySelector("svg")).not.toBeInTheDocument();
+  });
+
+  it("disables every option at once through the fieldset", () => {
+    render(<Portion disabled />);
+    for (const radio of screen.getAllByRole("radio")) expect(radio).toBeDisabled();
+  });
+
+  it("puts className on the fieldset", () => {
+    render(<Portion className="mt-6" />);
+    expect(screen.getByRole("radiogroup")).toHaveClass("mt-6", "min-w-0");
+  });
+
+  it("has no accessibility violations with an error and a message, or in a row with a disabled option", async () => {
+    const { container } = render(
+      <>
+        <Portion status="error" message="Pick a portion to continue." />
+        <RadioGroup legend="Heat" orientation="horizontal">
+          <Radio name="heat" value="hot" label="Hot" />
+          <Radio name="heat" value="extra-hot" label="Extra Hot" />
+          <Radio
+            name="heat"
+            value="kitchen-special"
+            label="Kitchen special"
+            description="Weekends only."
+            disabled
+          />
+        </RadioGroup>
+      </>
+    );
+    await expectNoA11yViolations(container);
+  });
+});
