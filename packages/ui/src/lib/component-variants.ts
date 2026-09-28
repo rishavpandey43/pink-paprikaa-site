@@ -227,12 +227,14 @@ export const twMergeConfig: TWMergeConfig = {
       z: [{ z: Z }],
       duration: [{ duration: DURATION }],
       scrim: ["scrim-bottom", "scrim-top"],
-      autogrid: ["autogrid", "autogrid-wide", { "autogrid-min": AUTOGRID_MIN }],
+      autogrid: ["autogrid", "autogrid-wide"],
+      "autogrid-min": [{ "autogrid-min": AUTOGRID_MIN }],
       "pattern-tile": [{ "pattern-tile": PATTERN_TILE }],
       "pattern-opacity": [{ "pattern-opacity": PATTERN_OPACITY }],
     },
-    // An auto-fit template and a fixed column count both set grid-template-columns: last one wins.
-    conflictingClassGroups: { autogrid: ["grid-cols"], "grid-cols": ["autogrid"] },
+    // An autogrid-min template and a fixed column count both set only grid-template-columns: last
+    // one wins. `autogrid`/`autogrid-wide` also set display + gap, so they stay out of it.
+    conflictingClassGroups: { "autogrid-min": ["grid-cols"], "grid-cols": ["autogrid-min"] },
   },
 };
 

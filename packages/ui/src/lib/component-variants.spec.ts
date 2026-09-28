@@ -109,6 +109,14 @@ describe("componentVariants", () => {
     }
   );
 
+  // autogrid owns display + gap + template; only the template-only classes conflict with it.
+  it.each(["autogrid autogrid-min-lg", "autogrid grid-cols-2", "autogrid-wide autogrid-min-sm"])(
+    "keeps both halves of %s",
+    (classes) => {
+      expect(componentVariants({ base: classes })()).toBe(classes);
+    }
+  );
+
   it.each([
     ["border-default", "border-strong"],
     ["z-header", "z-overlay"],
@@ -117,6 +125,7 @@ describe("componentVariants", () => {
     ["autogrid", "autogrid-wide"],
     ["autogrid-min-md", "autogrid-min-lg"],
     ["autogrid-min-md", "grid-cols-2"],
+    ["grid-cols-2", "autogrid-min-md"],
     ["pattern-tile-64", "pattern-tile-96"],
     ["pattern-opacity-default", "pattern-opacity-faint"],
   ])("lets a consumer className replace %s with %s", (base, className) => {
