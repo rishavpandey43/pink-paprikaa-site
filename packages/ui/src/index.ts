@@ -65,6 +65,7 @@ export {
 export { EmptyState, type EmptyStateProps } from "./molecules/empty-state/empty-state";
 export { Field, type FieldControlProps, type FieldProps } from "./molecules/field/field";
 export { ListRow, type ListRowProps } from "./molecules/list-row/list-row";
+export { LoyaltyCard, type LoyaltyCardProps } from "./molecules/loyalty-card/loyalty-card";
 export { MenuItemCard, type MenuItemCardProps } from "./molecules/menu-item-card/menu-item-card";
 export {
   type MenuItemImage,
