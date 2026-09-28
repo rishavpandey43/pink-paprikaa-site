@@ -1,0 +1,3 @@
+# Carried fixes for batch E (before T9 parity) — own fix commits
+1. Minor (latent bug) — packages/ui/src/lib/component-variants.ts:226,231: `autogrid`/`autogrid-wide` (display+gap+template) share a group with `autogrid-min-*` and conflict with `grid-cols`, so `autogrid grid-cols-2` / `autogrid autogrid-min-lg` merge away display:grid + gap. Put `autogrid-min` in its own group conflicting only with `grid-cols` (both directions); keep `autogrid`/`autogrid-wide` out of the grid-cols conflict. Spec rows for both directions + "autogrid autogrid-min-lg keeps both".
+2. Minor — auto-grid.stories.tsx ColumnsAt768/ColumnsAt1280: add plays counting distinct offsetLeft values (2 and 4).

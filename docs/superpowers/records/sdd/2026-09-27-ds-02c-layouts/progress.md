@@ -22,3 +22,21 @@ Review B: 2b fix wave 12/12 ADDRESSED; T3 Stack ✅, Spacing restore ✅, T4 Clu
 Task 3–4: minor (deferred): spacing.stories isEveryStepShown runtime expect is vacuous (use void).
 Task 3: complete (..b8088af) · Task 4: complete (..01308e6)
 Pending: archive plan 2b records at next idle gap.
+Batch C: DONE (d445180 T5 AutoGrid, f473585 3b/4 plan re-sorts, c563719 T6 Section, fd787a4 plan-5 Spacing Rhythm; ui 746, sb 458, tokens 249).
+Note: plan-5 Task 7 (Layout group) now unblocked — runs with plan 5's later run (or after 2c T7 AppShell).
+Archive: 657e3eb (2b complete + 2c A–C + plan 5 foundations).
+Ledger: D (T7 AppShell, T8 PostFrame) dispatched base 657e3eb; review C in parallel
+Review C: T5 ✅ T6 ✅ Rhythm ✅ approved, 0 Critical/Important. Minors (autogrid twMerge grouping latent bug, one-direction spec, column plays) → carried-fixes-E.md.
+Task 5: complete (..d445180) · Task 6: complete (..c563719)
+Batch D: DONE (7e76a72 T7 AppShell, 5f80d82 T8 PostFrame + POST_FORMATS, 2f584a1/4c9aae9 plan re-sorts; ui 796, sb 490, tokens 249). No cast needed (no `as` prop).
+Ledger: E (carried-fixes-E.md 1–2, then T9 parity) dispatched base 4c9aae9; review D in parallel
+Review D: T7 ✅ T8 ✅ approved, 0 Critical/Important; decided deviations 2,3,5–8 + R70 verified.
+Task 8: minor (deferred, plan-mandated): post-frame-scaler.tsx:33 parent width 0 → scale 0 marked measured; skip update when clientWidth === 0.
+Task 7: complete (..7e76a72) · Task 8: complete (..5f80d82)
+Batch E: DONE (7d35c06 autogrid-min own twMerge group, 1585e8c column plays, a984709 T9 parity — fixed PostFrame mpu headline font; ui 800, sb 490, tokens 249 cold).
+Ruling R74: batch E task review folded into the 2c final review (precedent R49/R68); 2c's final fix wave rides in 3a batch B (precedent R69) — cost if wrong: 3a batch A builds on a 2c defect for one batch.
+Final review dispatched: range 657e3eb..a984709 (2c A–E; archive commit 657e3eb is docs only)
+Final review 2c: READY WITH FIXES — 0 Critical/Important; 4 minors + 3 deferred → final-fix-wave.md (rides in 3a batch B). Batch E ✅ (task review per R74). R69–R74 hold.
+Task 9: complete (4c9aae9..a984709). Plan 2c: COMPLETE pending fix wave (all minor).
+2c final fix wave: done in 3a batch B (fad1dd7..901bed7); reviewed in 3a review B.
+Plan 2c: COMPLETE (fix wave re-reviewed ✅ in 3a review B).

@@ -10,7 +10,7 @@ You implement one batch of tasks from one plan. The controller's dispatch names 
 5. `packages/ui/AUTHORING.md`, repo `CLAUDE.md`.
 
 ## Hard rules
-- No raw hex; tokens only; atomic layering upward only (atoms → lib + atoms/icon; molecules → atoms + lib; organisms → molecules + atoms + lib). Stories may import `../../assets/*` (R46).
+- No raw hex; tokens only; atomic layering upward only (atoms → lib + atoms/icon; molecules → atoms + lib; organisms → molecules + atoms + lib; layouts are the TOP tier (layouts → organisms + molecules + atoms + lib) — nothing imports a layout (R75, tools/eslint-config/atomic-layering.js)). Stories may import `../../assets/*` (R46).
 - pnpm only; `pnpm add` (never hand-write versions). Never `--no-verify`, never eslint-disable a LAW rule, never `git reset --hard` / `checkout --` / `clean`.
 - Optional props are `?: T | undefined` (R13). Blank label/name = no label (R48). External/new-tab links announce "Opens in a new tab" (R44).
 - Do NOT dispatch subagents.
@@ -24,7 +24,7 @@ You implement one batch of tasks from one plan. The controller's dispatch names 
 - `storybook:test` from a cold cache can fail with "Failed to fetch dynamically imported module" — re-run once, report both.
 
 ## Process
-One task at a time; TDD per brief (see the test fail first); run the brief's gates via `pnpm nx …` plus `pnpm nx format:check`. One commit per task — Conventional Commits, `git commit -m`, message ends with:
+One task at a time; TDD per brief (see the test fail first); run the brief's gates via `pnpm nx …` plus `pnpm nx format:check` and `pnpm nx run storybook:test` (R77). One commit per task — Conventional Commits, `git commit -m`, message ends with:
 `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`
 
 ## Report
