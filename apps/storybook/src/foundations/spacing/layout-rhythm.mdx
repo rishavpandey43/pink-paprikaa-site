@@ -1,0 +1,25 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./spacing.stories";
+
+<Meta title="Spacing/Layout rhythm" />
+
+{/* source: guidelines/spacing-layout.card.html */}
+
+# Layout rhythm
+
+A content container, a fluid gutter, a fluid grid gap and fluid section spacing set the page's
+rhythm. `Container` and `Section` apply them; the `container-page` and `section-y` utilities do the
+same for raw markup.
+
+<Canvas of={Specimens.RhythmTokens} meta={Specimens} sourceState="none" />
+
+The gutter and section values are the handoff's (spec C8) — newer than the design system's and used
+on every handoff page; the difference is at most a few pixels of gutter at 360px. Sections breathe:
+never less than the mobile section value, never more than the desktop one.
+
+The fixed chrome — the sticky site header (default and the handoff's compact row), the bottom tab
+bar and the clearance sticky bars keep above the mobile dock — and the minimum touch target every
+interactive element meets:
+
+<Canvas of={Specimens.ChromeTokens} meta={Specimens} sourceState="none" />

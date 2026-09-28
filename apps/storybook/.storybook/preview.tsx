@@ -85,7 +85,7 @@ const preview: Preview = {
           "Type",
           ["Display", "Headings", "Body", "Overline & mono", "Devanagari", "Fluid"],
           "Spacing",
-          ["Scale", "Layout rhythm"],
+          ["Scale", "Layout rhythm", "Shape"],
           "Layout",
           [
             "Breakpoints",

@@ -1,0 +1,26 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./spacing.stories";
+
+<Meta title="Spacing/Scale" />
+
+{/* source: guidelines/spacing-scale.card.html */}
+
+# Spacing scale
+
+Step N is N × the spacing unit, so the step number _is_ the multiple: `p-6` is the design system's
+`--space-6`, `gap-10` its `--space-10`.
+
+<Canvas of={Specimens.Scale} meta={Specimens} sourceState="none" />
+
+Steps run from 1 to 12 one at a time, then 14, 16, 18, 20, 24 and 32; half steps 0.5 and 1.5 exist
+for optical nudges. Steps 4, 6 and 10 do most of the work. Layouts take `space` as a step
+(`Stack space={6}`), never as a length. Every step's padding, margin and gap classes are copy
+buttons — any other spacing utility (`px-4`, `mb-6`) takes the same step number.
+
+## Named sizes
+
+Icons, avatars, controls and measures have tokens of their own. Each lists the utility the library
+uses it as — `size-icon-sm`, `h-button-h-md`, `max-w-text-measure-prose` — never as padding.
+
+<Canvas of={Specimens.ComponentSizes} meta={Specimens} sourceState="none" />
