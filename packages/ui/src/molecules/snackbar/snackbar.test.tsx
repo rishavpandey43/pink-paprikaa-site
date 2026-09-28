@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 
@@ -73,6 +73,7 @@ describe("Snackbar", () => {
 
   it.each([
     ["ink", "polite"],
+    ["brand", "polite"],
     ["success", "polite"],
     ["danger", "assertive"],
   ] as const)(
@@ -121,6 +122,31 @@ describe("Snackbar", () => {
     const onOpenChange = vi.fn();
     render(<Snackbar onOpenChange={onOpenChange}>Code copied.</Snackbar>);
     await user.click(screen.getByRole("button", { name: "Dismiss" }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+
+  it("follows a downward swipe and closes past the threshold", () => {
+    const onOpenChange = vi.fn();
+    render(<Snackbar onOpenChange={onOpenChange}>Code copied.</Snackbar>);
+    const bar = within(messages()).getByRole("listitem");
+    expect(bar).toHaveClass("toast-swipe-y");
+    fireEvent.pointerDown(bar, { button: 0, clientX: 0, clientY: 0 });
+    fireEvent.pointerMove(bar, { clientX: 0, clientY: 20 });
+    fireEvent.pointerMove(bar, { clientX: 0, clientY: 60 });
+    expect(bar).toHaveAttribute("data-swipe", "move");
+    expect(bar.style.getPropertyValue("--radix-toast-swipe-move-y")).toBe("60px");
+    fireEvent.pointerUp(bar, { clientX: 0, clientY: 60 });
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+
+  it("closes on Escape and reports it", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(<Snackbar onOpenChange={onOpenChange}>Code copied.</Snackbar>);
+    within(messages()).getByRole("listitem").focus();
+    await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledWith(false);
     expect(screen.queryByRole("region")).not.toBeInTheDocument();
   });

@@ -196,11 +196,12 @@ describe("Toast", () => {
         </Toast>
       </ToastProvider>
     );
+    // Spy first: a server-render warning counts too.
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
     const container = document.createElement("div");
     container.innerHTML = renderToString(tree);
     document.body.append(container);
     const onRecoverableError = vi.fn();
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     const root = await act(() => hydrateRoot(container, tree, { onRecoverableError }));
 

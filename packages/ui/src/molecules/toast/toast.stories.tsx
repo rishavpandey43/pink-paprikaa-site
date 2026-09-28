@@ -101,7 +101,7 @@ export const AddToOrder: Story = {
     await userEvent.click(canvas.getByRole("button", { name: "Add Chilli Paneer" }));
     await expect(await canvas.findByText("Chilli Paneer added.")).toBeInTheDocument();
     await userEvent.click(canvas.getByRole("button", { name: "View Cart" }));
-    await expect(VIEW_CART.onClick).toHaveBeenCalled();
+    await expect(VIEW_CART.onClick).toHaveBeenCalledTimes(1);
   },
 };
 
