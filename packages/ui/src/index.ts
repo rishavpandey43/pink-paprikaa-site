@@ -22,6 +22,7 @@ export { Logo, type LogoProps } from "./atoms/logo/logo";
 export { PatternField, type PatternFieldProps } from "./atoms/pattern-field/pattern-field";
 export { Radio, RadioGroup, type RadioGroupProps, type RadioProps } from "./atoms/radio/radio";
 export { Select, type SelectOption, type SelectProps } from "./atoms/select/select";
+export { Skeleton, type SkeletonProps } from "./atoms/skeleton/skeleton";
 export { Slider, type SliderProps } from "./atoms/slider/slider";
 export { SocialHeadline, type SocialHeadlineProps } from "./atoms/social-headline/social-headline";
 export { Spinner, type SpinnerProps } from "./atoms/spinner/spinner";
