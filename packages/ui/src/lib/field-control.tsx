@@ -78,15 +78,40 @@ export const fieldControlVariants = componentVariants({
     { control: "select", hasIcon: true, class: { control: "ps-11" } },
     { status: "default", isReadOnly: true, class: { glyph: "text-ink-400" } },
     // A read-only select is disabled natively (a select cannot be read-only), so it undoes the
-    // disabled paint: locked but readable — body text on the default border, like a read-only Input.
+    // disabled paint: locked but readable — body text on its status border, like a read-only Input.
     {
       control: "select",
       isReadOnly: true,
       class: {
-        root: "has-disabled:cursor-default has-disabled:border-border-default has-disabled:text-text-body",
+        root: "has-disabled:cursor-default has-disabled:text-text-body",
         icon: "group-has-disabled/field:text-ink-500",
         control: "disabled:cursor-default",
       },
+    },
+    // `has-disabled:` outranks a plain border class, so each status restores its own border.
+    {
+      control: "select",
+      isReadOnly: true,
+      status: "default",
+      class: { root: "has-disabled:border-border-default" },
+    },
+    {
+      control: "select",
+      isReadOnly: true,
+      status: "error",
+      class: { root: "has-disabled:border-status-danger" },
+    },
+    {
+      control: "select",
+      isReadOnly: true,
+      status: "success",
+      class: { root: "has-disabled:border-status-success" },
+    },
+    {
+      control: "select",
+      isReadOnly: true,
+      status: "warning",
+      class: { root: "has-disabled:border-status-warning" },
     },
   ],
   defaultVariants: {

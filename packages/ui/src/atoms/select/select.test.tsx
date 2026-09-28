@@ -178,6 +178,18 @@ describe("Select", () => {
     expect(disabled).not.toHaveClass("has-disabled:text-text-body");
   });
 
+  it.each([
+    ["error", "has-disabled:border-status-danger"],
+    ["success", "has-disabled:border-status-success"],
+    ["warning", "has-disabled:border-status-warning"],
+  ] as const)("keeps the %s border when read-only (%s)", (status, border) => {
+    render(<Select aria-label="Outlet" readOnly status={status} options={SLOTS} />);
+    const box = screen.getByRole("combobox", { name: "Outlet" }).parentElement;
+    expect(box).toHaveClass(border);
+    expect(box).not.toHaveClass("has-disabled:border-border-default");
+    expect(box).not.toHaveClass("has-disabled:border-border-subtle");
+  });
+
   it("posts no empty value from a read-only placeholder", () => {
     const { container } = render(
       <Select aria-label="Outlet" name="outlet" readOnly placeholder="Choose" options={SLOTS} />

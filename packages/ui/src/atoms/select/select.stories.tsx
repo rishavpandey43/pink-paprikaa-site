@@ -71,6 +71,7 @@ export const ReadOnlyAndDisabled: Story = {
   render: () => (
     <div className="grid w-full max-w-text-measure-prose gap-3">
       <Select aria-label="Outlet" readOnly options={OUTLETS} />
+      <Select aria-label="Outlet, unavailable" readOnly status="error" options={OUTLETS} />
       <Select
         aria-label="Delivery slot"
         disabled
@@ -104,6 +105,14 @@ export const ReadOnlyAndDisabled: Story = {
     );
     await expect(getComputedStyle(disabled).color).toBe(
       paint(disabled, "color", "--color-ink-400")
+    );
+
+    // A status still shows on a read-only select: the disabled paint must not reset its border.
+    const invalid = canvas.getByRole("combobox", { name: "Outlet, unavailable" });
+    const invalidBox = invalid.parentElement;
+    if (invalidBox === null) throw new Error("The select renders inside its field box.");
+    await expect(getComputedStyle(invalidBox).borderColor).toBe(
+      paint(invalid, "borderColor", "--color-status-danger")
     );
   },
 };
