@@ -134,6 +134,9 @@ const SPACING = [
   "switch-width",
   "switch-height",
   "switch-knob",
+  "spinner-sm",
+  "spinner-md",
+  "spinner-lg",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];

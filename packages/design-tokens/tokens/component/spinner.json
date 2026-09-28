@@ -1,0 +1,19 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "spinner-sm": {
+      "$value": "24px",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "spinner-md": {
+      "$value": "36px",
+      "$description": "The default loader.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "spinner-lg": {
+      "$value": "52px",
+      "$description": "A full-page load.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
+  }
+}

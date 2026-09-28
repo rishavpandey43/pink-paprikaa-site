@@ -24,6 +24,7 @@ export { Radio, RadioGroup, type RadioGroupProps, type RadioProps } from "./atom
 export { Select, type SelectOption, type SelectProps } from "./atoms/select/select";
 export { Slider, type SliderProps } from "./atoms/slider/slider";
 export { SocialHeadline, type SocialHeadlineProps } from "./atoms/social-headline/social-headline";
+export { Spinner, type SpinnerProps } from "./atoms/spinner/spinner";
 export { StatusDot, type StatusDotProps } from "./atoms/status-dot/status-dot";
 export { Switch, type SwitchProps } from "./atoms/switch/switch";
 export { Tag, type TagProps, tagVariants } from "./atoms/tag/tag";
