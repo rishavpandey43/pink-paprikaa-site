@@ -3957,7 +3957,7 @@ import { componentVariants } from "../../lib/component-variants";
 const progressBar = componentVariants({
   slots: {
     root: "grid gap-2",
-    label: "text-progress-label font-body text-text-muted",
+    label: "font-body text-progress-label text-text-muted",
     track: "flex w-full gap-1.25",
     segment: "flex-1 overflow-hidden rounded-pill",
     bar: "block h-full rounded-pill transition-all duration-slow ease-out",
