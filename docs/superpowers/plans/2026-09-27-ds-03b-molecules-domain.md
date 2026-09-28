@@ -6531,7 +6531,7 @@ const steps = componentVariants({
     item: "",
     marker: "font-display font-black",
     body: "flex min-w-0 flex-col gap-1",
-    title: "text-steps-title font-display text-text-heading",
+    title: "font-display text-steps-title text-text-heading",
     description: "m-0 max-w-none text-body text-text-body",
   },
   variants: {
