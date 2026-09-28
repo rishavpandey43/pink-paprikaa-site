@@ -75,7 +75,7 @@ export function Pagination({
           <li>
             <LinkComponent href={getPageHref(current - 1)} className={styles.item()}>
               <Icon icon={ChevronLeft} size="sm" />
-              {/* Text, not an Icon label: the name matches the pages' sr-only "Page " text. */}
+              {/* Text, not an Icon label: matches the pages' sr-only name text. */}
               <span className="sr-only">Previous page</span>
             </LinkComponent>
           </li>
@@ -109,7 +109,7 @@ export function Pagination({
           <li>
             <LinkComponent href={getPageHref(current + 1)} className={styles.item()}>
               <Icon icon={ChevronRight} size="sm" />
-              {/* Text, not an Icon label: the name matches the pages' sr-only "Page " text. */}
+              {/* Text, not an Icon label: matches the pages' sr-only name text. */}
               <span className="sr-only">Next page</span>
             </LinkComponent>
           </li>
