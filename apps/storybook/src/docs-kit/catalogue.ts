@@ -3,6 +3,8 @@ import type { TokenEntry } from "@pink-paprikaa-web/design-tokens/catalogue";
 import { parseColor } from "@pink-paprikaa-web/design-tokens/contrast";
 import catalogue from "@pink-paprikaa-web/design-tokens/tokens.json";
 
+import { LIBRARY_SOURCE } from "./library-source";
+
 export type { TokenEntry } from "@pink-paprikaa-web/design-tokens/catalogue";
 
 /**
@@ -174,15 +176,36 @@ function spacingUtilities(step: string, entry: TokenEntry): readonly string[] {
   return SPACING_UTILITIES.map((utility) => `${utility}-${step}`);
 }
 
+const REGEX_SPECIAL = /[.*+?^${}()|[\]\\]/g;
+
 /**
- * A colour's utilities by its role, read from its name (R62) — never a hand list:
+ * The utilities (matching `reader`) packages/ui writes a token step as: `libraryUsesOf("hit",
+ * spacingReader)` → `["min-h"]` for `min-h-hit`. A variant prefix (`has-disabled:`) is read through;
+ * a longer name is not a use (`shadow-field-ring-danger` is not `ring-danger`). Blind spots: it reads
+ * literal class names only, so a step reached through `var(--…)`, an arbitrary value
+ * (`h-(--spacing-…)`) or a class built at runtime reads as unused. Tailwind cannot see a runtime
+ * class either, so the library writes every class out literally.
+ */
+export function libraryUsesOf(step: string, reader: RegExp): string[] {
+  const escaped = step.replace(REGEX_SPECIAL, "\\$&");
+  const pattern = new RegExp(`(?<![\\w-])(-?[a-z]+(?:-[a-z]+)*?)-${escaped}(?![\\w-])`, "g");
+  const prefixes = [...LIBRARY_SOURCE.matchAll(pattern)].map((match) => match[1] ?? "");
+  return [...new Set(prefixes.filter((prefix) => reader.test(prefix)))].sort();
+}
+
+/** Utilities that read Tailwind's colour namespace. */
+const COLOR_READER =
+  /^(?:bg|text|border(?:-[xytrblse])?|outline|ring(?:-offset)?|fill|stroke|decoration|accent|caret|divide)$/;
+
+/**
+ * A colour's default utilities by its role, read from its name (R62) — never a hand list:
  * `text-*` → `text-` only; `surface-*` → `bg-` only; `border-*` → `border-` only; a `-strong`
  * companion is text; a status or accent fill (`status-*`, or a named primitive hue — a primitive one
  * path step below `color`, such as `turmeric`, `mint-soft`, `veg`) paints fields and outlines, so
  * `bg-`/`border-`. The ramps and the alpha steps (`pink-500`, `white-alpha-50`) — and anything else
  * — keep all three.
  */
-function colorUtilities(step: string, entry: TokenEntry): readonly string[] {
+function colorRoleUtilities(step: string, entry: TokenEntry): readonly string[] {
   if (step.startsWith("text-")) return [`text-${step}`];
   if (step.startsWith("surface-")) return [`bg-${step}`];
   if (step.startsWith("border-")) return [`border-${step}`];
@@ -190,6 +213,16 @@ function colorUtilities(step: string, entry: TokenEntry): readonly string[] {
   const isAccent = entry.tier === "primitive" && entry.path.length === 2;
   if (step.startsWith("status-") || isAccent) return [`bg-${step}`, `border-${step}`];
   return [`bg-${step}`, `text-${step}`, `border-${step}`];
+}
+
+/**
+ * R65: the role default plus every colour utility the library really writes the token as — the
+ * status glyphs paint `text-status-*` through currentColor — so a chip is never hidden from a
+ * class packages/ui uses.
+ */
+function colorUtilities(step: string, entry: TokenEntry): readonly string[] {
+  const used = libraryUsesOf(step, COLOR_READER).map((utility) => `${utility}-${step}`);
+  return [...new Set([...colorRoleUtilities(step, entry), ...used])];
 }
 
 /**

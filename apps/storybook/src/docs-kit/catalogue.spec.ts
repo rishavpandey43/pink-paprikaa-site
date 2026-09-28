@@ -1,8 +1,8 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { CATALOGUE, utilitiesOf } from "./catalogue";
+import { CATALOGUE, libraryUsesOf, utilitiesOf } from "./catalogue";
 
 const UI_SRC = join(import.meta.dirname, "../../../../packages/ui/src");
 const stylesheet = readFileSync(join(UI_SRC, "styles.css"), "utf8");
@@ -35,37 +35,14 @@ describe("utilitiesOf", () => {
   });
 });
 
-/** Library source a consumer ships — not its tests or stories. */
-function sourceFiles(dir: string): string[] {
-  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) return sourceFiles(path);
-    const isSource = /\.(tsx?|css)$/.test(entry.name);
-    const isTestOrStory = /\.(test|spec|stories)\./.test(entry.name);
-    return isSource && !isTestOrStory ? [path] : [];
-  });
-}
-
-const SOURCE = sourceFiles(UI_SRC)
-  .map((file) => readFileSync(file, "utf8"))
-  .join("\n");
-
 /** Utilities that read Tailwind's spacing namespace; `text-*`, `z-*` and the rest read others. */
 const SPACING_READER =
   /^-?(?:[pm][xytrblse]?|gap(?:-[xy])?|space-[xy]|inset(?:-[xy])?|top|right|bottom|left|start|end|translate-[xy]|scroll-[mp][xytrblse]?|indent|basis|size|w|h|min-[wh]|max-[wh])$/;
 const SIZING = new Set(["size", "w", "h", "min-w", "min-h", "max-w", "max-h"]);
 
-/**
- * The spacing-namespace utilities packages/ui uses a named spacing step as (`size`, `h`, `p`, …).
- * Blind spots: it reads literal class names only, so a step reached through `var(--spacing-…)`, an
- * arbitrary value (`h-(--spacing-…)`, `min-h-[…]`) or a class built at runtime (`` `size-${x}` ``)
- * reads as unused — which the R63 rule below lets carry any marker. Tailwind cannot see a runtime
- * class either, so the library writes every class out literally.
- */
+/** The spacing-namespace utilities packages/ui uses a named spacing step as (`size`, `h`, `p`, …). */
 function usesOf(step: string): string[] {
-  const pattern = new RegExp(`(?<![\\w-])(-?[a-z]+(?:-[a-z]+)*?)-${step}(?![\\w-])`, "g");
-  const prefixes = [...SOURCE.matchAll(pattern)].map((match) => match[1] ?? "");
-  return [...new Set(prefixes.filter((prefix) => SPACING_READER.test(prefix)))].sort();
+  return libraryUsesOf(step, SPACING_READER);
 }
 
 /*
@@ -100,9 +77,37 @@ describe("R61 sizing markers", () => {
     expect(utilitiesOf("spacing-header")).toEqual(["h-header"]);
     expect(utilitiesOf("spacing-header-compact")).toEqual(["h-header-compact"]);
     expect(utilitiesOf("spacing-tabbar")).toEqual(["h-tabbar"]);
-    expect(utilitiesOf("spacing-hit")).toEqual(["min-h-hit", "min-w-hit"]);
+    expect(utilitiesOf("spacing-hit")).toEqual(["min-h-hit"]);
     expect(utilitiesOf("spacing-dock-clearance")).toEqual(["bottom-dock-clearance"]);
     expect(utilitiesOf("spacing-card-min")).toEqual([]);
     expect(utilitiesOf("spacing-card-min-wide")).toEqual([]);
+  });
+});
+
+/*
+ * R65: a colour's chips are its role default (R62) plus every colour utility packages/ui really
+ * writes it as — the status glyphs paint `text-status-*` through currentColor, the veg mark
+ * `text-veg`, the focus outline `outline-focus` — so the docs never hide a class the library uses.
+ */
+describe("R65 colour chips", () => {
+  it.each([
+    ["color-status-danger", ["bg-status-danger", "border-status-danger", "text-status-danger"]],
+    ["color-status-success", ["bg-status-success", "border-status-success", "text-status-success"]],
+    ["color-status-warning", ["bg-status-warning", "border-status-warning", "text-status-warning"]],
+    ["color-veg", ["bg-veg", "border-veg", "text-veg"]],
+    ["color-focus", ["bg-focus", "text-focus", "border-focus", "outline-focus"]],
+  ])("%s offers its role default and the classes packages/ui uses", (name, expected) => {
+    expect(utilitiesOf(name)).toEqual(expected);
+  });
+
+  it("keeps an unused colour at its role default", () => {
+    expect(libraryUsesOf("turmeric", /^text$/)).toEqual([]);
+    expect(utilitiesOf("color-turmeric")).toEqual(["bg-turmeric", "border-turmeric"]);
+  });
+
+  it("reads a class under a variant prefix, never one inside a longer name", () => {
+    // `has-disabled:border-status-danger` is a use; `shadow-field-ring-danger` is not `ring-danger`.
+    expect(libraryUsesOf("status-danger", /^border$/)).toEqual(["border"]);
+    expect(libraryUsesOf("danger", /^ring$/)).toEqual([]);
   });
 });

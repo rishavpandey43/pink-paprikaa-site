@@ -22,7 +22,7 @@
     "hit": {
       "$value": "44px",
       "$description": "Minimum touch target.",
-      "$extensions": { "pink-paprikaa": { "utility": ["min-h", "min-w"] } }
+      "$extensions": { "pink-paprikaa": { "utility": ["min-h"] } }
     },
     "card-min": {
       "$value": "260px",

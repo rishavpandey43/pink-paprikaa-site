@@ -72,6 +72,9 @@ const DERIVED = [
       ["bg-pink-500", "backgroundColor"],
       ["text-pink-500", "color"],
       ["border-pink-500", "borderTopColor"],
+      // R65: the library also writes the brand pink as a form accent and an SVG fill.
+      ["accent-pink-500", "accentColor"],
+      ["fill-pink-500", "fill"],
     ],
     expected: () => rgbOf("color-pink-500"),
   },
@@ -88,7 +91,11 @@ const DERIVED = [
   },
   {
     name: "color-border-subtle",
-    paints: [["border-border-subtle", "borderTopColor"]],
+    // R65: the role default plus the library's own use as a hairline fill (`bg-border-subtle`).
+    paints: [
+      ["border-border-subtle", "borderTopColor"],
+      ["bg-border-subtle", "backgroundColor"],
+    ],
     expected: () => rgbOf("color-border-subtle"),
   },
   {
@@ -96,11 +103,13 @@ const DERIVED = [
     paints: [["text-mint-strong", "color"]],
     expected: () => rgbOf("color-mint-strong"),
   },
+  // R65: plus the classes the library really writes — the status glyphs paint `text-status-*`.
   {
     name: "color-status-success",
     paints: [
       ["bg-status-success", "backgroundColor"],
       ["border-status-success", "borderTopColor"],
+      ["text-status-success", "color"],
     ],
     expected: () => rgbOf("color-status-success"),
   },
@@ -164,12 +173,10 @@ const DERIVED = [
     expected: () => cssValue("z-header"),
   },
   {
-    // R63: a primitive sizing token is marked by its documented use — the touch-target minimum.
+    // R63: a primitive sizing token is marked by its documented use — the touch-target minimum
+    // height (the plans only ever write `min-h-hit`).
     name: "spacing-hit",
-    paints: [
-      ["min-h-hit", "minHeight"],
-      ["min-w-hit", "minWidth"],
-    ],
+    paints: [["min-h-hit", "minHeight"]],
     expected: () => cssValue("spacing-hit"),
   },
   {
