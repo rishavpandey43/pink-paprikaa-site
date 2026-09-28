@@ -1,0 +1,9 @@
+{
+  "text": {
+    "$type": "typography",
+    "steps-title": {
+      "$value": { "fontSize": "17px", "lineHeight": 1.3, "fontWeight": "{font-weight.bold}" },
+      "$description": "Step title (handoff 17–18px Poppins 700)."
+    }
+  }
+}

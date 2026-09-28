@@ -126,6 +126,7 @@ export {
   type StepTrackerProps,
   type TrackerStep,
 } from "./molecules/step-tracker/step-tracker";
+export { Steps, type StepsItem, type StepsProps } from "./molecules/steps/steps";
 export { type TabItem, Tabs, type TabsProps } from "./molecules/tabs/tabs";
 export {
   Toast,
