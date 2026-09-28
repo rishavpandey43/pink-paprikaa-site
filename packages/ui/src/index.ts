@@ -84,6 +84,11 @@ export {
   type FilterBarProps,
   type FilterOption,
 } from "./molecules/filter-bar/filter-bar";
+export {
+  type KeyValueItem,
+  KeyValueList,
+  type KeyValueListProps,
+} from "./molecules/key-value-list/key-value-list";
 export { ListRow, type ListRowProps } from "./molecules/list-row/list-row";
 export { LogoLockup, type LogoLockupProps } from "./molecules/logo-lockup/logo-lockup";
 export { LoyaltyCard, type LoyaltyCardProps } from "./molecules/loyalty-card/loyalty-card";
