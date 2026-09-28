@@ -7383,8 +7383,8 @@ const stat = componentVariants({
   slots: {
     root: "grid gap-1",
     icon: "mb-1",
-    value: "text-stat-value font-display",
-    label: "text-stat-label font-body font-medium text-text-body",
+    value: "font-display text-stat-value",
+    label: "font-body text-stat-label font-medium text-text-body",
     sub: "text-stat-sub text-text-subtle",
   },
   variants: {
