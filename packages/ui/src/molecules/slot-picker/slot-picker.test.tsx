@@ -60,6 +60,17 @@ describe("SlotPicker", () => {
     expect(screen.getByRole("radio", { name: "8:30pm" })).toBeChecked();
   });
 
+  it("takes a value with no handler as its starting pick, without React's read-only warning", async () => {
+    const user = userEvent.setup();
+    const consoleError = vi.spyOn(console, "error").mockImplementation(vi.fn());
+    render(<SlotPicker name="pickup" legend="Pickup time" slots={SLOTS} value="7:30pm" />);
+    expect(screen.getByRole("radio", { name: "7:30pm" })).toBeChecked();
+    await user.click(screen.getByText("8:00pm"));
+    expect(screen.getByRole("radio", { name: "8:00pm" })).toBeChecked();
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
   it("picks from the keyboard", async () => {
     const user = userEvent.setup();
     render(<SlotPicker name="pickup" legend="Pickup time" slots={SLOTS} />);

@@ -60,6 +60,10 @@ export interface SlotPickerProps extends Omit<
   legend: ReactNode;
   isLegendHidden?: boolean | undefined;
   slots: SlotOption[];
+  /**
+   * The picked slot. Controlled use needs `onValueChange`; without a handler `value` is only the
+   * starting pick (like `defaultValue`), so React never renders read-only radios.
+   */
   value?: string | undefined;
   defaultValue?: string | undefined;
   onValueChange?: ((value: string) => void) | undefined;
@@ -91,7 +95,8 @@ export function SlotPicker({
 }: SlotPickerProps) {
   const baseId = useId();
   const messageId = `${baseId}-message`;
-  const isControlled = value !== undefined;
+  const isControlled = value !== undefined && onValueChange !== undefined;
+  const initialValue = value ?? defaultValue;
   const styles = slotPicker({ status, isLegendHidden });
 
   return (
@@ -128,7 +133,7 @@ export function SlotPicker({
                 aria-invalid={status === "error" ? true : undefined}
                 {...(isControlled
                   ? { checked: value === slot.value }
-                  : { defaultChecked: defaultValue === slot.value })}
+                  : { defaultChecked: initialValue === slot.value })}
                 onChange={
                   onValueChange === undefined
                     ? undefined
