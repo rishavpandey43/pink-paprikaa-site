@@ -55,6 +55,8 @@ const TEXT = [
   "avatar-lg",
   "avatar-xl",
   "field-suffix",
+  "control",
+  "control-description",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -128,6 +130,7 @@ const SPACING = [
   "field-md",
   "field-lg",
   "field-spinner",
+  "choice-box",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];
