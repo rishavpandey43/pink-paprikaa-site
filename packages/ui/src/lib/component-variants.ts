@@ -66,10 +66,11 @@ const TEXT = [
   "price-canvas",
   "price-amount",
   "price-was",
+  "app-shell-status",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
-const RADIUS = ["xs", "sm", "md", "lg", "xl", "pill", "diamond"];
+const RADIUS = ["xs", "sm", "md", "lg", "xl", "pill", "diamond", "app-shell"];
 const SHADOW = [
   "1",
   "2",
@@ -169,6 +170,14 @@ const SPACING = [
   "grid-min-2xl",
   "section-tight",
   "section-loose",
+  "app-shell-w",
+  "app-shell-h",
+  "app-shell-sm-w",
+  "app-shell-sm-h",
+  "app-shell-status-x",
+  "app-shell-home",
+  "app-shell-home-bar-w",
+  "app-shell-home-bar-h",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

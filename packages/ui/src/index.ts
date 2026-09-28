@@ -37,6 +37,7 @@ export { Switch, type SwitchProps } from "./atoms/switch/switch";
 export { Tag, type TagProps, tagVariants } from "./atoms/tag/tag";
 export { Text, type TextProps, type TextTone, type TextVariant } from "./atoms/text/text";
 export { Tooltip, type TooltipProps } from "./atoms/tooltip/tooltip";
+export { AppShell, type AppShellProps } from "./layouts/app-shell/app-shell";
 export { AutoGrid, type AutoGridMin, type AutoGridProps } from "./layouts/auto-grid/auto-grid";
 export { Cluster, type ClusterProps } from "./layouts/cluster/cluster";
 export { Container, type ContainerProps, type ContainerSize } from "./layouts/container/container";
