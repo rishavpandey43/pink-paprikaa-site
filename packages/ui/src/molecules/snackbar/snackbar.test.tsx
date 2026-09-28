@@ -251,6 +251,39 @@ describe("Snackbar", () => {
       expect(trigger).toHaveFocus();
     });
 
+    it("when the parent closes it while focus is inside", () => {
+      const onOpenChange = vi.fn();
+      const { rerender } = render(
+        <>
+          <button type="button">Remove Chilli Paneer</button>
+          <Snackbar open={false} onOpenChange={onOpenChange}>
+            Chilli Paneer removed.
+          </Snackbar>
+        </>
+      );
+      const trigger = screen.getByRole("button", { name: "Remove Chilli Paneer" });
+      trigger.focus();
+      function renderWith(isOpen: boolean): void {
+        rerender(
+          <>
+            <button type="button">Remove Chilli Paneer</button>
+            <Snackbar open={isOpen} onOpenChange={onOpenChange}>
+              Chilli Paneer removed.
+            </Snackbar>
+          </>
+        );
+      }
+      renderWith(true);
+      act(() => {
+        within(messages()).getByRole("button", { name: "Dismiss" }).focus();
+      });
+      // No Radix close path: the parent flips `open` itself.
+      renderWith(false);
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+      expect(onOpenChange).not.toHaveBeenCalled();
+    });
+
     it("leaves focus alone when it was never inside the bar", async () => {
       const user = userEvent.setup();
       render(

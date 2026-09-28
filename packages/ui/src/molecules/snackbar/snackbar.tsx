@@ -107,21 +107,34 @@ export function Snackbar({
   const styles = snackbar({ tone, position, isContained });
   const viewportRef = useRef<HTMLOListElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+  // Whether focus is inside the bar. React ignores the blur a removed node may fire during a
+  // commit, so this still reads true after the bar has unmounted under focus.
+  const isFocusInsideRef = useRef(false);
 
-  // Remember what had focus when the bar opened (Radix never moves focus on open).
+  function returnFocus(): void {
+    const target = returnFocusRef.current;
+    if (target?.isConnected === true) target.focus();
+  }
+
+  // Remember what had focus when the bar opened (Radix never moves focus on open). A close that
+  // skips Radix — the parent setting `open` to false — unmounts the bar with focus inside it:
+  // hand focus back here too.
   useLayoutEffect(() => {
-    if (!isOpen) return;
-    const active = document.activeElement;
-    returnFocusRef.current = active instanceof HTMLElement ? active : null;
+    if (isOpen) {
+      const active = document.activeElement;
+      returnFocusRef.current = active instanceof HTMLElement ? active : null;
+      return;
+    }
+    if (isFocusInsideRef.current) {
+      isFocusInsideRef.current = false;
+      returnFocus();
+    }
   }, [isOpen]);
 
   // R82: on close Radix parks focus on its viewport, which unmounts with the bar and drops focus
   // to <body>. When focus is inside the bar, hand it back to what had it before the bar opened.
   function handleOpenChange(next: boolean): void {
-    if (!next && viewportRef.current?.contains(document.activeElement) === true) {
-      const target = returnFocusRef.current;
-      if (target?.isConnected === true) target.focus();
-    }
+    if (!next && viewportRef.current?.contains(document.activeElement) === true) returnFocus();
     setIsOpen(next);
   }
 
@@ -136,6 +149,12 @@ export function Snackbar({
         type={tone === "danger" ? "foreground" : "background"}
         data-surface={NOTIFICATION_SURFACE[tone]}
         className={styles.root({ className })}
+        onFocus={() => {
+          isFocusInsideRef.current = true;
+        }}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) isFocusInsideRef.current = false;
+        }}
       >
         <Icon icon={icon ?? NOTIFICATION_ICON[tone]} size="md" />
         <RadixToast.Description className={styles.message()}>{children}</RadixToast.Description>

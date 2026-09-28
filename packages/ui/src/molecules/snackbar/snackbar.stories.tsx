@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { useState } from "react";
-import { expect, fn } from "storybook/test";
+import { useEffect, useState } from "react";
+import { expect, fn, waitFor } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
 import { Snackbar } from "./snackbar";
@@ -87,6 +87,49 @@ export const LiveCopy: Story = {
     canvas.getByRole("button", { name: "Dismiss" }).focus();
     await userEvent.keyboard("{Enter}");
     await expect(canvas.getByRole("button", { name: "Copy PAPRIKAA50" })).toHaveFocus();
+  },
+};
+
+/** The parent's own timer closes the bar — no Radix close path. */
+function ClosedByParentDemo() {
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    if (!isOpen) return;
+    const timer = setTimeout(() => {
+      setIsOpen(false);
+    }, 400);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isOpen]);
+  return (
+    <div className="relative grid h-40 place-items-start rounded-lg border border-border-subtle p-4">
+      <Button
+        variant="secondary"
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        Save address
+      </Button>
+      <Snackbar open={isOpen} onOpenChange={setIsOpen} duration={10_000}>
+        Address saved.
+      </Snackbar>
+    </div>
+  );
+}
+
+/** R82: a parent that closes the bar itself still gets focus handed back. */
+export const ClosedByParent: Story = {
+  render: () => <ClosedByParentDemo />,
+  play: async ({ canvas, userEvent }) => {
+    const opener = canvas.getByRole("button", { name: "Save address" });
+    await userEvent.click(opener);
+    (await canvas.findByRole("button", { name: "Dismiss" })).focus();
+    await waitFor(async () => {
+      await expect(canvas.queryByText("Address saved.")).toBeNull();
+    });
+    await expect(opener).toHaveFocus();
   },
 };
 
