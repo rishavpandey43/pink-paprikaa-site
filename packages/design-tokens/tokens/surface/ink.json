@@ -6,6 +6,8 @@
       "price-summary-discount": { "$value": "{color.ink.000}" },
       "step-tracker-bar-off": { "$value": "{color.white-alpha.25}" },
       "step-tracker-marker-off": { "$value": "{color.white-alpha.25}" },
+      "feature-item-tile": { "$value": "{color.ink.800}" },
+      "feature-item-icon": { "$value": "{color.pink.300}" },
       "text": {
         "heading": { "$value": "{color.ink.000}" },
         "body": { "$value": "{color.ink.000}" },

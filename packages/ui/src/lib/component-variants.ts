@@ -97,6 +97,8 @@ const TEXT = [
   "coupon-ticket-stub-label-lg",
   "choice-card-title",
   "steps-title",
+  "feature-item-title-md",
+  "feature-item-title-sm",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];

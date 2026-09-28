@@ -1,0 +1,24 @@
+{
+  "color": {
+    "$type": "color",
+    "feature-item-tile": {
+      "$value": "{color.pink.100}",
+      "$description": "Icon tile fill; ink-800 on the ink surface."
+    },
+    "feature-item-icon": {
+      "$value": "{color.pink.600}",
+      "$description": "Icon colour in the tile; pink-300 on the ink surface."
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "feature-item-title-md": {
+      "$value": { "fontSize": "17px", "lineHeight": 1.3, "fontWeight": "{font-weight.bold}" },
+      "$description": "Catering \"Why us\"."
+    },
+    "feature-item-title-sm": {
+      "$value": { "fontSize": "16px", "lineHeight": 1.35, "fontWeight": "{font-weight.bold}" },
+      "$description": "Office perks, Homely Meals \"What you get\"."
+    }
+  }
+}
