@@ -1,77 +1,82 @@
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
-import { contrastRatio } from "./contrast.js";
+import type { TokenEntry } from "./catalogue.js";
 
-interface CatalogueEntry {
-  name: string;
-  value: unknown;
-  surface: string | null;
-}
-
-interface PolicyGroup {
-  id: string;
-  surface: string | null;
-  foregrounds?: string[];
-  backgrounds?: string[];
-  pairs?: [string, string][];
-  backdrop?: string;
-  min: number;
-  exception?: "brand-fill";
-}
+import {
+  AA_NORMAL,
+  type ContrastPolicy,
+  evaluateContrastPolicy,
+  pairsOf,
+  resolveColor,
+  verdictOf,
+} from "./contrast.js";
 
 const readJson = (relative: string): unknown =>
-  JSON.parse(readFileSync(new URL(relative, import.meta.url), "utf8"));
+  JSON.parse(readFileSync(join(import.meta.dirname, relative), "utf8"));
 
-const catalogue = readJson("../dist/tokens.json") as CatalogueEntry[];
-const { groups } = readJson("../contrast-pairs.json") as { groups: PolicyGroup[] };
+const catalogue = readJson("../dist/tokens.json") as TokenEntry[];
+const policy = readJson("../contrast-pairs.json") as ContrastPolicy;
+const results = evaluateContrastPolicy(catalogue, policy);
 
-/** A token's value on a surface: the surface override if one exists, else the base token. */
-function resolve(name: string, surface: string | null): string {
-  const override =
-    surface === null ? undefined : catalogue.find((e) => e.surface === surface && e.name === name);
-  const entry = override ?? catalogue.find((e) => e.surface === null && e.name === name);
-  if (entry === undefined || typeof entry.value !== "string") {
-    throw new Error(`contrast policy: no colour token "${name}"${surface ? ` on ${surface}` : ""}`);
-  }
-  return entry.value;
-}
+describe.each(policy.groups)("contrast group $id", (group) => {
+  const groupResults = results.filter((result) => result.group === group.id);
 
-function pairsOf(group: PolicyGroup): [string, string][] {
-  if (group.pairs) return group.pairs;
-  const backgrounds = group.backgrounds ?? [];
-  return (group.foregrounds ?? []).flatMap((fg) =>
-    backgrounds.map((bg): [string, string] => [fg, bg])
-  );
-}
-
-describe.each(groups)("contrast group $id", (group) => {
-  it.each(pairsOf(group))("%s on %s meets the group minimum", (fg, bg) => {
-    const backdrop =
-      group.backdrop === undefined ? undefined : resolve(group.backdrop, group.surface);
-    const ratio = contrastRatio(resolve(fg, group.surface), resolve(bg, group.surface), backdrop);
-    expect(
-      ratio,
-      `${fg} on ${bg} (${group.surface ?? "light"}) = ${ratio.toFixed(2)}:1`
-    ).toBeGreaterThanOrEqual(group.min);
+  it("declares at least one pair", () => {
+    expect(groupResults.length).toBeGreaterThan(0);
   });
+
+  it.each(groupResults.map((result) => [result.foreground, result.background, result] as const))(
+    "%s on %s meets the group minimum",
+    (_foreground, _background, result) => {
+      expect(
+        result.ratio,
+        `${result.foreground} on ${result.background} (${result.surface ?? "light"}) = ${result.ratio.toFixed(2)}:1`
+      ).toBeGreaterThanOrEqual(result.min);
+    }
+  );
 });
 
 describe("contrast policy", () => {
   it("allows a ratio below AA only for the brand-fill exception, and never below the AA-large floor", () => {
-    const loose = groups.filter((g) => g.min < 4.5);
-    expect(loose.every((g) => g.exception === "brand-fill" && g.min === 3)).toBe(true);
+    const loose = policy.groups.filter((group) => group.min < AA_NORMAL);
+    expect(loose.every((group) => group.exception === "brand-fill" && group.min === 3)).toBe(true);
   });
 
   it("uses the brand-fill exception only over the brand pink", () => {
-    const brandPink = resolve("color-surface-brand", null);
-    for (const group of groups.filter((g) => g.exception === "brand-fill")) {
-      for (const [, bg] of pairsOf(group)) {
-        const ground =
-          group.backdrop === undefined
-            ? resolve(bg, group.surface)
-            : resolve(group.backdrop, group.surface);
+    const brandPink = resolveColor(catalogue, "color-surface-brand", null);
+    for (const group of policy.groups.filter((candidate) => candidate.exception === "brand-fill")) {
+      for (const [, background] of pairsOf(group)) {
+        const ground = resolveColor(catalogue, group.backdrop ?? background, group.surface);
         expect(ground, `${group.id}: exception ground`).toBe(brandPink);
       }
     }
+  });
+
+  it("rates white on the brand pink as the declared exception, not a pass", () => {
+    const onBrand = results.find(
+      (result) =>
+        result.foreground === "color-text-on-brand" && result.background === "color-surface-brand"
+    );
+    expect(onBrand?.verdict).toBe("exception");
+  });
+});
+
+describe("verdictOf", () => {
+  it.each([
+    [4.5, 3, "pass"],
+    [4.04, 3, "exception"],
+    [2.9, 3, "fail"],
+    [4.49, 4.5, "fail"],
+  ] as const)("rates %s against a minimum of %s as %s", (ratio, min, verdict) => {
+    expect(verdictOf(ratio, min)).toBe(verdict);
+  });
+});
+
+describe("pairsOf", () => {
+  it("rejects a declared pair that is not [foreground, background]", () => {
+    expect(() =>
+      pairsOf({ id: "bad", surface: null, pairs: [["color-text-body"]], min: 4.5 })
+    ).toThrow(/group "bad" has a pair that is not \[foreground, background\]/);
   });
 });

@@ -5,6 +5,8 @@
  * `#rrggbb`, `#rrggbbaa`, `rgb()` and `rgba()`. Anything else throws, so a token the policy
  * cannot measure fails loudly instead of being skipped.
  */
+import type { TokenEntry } from "./catalogue.js";
+
 export interface Rgba {
   readonly r: number;
   readonly g: number;
@@ -78,4 +80,125 @@ export function contrastRatio(foreground: string, background: string, backdrop?:
   const a = relativeLuminance(fg);
   const b = relativeLuminance(bg);
   return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+
+/** WCAG 2.x AA minimum for normal-size text. */
+export const AA_NORMAL = 4.5;
+
+/** The part of a catalogue entry the policy reads. */
+export type CatalogueEntry = Pick<TokenEntry, "name" | "value" | "surface">;
+
+/** One group of `contrast-pairs.json` (spec §5.4). Pairs are string arrays so the JSON types as-is. */
+export interface PolicyGroup {
+  readonly id: string;
+  readonly surface: string | null;
+  readonly foregrounds?: readonly string[];
+  readonly backgrounds?: readonly string[];
+  readonly pairs?: readonly (readonly string[])[];
+  readonly backdrop?: string;
+  readonly min: number;
+  readonly exception?: string;
+}
+
+export interface ContrastPolicy {
+  readonly groups: readonly PolicyGroup[];
+}
+
+export type ContrastVerdict = "pass" | "exception" | "fail";
+
+export interface ContrastResult {
+  readonly group: string;
+  readonly surface: string | null;
+  readonly foreground: string;
+  readonly background: string;
+  readonly backdrop: string | null;
+  readonly foregroundValue: string;
+  readonly backgroundValue: string;
+  readonly backdropValue: string | null;
+  readonly ratio: number;
+  readonly min: number;
+  readonly exception: string | null;
+  readonly verdict: ContrastVerdict;
+}
+
+/** A colour token's value on a surface: the surface override if there is one, else the base token. */
+export function resolveColor(
+  catalogue: readonly CatalogueEntry[],
+  name: string,
+  surface: string | null
+): string {
+  const override =
+    surface === null
+      ? undefined
+      : catalogue.find((entry) => entry.surface === surface && entry.name === name);
+  const entry =
+    override ??
+    catalogue.find((candidate) => candidate.surface === null && candidate.name === name);
+  if (entry === undefined || typeof entry.value !== "string") {
+    throw new Error(
+      `contrast policy: no colour token "${name}"${surface === null ? "" : ` on ${surface}`}`
+    );
+  }
+  return entry.value;
+}
+
+/** Every [foreground, background] pair a group declares. */
+export function pairsOf(group: PolicyGroup): [string, string][] {
+  if (group.pairs !== undefined) {
+    return group.pairs.map((pair) => {
+      const [foreground, background] = pair;
+      if (pair.length !== 2 || foreground === undefined || background === undefined) {
+        throw new Error(
+          `contrast policy: group "${group.id}" has a pair that is not [foreground, background]`
+        );
+      }
+      return [foreground, background];
+    });
+  }
+  const backgrounds = group.backgrounds ?? [];
+  return (group.foregrounds ?? []).flatMap((foreground) =>
+    backgrounds.map((background): [string, string] => [foreground, background])
+  );
+}
+
+/** "pass" at AA; "exception" between a group's lower minimum and AA; "fail" below the minimum. */
+export function verdictOf(ratio: number, min: number): ContrastVerdict {
+  if (ratio >= AA_NORMAL) return "pass";
+  return ratio >= min ? "exception" : "fail";
+}
+
+/**
+ * Measures every pair the policy declares against the built catalogue. The contrast gate
+ * (`policy.spec.ts`) and Storybook's Colors → Contrast page both call this, so the page can never
+ * show a different verdict from the one CI enforces.
+ */
+export function evaluateContrastPolicy(
+  catalogue: readonly CatalogueEntry[],
+  policy: ContrastPolicy
+): ContrastResult[] {
+  return policy.groups.flatMap((group) =>
+    pairsOf(group).map(([foreground, background]) => {
+      const backdropValue =
+        group.backdrop === undefined
+          ? null
+          : resolveColor(catalogue, group.backdrop, group.surface);
+      const foregroundValue = resolveColor(catalogue, foreground, group.surface);
+      const backgroundValue = resolveColor(catalogue, background, group.surface);
+      const ratio = contrastRatio(foregroundValue, backgroundValue, backdropValue ?? undefined);
+      return {
+        group: group.id,
+        surface: group.surface,
+        foreground,
+        background,
+        backdrop: group.backdrop ?? null,
+        foregroundValue,
+        backgroundValue,
+        backdropValue,
+        ratio,
+        min: group.min,
+        exception: group.exception ?? null,
+        verdict: verdictOf(ratio, group.min),
+      };
+    })
+  );
 }

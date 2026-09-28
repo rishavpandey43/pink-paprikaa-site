@@ -14,7 +14,13 @@
       "types": "./src/contrast.ts",
       "import": "./src/contrast.ts",
       "default": "./src/contrast.ts"
-    }
+    },
+    "./catalogue": {
+      "types": "./src/catalogue.ts",
+      "import": "./src/catalogue.ts",
+      "default": "./src/catalogue.ts"
+    },
+    "./contrast-pairs.json": "./contrast-pairs.json"
   },
   "nx": {
     "tags": [
