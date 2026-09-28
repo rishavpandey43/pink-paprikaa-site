@@ -2,6 +2,7 @@
   "surface-brand": {
     "color": {
       "$type": "color",
+      "breadcrumb-chevron": { "$value": "{color.white-alpha.50}" },
       "text": {
         "heading": { "$value": "{color.ink.000}" },
         "body": { "$value": "{color.ink.000}" },

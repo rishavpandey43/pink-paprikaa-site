@@ -2,6 +2,7 @@
   "surface-light": {
     "color": {
       "$type": "color",
+      "breadcrumb-chevron": { "$value": "{color.ink.400}" },
       "text": {
         "heading": { "$value": "{color.ink.900}" },
         "body": { "$value": "{color.ink.800}" },
