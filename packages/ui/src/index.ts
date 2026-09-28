@@ -62,6 +62,7 @@ export {
   type BreadcrumbItem,
   type BreadcrumbProps,
 } from "./molecules/breadcrumb/breadcrumb";
+export { CheckCard, type CheckCardProps } from "./molecules/check-card/check-card";
 export {
   ChoiceCardGroup,
   type ChoiceCardGroupProps,
