@@ -265,6 +265,9 @@ importers:
       '@pink-paprikaa-web/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@pink-paprikaa-web/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^5.3.0
@@ -302,6 +305,9 @@ importers:
       chromatic:
         specifier: ^18.1.0
         version: 18.1.0
+      lucide-react:
+        specifier: ^1.30.0
+        version: 1.30.0(react@19.2.8)
       playwright:
         specifier: ^1.62.1
         version: 1.62.1

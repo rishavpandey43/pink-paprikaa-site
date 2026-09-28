@@ -73,17 +73,33 @@ const preview: Preview = {
     },
     options: {
       // Introduction, then the design system's thirteen tab groups in its own order (foundations,
-      // then the atomic layers, then the reference kits), instead of alphabetical.
+      // then the atomic layers, then the reference kits), instead of alphabetical. Foundation pages
+      // follow the design system's card order; component stories inside a layer stay alphabetical.
       storySort: {
         order: [
           "Introduction",
           "Brand",
+          ["Logo", "Pattern", "Company details", "Voice & content", "Iconography"],
           "Colors",
+          ["Primary", "Ink", "Accents", "Heat", "Semantic", "Surfaces", "Status", "Contrast"],
           "Type",
+          ["Display", "Headings", "Body", "Overline & mono", "Devanagari", "Fluid"],
           "Spacing",
+          ["Scale", "Layout rhythm"],
           "Layout",
+          [
+            "Breakpoints",
+            "AutoGrid",
+            "Radii",
+            "Borders",
+            "Elevation",
+            "Card anatomy",
+            "Utility classes",
+          ],
           "Motion",
+          ["Motion", "States", "Form states", "Section reveal"],
           "Marketing",
+          ["Canvas formats", "Canvas type", "Kit", ["Feed", "Ads"]],
           "Atoms",
           "Molecules",
           "Organisms",

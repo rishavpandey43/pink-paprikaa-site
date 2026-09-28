@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "nx": {
+    "projectType": "application",
     "tags": [
       "type:app",
       "scope:shared"
@@ -45,6 +46,9 @@
       },
       "serve": {
         "continuous": true,
+        "dependsOn": [
+          "^build"
+        ],
         "executor": "nx:run-commands",
         "options": {
           "cwd": "apps/storybook",
@@ -66,7 +70,8 @@
   "dependencies": {
     "@pink-paprikaa-web/content": "workspace:*",
     "@pink-paprikaa-web/design-tokens": "workspace:*",
-    "@pink-paprikaa-web/ui": "workspace:*"
+    "@pink-paprikaa-web/ui": "workspace:*",
+    "@pink-paprikaa-web/utils": "workspace:*"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.3.0",
@@ -81,6 +86,7 @@
     "@vitest/browser": "^4.1.10",
     "@vitest/browser-playwright": "^4.1.10",
     "chromatic": "^18.1.0",
+    "lucide-react": "^1.30.0",
     "playwright": "^1.62.1",
     "remark-gfm": "^4.0.1",
     "tailwindcss": "^4.3.3",
