@@ -178,6 +178,10 @@ const SPACING = [
   "app-shell-home",
   "app-shell-home-bar-w",
   "app-shell-home-bar-h",
+  "canvas-pad",
+  "canvas-pad-tight",
+  "story-safe-top",
+  "story-safe-bottom",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

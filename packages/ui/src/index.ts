@@ -41,6 +41,8 @@ export { AppShell, type AppShellProps } from "./layouts/app-shell/app-shell";
 export { AutoGrid, type AutoGridMin, type AutoGridProps } from "./layouts/auto-grid/auto-grid";
 export { Cluster, type ClusterProps } from "./layouts/cluster/cluster";
 export { Container, type ContainerProps, type ContainerSize } from "./layouts/container/container";
+export { POST_FORMATS, type PostFormat } from "./layouts/post-frame/post-formats";
+export { PostFrame, type PostFrameProps } from "./layouts/post-frame/post-frame";
 export { Section, type SectionProps } from "./layouts/section/section";
 export { Stack, type StackProps } from "./layouts/stack/stack";
 export type { FieldStatus } from "./lib/field-status";
