@@ -2828,12 +2828,12 @@ import { componentVariants } from "../../lib/component-variants";
 const toggle = componentVariants({
   slots: {
     track: [
-      "h-switch-height w-switch-width relative flex rounded-pill bg-ink-300 transition-colors duration-base ease-out",
+      "relative flex h-switch-height w-switch-width rounded-pill bg-ink-300 transition-colors duration-base ease-out",
       "group-has-checked/choice:bg-pink-500",
       "group-has-focus-visible/choice:outline-2 group-has-focus-visible/choice:outline-offset-2 group-has-focus-visible/choice:outline-focus",
       "group-has-disabled/choice:bg-ink-200",
     ],
-    knob: "size-switch-knob absolute top-0.75 left-0.75 rounded-pill bg-ink-000 shadow-1 transition-transform duration-base ease-out group-has-checked/choice:translate-x-4.5",
+    knob: "absolute top-0.75 left-0.75 size-switch-knob rounded-pill bg-ink-000 shadow-1 transition-transform duration-base ease-out group-has-checked/choice:translate-x-4.5",
   },
 });
 
