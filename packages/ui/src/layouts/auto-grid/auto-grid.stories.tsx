@@ -34,6 +34,15 @@ const MINS: { min: AutoGridMin; px: string }[] = [
   { min: "2xl", px: "420px" },
 ];
 
+/** Columns the grid actually laid out: its cells' distinct left edges. */
+const columnCount = (canvasElement: HTMLElement) =>
+  new Set(
+    Array.from(
+      within(canvasElement).getByTestId("grid").children,
+      (cell) => (cell as HTMLElement).offsetLeft
+    )
+  ).size;
+
 const meta = {
   title: "Layouts/AutoGrid",
   component: AutoGrid,
@@ -112,14 +121,20 @@ export const ColumnsAt360: Story = {
 
 export const ColumnsAt768: Story = {
   name: "768px — two columns",
-  args: { children: cards(8) },
   globals: { viewport: { value: "md", isRotated: false } },
+  render: () => <AutoGrid data-testid="grid">{cards(8)}</AutoGrid>,
+  play: async ({ canvasElement }) => {
+    await expect(columnCount(canvasElement)).toBe(2);
+  },
 };
 
 export const ColumnsAt1280: Story = {
   name: "1280px — four columns",
-  args: { children: cards(8) },
   globals: { viewport: { value: "xl", isRotated: false } },
+  render: () => <AutoGrid data-testid="grid">{cards(8)}</AutoGrid>,
+  play: async ({ canvasElement }) => {
+    await expect(columnCount(canvasElement)).toBe(4);
+  },
 };
 
 /**
