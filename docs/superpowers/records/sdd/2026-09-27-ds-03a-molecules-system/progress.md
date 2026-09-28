@@ -69,3 +69,8 @@ Ruling R91: Toast restores focus on close like Snackbar (R82) instead of leaving
 Ruling R92: Pagination gap follows the card (bordered circle) over the brief/dev — parity is against the card.
 Ruling R93: batch H task review folded into the 3a final review (precedent R49/R68/R74); 3a fix wave rides in 3b batch B.
 Task 20: complete pending final review.
+Final review 3a: READY WITH FIXES — 0 Critical, 1 Important (Accordion ::details-content transition escapes reduced-motion reset). Batch H ✅ (R93). R75–R88, R92 hold. Same R89 brand-surface pattern found in EmptyState, Stat, Tabs underline.
+Final fix wave: W/final-fix-wave.md (16 items) → rides in 3b batch B (R93).
+Task 20: complete (..aaa17c5). Plan 3a: COMPLETE pending fix wave.
+3a final fix wave: done in 3b batch B (4bb3050..bf640fd); re-reviewed in 3b review B.
+Plan 3a: COMPLETE (fix wave re-reviewed ✅ in 3b review B).
