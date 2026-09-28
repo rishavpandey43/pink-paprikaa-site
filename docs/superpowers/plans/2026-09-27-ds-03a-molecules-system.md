@@ -3787,7 +3787,7 @@ const alert = componentVariants({
     root: "flex items-start gap-3 rounded-md border px-4 py-3.5",
     icon: "mt-px",
     body: "min-w-0 flex-1",
-    title: "text-alert-title m-0 font-display",
+    title: "m-0 font-display text-alert-title",
     content: "text-body-sm text-pretty",
     action: "mt-2.5",
   },
