@@ -71,7 +71,7 @@ const SIDES = [
 export const Sides: Story = {
   name: "side",
   render: () => (
-    <div className="flex items-center gap-8 p-16">
+    <div className="flex flex-wrap items-center gap-8 p-16">
       {SIDES.map(({ side, label, name, icon }) => (
         <Tooltip key={side} label={label} side={side}>
           <Trigger icon={icon} label={name} />
