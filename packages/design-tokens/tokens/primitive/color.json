@@ -49,6 +49,10 @@
     },
     "danger": { "$value": "#CF2222" },
     "danger-soft": { "$value": "#FCE9E9" },
+    "danger-strong": {
+      "$value": "#B81E1E",
+      "$description": "Danger text on the pink-100 soft ground, where danger measures 4.24:1."
+    },
     "veg": { "$value": "#1A7A3C", "$description": "The statutory vegetarian mark." },
     "white-alpha": {
       "06": { "$value": "rgba(255, 255, 255, 0.06)" },

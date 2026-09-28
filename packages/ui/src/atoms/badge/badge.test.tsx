@@ -27,9 +27,9 @@ describe("Badge", () => {
     ["brand", "bg-badge-brand-bg", "text-badge-brand-fg"],
     ["soft", "bg-pink-100", "text-pink-700"],
     ["ink", "bg-ink-900", "text-ink-000"],
-    ["success", "bg-status-success-soft", "text-text-success"],
-    ["warning", "bg-status-warning-soft", "text-text-warning"],
-    ["danger", "bg-status-danger-soft", "text-text-danger"],
+    ["success", "bg-status-success-soft", "text-mint-strong"],
+    ["warning", "bg-status-warning-soft", "text-turmeric-strong"],
+    ["danger", "bg-status-danger-soft", "text-danger"],
     ["neutral", "bg-ink-100", "text-ink-700"],
   ] as const)("paints the %s tone with %s and %s", (tone, fill, text) => {
     render(<Badge tone={tone}>Bestseller</Badge>);

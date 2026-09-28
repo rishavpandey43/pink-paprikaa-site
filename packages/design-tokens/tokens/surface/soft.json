@@ -9,7 +9,8 @@
           "$description": "pink-600 on pink-100 measures 4.08:1 (spec §5.3)."
         },
         "link": { "$value": "{color.pink.700}" },
-        "link-hover": { "$value": "{color.pink.800}" }
+        "link-hover": { "$value": "{color.pink.800}" },
+        "danger": { "$value": "{color.danger-strong}" }
       },
       "border": {
         "subtle": { "$value": "{color.pink.200}" },

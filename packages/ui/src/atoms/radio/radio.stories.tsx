@@ -167,13 +167,16 @@ export const PortionPicker: Story = {
   ),
 };
 
-/** Unnamed radios, so each of the five grounds keeps its own checked option. */
+/** Unnamed radios, so each ground keeps its own checked option; the errored group shows its message. */
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
     <OnSurfaces>
       <Radio value="regular" label="Regular" price={280} defaultChecked />
       <Radio value="sharing" label="Sharing" price={440} />
+      <RadioGroup legend="Portion" isLegendHidden status="error" message="Pick a portion.">
+        <Radio value="half" label="Half" />
+      </RadioGroup>
     </OnSurfaces>
   ),
 };

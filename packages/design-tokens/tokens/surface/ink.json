@@ -9,7 +9,13 @@
         "subtle": { "$value": "{color.white-alpha.85}" },
         "brand": { "$value": "{color.pink.300}" },
         "link": { "$value": "{color.ink.000}" },
-        "link-hover": { "$value": "{color.ink.000}" }
+        "link-hover": { "$value": "{color.ink.000}" },
+        "success": { "$value": "{color.mint-soft}" },
+        "warning": { "$value": "{color.turmeric-soft}" },
+        "danger": {
+          "$value": "{color.danger-soft}",
+          "$description": "Status text on a dark or brand ground is the soft tint; the glyph and the words carry the status."
+        }
       },
       "link": {
         "underline": { "$value": "{color.white-alpha.40}" },

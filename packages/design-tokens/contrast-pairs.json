@@ -46,7 +46,10 @@
         "color-text-subtle",
         "color-text-brand",
         "color-text-link",
-        "color-text-link-hover"
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger"
       ],
       "backgrounds": ["color-surface-brand-soft"],
       "min": 4.5
@@ -61,7 +64,10 @@
         "color-text-subtle",
         "color-text-brand",
         "color-text-link",
-        "color-text-link-hover"
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger"
       ],
       "backgrounds": ["color-surface-inverse"],
       "min": 4.5
@@ -76,7 +82,10 @@
         "color-text-subtle",
         "color-text-brand",
         "color-text-link",
-        "color-text-link-hover"
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger"
       ],
       "backgrounds": ["color-surface-card"],
       "backdrop": "color-surface-inverse",
@@ -92,7 +101,10 @@
         "color-text-subtle",
         "color-text-brand",
         "color-text-link",
-        "color-text-link-hover"
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger"
       ],
       "backgrounds": ["color-surface-brand"],
       "min": 3,
@@ -108,7 +120,10 @@
         "color-text-subtle",
         "color-text-brand",
         "color-text-link",
-        "color-text-link-hover"
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger"
       ],
       "backgrounds": ["color-surface-card"],
       "backdrop": "color-surface-brand",
@@ -268,7 +283,7 @@
         ["color-ink-700", "color-pink-50"],
         ["color-pink-700", "color-ink-000"],
         ["color-pink-700", "color-pink-50"],
-        ["color-text-success", "color-status-success-soft"],
+        ["color-mint-strong", "color-status-success-soft"],
         ["color-ink-000", "color-tag-selected-hover"]
       ],
       "min": 4.5
@@ -306,9 +321,9 @@
         ["color-pink-700", "color-pink-100"],
         ["color-ink-000", "color-ink-900"],
         ["color-ink-700", "color-ink-100"],
-        ["color-text-success", "color-status-success-soft"],
-        ["color-text-warning", "color-status-warning-soft"],
-        ["color-text-danger", "color-status-danger-soft"]
+        ["color-mint-strong", "color-status-success-soft"],
+        ["color-turmeric-strong", "color-status-warning-soft"],
+        ["color-danger", "color-status-danger-soft"]
       ],
       "min": 4.5
     },

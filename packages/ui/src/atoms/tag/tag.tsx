@@ -31,7 +31,8 @@ export const tagVariants = componentVariants({
   variants: {
     tone: {
       default: { root: "border-ink-300 bg-ink-000 text-ink-700" },
-      success: { root: "border-status-success bg-status-success-soft text-text-success" },
+      // Its own soft fill, so surface-invariant text (`text-text-success` is a soft tint on dark).
+      success: { root: "border-status-success bg-status-success-soft text-mint-strong" },
       brand: { root: "border-pink-200 bg-ink-000 text-pink-700" },
     },
     // Declared after `tone`, so a selected tag's fill, border and text replace the tone's.

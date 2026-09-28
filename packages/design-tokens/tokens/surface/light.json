@@ -9,7 +9,10 @@
         "subtle": { "$value": "{color.ink.600}" },
         "brand": { "$value": "{color.pink.600}" },
         "link": { "$value": "{color.pink.600}" },
-        "link-hover": { "$value": "{color.pink.700}" }
+        "link-hover": { "$value": "{color.pink.700}" },
+        "success": { "$value": "{color.mint-strong}" },
+        "warning": { "$value": "{color.turmeric-strong}" },
+        "danger": { "$value": "{color.danger}" }
       },
       "link": {
         "underline": { "$value": "{color.pink.200}" },

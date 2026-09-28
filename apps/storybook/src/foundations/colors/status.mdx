@@ -15,4 +15,7 @@ carries a message and a glyph.
 
 The fills are accents. Status **text** uses the strong companions — `--color-text-success` is
 `mint-strong`, `--color-text-warning` is `turmeric-strong` — which pass AA on white and on the soft
-fills.
+fills. On a brand or ink section the three status text colours turn to their soft tints
+(`mint-soft`, `turmeric-soft`, `danger-soft`), and on the pink-100 soft ground danger text deepens to
+`danger-strong`. A status chip that brings its own soft fill (Badge, Tag) uses the strong primitives
+directly, so it reads the same on every ground.

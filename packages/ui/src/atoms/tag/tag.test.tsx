@@ -115,7 +115,7 @@ describe("Tag", () => {
 
   it.each([
     ["default", "bg-ink-000", "border-ink-300", "text-ink-700"],
-    ["success", "bg-status-success-soft", "border-status-success", "text-text-success"],
+    ["success", "bg-status-success-soft", "border-status-success", "text-mint-strong"],
     ["brand", "bg-ink-000", "border-pink-200", "text-pink-700"],
   ] as const)("paints the %s tone with %s, %s and %s", (tone, fill, border, text) => {
     render(<Tag tone={tone}>Sector 57</Tag>);

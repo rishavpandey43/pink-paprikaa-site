@@ -21,9 +21,11 @@ const badge = componentVariants({
       brand: { root: "bg-badge-brand-bg text-badge-brand-fg" },
       soft: { root: "bg-pink-100 text-pink-700" },
       ink: { root: "bg-ink-900 text-ink-000" },
-      success: { root: "bg-status-success-soft text-text-success" },
-      warning: { root: "bg-status-warning-soft text-text-warning" },
-      danger: { root: "bg-status-danger-soft text-text-danger" },
+      // Status skins bring their own soft fill, so their text is the surface-invariant strong
+      // primitive — `text-text-*` turns to a soft tint on brand and ink.
+      success: { root: "bg-status-success-soft text-mint-strong" },
+      warning: { root: "bg-status-warning-soft text-turmeric-strong" },
+      danger: { root: "bg-status-danger-soft text-danger" },
       neutral: { root: "bg-ink-100 text-ink-700" },
     },
   },
