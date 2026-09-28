@@ -4,6 +4,8 @@
       "$type": "color",
       "breadcrumb-chevron": { "$value": "{color.white-alpha.50}" },
       "price-summary-discount": { "$value": "{color.ink.000}" },
+      "step-tracker-bar-on": { "$value": "{color.ink.000}" },
+      "step-tracker-bar-off": { "$value": "{color.white-alpha.25}" },
       "text": {
         "heading": { "$value": "{color.ink.000}" },
         "body": { "$value": "{color.ink.000}" },

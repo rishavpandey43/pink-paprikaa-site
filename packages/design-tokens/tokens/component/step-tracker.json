@@ -1,0 +1,34 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "step-tracker-marker": {
+      "$value": "22px",
+      "$description": "Vertical StepTracker marker: a 22px square turned 45°.",
+      "$extensions": {
+        "pink-paprikaa": {
+          "utility": ["size"]
+        }
+      }
+    },
+    "step-tracker-mark": {
+      "$value": "16px",
+      "$description": "The brand mark inside a marker (74% of the marker).",
+      "$extensions": {
+        "pink-paprikaa": {
+          "utility": ["size"]
+        }
+      }
+    }
+  },
+  "color": {
+    "$type": "color",
+    "step-tracker-bar-on": {
+      "$value": "{color.pink.500}",
+      "$description": "Horizontal StepTracker: a reached segment. White on a pink field."
+    },
+    "step-tracker-bar-off": {
+      "$value": "{color.ink.200}",
+      "$description": "Horizontal StepTracker: a segment still to come. White at 25% on pink and ink fields."
+    }
+  }
+}
