@@ -5021,12 +5021,12 @@ const NO_HOTKEY: string[] = [];
 const snackbar = componentVariants({
   slots: {
     anchor: "pointer-events-none inset-x-6 z-toast m-0 flex list-none p-0",
-    root: "max-w-snackbar pointer-events-auto flex w-full min-w-0 animate-sheet-in items-center gap-3 rounded-md py-3.25 pr-3.5 pl-4 text-text-body shadow-3",
-    message: "text-snackbar min-w-0 flex-1 font-body font-medium text-pretty",
+    root: "pointer-events-auto flex w-full max-w-snackbar min-w-0 animate-sheet-in items-center gap-3 rounded-md py-3.25 pr-3.5 pl-4 text-text-body shadow-3",
+    message: "min-w-0 flex-1 font-body text-snackbar font-medium text-pretty",
     // Hit areas (dev parity): the action is 44px tall (`min-h-hit`, margin pulled into the 13px
     // padding by `-my-3`); the 24px dismiss takes taps over 40px through `before:-inset-2`.
     action:
-      "text-snackbar-action -my-3 inline-flex min-h-hit shrink-0 items-center rounded-xs px-1.5 font-display font-bold uppercase active:press-scale",
+      "-my-3 inline-flex min-h-hit shrink-0 items-center rounded-xs px-1.5 font-display text-snackbar-action font-bold uppercase active:press-scale",
     dismiss:
       "relative grid size-6 shrink-0 place-items-center rounded-pill text-current opacity-70 transition-opacity duration-fast ease-out before:absolute before:-inset-2 hover:opacity-100",
   },
