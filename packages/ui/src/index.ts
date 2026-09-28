@@ -51,3 +51,4 @@ export type { LinkAs, LinkAsProps } from "./lib/link-as";
 export { RevealObserver, type RevealObserverProps } from "./lib/reveal-observer";
 export { GAP_CLASS, type SpaceStep } from "./lib/space";
 export { Field, type FieldControlProps, type FieldProps } from "./molecules/field/field";
+export { SearchField, type SearchFieldProps } from "./molecules/search-field/search-field";

@@ -319,6 +319,18 @@
   z-index: var(--z-toast);
 }
 
+/* A search input without the browser's own clear button and decorations (SearchField draws its own). */
+@utility search-reset {
+  appearance: none;
+
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    appearance: none;
+  }
+}
+
 @utility z-tooltip {
   z-index: var(--z-tooltip);
 }
