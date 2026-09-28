@@ -7789,11 +7789,11 @@ const accordion = componentVariants({
     root: "border-t border-border-subtle",
     item: "group details-content-motion border-b border-border-subtle",
     summary:
-      "text-accordion-question flex cursor-pointer list-none items-center justify-between gap-4 py-4.5 font-display text-text-heading transition-colors duration-fast ease-out group-open:text-text-brand marker:hidden hover:text-text-brand",
+      "flex cursor-pointer list-none items-center justify-between gap-4 py-4.5 font-display text-accordion-question text-text-heading transition-colors duration-fast ease-out group-open:text-text-brand marker:hidden hover:text-text-brand",
     question: "min-w-0",
     chevron: "transition-transform duration-base ease-out group-open:rotate-180",
     answer:
-      "max-w-accordion-answer-measure text-accordion-answer pb-4.5 text-pretty text-text-muted",
+      "max-w-accordion-answer-measure pb-4.5 text-accordion-answer text-pretty text-text-muted",
   },
 });
 
