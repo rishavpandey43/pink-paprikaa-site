@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, within } from "storybook/test";
 
 import { brand } from "@pink-paprikaa-web/content";
-import { Card } from "@pink-paprikaa-web/ui";
+import { Card, SpiceLevel } from "@pink-paprikaa-web/ui";
 
 import { rgbOf, token, utilitiesOf } from "../../docs-kit/catalogue";
 import { spyOnClipboard } from "../../docs-kit/clipboard";
@@ -47,6 +47,7 @@ const TEXT_COMPANIONS = [
   "color-veg",
 ];
 const HEAT = ["color-heat-1", "color-heat-2", "color-heat-3", "color-heat-4"];
+const LEVELS = [1, 2, 3, 4] as const;
 const STATUS = ["success", "warning", "danger", "info"].flatMap((status) => [
   `color-status-${status}`,
   `color-status-${status}-soft`,
@@ -84,8 +85,18 @@ export const TextCompanions: Story = {
   render: () => <Swatches selection={{ names: TEXT_COMPANIONS }} />,
 };
 
-// Deferred (fold list item 3): the SpiceLevel row above the swatches — Plan 2b T12.
-export const HeatScale: Story = { render: () => <Swatches selection={{ names: HEAT }} /> };
+export const HeatScale: Story = {
+  render: () => (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-end gap-8">
+        {LEVELS.map((level) => (
+          <SpiceLevel key={level} level={level} hasLabel />
+        ))}
+      </div>
+      <Swatches selection={{ names: HEAT }} />
+    </div>
+  ),
+};
 
 /** A token's CSS variable as a copy chip — the label is `token(name).cssVar`, never retyped. */
 function VarChip({ name, className }: { name: string; className?: string | undefined }) {

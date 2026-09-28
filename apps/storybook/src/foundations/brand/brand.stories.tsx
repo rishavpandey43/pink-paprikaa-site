@@ -5,11 +5,15 @@ import { expect, within } from "storybook/test";
 
 import { brand, toBrandLines } from "@pink-paprikaa-web/content";
 import {
+  DietMark,
   Icon,
   InstagramGlyph,
   LinkedinGlyph,
   Logo,
   PatternField,
+  Rating,
+  SpiceLevel,
+  Spinner,
   StatusDot,
   Text,
   YoutubeGlyph,
@@ -33,6 +37,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const ICON_SIZES = ["xs", "sm", "md", "lg", "xl"] as const;
+const SIZES = ["sm", "md", "lg"] as const;
+const LEVELS = [1, 2, 3, 4] as const;
 
 export const Lockup: Story = {
   render: () => (
@@ -133,10 +139,24 @@ export const SymbolMark: Story = {
 export const MarkLegibility: Story = {
   render: () => (
     <div className="flex flex-col gap-6">
-      {/* Deferred (fold list item 3): the SpiceLevel, Rating and Spinner rows — Plan 2b T12/T11/T8. */}
       <SpecimenRow label='StatusDot — size="sm" · "md"'>
         {(["sm", "md"] as const).map((size) => (
           <StatusDot key={size} tone="live" size={size} label={`Live · ${size}`} />
+        ))}
+      </SpecimenRow>
+      <SpecimenRow label='SpiceLevel — size="sm" · "md" · "lg"'>
+        {SIZES.map((size) => (
+          <SpiceLevel key={size} level={2} size={size} />
+        ))}
+      </SpecimenRow>
+      <SpecimenRow label='Rating — size="sm" · "md" · "lg"'>
+        {SIZES.map((size) => (
+          <Rating key={size} value={4} size={size} hasValue={false} />
+        ))}
+      </SpecimenRow>
+      <SpecimenRow label='Spinner — size="sm" · "md" · "lg"'>
+        {SIZES.map((size) => (
+          <Spinner key={size} size={size} label={`Loading · ${size}`} />
         ))}
       </SpecimenRow>
     </div>
@@ -193,12 +213,23 @@ export const PatternTokens: Story = {
 export const DiamondMotif: Story = {
   render: () => (
     <div className="grid gap-6 md:grid-cols-2">
-      {/* Deferred (fold list item 3): the SpiceLevel, StepTracker, Rating and Spinner rows — Plans 2b, 3a T19. */}
+      <SpecimenRow label="Heat scale — SpiceLevel">
+        {LEVELS.map((level) => (
+          <SpiceLevel key={level} level={level} />
+        ))}
+      </SpecimenRow>
+      {/* Deferred (fold list item 3): the StepTracker row — Plan 3a T19. */}
+      <SpecimenRow label="Score — Rating">
+        <Rating value={4.5} />
+      </SpecimenRow>
       <SpecimenRow label="Dot — StatusDot">
         <StatusDot tone="open" label="Open now" />
         <StatusDot tone="busy" label="Kitchen is busy" />
         <StatusDot tone="closed" label="Closed" />
         <StatusDot tone="live" label="Live" isPulsing />
+      </SpecimenRow>
+      <SpecimenRow label="Loader — Spinner">
+        <Spinner size="lg" />
       </SpecimenRow>
     </div>
   ),
@@ -254,5 +285,22 @@ export const BrandGlyphs: Story = {
       <Icon icon={YoutubeGlyph} size="lg" label="YouTube" />
       <Icon icon={LinkedinGlyph} size="lg" label="LinkedIn" />
     </SpecimenRow>
+  ),
+};
+
+export const DietAndHeat: Story = {
+  render: () => (
+    <div className="flex flex-col gap-6">
+      <SpecimenRow label='DietMark — the only diet mark; size="sm" · "md" · "lg"'>
+        {SIZES.map((size) => (
+          <DietMark key={size} size={size} />
+        ))}
+      </SpecimenRow>
+      <SpecimenRow label="SpiceLevel — hasLabel, level 1–4">
+        {LEVELS.map((level) => (
+          <SpiceLevel key={level} level={level} hasLabel />
+        ))}
+      </SpecimenRow>
+    </div>
   ),
 };
