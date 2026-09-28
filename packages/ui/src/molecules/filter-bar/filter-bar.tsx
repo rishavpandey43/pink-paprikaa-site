@@ -42,7 +42,8 @@ const filterBar = componentVariants({
   variants: {
     isWrapping: {
       true: { root: "flex-wrap", group: "flex-wrap" },
-      false: { root: "flex-nowrap overflow-x-auto pb-1", group: "flex-nowrap" },
+      // The group scrolls, not the root, so the note and the trailing control stay pinned in view.
+      false: { root: "flex-nowrap", group: "min-w-0 flex-nowrap overflow-x-auto pb-1" },
     },
   },
 });

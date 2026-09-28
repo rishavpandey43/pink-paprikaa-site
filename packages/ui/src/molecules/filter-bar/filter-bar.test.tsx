@@ -71,7 +71,9 @@ describe("FilterBar", () => {
     const { container, rerender } = render(
       <FilterBar label="Menu category" options={CATEGORIES} />
     );
-    expect(container.firstElementChild).toHaveClass("overflow-x-auto", "flex-nowrap");
+    // The group scrolls, not the root, so the note and the trailing slot stay pinned in view.
+    expect(screen.getByRole("radiogroup")).toHaveClass("overflow-x-auto", "flex-nowrap");
+    expect(container.firstElementChild).not.toHaveClass("overflow-x-auto");
     rerender(<FilterBar label="Menu category" options={CATEGORIES} isWrapping />);
     expect(container.firstElementChild).toHaveClass("flex-wrap");
   });

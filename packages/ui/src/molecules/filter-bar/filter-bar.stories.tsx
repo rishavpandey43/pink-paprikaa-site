@@ -99,6 +99,36 @@ export const WithTrailing: Story = {
   },
 };
 
+/** 360px, scrolling: the filters scroll under a pinned statement badge and trailing control. */
+export const ScrollPinned: Story = {
+  args: {
+    isWrapping: false,
+    options: [...WEBSITE, { value: "bar", label: "Bar" }],
+    trailing: (
+      <Button size="sm" variant="ghost" icon={Search}>
+        Search
+      </Button>
+    ),
+  },
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  play: async ({ canvas }) => {
+    const group = canvas.getByRole("radiogroup");
+    const root = group.parentElement;
+    await expect(root).toBeInstanceOf(HTMLElement);
+    if (root === null) return;
+    await expect(group.scrollWidth).toBeGreaterThan(group.clientWidth);
+    const edge = root.getBoundingClientRect().right;
+    await expect(
+      canvas.getByText("100% Vegetarian").getBoundingClientRect().right
+    ).toBeLessThanOrEqual(edge);
+    await expect(
+      canvas.getByRole("button", { name: "Search" }).getBoundingClientRect().right
+    ).toBeLessThanOrEqual(edge);
+    const page = document.documentElement;
+    await expect(page.scrollWidth).toBeLessThanOrEqual(page.clientWidth);
+  },
+};
+
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: (args) => (
