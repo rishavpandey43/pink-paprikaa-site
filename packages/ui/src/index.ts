@@ -70,6 +70,7 @@ export {
   type FilterOption,
 } from "./molecules/filter-bar/filter-bar";
 export { ListRow, type ListRowProps } from "./molecules/list-row/list-row";
+export { LogoLockup, type LogoLockupProps } from "./molecules/logo-lockup/logo-lockup";
 export { LoyaltyCard, type LoyaltyCardProps } from "./molecules/loyalty-card/loyalty-card";
 export { MenuItemCard, type MenuItemCardProps } from "./molecules/menu-item-card/menu-item-card";
 export {
