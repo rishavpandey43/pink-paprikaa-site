@@ -99,6 +99,7 @@ const TEXT = [
   "steps-title",
   "feature-item-title-md",
   "feature-item-title-sm",
+  "pricing-card-price",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -231,6 +232,7 @@ const SPACING = [
   "coupon-ticket-stub-md",
   "coupon-ticket-stub-lg",
   "coupon-ticket-notch",
+  "pricing-card-pad",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

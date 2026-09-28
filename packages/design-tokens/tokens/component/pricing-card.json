@@ -1,0 +1,21 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "pricing-card-pad": {
+      "$value": "clamp(20px, 3vw, 28px)",
+      "$description": "Card padding (handoff Homely Meals plates)."
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "pricing-card-price": {
+      "$value": {
+        "fontSize": "clamp(36px, 4.4vw, 48px)",
+        "lineHeight": 1,
+        "letterSpacing": "-0.03em",
+        "fontWeight": "{font-weight.black}"
+      },
+      "$description": "The per-unit price; the handoff's 34–48px range, fluid."
+    }
+  }
+}

@@ -108,6 +108,7 @@ export {
   PriceSummary,
   type PriceSummaryProps,
 } from "./molecules/price-summary/price-summary";
+export { PricingCard, type PricingCardProps } from "./molecules/pricing-card/pricing-card";
 export {
   QuantityStepper,
   type QuantityStepperProps,
