@@ -115,8 +115,11 @@ export const Spacing: Story = {
 
 export const ColumnsAt360: Story = {
   name: "360px — one column",
-  args: { children: cards(8) },
   globals: { viewport: { value: "floor360", isRotated: false } },
+  render: () => <AutoGrid data-testid="grid">{cards(8)}</AutoGrid>,
+  play: async ({ canvasElement }) => {
+    await expect(columnCount(canvasElement)).toBe(1);
+  },
 };
 
 export const ColumnsAt768: Story = {
