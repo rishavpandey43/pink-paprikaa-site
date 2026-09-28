@@ -181,6 +181,22 @@ describe("PostFrame", () => {
       expect(canvasOf(container).parentElement).toHaveStyle({ transform: "scale(1)" });
     });
 
+    it("keeps its last scale while the frame measures 0 wide (a hidden tab or collapsed panel)", () => {
+      frameWidth = 0;
+      const { container } = render(<PostFrame format="post" isFit />);
+      const scaler = canvasOf(container).parentElement;
+      expect(scaler).toHaveClass("invisible");
+      frameWidth = 540;
+      act(() => {
+        report();
+      });
+      frameWidth = 0;
+      act(() => {
+        report();
+      });
+      expect(scaler).toHaveStyle({ transform: "scale(0.5)" });
+    });
+
     it("stays invisible until it has measured", () => {
       vi.stubGlobal(
         "ResizeObserver",

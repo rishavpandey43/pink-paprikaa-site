@@ -29,7 +29,10 @@ export function PostFrameScaler({ width, className, children }: PostFrameScalerP
     const box = ref.current;
     if (box === null) return undefined;
     // ResizeObserver reports the initial size too, so this is also the first measurement.
+    // A frame 0 wide (display: none, a hidden tab) has no width to fit: keep the last scale
+    // rather than collapse the canvas to scale(0).
     const observer = new ResizeObserver(() => {
+      if (box.clientWidth === 0) return;
       setScale(Math.min(1, box.clientWidth / width));
     });
     observer.observe(box);
