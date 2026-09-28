@@ -90,6 +90,7 @@ export {
   KeyValueList,
   type KeyValueListProps,
 } from "./molecules/key-value-list/key-value-list";
+export { LinkCard, type LinkCardProps } from "./molecules/link-card/link-card";
 export { ListRow, type ListRowProps } from "./molecules/list-row/list-row";
 export { LogoLockup, type LogoLockupProps } from "./molecules/logo-lockup/logo-lockup";
 export { LoyaltyCard, type LoyaltyCardProps } from "./molecules/loyalty-card/loyalty-card";

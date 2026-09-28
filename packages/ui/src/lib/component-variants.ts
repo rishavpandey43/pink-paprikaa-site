@@ -100,6 +100,8 @@ const TEXT = [
   "feature-item-title-md",
   "feature-item-title-sm",
   "pricing-card-price",
+  "link-card-title",
+  "link-card-title-lg",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
