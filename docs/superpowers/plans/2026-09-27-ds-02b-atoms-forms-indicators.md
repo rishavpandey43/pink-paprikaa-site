@@ -692,14 +692,14 @@ export const fieldControlVariants = componentVariants({
     icon: "text-ink-500 group-has-disabled/field:text-ink-400",
     control: "bg-transparent outline-none disabled:cursor-not-allowed",
     glyph: "ms-auto",
-    spinner: "size-field-spinner ms-auto shrink-0 text-pink-500 motion-safe:animate-mark-pulse",
-    suffix: "text-field-suffix shrink-0 font-mono text-text-subtle",
+    spinner: "ms-auto size-field-spinner shrink-0 text-pink-500 motion-safe:animate-mark-pulse",
+    suffix: "shrink-0 font-mono text-field-suffix text-text-subtle",
   },
   variants: {
     size: {
       sm: { root: "h-field-sm text-body-sm" },
-      md: { root: "h-field-md text-control" },
-      lg: { root: "h-field-lg text-control" },
+      md: { root: "text-control h-field-md" },
+      lg: { root: "text-control h-field-lg" },
     },
     control: {
       input: {
@@ -723,17 +723,17 @@ export const fieldControlVariants = componentVariants({
         glyph: "text-ink-500 group-has-disabled/field:text-ink-400",
       },
       error: {
-        root: "focus-within:shadow-field-ring-danger border-2 border-status-danger",
+        root: "border-2 border-status-danger focus-within:shadow-field-ring-danger",
         icon: "text-status-danger",
         glyph: "text-status-danger",
       },
       success: {
-        root: "focus-within:shadow-field-ring-success border-2 border-status-success",
+        root: "border-2 border-status-success focus-within:shadow-field-ring-success",
         icon: "text-status-success",
         glyph: "text-status-success",
       },
       warning: {
-        root: "focus-within:shadow-field-ring-warning border-2 border-status-warning",
+        root: "border-2 border-status-warning focus-within:shadow-field-ring-warning",
         icon: "text-status-warning",
         glyph: "text-status-warning",
       },
