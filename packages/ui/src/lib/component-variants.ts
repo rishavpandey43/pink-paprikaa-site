@@ -81,6 +81,8 @@ const TEXT = [
   "stat-sub",
   "accordion-question",
   "accordion-answer",
+  "menu-item-name",
+  "menu-item-devanagari",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
