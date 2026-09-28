@@ -4577,13 +4577,13 @@ export interface ChoiceCardGroupProps extends Omit<
 const choiceCardGroup = componentVariants({
   slots: {
     root: "min-w-0",
-    legend: "text-choice-card-title mb-2.5 font-display text-text-heading",
+    legend: "mb-2.5 font-display text-choice-card-title text-text-heading",
     list: "grid gap-2",
     card: "relative flex min-h-16 cursor-pointer rounded-md p-3 text-left transition-control has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400",
     input: "",
     body: "flex min-w-0 flex-1 flex-col items-start gap-1",
     head: "flex w-full flex-wrap items-center justify-between gap-1.5",
-    title: "text-choice-card-title font-display",
+    title: "font-display text-choice-card-title",
     price:
       "flex flex-wrap items-baseline gap-1.5 font-display text-h4 font-black whitespace-nowrap",
     was: "font-body text-body-sm font-regular",
@@ -4597,13 +4597,13 @@ const choiceCardGroup = componentVariants({
     tone: {
       light: {
         // 1px border + the inset `selected` shadow = a 2px border that never shifts the layout.
-        card: "has-checked:shadow-selected border border-border-default bg-surface-card text-text-heading has-checked:border-border-brand has-checked:bg-pink-50 has-checked:text-pink-700",
+        card: "border border-border-default bg-surface-card text-text-heading has-checked:border-border-brand has-checked:bg-pink-50 has-checked:text-pink-700 has-checked:shadow-selected",
         input: "sr-only",
       },
       "on-brand": {
         card: "border-2 border-transparent bg-white-alpha-92 text-text-heading has-checked:border-ink-900 has-checked:bg-ink-000",
         input:
-          "checked:shadow-choice-card-radio size-4.5 shrink-0 cursor-pointer appearance-none rounded-pill border-2 border-ink-600 bg-ink-000 checked:border-pink-600 checked:bg-pink-600 focus-visible:outline-none",
+          "size-4.5 shrink-0 cursor-pointer appearance-none rounded-pill border-2 border-ink-600 bg-ink-000 checked:border-pink-600 checked:bg-pink-600 checked:shadow-choice-card-radio focus-visible:outline-none",
       },
     },
     min: {
@@ -5129,7 +5129,7 @@ import { componentVariants } from "../../lib/component-variants";
 
 const checkCard = componentVariants({
   slots: {
-    root: "has-checked:shadow-selected flex min-h-13 cursor-pointer items-center gap-3 rounded-md border border-border-default bg-surface-card px-3.5 py-3 text-text-heading transition-control has-checked:border-border-brand has-checked:bg-pink-50 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400",
+    root: "flex min-h-13 cursor-pointer items-center gap-3 rounded-md border border-border-default bg-surface-card px-3.5 py-3 text-text-heading transition-control has-checked:border-border-brand has-checked:bg-pink-50 has-checked:shadow-selected has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400",
     // The native checkbox, restyled, with the tick stacked on it in the same grid cell.
     box: "grid shrink-0 place-items-center",
     input:
@@ -9182,7 +9182,7 @@ function PriceButton({
       type="button"
       className={
         isHighlighted
-          ? "shadow-selected flex min-h-13 w-full flex-col items-start gap-0.5 rounded-md border border-border-brand bg-pink-50 px-3 py-2.5 text-left"
+          ? "flex min-h-13 w-full flex-col items-start gap-0.5 rounded-md border border-border-brand bg-pink-50 px-3 py-2.5 text-left shadow-selected"
           : "flex min-h-13 w-full flex-col items-start gap-0.5 rounded-md border border-transparent px-3 py-2.5 text-left hover:bg-surface-page-alt"
       }
     >
