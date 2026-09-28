@@ -1,3 +1,5 @@
+import type { TrackerStep } from "@pink-paprikaa-web/ui";
+
 import { brand } from "@pink-paprikaa-web/content";
 
 const [flagship] = brand.outlets;
@@ -11,14 +13,8 @@ export const OUTLET = flagship;
 /** The year the legal lines print — read once when Storybook is built, as an app does at build. */
 export const BUILD_YEAR = new Date().getFullYear();
 
-/** One OrderTracker step — the shape of `TrackerStep`, which lands with StepTracker (Plan 3a). */
-interface OrderStep {
-  readonly label: string;
-  readonly note: string;
-}
-
 /** Order steps from the design system's OrderTracker. */
-export const ORDER_STEPS: OrderStep[] = [
+export const ORDER_STEPS: TrackerStep[] = [
   { label: "Order in", note: "Kitchen's on it." },
   { label: "On the tandoor", note: "Chilli paneer is charring." },
   { label: "Ready for pickup", note: "Counter 2, ask for Paprikaa." },

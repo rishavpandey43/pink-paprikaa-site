@@ -15,6 +15,7 @@ import {
   SpiceLevel,
   Spinner,
   StatusDot,
+  StepTracker,
   Text,
   YoutubeGlyph,
 } from "@pink-paprikaa-web/ui";
@@ -23,7 +24,7 @@ import { formatValue, token, utilitiesOf } from "../../docs-kit/catalogue";
 import { spyOnClipboard } from "../../docs-kit/clipboard";
 import { SpecimenRow, SpecimenTile } from "../../docs-kit/specimen";
 import { TokenTable } from "../../docs-kit/token-table";
-import { BUILD_YEAR } from "../../kits/fixtures";
+import { BUILD_YEAR, ORDER_STEPS } from "../../kits/fixtures";
 import { CompanyDetails, OWNER_TO_SUPPLY, pendingFacts } from "./company-details";
 
 /** Live visuals for the Brand pages. Hidden from the sidebar; rendered by the MDX; run by storybook:test. */
@@ -218,7 +219,10 @@ export const DiamondMotif: Story = {
           <SpiceLevel key={level} level={level} />
         ))}
       </SpecimenRow>
-      {/* Deferred (fold list item 3): the StepTracker row — Plan 3a T19. */}
+      {/* Vertical: its markers are the diamonds (the horizontal tracker is a segmented bar). */}
+      <SpecimenRow label="Step — StepTracker">
+        <StepTracker steps={ORDER_STEPS} current={1} />
+      </SpecimenRow>
       <SpecimenRow label="Score — Rating">
         <Rating value={4.5} />
       </SpecimenRow>
