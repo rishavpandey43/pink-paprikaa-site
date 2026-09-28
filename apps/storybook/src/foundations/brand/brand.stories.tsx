@@ -258,6 +258,31 @@ export const CompanyFacts: Story = {
   },
 };
 
+/** At xl the fact boxes sit three to a row; no key or value is clipped or pushes out of its card. */
+export const CompanyFactsXl: Story = {
+  globals: { viewport: { value: "xl", isRotated: false } },
+  render: () => <CompanyDetails />,
+  play: async ({ canvasElement }) => {
+    const cards = [...canvasElement.querySelectorAll("dl")].map(
+      (list) => list.parentElement ?? list
+    );
+    // Three columns: the first three fact boxes share a top edge.
+    const tops = cards.slice(0, 3).map((card) => Math.round(card.getBoundingClientRect().top));
+    await expect(new Set(tops).size).toBe(1);
+    for (const card of cards) {
+      const box = card.getBoundingClientRect();
+      for (const cell of card.querySelectorAll("dt, dd")) {
+        await expect(cell.scrollWidth).toBeLessThanOrEqual(cell.clientWidth);
+        await expect(cell.getBoundingClientRect().right).toBeLessThanOrEqual(box.right);
+      }
+    }
+    // The keys keep the fact sheet's mono face.
+    await expect(
+      getComputedStyle(canvasElement.querySelector("dt > span") ?? canvasElement).fontFamily
+    ).toMatch(/mono/i);
+  },
+};
+
 export const IconSizes: Story = {
   render: () => (
     <div className="flex flex-col gap-6">

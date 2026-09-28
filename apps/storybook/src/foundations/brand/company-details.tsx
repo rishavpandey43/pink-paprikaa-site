@@ -29,6 +29,14 @@ function percent(rate: number): string {
   return `${String(Math.round(rate * 1000) / 10)}%`;
 }
 
+/** The fact sheet sets its keys in mono, as the design system's Company details card does. */
+function monoKeys(items: KeyValueItem[]): KeyValueItem[] {
+  return items.map((item) => ({
+    ...item,
+    key: <span className="font-mono text-mono">{item.key}</span>,
+  }));
+}
+
 interface FactBox {
   heading: string;
   items: KeyValueItem[];
@@ -114,7 +122,7 @@ export function CompanyDetails() {
             </Text>
             {/* wrap-break-word inherits to the values: an email or URL never widens the card. */}
             <KeyValueList
-              items={box.items}
+              items={monoKeys(box.items)}
               density="compact"
               keyWidth="sm"
               className="wrap-break-word"
@@ -130,14 +138,14 @@ export function CompanyDetails() {
           density="compact"
           keyWidth="md"
           className="wrap-break-word"
-          items={[
+          items={monoKeys([
             { key: "copyright", value: lines.copyright },
             { key: "fssai", value: lines.fssai },
             { key: "gstin", value: lines.gstin },
             { key: "cin", value: lines.cin },
             { key: "contactShort", value: lines.contactShort },
             { key: "footerPolicies", value: lines.footerPolicies.join(" · ") },
-          ]}
+          ])}
         />
       </Card>
       <div className="flex flex-col gap-2">
