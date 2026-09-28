@@ -47,9 +47,17 @@ describe("library stylesheets", () => {
  * the variable at the element instead (the fix `shadow-button-primary` shipped with).
  */
 describe("surface-overridden shadows", () => {
+  // An empty list would pass the it.each below vacuously (a renamed catalogue field, say).
+  it("finds the shadows a surface overrides", () => {
+    expect(surfaceShadows).toContain("focus-ring");
+  });
+
   it.each(surfaceShadows)("shadow-%s reads its variable at the element", (name) => {
-    expect(stylesheet).toContain(
-      `@utility shadow-${name} {\n  --tw-shadow: var(--shadow-${name});\n}`
+    // Token names are [a-z0-9-], so they need no escaping; any whitespace or a final `;` passes.
+    expect(stylesheet).toMatch(
+      new RegExp(
+        `@utility shadow-${name}\\s*\\{\\s*--tw-shadow:\\s*var\\(--shadow-${name}\\);?\\s*\\}`
+      )
     );
   });
 });
