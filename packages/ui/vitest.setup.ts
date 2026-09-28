@@ -57,6 +57,12 @@ if (typeof globalThis.IntersectionObserver === "undefined") {
 if (typeof globalThis.ResizeObserver === "undefined") {
   globalThis.ResizeObserver = InertObserver;
 }
+// Radix Toast's swipe handler calls these on every pointerup (a click on a toast's action).
+if (typeof Element.prototype.hasPointerCapture === "undefined") {
+  Element.prototype.hasPointerCapture = () => false;
+  Element.prototype.setPointerCapture = () => undefined;
+  Element.prototype.releasePointerCapture = () => undefined;
+}
 if (typeof window.matchMedia === "undefined") {
   window.matchMedia = (query: string) =>
     ({

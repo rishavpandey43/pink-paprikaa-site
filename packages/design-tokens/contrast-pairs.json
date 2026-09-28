@@ -361,6 +361,15 @@
       "surface": null,
       "pairs": [["color-pink-800", "color-surface-brand-soft"]],
       "min": 4.5
+    },
+    {
+      "id": "toast",
+      "surface": "ink",
+      "pairs": [
+        ["color-text-body", "color-toast-success-bg"],
+        ["color-text-body", "color-status-danger"]
+      ],
+      "min": 4.5
     }
   ]
 }

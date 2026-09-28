@@ -70,6 +70,8 @@ const TEXT = [
   "otp-digit",
   "slot-picker-note",
   "alert-title",
+  "toast",
+  "toast-action",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
