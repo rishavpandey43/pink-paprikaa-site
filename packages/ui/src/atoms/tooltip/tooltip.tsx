@@ -21,7 +21,7 @@ const tooltip = componentVariants({
 });
 
 export interface TooltipProps {
-  /** Short hint, no full stop — never essential copy. */
+  /** Short hint, no full stop — never essential copy. Blank renders the trigger alone. */
   label: string;
   /** = "top" */
   side?: "top" | "bottom" | "left" | "right" | undefined;
@@ -31,6 +31,8 @@ export interface TooltipProps {
 
 /** Names an icon-only control or explains a mark. Opens on hover and focus, closes on Escape. */
 export function Tooltip({ label, side = "top", children }: TooltipProps) {
+  // R48: a blank label is no label — an empty pill would describe the trigger as nothing.
+  if (label.trim() === "") return children;
   return (
     <TooltipPrimitive.Provider delayDuration={OPEN_DELAY_MS}>
       <TooltipPrimitive.Root>

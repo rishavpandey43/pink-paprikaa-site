@@ -107,6 +107,19 @@ describe("Tooltip", () => {
     expect(screen.getAllByRole("button")).toHaveLength(1);
   });
 
+  it("renders only the trigger for a blank label (R48)", async () => {
+    const user = userEvent.setup();
+    render(
+      <Tooltip label="  ">
+        <button type="button">Dairy</button>
+      </Tooltip>
+    );
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Dairy" })).toHaveFocus();
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Dairy" })).not.toHaveAttribute("aria-describedby");
+  });
+
   it("has no accessibility violations while open", async () => {
     const user = userEvent.setup();
     const { container } = renderDairy();
