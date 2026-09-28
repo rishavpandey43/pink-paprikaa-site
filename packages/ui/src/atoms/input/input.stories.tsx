@@ -118,6 +118,27 @@ export const DisabledTrailing: Story = {
   },
 };
 
+/** A disabled `<fieldset>` disables its fields natively, and the box greys with them. */
+export const InDisabledFieldset: Story = {
+  name: "inside a disabled fieldset",
+  render: () => (
+    <fieldset disabled className="w-full max-w-text-measure-prose">
+      <legend className="sr-only">Delivery</legend>
+      <Input aria-label="Delivery address" defaultValue="Sector 57" />
+    </fieldset>
+  ),
+  play: async ({ canvas }) => {
+    const input = canvas.getByRole("textbox", { name: "Delivery address" });
+    const box = input.parentElement;
+    if (box === null) throw new Error("The input renders inside its field box.");
+    await expect(input).toBeDisabled();
+    await expect(getComputedStyle(input).color).toBe(paint(input, "color", "--color-ink-400"));
+    await expect(getComputedStyle(box).backgroundColor).toBe(
+      paint(input, "backgroundColor", "--color-ink-100")
+    );
+  },
+};
+
 export const Sizes: Story = {
   name: "size",
   render: () => (
