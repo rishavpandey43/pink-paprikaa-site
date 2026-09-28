@@ -1,0 +1,14 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "empty-state-symbol-lg": {
+      "$value": "52px",
+      "$description": "EmptyState size=\"lg\" brand symbol box (md is 40px, a spacing step).",
+      "$extensions": {
+        "pink-paprikaa": {
+          "utility": ["size"]
+        }
+      }
+    }
+  }
+}

@@ -191,6 +191,7 @@ const SPACING = [
   "story-safe-bottom",
   "quantity-stepper-count",
   "snackbar",
+  "empty-state-symbol-lg",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];
