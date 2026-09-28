@@ -161,6 +161,14 @@ function borderWidthClass(entry: TokenEntry): string {
 }
 
 /**
+ * A measure — a spacing token in `ch` (the Text and SocialHeadline measures) — caps a line length;
+ * it is only ever a `max-w-*`, never padding, margin or a gap (R59).
+ */
+function isMeasure(entry: TokenEntry): boolean {
+  return formatValue(entry.value).endsWith("ch");
+}
+
+/**
  * Each token namespace and the utilities it feeds — Tailwind 4's theme namespaces, plus the
  * `@utility` rules in `packages/ui/src/styles.css` for the namespaces Tailwind does not own
  * (`duration-*`, `z-*`, `pattern-*`, `scrim-*`). First match wins, so `font-weight-` precedes
@@ -177,7 +185,13 @@ const UTILITY_RULES: readonly (readonly [
   ["radius-", (step) => [`rounded-${step}`]],
   ["shadow-", (step) => [`shadow-${step}`]],
   ["border-width-", (step, entry) => [`border-${step}`, borderWidthClass(entry)]],
-  ["spacing-", (step) => SPACING_UTILITIES.map((utility) => `${utility}-${step}`)],
+  [
+    "spacing-",
+    (step, entry) =>
+      isMeasure(entry)
+        ? [`max-w-${step}`]
+        : SPACING_UTILITIES.map((utility) => `${utility}-${step}`),
+  ],
   ["container-", (step) => [`max-w-${step}`]],
   ["aspect-", (step) => [`aspect-${step}`]],
   ["blur-", (step) => [`blur-${step}`, `backdrop-blur-${step}`]],

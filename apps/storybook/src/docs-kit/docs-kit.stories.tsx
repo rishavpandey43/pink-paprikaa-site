@@ -155,6 +155,16 @@ export const UtilitiesDeriveFromTheCatalogue: Story = {
           />
         ))
       )}
+      <span
+        aria-hidden
+        data-utility="max-w-text-measure-prose"
+        className="max-w-text-measure-prose"
+      />
+      <span
+        aria-hidden
+        data-measure-reference
+        style={{ maxWidth: `var(${token("spacing-text-measure-prose").cssVar})` }}
+      />
     </div>
   ),
   play: async ({ canvasElement }) => {
@@ -169,6 +179,20 @@ export const UtilitiesDeriveFromTheCatalogue: Story = {
     }
     // The 4px scale: step N gives the stock spacing utilities at N.
     await expect(stepUtilities(3)).toEqual(["p-3", "m-3", "mt-3", "gap-3"]);
+    // R59: a measure (a `ch` spacing token) is a width — `max-w-*` only, never padding or a gap.
+    const measures = tokensWithPrefix("spacing-").filter((entry) =>
+      formatValue(entry.value).endsWith("ch")
+    );
+    await expect(measures.map((entry) => entry.name)).toContain("spacing-text-measure-prose");
+    for (const entry of measures) {
+      await expect(utilitiesOf(entry.name)).toEqual([
+        `max-w-${entry.name.slice("spacing-".length)}`,
+      ]);
+    }
+    await expect(
+      getComputedStyle(requireElement(canvasElement, '[data-utility="max-w-text-measure-prose"]'))
+        .maxWidth
+    ).toBe(getComputedStyle(requireElement(canvasElement, "[data-measure-reference]")).maxWidth);
     // A token no utility reads (an artboard size) has no classes rather than an invented one.
     await expect(utilitiesOf("canvas-post-w")).toEqual([]);
   },
