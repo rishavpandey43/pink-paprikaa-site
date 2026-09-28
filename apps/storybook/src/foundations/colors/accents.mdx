@@ -1,0 +1,25 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./colors.stories";
+
+<Meta title="Colors/Accents" />
+
+{/* source: guidelines/color-accents.card.html */}
+
+# Spice accents
+
+Secondary only. Turmeric, tandoor, mint and kesar exist for heat scales, status and the occasional
+data point. **At most one accent per screen beside the pink**, and at most two background colours
+per composition: white or `pink-50`, plus one flooded pink or ink panel.
+
+<Canvas of={Specimens.Accents} meta={Specimens} sourceState="none" />
+
+## Text companions
+
+An accent is a fill. Where status needs _text_, the system uses the strong companions, which pass
+AA on white and on their soft fills; `veg` is the statutory mark's green.
+
+<Canvas of={Specimens.TextCompanions} meta={Specimens} sourceState="none" />
+
+Gradients: essentially none. The only two are the legibility scrims over photography
+(Layout → Utility classes) — no pink-to-orange, no purple, no mesh.

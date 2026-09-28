@@ -1,0 +1,17 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./colors.stories";
+
+<Meta title="Colors/Ink" />
+
+{/* source: guidelines/color-ink.card.html */}
+
+# Warm ink neutrals
+
+Neutrals are tinted warm toward the pink — never blue-grey, never a flat grey.
+
+<Canvas of={Specimens.InkRamp} meta={Specimens} sourceState="none" />
+
+`ink-900` carries headings, `ink-800` body text and `ink-600` muted and subtle text; `ink-200` and
+`ink-300` are borders, `ink-100` the sunken fill, `ink-000` white. The design system set subtle
+text in `ink-500`, which falls below AA on white, so subtle text moved up to `ink-600` (spec §3.2).

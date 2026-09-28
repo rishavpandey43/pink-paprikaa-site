@@ -1,0 +1,19 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./colors.stories";
+
+<Meta title="Colors/Semantic" />
+
+{/* source: guidelines/color-semantic.card.html */}
+
+# Semantic surfaces & text
+
+The aliases to reach for in components. A component never names a ramp step for its field or its
+text — it names what the colour means, and the semantic token points at the step.
+
+Utilities carry the family name twice: `text-text-heading`, not `text-heading`; `border-border-subtle`,
+not `border-subtle`; `bg-surface-card`.
+
+<Canvas of={Specimens.SemanticPanels} meta={Specimens} sourceState="none" />
+
+<Canvas of={Specimens.SemanticTokens} meta={Specimens} sourceState="none" />

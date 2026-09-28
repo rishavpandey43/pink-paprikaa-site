@@ -1,0 +1,33 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./colors.stories";
+
+<Meta title="Colors/Contrast" />
+
+{/* source: spec §5 — the accessibility balance policy */}
+
+# Contrast
+
+WCAG 2.2 AA everywhere **except** the one pairing the brand cannot give up: white text on the brand
+pink fill. That pair is held to the AA-large floor (3:1) and is declared, tested and shown here as
+the sole exception (spec §5, owner decision D3). Everything else about accessibility — semantics,
+names, keyboard, focus, targets, motion — is uncompromised and gated.
+
+<Canvas of={Specimens.Contrast} meta={Specimens} sourceState="none" />
+
+The matrix is computed on this build from `tokens.json` and
+`packages/design-tokens/contrast-pairs.json` by the same evaluator the gate runs
+(`design-tokens:test`), so this page cannot disagree with CI. A pair below its minimum fails the
+build; a pair between 3:1 and AA is allowed only in a group tagged `brand-fill`, over the brand
+pink.
+
+## Why axe does not check contrast
+
+axe cannot scope an exception to one pair, so its `color-contrast` rule is off in the component
+tests and the story tests. The token policy replaces it and measures every pair the components
+paint. A component that paints a new text-on-background pair adds that pair to
+`contrast-pairs.json` in the same change.
+
+## Changing it
+
+Change a **text** token, never a fill. Lowering a group's minimum is a decision-log event.

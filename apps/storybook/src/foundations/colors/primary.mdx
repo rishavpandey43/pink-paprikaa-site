@@ -1,0 +1,23 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./colors.stories";
+
+<Meta title="Colors/Primary" />
+
+{/* source: guidelines/color-primary.card.html */}
+
+# Brand pink
+
+The primary ramp. `--color-pink-500` is the logo pink, given by the client; its hex exists in one
+file only — `packages/design-tokens/tokens/primitive/color.json` — and everything else refers to
+it by name.
+
+<Canvas of={Specimens.PinkRamp} meta={Specimens} sourceState="none" />
+
+- **One primary, used at full strength.** Large flat fields of `pink-500` — full-bleed hero panels,
+  footers, CTA bars — with white type on top are the signature move.
+- **`pink-100`**, the client's light pink, is the calm counterpart: page tints, soft badges, card
+  fills, section backgrounds. Together with white it does most of the work.
+- **As text, pink is one step darker.** `--color-text-brand` is `pink-600`: `pink-500` text on white
+  falls short of AA for body sizes (Colors → Contrast has the measured ratio). Fills never change;
+  only text tokens moved (spec §5.3).
