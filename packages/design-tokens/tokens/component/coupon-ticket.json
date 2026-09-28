@@ -1,0 +1,74 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "coupon-ticket-md": {
+      "$value": "560px",
+      "$description": "Ticket width on screens.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "coupon-ticket-lg": {
+      "$value": "900px",
+      "$description": "Ticket width on artwork.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "coupon-ticket-stub-md": {
+      "$value": "168px",
+      "$description": "Code stub, 0.3 × 560.",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
+    },
+    "coupon-ticket-stub-lg": {
+      "$value": "270px",
+      "$description": "Code stub, 0.3 × 900.",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
+    },
+    "coupon-ticket-notch": {
+      "$value": "34px",
+      "$description": "Punched perforation notch.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "coupon-ticket-headline-md": {
+      "$value": {
+        "fontSize": "30px",
+        "lineHeight": 1.05,
+        "letterSpacing": "-0.025em",
+        "fontWeight": "{font-weight.black}"
+      }
+    },
+    "coupon-ticket-headline-lg": {
+      "$value": {
+        "fontSize": "50px",
+        "lineHeight": 1.05,
+        "letterSpacing": "-0.025em",
+        "fontWeight": "{font-weight.black}"
+      }
+    },
+    "coupon-ticket-code-md": {
+      "$value": {
+        "fontSize": "18px",
+        "lineHeight": 1.2,
+        "letterSpacing": "0.04em",
+        "fontWeight": "{font-weight.bold}"
+      }
+    },
+    "coupon-ticket-code-lg": {
+      "$value": {
+        "fontSize": "29px",
+        "lineHeight": 1.2,
+        "letterSpacing": "0.04em",
+        "fontWeight": "{font-weight.bold}"
+      }
+    },
+    "coupon-ticket-stub-label-lg": {
+      "$value": {
+        "fontSize": "14px",
+        "lineHeight": 1.2,
+        "letterSpacing": "0.14em",
+        "fontWeight": "{font-weight.bold}"
+      },
+      "$description": "Stub label at artwork size; md uses the overline step."
+    }
+  }
+}

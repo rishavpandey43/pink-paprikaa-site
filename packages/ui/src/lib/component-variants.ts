@@ -90,6 +90,11 @@ const TEXT = [
   "offer-seal-value",
   "offer-seal-label",
   "offer-seal-note",
+  "coupon-ticket-headline-md",
+  "coupon-ticket-headline-lg",
+  "coupon-ticket-code-md",
+  "coupon-ticket-code-lg",
+  "coupon-ticket-stub-label-lg",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -214,6 +219,11 @@ const SPACING = [
   "accordion-answer-measure",
   "step-tracker-marker",
   "offer-seal",
+  "coupon-ticket-md",
+  "coupon-ticket-lg",
+  "coupon-ticket-stub-md",
+  "coupon-ticket-stub-lg",
+  "coupon-ticket-notch",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];
