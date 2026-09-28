@@ -1,7 +1,7 @@
 import { type ReactNode, useId } from "react";
 
 import { brand, toBrandLines } from "@pink-paprikaa-web/content";
-import { Badge, Card, Text } from "@pink-paprikaa-web/ui";
+import { Badge, Card, type KeyValueItem, KeyValueList, Text } from "@pink-paprikaa-web/ui";
 
 import { BUILD_YEAR } from "../../kits/fixtures";
 
@@ -29,31 +29,9 @@ function percent(rate: number): string {
   return `${String(Math.round(rate * 1000) / 10)}%`;
 }
 
-/** One row — the shape of `KeyValueItem`, which lands with KeyValueList (Plan 3b T13). */
-interface FactItem {
-  key: string;
-  value: ReactNode;
-}
-
 interface FactBox {
   heading: string;
-  items: FactItem[];
-}
-
-/** A native description list standing in for `KeyValueList` (compact) until Plan 3b T13 lands. */
-function FactList({ items }: { items: readonly FactItem[] }) {
-  return (
-    <dl className="flex flex-col gap-2">
-      {items.map((item, index) => (
-        <div key={`${item.key}:${String(index)}`} className="grid grid-cols-3 gap-x-3">
-          <dt className="font-mono text-mono text-text-muted">{item.key}</dt>
-          <dd className="col-span-2 min-w-0 text-body-sm wrap-break-word text-text-body">
-            {item.value}
-          </dd>
-        </div>
-      ))}
-    </dl>
-  );
+  items: KeyValueItem[];
 }
 
 /** The brand facts as the design system's Company details card shows them, bound to the real data. */
@@ -134,7 +112,13 @@ export function CompanyDetails() {
             <Text variant="overline" tone="brand" as="h2">
               {box.heading}
             </Text>
-            <FactList items={box.items} />
+            {/* wrap-break-word inherits to the values: an email or URL never widens the card. */}
+            <KeyValueList
+              items={box.items}
+              density="compact"
+              keyWidth="sm"
+              className="wrap-break-word"
+            />
           </Card>
         ))}
       </div>
@@ -142,7 +126,10 @@ export function CompanyDetails() {
         <Text variant="overline" tone="brand" as="h2">
           Derived lines — toBrandLines(brand, year)
         </Text>
-        <FactList
+        <KeyValueList
+          density="compact"
+          keyWidth="md"
+          className="wrap-break-word"
           items={[
             { key: "copyright", value: lines.copyright },
             { key: "fssai", value: lines.fssai },
