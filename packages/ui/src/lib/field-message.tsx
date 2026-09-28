@@ -53,8 +53,11 @@ export function FieldMessage({
   className,
 }: FieldMessageProps) {
   if (status !== "default" && isShown(message)) {
+    // `key`: a hint turning into an error mounts a fresh node — screen readers announce an added
+    // `role="alert"` on an existing node unreliably.
     return (
       <p
+        key={status}
         id={id}
         role={status === "error" ? "alert" : undefined}
         className={fieldMessage({ status, className })}

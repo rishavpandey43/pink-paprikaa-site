@@ -40,6 +40,16 @@ describe("FieldMessage", () => {
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
+  it("mounts a fresh alert when a hint turns into an error, so the role is announced", () => {
+    const { rerender } = render(<FieldMessage id="m" hint="We text the code here." />);
+    const hint = screen.getByText("We text the code here.");
+    rerender(<FieldMessage id="m" status="error" message="Enter a 10-digit number." hint="x" />);
+    const alert = screen.getByRole("alert");
+    expect(alert).not.toBe(hint);
+    rerender(<FieldMessage id="m" status="warning" message="Enter a 10-digit number." />);
+    expect(screen.getByText("Enter a 10-digit number.").closest("p")).not.toBe(alert);
+  });
+
   it("shows a message on the default status in the neutral tone, without a glyph, over the hint", () => {
     const { container } = render(
       <FieldMessage id="m" message="Two slots left at 7:30pm." hint="Hint." />
