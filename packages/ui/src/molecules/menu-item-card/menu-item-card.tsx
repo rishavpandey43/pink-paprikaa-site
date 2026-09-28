@@ -14,7 +14,9 @@ import { type HeadingLevel, headingTag } from "../../lib/heading";
 
 const menuItemCard = componentVariants({
   slots: {
-    root: "relative flex h-full flex-col",
+    // The stretched link covers the card, so its focus ring goes round the card (the link's own
+    // ring on the name is dropped below).
+    root: "relative flex h-full flex-col has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-focus",
     media: "relative",
     badge: "absolute top-3 left-3",
     // Above the stretched link's overlay, so the Add button stays its own target.
@@ -24,7 +26,7 @@ const menuItemCard = componentVariants({
     header: "flex items-center gap-2",
     name: "min-w-0 font-display text-menu-item-name text-text-heading",
     // Stretched link: the ::after covers the whole card, so the card clicks through to the dish.
-    link: "text-inherit no-underline after:absolute after:inset-0",
+    link: "text-inherit no-underline after:absolute after:inset-0 focus-visible:outline-none",
     description: "m-0 line-clamp-2 max-w-none text-body-sm text-text-muted",
     footer: "mt-auto flex items-center justify-between gap-2.5 pt-0.5",
   },

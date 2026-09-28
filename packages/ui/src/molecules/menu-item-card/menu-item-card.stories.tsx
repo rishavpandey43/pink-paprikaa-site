@@ -108,6 +108,27 @@ export const AsLink: Story = {
   },
 };
 
+/** Keyboard: when the stretched link has focus the ring goes round the whole card it covers. */
+export const KeyboardFocus: Story = {
+  args: { href: "#masala-cold-brew" },
+  decorators: [cardWidth],
+  play: async ({ canvas, userEvent }) => {
+    const card = canvas.getByRole("article");
+    const ringOf = () => getComputedStyle(card).outlineStyle;
+    await expect(ringOf()).toBe("none");
+    // The floating Add button comes first; it rings itself, not the card.
+    await userEvent.tab();
+    await expect(canvas.getByRole("button", { name: "Add Masala Cold Brew" })).toHaveFocus();
+    await expect(ringOf()).toBe("none");
+    await userEvent.tab();
+    const link = canvas.getByRole("link", { name: "Masala Cold Brew" });
+    await expect(link).toHaveFocus();
+    await expect(ringOf()).toBe("solid");
+    // One ring, not two: the name drops its own.
+    await expect(getComputedStyle(link).outlineStyle).toBe("none");
+  },
+};
+
 /** Uneven descriptions still line up: the price row is pinned to the bottom of every card. */
 export const InAGrid: Story = {
   render: () => (
