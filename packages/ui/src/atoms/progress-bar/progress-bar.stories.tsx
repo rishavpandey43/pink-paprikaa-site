@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { ProgressBar } from "./progress-bar";
 
 const meta = {
@@ -69,5 +70,17 @@ export const Sizes: Story = {
       <ProgressBar label="Loyalty card, sm" segments={6} value={3} size="sm" />
       <ProgressBar label="Loyalty card, md" segments={6} value={3} size="md" />
     </div>
+  ),
+};
+
+/** The label is `text-text-muted`, which follows `data-surface`; the default tone on every ground. */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: () => (
+    <OnSurfaces>
+      <div className="min-w-0 flex-1">
+        <ProgressBar label="3 more visits and chai's on us" segments={6} value={3} />
+      </div>
+    </OnSurfaces>
   ),
 };
