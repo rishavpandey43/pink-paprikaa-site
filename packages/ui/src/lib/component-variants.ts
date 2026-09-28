@@ -222,6 +222,7 @@ const SPACING = [
   "accordion-answer-measure",
   "step-tracker-marker",
   "offer-seal",
+  "offer-seal-clear",
   "coupon-ticket-md",
   "coupon-ticket-lg",
   "coupon-ticket-stub-md",

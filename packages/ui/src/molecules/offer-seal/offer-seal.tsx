@@ -22,7 +22,13 @@ const offerSeal = componentVariants({
       brand: { root: "bg-pink-500 text-ink-000" },
       turmeric: { root: "bg-turmeric text-ink-900" },
     },
-    bleed: { none: {}, sm: { root: "absolute" }, md: { root: "absolute" } },
+    // In flow, a margin reserves the rotated tips' overhang (~0.15 × side; rotate-45 is not
+    // layout), so neighbours and a 360px page never meet a tip. A bleeding seal overhangs on purpose.
+    bleed: {
+      none: { root: "m-offer-seal-clear" },
+      sm: { root: "absolute" },
+      md: { root: "absolute" },
+    },
     corner: { "top-right": {}, "top-left": {}, "bottom-right": {}, "bottom-left": {} },
   },
   // Bleed is a fraction of the seal's own side. The counter-rotated value reaches 0.32 × side from
@@ -77,8 +83,12 @@ export interface OfferSealProps extends ComponentProps<"div"> {
   value: string;
   /** Short word under it, e.g. "Off" (rendered uppercase). */
   label?: string | undefined;
+  /** Small print under the label. Not rendered at `sm`, where it would print at ~7px. */
   note?: string | undefined;
-  /** Side: sm 110 · md 156 (handoff hero) · lg 260 (1080 canvases) · xl 360px. */
+  /**
+   * Side: sm 110 · md 156 (handoff hero) · lg 260 (1080 canvases) · xl 360px. In flow the seal
+   * also reserves 0.15 × side on every edge for its tips, so on a 360px page use `sm` or `md`.
+   */
   size?: "sm" | "md" | "lg" | "xl" | undefined;
   tone?: "light" | "brand" | "turmeric" | undefined;
   /** Where the seal hangs off its container when it bleeds. */
@@ -105,7 +115,7 @@ export function OfferSeal({
       <div className={styles.content()}>
         <span className={styles.value()}>{value}</span>
         {label ? <span className={styles.label()}>{label}</span> : null}
-        {note ? <span className={styles.note()}>{note}</span> : null}
+        {note && size !== "sm" ? <span className={styles.note()}>{note}</span> : null}
       </div>
     </div>
   );

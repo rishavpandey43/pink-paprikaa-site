@@ -5,6 +5,10 @@
       "$value": "10em",
       "$description": "Seal side, in em of the seal's own font size (sm 11px → 110px … xl 36px → 360px).",
       "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "offer-seal-clear": {
+      "$value": "1.5em",
+      "$description": "In-flow margin that reserves the rotated tips' overhang: a 45° square with 0.14 × side corners reaches 0.649 × side from its centre, 0.149 × side past its layout box."
     }
   },
   "radius": {

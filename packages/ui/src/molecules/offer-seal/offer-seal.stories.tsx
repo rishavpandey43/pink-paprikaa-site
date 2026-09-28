@@ -39,8 +39,9 @@ export const Tones: Story = {
   ),
 };
 
-/** Card row "value". */
+/** Card row "value", at `md`: the note is dropped at `sm`, where it would print at ~7px. */
 export const Values: Story = {
+  args: { size: "md" },
   render: (args) => (
     <div className="flex items-center gap-7.5 py-4.5">
       <OfferSeal {...args} value={formatRupees(99)} label="Only" />
@@ -63,6 +64,37 @@ export const Sizes: Story = {
       ))}
     </div>
   ),
+};
+
+/**
+ * `md` in flow on a 360px phone: the rotated tips stay inside the frame (the seal reserves
+ * 0.15 × side around itself) and the page never scrolls sideways.
+ */
+export const Floor360: Story = {
+  args: { size: "md", tone: "brand", value: formatRupees(130), label: "Launch" },
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  render: (args) => (
+    <div data-testid="frame" className="flex">
+      <OfferSeal {...args} />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    const frame = canvas.getByTestId("frame");
+    const seal = frame.firstElementChild;
+    await expect(seal).toBeInstanceOf(HTMLElement);
+    if (seal === null) return;
+    // getBoundingClientRect is the rotated square's box, sharp corners included; the painted tip
+    // is the rounded corner, r × (√2 − 1) further in.
+    const rect = seal.getBoundingClientRect();
+    const cut = Number.parseFloat(getComputedStyle(seal).borderTopLeftRadius) * (Math.SQRT2 - 1);
+    const box = frame.getBoundingClientRect();
+    await expect(rect.top + cut).toBeGreaterThanOrEqual(box.top);
+    await expect(rect.left + cut).toBeGreaterThanOrEqual(box.left);
+    await expect(rect.right - cut).toBeLessThanOrEqual(box.right);
+    await expect(rect.bottom - cut).toBeLessThanOrEqual(box.bottom);
+    const page = document.documentElement;
+    await expect(page.scrollWidth).toBeLessThanOrEqual(page.clientWidth);
+  },
 };
 
 /** Every corner bled the maximum on a 400px board: the value must stay fully on the board. */

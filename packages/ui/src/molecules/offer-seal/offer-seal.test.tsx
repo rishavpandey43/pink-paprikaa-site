@@ -59,6 +59,20 @@ describe("OfferSeal", () => {
     expect(bleedFractions(container.firstElementChild)).toEqual([]);
   });
 
+  it("reserves room for its rotated tips in flow, but not when it bleeds", () => {
+    // A rotated square's tips overhang its layout box by ~0.15 × side; rotate-45 is not layout.
+    const { container, rerender } = render(<OfferSeal value="50%" />);
+    expect(container.firstElementChild).toHaveClass("m-offer-seal-clear");
+    rerender(<OfferSeal value="50%" bleed="md" />);
+    expect(container.firstElementChild).not.toHaveClass("m-offer-seal-clear");
+  });
+
+  it("drops the note at sm, where it would print below a legible size", () => {
+    render(<OfferSeal value="50%" label="Off" note="till 11:30pm" size="sm" />);
+    expect(screen.getByText("Off")).toBeInTheDocument();
+    expect(screen.queryByText("till 11:30pm")).not.toBeInTheDocument();
+  });
+
   it.each(CORNERS)(
     "never bleeds a corner further than 0.18 × its side (%s) — the value reaches 0.32 × side from the centre",
     (corner) => {
