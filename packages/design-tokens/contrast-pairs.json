@@ -345,6 +345,16 @@
       "surface": null,
       "pairs": [["color-pink-700", "color-pink-100"]],
       "min": 4.5
+    },
+    {
+      "id": "slot-picker",
+      "surface": null,
+      "pairs": [
+        ["color-ink-700", "color-surface-card"],
+        ["color-pink-700", "color-surface-page-alt"],
+        ["color-text-subtle", "color-surface-page-alt"]
+      ],
+      "min": 4.5
     }
   ]
 }

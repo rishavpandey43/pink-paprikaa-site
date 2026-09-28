@@ -68,6 +68,7 @@ const TEXT = [
   "price-was",
   "app-shell-status",
   "otp-digit",
+  "slot-picker-note",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];

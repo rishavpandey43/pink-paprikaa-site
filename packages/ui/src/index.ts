@@ -57,3 +57,8 @@ export {
   type QuantityStepperProps,
 } from "./molecules/quantity-stepper/quantity-stepper";
 export { SearchField, type SearchFieldProps } from "./molecules/search-field/search-field";
+export {
+  type SlotOption,
+  SlotPicker,
+  type SlotPickerProps,
+} from "./molecules/slot-picker/slot-picker";
