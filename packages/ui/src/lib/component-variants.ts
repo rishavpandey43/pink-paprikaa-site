@@ -60,6 +60,12 @@ const TEXT = [
   "progress-label",
   "rating-value",
   "rating-count",
+  "price-sm",
+  "price-md",
+  "price-lg",
+  "price-canvas",
+  "price-amount",
+  "price-was",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];

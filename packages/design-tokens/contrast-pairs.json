@@ -129,6 +129,13 @@
       "exception": "brand-fill"
     },
     {
+      "id": "inverse-text-on-brand-fill",
+      "surface": null,
+      "pairs": [["color-text-on-inverse", "color-surface-brand"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
       "id": "link",
       "surface": null,
       "pairs": [

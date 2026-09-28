@@ -21,6 +21,7 @@ export { Input, type InputProps } from "./atoms/input/input";
 export { Link, type LinkProps } from "./atoms/link/link";
 export { Logo, type LogoProps } from "./atoms/logo/logo";
 export { PatternField, type PatternFieldProps } from "./atoms/pattern-field/pattern-field";
+export { PriceTag, type PriceTagProps } from "./atoms/price-tag/price-tag";
 export { ProgressBar, type ProgressBarProps } from "./atoms/progress-bar/progress-bar";
 export { Radio, RadioGroup, type RadioGroupProps, type RadioProps } from "./atoms/radio/radio";
 export { Rating, type RatingProps } from "./atoms/rating/rating";

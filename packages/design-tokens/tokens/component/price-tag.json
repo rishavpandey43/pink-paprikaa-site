@@ -1,0 +1,20 @@
+{
+  "text": {
+    "$type": "typography",
+    "price-sm": { "$value": { "fontSize": "14px" } },
+    "price-md": { "$value": { "fontSize": "17px" }, "$description": "The default price." },
+    "price-lg": { "$value": { "fontSize": "22px" } },
+    "price-canvas": {
+      "$value": { "fontSize": "56px" },
+      "$description": "A price on a 1080px artboard (FeedArtboards DishLaunchPost), under a canvas-h1 headline."
+    },
+    "price-amount": {
+      "$value": { "fontSize": "1em", "letterSpacing": "-0.01em" },
+      "$description": "The amount, relative to the tag's size, so one class on the tag scales the whole price."
+    },
+    "price-was": {
+      "$value": { "fontSize": "0.78em" },
+      "$description": "The struck original: 78% of the amount."
+    }
+  }
+}
