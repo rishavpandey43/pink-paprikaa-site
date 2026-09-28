@@ -71,7 +71,8 @@ export const NotStarted: Story = { args: { current: -1 } };
 
 /**
  * The vertical markers on every field. On pink the reached diamonds turn white with a pink mark and
- * the ones to come fade to white at 25% (R89) — a pink diamond on the pink field would vanish.
+ * the ones to come fade to white at 25% (R89) — a pink diamond on the pink field would vanish. On
+ * ink the ones to come take the same white at 25%, so they never out-shine the reached pink ones.
  */
 export const VerticalSurfaces: Story = {
   render: (args) => (

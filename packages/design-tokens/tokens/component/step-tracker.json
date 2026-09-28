@@ -27,7 +27,7 @@
     },
     "step-tracker-marker-off": {
       "$value": "{color.ink.200}",
-      "$description": "Vertical StepTracker: a marker still to come. White at 25% on a pink field, so it reads weaker than a reached one."
+      "$description": "Vertical StepTracker: a marker still to come. White at 25% on pink and ink fields, so it reads weaker than a reached one."
     },
     "step-tracker-mark-on": {
       "$value": "{color.ink.000}",
