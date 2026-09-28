@@ -1,4 +1,4 @@
-import type { ComponentProps, ElementType } from "react";
+import type { ComponentProps } from "react";
 
 import { componentVariants } from "../../lib/component-variants";
 
@@ -38,6 +38,8 @@ export function Container({
   className,
   ...props
 }: ContainerProps) {
-  const Element: ElementType = as;
+  // A narrow cast (the Stack trap): every member of the `as` union takes the same props, and the
+  // spread props stay type-checked, which `ElementType` would not do.
+  const Element = as as "div";
   return <Element className={container({ size, isBleed, className })} {...props} />;
 }
