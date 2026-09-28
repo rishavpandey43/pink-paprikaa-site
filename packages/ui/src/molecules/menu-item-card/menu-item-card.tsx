@@ -11,12 +11,12 @@ import { PriceTag } from "../../atoms/price-tag/price-tag";
 import { SpiceLevel } from "../../atoms/spice-level/spice-level";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { STRETCHED_LINK } from "../../lib/stretched-link";
 
 const menuItemCard = componentVariants({
   slots: {
-    // The stretched link covers the card, so its focus ring goes round the card (the link's own
-    // ring on the name is dropped below).
-    root: "relative flex h-full flex-col has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-focus",
+    // The stretched link's keyboard ring goes round the whole card (lib/stretched-link).
+    root: ["flex h-full flex-col", STRETCHED_LINK.card],
     media: "relative",
     badge: "absolute top-3 left-3",
     // Above the stretched link's overlay, so the Add button stays its own target.
@@ -26,7 +26,7 @@ const menuItemCard = componentVariants({
     header: "flex items-center gap-2",
     name: "min-w-0 font-display text-menu-item-name text-text-heading",
     // Stretched link: the ::after covers the whole card, so the card clicks through to the dish.
-    link: "text-inherit no-underline after:absolute after:inset-0 focus-visible:outline-none",
+    link: STRETCHED_LINK.link,
     description: "m-0 line-clamp-2 max-w-none text-body-sm text-text-muted",
     footer: "mt-auto flex items-center justify-between gap-2.5 pt-0.5",
   },
@@ -105,7 +105,7 @@ export function MenuItemCard({
               href === undefined ? (
                 name
               ) : (
-                <LinkComponent href={href} className={styles.link()}>
+                <LinkComponent href={href} className={styles.link()} data-stretched-link>
                   {name}
                 </LinkComponent>
               )

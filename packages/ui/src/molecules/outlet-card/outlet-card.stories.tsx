@@ -65,7 +65,8 @@ export const WithoutImage: Story = {
 export const AsLink: Story = {
   args: { href: "#sector-57", hasImage: false, action: directions },
   // Real layout: a tap on the address lands on the stretched link; a tap on Directions lands on
-  // Directions (z-raised), not on the card behind it.
+  // Directions, not on the card behind it. `relative` plus DOM order (the action comes after the
+  // link) already paint it above the overlay; `z-raised` guards against a reorder.
   play: async ({ canvas }) => {
     const link = canvas.getByRole("link", { name: "Sector 57" });
     const action = canvas.getByRole("link", { name: /Directions/ });
@@ -75,6 +76,26 @@ export const AsLink: Story = {
     };
     await expect(at(canvas.getByText(ADDRESS))).toBe(link);
     await expect(action.contains(at(action))).toBe(true);
+  },
+};
+
+/** Keyboard: the stretched link rings the whole card; Directions rings only itself. */
+export const KeyboardFocus: Story = {
+  args: { href: "#sector-57", hasImage: false, action: directions },
+  play: async ({ canvas, userEvent }) => {
+    const card = canvas.getByRole("article");
+    const ringOf = () => getComputedStyle(card).outlineStyle;
+    await expect(ringOf()).toBe("none");
+    await userEvent.tab();
+    const link = canvas.getByRole("link", { name: "Sector 57" });
+    await expect(link).toHaveFocus();
+    await expect(ringOf()).toBe("solid");
+    // One ring, not two: the name drops its own.
+    await expect(getComputedStyle(link).outlineStyle).toBe("none");
+    // Directions is a link too, but not the card's link: it rings itself, not the card.
+    await userEvent.tab();
+    await expect(canvas.getByRole("link", { name: /Directions/ })).toHaveFocus();
+    await expect(ringOf()).toBe("none");
   },
 };
 

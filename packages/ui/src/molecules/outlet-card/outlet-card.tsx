@@ -10,6 +10,7 @@ import { ImageSlot } from "../../atoms/image-slot/image-slot";
 import { StatusDot } from "../../atoms/status-dot/status-dot";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { STRETCHED_LINK } from "../../lib/stretched-link";
 
 type OutletStatus = "open" | "busy" | "closed";
 
@@ -22,15 +23,16 @@ const STATUS_WORD: Readonly<Record<OutletStatus, string>> = {
 
 const outletCard = componentVariants({
   slots: {
-    // relative anchors the stretched link; h-full lets a locator row of cards share one height.
-    root: "relative flex h-full flex-col",
+    // h-full lets a locator row of cards share one height; the stretched link's keyboard ring goes
+    // round the whole card (lib/stretched-link).
+    root: ["flex h-full flex-col", STRETCHED_LINK.card],
     body: "grid gap-2.5 p-4.5",
     top: "flex flex-wrap items-start justify-between gap-3",
     titles: "min-w-0",
     city: "m-0 max-w-none font-display text-overline text-text-brand uppercase",
     name: "mt-1 font-display text-h4 text-text-heading",
     // Stretched link: the ::after covers the whole card, so the card clicks through to the outlet.
-    link: "text-inherit no-underline after:absolute after:inset-0",
+    link: STRETCHED_LINK.link,
     detail: "m-0 flex max-w-none items-start gap-2 text-body-sm text-text-muted not-italic",
     detailIcon: "mt-0.5",
     // Above the stretched link's overlay, so Directions stays its own target.
@@ -101,7 +103,7 @@ export function OutletCard({
                 href === undefined ? (
                   name
                 ) : (
-                  <LinkComponent href={href} className={styles.link()}>
+                  <LinkComponent href={href} className={styles.link()} data-stretched-link>
                     {name}
                   </LinkComponent>
                 )
