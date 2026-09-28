@@ -331,6 +331,32 @@
   }
 }
 
+/*
+ * Accordion answers: the <details> content animates its height where the browser supports
+ * ::details-content and interpolate-size (Chromium 131+) and opens instantly elsewhere. The answer
+ * stays in the DOM either way, so find-in-page and search engines see every one.
+ */
+@utility details-content-motion {
+  interpolate-size: allow-keywords;
+
+  &::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition:
+      block-size var(--duration-base) var(--ease-out),
+      content-visibility var(--duration-base) var(--ease-out) allow-discrete;
+  }
+
+  &[open]::details-content {
+    block-size: auto;
+  }
+
+  /* WebKit draws its own summary marker; list-none only removes ::marker. */
+  & > summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
 @utility z-tooltip {
   z-index: var(--z-tooltip);
 }

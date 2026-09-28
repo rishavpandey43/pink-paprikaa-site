@@ -1,0 +1,33 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "accordion-answer-measure": {
+      "$value": "62ch",
+      "$description": "Answer line length.",
+      "$extensions": {
+        "pink-paprikaa": {
+          "utility": ["max-w"]
+        }
+      }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "accordion-question": {
+      "$value": {
+        "fontSize": "16.5px",
+        "lineHeight": 1.4,
+        "letterSpacing": "-0.005em",
+        "fontWeight": "{font-weight.bold}"
+      },
+      "$description": "Accordion question (Poppins 700)."
+    },
+    "accordion-answer": {
+      "$value": {
+        "fontSize": "15px",
+        "lineHeight": 1.6
+      },
+      "$description": "Accordion answer (DM Sans)."
+    }
+  }
+}

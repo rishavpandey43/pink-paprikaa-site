@@ -79,6 +79,8 @@ const TEXT = [
   "stat-value",
   "stat-label",
   "stat-sub",
+  "accordion-question",
+  "accordion-answer",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -199,6 +201,7 @@ const SPACING = [
   "empty-state-symbol-lg",
   "section-header-measure",
   "section-header-measure-centered",
+  "accordion-answer-measure",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];
