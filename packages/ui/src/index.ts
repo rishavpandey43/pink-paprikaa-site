@@ -65,12 +65,12 @@ export {
   type QuantityStepperProps,
 } from "./molecules/quantity-stepper/quantity-stepper";
 export { SearchField, type SearchFieldProps } from "./molecules/search-field/search-field";
-export { Snackbar, type SnackbarProps } from "./molecules/snackbar/snackbar";
 export {
   type SlotOption,
   SlotPicker,
   type SlotPickerProps,
 } from "./molecules/slot-picker/slot-picker";
+export { Snackbar, type SnackbarProps } from "./molecules/snackbar/snackbar";
 export { type TabItem, Tabs, type TabsProps } from "./molecules/tabs/tabs";
 export {
   Toast,
