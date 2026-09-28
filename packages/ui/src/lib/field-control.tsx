@@ -86,7 +86,7 @@ export const fieldControlVariants = componentVariants({
       control: "select",
       isReadOnly: true,
       class: {
-        root: "has-[>:is(input,textarea,select):disabled]:cursor-default has-[>:is(input,textarea,select):disabled]:text-text-body",
+        root: "has-[>:is(input,textarea,select):disabled]:cursor-default has-[>:is(input,textarea,select):disabled]:bg-surface-sunken has-[>:is(input,textarea,select):disabled]:text-text-body",
         icon: "group-has-[>:is(input,textarea,select):disabled]/field:text-ink-500",
         control: "disabled:cursor-default",
       },

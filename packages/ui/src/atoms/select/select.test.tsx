@@ -167,7 +167,9 @@ describe("Select", () => {
     const readOnly = screen.getByRole("combobox", { name: "Outlet" }).parentElement;
     expect(readOnly).toHaveClass(
       "has-[>:is(input,textarea,select):disabled]:text-text-body",
-      "has-[>:is(input,textarea,select):disabled]:border-border-default"
+      "has-[>:is(input,textarea,select):disabled]:border-border-default",
+      // Its own sunken fill, not the disabled ink-100 that only happens to match it.
+      "has-[>:is(input,textarea,select):disabled]:bg-surface-sunken"
     );
     // One class per assertion: a negated multi-class match passes if any one is absent.
     expect(readOnly).not.toHaveClass("has-[>:is(input,textarea,select):disabled]:text-ink-400");
