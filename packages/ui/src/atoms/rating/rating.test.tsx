@@ -57,6 +57,19 @@ describe("Rating", () => {
     expect(() => renderToString(<Rating value={value} />)).toThrow(RangeError);
   });
 
+  it("rounds the score once, so the name and the visible score agree", () => {
+    render(<Rating value={4.25} />);
+    expect(screen.getByRole("img", { name: "4.3 out of 5" })).toBeInTheDocument();
+    expect(screen.getByText("4.3")).toBeInTheDocument();
+  });
+
+  it.each([-1, 2.5, Number.NaN, Number.POSITIVE_INFINITY])(
+    "rejects the impossible review count %d",
+    (count) => {
+      expect(() => renderToString(<Rating value={4} count={count} />)).toThrow(RangeError);
+    }
+  );
+
   it("rejects a max that is not a whole number of at least 1", () => {
     expect(() => renderToString(<Rating value={1} max={2.5} />)).toThrow(RangeError);
     expect(() => renderToString(<Rating value={0} max={0} />)).toThrow(RangeError);

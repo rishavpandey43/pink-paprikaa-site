@@ -88,7 +88,7 @@ export interface RatingProps extends ComponentProps<"span"> {
   value: number;
   /** = 5 */
   max?: number | undefined;
-  /** Review count, shown in brackets with Indian digit grouping and read in the name. */
+  /** Review count, a whole number ≥ 0, shown in brackets with Indian digit grouping and read in the name. */
   count?: number | undefined;
   /** sm 12 · md 16 · lg 24px diamonds. = "md" */
   size?: RatingSize | undefined;
@@ -114,8 +114,13 @@ export function Rating({
       `Rating: value must be between 0 and a whole max of at least 1, got ${String(value)} of ${String(max)}`
     );
   }
+  if (count !== undefined && (!Number.isInteger(count) || count < 0)) {
+    throw new RangeError(`Rating: count must be a whole number of reviews, got ${String(count)}`);
+  }
   const styles = rating({ variant });
-  const score = `${String(value)} out of ${String(max)}`;
+  // Rounded once, so the name and the printed score never disagree (4.25 → "4.3" in both).
+  const rounded = Math.round(value * 10) / 10;
+  const score = `${String(rounded)} out of ${String(max)}`;
   const name = count === undefined ? score : `${score}, ${formatCount(count)} reviews`;
 
   return (
@@ -130,7 +135,7 @@ export function Rating({
           );
         })}
       </span>
-      {hasValue ? <span className={styles.value()}>{value.toFixed(1)}</span> : null}
+      {hasValue ? <span className={styles.value()}>{rounded.toFixed(1)}</span> : null}
       {count === undefined ? null : <span className={styles.count()}>({formatCount(count)})</span>}
     </span>
   );
