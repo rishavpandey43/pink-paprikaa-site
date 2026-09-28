@@ -1,0 +1,30 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./type.stories";
+
+<Meta title="Type/Fluid" />
+
+{/* source: guidelines/fluid-type.card.html */}
+
+# Fluid type
+
+`clamp()` sizes for layouts — headings never overflow a 360px screen. Type is fluid in layouts and
+fixed only in specimens and on marketing canvases. The design system's `.pp-fluid-*` classes are
+the `text-*-fluid` utilities here (`text-h1-fluid`), each carrying its line-height, tracking and
+weight.
+
+<Canvas of={Specimens.FluidSteps} meta={Specimens} sourceState="none" />
+
+**Set `isFluid` in every responsive layout:**
+
+```tsx
+<Text variant="h1" isFluid>
+  Desi at heart. Urban by nature.
+</Text>
+```
+
+Only the display steps, h1–h4 and body have a twin. The small end — `body-sm`, `caption`,
+`overline`, `mono` — is already comfortable at any width, and scaling it down would crowd the
+hit-target floor.
+
+<Canvas of={Specimens.FluidTokens} meta={Specimens} sourceState="none" />

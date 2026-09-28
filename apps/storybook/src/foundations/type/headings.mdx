@@ -1,0 +1,26 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./type.stories";
+
+<Meta title="Type/Headings" />
+
+{/* source: guidelines/type-headings.card.html */}
+
+# Headings
+
+Poppins bold for every structural heading, h1 to h4 — geometric and circular, matching the
+wordmark's bowls.
+
+<Canvas of={Specimens.HeadingSteps} meta={Specimens} sourceState="none" />
+
+Set every piece of text through the `Text` atom (`variant`): each step owns its size, line-height,
+tracking and weight together — one decision, never mixed by hand.
+
+The visual step and the document outline are separate decisions: every titled component takes
+`headingLevel`, so a card title can look like an h4 and still be the page's third-level heading.
+Headlines stay at six words or fewer; `Text` balances every display and heading step
+(`text-wrap: balance`) by default.
+
+Each specimen lists the classes that set it, ready to copy. A `text-*` class carries its step's
+line-height, tracking and weight along with the size, so the type steps have no separate
+`leading-*` or `tracking-*` tokens to add.
