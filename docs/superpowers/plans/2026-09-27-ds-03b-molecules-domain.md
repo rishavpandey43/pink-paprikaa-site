@@ -6873,7 +6873,7 @@ export interface FeatureItemProps extends Omit<ComponentProps<"div">, "title"> {
 const featureItem = componentVariants({
   slots: {
     root: "flex items-start gap-3.5",
-    tile: "bg-feature-item-tile text-feature-item-icon grid shrink-0 place-items-center rounded-md",
+    tile: "grid shrink-0 place-items-center rounded-md bg-feature-item-tile text-feature-item-icon",
     body: "flex min-w-0 flex-col gap-1",
     title: "font-display text-text-heading",
     description: "m-0 max-w-none text-text-muted",
