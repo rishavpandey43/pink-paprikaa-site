@@ -6,7 +6,8 @@ export interface DocTableProps {
   headers: readonly string[];
   /**
    * The width below which the table scrolls sideways instead of squeezing; `"none"` never scrolls.
-   * The same prop and semantics as the library's `Table` (Plan 3b), which replaces this.
+   * The semantics of the library `Table`'s `minWidth` (Plan 3b), not its values: on the swap,
+   * `article` becomes `md` and `narrow` becomes `lg`.
    */
   minWidth: keyof typeof MIN_WIDTH;
   /** `<tr>` rows of `DocCell`s. */
@@ -18,7 +19,8 @@ const MIN_WIDTH = { none: "", article: "min-w-article", narrow: "min-w-narrow" }
 /**
  * A captioned docs table. With a `minWidth` it sits in a focusable region named by its caption, so
  * a keyboard user can scroll it (axe `scrollable-region-focusable`). Native markup until the
- * library's `Table` molecule lands (Plan 3b), then this becomes it.
+ * library's `Table` molecule lands (Plan 3b); then callers move to `Table` with the `minWidth`
+ * values remapped (`article` → `md`, `narrow` → `lg`).
  */
 export function DocTable({ caption, headers, minWidth, children }: DocTableProps) {
   const captionId = useId();

@@ -23,7 +23,11 @@ export interface CopyScopeProps {
 export function CopyScope({ children, className }: CopyScopeProps) {
   const [copied, setCopied] = useState<string | null>(null);
   const copy = (text: string) => {
-    navigator.clipboard.writeText(text).then(
+    // Absent outside a secure context (a plain-http preview), whatever the DOM type says: copy
+    // nothing rather than throw from the click handler.
+    const clipboard = navigator.clipboard as Clipboard | undefined;
+    if (clipboard === undefined) return;
+    clipboard.writeText(text).then(
       () => {
         setCopied(text);
       },

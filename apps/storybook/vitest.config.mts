@@ -1,10 +1,12 @@
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import react from "@vitejs/plugin-react";
 import { playwright } from "@vitest/browser-playwright";
+import { join } from "node:path";
 import { defineConfig } from "vitest/config";
 
 /**
- * Story tests — every story in `packages/ui` run as a Vitest test, in a real browser.
+ * Story tests — every story in `packages/ui` run as a Vitest test, in a real browser — plus the
+ * docs-kit's node specs (the `docs-kit` project below).
  *
  * This is a *separate* config from `vite.config.mts` on purpose:
  *
@@ -24,37 +26,54 @@ import { defineConfig } from "vitest/config";
  * the token contrast policy owns it — see the comment on the rule in `preview.tsx`.)
  */
 export default defineConfig({
-  plugins: [
-    // `@storybook/react-vite`'s preset contributes only the docgen plugins — the JSX transform
-    // comes from the *builder* config (`vite.config.mts`), which `storybookTest` does not load.
-    // Without this, `.storybook/preview.tsx` reaches vite:import-analysis as raw JSX and every
-    // story file fails with "content contains invalid JS syntax".
-    react(),
-    storybookTest({
-      // Relative to this file. The Storybook CLI's `MainFileMissingError` is what you get if this
-      // points anywhere without a `main.ts` — including the workspace root.
-      configDir: ".storybook",
-      // Watch mode only: if no Storybook is already serving, start one so failure output can link
-      // to the failing story. Ignored by a single-shot `vitest run`.
-      storybookScript: "pnpm nx run @pink-paprikaa-web/storybook:storybook --quiet",
-      storybookUrl: "http://localhost:6006",
-    }),
-  ],
   test: {
-    name: "storybook",
     // `nx.json` runs the inferred `test` target as bare `vitest` (testMode: "watch"), so the config
     // is what makes a plain `nx test` a single run — same convention as `packages/ui`. Pass
     // `--watch` on the command line to opt back in.
     watch: false,
-    browser: {
-      enabled: true,
-      headless: true,
-      provider: playwright(),
-      instances: [{ browser: "chromium" }],
-      // A failing story is diagnosed from the assertion and the story URL; writing PNGs into the
-      // project on every failure is noise the repo would then have to gitignore.
-      screenshotFailures: false,
-    },
     reporters: ["default"],
+    projects: [
+      {
+        extends: true,
+        plugins: [
+          // `@storybook/react-vite`'s preset contributes only the docgen plugins — the JSX transform
+          // comes from the *builder* config (`vite.config.mts`), which `storybookTest` does not load.
+          // Without this, `.storybook/preview.tsx` reaches vite:import-analysis as raw JSX and every
+          // story file fails with "content contains invalid JS syntax".
+          react(),
+          storybookTest({
+            // The Storybook CLI's `MainFileMissingError` is what you get if this points anywhere
+            // without a `main.ts` — including the workspace root.
+            configDir: join(import.meta.dirname, ".storybook"),
+            // Watch mode only: if no Storybook is already serving, start one so failure output can
+            // link to the failing story. Ignored by a single-shot `vitest run`.
+            storybookScript: "pnpm nx run @pink-paprikaa-web/storybook:storybook --quiet",
+            storybookUrl: "http://localhost:6006",
+          }),
+        ],
+        test: {
+          name: "storybook",
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright(),
+            instances: [{ browser: "chromium" }],
+            // A failing story is diagnosed from the assertion and the story URL; writing PNGs into
+            // the project on every failure is noise the repo would then have to gitignore.
+            screenshotFailures: false,
+          },
+        },
+      },
+      {
+        // Node-side specs over the docs-kit — checks that read the library's source files
+        // (`src/**/*.spec.ts`), which a story running in the browser cannot.
+        extends: true,
+        test: {
+          name: "docs-kit",
+          environment: "node",
+          include: ["src/**/*.spec.ts"],
+        },
+      },
+    ],
   },
 });

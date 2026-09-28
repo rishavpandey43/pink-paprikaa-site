@@ -161,18 +161,41 @@ function borderWidthClass(entry: TokenEntry): string {
 }
 
 /**
- * A measure — a spacing token in `ch` (the Text and SocialHeadline measures) — caps a line length;
- * it is only ever a `max-w-*`, never padding, margin or a gap (R59).
+ * A named spacing token's utilities. A sizing token carries a marker in its token JSON naming what
+ * the library uses it as — `size-icon-sm`, `h-button-h-md` — and the marker wins (R61; the
+ * `catalogue.spec.ts` node spec keeps each marker equal to the library's real usage). An unmarked
+ * measure (a `ch` value) caps a line length, so it is only a `max-w-*` (R59); anything else is
+ * padding, margin or a gap.
  */
-function isMeasure(entry: TokenEntry): boolean {
-  return formatValue(entry.value).endsWith("ch");
+function spacingUtilities(step: string, entry: TokenEntry): readonly string[] {
+  const marker = entry.extensions?.["pink-paprikaa"]?.utility;
+  if (marker !== undefined) return marker.map((utility) => `${utility}-${step}`);
+  if (formatValue(entry.value).endsWith("ch")) return [`max-w-${step}`];
+  return SPACING_UTILITIES.map((utility) => `${utility}-${step}`);
+}
+
+/**
+ * Tailwind's static `max-w-prose` (65ch) shadows `--container-prose`, so a container that a
+ * spacing token aliases — the prose measures — is reached through that alias
+ * (`max-w-text-measure-prose`); every other container is a plain `max-w-*`.
+ */
+function containerUtilities(step: string, entry: TokenEntry): readonly string[] {
+  const reference = entry.path.join(".");
+  const alias = CATALOGUE.find(
+    (candidate) =>
+      candidate.surface === null &&
+      candidate.name.startsWith("spacing-") &&
+      candidate.reference === reference
+  );
+  return alias === undefined ? [`max-w-${step}`] : utilitiesOf(alias.name);
 }
 
 /**
  * Each token namespace and the utilities it feeds — Tailwind 4's theme namespaces, plus the
  * `@utility` rules in `packages/ui/src/styles.css` for the namespaces Tailwind does not own
- * (`duration-*`, `z-*`, `pattern-*`, `scrim-*`). First match wins, so `font-weight-` precedes
- * `font-`.
+ * (`duration-*`, `z-*`, `pattern-*`, `scrim-*`, the motion pair) — `catalogue.spec.ts` fails if
+ * one of those classes has no `@utility`. First match wins, so `font-weight-` precedes `font-`;
+ * an effect other than a scrim has no utility.
  */
 const UTILITY_RULES: readonly (readonly [
   prefix: string,
@@ -185,14 +208,8 @@ const UTILITY_RULES: readonly (readonly [
   ["radius-", (step) => [`rounded-${step}`]],
   ["shadow-", (step) => [`shadow-${step}`]],
   ["border-width-", (step, entry) => [`border-${step}`, borderWidthClass(entry)]],
-  [
-    "spacing-",
-    (step, entry) =>
-      isMeasure(entry)
-        ? [`max-w-${step}`]
-        : SPACING_UTILITIES.map((utility) => `${utility}-${step}`),
-  ],
-  ["container-", (step) => [`max-w-${step}`]],
+  ["spacing-", spacingUtilities],
+  ["container-", containerUtilities],
   ["aspect-", (step) => [`aspect-${step}`]],
   ["blur-", (step) => [`blur-${step}`, `backdrop-blur-${step}`]],
   ["breakpoint-", (step) => [`${step}:`]],
@@ -200,7 +217,7 @@ const UTILITY_RULES: readonly (readonly [
   ["ease-", (step) => [`ease-${step}`]],
   ["z-", (step) => [`z-${step}`]],
   ["pattern-", (_step, entry) => [entry.name]],
-  ["effect-", (step) => [step]],
+  ["effect-scrim-", (step) => [`scrim-${step}`]],
   ["motion-", (step) => MOTION_UTILITIES[step] ?? []],
 ];
 

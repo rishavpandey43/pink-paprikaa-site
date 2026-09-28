@@ -20,7 +20,7 @@ export function SpacingScale({ steps }: SpacingScaleProps) {
             <span
               aria-hidden
               data-step={step}
-              className="h-6 rounded-xs bg-pink-500"
+              className="h-6 shrink-0 rounded-xs bg-pink-500"
               style={{ width: `calc(var(${unit.cssVar}) * ${String(step)})` }}
             />
           </span>

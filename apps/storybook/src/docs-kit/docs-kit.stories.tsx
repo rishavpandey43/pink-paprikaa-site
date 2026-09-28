@@ -140,6 +140,20 @@ const DERIVED = [
     ],
     expected: () => cssValue("spacing-hit"),
   },
+  {
+    // R61: a sizing token's marker names the utility the library uses it as.
+    name: "spacing-icon-sm",
+    paints: [["size-icon-sm", "width"]],
+    expected: () => cssValue("spacing-icon-sm"),
+  },
+  {
+    name: "spacing-button-h-md",
+    paints: [
+      ["h-button-h-md", "height"],
+      ["min-w-button-h-md", "minWidth"],
+    ],
+    expected: () => cssValue("spacing-button-h-md"),
+  },
 ] as const;
 
 export const UtilitiesDeriveFromTheCatalogue: Story = {
@@ -193,6 +207,10 @@ export const UtilitiesDeriveFromTheCatalogue: Story = {
       getComputedStyle(requireElement(canvasElement, '[data-utility="max-w-text-measure-prose"]'))
         .maxWidth
     ).toBe(getComputedStyle(requireElement(canvasElement, "[data-measure-reference]")).maxWidth);
+    // R60: the prose containers are reached through their measure aliases — never Tailwind's static
+    // `max-w-prose` (65ch), which shadows `--container-prose`.
+    await expect(utilitiesOf("container-prose")).toEqual(["max-w-text-measure-prose"]);
+    await expect(utilitiesOf("container-prose-narrow")).toEqual(["max-w-text-measure-narrow"]);
     // A token no utility reads (an artboard size) has no classes rather than an invented one.
     await expect(utilitiesOf("canvas-post-w")).toEqual([]);
   },
@@ -209,6 +227,22 @@ export const CopyChipsCopyAClass: Story = {
     await expect(write).toHaveBeenLastCalledWith(utility);
     await expect(canvas.getByRole("status")).toHaveTextContent(`Copied ${utility}`);
     write.mockRestore();
+  },
+};
+
+export const CopyWithoutAClipboard: Story = {
+  render: () => <CopyChips values={utilitiesOf("radius-lg")} />,
+  play: async ({ canvas, userEvent }) => {
+    // Outside a secure context (a plain-http preview) `navigator.clipboard` is undefined: a click
+    // copies nothing and throws nothing.
+    const absent = spyOn(navigator, "clipboard", "get").mockReturnValue(
+      undefined as unknown as Clipboard
+    );
+    const [utility] = utilitiesOf("radius-lg");
+    if (utility === undefined) throw new Error("radius-lg has no utility class");
+    await userEvent.click(canvas.getByRole("button", { name: utility }));
+    await expect(canvas.getByRole("status")).toHaveTextContent("");
+    absent.mockRestore();
   },
 };
 
