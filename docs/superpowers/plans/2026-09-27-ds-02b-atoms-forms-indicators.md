@@ -698,8 +698,8 @@ export const fieldControlVariants = componentVariants({
   variants: {
     size: {
       sm: { root: "h-field-sm text-body-sm" },
-      md: { root: "text-control h-field-md" },
-      lg: { root: "text-control h-field-lg" },
+      md: { root: "h-field-md text-control" },
+      lg: { root: "h-field-lg text-control" },
     },
     control: {
       input: {
@@ -1823,7 +1823,7 @@ export const choiceVariants = componentVariants({
     root: "group/choice relative flex cursor-pointer font-body text-text-body has-disabled:cursor-not-allowed has-disabled:text-ink-400",
     input: "sr-only",
     control: "flex shrink-0",
-    text: "text-control flex min-w-0 flex-1 flex-col gap-0.5 font-medium",
+    text: "flex min-w-0 flex-1 flex-col gap-0.5 text-control font-medium",
     description:
       "text-control-description font-regular text-text-muted group-has-disabled/choice:text-ink-400",
     price:
@@ -1934,7 +1934,7 @@ import { Icon } from "../icon/icon";
 /** 22px, 6px radius, 2px border; checked is pink with a white 14px tick. */
 const box = componentVariants({
   base: [
-    "size-choice-box grid place-items-center rounded-sm border-2 border-border-default bg-ink-000 text-transparent transition-control",
+    "grid size-choice-box place-items-center rounded-sm border-2 border-border-default bg-ink-000 text-transparent transition-control",
     "group-has-checked/choice:border-pink-500 group-has-checked/choice:bg-pink-500 group-has-checked/choice:text-ink-000",
     "group-has-focus-visible/choice:outline-2 group-has-focus-visible/choice:outline-offset-2 group-has-focus-visible/choice:outline-focus",
     "group-has-disabled/choice:border-ink-200 group-has-disabled/choice:bg-ink-200 group-has-checked/choice:group-has-disabled/choice:text-ink-400",
