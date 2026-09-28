@@ -21,7 +21,10 @@
       "$value": "0 8px 24px -6px rgba(238, 44, 104, 0.38)",
       "$description": "Primary CTA and the floating add button only."
     },
-    "inset": { "$value": "inset 0 1px 0 rgba(255, 255, 255, 0.5)" }
+    "inset": {
+      "$value": "inset 0 1px 0 rgba(255, 255, 255, 0.5)",
+      "$description": "A 1px inner highlight along the top edge; it adds no depth."
+    }
   },
   "blur": {
     "$type": "dimension",
