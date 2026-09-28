@@ -3,6 +3,7 @@
     "color": {
       "$type": "color",
       "breadcrumb-chevron": { "$value": "{color.ink.400}" },
+      "price-summary-discount": { "$value": "{color.mint-strong}" },
       "text": {
         "heading": { "$value": "{color.ink.900}" },
         "body": { "$value": "{color.ink.800}" },

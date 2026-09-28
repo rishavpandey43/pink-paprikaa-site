@@ -67,6 +67,11 @@ export { ListRow, type ListRowProps } from "./molecules/list-row/list-row";
 export { OtpInput, type OtpInputProps } from "./molecules/otp-input/otp-input";
 export { Pagination, type PaginationProps } from "./molecules/pagination/pagination";
 export {
+  type PriceLine,
+  PriceSummary,
+  type PriceSummaryProps,
+} from "./molecules/price-summary/price-summary";
+export {
   QuantityStepper,
   type QuantityStepperProps,
 } from "./molecules/quantity-stepper/quantity-stepper";

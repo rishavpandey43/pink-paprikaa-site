@@ -385,6 +385,31 @@
       "surface": null,
       "pairs": [["color-tabs-segmented-fg", "color-surface-card"]],
       "min": 4.5
+    },
+    {
+      "id": "price-summary",
+      "surface": null,
+      "foregrounds": ["color-price-summary-discount"],
+      "backgrounds": [
+        "color-surface-page",
+        "color-surface-page-alt",
+        "color-surface-card",
+        "color-surface-brand-soft"
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "price-summary-ink",
+      "surface": "ink",
+      "pairs": [["color-price-summary-discount", "color-surface-inverse"]],
+      "min": 4.5
+    },
+    {
+      "id": "price-summary-brand",
+      "surface": "brand",
+      "pairs": [["color-price-summary-discount", "color-surface-brand"]],
+      "min": 3,
+      "exception": "brand-fill"
     }
   ]
 }
