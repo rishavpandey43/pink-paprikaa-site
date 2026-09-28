@@ -167,6 +167,8 @@ const SPACING = [
   "grid-min-lg",
   "grid-min-xl",
   "grid-min-2xl",
+  "section-tight",
+  "section-loose",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

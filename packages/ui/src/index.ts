@@ -40,6 +40,7 @@ export { Tooltip, type TooltipProps } from "./atoms/tooltip/tooltip";
 export { AutoGrid, type AutoGridMin, type AutoGridProps } from "./layouts/auto-grid/auto-grid";
 export { Cluster, type ClusterProps } from "./layouts/cluster/cluster";
 export { Container, type ContainerProps, type ContainerSize } from "./layouts/container/container";
+export { Section, type SectionProps } from "./layouts/section/section";
 export { Stack, type StackProps } from "./layouts/stack/stack";
 export type { FieldStatus } from "./lib/field-status";
 export { type HeadingLevel, headingTag } from "./lib/heading";
