@@ -84,6 +84,27 @@ export const GroupError: Story = {
   },
 };
 
+/** An option invalid on its own and chosen: the red ring must beat the checked pink. */
+export const InvalidChecked: Story = {
+  name: "invalid + checked",
+  render: () => (
+    <Radio name="portion-invalid" value="regular" label="Regular" isInvalid defaultChecked />
+  ),
+  play: async ({ canvas }) => {
+    const radio = canvas.getByRole("radio", { name: "Regular" });
+    const ring = radio.nextElementSibling?.firstElementChild as HTMLElement;
+    await Promise.all(ring.getAnimations().map((animation) => animation.finished));
+    const probe = document.createElement("span");
+    probe.style.borderColor = "var(--color-status-danger)";
+    ring.append(probe);
+    const danger = getComputedStyle(probe).borderColor;
+    probe.remove();
+    await expect(radio).toBeChecked();
+    await expect(getComputedStyle(ring).borderTopWidth).toBe("6px");
+    await expect(getComputedStyle(ring).borderColor).toBe(danger);
+  },
+};
+
 export const Horizontal: Story = {
   name: "orientation horizontal",
   render: () => (

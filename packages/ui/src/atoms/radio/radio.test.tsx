@@ -78,6 +78,7 @@ describe("Radio", () => {
     expect(container.innerHTML).not.toMatch(/opacity-/);
   });
 
+  // The class pins the wiring; the InvalidChecked story's play asserts the computed red in Chromium.
   it("marks one option invalid and rings it red", () => {
     render(<Radio name="size" value="regular" label="Regular" isInvalid />);
     const radio = screen.getByRole("radio", { name: "Regular" });

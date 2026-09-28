@@ -169,10 +169,9 @@ describe("Select", () => {
       "has-disabled:text-text-body",
       "has-disabled:border-border-default"
     );
-    expect(readOnly).not.toHaveClass(
-      "has-disabled:text-ink-400",
-      "has-disabled:border-border-subtle"
-    );
+    // One class per assertion: a negated multi-class match passes if any one is absent.
+    expect(readOnly).not.toHaveClass("has-disabled:text-ink-400");
+    expect(readOnly).not.toHaveClass("has-disabled:border-border-subtle");
     const disabled = screen.getByRole("combobox", { name: "Pickup time" }).parentElement;
     expect(disabled).toHaveClass("has-disabled:text-ink-400");
     expect(disabled).not.toHaveClass("has-disabled:text-text-body");
