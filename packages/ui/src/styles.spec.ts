@@ -61,3 +61,16 @@ describe("surface-overridden shadows", () => {
     );
   });
 });
+
+/*
+ * The base reduced-motion reset matches `*, ::before, ::after`, never `::details-content`, so the
+ * Accordion's height transition must switch itself off (proved in Chromium in plan 3b batch B).
+ */
+describe("details-content-motion", () => {
+  it("turns its height transition off under reduced motion", () => {
+    const utility = /@utility details-content-motion\s*\{([\s\S]*?)\n\}/.exec(stylesheet)?.[1];
+    expect(utility).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)\s*\{\s*&::details-content\s*\{\s*transition: none;/
+    );
+  });
+});

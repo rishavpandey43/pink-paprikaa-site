@@ -351,6 +351,14 @@
     block-size: auto;
   }
 
+  /* The base reduced-motion reset (`*, ::before, ::after`) does not match ::details-content, and
+     adding it to that list would drop the whole reset in a browser that cannot parse it. */
+  @media (prefers-reduced-motion: reduce) {
+    &::details-content {
+      transition: none;
+    }
+  }
+
   /* WebKit draws its own summary marker; list-none only removes ::marker. */
   & > summary::-webkit-details-marker {
     display: none;
