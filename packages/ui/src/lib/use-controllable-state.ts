@@ -14,6 +14,10 @@ export interface ControllableStateOptions<T> {
  * (`value` / `defaultValue` / `onValueChange`, spec §8.1). The rule it owns: a controlled value is
  * never copied into local state, an uncontrolled one is, and the change is reported synchronously,
  * once, only when the value actually changes.
+ *
+ * Limit: the setter compares against the value of the render that created it, not a queued one —
+ * two sets in one event (`set(a); set(b)`) both compare against the rendered value, and it takes
+ * no updater function. Every consumer sets once per event.
  */
 export function useControllableState<T>({
   value,
