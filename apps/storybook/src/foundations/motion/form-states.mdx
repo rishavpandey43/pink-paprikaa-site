@@ -1,4 +1,6 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./motion.stories";
 
 <Meta title="Motion/Form states" />
 
@@ -9,17 +11,19 @@ import { Meta } from "@storybook/addon-docs/blocks";
 One status system across every control: default, error, success, warning, disabled, read-only and
 loading.
 
-| State      | Border                                        | Message              | Applies to                                                               |
-| ---------- | --------------------------------------------- | -------------------- | ------------------------------------------------------------------------ |
-| `default`  | default width, `border-default`               | hint, subtle         | all                                                                      |
-| `focus`    | strong width, `border-brand` + the focus ring | —                    | all                                                                      |
-| `error`    | strong width, danger                          | says what to do next | Input, Select, SearchField, OtpInput, Checkbox, Radio, SlotPicker, Field |
-| `success`  | strong width, mint                            | confirms the result  | Input, Select, SearchField, OtpInput, Field                              |
-| `warning`  | strong width, turmeric                        | flags a caveat       | Input, Select, SearchField, Field                                        |
-| `disabled` | `ink-100` fill, `ink-400` text                | —                    | all — a real fill, never opacity                                         |
-| `readOnly` | sunken fill + lock glyph                      | —                    | Input, Select                                                            |
-| `loading`  | unchanged                                     | trailing Spinner     | Input, SearchField                                                       |
+| State      | Border                                                                         | Message                       | Applies to                                                               |
+| ---------- | ------------------------------------------------------------------------------ | ----------------------------- | ------------------------------------------------------------------------ |
+| `default`  | default width, `border-default`                                                | hint, subtle                  | all                                                                      |
+| `focus`    | strong width, `border-brand` + the focus ring                                  | —                             | all                                                                      |
+| `error`    | strong width, danger                                                           | says what to do next          | Input, Select, SearchField, OtpInput, Checkbox, Radio, SlotPicker, Field |
+| `success`  | strong width, mint                                                             | confirms the result           | Input, Select, SearchField, OtpInput, Field                              |
+| `warning`  | strong width, turmeric                                                         | flags a caveat                | Input, Select, SearchField, Field                                        |
+| `disabled` | `border-subtle`, `ink-100` fill, `ink-400` text (choice boxes: `ink-200` fill) | — (Field mutes its label)     | all — a real fill, never opacity                                         |
+| `readOnly` | sunken fill + lock glyph                                                       | —                             | Input, Select                                                            |
+| `loading`  | unchanged                                                                      | pulsing brand mark in the box | Input, SearchField                                                       |
 
 A status raises the border, tints the leading icon, shows the matching glyph and **replaces the
 hint with its message** — never a status colour without a message. The control carries `status`;
 `Field` renders the message and wires `aria-describedby` and `aria-invalid`.
+
+<Canvas of={Specimens.FormStates} meta={Specimens} sourceState="none" />

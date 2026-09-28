@@ -1,14 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { Phone, Search } from "lucide-react";
 import { expect, waitFor } from "storybook/test";
 
-import { Button, RevealObserver } from "@pink-paprikaa-web/ui";
+import { Button, Field, Input, RevealObserver } from "@pink-paprikaa-web/ui";
 
 import { spyOnClipboard } from "../../docs-kit/clipboard";
 import { CopyChips } from "../../docs-kit/copy";
 import { requireElement } from "../../docs-kit/dom";
 import { MotionDemo } from "../../docs-kit/motion-demo";
 import { TokenTable } from "../../docs-kit/token-table";
+import { OUTLET } from "../../kits/fixtures";
 
 /** Live visuals for the Motion pages. Hidden from the sidebar; rendered by the MDX; run by storybook:test. */
 const meta = {
@@ -135,8 +137,43 @@ export const StateTokens: Story = {
   ),
 };
 
-// Deferred (fold list item 3): `FormStates` — every status on a real Field (Plan 3a T2); an Input
-// without its Field has no label and fails axe.
+export const FormStates: Story = {
+  render: () => (
+    <div className="grid gap-5 md:grid-cols-2">
+      <Field label="Mobile number" hint="We text your pickup code here.">
+        {(control) => <Input {...control} type="tel" icon={Phone} placeholder="98765 43210" />}
+      </Field>
+      <Field label="Mobile number" status="error" message="Enter a 10-digit mobile number.">
+        {(control) => (
+          <Input {...control} type="tel" icon={Phone} status="error" defaultValue="98765" />
+        )}
+      </Field>
+      <Field label="Coupon" status="success" message="PAPRIKAA50 applied to your order.">
+        {(control) => <Input {...control} status="success" defaultValue="PAPRIKAA50" />}
+      </Field>
+      <Field
+        label="Pickup time"
+        status="warning"
+        message="The kitchen is busy — pickup may take longer."
+      >
+        {(control) => <Input {...control} status="warning" defaultValue="8:30pm" />}
+      </Field>
+      <Field label="Outlet">
+        {(control) => (
+          <Input {...control} defaultValue={`${OUTLET.name}, ${OUTLET.city}`} disabled />
+        )}
+      </Field>
+      <Field label="Order code">
+        {(control) => <Input {...control} defaultValue="PPK-4821" readOnly />}
+      </Field>
+      <Field label="Search the menu">
+        {(control) => (
+          <Input {...control} type="search" icon={Search} defaultValue="paneer" isLoading />
+        )}
+      </Field>
+    </div>
+  ),
+};
 
 function RevealDemo() {
   return (
