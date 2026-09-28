@@ -63,6 +63,7 @@ export {
 } from "./molecules/breadcrumb/breadcrumb";
 export { EmptyState, type EmptyStateProps } from "./molecules/empty-state/empty-state";
 export { Field, type FieldControlProps, type FieldProps } from "./molecules/field/field";
+export { ListRow, type ListRowProps } from "./molecules/list-row/list-row";
 export { OtpInput, type OtpInputProps } from "./molecules/otp-input/otp-input";
 export { Pagination, type PaginationProps } from "./molecules/pagination/pagination";
 export {
