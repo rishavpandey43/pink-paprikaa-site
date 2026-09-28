@@ -45,6 +45,13 @@ export const Centred: Story = {
   ),
 };
 
+/**
+ * `tone="badge"`: the lockup on its own pink plate (Logo's badge tone), for grounds the white and
+ * pink tones cannot sit on. The design-system card shows only pink and white; the tone is kept
+ * because contract §6 and the design-system types allow it.
+ */
+export const Badge: Story = { args: { tone: "badge" } };
+
 /** Card row `hasTagline={false}` — the wordmark. */
 export const Wordmark: Story = { args: { hasTagline: false } };
 
