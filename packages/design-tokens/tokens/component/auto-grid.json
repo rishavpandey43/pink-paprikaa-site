@@ -1,0 +1,35 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "grid-min-xs": {
+      "$value": "140px",
+      "$description": "AutoGrid min=\"xs\": the smallest track before a column drops (chips, small tiles). A grid template reads it, so it has no class of its own.",
+      "$extensions": { "pink-paprikaa": { "utility": [] } }
+    },
+    "grid-min-sm": {
+      "$value": "200px",
+      "$description": "AutoGrid min=\"sm\". A grid template reads it, so it has no class of its own.",
+      "$extensions": { "pink-paprikaa": { "utility": [] } }
+    },
+    "grid-min-md": {
+      "$value": "{spacing.card-min}",
+      "$description": "AutoGrid min=\"md\" (default): the card minimum, 260px. A grid template reads it, so it has no class of its own.",
+      "$extensions": { "pink-paprikaa": { "utility": [] } }
+    },
+    "grid-min-lg": {
+      "$value": "{spacing.card-min-wide}",
+      "$description": "AutoGrid min=\"lg\": the panel minimum, 320px. A grid template reads it, so it has no class of its own.",
+      "$extensions": { "pink-paprikaa": { "utility": [] } }
+    },
+    "grid-min-xl": {
+      "$value": "380px",
+      "$description": "AutoGrid min=\"xl\". A grid template reads it, so it has no class of its own.",
+      "$extensions": { "pink-paprikaa": { "utility": [] } }
+    },
+    "grid-min-2xl": {
+      "$value": "420px",
+      "$description": "AutoGrid min=\"2xl\". A grid template reads it, so it has no class of its own.",
+      "$extensions": { "pink-paprikaa": { "utility": [] } }
+    }
+  }
+}

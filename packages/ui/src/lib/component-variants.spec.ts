@@ -115,6 +115,8 @@ describe("componentVariants", () => {
     ["duration-slow", "duration-fast"],
     ["scrim-bottom", "scrim-top"],
     ["autogrid", "autogrid-wide"],
+    ["autogrid-min-md", "autogrid-min-lg"],
+    ["autogrid-min-md", "grid-cols-2"],
     ["pattern-tile-64", "pattern-tile-96"],
     ["pattern-opacity-default", "pattern-opacity-faint"],
   ])("lets a consumer className replace %s with %s", (base, className) => {

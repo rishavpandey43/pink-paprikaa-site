@@ -161,6 +161,12 @@ const SPACING = [
   "diet-mark-sm",
   "diet-mark-md",
   "diet-mark-lg",
+  "grid-min-xs",
+  "grid-min-sm",
+  "grid-min-md",
+  "grid-min-lg",
+  "grid-min-xl",
+  "grid-min-2xl",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];
@@ -170,6 +176,8 @@ const PATTERN_TILE = ["56", "64", "72", "80", "86", "96"];
 const PATTERN_OPACITY = ["default", "light", "faint"];
 /** tailwind-merge keeps a width group per side (`border-w-t` for `border-t-*`, …); all read these. */
 const BORDER_SIDES = ["x", "y", "s", "e", "bs", "be", "t", "r", "b", "l"];
+/** AutoGrid's `min` steps (`styles.css` `autogrid-min-*`, tokens/component/auto-grid.json). */
+const AUTOGRID_MIN = ["xs", "sm", "md", "lg", "xl", "2xl"];
 const ANIMATE = [
   "skeleton",
   "mark-pulse",
@@ -204,10 +212,12 @@ export const twMergeConfig: TWMergeConfig = {
       z: [{ z: Z }],
       duration: [{ duration: DURATION }],
       scrim: ["scrim-bottom", "scrim-top"],
-      autogrid: ["autogrid", "autogrid-wide"],
+      autogrid: ["autogrid", "autogrid-wide", { "autogrid-min": AUTOGRID_MIN }],
       "pattern-tile": [{ "pattern-tile": PATTERN_TILE }],
       "pattern-opacity": [{ "pattern-opacity": PATTERN_OPACITY }],
     },
+    // An auto-fit template and a fixed column count both set grid-template-columns: last one wins.
+    conflictingClassGroups: { autogrid: ["grid-cols"], "grid-cols": ["autogrid"] },
   },
 };
 

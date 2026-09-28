@@ -182,6 +182,13 @@
   grid-template-columns: repeat(auto-fit, minmax(min(var(--spacing-card-min-wide), 100%), 1fr));
 }
 
+/* AutoGrid's `min` steps (tokens/component/auto-grid.json): auto-fit tracks that drop a column
+   instead of squashing one. min(step, 100%) keeps a track from outgrowing a narrow parent, and a
+   fixed floor (never min-content) keeps a long word from widening its column. */
+@utility autogrid-min-* {
+  grid-template-columns: repeat(auto-fit, minmax(min(--value(--spacing-grid-min-*), 100%), 1fr));
+}
+
 @utility cluster {
   display: flex;
   flex-wrap: wrap;
