@@ -370,6 +370,15 @@
         ["color-text-body", "color-status-danger"]
       ],
       "min": 4.5
+    },
+    {
+      "id": "snackbar",
+      "surface": "ink",
+      "pairs": [
+        ["color-text-body", "color-snackbar-success-bg"],
+        ["color-text-body", "color-status-danger"]
+      ],
+      "min": 4.5
     }
   ]
 }

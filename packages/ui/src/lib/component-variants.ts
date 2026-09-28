@@ -72,6 +72,8 @@ const TEXT = [
   "alert-title",
   "toast",
   "toast-action",
+  "snackbar",
+  "snackbar-action",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -188,6 +190,7 @@ const SPACING = [
   "story-safe-top",
   "story-safe-bottom",
   "quantity-stepper-count",
+  "snackbar",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

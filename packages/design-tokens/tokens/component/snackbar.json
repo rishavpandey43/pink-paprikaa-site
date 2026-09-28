@@ -1,0 +1,28 @@
+{
+  "color": {
+    "$type": "color",
+    "snackbar-success-bg": {
+      "$value": "{color.mint-strong}",
+      "$description": "Success snackbar fill — white on the design system's mint fails AA (3.16:1)."
+    }
+  },
+  "spacing": {
+    "$type": "dimension",
+    "snackbar": {
+      "$value": "420px",
+      "$description": "Snackbar bar maximum width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "snackbar": {
+      "$value": { "fontSize": "14.5px", "lineHeight": 1.4 },
+      "$description": "Snackbar message (DM Sans 500)."
+    },
+    "snackbar-action": {
+      "$value": { "fontSize": "12.5px", "lineHeight": 1.4, "letterSpacing": "0.06em" },
+      "$description": "Snackbar text action (Poppins 700, uppercase)."
+    }
+  }
+}
