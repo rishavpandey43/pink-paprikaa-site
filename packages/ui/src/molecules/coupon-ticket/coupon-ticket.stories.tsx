@@ -33,9 +33,12 @@ export const Playground: Story = {};
 
 /** Card row "brand". */
 export const Brand: Story = {
-  // Headless Chromium refuses a clipboard write from a scripted click (no real gesture), so this
-  // story's clipboard accepts the code; the refused path is the jsdom test "never claims a copy…".
+  // Headless Chromium refuses a clipboard write from a scripted click (no real gesture), so under
+  // the test runner (an automated browser, `navigator.webdriver`) this story's clipboard accepts
+  // the code; the refused path is the jsdom test "never claims a copy…". A person clicking the
+  // stub in Storybook gets the real clipboard.
   beforeEach: () => {
+    if (!navigator.webdriver) return;
     const writeText = spyOn(navigator.clipboard, "writeText").mockResolvedValue();
     return () => {
       writeText.mockRestore();
