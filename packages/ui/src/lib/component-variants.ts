@@ -76,6 +76,9 @@ const TEXT = [
   "snackbar-action",
   "tabs-label",
   "breadcrumb",
+  "stat-value",
+  "stat-label",
+  "stat-sub",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];

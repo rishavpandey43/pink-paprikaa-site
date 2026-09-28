@@ -1,0 +1,22 @@
+{
+  "text": {
+    "$type": "typography",
+    "stat-value": {
+      "$value": {
+        "fontSize": "clamp(30px, 3.4vw, 42px)",
+        "lineHeight": 1.02,
+        "letterSpacing": "-0.025em",
+        "fontWeight": "{font-weight.black}"
+      },
+      "$description": "The big number — fluid, so it never overflows a narrow column (Poppins 800)."
+    },
+    "stat-label": {
+      "$value": { "fontSize": "15px", "lineHeight": 1.6 },
+      "$description": "The one line under the number (DM Sans 500)."
+    },
+    "stat-sub": {
+      "$value": { "fontSize": "13px", "lineHeight": 1.6 },
+      "$description": "Optional fine print under the label."
+    }
+  }
+}

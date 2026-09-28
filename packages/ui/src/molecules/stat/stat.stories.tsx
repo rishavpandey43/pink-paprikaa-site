@@ -1,0 +1,77 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+
+import { Heart } from "lucide-react";
+
+import { Stat } from "./stat";
+
+const meta = {
+  title: "Molecules/Stat",
+  component: Stat,
+  args: { value: "18", label: "spices ground in-house, daily" },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "A single big fact — outlet counts, spices ground, years open. The number is fluid-clamped Poppins 800, so it never overflows a narrow column; `tone` colours it (ink, brand, or white `inverse` on a dark band) while the label and sub follow the surface. Use at most 3–4 in a row and never invent numbers.",
+      },
+    },
+  },
+} satisfies Meta<typeof Stat>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};
+
+/** Card row "default". */
+export const Default: Story = {
+  render: () => (
+    <div className="flex flex-wrap gap-10">
+      <Stat value="18" label="spices ground in-house, daily" />
+      <Stat value="100%" label="vegetarian kitchen" />
+    </div>
+  ),
+};
+
+/** Card row "icon + brand". */
+export const IconBrand: Story = {
+  args: { value: "4.6", label: "average guest rating", icon: Heart, tone: "brand" },
+};
+
+/** Card row "inverse + center", on an ink field. */
+export const InverseCentre: Story = {
+  args: { value: "2025", label: "the year we started", tone: "inverse", align: "center" },
+  render: (args) => (
+    <div data-surface="ink" className="rounded-lg bg-surface-inverse p-6">
+      <Stat {...args} />
+    </div>
+  ),
+};
+
+/** Dev parity: the sub line carries the detail behind the number. */
+export const WithSub: Story = {
+  args: { value: "100%", label: "vegetarian kitchen", sub: "No meat, no egg, ever." },
+};
+
+/** Dev parity: three across, the most a row should carry; one column each below 480px. */
+export const Row: Story = {
+  render: () => (
+    <div className="grid gap-8 sm:grid-cols-3">
+      <Stat value="100%" label="vegetarian kitchen" />
+      <Stat value="18" label="spices ground in-house, daily" />
+      <Stat value="2025" label="the year we started" />
+    </div>
+  ),
+};
+
+/** Dev parity: at 360px the fluid number steps down rather than pushing the column open. */
+export const Narrow: Story = {
+  args: { value: "4.6", label: "average guest rating", sub: "Across every ordering channel" },
+  decorators: [
+    (Story) => (
+      <div className="w-full max-w-80">
+        <Story />
+      </div>
+    ),
+  ],
+};
