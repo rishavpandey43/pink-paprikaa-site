@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { Toast as RadixToast } from "radix-ui";
+import { useLayoutEffect, useRef } from "react";
 
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
@@ -104,6 +105,25 @@ export function Snackbar({
     onChange: onOpenChange,
   });
   const styles = snackbar({ tone, position, isContained });
+  const viewportRef = useRef<HTMLOListElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+
+  // Remember what had focus when the bar opened (Radix never moves focus on open).
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    const active = document.activeElement;
+    returnFocusRef.current = active instanceof HTMLElement ? active : null;
+  }, [isOpen]);
+
+  // R82: on close Radix parks focus on its viewport, which unmounts with the bar and drops focus
+  // to <body>. When focus is inside the bar, hand it back to what had it before the bar opened.
+  function handleOpenChange(next: boolean): void {
+    if (!next && viewportRef.current?.contains(document.activeElement) === true) {
+      const target = returnFocusRef.current;
+      if (target?.isConnected === true) target.focus();
+    }
+    setIsOpen(next);
+  }
 
   if (!isOpen) return null;
 
@@ -111,7 +131,7 @@ export function Snackbar({
     <RadixToast.Provider duration={duration} swipeDirection={SWIPE_DIRECTION[position]}>
       <RadixToast.Root
         open={isOpen}
-        onOpenChange={setIsOpen}
+        onOpenChange={handleOpenChange}
         // Severity picks the politeness (dev parity): a failure interrupts, a confirmation waits.
         type={tone === "danger" ? "foreground" : "background"}
         data-surface={NOTIFICATION_SURFACE[tone]}
@@ -132,7 +152,12 @@ export function Snackbar({
           <Icon icon={X} size="sm" />
         </RadixToast.Close>
       </RadixToast.Root>
-      <RadixToast.Viewport label="Messages" hotkey={NO_HOTKEY} className={styles.anchor()} />
+      <RadixToast.Viewport
+        ref={viewportRef}
+        label="Messages"
+        hotkey={NO_HOTKEY}
+        className={styles.anchor()}
+      />
     </RadixToast.Provider>
   );
 }

@@ -1,8 +1,9 @@
-import { act, render, screen, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useState } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
-import { Snackbar } from "./snackbar";
+import { Snackbar, type SnackbarProps } from "./snackbar";
 
 const UNDO = { label: "Undo", altText: "Undo removing Chilli Paneer" } as const;
 
@@ -166,6 +167,80 @@ describe("Snackbar", () => {
       </Snackbar>
     );
     expect(within(messages()).getByText("Code copied.")).toBeInTheDocument();
+  });
+
+  describe("hands focus back to what opened it (R82)", () => {
+    function Opener({ action, duration }: Pick<SnackbarProps, "action" | "duration">) {
+      const [isOpen, setIsOpen] = useState(false);
+      return (
+        <>
+          <button
+            type="button"
+            onClick={() => {
+              setIsOpen(true);
+            }}
+          >
+            Remove Chilli Paneer
+          </button>
+          <Snackbar open={isOpen} onOpenChange={setIsOpen} action={action} duration={duration}>
+            Chilli Paneer removed.
+          </Snackbar>
+        </>
+      );
+    }
+
+    async function openAndFocus(name: string, action?: SnackbarProps["action"]) {
+      const user = userEvent.setup();
+      render(<Opener action={action} />);
+      const trigger = screen.getByRole("button", { name: "Remove Chilli Paneer" });
+      await user.click(trigger);
+      within(messages()).getByRole("button", { name }).focus();
+      return { user, trigger };
+    }
+
+    it("after Dismiss", async () => {
+      const { user, trigger } = await openAndFocus("Dismiss");
+      await user.keyboard("{Enter}");
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+
+    it.each(["Undo", "Retry"])("after its %s action", async (label) => {
+      const onClick = vi.fn();
+      const { user, trigger } = await openAndFocus(label, {
+        label,
+        altText: `${label} removing Chilli Paneer`,
+        onClick,
+      });
+      await user.keyboard("{Enter}");
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+
+    it("after Escape", async () => {
+      const { user, trigger } = await openAndFocus("Dismiss");
+      await user.keyboard("{Escape}");
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+
+    it("leaves focus alone when it was never inside the bar", async () => {
+      const user = userEvent.setup();
+      render(
+        <>
+          <Opener duration={20} />
+          <input aria-label="Note" />
+        </>
+      );
+      await user.click(screen.getByRole("button", { name: "Remove Chilli Paneer" }));
+      const note = screen.getByRole("textbox", { name: "Note" });
+      note.focus();
+      await waitFor(() => {
+        expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      });
+      expect(note).toHaveFocus();
+    });
   });
 
   it("has no accessibility violations with an action and a dismiss", async () => {

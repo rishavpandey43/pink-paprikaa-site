@@ -83,6 +83,10 @@ export const LiveCopy: Story = {
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("button", { name: "Copy PAPRIKAA50" }));
     await expect(await canvas.findByText("Code copied. Paste it at checkout.")).toBeInTheDocument();
+    // R82: dismissing from the keyboard hands focus back to the button that opened the bar.
+    canvas.getByRole("button", { name: "Dismiss" }).focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(canvas.getByRole("button", { name: "Copy PAPRIKAA50" })).toHaveFocus();
   },
 };
 
