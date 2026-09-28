@@ -947,7 +947,7 @@ const field = componentVariants({
       stack: { root: "gap-1.5" },
       // Two columns from `sm` (480px) up only; below it the field stacks (dev parity).
       side: {
-        root: "sm:grid-cols-field-side gap-1.5 sm:items-start sm:gap-4",
+        root: "gap-1.5 sm:grid-cols-field-side sm:items-start sm:gap-4",
         label: "sm:pt-3.25",
       },
     },
