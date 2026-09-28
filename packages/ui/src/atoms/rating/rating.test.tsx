@@ -47,7 +47,7 @@ describe("Rating", () => {
 
   it("draws no fill at all for 0, and still names the score", () => {
     const { container } = render(<Rating value={0} />);
-    expect(screen.getByRole("img", { name: "0 out of 5" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "0.0 out of 5" })).toBeInTheDocument();
     expect(screen.getByText("0.0")).toBeInTheDocument();
     expect(filled(container)).toHaveLength(0);
     expect(empty(container)).toHaveLength(5);
@@ -77,7 +77,7 @@ describe("Rating", () => {
 
   it("honours another max", () => {
     const { container } = render(<Rating value={2} max={3} />);
-    expect(screen.getByRole("img", { name: "2 out of 3" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "2.0 out of 3" })).toBeInTheDocument();
     expect(empty(container)).toHaveLength(3);
   });
 

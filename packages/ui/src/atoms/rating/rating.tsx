@@ -118,9 +118,10 @@ export function Rating({
     throw new RangeError(`Rating: count must be a whole number of reviews, got ${String(count)}`);
   }
   const styles = rating({ variant });
-  // Rounded once, so the name and the printed score never disagree (4.25 → "4.3" in both).
-  const rounded = Math.round(value * 10) / 10;
-  const score = `${String(rounded)} out of ${String(max)}`;
+  // Rounded once and printed one way, so the name and the visible score never disagree
+  // (4.25 → "4.3" and 4 → "4.0" in both).
+  const shown = (Math.round(value * 10) / 10).toFixed(1);
+  const score = `${shown} out of ${String(max)}`;
   const name = count === undefined ? score : `${score}, ${formatCount(count)} reviews`;
 
   return (
@@ -135,7 +136,7 @@ export function Rating({
           );
         })}
       </span>
-      {hasValue ? <span className={styles.value()}>{rounded.toFixed(1)}</span> : null}
+      {hasValue ? <span className={styles.value()}>{shown}</span> : null}
       {count === undefined ? null : <span className={styles.count()}>({formatCount(count)})</span>}
     </span>
   );
