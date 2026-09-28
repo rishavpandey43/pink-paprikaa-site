@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 import axeCore, { type RunOptions } from "axe-core";
-import { expect } from "vitest";
+import { expect, type Mock, vi } from "vitest";
 
 /**
  * The accessibility assertion every component test ends with (handbook 08 §1).
@@ -24,6 +24,20 @@ export async function expectNoA11yViolations(
     })
     .join("\n\n");
   expect(violations, `accessibility violations:\n\n${detail}`).toHaveLength(0);
+}
+
+/**
+ * What react-hook-form's `register(name)` returns — `{ name, onChange, onBlur, ref }` — as spies.
+ * Spread it onto a native-backed control to prove `{...register("field")}` works (spec D17)
+ * without making react-hook-form a dependency of the library.
+ */
+export function fakeRegister(name: string): {
+  name: string;
+  onChange: Mock;
+  onBlur: Mock;
+  ref: Mock;
+} {
+  return { name, onChange: vi.fn(), onBlur: vi.fn(), ref: vi.fn() };
 }
 
 /*

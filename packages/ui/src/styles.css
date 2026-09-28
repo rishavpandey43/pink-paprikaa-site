@@ -238,11 +238,16 @@
 }
 
 /* Tailwind's `shadow-*` inlines the theme value (`--tw-shadow: var(--shadow-brand)`) so it can
-   swap in `--tw-shadow-color`, which means a surface override of `--shadow-button-primary` never
-   reached the class. This merges into the generated rule and reads the variable at the element, so
-   primary takes shadow-2 on a pink field (surface/brand.json). */
+   swap in `--tw-shadow-color`, which means a surface override of a shadow token never reaches the
+   class. Each of these merges into the generated rule and reads the variable at the element, so
+   primary takes shadow-2 on a pink field (surface/brand.json) and a field's focus ring follows its
+   light island. Every surface-overridden shadow needs one (`styles.spec.ts` enforces it). */
 @utility shadow-button-primary {
   --tw-shadow: var(--shadow-button-primary);
+}
+
+@utility shadow-focus-ring {
+  --tw-shadow: var(--shadow-focus-ring);
 }
 
 /* PatternField (spec §7.2): the tile image is the white symbol as a mask, set by the component;

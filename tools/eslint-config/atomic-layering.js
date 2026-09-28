@@ -7,7 +7,9 @@ const layerOrder = ["atoms", "molecules", "organisms", "layouts"];
  * `../../../src/index`, or the package's own name `@pink-paprikaa-web/ui`, ruling R41).
  * An atom also imports no other atom but Icon, directly (`../text/text`) or by the roundabout
  * path (`../../atoms/text/text`). Everything else passes: `../../lib/*`, `../../assets/*`,
- * `../../styles.css`, `../../../vitest.setup`, packages. `atomic-layering.test.mjs` pins each case.
+ * `../../styles.css`, `../../../vitest.setup`, packages. `src/lib/` is not a tier, but the barrel
+ * and self-package bans cover it too (R41): library internals are imported by the atoms, so a lib
+ * file reaching the barrel would be a cycle. `atomic-layering.test.mjs` pins each case.
  *
  * Exported separately from `react.js` (not folded into the default react preset) because the
  * `files` pattern below — `src/<layer>` — is project-local, not workspace-global: ESLint's flat
@@ -77,6 +79,12 @@ const atomicLayering = [
     files: [`**/src/${layer}/**/*`],
     rules: { "no-restricted-imports": ["error", { patterns: tierPatterns(layer) }] },
   })),
+  {
+    files: ["**/src/lib/**/*"],
+    rules: {
+      "no-restricted-imports": ["error", { patterns: [barrelPattern, selfPackagePattern] }],
+    },
+  },
 ];
 
 export default atomicLayering;

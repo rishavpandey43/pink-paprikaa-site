@@ -23,5 +23,6 @@ export { StatusDot, type StatusDotProps } from "./atoms/status-dot/status-dot";
 export { Tag, type TagProps, tagVariants } from "./atoms/tag/tag";
 export { Text, type TextProps, type TextTone, type TextVariant } from "./atoms/text/text";
 export { RevealObserver, type RevealObserverProps } from "./lib/reveal-observer";
+export type { FieldStatus } from "./lib/field-status";
 export { type HeadingLevel, headingTag } from "./lib/heading";
 export type { LinkAs, LinkAsProps } from "./lib/link-as";

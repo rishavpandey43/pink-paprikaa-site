@@ -63,3 +63,36 @@ test("an atom imports no other atom but Icon", () => {
   assert.equal(errors("atoms", "../icon/icon"), 0);
   assert.equal(errors("atoms", "../../atoms/icon/icon"), 0);
 });
+
+/** How many errors `import "<source>"` raises in a library file (`src/lib/`, not a tier). */
+function libErrors(source) {
+  return linter.verify(`import "${source}";`, atomicLayering, "src/lib/probe.js").length;
+}
+
+test("a lib file never imports the package barrel, by any spelling (R41)", () => {
+  for (const barrel of [
+    "..",
+    "../",
+    "../index",
+    "../index.ts",
+    "../../src",
+    "../../src/index",
+    "@pink-paprikaa-web/ui",
+    "@pink-paprikaa-web/ui/styles.css",
+  ]) {
+    assert.equal(libErrors(barrel), 1, `lib importing "${barrel}"`);
+  }
+});
+
+test("a lib file may import its siblings, the Icon atom, the stylesheet, the test setup and packages", () => {
+  for (const source of [
+    "./component-variants",
+    "../atoms/icon/icon",
+    "../styles.css",
+    "../../vitest.setup",
+    "react",
+    "@pink-paprikaa-web/utils",
+  ]) {
+    assert.equal(libErrors(source), 0, `lib importing "${source}"`);
+  }
+});
