@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { expect } from "storybook/test";
 
+import type { StackProps } from "@pink-paprikaa-web/ui";
+
 import { cssValue, stepUtilities, tokensWithPrefix, utilitiesOf } from "../../docs-kit/catalogue";
 import { spyOnClipboard } from "../../docs-kit/clipboard";
 import { requireElement } from "../../docs-kit/dom";
@@ -20,13 +22,17 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/**
- * Every step of the scale in order. Deferred (fold list item 6): the compile-time check against
- * the layouts' `StackProps["space"]` returns with Stack (Plan 2c).
- */
+type SpaceStep = NonNullable<StackProps["space"]>;
+
+/** Every step of the scale in order — checked against the layouts' `space` type in both directions. */
 const SPACE_STEPS = [
   0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 32,
-] as const;
+] as const satisfies readonly SpaceStep[];
+
+/** Compile-time: a step the system gains but this page does not show fails typecheck. */
+const isEveryStepShown: [Exclude<SpaceStep, (typeof SPACE_STEPS)[number]>] extends [never]
+  ? true
+  : false = true;
 
 const RHYTHM_TOKENS = [
   "spacing-gutter",
@@ -64,6 +70,7 @@ async function expectChipCopies(
 export const Scale: Story = {
   render: () => <SpacingScale steps={SPACE_STEPS} />,
   play: async ({ canvas, canvasElement, userEvent }) => {
+    await expect(isEveryStepShown).toBe(true);
     // Design-system rule: step N is N × 4px, so step 6 is always 24px.
     const unit = Number.parseFloat(cssValue("spacing"));
     await expect(unit).toBe(4);
