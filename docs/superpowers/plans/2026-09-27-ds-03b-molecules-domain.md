@@ -7342,13 +7342,13 @@ const SURFACE_OF: Readonly<Record<PricingCardVariant, "light" | "brand">> = {
 
 const pricingCard = componentVariants({
   slots: {
-    root: "p-pricing-card-pad relative flex h-full flex-col gap-3.5 rounded-xl",
+    root: "relative flex h-full flex-col gap-3.5 rounded-xl p-pricing-card-pad",
     badge: "absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap",
     header: "flex flex-wrap items-center justify-between gap-2",
     // A long name wraps (anywhere, if it must) rather than widening the card.
     name: "min-w-0 font-display text-h4 font-black wrap-anywhere text-text-heading",
     priceRow: "m-0 flex max-w-none flex-wrap items-baseline gap-x-2 gap-y-1",
-    price: "text-pricing-card-price font-display text-text-heading",
+    price: "font-display text-pricing-card-price text-text-heading",
     unit: "text-body-sm text-text-muted",
     was: "text-body text-text-muted",
     blurb: "m-0 max-w-none text-body-sm text-text-body",
