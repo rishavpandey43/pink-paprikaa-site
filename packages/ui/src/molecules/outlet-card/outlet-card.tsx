@@ -99,11 +99,14 @@ export function OutletCard({
                   a capitalised call result as a component created during render. */}
               {createElement(
                 headingTag(headingLevel),
-                { className: styles.name() },
+                {
+                  className: styles.name(),
+                  "data-stretched-link": href === undefined ? undefined : "",
+                },
                 href === undefined ? (
                   name
                 ) : (
-                  <LinkComponent href={href} className={styles.link()} data-stretched-link>
+                  <LinkComponent href={href} className={styles.link()}>
                     {name}
                   </LinkComponent>
                 )

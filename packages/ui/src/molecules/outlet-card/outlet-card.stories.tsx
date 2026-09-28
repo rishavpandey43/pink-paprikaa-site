@@ -3,8 +3,19 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ArrowUpRight } from "lucide-react";
 import { expect } from "storybook/test";
 
+import type { LinkAsProps } from "../../lib/link-as";
+
 import { Button } from "../../atoms/button/button";
 import { OutletCard } from "./outlet-card";
+
+/** A router link that forwards only the LinkAsProps it is given — no stray data attributes. */
+function StrictLink({ href, className, children }: LinkAsProps) {
+  return (
+    <a href={href} className={className}>
+      {children}
+    </a>
+  );
+}
 
 const ADDRESS = "Booth No. 67P, HSVP Market (MKM Market), Sector 57";
 const HOURS = "8am – 11:30pm";
@@ -79,9 +90,12 @@ export const AsLink: Story = {
   },
 };
 
-/** Keyboard: the stretched link rings the whole card; Directions rings only itself. */
+/**
+ * Keyboard: the stretched link rings the whole card — even through a router link that forwards
+ * nothing but its LinkAsProps; Directions rings only itself.
+ */
 export const KeyboardFocus: Story = {
-  args: { href: "#sector-57", hasImage: false, action: directions },
+  args: { href: "#sector-57", hasImage: false, action: directions, linkAs: StrictLink },
   play: async ({ canvas, userEvent }) => {
     const card = canvas.getByRole("article");
     const ringOf = () => getComputedStyle(card).outlineStyle;

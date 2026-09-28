@@ -3,8 +3,19 @@ import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import { Plus } from "lucide-react";
 import { expect } from "storybook/test";
 
+import type { LinkAsProps } from "../../lib/link-as";
+
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { MenuItemCard } from "./menu-item-card";
+
+/** A router link that forwards only the LinkAsProps it is given — no stray data attributes. */
+function StrictLink({ href, className, children }: LinkAsProps) {
+  return (
+    <a href={href} className={className}>
+      {children}
+    </a>
+  );
+}
 
 /**
  * One card at the design system's 210px. A story decorator, not a `meta` one: Storybook
@@ -108,9 +119,12 @@ export const AsLink: Story = {
   },
 };
 
-/** Keyboard: when the stretched link has focus the ring goes round the whole card it covers. */
+/**
+ * Keyboard: when the stretched link has focus the ring goes round the whole card it covers — even
+ * through a router link that forwards nothing but its LinkAsProps.
+ */
 export const KeyboardFocus: Story = {
-  args: { href: "#masala-cold-brew" },
+  args: { href: "#masala-cold-brew", linkAs: StrictLink },
   decorators: [cardWidth],
   play: async ({ canvas, userEvent }) => {
     const card = canvas.getByRole("article");
