@@ -31,7 +31,7 @@ const toastViewport = componentVariants({
 
 const toast = componentVariants({
   slots: {
-    root: "pointer-events-auto inline-flex max-w-full items-center gap-3 rounded-pill px-4 py-3 text-text-body shadow-3",
+    root: "pointer-events-auto inline-flex max-w-full toast-swipe-y items-center gap-3 rounded-pill px-4 py-3 text-text-body shadow-3",
     message: "min-w-0 font-body text-toast font-medium text-pretty",
     // `min-h-hit` + `-my-3`: a 44px target that does not grow the pill (dev parity).
     action:

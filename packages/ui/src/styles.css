@@ -335,6 +335,23 @@
   z-index: var(--z-tooltip);
 }
 
+/* Radix Toast swipe (Toast, Snackbar): the bar follows the finger, springs back on a cancel and
+   stays where it was flung while it closes. Radix sets `data-swipe` and the offset variables. */
+@utility toast-swipe-y {
+  &[data-swipe="move"] {
+    translate: 0 var(--radix-toast-swipe-move-y);
+  }
+
+  &[data-swipe="cancel"] {
+    translate: 0 0;
+    transition: translate var(--duration-fast) var(--ease-out);
+  }
+
+  &[data-swipe="end"] {
+    translate: 0 var(--radix-toast-swipe-end-y);
+  }
+}
+
 /* The design system's seven animations. */
 @keyframes pp-toast-pop {
   from {

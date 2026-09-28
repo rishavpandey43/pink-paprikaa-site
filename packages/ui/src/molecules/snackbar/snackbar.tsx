@@ -22,7 +22,7 @@ const NO_HOTKEY: string[] = [];
 const snackbar = componentVariants({
   slots: {
     anchor: "pointer-events-none inset-x-6 z-toast m-0 flex list-none p-0",
-    root: "pointer-events-auto flex w-full max-w-snackbar min-w-0 animate-sheet-in items-center gap-3 rounded-md py-3.25 pr-3.5 pl-4 text-text-body shadow-3",
+    root: "pointer-events-auto flex w-full max-w-snackbar min-w-0 toast-swipe-y animate-sheet-in items-center gap-3 rounded-md py-3.25 pr-3.5 pl-4 text-text-body shadow-3",
     message: "min-w-0 flex-1 font-body text-snackbar font-medium text-pretty",
     // Hit areas (dev parity): the action is 44px tall (`min-h-hit`, margin pulled into the 13px
     // padding by `-my-3`); the 24px dismiss takes taps over 40px through `before:-inset-2`.
