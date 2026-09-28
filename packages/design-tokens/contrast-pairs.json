@@ -379,6 +379,12 @@
         ["color-text-body", "color-status-danger"]
       ],
       "min": 4.5
+    },
+    {
+      "id": "tabs",
+      "surface": null,
+      "pairs": [["color-tabs-segmented-fg", "color-surface-card"]],
+      "min": 4.5
     }
   ]
 }

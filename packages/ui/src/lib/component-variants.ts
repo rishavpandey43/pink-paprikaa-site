@@ -74,6 +74,7 @@ const TEXT = [
   "toast-action",
   "snackbar",
   "snackbar-action",
+  "tabs-label",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];

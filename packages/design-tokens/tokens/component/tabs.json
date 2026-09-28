@@ -1,0 +1,21 @@
+{
+  "color": {
+    "$type": "color",
+    "tabs-segmented-fg": {
+      "$value": "{color.pink.700}",
+      "$description": "Idle label on the handoff's segmented tab rail (white fill)."
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "tabs-label": {
+      "$value": {
+        "fontSize": "15px",
+        "lineHeight": 1.4,
+        "letterSpacing": "-0.005em",
+        "fontWeight": "{font-weight.bold}"
+      },
+      "$description": "Underline tab label (Poppins 700)."
+    }
+  }
+}

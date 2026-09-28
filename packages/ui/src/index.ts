@@ -65,6 +65,7 @@ export {
   SlotPicker,
   type SlotPickerProps,
 } from "./molecules/slot-picker/slot-picker";
+export { type TabItem, Tabs, type TabsProps } from "./molecules/tabs/tabs";
 export {
   Toast,
   type ToastProps,
