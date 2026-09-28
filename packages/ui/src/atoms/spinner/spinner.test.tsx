@@ -17,6 +17,14 @@ describe("Spinner", () => {
     expect(screen.getByRole("status", { name: "Finding your outlet" })).toBeInTheDocument();
   });
 
+  it("announces its label as live-region content, not only as a name", () => {
+    render(<Spinner label="Finding your outlet" />);
+    const status = screen.getByRole("status");
+    expect(status).not.toHaveAttribute("aria-label");
+    expect(status).toHaveTextContent("Finding your outlet");
+    expect(screen.getByText("Finding your outlet")).toHaveClass("sr-only");
+  });
+
   it("draws the brand mark, pulsing only when motion is allowed", () => {
     const { container } = render(<Spinner />);
     const mark = markIn(container);

@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react";
+import { type ComponentProps, useId } from "react";
 
 import { componentVariants } from "../../lib/component-variants";
 import { SymbolMark } from "../../lib/symbol-mark";
@@ -41,9 +41,15 @@ export function Spinner({
   ...props
 }: SpinnerProps) {
   const styles = spinner({ size, tone });
+  const labelId = useId();
+  // A live region announces its content, not its name: the label is sr-only text inside it,
+  // and aria-labelledby points at that text so the status keeps its name (status is named by author only).
   return (
-    <span role="status" aria-label={label} className={styles.root({ className })} {...props}>
+    <span role="status" aria-labelledby={labelId} className={styles.root({ className })} {...props}>
       <SymbolMark className={styles.mark()} />
+      <span id={labelId} className="sr-only">
+        {label}
+      </span>
     </span>
   );
 }
