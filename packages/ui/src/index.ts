@@ -64,6 +64,13 @@ export {
 } from "./molecules/breadcrumb/breadcrumb";
 export { CheckCard, type CheckCardProps } from "./molecules/check-card/check-card";
 export {
+  ChipGroup,
+  type ChipGroupProps,
+  type ChipOption,
+  type MultipleChipGroupProps,
+  type SingleChipGroupProps,
+} from "./molecules/chip-group/chip-group";
+export {
   ChoiceCardGroup,
   type ChoiceCardGroupProps,
   type ChoiceGridMin,
