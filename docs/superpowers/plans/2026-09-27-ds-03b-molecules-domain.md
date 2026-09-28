@@ -435,8 +435,8 @@ const menuItemRow = componentVariants({
     root: "flex items-start gap-5 py-5",
     body: "min-w-0 flex-1",
     header: "flex flex-wrap items-center gap-2",
-    name: "text-menu-item-name font-display text-text-heading",
-    nameDevanagari: "text-menu-item-devanagari font-devanagari text-text-brand",
+    name: "font-display text-menu-item-name text-text-heading",
+    nameDevanagari: "font-devanagari text-menu-item-devanagari text-text-brand",
     meta: "mt-2 flex items-center gap-3.5",
     description: "mt-2 mb-0 max-w-text-measure-narrow text-body-sm text-text-muted",
     action: "mt-3.5",
@@ -962,7 +962,7 @@ const menuItemCard = componentVariants({
     // flex-1 + the footer's mt-auto pin the price row to the bottom, so a grid of cards lines up.
     body: "flex flex-1 flex-col gap-2 p-4.5",
     header: "flex items-center gap-2",
-    name: "text-menu-item-name min-w-0 font-display text-text-heading",
+    name: "min-w-0 font-display text-menu-item-name text-text-heading",
     // Stretched link: the ::after covers the whole card, so the card clicks through to the dish.
     link: "text-inherit no-underline after:absolute after:inset-0",
     description: "m-0 line-clamp-2 max-w-none text-body-sm text-text-muted",
