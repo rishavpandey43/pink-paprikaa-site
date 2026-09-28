@@ -122,13 +122,23 @@ describe("Select", () => {
     expect(select.parentElement).not.toHaveClass("w-full");
   });
 
-  it("locks when read-only: sunken fill, a lock, and the value cannot change", () => {
+  it("locks when read-only: sunken fill, a lock, and the value cannot change", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
     const { container } = render(
-      <Select aria-label="Outlet" readOnly defaultValue="20:00" options={SLOTS} />
+      <Select
+        aria-label="Outlet"
+        readOnly
+        defaultValue="20:00"
+        onChange={onChange}
+        options={SLOTS}
+      />
     );
     const select = screen.getByRole("combobox");
     expect(select).toBeDisabled();
+    await user.selectOptions(select, "7:30pm").catch(() => undefined);
     expect(select).toHaveValue("20:00");
+    expect(onChange).not.toHaveBeenCalled();
     expect(select.parentElement).toHaveClass("bg-surface-sunken");
     expect(container.querySelector(".lucide-lock")).toBeInTheDocument();
     expect(container.querySelector(".lucide-chevron-down")).not.toBeInTheDocument();
@@ -145,6 +155,34 @@ describe("Select", () => {
     expect(hidden).toHaveLength(1);
     expect(hidden[0]).toHaveAttribute("name", "outlet");
     expect(hidden[0]).toHaveValue("20:00");
+  });
+
+  it("undoes the disabled paint when read-only, and keeps it when also disabled", () => {
+    render(
+      <>
+        <Select aria-label="Outlet" readOnly defaultValue="20:00" options={SLOTS} />
+        <Select aria-label="Pickup time" readOnly disabled options={SLOTS} />
+      </>
+    );
+    const readOnly = screen.getByRole("combobox", { name: "Outlet" }).parentElement;
+    expect(readOnly).toHaveClass(
+      "has-disabled:text-text-body",
+      "has-disabled:border-border-default"
+    );
+    expect(readOnly).not.toHaveClass(
+      "has-disabled:text-ink-400",
+      "has-disabled:border-border-subtle"
+    );
+    const disabled = screen.getByRole("combobox", { name: "Pickup time" }).parentElement;
+    expect(disabled).toHaveClass("has-disabled:text-ink-400");
+    expect(disabled).not.toHaveClass("has-disabled:text-text-body");
+  });
+
+  it("posts no empty value from a read-only placeholder", () => {
+    const { container } = render(
+      <Select aria-label="Outlet" name="outlet" readOnly placeholder="Choose" options={SLOTS} />
+    );
+    expect(container.querySelector('input[type="hidden"]')).not.toBeInTheDocument();
   });
 
   it("submits nothing when read-only and disabled", () => {

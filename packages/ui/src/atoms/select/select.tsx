@@ -53,6 +53,8 @@ export function Select({
     value === undefined && defaultValue === undefined && placeholder !== undefined
       ? ""
       : defaultValue;
+  // A read-only placeholder with no value posts nothing, as an empty native select would.
+  const submitted = value ?? initialValue ?? "";
 
   return (
     <FieldControl
@@ -60,7 +62,8 @@ export function Select({
       size={size}
       status={status}
       icon={icon}
-      isReadOnly={readOnly}
+      // Disabled and read-only greys as disabled; read-only alone stays readable.
+      isReadOnly={readOnly && disabled !== true}
       affordance={ChevronDown}
       className={className}
     >
@@ -86,8 +89,8 @@ export function Select({
               </option>
             ))}
           </select>
-          {readOnly && disabled !== true && name !== undefined ? (
-            <input type="hidden" name={name} value={value ?? initialValue ?? ""} />
+          {readOnly && disabled !== true && name !== undefined && submitted !== "" ? (
+            <input type="hidden" name={name} value={submitted} />
           ) : null}
         </>
       )}

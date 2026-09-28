@@ -77,6 +77,17 @@ export const fieldControlVariants = componentVariants({
     // A select's text clears a leading icon: 14px inset + 20px icon + 10px gap.
     { control: "select", hasIcon: true, class: { control: "ps-11" } },
     { status: "default", isReadOnly: true, class: { glyph: "text-ink-400" } },
+    // A read-only select is disabled natively (a select cannot be read-only), so it undoes the
+    // disabled paint: locked but readable — body text on the default border, like a read-only Input.
+    {
+      control: "select",
+      isReadOnly: true,
+      class: {
+        root: "has-disabled:cursor-default has-disabled:border-border-default has-disabled:text-text-body",
+        icon: "group-has-disabled/field:text-ink-500",
+        control: "disabled:cursor-default",
+      },
+    },
   ],
   defaultVariants: {
     size: "md",
@@ -114,6 +125,7 @@ export interface FieldControlProps {
   trailing?: ReactNode;
   /** Pulses the brand mark in place of the trailing glyph. */
   isLoading?: boolean | undefined;
+  /** Sunken fill and a lock. With `control="select"` it also undoes the disabled paint. */
   isReadOnly?: boolean | undefined;
   isMultiline?: boolean | undefined;
   /** A resting trailing glyph (Select's chevron); a status, the lock or the loading mark replace it. */

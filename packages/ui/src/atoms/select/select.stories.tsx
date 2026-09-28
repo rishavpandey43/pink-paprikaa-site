@@ -78,6 +78,34 @@ export const ReadOnlyAndDisabled: Story = {
       />
     </div>
   ),
+  // Locked but readable: a read-only select is disabled natively, yet paints body text on a
+  // default border, while a disabled one greys. A probe painted with the token inside the same
+  // field box gives the expected value in the browser's own format.
+  play: async ({ canvas }) => {
+    const paint = (select: HTMLElement, property: "color" | "borderColor", token: string) => {
+      const probe = document.createElement("span");
+      probe.style[property] = `var(${token})`;
+      select.parentElement?.append(probe);
+      const expected = getComputedStyle(probe)[property];
+      probe.remove();
+      return expected;
+    };
+    const readOnly = canvas.getByRole("combobox", { name: "Outlet" });
+    const disabled = canvas.getByRole("combobox", { name: "Delivery slot" });
+    const box = readOnly.parentElement;
+    if (box === null) throw new Error("The select renders inside its field box.");
+
+    await expect(getComputedStyle(readOnly).color).toBe(
+      paint(readOnly, "color", "--color-text-body")
+    );
+    await expect(getComputedStyle(readOnly).opacity).toBe("1");
+    await expect(getComputedStyle(box).borderColor).toBe(
+      paint(readOnly, "borderColor", "--color-border-default")
+    );
+    await expect(getComputedStyle(disabled).color).toBe(
+      paint(disabled, "color", "--color-ink-400")
+    );
+  },
 };
 
 export const Sizes: Story = {
