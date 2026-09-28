@@ -12,18 +12,20 @@ import { SymbolMark } from "./symbol-mark";
  * native control inside it — and SearchField can — so heights, radius, the status border, the focus
  * ring, the disabled and read-only fills and the trailing glyph are shared by construction.
  *
- * Disabled is styled off the native element (`has-[>:disabled]:`), so a disabled `<fieldset>`
- * greys its fields too. The `>` matters: a bare `has-disabled:` also matches a select's disabled
- * placeholder `<option>` and would paint every placeholder Select disabled. Read-only cannot be (`:read-only` matches every non-editable element), so it
- * is a variant.
+ * Disabled is styled off the native control (`has-[>:is(input,textarea,select):disabled]:`), so a
+ * disabled `<fieldset>` greys its fields too. The selector names the control, a direct child of the
+ * box: a bare `has-disabled:` also matches a select's disabled placeholder `<option>`, and
+ * `has-[>:disabled]:` a disabled trailing button — either would paint the whole field disabled. A
+ * new control rendered in the box must be one of those three elements and a direct child. Read-only
+ * cannot be styled that way (`:read-only` matches every non-editable element), so it is a variant.
  */
 export const fieldControlVariants = componentVariants({
   slots: {
     root: [
       "group/field relative flex w-full min-w-0 items-center gap-2.5 rounded-md border border-border-default bg-surface-card px-3.5 font-body text-text-body transition-control",
-      "has-[>:disabled]:cursor-not-allowed has-[>:disabled]:border-border-subtle has-[>:disabled]:bg-ink-100 has-[>:disabled]:text-ink-400",
+      "has-[>:is(input,textarea,select):disabled]:cursor-not-allowed has-[>:is(input,textarea,select):disabled]:border-border-subtle has-[>:is(input,textarea,select):disabled]:bg-ink-100 has-[>:is(input,textarea,select):disabled]:text-ink-400",
     ],
-    icon: "text-ink-500 group-has-[>:disabled]/field:text-ink-400",
+    icon: "text-ink-500 group-has-[>:is(input,textarea,select):disabled]/field:text-ink-400",
     control: "bg-transparent outline-none disabled:cursor-not-allowed",
     glyph: "ms-auto",
     spinner: "ms-auto size-field-spinner shrink-0 text-pink-500 motion-safe:animate-mark-pulse",
@@ -55,7 +57,7 @@ export const fieldControlVariants = componentVariants({
       default: {
         root: "focus-within:border-2 focus-within:border-border-brand focus-within:shadow-focus-ring",
         icon: "group-focus-within/field:text-pink-500",
-        glyph: "text-ink-500 group-has-[>:disabled]/field:text-ink-400",
+        glyph: "text-ink-500 group-has-[>:is(input,textarea,select):disabled]/field:text-ink-400",
       },
       error: {
         root: "border-2 border-status-danger focus-within:shadow-field-ring-danger",
@@ -84,35 +86,35 @@ export const fieldControlVariants = componentVariants({
       control: "select",
       isReadOnly: true,
       class: {
-        root: "has-[>:disabled]:cursor-default has-[>:disabled]:text-text-body",
-        icon: "group-has-[>:disabled]/field:text-ink-500",
+        root: "has-[>:is(input,textarea,select):disabled]:cursor-default has-[>:is(input,textarea,select):disabled]:text-text-body",
+        icon: "group-has-[>:is(input,textarea,select):disabled]/field:text-ink-500",
         control: "disabled:cursor-default",
       },
     },
-    // `has-[>:disabled]:` outranks a plain border class, so each status restores its own border.
+    // `has-[>:is(input,textarea,select):disabled]:` outranks a plain border class, so each status restores its own border.
     {
       control: "select",
       isReadOnly: true,
       status: "default",
-      class: { root: "has-[>:disabled]:border-border-default" },
+      class: { root: "has-[>:is(input,textarea,select):disabled]:border-border-default" },
     },
     {
       control: "select",
       isReadOnly: true,
       status: "error",
-      class: { root: "has-[>:disabled]:border-status-danger" },
+      class: { root: "has-[>:is(input,textarea,select):disabled]:border-status-danger" },
     },
     {
       control: "select",
       isReadOnly: true,
       status: "success",
-      class: { root: "has-[>:disabled]:border-status-success" },
+      class: { root: "has-[>:is(input,textarea,select):disabled]:border-status-success" },
     },
     {
       control: "select",
       isReadOnly: true,
       status: "warning",
-      class: { root: "has-[>:disabled]:border-status-warning" },
+      class: { root: "has-[>:is(input,textarea,select):disabled]:border-status-warning" },
     },
   ],
   defaultVariants: {

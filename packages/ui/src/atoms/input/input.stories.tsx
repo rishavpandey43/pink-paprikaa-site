@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { CreditCard, Phone } from "lucide-react";
+import { expect } from "storybook/test";
 
+import { paint } from "../../lib/story-paint";
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Input } from "./input";
 
@@ -86,6 +88,33 @@ export const SuffixAndTrailing: Story = {
         Check
       </button>
     ),
+  },
+};
+
+/** A disabled trailing button disables only itself: the field keeps its white box and body text. */
+export const DisabledTrailing: Story = {
+  name: "trailing disabled",
+  args: {
+    "aria-label": "Promo code",
+    defaultValue: "CHAI20",
+    trailing: (
+      <button
+        type="button"
+        disabled
+        className="shrink-0 rounded-pill px-3 py-1 font-display text-body-sm font-bold text-text-link disabled:text-ink-400"
+      >
+        Apply
+      </button>
+    ),
+  },
+  play: async ({ canvas }) => {
+    const input = canvas.getByRole("textbox", { name: "Promo code" });
+    const box = input.parentElement;
+    if (box === null) throw new Error("The input renders inside its field box.");
+    await expect(getComputedStyle(input).color).toBe(paint(input, "color", "--color-text-body"));
+    await expect(getComputedStyle(box).backgroundColor).toBe(
+      paint(input, "backgroundColor", "--color-surface-card")
+    );
   },
 };
 

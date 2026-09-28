@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Users } from "lucide-react";
 import { expect } from "storybook/test";
 
+import { paint } from "../../lib/story-paint";
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Select } from "./select";
 
@@ -41,20 +42,6 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-
-/** A token painted by a probe inside the same field box: the expected value in the browser's own format. */
-function paint(
-  select: HTMLElement,
-  property: "color" | "borderColor" | "backgroundColor",
-  token: string
-) {
-  const probe = document.createElement("span");
-  probe.style[property] = `var(${token})`;
-  select.parentElement?.append(probe);
-  const expected = getComputedStyle(probe)[property];
-  probe.remove();
-  return expected;
-}
 
 export const Playground: Story = {};
 

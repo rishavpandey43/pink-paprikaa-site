@@ -120,8 +120,8 @@ describe("Input", () => {
     const input = screen.getByRole("textbox");
     expect(input).toBeDisabled();
     expect(input.parentElement).toHaveClass(
-      "has-[>:disabled]:bg-ink-100",
-      "has-[>:disabled]:text-ink-400"
+      "has-[>:is(input,textarea,select):disabled]:bg-ink-100",
+      "has-[>:is(input,textarea,select):disabled]:text-ink-400"
     );
     expect(input.parentElement?.className).not.toMatch(/opacity-/);
     await user.type(input, "98");

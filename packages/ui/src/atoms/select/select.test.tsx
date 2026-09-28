@@ -96,8 +96,8 @@ describe("Select", () => {
     const select = screen.getByRole("combobox");
     expect(select).toBeDisabled();
     expect(select.parentElement).toHaveClass(
-      "has-[>:disabled]:bg-ink-100",
-      "has-[>:disabled]:text-ink-400"
+      "has-[>:is(input,textarea,select):disabled]:bg-ink-100",
+      "has-[>:is(input,textarea,select):disabled]:text-ink-400"
     );
     expect(select.parentElement?.className).not.toMatch(/opacity-/);
   });
@@ -166,27 +166,29 @@ describe("Select", () => {
     );
     const readOnly = screen.getByRole("combobox", { name: "Outlet" }).parentElement;
     expect(readOnly).toHaveClass(
-      "has-[>:disabled]:text-text-body",
-      "has-[>:disabled]:border-border-default"
+      "has-[>:is(input,textarea,select):disabled]:text-text-body",
+      "has-[>:is(input,textarea,select):disabled]:border-border-default"
     );
     // One class per assertion: a negated multi-class match passes if any one is absent.
-    expect(readOnly).not.toHaveClass("has-[>:disabled]:text-ink-400");
-    expect(readOnly).not.toHaveClass("has-[>:disabled]:border-border-subtle");
+    expect(readOnly).not.toHaveClass("has-[>:is(input,textarea,select):disabled]:text-ink-400");
+    expect(readOnly).not.toHaveClass(
+      "has-[>:is(input,textarea,select):disabled]:border-border-subtle"
+    );
     const disabled = screen.getByRole("combobox", { name: "Pickup time" }).parentElement;
-    expect(disabled).toHaveClass("has-[>:disabled]:text-ink-400");
-    expect(disabled).not.toHaveClass("has-[>:disabled]:text-text-body");
+    expect(disabled).toHaveClass("has-[>:is(input,textarea,select):disabled]:text-ink-400");
+    expect(disabled).not.toHaveClass("has-[>:is(input,textarea,select):disabled]:text-text-body");
   });
 
   it.each([
-    ["error", "has-[>:disabled]:border-status-danger"],
-    ["success", "has-[>:disabled]:border-status-success"],
-    ["warning", "has-[>:disabled]:border-status-warning"],
+    ["error", "has-[>:is(input,textarea,select):disabled]:border-status-danger"],
+    ["success", "has-[>:is(input,textarea,select):disabled]:border-status-success"],
+    ["warning", "has-[>:is(input,textarea,select):disabled]:border-status-warning"],
   ] as const)("keeps the %s border when read-only (%s)", (status, border) => {
     render(<Select aria-label="Outlet" readOnly status={status} options={SLOTS} />);
     const box = screen.getByRole("combobox", { name: "Outlet" }).parentElement;
     expect(box).toHaveClass(border);
-    expect(box).not.toHaveClass("has-[>:disabled]:border-border-default");
-    expect(box).not.toHaveClass("has-[>:disabled]:border-border-subtle");
+    expect(box).not.toHaveClass("has-[>:is(input,textarea,select):disabled]:border-border-default");
+    expect(box).not.toHaveClass("has-[>:is(input,textarea,select):disabled]:border-border-subtle");
   });
 
   it("posts no empty value from a read-only placeholder", () => {
