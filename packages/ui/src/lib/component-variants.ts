@@ -58,6 +58,8 @@ const TEXT = [
   "control",
   "control-description",
   "progress-label",
+  "rating-value",
+  "rating-count",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -140,6 +142,16 @@ const SPACING = [
   "spinner-lg",
   "progress-sm",
   "progress-md",
+  "brand-diamond-12",
+  "brand-diamond-14",
+  "brand-diamond-16",
+  "brand-diamond-20",
+  "brand-diamond-24",
+  "brand-diamond-box-12",
+  "brand-diamond-box-14",
+  "brand-diamond-box-16",
+  "brand-diamond-box-20",
+  "brand-diamond-box-24",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];
