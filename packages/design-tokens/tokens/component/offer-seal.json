@@ -1,0 +1,58 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "offer-seal": {
+      "$value": "10em",
+      "$description": "Seal side, in em of the seal's own font size (sm 11px → 110px … xl 36px → 360px).",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "offer-seal": {
+      "$value": "1.4em",
+      "$description": "0.14 × the side (design-system OfferSeal)."
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "offer-seal-sm": {
+      "$value": { "fontSize": "11px" },
+      "$description": "Side 110px — the design-system card and the display-ad kits."
+    },
+    "offer-seal-md": {
+      "$value": { "fontSize": "15.6px" },
+      "$description": "Side 156px — the handoff hero seal."
+    },
+    "offer-seal-lg": {
+      "$value": { "fontSize": "26px" },
+      "$description": "Side 260px — the design-system default for 1080px canvases."
+    },
+    "offer-seal-xl": {
+      "$value": { "fontSize": "36px" },
+      "$description": "Side 360px — the feed-post kit."
+    },
+    "offer-seal-value": {
+      "$value": {
+        "fontSize": "3em",
+        "lineHeight": 1,
+        "letterSpacing": "-0.03em",
+        "fontWeight": "{font-weight.black}"
+      },
+      "$description": "The number, 0.3 × side."
+    },
+    "offer-seal-label": {
+      "$value": {
+        "fontSize": "1em",
+        "lineHeight": 1.2,
+        "letterSpacing": "0.14em",
+        "fontWeight": "{font-weight.bold}"
+      },
+      "$description": "The uppercase word under the number, 0.1 × side."
+    },
+    "offer-seal-note": {
+      "$value": { "fontSize": "0.65em", "lineHeight": 1.3, "fontWeight": "{font-weight.regular}" },
+      "$description": "The small note, 0.065 × side."
+    }
+  }
+}

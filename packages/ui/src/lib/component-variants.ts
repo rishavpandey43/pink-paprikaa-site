@@ -83,10 +83,17 @@ const TEXT = [
   "accordion-answer",
   "menu-item-name",
   "menu-item-devanagari",
+  "offer-seal-sm",
+  "offer-seal-md",
+  "offer-seal-lg",
+  "offer-seal-xl",
+  "offer-seal-value",
+  "offer-seal-label",
+  "offer-seal-note",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
-const RADIUS = ["xs", "sm", "md", "lg", "xl", "pill", "diamond", "app-shell"];
+const RADIUS = ["xs", "sm", "md", "lg", "xl", "pill", "diamond", "app-shell", "offer-seal"];
 const SHADOW = [
   "1",
   "2",
@@ -206,6 +213,7 @@ const SPACING = [
   "section-header-measure-centered",
   "accordion-answer-measure",
   "step-tracker-marker",
+  "offer-seal",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];
