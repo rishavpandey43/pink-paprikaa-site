@@ -142,14 +142,17 @@ export const BaselineMetaRow: Story = {
 export const ScrollableRailAt360: Story = {
   name: "360px — rail keyboard reach and focus-ring room",
   globals: { viewport: { value: "floor360", isRotated: false } },
+  // The page gutter a Container gives: the rail's -m-1 needs at least 4px of parent padding.
   render: () => (
-    <Cluster isScrollable role="group" aria-label="Categories">
-      {CATEGORIES.map((label) => (
-        <Button key={label} size="sm" variant="secondary">
-          {label}
-        </Button>
-      ))}
-    </Cluster>
+    <div className="px-gutter">
+      <Cluster isScrollable role="group" aria-label="Categories">
+        {CATEGORIES.map((label) => (
+          <Button key={label} size="sm" variant="secondary">
+            {label}
+          </Button>
+        ))}
+      </Cluster>
+    </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -187,5 +190,7 @@ export const ScrollableRailAt360: Story = {
     await expect(last).toHaveFocus();
     rail.scrollLeft = rail.scrollWidth;
     await expect(room(last).end).toBeGreaterThanOrEqual(minimum);
+    // The rail's -m-1 must not widen the page at 360px.
+    await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(window.innerWidth);
   },
 };

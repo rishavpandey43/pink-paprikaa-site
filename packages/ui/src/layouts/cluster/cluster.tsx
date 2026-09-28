@@ -38,6 +38,8 @@ export interface ClusterProps extends ComponentProps<"div"> {
    * Scroll sideways instead of wrapping — the mobile category rail. The rail is a tab stop so the
    * keyboard can scroll it; name it with `aria-label` (plus `role="group"` on a `div` — never on a
    * `ul`, which keeps its list role), and pass `tabIndex={-1}` when every item is itself focusable.
+   * The rail's `-m-1` reaches 4px past its box: its parent needs at least 4px of padding (a
+   * Container's gutter gives it), or the rail widens the page.
    */
   isScrollable?: boolean | undefined;
   as?: "div" | "ul" | "ol" | "nav" | undefined;
