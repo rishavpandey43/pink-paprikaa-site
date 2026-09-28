@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { expect } from "storybook/test";
+
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Radio, RadioGroup } from "./radio";
 
@@ -64,6 +66,22 @@ export const GroupError: Story = {
       <Radio name="portion" value="sharing" label="Sharing" price={440} />
     </RadioGroup>
   ),
+  // The group error reddens every ring — a chosen one too, whose pink ring would otherwise win.
+  play: async ({ canvas, userEvent }) => {
+    const regular = canvas.getByRole("radio", { name: "Regular ₹280" });
+    await userEvent.click(regular);
+    const ring = regular.nextElementSibling?.firstElementChild as HTMLElement;
+    // Read the settled ring, not a frame of its transition.
+    await Promise.all(ring.getAnimations().map((animation) => animation.finished));
+    const probe = document.createElement("span");
+    probe.style.borderColor = "var(--color-status-danger)";
+    ring.append(probe);
+    const danger = getComputedStyle(probe).borderColor;
+    probe.remove();
+    await expect(regular).toBeChecked();
+    await expect(getComputedStyle(ring).borderTopWidth).toBe("6px");
+    await expect(getComputedStyle(ring).borderColor).toBe(danger);
+  },
 };
 
 export const Horizontal: Story = {

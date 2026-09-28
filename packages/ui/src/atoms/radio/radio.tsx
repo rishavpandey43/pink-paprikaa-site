@@ -15,6 +15,8 @@ const ring = componentVariants({
     "group-has-focus-visible/choice:outline-2 group-has-focus-visible/choice:outline-offset-2 group-has-focus-visible/choice:outline-focus",
     "group-has-disabled/choice:border-ink-200 group-has-disabled/choice:bg-ink-200 group-has-checked/choice:group-has-disabled/choice:border-ink-400",
     "group-has-aria-invalid/choice:border-status-danger in-aria-invalid:border-status-danger",
+    // Invalid reddens a chosen ring too, which the checked pink would otherwise out-rank.
+    "group-has-checked/choice:group-has-aria-invalid/choice:border-status-danger in-aria-invalid:group-has-checked/choice:border-status-danger",
   ],
 });
 
@@ -61,15 +63,27 @@ export function Radio({ price, ...props }: RadioProps) {
   );
 }
 
-export interface RadioGroupProps extends ComponentProps<"fieldset"> {
+interface RadioGroupOwnProps extends ComponentProps<"fieldset"> {
   legend: ReactNode;
   isLegendHidden?: boolean | undefined;
   orientation?: "vertical" | "horizontal" | undefined;
-  /** `error` marks the group invalid and turns every ring red. */
-  status?: FieldStatus | undefined;
-  /** Shown under the options with the status glyph, and read as the group's description. */
-  message?: ReactNode;
 }
+
+/** A status always brings its message: an error is never shown by colour alone (spec §5.5). */
+export type RadioGroupProps = RadioGroupOwnProps &
+  (
+    | {
+        status?: "default" | undefined;
+        /** A plain hint under the options, read as the group's description. */
+        message?: ReactNode;
+      }
+    | {
+        /** `error` marks the group invalid and turns every ring red, a chosen one too. */
+        status: Exclude<FieldStatus, "default">;
+        /** Shown under the options with the status glyph, and read as the group's description. */
+        message: NonNullable<ReactNode>;
+      }
+  );
 
 /** A `<fieldset>` + `<legend>` around Radios, exposed as a radiogroup. */
 export function RadioGroup({

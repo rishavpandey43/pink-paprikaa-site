@@ -6,8 +6,11 @@ import { Radio, RadioGroup, type RadioGroupProps } from "./radio";
 
 const ringOf = (input: HTMLElement) => input.nextElementSibling?.firstElementChild;
 
+/** `Omit` over each member, so the status/message pairing survives. */
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
+
 /** The card's "group" row as a fixture: the legend and options are fixed, the rest is the test's. */
-function Portion(props: Omit<RadioGroupProps, "legend" | "children">) {
+function Portion(props: DistributiveOmit<RadioGroupProps, "legend" | "children">) {
   return (
     <RadioGroup legend="Portion" {...props}>
       <Radio name="size" value="regular" label="Regular" price={280} defaultChecked />
@@ -79,7 +82,10 @@ describe("Radio", () => {
     render(<Radio name="size" value="regular" label="Regular" isInvalid />);
     const radio = screen.getByRole("radio", { name: "Regular" });
     expect(radio).toHaveAttribute("aria-invalid", "true");
-    expect(ringOf(radio)).toHaveClass("group-has-aria-invalid/choice:border-status-danger");
+    expect(ringOf(radio)).toHaveClass(
+      "group-has-aria-invalid/choice:border-status-danger",
+      "group-has-checked/choice:group-has-aria-invalid/choice:border-status-danger"
+    );
   });
 
   it("puts className on the option's row, replacing a conflicting class", () => {
@@ -138,9 +144,22 @@ describe("RadioGroup", () => {
     expect(group).toHaveAttribute("aria-invalid", "true");
     expect(group).toHaveAccessibleDescription("Pick a portion to continue.");
     expect(container.querySelector(".lucide-circle-alert")).toBeInTheDocument();
+    // Regular is checked: its ring takes the checked-and-invalid red over the checked pink
+    // (the GroupError story's play asserts the computed colour in Chromium).
     expect(ringOf(screen.getByRole("radio", { name: "Regular ₹280" }))).toHaveClass(
-      "in-aria-invalid:border-status-danger"
+      "in-aria-invalid:border-status-danger",
+      "in-aria-invalid:group-has-checked/choice:border-status-danger"
     );
+  });
+
+  it("will not take a status without its message, so an error is never colour alone", () => {
+    render(
+      // @ts-expect-error — a status needs its message (spec §5.5)
+      <RadioGroup legend="Portion" status="error">
+        <Radio name="size" value="regular" label="Regular" />
+      </RadioGroup>
+    );
+    expect(screen.getByRole("radiogroup")).toHaveAttribute("aria-invalid", "true");
   });
 
   it("shows a message without a status as a plain hint", () => {
