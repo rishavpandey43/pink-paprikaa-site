@@ -312,6 +312,10 @@
   z-index: var(--z-toast);
 }
 
+@utility z-tooltip {
+  z-index: var(--z-tooltip);
+}
+
 /* The design system's seven animations. */
 @keyframes pp-toast-pop {
   from {

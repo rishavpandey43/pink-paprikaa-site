@@ -163,7 +163,7 @@ const SPACING = [
   "diet-mark-lg",
 ];
 const BORDER_WIDTH = ["default", "strong"];
-const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];
+const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];
 const DURATION = ["instant", "fast", "base", "slow", "page"];
 /** PatternField's named utilities (`styles.css`): `pattern-tile-*` and `pattern-opacity-*`. */
 const PATTERN_TILE = ["56", "64", "72", "80", "86", "96"];

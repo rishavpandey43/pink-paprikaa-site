@@ -244,7 +244,7 @@ scale becomes a token.
   - motion: `duration-instant|fast|base|slow|page`, `active:press-scale`, `hover:lift`,
     `transition-control` (pill controls)
   - pattern: `pattern-tile-56|64|72|80|86|96`, `pattern-opacity-default|light|faint`
-  - stacking: `z-raised|sticky|header|dock|overlay|toast`
+  - stacking: `z-raised|sticky|header|dock|overlay|toast|tooltip`
   - layout: `container-page`, `section-y`, `autogrid`, `autogrid-wide`, `cluster`
   - imagery: `scrim-bottom`, `scrim-top`
   - animation: `animate-skeleton|mark-pulse|spin-pulse|dot-pulse|rotate|sheet-in|toast-pop`
