@@ -4,6 +4,119 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # Pink Paprikaa Design System
 
-The production design system for pinkpaprikaa.com, rebuilt from the supplied design-system folder.
-Foundations, components and reference kits are added group by group; see
-`docs/superpowers/specs/2026-09-27-design-system-rewrite-design.md`.
+The production design system for pinkpaprikaa.com — tokens, 90 React components and three
+reference kits, rebuilt from the supplied design-system folder. This Storybook is that folder's
+"Design System tab": the same thirteen groups, in the same order.
+
+The system is loud, warm, young and city-street confident. Pink is not decorative here — it is the
+whole identity: one primary pink used at full strength, warm neutrals tinted toward it, and a single
+accent per screen. Everything else is restraint.
+
+| Group                                                         | What it holds                                                                                                                                     |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Brand · Colors · Type · Spacing · Layout · Motion · Marketing | Foundations — every guideline card as a live page. Values are read from the token build, never retyped.                                           |
+| Atoms · Molecules · Organisms · Layouts                       | One story file per component: every variant, size, tone and state on its design-system card, a Playground, surface stories and interaction tests. |
+| Website · App · Marketing → Kit                               | Reference kits composed only from the library, with real brand facts and verified reviews — each badged "Reference kit — not production copy".    |
+
+## How it fits together
+
+| Layer                              | What lives there                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------ |
+| `@pink-paprikaa-web/design-tokens` | Every value, authored as DTCG JSON and compiled by Style Dictionary            |
+| `@pink-paprikaa-web/ui` — atoms    | Indivisible primitives: `Button` `Text` `Icon` `Input` `SpiceLevel` `DietMark` |
+| — molecules                        | Small compositions: `Field` `MenuItemCard` `Tabs` `Alert`                      |
+| — organisms                        | Page-level regions: `SiteHeader` `HeroBanner` `MenuList` `CtaBand`             |
+| — layouts                          | Spacing, width and frame only: `Container` `Section` `AutoGrid` `PostFrame`    |
+
+A layer composes only the layers below it: a molecule may use atoms, an atom may never reach a
+molecule, and an atom imports nothing but `Icon`. The rule is lint-enforced (`atomic-layering`),
+not advisory.
+
+## Consume it
+
+An app imports Tailwind and the library's one stylesheet — nothing else. The library scans its
+own sources, so the app adds no `@source` for it.
+
+```css
+@import "tailwindcss";
+@import "@pink-paprikaa-web/ui/styles.css";
+```
+
+That one import brings the token theme, the `data-surface` remaps, the base layer (element
+defaults, the pink focus ring, the reduced-motion contract), the system's named utilities and its
+seven animations.
+
+Components are named imports from the one barrel — `import { Button, Field, Input } from "@pink-paprikaa-web/ui";` —
+and a Next.js app adds `transpilePackages: ["@pink-paprikaa-web/ui"]`. Fonts are the app's to load
+(Poppins with the Devanagari subset, DM Sans, Space Mono); the font tokens pick them up by name.
+
+## The one thing that will surprise you
+
+**Stock Tailwind scales do not exist here.** The tokens package clears every Tailwind namespace it
+replaces, so `text-sm`, `bg-red-500`, `shadow-md` and `font-sans` compile to nothing — a class
+outside the system fails loudly instead of quietly rendering an off-brand value. Where a name
+matches the design system's own token it is the system's value: `rounded-lg` is the card radius.
+Use `text-body-sm`, `bg-status-danger`, `shadow-2`, `font-body`.
+
+## Rules the system keeps
+
+- **Tokens only.** Every class is a token utility (`bg-surface-brand`, `text-h2`, `rounded-lg`) —
+  no arbitrary values, no literal colours. The brand pink's hex exists once, in
+  `packages/design-tokens`.
+- **Text colour follows the surface.** A flooded field carries `data-surface`; headings, text,
+  links, borders and focus re-read the semantic tokens inside it. No component takes an `on` prop.
+- **No content inside the system.** Copy, links, prices and brand facts arrive as props; stories
+  bind fixtures, and Brand → Company details and the kits bind `@pink-paprikaa-web/content`.
+- **Server-first, native-first.** Only components that own state or effects are client components;
+  native `<select>`, `<details>` and inputs come before any library.
+- **Accessibility is gated.** Every story runs axe in headless Chromium. Colour contrast is owned by
+  the token contrast policy instead — **Colors → Contrast** shows the one declared exception.
+
+## Accessibility
+
+Every component test ends with an axe check, and every story runs axe again in headless Chromium
+with `a11y.test = "error"` — a violation fails the suite; it does not sit in a panel nobody opens.
+
+### What the system guarantees
+
+- **Focus is a brand decision.** The base layer paints `:focus-visible` as a 2px `--color-focus`
+  outline at a 2px offset, everywhere; fields add the 3px focus ring. No component restates it,
+  and none can quietly drop it.
+- **Touch targets are at least the hit token** (`--spacing-hit`), icon-only buttons included. Only
+  the system's 36/38px controls go smaller, and never below 24px (spec §5.5).
+- **Disabled is a real grey fill**, never a reduced opacity — opacity fails contrast and reads as
+  "loading" rather than "unavailable".
+- **Behaviour is native or Radix, never hand-rolled.** Native `<select>`, `<details>` and inputs
+  come first; Dialog/Sheet, Tabs, Tooltip, Toast and ToggleGroup use Radix, so roles, keyboard
+  handling and focus management come built in.
+- **Reduced motion is global.** `prefers-reduced-motion: reduce` collapses animation and transition
+  durations in the base layer; no component handles it alone.
+
+### What each use owns
+
+- **A name.** An icon-only control takes a `label` (`IconButton` requires one); a decorative icon is
+  `aria-hidden`, so its meaning is not announced twice beside the text it decorates.
+- **Never colour alone.** A status colour always arrives with a message and a glyph. `SpiceLevel`
+  and `DietMark` carry text alternatives — heat and diet are load-bearing information.
+- **Heading order.** A component's look and its document level are separate decisions: every titled
+  component takes `headingLevel` (and `Text` takes `as`); the page owns its outline.
+- **Contrast follows the surface.** Put content that sits on pink or ink inside a `data-surface`
+  field and the text tokens remap; never hand-pick a light text colour. Muted and subtle text are
+  for secondary content only.
+
+## For authors
+
+The binding authoring contract is `packages/ui/AUTHORING.md`; the decisions are in
+`docs/superpowers/specs/2026-09-27-design-system-rewrite-design.md`. Foundation pages live in
+`apps/storybook/src/foundations`, their helpers in `apps/storybook/src/docs-kit` — docs-only, never
+shipped in `packages/ui`.
+
+Before you add a component:
+
+1. **Tokens first** — a new visual value goes into `packages/design-tokens/tokens/` before any
+   component uses it (AUTHORING §5).
+2. **Read the design-system files and copy the canonical shape** (AUTHORING §1, §3), or run
+   `/new-component`.
+3. **Ship the trio** — component, test (behaviour + axe), stories (every card row) (AUTHORING §2).
+4. **Gate:** `pnpm nx test ui && pnpm nx lint ui && pnpm nx run storybook:build`, then
+   `pnpm nx test storybook` (AUTHORING §12).

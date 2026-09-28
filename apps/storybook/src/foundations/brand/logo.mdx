@@ -1,0 +1,57 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./brand.stories";
+
+<Meta title="Brand/Logo" />
+
+{/* source: guidelines/brand-logo.card.html */}
+{/* source: guidelines/brand-wordmark.card.html */}
+{/* source: guidelines/brand-symbol.card.html */}
+{/* source: guidelines/mark-legibility.card.html */}
+
+# Logo
+
+Three marks — **lockup**, **wordmark**, **symbol** — each in three tones: `pink` on light, `white`
+on pink, ink or photography, and `badge` on its own pink plate. Reach for them through `Logo`
+(`variant`, `tone`) or `LogoLockup` (clear space built in); never place, recolour or retype the
+artwork by hand.
+
+## Lockup
+
+The official logo, tagline included — pink, white and the badge plate.
+
+<Canvas of={Specimens.Lockup} meta={Specimens} sourceState="none" />
+
+The tagline is part of the artwork — never set it in live type next to the mark; it is drawn,
+kerned and locked to the wordmark, and retyping it drifts. Use the lockup wherever there is at
+least 200px of width; below that switch to the wordmark. The lockup is the default in every
+header, footer, app screen, artboard and template: the tagline tucks into the space beside the
+"P" descender, so swapping it in costs no layout anywhere.
+
+## Wordmark
+
+The lockup with the tagline removed — headers, app chrome, anything under 200px wide.
+
+<Canvas of={Specimens.Wordmark} meta={Specimens} sourceState="none" />
+
+Clear space around any logo is the height of the "P". The wordmark's minimum width is 140px.
+Never recolour, rotate, outline or add effects to the logo.
+
+<Canvas of={Specimens.LogoTokens} meta={Specimens} sourceState="none" />
+
+## Symbol
+
+The standalone diamond mark: pink and white on transparent, plus the badge plate — the app icon,
+favicon and avatar.
+
+<Canvas of={Specimens.SymbolMark} meta={Specimens} sourceState="none" />
+
+## Mark legibility
+
+How the embedded mark scales and strengthens as the diamond shrinks. Mark size and opacity both
+ramp with the diamond: below 14px the mark is 86% of the square at 85% white, from 14 to 19px it
+is 80% at 66%, and from 20px up it is 74% at 50%. Without the ramp a 12px dot draws an 8.9px
+glyph at 42% — below the size where its strokes resolve, which is why small marks looked missing.
+The components below draw the ramp themselves; they are shown at every size they ship.
+
+<Canvas of={Specimens.MarkLegibility} meta={Specimens} sourceState="none" />
