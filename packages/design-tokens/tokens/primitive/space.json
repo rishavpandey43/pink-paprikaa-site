@@ -12,18 +12,32 @@
     "section-mobile": { "$value": "48px" },
     "section-desktop": { "$value": "96px" },
     "grid-gap": { "$value": "clamp(16px, 2vw, 24px)" },
-    "header": { "$value": "88px" },
+    "header": { "$value": "88px", "$extensions": { "pink-paprikaa": { "utility": ["h"] } } },
     "header-compact": {
       "$value": "64px",
-      "$description": "The handoff site header row (spec C1)."
+      "$description": "The handoff site header row (spec C1).",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
     },
-    "tabbar": { "$value": "64px" },
-    "hit": { "$value": "44px", "$description": "Minimum touch target." },
-    "card-min": { "$value": "260px" },
-    "card-min-wide": { "$value": "320px" },
+    "tabbar": { "$value": "64px", "$extensions": { "pink-paprikaa": { "utility": ["h"] } } },
+    "hit": {
+      "$value": "44px",
+      "$description": "Minimum touch target.",
+      "$extensions": { "pink-paprikaa": { "utility": ["min-h", "min-w"] } }
+    },
+    "card-min": {
+      "$value": "260px",
+      "$description": "AutoGrid's card track minimum. A grid template reads it, so it has no class of its own.",
+      "$extensions": { "pink-paprikaa": { "utility": [] } }
+    },
+    "card-min-wide": {
+      "$value": "320px",
+      "$description": "AutoGrid's panel track minimum. A grid template reads it, so it has no class of its own.",
+      "$extensions": { "pink-paprikaa": { "utility": [] } }
+    },
     "dock-clearance": {
       "$value": "84px",
-      "$description": "Sticky bars sit this far above the viewport bottom so the mobile action dock never covers them."
+      "$description": "Sticky bars sit this far above the viewport bottom so the mobile action dock never covers them.",
+      "$extensions": { "pink-paprikaa": { "utility": ["bottom"] } }
     }
   },
   "container": {
