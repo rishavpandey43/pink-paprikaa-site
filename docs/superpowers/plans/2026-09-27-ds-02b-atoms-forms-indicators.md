@@ -4516,8 +4516,8 @@ const rating = componentVariants({
   slots: {
     root: "inline-flex items-center gap-2",
     units: "inline-flex items-center",
-    value: "text-rating-value font-display font-bold text-text-heading tabular-nums",
-    count: "text-rating-count font-body text-text-subtle tabular-nums",
+    value: "font-display text-rating-value font-bold text-text-heading tabular-nums",
+    count: "font-body text-rating-count text-text-subtle tabular-nums",
   },
   variants: {
     variant: {
