@@ -44,6 +44,9 @@ export const fieldControlVariants = componentVariants({
           "min-w-0 flex-1 self-stretch placeholder:text-text-subtle read-only:cursor-default",
       },
       select: {
+        // The control is out of flow, so the box has no content width of its own: the minimum
+        // keeps a content-sized parent from shrinking it to the chevron (R90).
+        root: "min-w-field-select-min",
         // Overlays the whole box, so a click anywhere opens it and a long option label can
         // never widen the layout — it truncates inside the box.
         control:

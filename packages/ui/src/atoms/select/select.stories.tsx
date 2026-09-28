@@ -169,3 +169,37 @@ export const OnSurfacesStory: Story = {
     </OnSurfaces>
   ),
 };
+
+/**
+ * R90: in a content-sized parent (an inline row, a flex cluster) the box has an intrinsic minimum,
+ * so a short placeholder reads in full instead of clipping to "Pick …".
+ */
+export const ContentSizedParent: Story = {
+  args: {
+    "aria-label": "How spicy?",
+    placeholder: "Pick one",
+    status: "error",
+    options: [{ value: "mild", label: "Mild" }],
+  },
+  render: (args) => (
+    <div className="inline-flex">
+      <Select {...args} />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    const select = canvas.getByRole("combobox", { name: "How spicy?" });
+    const style = getComputedStyle(select);
+    const probe = document.createElement("span");
+    probe.style.font = style.font;
+    probe.style.whiteSpace = "pre";
+    probe.textContent = "Pick one";
+    document.body.append(probe);
+    const textWidth = probe.getBoundingClientRect().width;
+    probe.remove();
+    const room =
+      select.clientWidth -
+      Number.parseFloat(style.paddingLeft) -
+      Number.parseFloat(style.paddingRight);
+    await expect(room).toBeGreaterThanOrEqual(textWidth);
+  },
+};

@@ -155,6 +155,7 @@ const SPACING = [
   "field-sm",
   "field-md",
   "field-lg",
+  "field-select-min",
   "field-spinner",
   "choice-box",
   "switch-width",

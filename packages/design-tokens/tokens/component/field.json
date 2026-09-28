@@ -16,6 +16,11 @@
       "$description": "Field height, size lg.",
       "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
     },
+    "field-select-min": {
+      "$value": "160px",
+      "$description": "A Select's intrinsic minimum width (R90): its native select overlays the box, so a content-sized parent would otherwise shrink it to the chevron and clip the placeholder.",
+      "$extensions": { "pink-paprikaa": { "utility": ["min-w"] } }
+    },
     "field-spinner": {
       "$value": "18px",
       "$description": "The pulsing mark while a field validates.",

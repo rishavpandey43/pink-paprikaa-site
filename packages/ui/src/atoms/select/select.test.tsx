@@ -235,7 +235,8 @@ describe("Select", () => {
     );
     const select = screen.getByRole("combobox");
     expect(select).toHaveClass("absolute", "inset-0", "size-full", "truncate");
-    expect(select.parentElement).toHaveClass("w-full", "min-w-0");
+    // Fills its parent; a content-sized parent still gets the R90 intrinsic minimum.
+    expect(select.parentElement).toHaveClass("w-full", "min-w-field-select-min");
   });
 
   it("has no accessibility violations with an icon, a placeholder and an error, disabled or read-only", async () => {
