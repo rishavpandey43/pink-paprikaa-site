@@ -38,6 +38,7 @@ export { Tag, type TagProps, tagVariants } from "./atoms/tag/tag";
 export { Text, type TextProps, type TextTone, type TextVariant } from "./atoms/text/text";
 export { Tooltip, type TooltipProps } from "./atoms/tooltip/tooltip";
 export { Container, type ContainerProps, type ContainerSize } from "./layouts/container/container";
+export { Stack, type StackProps } from "./layouts/stack/stack";
 export type { FieldStatus } from "./lib/field-status";
 export { type HeadingLevel, headingTag } from "./lib/heading";
 export type { LinkAs, LinkAsProps } from "./lib/link-as";
