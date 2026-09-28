@@ -139,6 +139,12 @@ export function OtpInput({
           onFocus={() => {
             setIsFocused(true);
           }}
+          // The caret is transparent and the cells show only "the next one", so pin the caret to
+          // the end: an arrow key or a tap can never move the insertion point out of sight.
+          onSelect={(event) => {
+            const end = event.currentTarget.value.length;
+            event.currentTarget.setSelectionRange(end, end);
+          }}
           onBlur={() => {
             setIsFocused(false);
             onBlur?.();

@@ -160,6 +160,15 @@ describe("OtpInput", () => {
     expect(container.firstElementChild).not.toHaveClass("gap-2");
   });
 
+  it("keeps the invisible caret at the end, so a digit always lands in the next empty cell", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<OtpInput label="Login code" />);
+    const input = screen.getByRole("textbox");
+    await user.type(input, "48");
+    await user.keyboard("{ArrowLeft}{ArrowLeft}2");
+    expect(cellDigits(container)).toEqual(["4", "8", "2", "", "", ""]);
+  });
+
   it("gives react-hook-form's Controller a name, onBlur and a focusable ref", async () => {
     const user = userEvent.setup();
     const ref = createRef<HTMLInputElement>();
