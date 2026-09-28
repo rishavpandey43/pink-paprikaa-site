@@ -152,6 +152,9 @@ const SPACING = [
   "brand-diamond-box-16",
   "brand-diamond-box-20",
   "brand-diamond-box-24",
+  "diet-mark-sm",
+  "diet-mark-md",
+  "diet-mark-lg",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];

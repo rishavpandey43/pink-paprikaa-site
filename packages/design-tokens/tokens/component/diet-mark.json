@@ -1,0 +1,19 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "diet-mark-sm": {
+      "$value": "14px",
+      "$description": "Beside a dish name in a menu row or card.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "diet-mark-md": {
+      "$value": "16px",
+      "$description": "The default mark.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "diet-mark-lg": {
+      "$value": "20px",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
+  }
+}
