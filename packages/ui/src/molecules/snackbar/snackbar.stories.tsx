@@ -11,11 +11,13 @@ const meta = {
   component: Snackbar,
   args: { duration: Infinity, children: "Table held for 10 minutes.", onOpenChange: fn() },
   render: (args) => (
-    <div className="relative h-28 rounded-lg border border-border-subtle bg-surface-page-alt">
+    <div className="relative h-28 max-w-120 rounded-lg border border-border-subtle bg-surface-page-alt">
       <Snackbar {...args} />
     </div>
   ),
   parameters: {
+    // The bar anchors to a positioned frame, which the centred canvas would shrink to no width.
+    layout: "padded",
     docs: {
       description: {
         component:
@@ -61,7 +63,7 @@ export const UndoAndDismiss: Story = {
 function LiveCopyDemo() {
   const [isCopied, setIsCopied] = useState(false);
   return (
-    <div className="relative grid h-40 place-items-start rounded-lg border border-border-subtle p-4">
+    <div className="relative grid h-40 max-w-120 place-items-start rounded-lg border border-border-subtle p-4">
       <Button
         variant="secondary"
         onClick={() => {
@@ -103,7 +105,7 @@ function ClosedByParentDemo() {
     };
   }, [isOpen]);
   return (
-    <div className="relative grid h-40 place-items-start rounded-lg border border-border-subtle p-4">
+    <div className="relative grid h-40 max-w-120 place-items-start rounded-lg border border-border-subtle p-4">
       <Button
         variant="secondary"
         onClick={() => {
@@ -153,7 +155,7 @@ export const Narrow: Story = {
     action: { label: "Undo", altText: "Undo removing Chilli Paneer", onClick: fn() },
   },
   render: (args) => (
-    <div className="relative h-28 max-w-90 rounded-lg border border-border-subtle bg-surface-page-alt">
+    <div className="relative h-36 max-w-90 rounded-lg border border-border-subtle bg-surface-page-alt">
       <Snackbar {...args} />
     </div>
   ),

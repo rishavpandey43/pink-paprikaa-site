@@ -107,8 +107,10 @@ export const AddToOrder: Story = {
 
 /** `isContained` — the App kit's toast inside the phone frame (a positioned box here). */
 export const Contained: Story = {
+  // The toast anchors to a positioned frame, which the centred canvas would shrink to no width.
+  parameters: { layout: "padded" },
   render: (args) => (
-    <div className="relative h-60 overflow-hidden rounded-xl border border-border-subtle bg-surface-page-alt">
+    <div className="relative h-60 max-w-120 overflow-hidden rounded-xl border border-border-subtle bg-surface-page-alt">
       <ToastProvider isContained>
         <Toast {...args} />
       </ToastProvider>

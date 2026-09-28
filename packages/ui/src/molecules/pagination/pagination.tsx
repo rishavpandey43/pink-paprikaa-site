@@ -19,7 +19,7 @@ const pagination = componentVariants({
         item: "border border-border-default bg-surface-card text-ink-700 transition-colors duration-fast ease-out hover:bg-surface-page-alt",
       },
       current: { item: "bg-surface-brand text-text-on-brand" },
-      gap: { item: "text-ink-400" },
+      gap: { item: "border border-border-default bg-surface-card text-ink-400" },
       inert: { item: "border border-border-subtle bg-surface-card text-ink-400" },
     },
   },
