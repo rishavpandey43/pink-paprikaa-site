@@ -7037,7 +7037,7 @@ const sectionHeader = componentVariants({
       start: { root: "justify-between text-start", copy: "max-w-section-header-measure" },
       center: {
         root: "justify-center text-center",
-        copy: "max-w-section-header-measure-centered mx-auto",
+        copy: "mx-auto max-w-section-header-measure-centered",
       },
     },
     hasOverline: { true: { title: "mt-2.5" } },
