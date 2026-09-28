@@ -128,10 +128,16 @@ export const SpiceLevels: Story = {
 export const InCart: Story = {
   args: {
     action: (
-      <Button size="sm" variant="ghost">
+      // Named with the dish, like the Add button: a menu of "In cart · 2" controls says nothing.
+      <Button size="sm" variant="ghost" aria-label="Paprikaa Chilli Paneer in cart, 2">
         In cart · 2
       </Button>
     ),
+  },
+  play: async ({ canvas }) => {
+    await expect(
+      canvas.getByRole("button", { name: "Paprikaa Chilli Paneer in cart, 2" })
+    ).toBeVisible();
   },
 };
 
