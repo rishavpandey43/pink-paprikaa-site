@@ -8198,3 +8198,14 @@ Any FAIL stops here: fix through the normal loop and rerun from Step 1. With eve
 - **Form story title** `Molecules/Field/React Hook Form + Zod` — keep; the Task 15 sweep judges the sidebar.
 - **`isContained` (ToastProvider) / `portalContainer` (Dialog, Toast)** — Task 0 confirms the names against Plans 3a/4 as built and patches the kits.
 - **Plan 4 deviations to reconcile in Task 0:** CartPanel `emptyTitle`/`emptyBody`/`noteField` + `cartTotals`; OrderTracker `badge`/`codeLabel`/`paymentLabel`; QuotePanel `wasLabel`; Dialog `closeLabel`/`portalContainer`; SiteHeader `compactActions`/`drawerLinks`/`portalContainer` with the drawer below `lg`; CtaBand/SiteFooter/HeroBanner `pattern` enum (replaces `hasPattern`); SiteFooter `hasDockClearance`; MenuList server organism + client filter with `allLabel`/`filterLabel`/`overflowLabel`/`emptyState`. Task 14 also amends spec §9.3 (drawer below lg).
+
+## Controller amendments — owner request 2026-09-28 (rulings R55, R56)
+
+- **R55 — foundations run early.** Tasks 1–6 and 8 (contrast evaluator, plumbing + docs-kit, Introduction/Brand, Colors + Contrast, Type, Spacing, Motion) depend only on Plan 1 tokens and are executed right after Plan 2b batch C, before the rest of Plans 2b–4. Their Task 0 reconcile covers only what those tasks consume. Tasks 7 (Layout — needs Plan 2c) and 9 (Marketing foundations — needs molecules) and 10–15 stay in order.
+- **R56 — every scale is copyable as a utility.** Owner: "Colors, Spacing, Typography, numeric examples like `border-2`, `mt-3`, `mt-4` … things which are copyable." Every foundation specimen row shows, next to its value, **the Tailwind utility class(es) it produces and its CSS custom property, each a copy button** with the same `role="status"` "copied" feedback as `Swatch`:
+  - Colors: `bg-<name>`, `text-<name>`, `border-<name>`, `var(--color-<name>)`.
+  - Spacing: the step's `p-<n>` / `m-<n>` / `mt-<n>` / `gap-<n>` examples (4px base, step × 4) and the named `spacing-*` tokens; `var(--spacing-…)`.
+  - Border widths (`border`, `border-2`, …), radius (`rounded-<name>`), shadows (`shadow-<name>`), z-index (`z-<name>`).
+  - Type: `text-<name>`, `font-<family>`, `font-<weight>`, `leading-*`/`tracking-*` where tokenised.
+  - Motion: `duration-<name>`, `ease-<name>`, `animate-<name>`.
+    Class strings are derived from the token catalogue (never hand-typed lists), so a renamed token fails `storybook:test`. One play per group copies one class and asserts the clipboard write.
