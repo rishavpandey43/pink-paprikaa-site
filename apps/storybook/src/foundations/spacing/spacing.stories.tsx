@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { expect } from "storybook/test";
 
-import type { StackProps } from "@pink-paprikaa-web/ui";
+import { AutoGrid, Card, Section, type StackProps } from "@pink-paprikaa-web/ui";
 
 import { cssValue, stepUtilities, tokensWithPrefix, utilitiesOf } from "../../docs-kit/catalogue";
 import { spyOnClipboard } from "../../docs-kit/clipboard";
@@ -83,7 +83,19 @@ export const Scale: Story = {
   },
 };
 
-// Deferred (fold list item 3): `Rhythm` — a Section with an AutoGrid of Cards (Plan 2c T5/T6).
+export const Rhythm: Story = {
+  render: () => (
+    <Section tone="alt" space="tight">
+      <AutoGrid min="xs">
+        {["card 1", "card 2", "card 3", "card 4"].map((label) => (
+          <Card key={label} padding="sm">
+            <span className="font-mono text-mono text-text-muted">{label}</span>
+          </Card>
+        ))}
+      </AutoGrid>
+    </Section>
+  ),
+};
 
 export const RhythmTokens: Story = {
   render: () => (
