@@ -83,6 +83,7 @@ export {
   QuantityStepper,
   type QuantityStepperProps,
 } from "./molecules/quantity-stepper/quantity-stepper";
+export { ReviewCard, type ReviewCardProps } from "./molecules/review-card/review-card";
 export { SearchField, type SearchFieldProps } from "./molecules/search-field/search-field";
 export { SectionHeader, type SectionHeaderProps } from "./molecules/section-header/section-header";
 export {
