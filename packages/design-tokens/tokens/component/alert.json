@@ -1,0 +1,14 @@
+{
+  "text": {
+    "$type": "typography",
+    "alert-title": {
+      "$value": {
+        "fontSize": "15px",
+        "lineHeight": 1.6,
+        "letterSpacing": "-0.005em",
+        "fontWeight": "{font-weight.bold}"
+      },
+      "$description": "Alert title (Poppins 700)."
+    }
+  }
+}

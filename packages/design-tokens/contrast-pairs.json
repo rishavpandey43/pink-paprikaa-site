@@ -355,6 +355,12 @@
         ["color-text-subtle", "color-surface-page-alt"]
       ],
       "min": 4.5
+    },
+    {
+      "id": "alert",
+      "surface": null,
+      "pairs": [["color-pink-800", "color-surface-brand-soft"]],
+      "min": 4.5
     }
   ]
 }

@@ -69,6 +69,7 @@ const TEXT = [
   "app-shell-status",
   "otp-digit",
   "slot-picker-note",
+  "alert-title",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
