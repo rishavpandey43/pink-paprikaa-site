@@ -63,12 +63,16 @@ describe("SlotPicker", () => {
   it("takes a value with no handler as its starting pick, without React's read-only warning", async () => {
     const user = userEvent.setup();
     const consoleError = vi.spyOn(console, "error").mockImplementation(vi.fn());
-    render(<SlotPicker name="pickup" legend="Pickup time" slots={SLOTS} value="7:30pm" />);
-    expect(screen.getByRole("radio", { name: "7:30pm" })).toBeChecked();
-    await user.click(screen.getByText("8:00pm"));
-    expect(screen.getByRole("radio", { name: "8:00pm" })).toBeChecked();
-    expect(consoleError).not.toHaveBeenCalled();
-    consoleError.mockRestore();
+    try {
+      render(<SlotPicker name="pickup" legend="Pickup time" slots={SLOTS} value="7:30pm" />);
+      expect(screen.getByRole("radio", { name: "7:30pm" })).toBeChecked();
+      await user.click(screen.getByText("8:00pm"));
+      expect(screen.getByRole("radio", { name: "8:00pm" })).toBeChecked();
+      expect(consoleError).not.toHaveBeenCalled();
+    } finally {
+      // Restored even when an assertion fails, so a later test's console is real.
+      consoleError.mockRestore();
+    }
   });
 
   it("picks from the keyboard", async () => {
