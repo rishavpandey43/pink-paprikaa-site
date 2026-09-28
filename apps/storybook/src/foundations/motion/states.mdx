@@ -1,0 +1,25 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./motion.stories";
+
+<Meta title="Motion/States" />
+
+{/* source: guidelines/states.card.html */}
+
+# Interaction states
+
+Rest → hover (darken) → press (scale down **and** darken) → disabled (a real grey). Hover and press
+the live buttons.
+
+<Canvas of={Specimens.States} meta={Specimens} sourceState="none" />
+
+- **Hover:** darken pink one step (`--color-brand-hover`); on white surfaces tint toward `pink-50`;
+  on imagery, lift the scrim slightly. **Never fade a button on hover.**
+- **Press:** `press-scale` and `--color-brand-active`, both together, on the instant duration.
+- **Focus:** a 2px pink outline with a 2px offset (fields use the 3px focus ring).
+- **Disabled:** an `ink-200` fill, `ink-400` text, no shadow, `cursor: not-allowed` — a real fill,
+  not reduced opacity.
+- **Loading:** the pink diamond symbol pulsing, or a soft pink skeleton block — never a spinner with
+  a gradient.
+
+<Canvas of={Specimens.StateTokens} meta={Specimens} sourceState="none" />

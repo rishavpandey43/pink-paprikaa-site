@@ -1,0 +1,25 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Motion/Form states" />
+
+{/* source: guidelines/form-states.card.html */}
+
+# Form states
+
+One status system across every control: default, error, success, warning, disabled, read-only and
+loading.
+
+| State      | Border                                        | Message              | Applies to                                                               |
+| ---------- | --------------------------------------------- | -------------------- | ------------------------------------------------------------------------ |
+| `default`  | default width, `border-default`               | hint, subtle         | all                                                                      |
+| `focus`    | strong width, `border-brand` + the focus ring | —                    | all                                                                      |
+| `error`    | strong width, danger                          | says what to do next | Input, Select, SearchField, OtpInput, Checkbox, Radio, SlotPicker, Field |
+| `success`  | strong width, mint                            | confirms the result  | Input, Select, SearchField, OtpInput, Field                              |
+| `warning`  | strong width, turmeric                        | flags a caveat       | Input, Select, SearchField, Field                                        |
+| `disabled` | `ink-100` fill, `ink-400` text                | —                    | all — a real fill, never opacity                                         |
+| `readOnly` | sunken fill + lock glyph                      | —                    | Input, Select                                                            |
+| `loading`  | unchanged                                     | trailing Spinner     | Input, SearchField                                                       |
+
+A status raises the border, tints the leading icon, shows the matching glyph and **replaces the
+hint with its message** — never a status colour without a message. The control carries `status`;
+`Field` renders the message and wires `aria-describedby` and `aria-invalid`.
