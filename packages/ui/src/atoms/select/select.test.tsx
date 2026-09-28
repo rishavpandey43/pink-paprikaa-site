@@ -237,6 +237,8 @@ describe("Select", () => {
     expect(select).toHaveClass("absolute", "inset-0", "size-full", "truncate");
     // Fills its parent; a content-sized parent still gets the R90 intrinsic minimum.
     expect(select.parentElement).toHaveClass("w-full", "min-w-field-select-min");
+    // The box's shared `min-w-0` is replaced, not stacked: twMerge keeps only the select minimum.
+    expect(select.parentElement).not.toHaveClass("min-w-0");
   });
 
   it("has no accessibility violations with an icon, a placeholder and an error, disabled or read-only", async () => {
