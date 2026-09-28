@@ -12,6 +12,7 @@ import {
   typographyOf,
   utilitiesOf,
 } from "./catalogue";
+import { spyOnClipboard } from "./clipboard";
 import { ContrastMatrix, VERDICT_LABEL } from "./contrast-matrix";
 import { CopyChips } from "./copy";
 import { requireElement } from "./dom";
@@ -32,11 +33,6 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-
-/** The play's userEvent (user-event setup()) stubs navigator.clipboard; the spy observes the write. */
-function spyOnClipboard() {
-  return spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
-}
 
 export const MissingTokenFailsLoudly: Story = {
   render: () => <span className="font-mono text-mono">Token lookups throw on unknown names.</span>,
@@ -78,6 +74,43 @@ const DERIVED = [
       ["border-pink-500", "borderTopColor"],
     ],
     expected: () => rgbOf("color-pink-500"),
+  },
+  // R62: every other colour's chips follow its role, read from its name.
+  {
+    name: "color-text-body",
+    paints: [["text-text-body", "color"]],
+    expected: () => rgbOf("color-text-body"),
+  },
+  {
+    name: "color-surface-card",
+    paints: [["bg-surface-card", "backgroundColor"]],
+    expected: () => rgbOf("color-surface-card"),
+  },
+  {
+    name: "color-border-subtle",
+    paints: [["border-border-subtle", "borderTopColor"]],
+    expected: () => rgbOf("color-border-subtle"),
+  },
+  {
+    name: "color-mint-strong",
+    paints: [["text-mint-strong", "color"]],
+    expected: () => rgbOf("color-mint-strong"),
+  },
+  {
+    name: "color-status-success",
+    paints: [
+      ["bg-status-success", "backgroundColor"],
+      ["border-status-success", "borderTopColor"],
+    ],
+    expected: () => rgbOf("color-status-success"),
+  },
+  {
+    name: "color-turmeric",
+    paints: [
+      ["bg-turmeric", "backgroundColor"],
+      ["border-turmeric", "borderTopColor"],
+    ],
+    expected: () => rgbOf("color-turmeric"),
   },
   {
     name: "radius-lg",
@@ -131,14 +164,29 @@ const DERIVED = [
     expected: () => cssValue("z-header"),
   },
   {
+    // R63: a primitive sizing token is marked by its documented use — the touch-target minimum.
     name: "spacing-hit",
     paints: [
-      ["p-hit", "paddingTop"],
-      ["m-hit", "marginBottom"],
-      ["mt-hit", "marginTop"],
-      ["gap-hit", "rowGap"],
+      ["min-h-hit", "minHeight"],
+      ["min-w-hit", "minWidth"],
     ],
     expected: () => cssValue("spacing-hit"),
+  },
+  {
+    name: "spacing-header",
+    paints: [["h-header", "height"]],
+    expected: () => cssValue("spacing-header"),
+  },
+  {
+    // A spacing token with no marker is padding, margin or a gap.
+    name: "spacing-gutter-mobile",
+    paints: [
+      ["p-gutter-mobile", "paddingTop"],
+      ["m-gutter-mobile", "marginBottom"],
+      ["mt-gutter-mobile", "marginTop"],
+      ["gap-gutter-mobile", "rowGap"],
+    ],
+    expected: () => cssValue("spacing-gutter-mobile"),
   },
   {
     // R61: a sizing token's marker names the utility the library uses it as.
@@ -219,14 +267,14 @@ export const UtilitiesDeriveFromTheCatalogue: Story = {
 export const CopyChipsCopyAClass: Story = {
   render: () => <CopyChips values={utilitiesOf("radius-lg")} />,
   play: async ({ canvas, userEvent }) => {
-    const write = spyOnClipboard();
     const [utility] = utilitiesOf("radius-lg");
     if (utility === undefined) throw new Error("radius-lg has no utility class");
-    await expect(canvas.getByRole("status")).toHaveTextContent("");
-    await userEvent.click(canvas.getByRole("button", { name: utility }));
-    await expect(write).toHaveBeenLastCalledWith(utility);
-    await expect(canvas.getByRole("status")).toHaveTextContent(`Copied ${utility}`);
-    write.mockRestore();
+    await spyOnClipboard(async (write) => {
+      await expect(canvas.getByRole("status")).toHaveTextContent("");
+      await userEvent.click(canvas.getByRole("button", { name: utility }));
+      await expect(write).toHaveBeenLastCalledWith(utility);
+      await expect(canvas.getByRole("status")).toHaveTextContent(`Copied ${utility}`);
+    });
   },
 };
 
@@ -238,11 +286,14 @@ export const CopyWithoutAClipboard: Story = {
     const absent = spyOn(navigator, "clipboard", "get").mockReturnValue(
       undefined as unknown as Clipboard
     );
-    const [utility] = utilitiesOf("radius-lg");
-    if (utility === undefined) throw new Error("radius-lg has no utility class");
-    await userEvent.click(canvas.getByRole("button", { name: utility }));
-    await expect(canvas.getByRole("status")).toHaveTextContent("");
-    absent.mockRestore();
+    try {
+      const [utility] = utilitiesOf("radius-lg");
+      if (utility === undefined) throw new Error("radius-lg has no utility class");
+      await userEvent.click(canvas.getByRole("button", { name: utility }));
+      await expect(canvas.getByRole("status")).toHaveTextContent("");
+    } finally {
+      absent.mockRestore();
+    }
   },
 };
 
@@ -265,20 +316,20 @@ export const SwatchPaintsItsToken: Story = {
 export const SwatchCopiesNameAndValue: Story = {
   render: () => <Swatch name="color-pink-500" />,
   play: async ({ canvas, userEvent }) => {
-    const write = spyOnClipboard();
     const entry = token("color-pink-500");
     const value = formatValue(entry.value);
-    await userEvent.click(canvas.getByRole("button", { name: entry.cssVar }));
-    await expect(write).toHaveBeenLastCalledWith(entry.cssVar);
-    await expect(canvas.getByRole("status")).toHaveTextContent(`Copied ${entry.cssVar}`);
-    await userEvent.click(canvas.getByRole("button", { name: value }));
-    await expect(write).toHaveBeenLastCalledWith(value);
-    await expect(canvas.getByRole("status")).toHaveTextContent(`Copied ${value}`);
-    for (const utility of utilitiesOf(entry.name)) {
-      await userEvent.click(canvas.getByRole("button", { name: utility }));
-      await expect(write).toHaveBeenLastCalledWith(utility);
-    }
-    write.mockRestore();
+    await spyOnClipboard(async (write) => {
+      await userEvent.click(canvas.getByRole("button", { name: entry.cssVar }));
+      await expect(write).toHaveBeenLastCalledWith(entry.cssVar);
+      await expect(canvas.getByRole("status")).toHaveTextContent(`Copied ${entry.cssVar}`);
+      await userEvent.click(canvas.getByRole("button", { name: value }));
+      await expect(write).toHaveBeenLastCalledWith(value);
+      await expect(canvas.getByRole("status")).toHaveTextContent(`Copied ${value}`);
+      for (const utility of utilitiesOf(entry.name)) {
+        await userEvent.click(canvas.getByRole("button", { name: utility }));
+        await expect(write).toHaveBeenLastCalledWith(utility);
+      }
+    });
   },
 };
 

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { MapPin, MessageCircle, Search, ShoppingBag, Store } from "lucide-react";
-import { expect, spyOn, within } from "storybook/test";
+import { expect, within } from "storybook/test";
 
 import { brand, toBrandLines } from "@pink-paprikaa-web/content";
 import {
@@ -16,6 +16,7 @@ import {
 } from "@pink-paprikaa-web/ui";
 
 import { formatValue, token, utilitiesOf } from "../../docs-kit/catalogue";
+import { spyOnClipboard } from "../../docs-kit/clipboard";
 import { SpecimenRow, SpecimenTile } from "../../docs-kit/specimen";
 import { TokenTable } from "../../docs-kit/token-table";
 import { BUILD_YEAR } from "../../kits/fixtures";
@@ -177,15 +178,15 @@ export const PatternTokens: Story = {
   ),
   // R56: a class chip copies the utility the token produces.
   play: async ({ canvas, userEvent }) => {
-    const write = spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
     const [utility] = utilitiesOf("pattern-opacity-faint");
     if (utility === undefined) throw new Error("pattern-opacity-faint has no utility class");
-    await userEvent.click(canvas.getByRole("button", { name: utility }));
-    await expect(write).toHaveBeenLastCalledWith(utility);
-    await expect(
-      canvas.getAllByRole("status").some((status) => status.textContent === `Copied ${utility}`)
-    ).toBe(true);
-    write.mockRestore();
+    await spyOnClipboard(async (write) => {
+      await userEvent.click(canvas.getByRole("button", { name: utility }));
+      await expect(write).toHaveBeenLastCalledWith(utility);
+      await expect(
+        canvas.getAllByRole("status").some((status) => status.textContent === `Copied ${utility}`)
+      ).toBe(true);
+    });
   },
 };
 

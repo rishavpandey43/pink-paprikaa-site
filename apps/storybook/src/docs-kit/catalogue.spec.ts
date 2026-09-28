@@ -55,7 +55,13 @@ const SPACING_READER =
   /^-?(?:[pm][xytrblse]?|gap(?:-[xy])?|space-[xy]|inset(?:-[xy])?|top|right|bottom|left|start|end|translate-[xy]|scroll-[mp][xytrblse]?|indent|basis|size|w|h|min-[wh]|max-[wh])$/;
 const SIZING = new Set(["size", "w", "h", "min-w", "min-h", "max-w", "max-h"]);
 
-/** The spacing-namespace utilities packages/ui uses a named spacing step as (`size`, `h`, `p`, …). */
+/**
+ * The spacing-namespace utilities packages/ui uses a named spacing step as (`size`, `h`, `p`, …).
+ * Blind spots: it reads literal class names only, so a step reached through `var(--spacing-…)`, an
+ * arbitrary value (`h-(--spacing-…)`, `min-h-[…]`) or a class built at runtime (`` `size-${x}` ``)
+ * reads as unused — which the R63 rule below lets carry any marker. Tailwind cannot see a runtime
+ * class either, so the library writes every class out literally.
+ */
 function usesOf(step: string): string[] {
   const pattern = new RegExp(`(?<![\\w-])(-?[a-z]+(?:-[a-z]+)*?)-${step}(?![\\w-])`, "g");
   const prefixes = [...SOURCE.matchAll(pattern)].map((match) => match[1] ?? "");
@@ -63,23 +69,40 @@ function usesOf(step: string): string[] {
 }
 
 /*
- * R61: a spacing token the library uses only as a size (`size-icon-sm`, `h-button-h-md`) carries
+ * R61/R63: a spacing token the library uses only as a size (`size-icon-sm`, `h-button-h-md`) carries
  * `$extensions.pink-paprikaa.utility` naming exactly those utilities, so the docs offer
- * `size-icon-sm` instead of `p-icon-sm`. A token used for padding or a gap — or not at all —
- * carries none and keeps the p/m/mt/gap default.
+ * `size-icon-sm` instead of `p-icon-sm`; a token it uses for padding or a gap carries none. A token
+ * it does not use yet MAY carry one — the primitive chrome sizes are marked by their documented use
+ * (`h-header`, `min-h-hit`, `bottom-dock-clearance`) before any component reaches for them. Once
+ * the library uses a marked token, its marker must equal those uses.
  */
 describe("R61 sizing markers", () => {
   it.each(
     BASE.filter((entry) => entry.name.startsWith("spacing-")).map((entry) => [entry.name, entry])
-  )("%s is marked exactly when packages/ui uses it only as a size", (name, entry) => {
-    const uses = usesOf(name.slice("spacing-".length));
-    const isSizingOnly = uses.length > 0 && uses.every((use) => SIZING.has(use));
+  )("%s is marked exactly as packages/ui uses it", (name, entry) => {
+    const step = name.slice("spacing-".length);
+    const uses = usesOf(step);
     const marker = entry.extensions?.["pink-paprikaa"]?.utility;
+    for (const utility of marker ?? []) {
+      expect(SPACING_READER.test(utility), `${utility} reads the spacing namespace`).toBe(true);
+    }
+    if (uses.length === 0) return;
+    const isSizingOnly = uses.every((use) => SIZING.has(use));
     expect(marker === undefined ? undefined : [...marker].sort()).toEqual(
       isSizingOnly ? uses : undefined
     );
     if (isSizingOnly) {
-      expect(utilitiesOf(name)).toEqual(uses.map((use) => `${use}-${name.slice(8)}`));
+      expect(utilitiesOf(name)).toEqual(uses.map((use) => `${use}-${step}`));
     }
+  });
+
+  it("marks the primitive chrome sizes by their documented use (R63)", () => {
+    expect(utilitiesOf("spacing-header")).toEqual(["h-header"]);
+    expect(utilitiesOf("spacing-header-compact")).toEqual(["h-header-compact"]);
+    expect(utilitiesOf("spacing-tabbar")).toEqual(["h-tabbar"]);
+    expect(utilitiesOf("spacing-hit")).toEqual(["min-h-hit", "min-w-hit"]);
+    expect(utilitiesOf("spacing-dock-clearance")).toEqual(["bottom-dock-clearance"]);
+    expect(utilitiesOf("spacing-card-min")).toEqual([]);
+    expect(utilitiesOf("spacing-card-min-wide")).toEqual([]);
   });
 });

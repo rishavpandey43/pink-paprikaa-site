@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { expect, spyOn } from "storybook/test";
+import { expect } from "storybook/test";
 
 import { brand } from "@pink-paprikaa-web/content";
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
 import { typographyOf, utilitiesOf } from "../../docs-kit/catalogue";
+import { spyOnClipboard } from "../../docs-kit/clipboard";
 import { TokenTable } from "../../docs-kit/token-table";
 import { TypeSpecimen } from "../../docs-kit/type-specimen";
 import { OUTLET } from "../../kits/fixtures";
@@ -60,18 +61,18 @@ export const HeadingSteps: Story = {
   ),
   // R56: each specimen's chips copy the classes that set it — size, family and weight.
   play: async ({ canvas, userEvent }) => {
-    const write = spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
     const [size] = utilitiesOf("text-h1");
     const [family] = utilitiesOf("font-display");
     if (size === undefined || family === undefined) throw new Error("h1 has no utility classes");
-    await userEvent.click(canvas.getByRole("button", { name: size }));
-    await expect(write).toHaveBeenLastCalledWith(size);
-    // Every heading step is Poppins, so each specimen offers the family chip; copy the first.
-    const [familyChip] = canvas.getAllByRole("button", { name: family });
-    if (familyChip === undefined) throw new Error(`no ${family} chip`);
-    await userEvent.click(familyChip);
-    await expect(write).toHaveBeenLastCalledWith(family);
-    write.mockRestore();
+    await spyOnClipboard(async (write) => {
+      await userEvent.click(canvas.getByRole("button", { name: size }));
+      await expect(write).toHaveBeenLastCalledWith(size);
+      // Every heading step is Poppins, so each specimen offers the family chip; copy the first.
+      const [familyChip] = canvas.getAllByRole("button", { name: family });
+      if (familyChip === undefined) throw new Error(`no ${family} chip`);
+      await userEvent.click(familyChip);
+      await expect(write).toHaveBeenLastCalledWith(family);
+    });
   },
 };
 

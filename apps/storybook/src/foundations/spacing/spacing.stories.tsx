@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { expect, spyOn } from "storybook/test";
+import { expect } from "storybook/test";
 
-import { cssValue, stepUtilities, utilitiesOf } from "../../docs-kit/catalogue";
+import { cssValue, stepUtilities, tokensWithPrefix, utilitiesOf } from "../../docs-kit/catalogue";
+import { spyOnClipboard } from "../../docs-kit/clipboard";
 import { requireElement } from "../../docs-kit/dom";
 import { RadiusScale } from "../../docs-kit/radius-scale";
 import { ShadowLadder } from "../../docs-kit/shadow-ladder";
@@ -45,7 +46,8 @@ const CHROME_TOKENS = [
   "spacing-hit",
 ];
 
-const DEPTH_LADDER = ["shadow-1", "shadow-2", "shadow-3", "shadow-4", "shadow-brand"];
+/** The primitive shadows — the ladder and its two specials — read from the catalogue, never retyped. */
+const DEPTH_LADDER = tokensWithPrefix("shadow-", "primitive").map((entry) => entry.name);
 
 /** R56: a chip copies exactly its class, and says so in the scope's status line. */
 async function expectChipCopies(
@@ -53,10 +55,10 @@ async function expectChipCopies(
   click: (element: HTMLElement) => Promise<void>,
   utility: string
 ) {
-  const write = spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
-  await click(canvas.getByRole("button", { name: utility }));
-  await expect(write).toHaveBeenLastCalledWith(utility);
-  write.mockRestore();
+  await spyOnClipboard(async (write) => {
+    await click(canvas.getByRole("button", { name: utility }));
+    await expect(write).toHaveBeenLastCalledWith(utility);
+  });
 }
 
 export const Scale: Story = {

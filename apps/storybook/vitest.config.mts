@@ -51,6 +51,18 @@ export default defineConfig({
             storybookUrl: "http://localhost:6006",
           }),
         ],
+        // Pre-bundled up front, so a first cold run cannot re-optimise mid-run and fail its stories
+        // with "Failed to fetch dynamically imported module … sb-vitest/deps/…" (2a batch C hit it
+        // on the react-dom shim). `storybookTest` already lists its own setup files; these are the
+        // preview-side deps addon-docs injects. The bare `@storybook/react-dom-shim` id is an alias
+        // `optimizeDeps.include` cannot resolve ("Failed to resolve dependency"), so the shim is
+        // named through the package that depends on it.
+        optimizeDeps: {
+          include: [
+            "@storybook/addon-docs > @storybook/react-dom-shim",
+            "@storybook/addon-docs > @mdx-js/react",
+          ],
+        },
         test: {
           name: "storybook",
           browser: {

@@ -175,6 +175,24 @@ function spacingUtilities(step: string, entry: TokenEntry): readonly string[] {
 }
 
 /**
+ * A colour's utilities by its role, read from its name (R62) — never a hand list:
+ * `text-*` → `text-` only; `surface-*` → `bg-` only; `border-*` → `border-` only; a `-strong`
+ * companion is text; a status or accent fill (`status-*`, or a named primitive hue — a primitive one
+ * path step below `color`, such as `turmeric`, `mint-soft`, `veg`) paints fields and outlines, so
+ * `bg-`/`border-`. The ramps and the alpha steps (`pink-500`, `white-alpha-50`) — and anything else
+ * — keep all three.
+ */
+function colorUtilities(step: string, entry: TokenEntry): readonly string[] {
+  if (step.startsWith("text-")) return [`text-${step}`];
+  if (step.startsWith("surface-")) return [`bg-${step}`];
+  if (step.startsWith("border-")) return [`border-${step}`];
+  if (step.endsWith("-strong")) return [`text-${step}`];
+  const isAccent = entry.tier === "primitive" && entry.path.length === 2;
+  if (step.startsWith("status-") || isAccent) return [`bg-${step}`, `border-${step}`];
+  return [`bg-${step}`, `text-${step}`, `border-${step}`];
+}
+
+/**
  * Tailwind's static `max-w-prose` (65ch) shadows `--container-prose`, so a container that a
  * spacing token aliases — the prose measures — is reached through that alias
  * (`max-w-text-measure-prose`); every other container is a plain `max-w-*`.
@@ -201,7 +219,7 @@ const UTILITY_RULES: readonly (readonly [
   prefix: string,
   classes: (step: string, entry: TokenEntry) => readonly string[],
 ])[] = [
-  ["color-", (step) => [`bg-${step}`, `text-${step}`, `border-${step}`]],
+  ["color-", colorUtilities],
   ["font-weight-", (step) => [`font-${step}`]],
   ["font-", (step) => [`font-${step}`]],
   ["text-", (step) => [`text-${step}`]],

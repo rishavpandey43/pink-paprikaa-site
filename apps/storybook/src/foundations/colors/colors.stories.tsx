@@ -1,12 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { expect, spyOn, within } from "storybook/test";
+import { expect, within } from "storybook/test";
 
 import { brand } from "@pink-paprikaa-web/content";
 import { Card } from "@pink-paprikaa-web/ui";
 
-import { rgbOf, utilitiesOf } from "../../docs-kit/catalogue";
+import { rgbOf, token, utilitiesOf } from "../../docs-kit/catalogue";
+import { spyOnClipboard } from "../../docs-kit/clipboard";
 import { ContrastMatrix, contrastResults, VERDICT_LABEL } from "../../docs-kit/contrast-matrix";
+import { CopyButton, CopyScope } from "../../docs-kit/copy";
 import { SpecimenTile } from "../../docs-kit/specimen";
 import { Swatches } from "../../docs-kit/swatch";
 import { TokenTable } from "../../docs-kit/token-table";
@@ -65,12 +67,12 @@ export const PinkRamp: Story = {
   render: () => <Swatches selection={{ names: PINK_RAMP }} />,
   // R56: every swatch's class chips copy the utility, not just its name and value.
   play: async ({ canvas, userEvent }) => {
-    const write = spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
-    for (const utility of utilitiesOf("color-pink-500")) {
-      await userEvent.click(canvas.getByRole("button", { name: utility }));
-      await expect(write).toHaveBeenLastCalledWith(utility);
-    }
-    write.mockRestore();
+    await spyOnClipboard(async (write) => {
+      for (const utility of utilitiesOf("color-pink-500")) {
+        await userEvent.click(canvas.getByRole("button", { name: utility }));
+        await expect(write).toHaveBeenLastCalledWith(utility);
+      }
+    });
   },
 };
 
@@ -85,32 +87,52 @@ export const TextCompanions: Story = {
 // Deferred (fold list item 3): the SpiceLevel row above the swatches — Plan 2b T12.
 export const HeatScale: Story = { render: () => <Swatches selection={{ names: HEAT }} /> };
 
+/** A token's CSS variable as a copy chip — the label is `token(name).cssVar`, never retyped. */
+function VarChip({ name, className }: { name: string; className?: string | undefined }) {
+  return <CopyButton text={token(name).cssVar} className={className} />;
+}
+
 export const SemanticPanels: Story = {
   render: () => (
     <div className="grid gap-3 md:grid-cols-4">
-      <div className="flex flex-col gap-1 rounded-md border border-border-subtle bg-surface-page p-3">
-        <span className="font-mono text-mono text-text-muted">--color-surface-page</span>
+      <CopyScope className="flex flex-col items-start gap-1 rounded-md border border-border-subtle bg-surface-page p-3">
+        <VarChip name="color-surface-page" />
         <span className="font-display text-h4 text-text-heading">Heading</span>
-        <span className="text-body-sm text-text-body">--color-text-body</span>
-        <span className="text-body-sm text-text-muted">--color-text-muted</span>
-      </div>
-      <div className="flex flex-col gap-1 rounded-md bg-surface-page-alt p-3">
-        <span className="font-mono text-mono text-text-muted">--color-surface-page-alt</span>
-        <span className="font-display text-h4 text-text-brand">--color-text-brand</span>
+        <VarChip name="color-text-body" className="text-text-body" />
+        <VarChip name="color-text-muted" />
+      </CopyScope>
+      <CopyScope className="flex flex-col items-start gap-1 rounded-md bg-surface-page-alt p-3">
+        <VarChip name="color-surface-page-alt" />
+        <span className="font-display text-h4 text-text-brand">Brand text</span>
+        <VarChip name="color-text-brand" />
         <span className="text-body-sm text-text-body">Tinted section</span>
+      </CopyScope>
+      <div data-surface="brand" className="rounded-md bg-surface-brand p-3">
+        <CopyScope className="flex flex-col items-start gap-1">
+          <VarChip name="color-surface-brand" />
+          <span className="font-display text-h4 text-text-heading">On brand</span>
+          <VarChip name="color-text-on-brand" />
+          <span className="text-body-sm text-text-muted">Flooded pink panel</span>
+        </CopyScope>
       </div>
-      <div data-surface="brand" className="flex flex-col gap-1 rounded-md bg-surface-brand p-3">
-        <span className="font-mono text-mono text-text-muted">--color-surface-brand</span>
-        <span className="font-display text-h4 text-text-heading">--color-text-on-brand</span>
-        <span className="text-body-sm text-text-muted">Flooded pink panel</span>
-      </div>
-      <div data-surface="ink" className="flex flex-col gap-1 rounded-md bg-surface-inverse p-3">
-        <span className="font-mono text-mono text-text-muted">--color-surface-inverse</span>
-        <span className="font-display text-h4 text-text-heading">--color-text-on-inverse</span>
-        <span className="text-body-sm text-text-muted">Footer / ink panel</span>
+      <div data-surface="ink" className="rounded-md bg-surface-inverse p-3">
+        <CopyScope className="flex flex-col items-start gap-1">
+          <VarChip name="color-surface-inverse" />
+          <span className="font-display text-h4 text-text-heading">On ink</span>
+          <VarChip name="color-text-on-inverse" />
+          <span className="text-body-sm text-text-muted">Footer / ink panel</span>
+        </CopyScope>
       </div>
     </div>
   ),
+  // Each label is the token's own CSS variable, and copies it.
+  play: async ({ canvas, userEvent }) => {
+    const cssVar = token("color-text-on-brand").cssVar;
+    await spyOnClipboard(async (write) => {
+      await userEvent.click(canvas.getByRole("button", { name: cssVar }));
+      await expect(write).toHaveBeenLastCalledWith(cssVar);
+    });
+  },
 };
 
 export const SemanticTokens: Story = {

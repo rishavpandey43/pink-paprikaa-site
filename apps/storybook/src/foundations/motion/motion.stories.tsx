@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { expect, spyOn, waitFor } from "storybook/test";
+import { expect, waitFor } from "storybook/test";
 
 import { Button, RevealObserver } from "@pink-paprikaa-web/ui";
 
+import { spyOnClipboard } from "../../docs-kit/clipboard";
 import { CopyChips } from "../../docs-kit/copy";
 import { requireElement } from "../../docs-kit/dom";
 import { MotionDemo } from "../../docs-kit/motion-demo";
@@ -68,7 +69,7 @@ export const Animations: Story = {
             data-animation={utility}
             className={`size-10 rounded-md bg-pink-500 ${utility}`}
           />
-          <CopyChips values={[utility]} />
+          <CopyChips values={[utility, `--${utility}`]} />
           <span className="text-caption text-text-subtle">{use}</span>
         </li>
       ))}
@@ -79,12 +80,19 @@ export const Animations: Story = {
     for (const [utility] of ANIMATIONS) {
       const block = requireElement(canvasElement, `[data-animation="${utility}"]`);
       await expect(getComputedStyle(block).animationName).toBe(utility.replace("animate-", "pp-"));
+      // R56: the CSS variable chip names a variable the theme really defines.
+      await expect(
+        getComputedStyle(document.documentElement).getPropertyValue(`--${utility}`),
+        `--${utility}`
+      ).not.toBe("");
     }
-    // R56: each animation's chip copies its utility.
-    const write = spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
-    await userEvent.click(canvas.getByRole("button", { name: "animate-mark-pulse" }));
-    await expect(write).toHaveBeenLastCalledWith("animate-mark-pulse");
-    write.mockRestore();
+    // R56: each animation's chips copy its utility and its CSS variable.
+    await spyOnClipboard(async (write) => {
+      for (const text of ["animate-mark-pulse", "--animate-mark-pulse"]) {
+        await userEvent.click(canvas.getByRole("button", { name: text }));
+        await expect(write).toHaveBeenLastCalledWith(text);
+      }
+    });
   },
 };
 
