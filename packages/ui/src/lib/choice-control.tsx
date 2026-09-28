@@ -66,6 +66,7 @@ export function ChoiceControl({
   isLabelHidden,
   className,
   "aria-describedby": describedBy,
+  "aria-invalid": ariaInvalid,
   ...props
 }: ChoiceControlProps) {
   const descriptionId = useId();
@@ -76,7 +77,8 @@ export function ChoiceControl({
       <input
         type={type}
         className={styles.input()}
-        aria-invalid={isInvalid ? true : undefined}
+        // `isInvalid` wins over a caller's `aria-invalid`, which otherwise stands (Field's `true`).
+        aria-invalid={isInvalid ? true : ariaInvalid}
         aria-describedby={joinIds(
           description === undefined ? undefined : descriptionId,
           describedBy

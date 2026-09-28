@@ -75,6 +75,15 @@ describe("Checkbox", () => {
     expect(boxOf(checkbox)).toHaveClass("group-has-aria-invalid/choice:border-status-danger");
   });
 
+  it("stays invalid when a caller's aria-invalid says otherwise; without isInvalid the caller's stands", () => {
+    const { rerender } = render(
+      <Checkbox label="I agree to the terms" isInvalid aria-invalid={false} />
+    );
+    expect(screen.getByRole("checkbox")).toHaveAttribute("aria-invalid", "true");
+    rerender(<Checkbox label="I agree to the terms" aria-invalid />);
+    expect(screen.getByRole("checkbox")).toHaveAttribute("aria-invalid", "true");
+  });
+
   it("takes react-hook-form's register(): ref, name, onChange and onBlur reach the native input", async () => {
     const user = userEvent.setup();
     const field = fakeRegister("mayo");
