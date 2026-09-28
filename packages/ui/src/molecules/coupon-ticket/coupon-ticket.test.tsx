@@ -31,11 +31,13 @@ describe("CouponTicket", () => {
     await user.click(screen.getByRole("button", { name: /Use code PAPRIKAA50/ }));
     expect(await navigator.clipboard.readText()).toBe(TICKET.code);
     expect(onCopy).toHaveBeenCalledWith(TICKET.code);
-    expect(screen.getAllByText("Copied")).not.toHaveLength(0);
-    // The flash is visual; the live hint is what a screen reader hears.
-    expect(
-      screen.getAllByText("Copied").some((node) => node.getAttribute("aria-live") === "polite")
-    ).toBe(true);
+    // The label stays "Use code": only the hint flashes, never "Copied PAPRIKAA50 Copied".
+    expect(screen.getByRole("button")).toHaveAccessibleName("Use code PAPRIKAA50 Copied");
+    // A screen reader hears "Copied" once, from the one live region.
+    const live = document.querySelectorAll("[aria-live]");
+    expect(live).toHaveLength(1);
+    expect(live[0]).toHaveAttribute("aria-live", "polite");
+    expect(live[0]).toHaveTextContent(/^Copied$/);
   });
 
   it("copies from the keyboard", async () => {
@@ -59,6 +61,8 @@ describe("CouponTicket", () => {
       vi.advanceTimersByTime(2000);
     });
     expect(screen.getByText("Tap to copy")).toBeInTheDocument();
+    // The reset is silent: the live region empties rather than announcing "Tap to copy".
+    expect(document.querySelector("[aria-live]")).toBeEmptyDOMElement();
   });
 
   it("never claims a copy the browser refused — it selects the code to copy by hand", async () => {

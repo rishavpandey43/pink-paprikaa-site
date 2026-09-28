@@ -82,19 +82,26 @@ export function CouponCopyButton({
   };
 
   return (
-    <button type="button" onClick={handleClick} className={classNames.root}>
-      {/* The {" "} separators keep the button's name "Use code PAPRIKAA50 Tap to copy", not one run-on
-          word; a grid drops whitespace-only text, so they draw nothing. */}
-      <span className={classNames.inner}>
-        <span className={classNames.label}>{isCopied ? copiedLabel : codeLabel}</span>{" "}
-        <span ref={codeRef} className={classNames.code}>
-          {code}
-        </span>{" "}
-        <span aria-live="polite" className={classNames.hint}>
-          <Icon icon={isCopied ? Check : Copy} size="xs" />
-          {isCopied ? copiedLabel : copyHint}
+    <>
+      <button type="button" onClick={handleClick} className={classNames.root}>
+        {/* The {" "} separators keep the button's name "Use code PAPRIKAA50 Tap to copy", not one
+            run-on word; a grid drops whitespace-only text, so they draw nothing. */}
+        <span className={classNames.inner}>
+          <span className={classNames.label}>{codeLabel}</span>{" "}
+          <span ref={codeRef} className={classNames.code}>
+            {code}
+          </span>{" "}
+          <span className={classNames.hint}>
+            <Icon icon={isCopied ? Check : Copy} size="xs" />
+            {isCopied ? copiedLabel : copyHint}
+          </span>
         </span>
+      </button>
+      {/* The one announcement: "Copied" on a copy. Empty otherwise, so the reset stays silent. Outside
+          the button, so it never joins the button's name. */}
+      <span aria-live="polite" className="sr-only">
+        {isCopied ? copiedLabel : null}
       </span>
-    </button>
+    </>
   );
 }
