@@ -2690,7 +2690,7 @@ const otpInput = componentVariants({
     field: "relative w-fit max-w-full",
     cells: "flex flex-wrap gap-2.5",
     /** Layered over the shared field box (Plan 2b): a 48×56 cell with a centred mono digit. */
-    cell: "text-otp-digit w-12 justify-center px-0 font-mono text-text-heading",
+    cell: "w-12 justify-center px-0 font-mono text-otp-digit text-text-heading",
     input:
       "absolute inset-0 size-full cursor-text appearance-none border-0 bg-transparent p-0 text-body text-transparent caret-transparent outline-hidden selection:bg-transparent disabled:cursor-not-allowed",
   },
