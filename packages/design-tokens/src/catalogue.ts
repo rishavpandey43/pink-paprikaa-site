@@ -18,4 +18,11 @@ export interface TokenEntry {
   /** Set on a surface override; null for the base token. */
   readonly surface: "brand" | "ink" | "soft" | "light" | null;
   readonly description: string;
+  /**
+   * The token's authored `$extensions`, or null. `pink-paprikaa.utility` lists the utility
+   * prefixes a sizing token is used as (`["size"]`, `["h", "min-w"]`) — ruling R61.
+   */
+  readonly extensions: {
+    readonly "pink-paprikaa"?: { readonly utility?: readonly string[] };
+  } | null;
 }

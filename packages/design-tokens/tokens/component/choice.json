@@ -1,6 +1,10 @@
 {
   "spacing": {
     "$type": "dimension",
-    "choice-box": { "$value": "22px", "$description": "The drawn box of a checkbox or a radio." }
+    "choice-box": {
+      "$value": "22px",
+      "$description": "The drawn box of a checkbox or a radio.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
   }
 }

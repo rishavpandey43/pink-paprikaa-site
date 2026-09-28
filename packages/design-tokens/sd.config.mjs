@@ -126,6 +126,8 @@ StyleDictionary.registerFormat({
           tier: TIER.exec(token.filePath)?.[1] ?? "unknown",
           surface: surfaceOf(token),
           description: token.$description ?? "",
+          // As authored; `pink-paprikaa.utility` names what a sizing token is used as (R61).
+          extensions: token.$extensions ?? null,
         };
       }),
       null,

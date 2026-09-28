@@ -1,7 +1,11 @@
 {
   "spacing": {
     "$type": "dimension",
-    "tag-h": { "$value": "38px", "$description": "Tag height — fixed; tags never wrap." }
+    "tag-h": {
+      "$value": "38px",
+      "$description": "Tag height — fixed; tags never wrap.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    }
   },
   "text": {
     "$type": "typography",

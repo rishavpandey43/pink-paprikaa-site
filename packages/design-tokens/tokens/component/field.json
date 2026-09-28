@@ -1,15 +1,25 @@
 {
   "spacing": {
     "$type": "dimension",
-    "field-sm": { "$value": "40px", "$description": "Field height, size sm." },
+    "field-sm": {
+      "$value": "40px",
+      "$description": "Field height, size sm.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
     "field-md": {
       "$value": "48px",
-      "$description": "Field height, size md — the system's field (readme §3.10)."
+      "$description": "Field height, size md — the system's field (readme §3.10).",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
     },
-    "field-lg": { "$value": "56px", "$description": "Field height, size lg." },
+    "field-lg": {
+      "$value": "56px",
+      "$description": "Field height, size lg.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
     "field-spinner": {
       "$value": "18px",
-      "$description": "The pulsing mark while a field validates."
+      "$description": "The pulsing mark while a field validates.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
     }
   },
   "text": {

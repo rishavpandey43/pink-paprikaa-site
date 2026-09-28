@@ -68,8 +68,29 @@ describe("verdictOf", () => {
     [4.04, 3, "exception"],
     [2.9, 3, "fail"],
     [4.49, 4.5, "fail"],
+    [5, 7, "fail"],
+    [7, 7, "pass"],
   ] as const)("rates %s against a minimum of %s as %s", (ratio, min, verdict) => {
     expect(verdictOf(ratio, min)).toBe(verdict);
+  });
+});
+
+describe("a group stricter than AA", () => {
+  it("fails a pair that clears AA but not the group's own minimum", () => {
+    const strict: ContrastPolicy = {
+      groups: [
+        {
+          id: "aaa-body",
+          surface: null,
+          pairs: [["color-text-muted", "color-surface-page"]],
+          min: 7,
+        },
+      ],
+    };
+    const [result] = evaluateContrastPolicy(catalogue, strict);
+    expect(result?.ratio).toBeGreaterThanOrEqual(AA_NORMAL);
+    expect(result?.ratio).toBeLessThan(7);
+    expect(result?.verdict).toBe("fail");
   });
 });
 

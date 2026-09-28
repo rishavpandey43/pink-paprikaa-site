@@ -1,7 +1,11 @@
 {
   "spacing": {
     "$type": "dimension",
-    "divider-mark": { "$value": "16px", "$description": "The diamond section-break mark." }
+    "divider-mark": {
+      "$value": "16px",
+      "$description": "The diamond section-break mark.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
   },
   "color": {
     "$type": "color",

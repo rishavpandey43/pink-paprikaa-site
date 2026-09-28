@@ -161,10 +161,13 @@ export function pairsOf(group: PolicyGroup): [string, string][] {
   );
 }
 
-/** "pass" at AA; "exception" between a group's lower minimum and AA; "fail" below the minimum. */
+/**
+ * "fail" below the group's minimum (even one stricter than AA); otherwise "pass" at AA, and
+ * "exception" between a looser minimum and AA.
+ */
 export function verdictOf(ratio: number, min: number): ContrastVerdict {
-  if (ratio >= AA_NORMAL) return "pass";
-  return ratio >= min ? "exception" : "fail";
+  if (ratio < min) return "fail";
+  return ratio >= AA_NORMAL ? "pass" : "exception";
 }
 
 /**

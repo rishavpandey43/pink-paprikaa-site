@@ -1,11 +1,11 @@
 {
   "spacing": {
     "$type": "dimension",
-    "avatar-xs": { "$value": "24px" },
-    "avatar-sm": { "$value": "32px" },
-    "avatar-md": { "$value": "40px" },
-    "avatar-lg": { "$value": "56px" },
-    "avatar-xl": { "$value": "80px" }
+    "avatar-xs": { "$value": "24px", "$extensions": { "pink-paprikaa": { "utility": ["size"] } } },
+    "avatar-sm": { "$value": "32px", "$extensions": { "pink-paprikaa": { "utility": ["size"] } } },
+    "avatar-md": { "$value": "40px", "$extensions": { "pink-paprikaa": { "utility": ["size"] } } },
+    "avatar-lg": { "$value": "56px", "$extensions": { "pink-paprikaa": { "utility": ["size"] } } },
+    "avatar-xl": { "$value": "80px", "$extensions": { "pink-paprikaa": { "utility": ["size"] } } }
   },
   "text": {
     "$type": "typography",

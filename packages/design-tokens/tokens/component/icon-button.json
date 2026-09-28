@@ -3,16 +3,23 @@
     "$type": "dimension",
     "icon-button-sm": {
       "$value": "32px",
-      "$description": "Drawn size; a ::before keeps the 44px hit area."
+      "$description": "Drawn size; a ::before keeps the 44px hit area.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
     },
     "icon-button-md": {
       "$value": "40px",
-      "$description": "Drawn size; a ::before keeps the 44px hit area."
+      "$description": "Drawn size; a ::before keeps the 44px hit area.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
     },
-    "icon-button-lg": { "$value": "48px", "$description": "The app size (touch surfaces)." },
+    "icon-button-lg": {
+      "$value": "48px",
+      "$description": "The app size (touch surfaces).",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
     "icon-button-count": {
       "$value": "18px",
-      "$description": "Cart-count bubble height and minimum width."
+      "$description": "Cart-count bubble height and minimum width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
     }
   },
   "text": {

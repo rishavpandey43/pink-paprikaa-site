@@ -6,6 +6,7 @@ interface CatalogueEntry {
   value: unknown;
   tier: string;
   surface: string | null;
+  extensions: unknown;
 }
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), "utf8");
@@ -115,6 +116,13 @@ describe("tokens.json", () => {
       expect(entry.name).toMatch(/^[a-z0-9-]+$/);
       expect(["primitive", "semantic", "component", "surface"]).toContain(entry.tier);
     }
+  });
+
+  it("carries each token's authored $extensions — the R61 utility markers", () => {
+    const icon = catalogue.find((entry) => entry.name === "spacing-icon-sm");
+    expect(icon?.extensions).toEqual({ "pink-paprikaa": { utility: ["size"] } });
+    const gutter = catalogue.find((entry) => entry.name === "spacing-gutter");
+    expect(gutter?.extensions).toBeNull();
   });
 
   it("restores, on a light island, every token another surface overrides — to its exact base value", () => {

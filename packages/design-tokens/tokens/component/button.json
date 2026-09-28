@@ -1,12 +1,21 @@
 {
   "spacing": {
     "$type": "dimension",
-    "button-h-sm": { "$value": "36px", "$description": "Button sm height and minimum width." },
+    "button-h-sm": {
+      "$value": "36px",
+      "$description": "Button sm height and minimum width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
+    },
     "button-h-md": {
       "$value": "44px",
-      "$description": "Button md height — the touch-target minimum."
+      "$description": "Button md height — the touch-target minimum.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
     },
-    "button-h-lg": { "$value": "54px", "$description": "Button lg height and minimum width." }
+    "button-h-lg": {
+      "$value": "54px",
+      "$description": "Button lg height and minimum width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
+    }
   },
   "text": {
     "$type": "typography",

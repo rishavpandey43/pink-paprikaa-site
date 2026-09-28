@@ -1,8 +1,16 @@
 {
   "spacing": {
     "$type": "dimension",
-    "status-dot-sm": { "$value": "14px", "$description": "The default dot, beside a label." },
-    "status-dot-md": { "$value": "16px", "$description": "A bare dot." }
+    "status-dot-sm": {
+      "$value": "14px",
+      "$description": "The default dot, beside a label.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "status-dot-md": {
+      "$value": "16px",
+      "$description": "A bare dot.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
   },
   "text": {
     "$type": "typography",

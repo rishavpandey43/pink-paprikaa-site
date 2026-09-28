@@ -3,12 +3,14 @@
     "$type": "dimension",
     "logo-lockup": {
       "$value": "240px",
-      "$description": "Default lockup width. Minimum 200px (below it, use the wordmark)."
+      "$description": "Default lockup width. Minimum 200px (below it, use the wordmark).",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
     },
     "logo-wordmark": {
       "$value": "180px",
-      "$description": "Default wordmark width. Minimum 140px."
+      "$description": "Default wordmark width. Minimum 140px.",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
     },
-    "logo-symbol": { "$value": "40px" }
+    "logo-symbol": { "$value": "40px", "$extensions": { "pink-paprikaa": { "utility": ["w"] } } }
   }
 }

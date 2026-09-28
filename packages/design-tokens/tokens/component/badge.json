@@ -1,7 +1,11 @@
 {
   "spacing": {
     "$type": "dimension",
-    "badge-icon": { "$value": "12px", "$description": "The Badge glyph." }
+    "badge-icon": {
+      "$value": "12px",
+      "$description": "The Badge glyph.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
   },
   "color": {
     "$type": "color",
