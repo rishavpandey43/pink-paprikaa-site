@@ -194,6 +194,8 @@ const SPACING = [
   "quantity-stepper-count",
   "snackbar",
   "empty-state-symbol-lg",
+  "section-header-measure",
+  "section-header-measure-centered",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];
