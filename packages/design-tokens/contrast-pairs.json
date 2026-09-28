@@ -426,6 +426,19 @@
       "pairs": [["color-ink-000", "color-pink-500"]],
       "min": 3,
       "exception": "brand-fill"
+    },
+    {
+      "id": "choice-card-selected",
+      "surface": null,
+      "pairs": [["color-pink-700", "color-pink-50"]],
+      "min": 4.5
+    },
+    {
+      "id": "choice-card-on-brand",
+      "surface": null,
+      "pairs": [["color-text-heading", "color-white-alpha-92"]],
+      "backdrop": "color-surface-brand",
+      "min": 4.5
     }
   ]
 }

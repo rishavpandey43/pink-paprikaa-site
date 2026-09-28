@@ -95,6 +95,7 @@ const TEXT = [
   "coupon-ticket-code-md",
   "coupon-ticket-code-lg",
   "coupon-ticket-stub-label-lg",
+  "choice-card-title",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -113,6 +114,8 @@ const SHADOW = [
   "field-ring-danger",
   "field-ring-success",
   "field-ring-warning",
+  "selected",
+  "choice-card-radio",
 ];
 const BLUR = ["glass"];
 const EASE = ["out", "in-out", "entrance", "pop"];

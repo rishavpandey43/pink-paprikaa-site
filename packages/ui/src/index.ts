@@ -62,6 +62,12 @@ export {
   type BreadcrumbItem,
   type BreadcrumbProps,
 } from "./molecules/breadcrumb/breadcrumb";
+export {
+  ChoiceCardGroup,
+  type ChoiceCardGroupProps,
+  type ChoiceGridMin,
+  type ChoiceOption,
+} from "./molecules/choice-card-group/choice-card-group";
 export { CouponTicket, type CouponTicketProps } from "./molecules/coupon-ticket/coupon-ticket";
 export { EmptyState, type EmptyStateProps } from "./molecules/empty-state/empty-state";
 export { Field, type FieldControlProps, type FieldProps } from "./molecules/field/field";
