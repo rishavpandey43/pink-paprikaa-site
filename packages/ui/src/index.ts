@@ -59,6 +59,7 @@ export {
 export { EmptyState, type EmptyStateProps } from "./molecules/empty-state/empty-state";
 export { Field, type FieldControlProps, type FieldProps } from "./molecules/field/field";
 export { OtpInput, type OtpInputProps } from "./molecules/otp-input/otp-input";
+export { Pagination, type PaginationProps } from "./molecules/pagination/pagination";
 export {
   QuantityStepper,
   type QuantityStepperProps,
