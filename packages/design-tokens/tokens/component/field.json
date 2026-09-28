@@ -1,0 +1,37 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "field-sm": { "$value": "40px", "$description": "Field height, size sm." },
+    "field-md": {
+      "$value": "48px",
+      "$description": "Field height, size md — the system's field (readme §3.10)."
+    },
+    "field-lg": { "$value": "56px", "$description": "Field height, size lg." },
+    "field-spinner": {
+      "$value": "18px",
+      "$description": "The pulsing mark while a field validates."
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "field-suffix": {
+      "$value": { "fontSize": "12px" },
+      "$description": "A field's trailing unit or count, set in Space Mono."
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "field-ring-danger": {
+      "$value": "0 0 0 3px {color.status.danger-soft}",
+      "$description": "Focus ring of a field in error."
+    },
+    "field-ring-success": {
+      "$value": "0 0 0 3px {color.status.success-soft}",
+      "$description": "Focus ring of a field in success."
+    },
+    "field-ring-warning": {
+      "$value": "0 0 0 3px {color.status.warning-soft}",
+      "$description": "Focus ring of a field in warning."
+    }
+  }
+}

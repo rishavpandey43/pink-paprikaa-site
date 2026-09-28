@@ -54,6 +54,7 @@ const TEXT = [
   "avatar-md",
   "avatar-lg",
   "avatar-xl",
+  "field-suffix",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -69,6 +70,9 @@ const SHADOW = [
   "focus-ring-inverse",
   "button-primary",
   "avatar-ring",
+  "field-ring-danger",
+  "field-ring-success",
+  "field-ring-warning",
 ];
 const BLUR = ["glass"];
 const EASE = ["out", "in-out", "entrance", "pop"];
@@ -120,6 +124,10 @@ const SPACING = [
   "avatar-md",
   "avatar-lg",
   "avatar-xl",
+  "field-sm",
+  "field-md",
+  "field-lg",
+  "field-spinner",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];
