@@ -50,3 +50,4 @@ export { type HeadingLevel, headingTag } from "./lib/heading";
 export type { LinkAs, LinkAsProps } from "./lib/link-as";
 export { RevealObserver, type RevealObserverProps } from "./lib/reveal-observer";
 export { GAP_CLASS, type SpaceStep } from "./lib/space";
+export { Field, type FieldControlProps, type FieldProps } from "./molecules/field/field";
