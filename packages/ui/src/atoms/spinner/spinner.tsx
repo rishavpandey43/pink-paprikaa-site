@@ -24,7 +24,12 @@ const spinner = componentVariants({
   defaultVariants: { size: "md", tone: "brand" },
 });
 
-export interface SpinnerProps extends ComponentProps<"span"> {
+export interface SpinnerProps extends Omit<ComponentProps<"span">, "aria-label"> {
+  /**
+   * Not accepted: the status is named by `aria-labelledby`, which would silently outrank it — use
+   * `label`. Declared `never` because JSX skips excess-property checks on hyphenated attributes.
+   */
+  "aria-label"?: never;
   size?: "sm" | "md" | "lg" | undefined;
   /** `inverse` is the white mark, for pink or ink panels. */
   tone?: "brand" | "ink" | "inverse" | undefined;

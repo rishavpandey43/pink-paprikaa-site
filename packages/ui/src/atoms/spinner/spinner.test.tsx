@@ -17,6 +17,12 @@ describe("Spinner", () => {
     expect(screen.getByRole("status", { name: "Finding your outlet" })).toBeInTheDocument();
   });
 
+  it("takes no aria-label, which its aria-labelledby would silently outrank", () => {
+    // @ts-expect-error -- name the status with `label`
+    render(<Spinner aria-label="Finding your outlet" />);
+    expect(screen.getByRole("status", { name: "Loading" })).toBeInTheDocument();
+  });
+
   it("announces its label as live-region content, not only as a name", () => {
     render(<Spinner label="Finding your outlet" />);
     const status = screen.getByRole("status");
