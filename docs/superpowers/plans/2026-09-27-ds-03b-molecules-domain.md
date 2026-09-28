@@ -6543,7 +6543,7 @@ const steps = componentVariants({
           "grid size-11 shrink-0 place-items-center rounded-pill bg-surface-brand text-body text-text-on-brand",
       },
       rule: {
-        root: "autogrid-min-md grid gap-4",
+        root: "grid autogrid-min-md gap-4",
         item: "flex flex-col gap-2 border-t-3 border-border-brand pt-4",
         marker: "text-h2 leading-none text-text-brand",
       },

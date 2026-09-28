@@ -989,7 +989,7 @@ const statBand = componentVariants({
   slots: {
     root: "relative",
     pattern: "absolute inset-0",
-    grid: "autogrid-min-sm gap-stat-band-gap py-stat-band-y relative container-page grid",
+    grid: "gap-stat-band-gap py-stat-band-y relative container-page grid autogrid-min-sm",
   },
   variants: {
     tone: {
@@ -3753,7 +3753,7 @@ const siteFooter = componentVariants({
   slots: {
     root: "relative",
     pattern: "absolute inset-0",
-    grid: "autogrid-min-sm gap-site-footer-gap pt-site-footer-top relative container-page grid pb-8",
+    grid: "gap-site-footer-gap pt-site-footer-top relative container-page grid autogrid-min-sm pb-8",
     brand: "flex flex-col items-start gap-3.5",
     social: "flex gap-2",
     column: "flex min-w-0 flex-col gap-3.5",
