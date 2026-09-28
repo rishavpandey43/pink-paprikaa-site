@@ -57,6 +57,7 @@ const TEXT = [
   "field-suffix",
   "control",
   "control-description",
+  "progress-label",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -137,6 +138,8 @@ const SPACING = [
   "spinner-sm",
   "spinner-md",
   "spinner-lg",
+  "progress-sm",
+  "progress-md",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast"];

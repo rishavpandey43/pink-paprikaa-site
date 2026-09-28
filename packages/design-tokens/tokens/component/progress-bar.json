@@ -1,0 +1,19 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "progress-sm": {
+      "$value": "6px",
+      "$description": "Bar height inside a LoyaltyCard.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
+    "progress-md": {
+      "$value": "8px",
+      "$description": "The default bar height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "progress-label": { "$value": { "fontSize": "13.5px" } }
+  }
+}
