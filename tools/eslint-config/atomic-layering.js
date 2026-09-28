@@ -9,7 +9,8 @@ const layerOrder = ["atoms", "molecules", "organisms", "layouts"];
  * path (`../../atoms/text/text`). Everything else passes: `../../lib/*`, `../../assets/*`,
  * `../../styles.css`, `../../../vitest.setup`, packages. `src/lib/` is not a tier, but the barrel
  * and self-package bans cover it too (R41): library internals are imported by the atoms, so a lib
- * file reaching the barrel would be a cycle. `atomic-layering.test.mjs` pins each case.
+ * file reaching the barrel would be a cycle — as would a lib file reaching a molecule, organism,
+ * layout or any atom but Icon. `atomic-layering.test.mjs` pins each case.
  *
  * Exported separately from `react.js` (not folded into the default react preset) because the
  * `files` pattern below — `src/<layer>` — is project-local, not workspace-global: ESLint's flat
@@ -82,7 +83,25 @@ const atomicLayering = [
   {
     files: ["**/src/lib/**/*"],
     rules: {
-      "no-restricted-imports": ["error", { patterns: [barrelPattern, selfPackagePattern] }],
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            barrelPattern,
+            selfPackagePattern,
+            {
+              // The atoms import lib, so lib sits below every tier: a lib file reaching a molecule,
+              // organism or layout — or an atom other than Icon — would be a cycle.
+              group: ["**/molecules/**", "**/organisms/**", "**/layouts/**"],
+              message: "Atomic layering: lib cannot import a tier above the atoms.",
+            },
+            {
+              regex: "^(?:\\.\\./)+(?:src/)?atoms/(?!icon(?:/|$))",
+              message: "Atomic layering: lib may import only the Icon atom.",
+            },
+          ],
+        },
+      ],
     },
   },
 ];

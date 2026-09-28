@@ -96,3 +96,15 @@ test("a lib file may import its siblings, the Icon atom, the stylesheet, the tes
     assert.equal(libErrors(source), 0, `lib importing "${source}"`);
   }
 });
+
+test("a lib file imports no tier above the atoms, and no atom but Icon", () => {
+  for (const source of [
+    "../molecules/field/field",
+    "../organisms/site-header/site-header",
+    "../layouts/stack/stack",
+    "../atoms/text/text",
+    "../../src/atoms/text/text",
+  ]) {
+    assert.equal(libErrors(source), 1, `lib importing "${source}"`);
+  }
+});
