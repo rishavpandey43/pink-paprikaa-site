@@ -28,6 +28,15 @@ describe("Tabs", () => {
     expect(screen.getByText("The all-day menu.")).toBeVisible();
   });
 
+  it("starts at the first tab that is not disabled when no defaultValue is given", () => {
+    const items = MENU.map((item) =>
+      item.value === "all-day" ? { ...item, isDisabled: true } : item
+    );
+    render(<Tabs label="Menu sections" items={items} />);
+    expect(screen.getByRole("tab", { name: "Breakfast" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByText("The breakfast menu.")).toBeVisible();
+  });
+
   it("starts at defaultValue", () => {
     render(<Tabs label="Menu sections" items={MENU} defaultValue="bar" />);
     expect(screen.getByRole("tab", { name: "Bar" })).toHaveAttribute("aria-selected", "true");

@@ -51,6 +51,7 @@ export interface TabsProps {
   label: string;
   items: TabItem[];
   value?: string | undefined;
+  /** Default: the first tab that is not disabled. */
   defaultValue?: string | undefined;
   onValueChange?: ((value: string) => void) | undefined;
   /** `underline` (design system) or the handoff's `segmented` pill rail. */
@@ -77,7 +78,8 @@ export function Tabs({
 }: TabsProps) {
   const [selected, setSelected] = useControllableState({
     value,
-    defaultValue: defaultValue ?? items[0]?.value ?? "",
+    // A disabled tab is never the starting pick: its panel would open on a tab no one can select.
+    defaultValue: defaultValue ?? items.find((item) => item.isDisabled !== true)?.value ?? "",
     onChange: onValueChange,
   });
   const styles = tabs({ variant, isFullWidth });
