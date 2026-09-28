@@ -251,6 +251,27 @@ describe("Snackbar", () => {
       expect(trigger).toHaveFocus();
     });
 
+    it("never lets the timer close it under focus, then restores focus once it does close", async () => {
+      // `shouldAdvanceTime`: the click and focus move settle in real time; the close timer is faked.
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      const user = userEvent.setup({ delay: null });
+      render(<Opener duration={1000} />);
+      const trigger = screen.getByRole("button", { name: "Remove Chilli Paneer" });
+      await user.click(trigger);
+      const dismiss = within(messages()).getByRole("button", { name: "Dismiss" });
+      act(() => {
+        dismiss.focus();
+      });
+      // Radix pauses the timer while focus is inside the bar: it waits for the guest.
+      act(() => {
+        vi.advanceTimersByTime(5000);
+      });
+      expect(dismiss).toHaveFocus();
+      await user.keyboard("{Escape}");
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+
     it("when the parent closes it while focus is inside", () => {
       const onOpenChange = vi.fn();
       const { rerender } = render(

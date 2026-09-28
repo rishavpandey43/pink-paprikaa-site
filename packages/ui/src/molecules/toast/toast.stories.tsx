@@ -98,10 +98,13 @@ function AddToOrderDemo() {
 export const AddToOrder: Story = {
   render: () => <AddToOrderDemo />,
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole("button", { name: "Add Chilli Paneer" }));
+    const trigger = canvas.getByRole("button", { name: "Add Chilli Paneer" });
+    await userEvent.click(trigger);
     await expect(await canvas.findByText("Chilli Paneer added.")).toBeInTheDocument();
     await userEvent.click(canvas.getByRole("button", { name: "View Cart" }));
     await expect(VIEW_CART.onClick).toHaveBeenCalledTimes(1);
+    // R91: focus goes back to the trigger, not onto the empty, outlined viewport.
+    await expect(trigger).toHaveFocus();
   },
 };
 

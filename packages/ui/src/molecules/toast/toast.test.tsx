@@ -1,11 +1,12 @@
-import { act, render, screen, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Heart } from "lucide-react";
+import { useState } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
-import { Toast, ToastProvider } from "./toast";
+import { Toast, type ToastProps, ToastProvider } from "./toast";
 
 const VIEW_CART = { label: "View Cart", altText: "View your cart" } as const;
 
@@ -213,6 +214,104 @@ describe("Toast", () => {
     });
     consoleError.mockRestore();
     container.remove();
+  });
+
+  describe("hands focus back to what opened it (R91)", () => {
+    function Opener({ action, duration }: Pick<ToastProps, "action" | "duration">) {
+      const [isOpen, setIsOpen] = useState(false);
+      return (
+        <ToastProvider>
+          <button
+            type="button"
+            onClick={() => {
+              setIsOpen(true);
+            }}
+          >
+            Add Chilli Paneer
+          </button>
+          <Toast open={isOpen} onOpenChange={setIsOpen} action={action} duration={duration}>
+            Chilli Paneer added.
+          </Toast>
+          <input aria-label="Note" />
+        </ToastProvider>
+      );
+    }
+
+    async function openAndFocusAction(duration?: number) {
+      // `delay: null`: user-event never waits on a timer, so the same helper runs under fake timers.
+      const user = userEvent.setup({ delay: null });
+      render(<Opener action={{ ...VIEW_CART, onClick: vi.fn() }} duration={duration} />);
+      const trigger = screen.getByRole("button", { name: "Add Chilli Paneer" });
+      await user.click(trigger);
+      act(() => {
+        within(notifications()).getByRole("button", { name: "View Cart" }).focus();
+      });
+      return { user, trigger };
+    }
+
+    it("after its action", async () => {
+      const { user, trigger } = await openAndFocusAction();
+      await user.keyboard("{Enter}");
+      expect(within(notifications()).queryByRole("listitem")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+
+    it("after Escape", async () => {
+      const { user, trigger } = await openAndFocusAction();
+      await user.keyboard("{Escape}");
+      expect(within(notifications()).queryByRole("listitem")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+
+    it("never lets the timer close it under focus, then restores focus once it does close", async () => {
+      // `shouldAdvanceTime`: the clicks and focus moves above still settle in real time.
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      const { user, trigger } = await openAndFocusAction(1000);
+      // Radix pauses the timer while focus is inside the region: the toast waits for the guest.
+      act(() => {
+        vi.advanceTimersByTime(5000);
+      });
+      const viewCart = within(notifications()).getByRole("button", { name: "View Cart" });
+      expect(viewCart).toHaveFocus();
+      await user.keyboard("{Escape}");
+      expect(trigger).toHaveFocus();
+    });
+
+    it("when the parent closes it while focus is inside", () => {
+      function renderWith(isOpen: boolean) {
+        return (
+          <ToastProvider>
+            <button type="button">Add Chilli Paneer</button>
+            <Toast open={isOpen} action={{ ...VIEW_CART, onClick: vi.fn() }}>
+              Chilli Paneer added.
+            </Toast>
+          </ToastProvider>
+        );
+      }
+      const { rerender } = render(renderWith(false));
+      const trigger = screen.getByRole("button", { name: "Add Chilli Paneer" });
+      trigger.focus();
+      rerender(renderWith(true));
+      act(() => {
+        within(notifications()).getByRole("button", { name: "View Cart" }).focus();
+      });
+      // No Radix close path: the parent flips `open` itself.
+      rerender(renderWith(false));
+      expect(within(notifications()).queryByRole("listitem")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+
+    it("leaves focus alone when it was never inside the toast", async () => {
+      const user = userEvent.setup();
+      render(<Opener duration={20} />);
+      await user.click(screen.getByRole("button", { name: "Add Chilli Paneer" }));
+      const note = screen.getByRole("textbox", { name: "Note" });
+      note.focus();
+      await waitFor(() => {
+        expect(within(notifications()).queryByRole("listitem")).not.toBeInTheDocument();
+      });
+      expect(note).toHaveFocus();
+    });
   });
 
   it("has no accessibility violations with an action", async () => {

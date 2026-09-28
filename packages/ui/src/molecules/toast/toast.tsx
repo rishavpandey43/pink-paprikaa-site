@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 
 import { Toast as RadixToast } from "radix-ui";
+import { useRef } from "react";
 
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
@@ -12,6 +13,7 @@ import {
   type NotificationProps,
 } from "../../lib/notification";
 import { useControllableState } from "../../lib/use-controllable-state";
+import { useFocusReturn } from "../../lib/use-focus-return";
 
 /** Radix Toast's own default time on screen. */
 const TOAST_DURATION = 5000;
@@ -102,16 +104,27 @@ export function Toast({
     onChange: onOpenChange,
   });
   const styles = toast({ tone, isPop });
+  const rootRef = useRef<HTMLLIElement>(null);
+  const { returnFocus, focusProps } = useFocusReturn(isOpen);
+
+  // R91: a Radix close under focus parks focus on the provider's viewport, which outlives the
+  // toast and draws an empty focus outline. Hand it back to what had it when the toast opened.
+  function handleOpenChange(next: boolean): void {
+    if (!next && document.activeElement === rootRef.current?.parentElement) returnFocus();
+    setIsOpen(next);
+  }
 
   return (
     <RadixToast.Root
+      ref={rootRef}
       open={isOpen}
-      onOpenChange={setIsOpen}
+      onOpenChange={handleOpenChange}
       // Severity picks the politeness (dev parity): a failure interrupts, a confirmation waits.
       type={tone === "danger" ? "foreground" : "background"}
       {...(duration === undefined ? {} : { duration })}
       data-surface={NOTIFICATION_SURFACE[tone]}
       className={styles.root({ className })}
+      {...focusProps}
     >
       <Icon icon={icon ?? NOTIFICATION_ICON[tone]} size="md" />
       <RadixToast.Description className={styles.message()}>{children}</RadixToast.Description>
