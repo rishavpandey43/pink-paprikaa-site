@@ -5556,8 +5556,8 @@ import { componentVariants } from "../../lib/component-variants";
 const priceTag = componentVariants({
   slots: {
     root: "inline-flex flex-wrap items-baseline gap-2",
-    amount: "text-price-amount font-display font-bold",
-    was: "text-price-was font-body text-text-subtle",
+    amount: "font-display text-price-amount font-bold",
+    was: "font-body text-price-was text-text-subtle",
   },
   variants: {
     size: {
