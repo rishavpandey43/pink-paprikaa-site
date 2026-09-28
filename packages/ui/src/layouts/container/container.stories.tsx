@@ -100,6 +100,7 @@ export const AtDesktop: Story = {
     </Container>
   ),
   play: async ({ canvasElement }) => {
+    await expect(window.innerWidth).toBe(1280);
     const style = getComputedStyle(within(canvasElement).getByTestId("frame"));
     await expect(style.paddingLeft).toBe("40px");
     await expect(style.paddingRight).toBe("40px");
