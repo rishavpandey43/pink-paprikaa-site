@@ -14,7 +14,8 @@ const stepTracker = componentVariants({
     step: "flex min-w-0",
     marker: "relative mt-0.5 size-step-tracker-marker shrink-0",
     diamond: "absolute inset-0 grid rotate-45 place-items-center overflow-hidden rounded-xs",
-    mark: "size-step-tracker-mark -rotate-45 opacity-50",
+    // 16px: the base scale step, 74% of the 22px marker.
+    mark: "size-4 -rotate-45 opacity-50",
     check: "absolute inset-0 grid place-items-center text-step-tracker-mark-on",
     bar: "h-1.25 rounded-pill transition-colors duration-base ease-out",
     copy: "grid min-w-0",

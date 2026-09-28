@@ -96,7 +96,7 @@ describe("Accordion", () => {
     const { container } = render(<Accordion items={FAQ} />);
     const chevron = container.querySelector("summary svg.lucide-chevron-down")?.parentElement;
     expect(chevron).toHaveAttribute("aria-hidden", "true");
-    expect(chevron).toHaveClass("group-open:rotate-180");
+    expect(chevron).toHaveClass("group-open/accordion-item:rotate-180");
   });
 
   it("has no accessibility violations", async () => {

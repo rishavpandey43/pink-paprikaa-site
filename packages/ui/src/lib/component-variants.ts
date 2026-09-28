@@ -206,7 +206,6 @@ const SPACING = [
   "section-header-measure-centered",
   "accordion-answer-measure",
   "step-tracker-marker",
-  "step-tracker-mark",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

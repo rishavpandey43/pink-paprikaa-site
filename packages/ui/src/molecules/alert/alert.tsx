@@ -4,6 +4,7 @@ import { Check, CircleAlert, Info, Megaphone, TriangleAlert } from "lucide-react
 
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
 import { AlertDismiss } from "./alert-dismiss";
 
 const alert = componentVariants({
@@ -48,7 +49,11 @@ export interface AlertProps extends Omit<ComponentProps<"div">, "title"> {
   title?: ReactNode;
   /** Usually one small ghost Button. */
   action?: ReactNode;
-  /** Shows the dismiss button. */
+  /**
+   * Shows the dismiss button. The parent owns the removal, so it also owns focus: the button
+   * unmounts with the alert, so move focus somewhere sensible (the next heading, the trigger) or it
+   * drops to `<body>`.
+   */
   onDismiss?: (() => void) | undefined;
   /** Replaces the tone's glyph (the handoff's PG hint uses Building2). */
   icon?: IconComponent | undefined;
@@ -69,12 +74,16 @@ export function Alert({
   children,
   ...props
 }: AlertProps) {
-  const hasTitle = title !== undefined && title !== null;
+  const hasTitle = isShown(title);
   const styles = alert({ tone, hasTitle });
+  const role = tone === "danger" ? "alert" : "status";
 
   return (
     <div
-      role={tone === "danger" ? "alert" : "status"}
+      // A status turning into an alert mounts a fresh node: screen readers announce a role
+      // changed on an existing node unreliably (FieldMessage's `key={status}`).
+      key={role}
+      role={role}
       data-surface="light"
       className={styles.root({ className })}
       {...props}
@@ -82,12 +91,8 @@ export function Alert({
       <Icon icon={icon ?? TONE_ICON[tone]} size="md" className={styles.icon()} />
       <div className={styles.body()}>
         {hasTitle ? <p className={styles.title()}>{title}</p> : null}
-        {children === undefined || children === null ? null : (
-          <div className={styles.content()}>{children}</div>
-        )}
-        {action === undefined || action === null ? null : (
-          <div className={styles.action()}>{action}</div>
-        )}
+        {isShown(children) ? <div className={styles.content()}>{children}</div> : null}
+        {isShown(action) ? <div className={styles.action()}>{action}</div> : null}
       </div>
       {onDismiss === undefined ? null : <AlertDismiss onDismiss={onDismiss} />}
     </div>

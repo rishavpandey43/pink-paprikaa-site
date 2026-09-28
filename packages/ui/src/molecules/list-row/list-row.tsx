@@ -5,6 +5,7 @@ import { Slot } from "radix-ui";
 
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
 
 const listRow = componentVariants({
   slots: {
@@ -15,21 +16,26 @@ const listRow = componentVariants({
     title: "text-body-sm font-medium text-text-heading",
     description: "line-clamp-2 text-caption text-text-subtle",
     value: "shrink-0 text-body-sm text-text-muted",
-    chevron: "text-ink-400",
+    chevron: "text-text-subtle",
   },
   variants: {
     hasDivider: { true: { root: "border-b border-border-subtle" } },
     isDanger: { true: { icon: "text-text-danger", title: "text-text-danger" } },
     isInteractive: {
       true: {
-        // Hover tint and press feedback (dev parity) on a row rendered into a link or button.
-        row: "cursor-pointer no-underline transition-colors duration-fast ease-out hover:bg-surface-page-alt active:press-scale",
+        // Hover tint and press feedback (dev parity) on a row rendered into a link or button. The
+        // tint is the one a ghost Button uses: pink-50 on light, white at 16% on ink and brand.
+        row: "cursor-pointer no-underline transition-colors duration-fast ease-out hover:bg-button-hover-tint active:press-scale",
       },
     },
   },
   defaultVariants: { hasDivider: true, isDanger: false, isInteractive: false },
 });
 
+/**
+ * `ref`, `className` and the other `div` props land on the outer wrapper (the one that draws the
+ * divider), not on the row — with `asChild`, reach the link or button through the child's own ref.
+ */
 export interface ListRowProps extends Omit<ComponentProps<"div">, "title"> {
   title: ReactNode;
   description?: ReactNode;
@@ -81,13 +87,11 @@ export function ListRow({
               {leading ?? glyph}
               <span className={styles.body()}>
                 <span className={styles.title()}>{title}</span>
-                {description === undefined || description === null ? null : (
+                {isShown(description) ? (
                   <span className={styles.description()}>{description}</span>
-                )}
+                ) : null}
               </span>
-              {value === undefined || value === null ? null : (
-                <span className={styles.value()}>{value}</span>
-              )}
+              {isShown(value) ? <span className={styles.value()}>{value}</span> : null}
               {trailing}
               {hasChevron ? (
                 <Icon icon={ChevronRight} size="md" className={styles.chevron()} />

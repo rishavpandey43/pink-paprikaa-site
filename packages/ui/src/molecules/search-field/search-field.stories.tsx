@@ -43,6 +43,19 @@ export const WithValue: Story = {
   },
 };
 
+/** `clearLabel` names the clear button after what it clears, e.g. on the outlet finder. */
+export const ClearLabel: Story = {
+  args: {
+    label: "Search outlets",
+    placeholder: "Search Sector 57, MKM Market…",
+    defaultValue: "Sector 57",
+    clearLabel: "Clear outlet search",
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("button", { name: "Clear outlet search" })).toBeVisible();
+  },
+};
+
 /** Card row "loading" — `isLoading`. */
 export const Loading: Story = { args: { defaultValue: "kulfi", isLoading: true } };
 

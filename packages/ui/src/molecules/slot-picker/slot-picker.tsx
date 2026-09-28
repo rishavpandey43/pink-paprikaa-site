@@ -69,6 +69,7 @@ export interface SlotPickerProps extends Omit<
   onValueChange?: ((value: string) => void) | undefined;
   /** Fixed column count; omit to auto-fit at a 96px minimum. */
   columns?: keyof typeof COLUMN_CLASS | undefined;
+  /** Border and glyph colour. A status needs a `message`: never a colour without words. */
   status?: FieldStatus | undefined;
   /**
    * The line under the slots: on the default status a neutral hint ("Slots open 30 minutes

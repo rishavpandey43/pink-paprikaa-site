@@ -119,6 +119,37 @@ export const FullWidth: Story = {
   },
 };
 
+/** `isFullWidth` at 320px: a long label wraps inside its equal share instead of spilling out. */
+export const FullWidthLongLabels: Story = {
+  args: {
+    label: "This week's menu",
+    isFullWidth: true,
+    items: [
+      {
+        value: "classic",
+        label: "Classic & Signature thalis",
+        content: panel("The classic week."),
+      },
+      { value: "everyday", label: "Everyday comfort plates", content: panel("The everyday week.") },
+      { value: "festive", label: "Festive specials", content: panel("The festive week.") },
+    ],
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-80">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvas }) => {
+    const list = canvas.getByRole("tablist");
+    await expect(list.scrollWidth).toBeLessThanOrEqual(list.clientWidth);
+    for (const tab of canvas.getAllByRole("tab")) {
+      await expect(tab.scrollWidth).toBeLessThanOrEqual(tab.clientWidth);
+    }
+  },
+};
+
 /** Dev parity: a glyph before each label — pass it inside the ReactNode `label`. */
 export const WithIcons: Story = {
   args: {

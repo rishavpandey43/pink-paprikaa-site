@@ -56,6 +56,7 @@ export interface OtpInputProps {
   defaultValue?: string | undefined;
   onValueChange?: ((value: string) => void) | undefined;
   onBlur?: (() => void) | undefined;
+  /** Border and glyph colour. A status needs a `message`: never a colour without words. */
   status?: FieldStatus | undefined;
   /**
    * The line under the cells: on the default status a neutral hint ("The code lasts 10

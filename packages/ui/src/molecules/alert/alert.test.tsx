@@ -69,9 +69,20 @@ describe("Alert", () => {
     expect(screen.getByRole("button", { name: "See the Menu" })).toBeInTheDocument();
   });
 
-  it("draws no action wrapper for a null action", () => {
-    render(<Alert action={null}>Doors open Friday, 8am.</Alert>);
-    expect(screen.getByRole("status").querySelector(".mt-2\\.5")).toBeNull();
+  it.each([null, false, ""])("draws no action wrapper for a %j action", (action) => {
+    render(<Alert action={action}>Doors open Friday, 8am.</Alert>);
+    // The body holds the content and nothing after it.
+    const content = screen.getByText("Doors open Friday, 8am.");
+    expect(content.parentElement?.children).toHaveLength(1);
+  });
+
+  it("mounts a fresh node when a status turns into an alert", () => {
+    const { rerender } = render(<Alert tone="warning">Card machine is slow today.</Alert>);
+    const status = screen.getByRole("status");
+    rerender(<Alert tone="danger">Card machine is down. Pay by UPI.</Alert>);
+    const alert = screen.getByRole("alert");
+    expect(alert).not.toBe(status);
+    expect(status).not.toBeInTheDocument();
   });
 
   it("offers a dismiss button only when onDismiss is given", async () => {

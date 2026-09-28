@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Icon } from "../atoms/icon/icon";
 import { componentVariants } from "./component-variants";
 import { FIELD_STATUS_ICON, type FieldStatus } from "./field-status";
+import { isShown } from "./is-shown";
 
 const fieldMessage = componentVariants({
   base: "m-0 flex min-w-0 items-start gap-1.5 text-caption",
@@ -27,10 +28,6 @@ export interface FieldMessageProps extends FieldMessageContent {
   /** The id the control lists in `aria-describedby`. */
   id: string;
   className?: string | undefined;
-}
-
-function isShown(node: ReactNode): boolean {
-  return node !== undefined && node !== null && node !== false && node !== "";
 }
 
 /** True when `FieldMessage` renders a line — a control references its id only then. */

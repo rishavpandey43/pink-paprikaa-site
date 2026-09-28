@@ -29,9 +29,15 @@ const tabs = componentVariants({
           "min-h-hit rounded-pill px-4 py-2.5 text-body-sm text-tabs-segmented-fg not-disabled:hover:bg-surface-page-alt aria-selected:bg-surface-brand aria-selected:text-text-on-brand aria-selected:not-disabled:hover:bg-brand-hover",
       },
     },
-    /** Equal shares across the row (dev parity, R39): the tabs shrink rather than wrap. */
+    /**
+     * Equal shares across the row (dev parity, R39): the tabs shrink rather than the rail
+     * wrapping, and a label too long for its share wraps inside it rather than spilling out.
+     */
     isFullWidth: {
-      true: { list: "flex-nowrap justify-self-stretch", trigger: "min-w-0 flex-1 shrink" },
+      true: {
+        list: "flex-nowrap justify-self-stretch",
+        trigger: "min-w-0 flex-1 shrink text-center whitespace-normal",
+      },
     },
   },
   compoundVariants: [{ variant: "underline", isFullWidth: true, class: { list: "gap-x-0" } }],

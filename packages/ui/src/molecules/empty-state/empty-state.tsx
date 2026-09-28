@@ -6,6 +6,7 @@ import { createElement } from "react";
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
 import { SymbolMark } from "../../lib/symbol-mark";
 
 const emptyState = componentVariants({
@@ -70,10 +71,8 @@ export function EmptyState({
       {/* createElement, not `const Heading = headingTag(…)`: the React Compiler lint reads a
           capitalised call result as a component created during render. */}
       {createElement(headingTag(headingLevel), { className: styles.title() }, title)}
-      {body === undefined || body === null ? null : <p className={styles.body()}>{body}</p>}
-      {action === undefined || action === null ? null : (
-        <div className={styles.action()}>{action}</div>
-      )}
+      {isShown(body) ? <p className={styles.body()}>{body}</p> : null}
+      {isShown(action) ? <div className={styles.action()}>{action}</div> : null}
     </div>
   );
 }

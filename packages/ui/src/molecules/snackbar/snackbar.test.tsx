@@ -126,11 +126,23 @@ describe("Snackbar", () => {
     expect(screen.queryByRole("region")).not.toBeInTheDocument();
   });
 
-  it("follows a downward swipe and closes past the threshold", () => {
+  it("follows a downward swipe and closes past the threshold, handing focus back", () => {
     const onOpenChange = vi.fn();
-    render(<Snackbar onOpenChange={onOpenChange}>Code copied.</Snackbar>);
+    const { rerender } = render(<button type="button">Copy PAPRIKAA50</button>);
+    const trigger = screen.getByRole("button", { name: "Copy PAPRIKAA50" });
+    trigger.focus();
+    rerender(
+      <>
+        <button type="button">Copy PAPRIKAA50</button>
+        <Snackbar onOpenChange={onOpenChange}>Code copied.</Snackbar>
+      </>
+    );
     const bar = within(messages()).getByRole("listitem");
     expect(bar).toHaveClass("toast-swipe-y");
+    // A swipe is a touch on the focused bar: the close must not strand focus (R82).
+    act(() => {
+      bar.focus();
+    });
     fireEvent.pointerDown(bar, { button: 0, clientX: 0, clientY: 0 });
     fireEvent.pointerMove(bar, { clientX: 0, clientY: 20 });
     fireEvent.pointerMove(bar, { clientX: 0, clientY: 60 });
@@ -139,6 +151,7 @@ describe("Snackbar", () => {
     fireEvent.pointerUp(bar, { clientX: 0, clientY: 60 });
     expect(onOpenChange).toHaveBeenCalledWith(false);
     expect(screen.queryByRole("region")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
   });
 
   it("closes on Escape and reports it", async () => {

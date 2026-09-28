@@ -13,7 +13,7 @@ const CHECKOUT: TrackerStep[] = [
   { label: "Cart" },
   { label: "Details" },
   { label: "Pay" },
-  { label: "Done" },
+  { label: "Confirmed" },
 ];
 
 function states(): (string | null)[] {

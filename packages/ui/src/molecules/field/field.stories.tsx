@@ -5,6 +5,7 @@ import { expect } from "storybook/test";
 
 import { Input } from "../../atoms/input/input";
 import { Select } from "../../atoms/select/select";
+import { paint } from "../../lib/story-paint";
 import { Field } from "./field";
 
 const HEAT_LEVELS = [
@@ -146,10 +147,12 @@ export const ControlModes: Story = {
       </Field>
     </div>
   ),
-  // Only the disabled control mutes its label; read-only and loading keep theirs.
+  // Only the disabled control mutes its label, to text-subtle; read-only and loading keep theirs.
   play: async ({ canvas }) => {
     const resting = labelColour(canvas.getByText("Outlet"));
     await expect(labelColour(canvas.getByText("Promo code"))).toBe(resting);
-    await expect(labelColour(canvas.getByText("Table size"))).not.toBe(resting);
+    const muted = canvas.getByText("Table size");
+    await expect(labelColour(muted)).not.toBe(resting);
+    await expect(labelColour(muted)).toBe(paint(muted, "color", "--color-text-subtle"));
   },
 };

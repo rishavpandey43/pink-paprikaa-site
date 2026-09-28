@@ -16,7 +16,7 @@ const CHECKOUT: TrackerStep[] = [
   { label: "Cart" },
   { label: "Details" },
   { label: "Pay" },
-  { label: "Done" },
+  { label: "Confirmed" },
 ];
 
 const meta = {

@@ -114,6 +114,11 @@ describe("SearchField", () => {
     expect(screen.getByRole("searchbox")).toHaveAttribute("aria-invalid", "true");
   });
 
+  it("keeps a caller's own aria-invalid at the default status", () => {
+    render(<SearchField label="Search the menu" aria-invalid="true" />);
+    expect(screen.getByRole("searchbox")).toHaveAttribute("aria-invalid", "true");
+  });
+
   it("keeps a caller's own aria-describedby beside the hint", () => {
     render(
       <>

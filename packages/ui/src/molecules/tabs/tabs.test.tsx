@@ -139,7 +139,10 @@ describe("Tabs", () => {
 
   it("shares the row equally between its tabs when full width", () => {
     render(<Tabs label="Menu sections" items={MENU} variant="segmented" isFullWidth />);
-    for (const tab of screen.getAllByRole("tab")) expect(tab).toHaveClass("flex-1");
+    for (const tab of screen.getAllByRole("tab")) {
+      expect(tab).toHaveClass("flex-1", "whitespace-normal");
+      expect(tab).not.toHaveClass("whitespace-nowrap");
+    }
   });
 
   it("merges a caller className over its own gap", () => {

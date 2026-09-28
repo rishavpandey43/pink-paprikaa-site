@@ -4,6 +4,7 @@ import { formatRupees } from "@pink-paprikaa-web/utils";
 
 import { PriceTag } from "../../atoms/price-tag/price-tag";
 import { componentVariants } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
 
 const priceSummary = componentVariants({
   slots: {
@@ -78,7 +79,7 @@ export function PriceSummary({
           </dd>
         </div>
       </dl>
-      {note === undefined || note === null ? null : <p className={styles.note()}>{note}</p>}
+      {isShown(note) ? <p className={styles.note()}>{note}</p> : null}
     </div>
   );
 }

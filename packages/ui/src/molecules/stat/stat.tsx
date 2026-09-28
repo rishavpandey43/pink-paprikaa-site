@@ -2,6 +2,7 @@ import type { ComponentProps, ReactNode } from "react";
 
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
 
 const stat = componentVariants({
   slots: {
@@ -54,7 +55,7 @@ export function Stat({
       {icon === undefined ? null : <Icon icon={icon} size="lg" className={styles.icon()} />}
       <span className={styles.value()}>{value}</span>
       <span className={styles.label()}>{label}</span>
-      {sub === undefined || sub === null ? null : <span className={styles.sub()}>{sub}</span>}
+      {isShown(sub) ? <span className={styles.sub()}>{sub}</span> : null}
     </div>
   );
 }

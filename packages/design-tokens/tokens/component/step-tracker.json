@@ -9,15 +9,6 @@
           "utility": ["size"]
         }
       }
-    },
-    "step-tracker-mark": {
-      "$value": "16px",
-      "$description": "The brand mark inside a marker (74% of the marker).",
-      "$extensions": {
-        "pink-paprikaa": {
-          "utility": ["size"]
-        }
-      }
     }
   },
   "color": {

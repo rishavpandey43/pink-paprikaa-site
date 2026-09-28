@@ -33,7 +33,11 @@ export interface QuantityStepperProps {
   defaultValue?: number | undefined;
   onValueChange?: ((value: number) => void) | undefined;
   onBlur?: (() => void) | undefined;
-  /** Lowest value (default 0 — reaching it removes a cart line; use 1 where it should not). */
+  /**
+   * Lowest value (default 0 — reaching it removes a cart line; use 1 where it should not). The
+   * parent owns that removal, so it also owns focus: the stepper unmounts with the line, so move
+   * focus to the next line or the cart heading, or it drops to `<body>`.
+   */
   min?: number | undefined;
   max?: number | undefined;
   step?: number | undefined;

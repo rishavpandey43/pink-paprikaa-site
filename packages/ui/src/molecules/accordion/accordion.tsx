@@ -9,11 +9,11 @@ import { componentVariants } from "../../lib/component-variants";
 const accordion = componentVariants({
   slots: {
     root: "border-t border-border-subtle",
-    item: "group details-content-motion border-b border-border-subtle",
+    item: "group/accordion-item details-content-motion border-b border-border-subtle",
     summary:
-      "flex cursor-pointer list-none items-center justify-between gap-4 py-4.5 font-display text-accordion-question text-text-heading transition-colors duration-fast ease-out group-open:text-text-brand hover:text-text-brand",
+      "flex cursor-pointer list-none items-center justify-between gap-4 py-4.5 font-display text-accordion-question text-text-heading transition-colors duration-fast ease-out group-open/accordion-item:text-text-brand hover:text-text-brand",
     question: "min-w-0",
-    chevron: "transition-transform duration-base ease-out group-open:rotate-180",
+    chevron: "transition-transform duration-base ease-out group-open/accordion-item:rotate-180",
     answer:
       "max-w-accordion-answer-measure pb-4.5 text-accordion-answer text-pretty text-text-muted",
   },
@@ -30,7 +30,11 @@ export interface AccordionProps extends ComponentProps<"div"> {
   items: AccordionItem[];
   /** Let several answers stay open at once. */
   isMultiple?: boolean | undefined;
-  /** Items open on load (default: the first). */
+  /**
+   * Items open on load (default: the first). The `<details>` own their open state after that, but
+   * `defaultOpen` is not read only once: changing it re-applies it, so an item added to or removed
+   * from the list opens or closes again, whatever the guest did with it.
+   */
   defaultOpen?: string[] | undefined;
   /** The single-open group's name (default: generated). Two accordions never share one. */
   name?: string | undefined;

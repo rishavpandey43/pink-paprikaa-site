@@ -42,7 +42,10 @@ export interface SearchFieldProps extends Omit<
   /** Called after the clear button empties the box. */
   onClear?: (() => void) | undefined;
   size?: "sm" | "md" | undefined;
-  /** Border and glyph colour; the hint becomes the status message. */
+  /**
+   * Border and glyph colour; the hint becomes the status message. A status needs a `hint`: never
+   * a colour without words.
+   */
   status?: FieldStatus | undefined;
   /** Pulses the brand mark while results load (hides the clear button). */
   isLoading?: boolean | undefined;
@@ -126,7 +129,8 @@ export function SearchField({
             readOnly={readOnly}
             aria-label={label}
             aria-describedby={joinIds(describedBy, hasMessage ? messageId : undefined)}
-            aria-invalid={status === "error" ? true : undefined}
+            // A caller's own aria-invalid (spread above) survives the default status.
+            aria-invalid={status === "error" ? true : props["aria-invalid"]}
             aria-busy={isLoading ? true : undefined}
             className={styles.input({ className: controlClassName })}
           />

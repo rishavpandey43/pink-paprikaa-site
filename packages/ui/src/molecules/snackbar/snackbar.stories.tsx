@@ -127,7 +127,10 @@ export const ClosedByParent: Story = {
   play: async ({ canvas, userEvent }) => {
     const opener = canvas.getByRole("button", { name: "Save address" });
     await userEvent.click(opener);
-    (await canvas.findByRole("button", { name: "Dismiss" })).focus();
+    const dismiss = await canvas.findByRole("button", { name: "Dismiss" });
+    dismiss.focus();
+    // The parent's close must find focus inside the bar, or this play proves nothing.
+    await expect(dismiss).toHaveFocus();
     await waitFor(async () => {
       await expect(canvas.queryByText("Address saved.")).toBeNull();
     });

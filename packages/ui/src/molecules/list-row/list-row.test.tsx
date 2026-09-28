@@ -72,7 +72,7 @@ describe("ListRow", () => {
     );
     const link = screen.getByRole("link", { name: /Default outlet/ });
     expect(link).toHaveAttribute("href", "/account/outlet");
-    expect(link).toHaveClass("min-h-hit", "hover:bg-surface-page-alt");
+    expect(link).toHaveClass("min-h-hit", "hover:bg-button-hover-tint");
     expect(link).toHaveTextContent("Default outletSector 57");
   });
 

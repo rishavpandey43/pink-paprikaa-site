@@ -4,6 +4,7 @@ import { createElement } from "react";
 
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
 
 const sectionHeader = componentVariants({
   slots: {
@@ -26,10 +27,6 @@ const sectionHeader = componentVariants({
   },
   defaultVariants: { align: "start", hasOverline: false },
 });
-
-function isShown(node: ReactNode): boolean {
-  return node !== undefined && node !== null && node !== false;
-}
 
 export interface SectionHeaderProps extends Omit<ComponentProps<"div">, "title"> {
   /** Uppercase eyebrow. */

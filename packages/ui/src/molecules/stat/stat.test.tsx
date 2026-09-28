@@ -15,6 +15,12 @@ describe("Stat", () => {
     expect(screen.getByText("18")).toHaveClass("text-stat-value");
   });
 
+  it.each([false, "", null])("draws no sub line for a %j sub", (sub) => {
+    const { container } = render(<Stat value="18" label="spices ground in-house" sub={sub} />);
+    // The value and the label, nothing after them.
+    expect(container.firstElementChild?.children).toHaveLength(2);
+  });
+
   it.each([
     ["ink", "text-text-heading"],
     ["brand", "text-text-brand"],

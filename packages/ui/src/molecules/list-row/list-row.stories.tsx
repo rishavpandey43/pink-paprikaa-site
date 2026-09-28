@@ -110,6 +110,14 @@ export const AccountList: Story = {
       </ListRow>
     </div>
   ),
+  // Real layout: the flex row blockifies title and value, so Chromium names the link with a space
+  // between them (jsdom, without layout, runs them together).
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("link", { name: "Default outlet Sector 57" })).toHaveAttribute(
+      "href",
+      "#outlet"
+    );
+  },
 };
 
 /** Dev parity: at 360px the description clamps and the value keeps its place. */

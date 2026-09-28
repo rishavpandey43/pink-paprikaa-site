@@ -48,6 +48,7 @@ export { Stack, type StackProps } from "./layouts/stack/stack";
 export type { FieldStatus } from "./lib/field-status";
 export { type HeadingLevel, headingTag } from "./lib/heading";
 export type { LinkAs, LinkAsProps } from "./lib/link-as";
+export type { NotificationAction, NotificationTone } from "./lib/notification";
 export { RevealObserver, type RevealObserverProps } from "./lib/reveal-observer";
 export { GAP_CLASS, type SpaceStep } from "./lib/space";
 export {
