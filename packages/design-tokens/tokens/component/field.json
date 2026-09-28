@@ -17,8 +17,8 @@
       "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
     },
     "field-select-min": {
-      "$value": "160px",
-      "$description": "A Select's intrinsic minimum width (R90): its native select overlays the box, so a content-sized parent would otherwise shrink it to the chevron and clip the placeholder.",
+      "$value": "128px",
+      "$description": "A Select's intrinsic minimum width (R90, R95): its native select overlays the box, so a content-sized parent would otherwise shrink it to the chevron and clip the placeholder. 128px = a short placeholder plus the chrome, and still fits a two-up row at the 360px floor (~158px a column).",
       "$extensions": { "pink-paprikaa": { "utility": ["min-w"] } }
     },
     "field-spinner": {

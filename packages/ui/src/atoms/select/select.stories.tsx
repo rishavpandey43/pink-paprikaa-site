@@ -161,6 +161,33 @@ export const LongLabelAt360: Story = {
   },
 };
 
+/**
+ * R95: two Selects side by side at the 360px floor — a 328px content box (16px gutters) with a
+ * 12px gap leaves 158px a column; the intrinsic minimum must fit it, or the pair overflows the phone.
+ */
+export const TwoUpAt360: Story = {
+  name: "two up at 360px",
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  render: () => (
+    <div data-testid="frame" className="grid w-82 grid-cols-2 gap-3">
+      <Select aria-label="Guests" placeholder="Guests" options={GUESTS} />
+      <Select aria-label="Time" placeholder="Time" options={SLOTS} />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    const frame = canvas.getByTestId("frame");
+    const guests = canvas.getByRole("combobox", { name: "Guests" }).parentElement;
+    const time = canvas.getByRole("combobox", { name: "Time" }).parentElement;
+    await expect(frame.scrollWidth).toBeLessThanOrEqual(frame.clientWidth);
+    await expect(guests?.getBoundingClientRect().right).toBeLessThanOrEqual(
+      time?.getBoundingClientRect().left ?? 0
+    );
+    await expect(time?.getBoundingClientRect().right).toBeLessThanOrEqual(
+      frame.getBoundingClientRect().right
+    );
+  },
+};
+
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
