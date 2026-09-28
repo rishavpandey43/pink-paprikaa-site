@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { expect } from "storybook/test";
+
 import { Pagination } from "./pagination";
 
 const meta = {
@@ -20,7 +22,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /** Card row "many pages". */
-export const Playground: Story = {};
+export const Playground: Story = {
+  // The names in a real browser, with real CSS on the sr-only text (jsdom proves only its own).
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("link", { name: "Page 5" })).toHaveAttribute("href", "#page-5");
+    await expect(canvas.getByRole("link", { name: "Previous page" })).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "Next page" })).toBeVisible();
+  },
+};
 
 /** Card row "first page". */
 export const FirstPage: Story = { args: { page: 1, pages: 5 } };
