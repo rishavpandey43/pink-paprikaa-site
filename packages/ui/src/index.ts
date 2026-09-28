@@ -72,6 +72,7 @@ export {
   type MenuItemRowProps,
 } from "./molecules/menu-item-row/menu-item-row";
 export { OtpInput, type OtpInputProps } from "./molecules/otp-input/otp-input";
+export { OutletCard, type OutletCardProps } from "./molecules/outlet-card/outlet-card";
 export { Pagination, type PaginationProps } from "./molecules/pagination/pagination";
 export {
   type PriceLine,
