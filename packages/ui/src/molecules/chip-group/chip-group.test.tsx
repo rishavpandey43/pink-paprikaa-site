@@ -284,6 +284,18 @@ describe("ChipGroup", () => {
         defaultValue={["chilli-potato", "veg-manchurian"]}
       />,
     ],
+    [
+      "multiple with an error",
+      <ChipGroup
+        key="multiple-error"
+        type="multiple"
+        label="Starters"
+        options={STARTERS}
+        maxSelected={2}
+        status="error"
+        message="Pick at least one starter."
+      />,
+    ],
   ])("has no accessibility violations (%s)", async (_, element) => {
     const { container } = render(element);
     await expectNoA11yViolations(container);
