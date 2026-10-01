@@ -58,6 +58,10 @@ export {
 } from "./molecules/accordion/accordion";
 export { Alert, type AlertProps } from "./molecules/alert/alert";
 export {
+  AnnouncementBar,
+  type AnnouncementBarProps,
+} from "./molecules/announcement-bar/announcement-bar";
+export {
   Breadcrumb,
   type BreadcrumbItem,
   type BreadcrumbProps,
