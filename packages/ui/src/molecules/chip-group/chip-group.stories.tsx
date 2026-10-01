@@ -5,7 +5,7 @@ import { expect } from "storybook/test";
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
 import { OnSurfaces } from "../../lib/story-surfaces";
-import { ChipGroup } from "./chip-group";
+import { ChipGroup, type MultipleChipGroupProps, type SingleChipGroupProps } from "./chip-group";
 
 /** PlanCalculator "6. Standing add-ons" (`rates.js` → homely.addons). */
 const ADD_ONS = [
@@ -69,7 +69,8 @@ const meta = {
 export default meta;
 // Plain `StoryObj`, not `StoryObj<typeof meta>`: Storybook intersects ChipGroup's union of props
 // (single | multiple) with the meta's args and collapses every story to `never`. So the renders
-// below pass their props explicitly instead of spreading untyped args.
+// below either pass their props explicitly or cast the args, and each story's args are checked with
+// `satisfies Partial<…ChipGroupProps>`.
 type Story = StoryObj;
 
 export const Playground: Story = {};
@@ -128,7 +129,7 @@ export const StandingAddOns: Story = {
       value,
       label: `${name} +${formatRupees(price)}`,
     })),
-  },
+  } satisfies Partial<MultipleChipGroupProps>,
 };
 
 /** DawatCalculator starter picks — any 3, the rest unavailable once 3 are chosen. */
@@ -142,7 +143,7 @@ export const StarterPicks: Story = {
     options: VEG_STARTERS,
     getLimitMessage: (selected: number, max: number) =>
       `Pick ${String(max)} · ${String(selected)} picked`,
-  },
+  } satisfies Partial<MultipleChipGroupProps>,
   play: async ({ canvas, userEvent }) => {
     for (const name of ["Chilli Potato", "Veg Manchurian", "Veg Spring Roll"]) {
       await userEvent.click(canvas.getByRole("button", { name }));
@@ -168,7 +169,7 @@ export const Segmented: Story = {
       { value: "one", label: "Lunch or dinner" },
       { value: "both", label: "Lunch + dinner" },
     ],
-  },
+  } satisfies Partial<SingleChipGroupProps>,
 };
 
 /** R101: an error is said in words (announced), and every chip's border reddens. */
@@ -177,7 +178,7 @@ export const WithError: Story = {
     defaultValue: undefined,
     status: "error",
     message: "Choose the meals you want.",
-  },
+  } satisfies Partial<SingleChipGroupProps>,
   play: async ({ canvas }) => {
     const group = canvas.getByRole("radiogroup", { name: "Which meals" });
     await expect(group).toHaveAttribute("aria-invalid", "true");
@@ -205,17 +206,12 @@ export const OnInk: Story = {
 
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
-  render: () => (
+  render: (args) => (
     <OnSurfaces>
       <div className="grid min-w-0 flex-1 gap-3">
-        <ChipGroup type="single" label="Which meals" defaultValue="lunch" options={MEALS} />
-        <ChipGroup
-          type="single"
-          variant="segmented"
-          label="Meals per day"
-          defaultValue="lunch"
-          options={MEALS}
-        />
+        {/* The meta's args are a single group's (type "single", label, options, defaultValue). */}
+        <ChipGroup {...(args as SingleChipGroupProps)} />
+        <ChipGroup {...(args as SingleChipGroupProps)} variant="segmented" />
       </div>
     </OnSurfaces>
   ),
