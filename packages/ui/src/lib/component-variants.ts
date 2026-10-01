@@ -102,6 +102,7 @@ const TEXT = [
   "pricing-card-price",
   "link-card-title",
   "link-card-title-lg",
+  "sticky-action-bar-amount",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];

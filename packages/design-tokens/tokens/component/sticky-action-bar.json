@@ -1,0 +1,9 @@
+{
+  "text": {
+    "$type": "typography",
+    "sticky-action-bar-amount": {
+      "$value": { "fontSize": "18px", "lineHeight": 1.2, "fontWeight": "{font-weight.black}" },
+      "$description": "The running total in the calculators' sticky pill."
+    }
+  }
+}

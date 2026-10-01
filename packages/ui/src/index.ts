@@ -130,6 +130,10 @@ export {
   type TrackerStep,
 } from "./molecules/step-tracker/step-tracker";
 export { Steps, type StepsItem, type StepsProps } from "./molecules/steps/steps";
+export {
+  StickyActionBar,
+  type StickyActionBarProps,
+} from "./molecules/sticky-action-bar/sticky-action-bar";
 export { type TabItem, Tabs, type TabsProps } from "./molecules/tabs/tabs";
 export {
   Toast,
