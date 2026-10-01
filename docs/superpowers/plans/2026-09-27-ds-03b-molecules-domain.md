@@ -9027,7 +9027,7 @@ const tableHeaderCell = componentVariants({
   base: "px-3 first:pl-5 last:pr-5",
   variants: {
     isRowHeader: {
-      false: "text-table-head py-3.5 align-bottom font-display text-text-heading",
+      false: "py-3.5 align-bottom font-display text-table-head text-text-heading",
       true: "py-3 align-top font-display font-bold text-text-heading",
     },
     isHighlighted: { true: "", false: "" },
