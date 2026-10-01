@@ -257,6 +257,15 @@ describe("ChipGroup", () => {
     expect(group).not.toHaveAttribute("aria-describedby");
   });
 
+  it("never lets a caller's aria-invalid redden the chips without words", () => {
+    // Not in the props type; the cast stands in for an untyped spread (e.g. a form library's).
+    const callerInvalid = { "aria-invalid": true } as object;
+    const { container } = render(
+      <ChipGroup type="multiple" label="Starters" options={STARTERS} {...callerInvalid} />
+    );
+    expect(container.querySelector("[aria-invalid]")).toBeNull();
+  });
+
   it("keeps its limit line alongside a message and a caller's description (R102)", () => {
     render(
       <>
