@@ -8293,7 +8293,7 @@ const stickyActionBar = componentVariants({
   slots: {
     root: "sticky bottom-dock-clearance z-raised mt-3 flex items-center justify-between gap-3 rounded-pill bg-surface-inverse py-2 pr-2 pl-5 text-text-body shadow-4",
     summary: "flex min-w-0 flex-col",
-    amount: "text-sticky-action-bar-amount font-display text-text-heading",
+    amount: "font-display text-sticky-action-bar-amount text-text-heading",
     caption: "truncate text-caption text-text-muted",
     action: "shrink-0",
   },
