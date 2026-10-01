@@ -30,6 +30,17 @@ describe("PricingCard", () => {
     expect(container.querySelector("s")).toHaveTextContent("was ₹140");
   });
 
+  it.each([130, 120])(
+    "refuses a struck price (%i) that is not above the price, like PriceTag",
+    (was) => {
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      expect(() =>
+        render(<PricingCard {...CLASSIC} points={[...CLASSIC.points]} was={was} />)
+      ).toThrow(RangeError);
+      vi.restoreAllMocks();
+    }
+  );
+
   it("lists what the plate includes, each with a tick", () => {
     render(<PricingCard {...CLASSIC} points={[...CLASSIC.points]} />);
     const items = screen.getAllByRole("listitem");

@@ -54,6 +54,7 @@ export interface PricingCardProps extends Omit<ComponentProps<"article">, "title
   price: number;
   /** "a meal", "a head", "/head". */
   unit: string;
+  /** The struck regular price; must be above `price` (`RangeError` otherwise, like PriceTag). */
   was?: number | undefined;
   blurb?: ReactNode | undefined;
   /** What the plate includes; each gets a tick. */
@@ -84,6 +85,11 @@ export function PricingCard({
   className,
   ...props
 }: PricingCardProps) {
+  if (was !== undefined && was <= price) {
+    throw new RangeError(
+      `PricingCard: was (${String(was)}) must be more than the price it strikes through (${String(price)})`
+    );
+  }
   const styles = pricingCard({ variant });
 
   return (
