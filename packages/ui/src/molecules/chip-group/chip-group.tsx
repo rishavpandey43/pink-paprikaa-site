@@ -112,8 +112,15 @@ function blurLeavingGroup(onBlur: () => void) {
   };
 }
 
-function HiddenValues({ name, values }: { name: string | undefined; values: readonly string[] }) {
-  if (name === undefined) return null;
+interface HiddenValuesProps {
+  name: string | undefined;
+  values: readonly string[];
+  isDisabled: boolean;
+}
+
+/** Native disabled controls do not submit, so a disabled group renders no hidden inputs either. */
+function HiddenValues({ name, values, isDisabled }: HiddenValuesProps) {
+  if (name === undefined || isDisabled) return null;
   return values.map((item) => <input key={item} type="hidden" name={name} value={item} />);
 }
 
@@ -193,7 +200,7 @@ function SingleChipGroup({
         <ChipItems options={options} selected={values} variant={variant} />
       </ToggleGroup.Root>
       <FieldMessage id={messageId} status={status} message={message} />
-      <HiddenValues name={name} values={values} />
+      <HiddenValues name={name} values={values} isDisabled={disabled} />
     </div>
   );
 }
@@ -270,7 +277,7 @@ function MultipleChipGroup({
         />
       </ToggleGroup.Root>
       <FieldMessage id={messageId} status={status} message={message} />
-      <HiddenValues name={name} values={selected} />
+      <HiddenValues name={name} values={selected} isDisabled={disabled} />
     </div>
   );
 }

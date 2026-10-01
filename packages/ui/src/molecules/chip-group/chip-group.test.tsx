@@ -170,6 +170,20 @@ describe("ChipGroup", () => {
     expect(values).toEqual(["chilli-potato", "veg-manchurian"]);
   });
 
+  it("submits nothing while disabled, like a native disabled control", () => {
+    const { container } = render(
+      <ChipGroup
+        type="multiple"
+        label="Starters"
+        name="starters"
+        options={STARTERS}
+        defaultValue={["chilli-potato"]}
+        disabled
+      />
+    );
+    expect(container.querySelector('input[type="hidden"]')).toBeNull();
+  });
+
   it("reports blur only when focus leaves the whole group", async () => {
     const user = userEvent.setup();
     const onBlur = vi.fn();
