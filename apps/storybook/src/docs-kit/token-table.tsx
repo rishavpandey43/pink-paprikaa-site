@@ -1,6 +1,16 @@
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+} from "@pink-paprikaa-web/ui";
+
 import { formatValue, selectTokens, type TokenSelection, utilitiesOf } from "./catalogue";
 import { CopyButton, CopyScope } from "./copy";
-import { DocCell, DocTable } from "./doc-table";
+
+const HEADERS = ["Token", "Value", "References", "Use"] as const;
 
 export interface TokenTableProps {
   /** Visible caption and the table's accessible name. */
@@ -14,28 +24,34 @@ export interface TokenTableProps {
  */
 export function TokenTable({ caption, selection }: TokenTableProps) {
   return (
-    <DocTable
-      caption={caption}
-      headers={["Token", "Value", "References", "Use"]}
-      minWidth="article"
-    >
-      {selectTokens(selection).map((entry) => (
-        <tr key={`${entry.surface ?? "base"}:${entry.name}`}>
-          <DocCell>
-            <CopyScope className="flex min-w-0 flex-col items-start">
-              <CopyButton text={entry.cssVar} className="text-text-heading" />
-              {utilitiesOf(entry.name).map((utility) => (
-                <CopyButton key={utility} text={utility} />
-              ))}
-            </CopyScope>
-          </DocCell>
-          <DocCell className="font-mono text-mono">{formatValue(entry.value)}</DocCell>
-          <DocCell className="font-mono text-mono text-text-muted">
-            {entry.reference ?? "—"}
-          </DocCell>
-          <DocCell className="text-body-sm text-text-muted">{entry.description}</DocCell>
-        </tr>
-      ))}
-    </DocTable>
+    // DocTable's `minWidth="article"` (760px) maps to Table's `md` (620px).
+    <Table caption={caption} isCaptionVisible minWidth="md">
+      <TableHead>
+        <TableRow>
+          {HEADERS.map((header) => (
+            <TableHeaderCell key={header}>{header}</TableHeaderCell>
+          ))}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {selectTokens(selection).map((entry) => (
+          <TableRow key={`${entry.surface ?? "base"}:${entry.name}`}>
+            <TableCell>
+              <CopyScope className="flex min-w-0 flex-col items-start">
+                <CopyButton text={entry.cssVar} className="text-text-heading" />
+                {utilitiesOf(entry.name).map((utility) => (
+                  <CopyButton key={utility} text={utility} />
+                ))}
+              </CopyScope>
+            </TableCell>
+            <TableCell className="font-mono text-mono">{formatValue(entry.value)}</TableCell>
+            <TableCell className="font-mono text-mono text-text-muted">
+              {entry.reference ?? "—"}
+            </TableCell>
+            <TableCell className="text-body-sm text-text-muted">{entry.description}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }

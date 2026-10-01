@@ -5,10 +5,20 @@ import {
   evaluateContrastPolicy,
 } from "@pink-paprikaa-web/design-tokens/contrast";
 import pairs from "@pink-paprikaa-web/design-tokens/contrast-pairs.json";
-import { Badge, type BadgeProps } from "@pink-paprikaa-web/ui";
+import {
+  Badge,
+  type BadgeProps,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+} from "@pink-paprikaa-web/ui";
 
 import { CATALOGUE } from "./catalogue";
-import { DocCell, DocTable } from "./doc-table";
+
+const HEADERS = ["Sample", "Text", "Background", "Surface", "Ratio", "Needs", "Verdict"] as const;
 
 const POLICY: ContrastPolicy = pairs;
 
@@ -68,36 +78,46 @@ export function ContrastMatrix({ groups }: ContrastMatrixProps) {
         {results.length} pairs · {count("pass")} pass AA · {count("exception")} declared exceptions
         · {count("fail")} fail
       </div>
-      <DocTable
+      {/* DocTable's `minWidth="narrow"` (960px) maps to Table's `lg` (720px). */}
+      <Table
         caption="Every text and background pair the components paint, measured from this build's tokens"
-        headers={["Sample", "Text", "Background", "Surface", "Ratio", "Needs", "Verdict"]}
-        minWidth="narrow"
+        isCaptionVisible
+        minWidth="lg"
       >
-        {results.map((result) => (
-          <tr
-            key={`${result.group}:${result.foreground}:${result.background}`}
-            data-verdict={result.verdict}
-          >
-            <DocCell>
-              <Sample result={result} />
-            </DocCell>
-            <DocCell className="font-mono text-mono">{result.foreground}</DocCell>
-            <DocCell className="font-mono text-mono">
-              {result.backdrop === null
-                ? result.background
-                : `${result.background} over ${result.backdrop}`}
-            </DocCell>
-            <DocCell>{result.surface ?? "light"}</DocCell>
-            <DocCell className="font-mono text-mono tabular-nums">
-              {result.ratio.toFixed(2)}:1
-            </DocCell>
-            <DocCell className="font-mono text-mono tabular-nums">{result.min}:1</DocCell>
-            <DocCell>
-              <Badge tone={VERDICT_TONE[result.verdict]}>{VERDICT_LABEL[result.verdict]}</Badge>
-            </DocCell>
-          </tr>
-        ))}
-      </DocTable>
+        <TableHead>
+          <TableRow>
+            {HEADERS.map((header) => (
+              <TableHeaderCell key={header}>{header}</TableHeaderCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {results.map((result) => (
+            <TableRow
+              key={`${result.group}:${result.foreground}:${result.background}`}
+              data-verdict={result.verdict}
+            >
+              <TableCell>
+                <Sample result={result} />
+              </TableCell>
+              <TableCell className="font-mono text-mono">{result.foreground}</TableCell>
+              <TableCell className="font-mono text-mono">
+                {result.backdrop === null
+                  ? result.background
+                  : `${result.background} over ${result.backdrop}`}
+              </TableCell>
+              <TableCell>{result.surface ?? "light"}</TableCell>
+              <TableCell className="font-mono text-mono tabular-nums">
+                {result.ratio.toFixed(2)}:1
+              </TableCell>
+              <TableCell className="font-mono text-mono tabular-nums">{result.min}:1</TableCell>
+              <TableCell>
+                <Badge tone={VERDICT_TONE[result.verdict]}>{VERDICT_LABEL[result.verdict]}</Badge>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
