@@ -16,6 +16,8 @@ describe("Steps", () => {
   it("is an ordered list with one item per step", () => {
     render(<Steps items={HOW_IT_WORKS} />);
     expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(3);
+    // Explicit, so Safari/VoiceOver keeps the list semantics that list-style:none strips.
+    expect(screen.getByRole("list")).toHaveAttribute("role", "list");
   });
 
   it("titles each step as a level-3 heading by default", () => {

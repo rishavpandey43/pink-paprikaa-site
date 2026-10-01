@@ -63,7 +63,9 @@ export function Steps({
   const styles = steps({ variant });
 
   return (
-    <ol className={styles.root({ className })} {...props}>
+    // Not redundant in practice: Safari/VoiceOver drops list semantics from a list-style:none list.
+    // eslint-disable-next-line jsx-a11y/no-redundant-roles -- the explicit role restores them.
+    <ol role="list" className={styles.root({ className })} {...props}>
       {items.map((item, index) => (
         <li key={index} className={styles.item()}>
           <span className={styles.marker()}>{STEP_NUMBER[variant](index + 1)}</span>
