@@ -229,8 +229,11 @@ function MultipleChipGroup({
   const styles = chipGroup({ variant });
 
   const handleValueChange = (next: string[]) => {
-    // A chip blocked by the limit was pressed: the selection stays as it is.
-    if (maxSelected !== undefined && next.length > maxSelected) return;
+    // A chip blocked by the limit was pressed: the selection stays as it is. Only additions are
+    // guarded, so a group that starts over its limit can still drop chips.
+    if (maxSelected !== undefined && next.length > selected.length && next.length > maxSelected) {
+      return;
+    }
     setUncontrolledValue(next);
     onValueChange?.(next);
   };

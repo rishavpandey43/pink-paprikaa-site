@@ -110,6 +110,32 @@ describe("ChipGroup", () => {
     expect(screen.getByText("1 of 2 chosen.")).toBeInTheDocument();
   });
 
+  it("lets a group that starts over its limit drop chips, but never add one", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <ChipGroup
+        type="multiple"
+        label="Starters"
+        options={[...STARTERS, { value: "hara-bhara-kebab", label: "Hara Bhara Kebab" }]}
+        maxSelected={1}
+        defaultValue={["chilli-potato", "honey-chilli-potato", "veg-manchurian"]}
+        onValueChange={onValueChange}
+      />
+    );
+    await user.click(screen.getByRole("button", { name: "Chilli Potato" }));
+    expect(screen.getByRole("button", { name: "Chilli Potato" })).toHaveAttribute(
+      "aria-pressed",
+      "false"
+    );
+    expect(onValueChange).toHaveBeenLastCalledWith(["honey-chilli-potato", "veg-manchurian"]);
+    const blocked = screen.getByRole("button", { name: "Hara Bhara Kebab" });
+    blocked.focus();
+    await user.keyboard(" ");
+    expect(blocked).toHaveAttribute("aria-pressed", "false");
+    expect(onValueChange).toHaveBeenCalledTimes(1);
+  });
+
   it("lets the page word the limit", () => {
     render(
       <ChipGroup
