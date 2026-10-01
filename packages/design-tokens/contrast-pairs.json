@@ -439,6 +439,15 @@
       "pairs": [["color-text-heading", "color-white-alpha-92"]],
       "backdrop": "color-surface-brand",
       "min": 4.5
+    },
+    {
+      "id": "table-head",
+      "surface": null,
+      "pairs": [
+        ["color-text-heading", "color-surface-brand-soft"],
+        ["color-pink-700", "color-surface-brand-soft"]
+      ],
+      "min": 4.5
     }
   ]
 }

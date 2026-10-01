@@ -138,6 +138,20 @@ export {
   StickyActionBar,
   type StickyActionBarProps,
 } from "./molecules/sticky-action-bar/sticky-action-bar";
+export {
+  Table,
+  TableBody,
+  type TableBodyProps,
+  TableCell,
+  type TableCellProps,
+  TableHead,
+  TableHeaderCell,
+  type TableHeaderCellProps,
+  type TableHeadProps,
+  type TableProps,
+  TableRow,
+  type TableRowProps,
+} from "./molecules/table/table";
 export { type TabItem, Tabs, type TabsProps } from "./molecules/tabs/tabs";
 export {
   Toast,

@@ -103,6 +103,7 @@ const TEXT = [
   "link-card-title",
   "link-card-title-lg",
   "sticky-action-bar-amount",
+  "table-head",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -236,6 +237,9 @@ const SPACING = [
   "coupon-ticket-stub-lg",
   "coupon-ticket-notch",
   "pricing-card-pad",
+  "table-sm",
+  "table-md",
+  "table-lg",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

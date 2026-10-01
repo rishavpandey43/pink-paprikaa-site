@@ -1,0 +1,27 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "table-sm": {
+      "$value": "460px",
+      "$description": "Min width: offers / glance tables.",
+      "$extensions": { "pink-paprikaa": { "utility": ["min-w"] } }
+    },
+    "table-md": {
+      "$value": "620px",
+      "$description": "Min width: the price matrix.",
+      "$extensions": { "pink-paprikaa": { "utility": ["min-w"] } }
+    },
+    "table-lg": {
+      "$value": "720px",
+      "$description": "Min width: the box comparison.",
+      "$extensions": { "pink-paprikaa": { "utility": ["min-w"] } }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "table-head": {
+      "$value": { "fontSize": "13px", "lineHeight": 1.3, "fontWeight": "{font-weight.bold}" },
+      "$description": "Column headers (handoff 12–14px Poppins 700)."
+    }
+  }
+}

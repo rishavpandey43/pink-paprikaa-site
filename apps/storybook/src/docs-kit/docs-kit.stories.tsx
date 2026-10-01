@@ -91,10 +91,12 @@ const DERIVED = [
   },
   {
     name: "color-border-subtle",
-    // R65: the role default plus the library's own use as a hairline fill (`bg-border-subtle`).
+    // R65: the role default plus the library's own use as a hairline fill (`bg-border-subtle`)
+    // and as Table's row rules (`divide-border-subtle`, which paints the probe's children).
     paints: [
       ["border-border-subtle", "borderTopColor"],
       ["bg-border-subtle", "backgroundColor"],
+      ["divide-border-subtle", "borderTopColor"],
     ],
     expected: () => rgbOf("color-border-subtle"),
   },
@@ -221,7 +223,15 @@ export const UtilitiesDeriveFromTheCatalogue: Story = {
             aria-hidden
             data-utility={utility}
             className={`relative block border-solid ${utility}`}
-          />
+          >
+            {/* A divide-* colour paints the children between, never the element itself. */}
+            {utility.startsWith("divide-") ? (
+              <>
+                <span className="block border-solid" />
+                <span className="block border-solid" />
+              </>
+            ) : null}
+          </span>
         ))
       )}
       <span
@@ -240,7 +250,12 @@ export const UtilitiesDeriveFromTheCatalogue: Story = {
     for (const { name, paints, expected } of DERIVED) {
       await expect(utilitiesOf(name)).toEqual(paints.map(([utility]) => utility));
       for (const [utility, property] of paints) {
-        const probe = requireElement(canvasElement, `[data-utility="${utility}"]`);
+        const probe = requireElement(
+          canvasElement,
+          utility.startsWith("divide-")
+            ? `[data-utility="${utility}"] > :first-child`
+            : `[data-utility="${utility}"]`
+        );
         await expect(getComputedStyle(probe)[property], `${utility} paints ${name}`).toBe(
           expected()
         );
