@@ -8,7 +8,9 @@ import { isShown } from "../../lib/is-shown";
 
 const checkCard = componentVariants({
   slots: {
-    root: "flex min-h-13 cursor-pointer items-center gap-3 rounded-md border border-border-default bg-surface-card px-3.5 py-3 text-text-heading transition-control has-checked:border-border-brand has-checked:bg-pink-50 has-checked:shadow-selected has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400 has-aria-invalid:border-status-danger",
+    // Invalid and checked: the red border wins, and the pink inset goes so the red is not lined
+    // with pink (ChoiceCardGroup 267e35f). The pink-50 fill still says "chosen".
+    root: "flex min-h-13 cursor-pointer items-center gap-3 rounded-md border border-border-default bg-surface-card px-3.5 py-3 text-text-heading transition-control has-checked:border-border-brand has-checked:bg-pink-50 has-checked:shadow-selected has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400 has-aria-invalid:border-status-danger has-aria-invalid:has-checked:shadow-none",
     // The native checkbox, restyled, with the tick stacked on it in the same grid cell.
     box: "grid shrink-0 place-items-center",
     input:

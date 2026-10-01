@@ -97,6 +97,14 @@ describe("CheckCard", () => {
     expect(screen.getByRole("checkbox", { name: UPFRONT.title })).toBeInvalid();
   });
 
+  it("drops the pink selected inset when checked and invalid, so the red is not lined with pink", () => {
+    render(<CheckCard {...UPFRONT} isInvalid defaultChecked />);
+    expect(screen.getByRole("checkbox").closest("label")).toHaveClass(
+      "has-checked:shadow-selected",
+      "has-aria-invalid:has-checked:shadow-none"
+    );
+  });
+
   it("has no accessibility violations when checked", async () => {
     const { container } = render(<CheckCard {...UPFRONT} defaultChecked />);
     await expectNoA11yViolations(container);
