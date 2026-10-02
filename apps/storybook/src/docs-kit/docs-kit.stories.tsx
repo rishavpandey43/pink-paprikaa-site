@@ -17,7 +17,6 @@ import { ContrastMatrix, VERDICT_LABEL } from "./contrast-matrix";
 import { CopyChips } from "./copy";
 import { requireElement } from "./dom";
 import { MotionDemo } from "./motion-demo";
-import { ProseTable } from "./prose";
 import { RadiusScale } from "./radius-scale";
 import { ShadowLadder } from "./shadow-ladder";
 import { SpacingScale } from "./spacing-scale";
@@ -458,61 +457,5 @@ export const MotionDemoRunsOnTheTokens: Story = {
     for (const utility of [...utilitiesOf("duration-base"), ...utilitiesOf("ease-out")]) {
       await expect(canvas.getByRole("button", { name: utility })).toBeVisible();
     }
-  },
-};
-
-/**
- * A markdown table at 360px (the Introduction page's layer table): it scrolls inside its own named
- * region, so the page never scrolls sideways. The inline-code half of the docs-prose fix is a rule
- * on Storybook's own docs class (`.storybook/styles.css`), so it is probed on the docs pages, not
- * here.
- */
-export const ProseTableScrollsAt360: Story = {
-  globals: { viewport: { value: "floor360", isRotated: false } },
-  render: () => (
-    <ProseTable>
-      <thead>
-        <tr>
-          <th>Layer</th>
-          <th>What lives there</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <code>@pink-paprikaa-web/design-tokens</code>
-          </td>
-          {/* A column that cannot narrow, as a GFM table's often cannot. */}
-          <td className="whitespace-nowrap">
-            Every value, authored as DTCG JSON and compiled by Style Dictionary
-          </td>
-        </tr>
-      </tbody>
-    </ProseTable>
-  ),
-  play: async ({ canvas }) => {
-    const region = await canvas.findByRole("region", { name: "Scrollable table" });
-    await expect(region).toHaveAttribute("tabindex", "0");
-    await expect(region.scrollWidth).toBeGreaterThan(region.clientWidth);
-    const page = document.documentElement;
-    await expect(page.scrollWidth).toBeLessThanOrEqual(page.clientWidth);
-  },
-};
-
-/** A markdown table that fits is a plain table: no region, no extra tab stop. */
-export const ProseTableThatFitsAddsNoTabStop: Story = {
-  render: () => (
-    <ProseTable>
-      <tbody>
-        <tr>
-          <td>Fits</td>
-        </tr>
-      </tbody>
-    </ProseTable>
-  ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole("table")).toBeInTheDocument();
-    await expect(canvas.queryByRole("region")).not.toBeInTheDocument();
-    await expect(canvas.getByRole("table").parentElement).not.toHaveAttribute("tabindex");
   },
 };
