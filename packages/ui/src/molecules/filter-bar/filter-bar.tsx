@@ -24,7 +24,11 @@ export interface FilterBarProps {
   /** Uncontrolled starting filter. Default: the first option. */
   defaultValue?: string | undefined;
   onValueChange?: ((value: string) => void) | undefined;
-  /** Wrap onto more rows (the website) instead of scrolling on one line (the app). */
+  /**
+   * Wrap onto more rows (the website) instead of scrolling on one line (the app). The scrolling
+   * rail's `-m-1` (its chips' focus-ring room) reaches 4px past its box: its parent needs at least
+   * 4px of padding (a Container's gutter gives it), as Cluster's rail does, or it widens the page.
+   */
   isWrapping?: boolean | undefined;
   /** A static statement pinned after the filters, e.g. "100% Vegetarian". */
   note?: ReactNode | undefined;
