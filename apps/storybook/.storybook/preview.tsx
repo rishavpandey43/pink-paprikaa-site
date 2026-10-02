@@ -114,6 +114,20 @@ const preview: Preview = {
       },
     },
   },
+  /**
+   * storybook:test renders without Storybook's `iframe.html`, whose head pads the canvas by layout
+   * (`centered` and `padded` 1rem a side, `fullscreen` none). Without it every 360 play measured
+   * 32px more room than the canvas a reviewer sees, so the runner gets the same gutter here.
+   */
+  beforeEach: ({ parameters }) => {
+    if (!("__vitest_browser__" in globalThis)) return;
+    document.body.style.boxSizing = "border-box";
+    document.body.style.padding = parameters.layout === "fullscreen" ? "0" : "1rem";
+    return () => {
+      document.body.style.removeProperty("box-sizing");
+      document.body.style.removeProperty("padding");
+    };
+  },
   decorators: [
     (Story) => (
       <div className="font-body text-body text-text-body">
