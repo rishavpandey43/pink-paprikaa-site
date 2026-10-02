@@ -11,6 +11,12 @@ describe("StruckPrice", () => {
     expect(screen.getByText("was")).toHaveClass("sr-only");
   });
 
+  it("takes another hidden word, for a page in another language", () => {
+    const { container } = render(<StruckPrice label="pehle">₹140</StruckPrice>);
+    expect(container.querySelector("s")).toHaveTextContent("pehle ₹140");
+    expect(screen.getByText("pehle")).toHaveClass("sr-only");
+  });
+
   it("lets a consumer replace the colour", () => {
     const { container } = render(<StruckPrice className="text-ink-400">₹140</StruckPrice>);
     expect(container.querySelector("s")).toHaveClass("text-ink-400");

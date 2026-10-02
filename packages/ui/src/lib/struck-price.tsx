@@ -4,18 +4,22 @@ import { componentVariants } from "./component-variants";
 
 const struckPrice = componentVariants({ base: "text-text-subtle" });
 
-export type StruckPriceProps = ComponentProps<"s">;
+export interface StruckPriceProps extends ComponentProps<"s"> {
+  /** The hidden word read before the price; lower-case, as PriceTag's (R94). = "was" */
+  label?: string | undefined;
+}
 
 /**
  * The original price, struck through, in `text-subtle` (AA on every surface), with the hidden
- * lower-case "was" that tells assistive tech why it is struck (R94). PriceTag, PricingCard and
- * ChoiceCardGroup all draw theirs with it; size it with a class. Format the amount first
- * (`formatRupees`) and guard a numeric pair with `assertStruckAbove`.
+ * lower-case "was" that tells assistive tech why it is struck (R94) — screen readers do not
+ * announce strike-through. PriceTag, PricingCard and ChoiceCardGroup all draw theirs with it;
+ * size it with a class. Format the amount first (`formatRupees`) and guard a numeric pair with
+ * `assertStruckAbove`.
  */
-export function StruckPrice({ className, children, ...props }: StruckPriceProps) {
+export function StruckPrice({ label = "was", className, children, ...props }: StruckPriceProps) {
   return (
     <s className={struckPrice({ className })} {...props}>
-      <span className="sr-only">was</span> {children}
+      <span className="sr-only">{label}</span> {children}
     </s>
   );
 }
