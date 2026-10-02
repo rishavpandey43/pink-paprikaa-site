@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import type { ComponentProps } from "react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
@@ -15,6 +15,17 @@ function RouterLink({ children, ...props }: ComponentProps<"a">) {
   );
 }
 
+/**
+ * One card at the prose measure. A story decorator, not a `meta` one: Storybook concatenates story
+ * and meta decorators (`decorators: []` on a story removes nothing), so a meta-level width would
+ * squeeze the page-section stories too.
+ */
+const prose: Decorator = (Story) => (
+  <div className="w-full max-w-text-measure-prose">
+    <Story />
+  </div>
+);
+
 const meta = {
   title: "Molecules/LinkCard",
   component: LinkCard,
@@ -25,13 +36,6 @@ const meta = {
     cta: "See plans",
     media: <ImageSlot ratio="square" radius="md" label="Box" />,
   },
-  decorators: [
-    (Story) => (
-      <div className="w-full max-w-text-measure-prose">
-        <Story />
-      </div>
-    ),
-  ],
   parameters: {
     layout: "padded",
     docs: {
@@ -46,11 +50,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
+export const Playground: Story = { decorators: [prose] };
 
 /** Home "One kitchen, three ways to eat". */
 export const HomeDoors: Story = {
-  decorators: [],
   render: () => (
     <div className="grid max-w-content grid-cols-1 gap-4 md:grid-cols-3">
       <LinkCard
@@ -80,7 +83,6 @@ export const HomeDoors: Story = {
 
 /** About page CTA cards — stack, brand / ink / soft. */
 export const AboutCtas: Story = {
-  decorators: [],
   render: () => (
     <div className="grid max-w-content grid-cols-1 gap-4 md:grid-cols-3">
       <LinkCard
@@ -110,5 +112,6 @@ export const AboutCtas: Story = {
 
 /** `asChild`: the card renders into the consumer's link element. */
 export const AsChild: Story = {
+  decorators: [prose],
   args: { asChild: true, href: undefined, children: <RouterLink href="#homely-meals" /> },
 };
