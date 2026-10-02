@@ -1,7 +1,7 @@
 "use client";
 
 import { ToggleGroup } from "radix-ui";
-import { type FocusEvent, type ReactNode, useId, useState } from "react";
+import { type FocusEvent, type ReactNode, type Ref, useId, useState } from "react";
 
 import type { FieldStatus } from "../../lib/field-status";
 
@@ -32,6 +32,11 @@ interface ChipGroupBaseProps {
   disabled?: boolean | undefined;
   /** Fires when focus leaves the group — react-hook-form's `field.onBlur`. */
   onBlur?: (() => void) | undefined;
+  /**
+   * The group element — react-hook-form's `field.ref`. Focusing it lands on the chosen chip (or the
+   * first), so `shouldFocusError` reaches the group.
+   */
+  ref?: Ref<HTMLDivElement> | undefined;
   /**
    * `error` marks the group invalid and reddens every chip's border. A status shows only with its
    * `message`: without words it is ignored, so a group is never marked by colour alone (R101).
@@ -161,6 +166,7 @@ function SingleChipGroup({
   name,
   disabled = false,
   onBlur,
+  ref,
   status = "default",
   message,
   "aria-describedby": describedBy,
@@ -188,6 +194,7 @@ function SingleChipGroup({
       onBlur={onBlur === undefined ? undefined : blurLeavingGroup(onBlur)}
     >
       <ToggleGroup.Root
+        ref={ref}
         type="single"
         aria-label={label}
         aria-describedby={joinIds(hasMessage ? messageId : undefined, describedBy)}
@@ -213,6 +220,7 @@ function MultipleChipGroup({
   name,
   disabled = false,
   onBlur,
+  ref,
   status = "default",
   message,
   "aria-describedby": describedBy,
@@ -256,6 +264,7 @@ function MultipleChipGroup({
         </p>
       )}
       <ToggleGroup.Root
+        ref={ref}
         type="multiple"
         aria-label={label}
         aria-describedby={joinIds(

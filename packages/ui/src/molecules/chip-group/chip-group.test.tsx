@@ -1,5 +1,6 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { createRef } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { ChipGroup } from "./chip-group";
@@ -201,6 +202,44 @@ describe("ChipGroup", () => {
     await user.tab();
     expect(screen.getByRole("button", { name: "Next step" })).toHaveFocus();
     expect(onBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it("gives react-hook-form's Controller a name, onBlur and a focusable ref", async () => {
+    const user = userEvent.setup();
+    const ref = createRef<HTMLDivElement>();
+    const onBlur = vi.fn();
+    const { container } = render(
+      <>
+        <ChipGroup
+          type="single"
+          label="Which meals"
+          options={MEALS}
+          name="meals"
+          defaultValue="dinner"
+          ref={ref}
+          onBlur={onBlur}
+        />
+        <button type="button">Next step</button>
+      </>
+    );
+    expect(ref.current).toBe(screen.getByRole("radiogroup", { name: "Which meals" }));
+    expect(container.querySelector('input[name="meals"]')).toHaveValue("dinner");
+    act(() => {
+      ref.current?.focus();
+    });
+    expect(screen.getByRole("radio", { name: "Dinner" })).toHaveFocus();
+    await user.tab();
+    expect(onBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it("focuses the first chip through its ref when nothing is chosen yet", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(<ChipGroup type="multiple" label="Starters" options={STARTERS} ref={ref} />);
+    expect(ref.current).toBe(screen.getByRole("toolbar", { name: "Starters" }));
+    act(() => {
+      ref.current?.focus();
+    });
+    expect(screen.getByRole("button", { name: "Chilli Potato" })).toHaveFocus();
   });
 
   it("draws the segmented pill track, with unchosen options unfilled", () => {
