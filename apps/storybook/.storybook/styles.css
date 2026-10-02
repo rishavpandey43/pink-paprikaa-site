@@ -11,3 +11,12 @@
 
 @source "../src";
 @source "../../../packages/ui/src/**/*.stories.tsx";
+
+/*
+ * Docs prose at 360px: Storybook sets inline code in docs pages `nowrap`, so one long path or
+ * import line widened the whole page. Inline code (never a fenced block) wraps anywhere instead.
+ */
+.sbdocs-content :not(pre) > code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

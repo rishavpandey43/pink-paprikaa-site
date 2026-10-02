@@ -5,6 +5,8 @@ import type { Preview } from "@storybook/react-vite";
 
 import { INITIAL_VIEWPORTS } from "storybook/viewport";
 
+import { PROSE_COMPONENTS } from "../src/docs-kit/prose";
+
 /**
  * The system's own breakpoints, plus 360px.
  *
@@ -54,6 +56,8 @@ const preview: Preview = {
       expanded: true,
       matchers: { color: /(background|color)$/i, date: /Date$/i },
     },
+    // A markdown table scrolls in its own frame at 360px instead of the page (docs-kit/prose).
+    docs: { components: PROSE_COMPONENTS },
     viewport: { options: deviceViewports },
     backgrounds: { options: backgrounds },
     a11y: {
