@@ -312,7 +312,7 @@ export const PlanVsApp: Story = {
         ].map(([question, plan, app]) => (
           <TableRow key={question}>
             <TableHeaderCell scope="row">{question}</TableHeaderCell>
-            <TableCell isHighlighted>{plan}</TableCell>
+            <TableCell className="text-text-heading">{plan}</TableCell>
             <TableCell className="text-text-muted">{app}</TableCell>
           </TableRow>
         ))}
