@@ -58,20 +58,26 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Every Badge in a card sits inside the card's content box and shows without overflowing itself. */
-async function expectBadgesInsideTheirCards(canvasElement: HTMLElement) {
-  const badges = [...canvasElement.querySelectorAll<HTMLElement>("label [id$='-badge'] > *")];
-  await expect(badges.length).toBeGreaterThan(0);
-  for (const badge of badges) {
-    const card = badge.closest("label");
+/**
+ * Every Badge in a card shows its whole wording inside the card's content box (R108: it wraps,
+ * never truncates). Measured on the label, the element that would clip — the Badge root never
+ * overflows, since its label is the part that truncates.
+ */
+async function expectBadgesWhole(canvasElement: HTMLElement, wordings: string[]) {
+  const labels = [
+    ...canvasElement.querySelectorAll<HTMLElement>("label [id$='-badge'] > * > :last-child"),
+  ];
+  await expect(labels.map((label) => label.textContent)).toEqual(wordings);
+  for (const label of labels) {
+    const card = label.closest("label");
     if (card === null) throw new Error("A badge outside its card");
     const style = getComputedStyle(card);
     const contentRight =
       card.getBoundingClientRect().right -
       Number.parseFloat(style.borderRightWidth) -
       Number.parseFloat(style.paddingRight);
-    await expect(badge.getBoundingClientRect().right).toBeLessThanOrEqual(contentRight);
-    await expect(badge.scrollWidth).toBeLessThanOrEqual(badge.clientWidth);
+    await expect(label.getBoundingClientRect().right).toBeLessThanOrEqual(contentRight);
+    await expect(label.scrollWidth).toBeLessThanOrEqual(label.clientWidth);
   }
 }
 
@@ -156,11 +162,11 @@ export const PlanLengths: Story = {
     await expect(canvas.getByRole("radio", { name: "Weekday plan" })).toHaveAccessibleDescription(
       /Our recommendation/i
     );
-    await expectBadgesInsideTheirCards(canvasElement);
+    await expectBadgesWhole(canvasElement, ["Our recommendation"]);
   },
 };
 
-/** A long Badge in a 150px tile is bounded by the tile, not by its own text, and still read whole. */
+/** A long Badge in a 150px tile wraps inside the tile (R108): bounded by it, and shown whole. */
 export const LongBadgeInNarrowTile: Story = {
   args: {
     name: "length",
@@ -185,7 +191,7 @@ export const LongBadgeInNarrowTile: Story = {
   play: async ({ canvas, canvasElement }) => {
     const card = canvas.getByRole("radio", { name: "Weekday plan" }).closest("label");
     await expect(card?.getBoundingClientRect().width).toBe(150);
-    await expectBadgesInsideTheirCards(canvasElement);
+    await expectBadgesWhole(canvasElement, ["Offer: +1 free / month"]);
     await expect(canvas.getByRole("radio", { name: "Weekday plan" })).toHaveAccessibleDescription(
       /Offer: \+1 free \/ month/i
     );

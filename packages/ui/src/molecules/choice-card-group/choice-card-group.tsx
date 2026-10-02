@@ -86,8 +86,9 @@ const choiceCardGroup = componentVariants({
     // A disabled card greys its words; the struck price's own colour would out-rank the card's.
     was: "font-body text-body-sm font-regular group-has-disabled/card:text-ink-400",
     description: "text-caption",
-    // Bounded by the head, not by its own text, so a long Badge truncates inside the tile.
-    badge: "flex max-w-full min-w-0",
+    // Bounded by the head, not by its own text, and wrapped (R108): a long Badge shows in full
+    // inside the tile, never truncated — mid-word if one word is wider than the tile.
+    badge: "flex max-w-full min-w-0 **:wrap-anywhere **:whitespace-normal",
     // A line under the description wraps, a Badge's nowrap included: an offer shows in full in a
     // 150px tile, never truncated.
     meta: "flex max-w-full **:whitespace-normal",
