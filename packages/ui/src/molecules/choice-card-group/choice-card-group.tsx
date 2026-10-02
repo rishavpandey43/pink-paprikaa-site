@@ -85,7 +85,8 @@ const choiceCardGroup = componentVariants({
   },
   variants: {
     layout: {
-      tile: { card: "flex-col items-start gap-1" },
+      // The body stretches to the card, so a long meta Badge truncates inside it, not past it.
+      tile: { card: "flex-col items-start gap-1", body: "self-stretch" },
       row: { card: "items-center gap-3", price: "shrink-0" },
     },
     tone: {

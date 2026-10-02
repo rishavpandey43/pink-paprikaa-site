@@ -123,6 +123,13 @@ export const PlanLengths: Story = {
       },
     ],
   },
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  play: async ({ canvas }) => {
+    // At 360 the uppercase offer Badge is wider than its tile: it truncates inside the card.
+    for (const card of canvas.getAllByRole("radio").map((radio) => radio.closest("label"))) {
+      await expect(card?.scrollWidth).toBeLessThanOrEqual(card?.clientWidth ?? 0);
+    }
+  },
 };
 
 /** DawatCalculator "2. Dawat". */
