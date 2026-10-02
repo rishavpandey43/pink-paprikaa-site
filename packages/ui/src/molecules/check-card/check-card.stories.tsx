@@ -128,21 +128,19 @@ export const DisabledChecked: Story = {
   play: async ({ canvas }) => {
     const checkbox = canvas.getByRole("checkbox", { name: "Pay 3 months upfront" });
     const tick = checkbox.nextElementSibling;
-    const paint = (token: string) => {
-      const probe = document.createElement("span");
-      probe.style.color = `var(${token})`;
-      checkbox.parentElement?.append(probe);
-      const color = getComputedStyle(probe).color;
-      probe.remove();
-      return color;
-    };
     await expect(checkbox).toBeChecked();
-    await expect(getComputedStyle(checkbox).backgroundColor).toBe(paint("--color-ink-200"));
-    await expect(getComputedStyle(checkbox).borderTopColor).toBe(paint("--color-ink-200"));
-    await expect(tick === null ? "" : getComputedStyle(tick).color).toBe(paint("--color-ink-400"));
+    await expect(getComputedStyle(checkbox).backgroundColor).toBe(
+      paint(checkbox, "backgroundColor", "--color-ink-200")
+    );
+    await expect(getComputedStyle(checkbox).borderTopColor).toBe(
+      paint(checkbox, "borderColor", "--color-ink-200")
+    );
+    await expect(tick === null ? "" : getComputedStyle(tick).color).toBe(
+      paint(checkbox, "color", "--color-ink-400")
+    );
     const card = checkbox.closest("label");
     await expect(card === null ? "" : getComputedStyle(card).boxShadow).not.toContain(
-      paint("--color-pink-500")
+      paint(checkbox, "color", "--color-pink-500")
     );
   },
 };

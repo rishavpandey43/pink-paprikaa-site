@@ -6,6 +6,7 @@ import { expect } from "storybook/test";
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
 import { Badge } from "../../atoms/badge/badge";
+import { paint } from "../../lib/story-paint";
 import { ChoiceCardGroup, type ChoiceOption } from "./choice-card-group";
 
 /** PlanCalculator "1. Your plate" — Classic at its launch price. */
@@ -79,11 +80,6 @@ export const WithError: Story = {
       "Choose a plate to see your total."
     );
     // Real layout: every card's border is the danger red, the checked one too.
-    const probe = document.createElement("span");
-    probe.style.color = "var(--color-status-danger)";
-    canvasElement.append(probe);
-    const danger = getComputedStyle(probe).color;
-    probe.remove();
     await userEvent.click(canvas.getByRole("radio", { name: /Classic/ }));
     const cardOf = (name: RegExp) =>
       canvas.getByRole("radio", { name }).closest("label") ?? canvasElement;
@@ -94,6 +90,7 @@ export const WithError: Story = {
         .map(async (animation) => animation.finished)
     );
     const borderOf = (name: RegExp) => getComputedStyle(cardOf(name)).borderTopColor;
+    const danger = paint(cardOf(/Classic/), "borderColor", "--color-status-danger");
     await expect(borderOf(/Classic/)).toBe(danger);
     // …and loses the pink `selected` inset: every layer of its shadow is transparent.
     await expect(getComputedStyle(cardOf(/Classic/)).boxShadow).not.toMatch(/rgb\(/);
