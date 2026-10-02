@@ -21,7 +21,10 @@ export interface AnnouncementBarProps extends Omit<ComponentProps<"div">, "child
   href?: string | undefined;
   /** ISO 8601 with an offset. Shows a countdown, and the bar renders nothing once it passes. */
   endsAt?: string | undefined;
-  /** Accessible prefix for the countdown, e.g. "Launch price closes in". */
+  /**
+   * Accessible prefix for the countdown, e.g. "Launch price closes in". Omit it when the message
+   * already leads into the countdown ("… · closes in"), or a screen reader hears it twice.
+   */
   countdownLabel?: string | undefined;
   linkAs?: LinkAs | undefined;
 }

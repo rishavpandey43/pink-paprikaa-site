@@ -91,14 +91,12 @@ describe("AnnouncementBar", () => {
 
   it("has no accessibility violations", async () => {
     const { container } = render(
-      <AnnouncementBar
-        href="/homely-meals"
-        endsAt={inDays(3)}
-        countdownLabel="Launch price closes in"
-      >
+      <AnnouncementBar href="/homely-meals" endsAt={inDays(3)}>
         Launch price: Classic at ₹130 a meal · closes in
       </AnnouncementBar>
     );
+    // The message already leads into the countdown, so it is read once.
+    expect(screen.getByRole("link").textContent.match(/closes in/g)).toHaveLength(1);
     await expectNoA11yViolations(container);
   });
 });

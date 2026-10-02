@@ -22,7 +22,6 @@ const meta = {
     children: LAUNCH_COPY,
     href: "#homely-meals",
     endsAt: IN_THREE_DAYS,
-    countdownLabel: "Launch price closes in",
   },
   parameters: {
     layout: "fullscreen",
