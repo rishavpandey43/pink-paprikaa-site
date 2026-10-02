@@ -321,6 +321,24 @@ export const PlanVsApp: Story = {
   ),
 };
 
+/**
+ * PlanVsApp at 360px: a `minWidth="none"` table must fit, because its frame clips (it is not a
+ * scroll container, so nothing could scroll to a cut-off column).
+ */
+export const PlanVsAppAt360: Story = {
+  ...PlanVsApp,
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  play: async ({ canvas }) => {
+    const frame = canvas.getByRole("table").parentElement;
+    await expect(frame).toBeInstanceOf(HTMLElement);
+    if (frame === null) return;
+    await expect(getComputedStyle(frame).overflowX).toBe("clip");
+    await expect(frame.scrollWidth).toBeLessThanOrEqual(frame.clientWidth);
+    const page = document.documentElement;
+    await expect(page.scrollWidth).toBeLessThanOrEqual(page.clientWidth);
+  },
+};
+
 export const CaptionVisible: Story = {
   render: () => (
     <Table caption="Upgrades, per head" isCaptionVisible>

@@ -4,16 +4,18 @@ import { componentVariants } from "../../lib/component-variants";
 
 const table = componentVariants({
   slots: {
-    frame: "overflow-x-auto rounded-xl border border-border-subtle bg-surface-card shadow-1",
+    frame: "rounded-xl border border-border-subtle bg-surface-card shadow-1",
     table: "w-full border-collapse text-left text-body-sm text-text-body",
     caption: "px-5 pt-4 pb-2 text-left font-display text-body font-bold text-text-heading",
   },
   variants: {
+    // The frame clips the pink head to its radius either way. Only a table with a floor scrolls:
+    // `none` clips (not a scroll container, so no unfocusable scroll region) and must fit.
     minWidth: {
-      none: {},
-      sm: { table: "min-w-table-sm" },
-      md: { table: "min-w-table-md" },
-      lg: { table: "min-w-table-lg" },
+      none: { frame: "overflow-clip" },
+      sm: { frame: "overflow-x-auto", table: "min-w-table-sm" },
+      md: { frame: "overflow-x-auto", table: "min-w-table-md" },
+      lg: { frame: "overflow-x-auto", table: "min-w-table-lg" },
     },
     isCaptionVisible: { true: {}, false: { caption: "sr-only" } },
   },

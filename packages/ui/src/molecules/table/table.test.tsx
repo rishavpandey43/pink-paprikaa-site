@@ -55,6 +55,13 @@ describe("Table", () => {
     expect(screen.getByRole("table").parentElement).not.toHaveAttribute("tabindex");
   });
 
+  it("clips a table that never scrolls instead of making its frame a scroll container", () => {
+    render(<PriceList minWidth="none" />);
+    const frame = screen.getByRole("table").parentElement;
+    expect(frame).toHaveClass("overflow-clip");
+    expect(frame).not.toHaveClass("overflow-x-auto");
+  });
+
   it("keeps header association: column headers and row headers", () => {
     render(<PriceList />);
     expect(screen.getAllByRole("columnheader").map((cell) => cell.getAttribute("scope"))).toEqual([
