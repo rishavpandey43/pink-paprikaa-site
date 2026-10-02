@@ -208,11 +208,29 @@ export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: (args) => (
     <OnSurfaces>
-      <div className="grid min-w-0 flex-1 gap-3">
+      {/* Below sm the groups take a full row under the ground label: the segmented track is
+          wider than what is left beside the label at 360px. */}
+      <div className="grid min-w-0 grow basis-full gap-3 sm:basis-0">
         {/* The meta's args are a single group's (type "single", label, options, defaultValue). */}
         <ChipGroup {...(args as SingleChipGroupProps)} />
-        <ChipGroup {...(args as SingleChipGroupProps)} variant="segmented" />
+        <ChipGroup {...(args as SingleChipGroupProps)} variant="segmented" label="Meals per day" />
       </div>
     </OnSurfaces>
   ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getAllByRole("radiogroup", { name: "Which meals" })).toHaveLength(5);
+    await expect(canvas.getAllByRole("radiogroup", { name: "Meals per day" })).toHaveLength(5);
+  },
+};
+
+/** OnSurfaces at 360px: every ground's groups fit, so the page never scrolls sideways. */
+export const OnSurfacesAt360: Story = {
+  ...OnSurfacesStory,
+  name: "OnSurfaces at 360",
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  play: async (context) => {
+    await OnSurfacesStory.play?.(context);
+    const page = document.documentElement;
+    await expect(page.scrollWidth).toBeLessThanOrEqual(page.clientWidth);
+  },
 };
