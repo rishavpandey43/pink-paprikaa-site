@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { expect } from "storybook/test";
+
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
 import { OnSurfaces } from "../../lib/story-surfaces";
@@ -78,6 +80,29 @@ export const BookingRules: Story = {
       </div>
     </div>
   ),
+};
+
+/**
+ * BookingRules at 360px: the frame's padding steps down so the value column keeps at least 128px
+ * beside the 120px key column (a word or two a line otherwise).
+ */
+export const BookingRulesAt360: Story = {
+  ...BookingRules,
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  play: async ({ canvasElement }) => {
+    // Measured as the Storybook canvas draws it: the `padded` layout's 16px a side, which the test
+    // runner does not apply to its body.
+    const body = getComputedStyle(document.body);
+    const missingGutter =
+      32 - Number.parseFloat(body.paddingLeft) - Number.parseFloat(body.paddingRight);
+    const values = [...canvasElement.querySelectorAll("dd")];
+    await expect(values).toHaveLength(6);
+    for (const value of values) {
+      await expect(value.getBoundingClientRect().width - missingGutter).toBeGreaterThanOrEqual(128);
+    }
+    const page = document.documentElement;
+    await expect(page.scrollWidth).toBeLessThanOrEqual(page.clientWidth);
+  },
 };
 
 /** HomelyMeals "Make it yours" — split rows. */
