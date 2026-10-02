@@ -71,8 +71,9 @@ export const BookingRules: Story = {
     ],
   },
   render: (args) => (
-    <div data-surface="ink" className="rounded-xl bg-surface-inverse p-6">
-      <div className="rounded-xl bg-surface-card px-6 py-1">
+    // The handoff's padding steps down to 16px on a phone (`clamp(16px, …, 24px)`).
+    <div data-surface="ink" className="rounded-xl bg-surface-inverse p-4 sm:p-6">
+      <div className="rounded-xl bg-surface-card px-4 py-1 sm:px-6">
         <KeyValueList {...args} />
       </div>
     </div>
@@ -114,6 +115,7 @@ export const UpgradePrices: Story = {
 export const QuoteLines: Story = {
   args: {
     keyWidth: undefined,
+    hasDividers: false,
     items: [
       { key: `${formatRupees(130)} × 24 meals`, value: formatRupees(3120) },
       { key: "Offer: free meals (1)", value: formatRupees(0) },
