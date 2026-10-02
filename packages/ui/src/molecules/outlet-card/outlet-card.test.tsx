@@ -46,6 +46,13 @@ describe("OutletCard", () => {
     expect(screen.getByRole("link", { name: "Directions" })).toBeInTheDocument();
   });
 
+  it("draws the action slot whenever React would render it — a 0 counts, false does not", () => {
+    const { container, rerender } = render(<OutletCard name="Sector 57" action={0} />);
+    expect(container.querySelector(".z-raised")).toHaveTextContent("0");
+    rerender(<OutletCard name="Sector 57" action={false} />);
+    expect(container.querySelector(".z-raised")).toBeNull();
+  });
+
   it("uses the heading level the page needs", () => {
     render(<OutletCard name="Sector 57" headingLevel={2} />);
     expect(screen.getByRole("heading", { level: 2, name: "Sector 57" })).toBeInTheDocument();

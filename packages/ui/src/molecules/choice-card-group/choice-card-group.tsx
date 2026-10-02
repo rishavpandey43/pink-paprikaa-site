@@ -177,23 +177,23 @@ export function ChoiceCardGroup({
       <div className={styles.list()}>
         {options.map((option, index) => {
           const id = `${baseId}-${String(index)}`;
-          const price =
-            option.price === undefined ? null : (
-              <span id={`${id}-price`} className={styles.price()}>
-                {option.price}
-                {/* The {" "} separators keep the name "₹130 was ₹140", not "₹130was₹140"; a flex row
-                    drops whitespace-only text and a line drops a leading space, so neither draws. */}
-                {option.was === undefined ? null : (
-                  <>
-                    {" "}
-                    <s className={styles.was()}>
-                      {/* PriceTag's hidden word, lower-case (R94). */}
-                      <span className="sr-only">was</span> {option.was}
-                    </s>
-                  </>
-                )}
-              </span>
-            );
+          const hasDescription = isShown(option.description);
+          const price = isShown(option.price) ? (
+            <span id={`${id}-price`} className={styles.price()}>
+              {option.price}
+              {/* The {" "} separators keep the name "₹130 was ₹140", not "₹130was₹140"; a flex row
+                  drops whitespace-only text and a line drops a leading space, so neither draws. */}
+              {isShown(option.was) ? (
+                <>
+                  {" "}
+                  <s className={styles.was()}>
+                    {/* PriceTag's hidden word, lower-case (R94). */}
+                    <span className="sr-only">was</span> {option.was}
+                  </s>
+                </>
+              ) : null}
+            </span>
+          ) : null;
           return (
             <label key={option.value} data-surface="light" className={styles.card()}>
               <input
@@ -206,7 +206,7 @@ export function ChoiceCardGroup({
                 onChange={handleChange}
                 aria-labelledby={price === null ? `${id}-title` : `${id}-title ${id}-price`}
                 aria-describedby={joinIds(
-                  option.description === undefined ? undefined : `${id}-description`,
+                  hasDescription ? `${id}-description` : undefined,
                   isShown(option.meta) ? `${id}-meta` : undefined,
                   isShown(option.badge) ? `${id}-badge` : undefined
                 )}
@@ -227,11 +227,11 @@ export function ChoiceCardGroup({
                   ) : null}
                 </span>
                 {layout === "tile" ? price : null}
-                {option.description === undefined ? null : (
+                {hasDescription ? (
                   <span id={`${id}-description`} className={styles.description()}>
                     {option.description}
                   </span>
-                )}
+                ) : null}
                 {isShown(option.meta) ? (
                   <span id={`${id}-meta`} className={styles.meta()}>
                     {option.meta}

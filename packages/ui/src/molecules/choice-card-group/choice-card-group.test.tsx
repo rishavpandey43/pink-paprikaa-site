@@ -179,6 +179,40 @@ describe("ChoiceCardGroup", () => {
     expect(screen.getByRole("radio", { name: /Classic/ })).toHaveClass("appearance-none");
   });
 
+  it("skips a slot React would not render — no empty span, nothing to describe or name it by", () => {
+    const { container } = render(
+      <ChoiceCardGroup
+        name="plate"
+        legend="Your plate"
+        options={[
+          {
+            value: "everyday",
+            title: "Everyday",
+            price: null,
+            description: false,
+            meta: "",
+            badge: false,
+          },
+        ]}
+      />
+    );
+    const radio = screen.getByRole("radio", { name: "Everyday" });
+    expect(radio).not.toHaveAttribute("aria-describedby");
+    expect(radio).toHaveAttribute("aria-labelledby", expect.stringMatching(/-title$/));
+    expect(container.querySelectorAll("label span:empty")).toHaveLength(0);
+  });
+
+  it("shows a 0 price, as React renders it", () => {
+    render(
+      <ChoiceCardGroup
+        name="plate"
+        legend="Your plate"
+        options={[{ value: "free", title: "Taster", price: 0 }]}
+      />
+    );
+    expect(screen.getByRole("radio", { name: "Taster 0" })).toBeInTheDocument();
+  });
+
   it("puts the price under the title on tiles and at the end of rows", () => {
     const { rerender } = render(
       <ChoiceCardGroup name="plate" legend="Your plate" options={PLATES} />

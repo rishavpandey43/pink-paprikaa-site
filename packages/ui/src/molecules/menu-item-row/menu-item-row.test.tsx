@@ -80,6 +80,15 @@ describe("MenuItemRow", () => {
     expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
   });
 
+  it("draws the action slot whenever React would render it — a 0 counts, false does not", () => {
+    const { container, rerender } = render(
+      <MenuItemRow name="Kulhad Chai" price={90} action={0} />
+    );
+    expect(container.querySelector(".mt-3\\.5")).toHaveTextContent("0");
+    rerender(<MenuItemRow name="Kulhad Chai" price={90} action={false} />);
+    expect(container.querySelector(".mt-3\\.5")).toBeNull();
+  });
+
   it("renders no control when the menu cannot take orders", () => {
     render(<MenuItemRow name="Kulhad Chai" price={90} />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();

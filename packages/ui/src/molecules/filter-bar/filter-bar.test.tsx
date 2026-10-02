@@ -93,6 +93,17 @@ describe("FilterBar", () => {
     expect(screen.getByRole("button", { name: "Search" })).toBeInTheDocument();
   });
 
+  it("shows the note and trailing slots whenever React would render them — 0 counts", () => {
+    const { container, rerender } = render(
+      <FilterBar label="Menu category" options={CATEGORIES} note={0} trailing={0} />
+    );
+    expect(screen.getAllByText("0")).toHaveLength(2);
+    rerender(
+      <FilterBar label="Menu category" options={CATEGORIES} note={false} trailing={false} />
+    );
+    expect(container.firstElementChild?.children).toHaveLength(1);
+  });
+
   it("lets a caller className replace its own gap", () => {
     const { container } = render(
       <FilterBar label="Menu category" options={CATEGORIES} className="gap-1" />

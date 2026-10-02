@@ -1,6 +1,7 @@
 import type { ComponentProps, ReactNode } from "react";
 
 import { componentVariants } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
 
 const stickyActionBar = componentVariants({
   slots: {
@@ -40,7 +41,7 @@ export function StickyActionBar({
     <div data-surface="ink" className={styles.root({ className })} {...props}>
       <div className={styles.summary()}>
         <span className={styles.amount()}>{amount}</span>
-        {caption ? <span className={styles.caption()}>{caption}</span> : null}
+        {isShown(caption) ? <span className={styles.caption()}>{caption}</span> : null}
       </div>
       <div className={styles.action()}>{action}</div>
     </div>

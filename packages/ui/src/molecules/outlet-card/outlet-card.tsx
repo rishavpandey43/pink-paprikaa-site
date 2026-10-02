@@ -10,6 +10,7 @@ import { ImageSlot } from "../../atoms/image-slot/image-slot";
 import { StatusDot } from "../../atoms/status-dot/status-dot";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
 import { STRETCHED_LINK } from "../../lib/stretched-link";
 
 type OutletStatus = "open" | "busy" | "closed";
@@ -126,7 +127,7 @@ export function OutletCard({
               {hours}
             </p>
           ) : null}
-          {action ? <div className={styles.action()}>{action}</div> : null}
+          {isShown(action) ? <div className={styles.action()}>{action}</div> : null}
         </div>
       </article>
     </Card>

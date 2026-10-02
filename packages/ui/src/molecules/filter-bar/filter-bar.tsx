@@ -8,6 +8,7 @@ import { Badge } from "../../atoms/badge/badge";
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { tagVariants } from "../../atoms/tag/tag";
 import { componentVariants } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
 
 export interface FilterOption {
   value: string;
@@ -97,12 +98,12 @@ export function FilterBar({
           );
         })}
       </ToggleGroup.Root>
-      {note ? (
+      {isShown(note) ? (
         <Badge tone="success" icon={Leaf} className={styles.note()}>
           {note}
         </Badge>
       ) : null}
-      {trailing ? <div className={styles.trailing()}>{trailing}</div> : null}
+      {isShown(trailing) ? <div className={styles.trailing()}>{trailing}</div> : null}
     </div>
   );
 }

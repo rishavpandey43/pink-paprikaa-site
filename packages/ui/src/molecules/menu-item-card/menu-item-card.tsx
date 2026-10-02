@@ -11,6 +11,7 @@ import { PriceTag } from "../../atoms/price-tag/price-tag";
 import { SpiceLevel } from "../../atoms/spice-level/spice-level";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
 import { STRETCHED_LINK } from "../../lib/stretched-link";
 
 const menuItemCard = componentVariants({
@@ -92,7 +93,7 @@ export function MenuItemCard({
               {badge}
             </Badge>
           ) : null}
-          {action ? <div className={styles.action()}>{action}</div> : null}
+          {isShown(action) ? <div className={styles.action()}>{action}</div> : null}
         </div>
         <div className={styles.body()}>
           <div className={styles.header()}>

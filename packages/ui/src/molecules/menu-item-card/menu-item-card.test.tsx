@@ -79,6 +79,15 @@ describe("MenuItemCard", () => {
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
+  it("draws the action slot whenever React would render it — a 0 counts, false does not", () => {
+    const { container, rerender } = render(
+      <MenuItemCard name="Kulhad Chai" price={90} action={0} />
+    );
+    expect(container.querySelector(".z-raised")).toHaveTextContent("0");
+    rerender(<MenuItemCard name="Kulhad Chai" price={90} action={false} />);
+    expect(container.querySelector(".z-raised")).toBeNull();
+  });
+
   it("makes the name a link that covers the card when given an href", () => {
     render(<MenuItemCard name="Kulhad Chai" price={90} href="/menu/kulhad-chai" />);
     const link = screen.getByRole("link", { name: "Kulhad Chai" });

@@ -17,6 +17,13 @@ describe("StickyActionBar", () => {
     expect(screen.getByRole("link", { name: "Send plan" })).toBeInTheDocument();
   });
 
+  it("shows a caption whenever React would render it — a 0 counts, false does not", () => {
+    const { container, rerender } = render(<StickyActionBar {...BAR} caption={0} />);
+    expect(screen.getByText("0")).toBeInTheDocument();
+    rerender(<StickyActionBar {...BAR} caption={false} />);
+    expect(container.querySelector(".text-caption")).toBeNull();
+  });
+
   it("is an ink pill on every surface", () => {
     const { container } = render(<StickyActionBar {...BAR} />);
     expect(container.firstElementChild).toHaveAttribute("data-surface", "ink");

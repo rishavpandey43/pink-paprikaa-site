@@ -7,6 +7,7 @@ import { PriceTag } from "../../atoms/price-tag/price-tag";
 import { SpiceLevel } from "../../atoms/spice-level/spice-level";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
 
 /** A dish photograph from the image pipeline. Omit it and a labelled placeholder shows instead. */
 export interface MenuItemImage {
@@ -99,7 +100,7 @@ export function MenuItemRow({
           {spice === undefined ? null : <SpiceLevel level={spice} size="sm" />}
         </div>
         {description ? <p className={styles.description()}>{description}</p> : null}
-        {action ? <div className={styles.action()}>{action}</div> : null}
+        {isShown(action) ? <div className={styles.action()}>{action}</div> : null}
       </div>
       <ImageSlot
         ratio="square"
