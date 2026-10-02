@@ -128,6 +128,10 @@ const choiceCardGroup = componentVariants({
 /**
  * A card-style single choice (plates, plan lengths, dawats, platters, service, the trial, the
  * decide list). Native radios in a fieldset: keyboard, forms and `register()` work unmodified.
+ *
+ * It owns its `status` / `message` (the fieldset's description and invalid state); do not wrap it
+ * in Field: the legend names the group, and a caller's `aria-invalid` is dropped, so Field's error
+ * could not mark the cards invalid.
  */
 export function ChoiceCardGroup({
   name,

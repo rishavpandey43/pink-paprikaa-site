@@ -294,7 +294,12 @@ function MultipleChipGroup({
 /**
  * Tag-based single or multiple selection for the calculators (meals, breads, spice, add-ons,
  * starter picks) and the segmented value switch. Radix ToggleGroup: roving focus, arrows move,
- * Space/Enter choose.
+ * Space/Enter choose. A single group is a radiogroup that does not choose on focus — unlike a
+ * native radio group, an arrow only moves; the same model as FilterBar (R100).
+ *
+ * It owns its `status` / `message` (the group's description and invalid state); do not wrap it in
+ * Field: the group names itself (`label`), and it takes no `aria-invalid`, so Field's error could
+ * not mark the chips invalid.
  */
 export function ChipGroup(props: ChipGroupProps) {
   return props.type === "single" ? (
