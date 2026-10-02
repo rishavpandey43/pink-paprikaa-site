@@ -31,7 +31,7 @@ export const Playground: Story = {};
 /** Card row "tone". */
 export const Tones: Story = {
   render: (args) => (
-    <div className="flex items-center gap-7.5 py-4.5">
+    <div className="flex flex-wrap items-center gap-7.5 py-4.5">
       <OfferSeal {...args} tone="light" />
       <OfferSeal {...args} tone="brand" />
       <OfferSeal {...args} tone="turmeric" />
@@ -43,7 +43,7 @@ export const Tones: Story = {
 export const Values: Story = {
   args: { size: "md" },
   render: (args) => (
-    <div className="flex items-center gap-7.5 py-4.5">
+    <div className="flex flex-wrap items-center gap-7.5 py-4.5">
       <OfferSeal {...args} value={formatRupees(99)} label="Only" />
       <OfferSeal {...args} value="1+1" label="Free" />
       <OfferSeal {...args} value="50%" label="Off" note="till 11:30pm" />
