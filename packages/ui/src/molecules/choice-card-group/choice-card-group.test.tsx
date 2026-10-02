@@ -38,10 +38,39 @@ describe("ChoiceCardGroup", () => {
     expect(screen.getAllByRole("radio")).toHaveLength(3);
   });
 
-  it("names each radio by its title and price, and describes it with its blurb", () => {
+  it("names each radio by its title and price, and describes it with its blurb and badge", () => {
     render(<ChoiceCardGroup name="plate" legend="Your plate" options={PLATES} />);
     const classic = screen.getByRole("radio", { name: "Classic ₹130 was ₹140" });
-    expect(classic).toHaveAccessibleDescription("The full Pink Paprikaa menu. Our recommendation.");
+    expect(classic).toHaveAccessibleDescription(
+      "The full Pink Paprikaa menu. Our recommendation. Pick"
+    );
+    expect(screen.getByRole("radio", { name: /Everyday/ })).toHaveAccessibleDescription(
+      "Home-style basics, kept simple."
+    );
+  });
+
+  it("reads an option's meta line in its description, so an offer is never silent", () => {
+    render(
+      <ChoiceCardGroup
+        name="length"
+        legend="How many meals"
+        options={[
+          {
+            value: "weekday",
+            title: "Weekday plan",
+            description: "24 meals · Mon–Sat",
+            meta: <span>Offer: +1 free / month</span>,
+          },
+          { value: "offer-only", title: "Trial", meta: "Offer: first week free" },
+        ]}
+      />
+    );
+    expect(screen.getByRole("radio", { name: "Weekday plan" })).toHaveAccessibleDescription(
+      "24 meals · Mon–Sat Offer: +1 free / month"
+    );
+    expect(screen.getByRole("radio", { name: "Trial" })).toHaveAccessibleDescription(
+      "Offer: first week free"
+    );
   });
 
   it("starts on the default choice and reports a new one as a value and a native event", async () => {

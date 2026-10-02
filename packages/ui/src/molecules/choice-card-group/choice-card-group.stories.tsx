@@ -125,9 +125,18 @@ export const PlanLengths: Story = {
   },
   globals: { viewport: { value: "floor360", isRotated: false } },
   play: async ({ canvas }) => {
-    // At 360 the uppercase offer Badge is wider than its tile: it truncates inside the card.
+    // At 360 the uppercase offer Badge is wider than its tile: it wraps inside the card, so the
+    // whole offer shows (never truncated) and is read with the option.
     for (const card of canvas.getAllByRole("radio").map((radio) => radio.closest("label"))) {
       await expect(card?.scrollWidth).toBeLessThanOrEqual(card?.clientWidth ?? 0);
+    }
+    for (const offer of canvas.getAllByText("Offer: +1 free / month")) {
+      await expect(offer.scrollWidth).toBeLessThanOrEqual(offer.clientWidth);
+    }
+    for (const name of ["Weekday plan", "Full month"]) {
+      await expect(canvas.getByRole("radio", { name })).toHaveAccessibleDescription(
+        /Offer: \+1 free \/ month/i
+      );
     }
   },
 };

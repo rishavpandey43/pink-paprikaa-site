@@ -12,6 +12,7 @@ import type { FieldStatus } from "../../lib/field-status";
 import { joinIds } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import { isShown } from "../../lib/is-shown";
 
 /**
  * A grid minimum on the AutoGrid scale (xs 140 · sm 200 · md 260 · lg 320 · xl 380 · 2xl 420px).
@@ -82,6 +83,10 @@ const choiceCardGroup = componentVariants({
       "flex flex-wrap items-baseline gap-1.5 font-display text-h4 font-black whitespace-nowrap",
     was: "font-body text-body-sm font-regular",
     description: "text-caption",
+    badge: "flex",
+    // A line under the description wraps, a Badge's nowrap included: an offer shows in full in a
+    // 150px tile, never truncated.
+    meta: "flex max-w-full **:whitespace-normal",
   },
   variants: {
     layout: {
@@ -200,9 +205,11 @@ export function ChoiceCardGroup({
                 onBlur={onBlur}
                 onChange={handleChange}
                 aria-labelledby={price === null ? `${id}-title` : `${id}-title ${id}-price`}
-                aria-describedby={
-                  option.description === undefined ? undefined : `${id}-description`
-                }
+                aria-describedby={joinIds(
+                  option.description === undefined ? undefined : `${id}-description`,
+                  isShown(option.meta) ? `${id}-meta` : undefined,
+                  isShown(option.badge) ? `${id}-badge` : undefined
+                )}
                 className={styles.input()}
                 {...(value === undefined
                   ? { defaultChecked: option.value === defaultValue }
@@ -213,7 +220,11 @@ export function ChoiceCardGroup({
                   <span id={`${id}-title`} className={styles.title()}>
                     {option.title}
                   </span>
-                  {option.badge}
+                  {isShown(option.badge) ? (
+                    <span id={`${id}-badge`} className={styles.badge()}>
+                      {option.badge}
+                    </span>
+                  ) : null}
                 </span>
                 {layout === "tile" ? price : null}
                 {option.description === undefined ? null : (
@@ -221,7 +232,11 @@ export function ChoiceCardGroup({
                     {option.description}
                   </span>
                 )}
-                {option.meta}
+                {isShown(option.meta) ? (
+                  <span id={`${id}-meta`} className={styles.meta()}>
+                    {option.meta}
+                  </span>
+                ) : null}
               </span>
               {layout === "row" ? price : null}
             </label>
