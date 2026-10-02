@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
@@ -130,7 +130,9 @@ describe("ChipGroup", () => {
     );
     expect(onValueChange).toHaveBeenLastCalledWith(["honey-chilli-potato", "veg-manchurian"]);
     const blocked = screen.getByRole("button", { name: "Hara Bhara Kebab" });
-    blocked.focus();
+    act(() => {
+      blocked.focus();
+    });
     await user.keyboard(" ");
     expect(blocked).toHaveAttribute("aria-pressed", "false");
     expect(onValueChange).toHaveBeenCalledTimes(1);
