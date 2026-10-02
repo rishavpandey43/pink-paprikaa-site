@@ -17,6 +17,8 @@ import {
   Users,
 } from "lucide-react";
 
+import { formatRupees } from "@pink-paprikaa-web/utils";
+
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { FeatureItem } from "./feature-item";
 
@@ -163,7 +165,7 @@ export const WhatYouGet: Story = {
           {
             icon: Lock,
             title: "Your price is locked",
-            description: "Join at ₹130 and it stays ₹130 while you stay subscribed.",
+            description: `Join at ${formatRupees(130)} and it stays ${formatRupees(130)} while you stay subscribed.`,
           },
           {
             icon: CirclePause,
