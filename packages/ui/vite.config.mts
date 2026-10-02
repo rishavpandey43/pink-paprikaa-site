@@ -15,6 +15,8 @@ export default defineConfig(() => ({
     globals: true,
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
+    // Every vi.spyOn is undone before the next test, so a test that fails mid-way leaks nothing.
+    restoreMocks: true,
     include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     reporters: ["default"],
     coverage: {

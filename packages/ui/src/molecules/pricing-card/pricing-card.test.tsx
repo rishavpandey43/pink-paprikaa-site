@@ -37,7 +37,6 @@ describe("PricingCard", () => {
       expect(() =>
         render(<PricingCard {...CLASSIC} points={[...CLASSIC.points]} was={was} />)
       ).toThrow(RangeError);
-      vi.restoreAllMocks();
     }
   );
 

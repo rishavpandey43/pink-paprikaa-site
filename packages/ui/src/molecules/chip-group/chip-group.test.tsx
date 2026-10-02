@@ -157,7 +157,6 @@ describe("ChipGroup", () => {
     expect(() =>
       render(<ChipGroup type="multiple" label="Starters" options={STARTERS} maxSelected={0} />)
     ).toThrow(RangeError);
-    vi.restoreAllMocks();
   });
 
   it("submits its values with a form under its name", async () => {
