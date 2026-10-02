@@ -7,6 +7,7 @@ import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { assertStruckAbove, StruckPrice } from "../../lib/struck-price";
 
 type PricingCardVariant = "default" | "featured" | "flooded";
 
@@ -27,7 +28,7 @@ const pricingCard = componentVariants({
     priceRow: "m-0 flex max-w-none flex-wrap items-baseline gap-x-2 gap-y-1",
     price: "font-display text-pricing-card-price text-text-heading",
     unit: "text-body-sm text-text-muted",
-    was: "text-body text-text-muted",
+    was: "text-body",
     blurb: "m-0 max-w-none text-body-sm text-text-body",
     points: "m-0 flex flex-1 flex-col",
     point:
@@ -85,11 +86,7 @@ export function PricingCard({
   className,
   ...props
 }: PricingCardProps) {
-  if (was !== undefined && was <= price) {
-    throw new RangeError(
-      `PricingCard: was (${String(was)}) must be more than the price it strikes through (${String(price)})`
-    );
-  }
+  assertStruckAbove("PricingCard", was, price);
   const styles = pricingCard({ variant });
 
   return (
@@ -106,11 +103,7 @@ export function PricingCard({
         <span className={styles.price()}>{formatRupees(price)}</span>
         <span className={styles.unit()}>{unit}</span>
         {was === undefined ? null : (
-          <s className={styles.was()}>
-            {/* PriceTag's hidden word, lower-case (R94). */}
-            <span className="sr-only">was </span>
-            {formatRupees(was)}
-          </s>
+          <StruckPrice className={styles.was()}>{formatRupees(was)}</StruckPrice>
         )}
       </p>
       {isShown(blurb) ? <p className={styles.blurb()}>{blurb}</p> : null}

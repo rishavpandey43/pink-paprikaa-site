@@ -3,13 +3,14 @@ import type { ComponentProps } from "react";
 import { formatRupeeRange, formatRupees } from "@pink-paprikaa-web/utils";
 
 import { componentVariants } from "../../lib/component-variants";
+import { assertStruckAbove, StruckPrice } from "../../lib/struck-price";
 
 /** Size on the tag, amount and struck price in em — one class scales the whole price. */
 const priceTag = componentVariants({
   slots: {
     root: "inline-flex flex-wrap items-baseline gap-2",
     amount: "font-display text-price-amount font-bold",
-    was: "font-body text-price-was text-text-subtle",
+    was: "font-body text-price-was",
   },
   variants: {
     size: {
@@ -54,12 +55,7 @@ export function PriceTag({
   className,
   ...props
 }: PriceTagProps) {
-  const price = to ?? amount;
-  if (was !== undefined && was <= price) {
-    throw new RangeError(
-      `PriceTag: was (${String(was)}) must be more than the price it strikes through (${String(price)})`
-    );
-  }
+  assertStruckAbove("PriceTag", was, to ?? amount);
   const styles = priceTag({ size, tone });
 
   return (
@@ -68,10 +64,7 @@ export function PriceTag({
         {to === undefined ? formatRupees(amount) : formatRupeeRange(amount, to)}
       </span>
       {was === undefined ? null : (
-        <s className={styles.was()}>
-          <span className="sr-only">was </span>
-          {formatRupees(was)}
-        </s>
+        <StruckPrice className={styles.was()}>{formatRupees(was)}</StruckPrice>
       )}
     </span>
   );

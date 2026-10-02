@@ -49,6 +49,24 @@ describe("ChoiceCardGroup", () => {
     );
   });
 
+  it("draws the struck price with the shared StruckPrice, in text-subtle like PriceTag", () => {
+    const { container } = render(
+      <ChoiceCardGroup name="plate" legend="Your plate" options={PLATES} />
+    );
+    expect(container.querySelector("s")).toHaveClass("text-text-subtle");
+  });
+
+  it("greys a disabled card's struck price with the rest of the card", () => {
+    const { container } = render(
+      <ChoiceCardGroup
+        name="plate"
+        legend="Your plate"
+        options={PLATES.map((option) => ({ ...option, isDisabled: true }))}
+      />
+    );
+    expect(container.querySelector("s")).toHaveClass("group-has-disabled/card:text-ink-400");
+  });
+
   it("reads an option's meta line in its description, so an offer is never silent", () => {
     render(
       <ChoiceCardGroup

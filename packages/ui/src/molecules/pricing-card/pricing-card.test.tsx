@@ -30,6 +30,11 @@ describe("PricingCard", () => {
     expect(container.querySelector("s")).toHaveTextContent("was ₹140");
   });
 
+  it("draws the struck price with the shared StruckPrice, in text-subtle like PriceTag", () => {
+    const { container } = render(<PricingCard {...CLASSIC} points={[...CLASSIC.points]} />);
+    expect(container.querySelector("s")).toHaveClass("text-text-subtle", "text-body");
+  });
+
   it.each([130, 120])(
     "refuses a struck price (%i) that is not above the price, like PriceTag",
     (was) => {

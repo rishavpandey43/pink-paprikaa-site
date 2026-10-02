@@ -13,6 +13,7 @@ import { joinIds } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
 import { isShown } from "../../lib/is-shown";
+import { StruckPrice } from "../../lib/struck-price";
 
 /**
  * A grid minimum on the AutoGrid scale (xs 140 · sm 200 · md 260 · lg 320 · xl 380 · 2xl 420px).
@@ -25,6 +26,7 @@ export interface ChoiceOption {
   title: ReactNode;
   /** Formatted with formatRupees, or words ("Included", "Quoted · 25+ guests"). */
   price?: ReactNode | undefined;
+  /** The struck original, formatted like `price`; it must be higher (words are not checked). */
   was?: ReactNode | undefined;
   description?: ReactNode | undefined;
   /** A Badge beside the title, e.g. "Pick". */
@@ -74,14 +76,15 @@ const choiceCardGroup = componentVariants({
     legend: "mb-2.5 font-display text-choice-card-title text-text-heading",
     list: "grid gap-2",
     message: "mt-2",
-    card: "relative flex min-h-16 cursor-pointer rounded-md p-3 text-left transition-control has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400",
+    card: "group/card relative flex min-h-16 cursor-pointer rounded-md p-3 text-left transition-control has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-ink-200 has-disabled:text-ink-400",
     input: "",
     body: "flex min-w-0 flex-1 flex-col items-start gap-1",
     head: "flex w-full flex-wrap items-center justify-between gap-1.5",
     title: "font-display text-choice-card-title",
     price:
       "flex flex-wrap items-baseline gap-1.5 font-display text-h4 font-black whitespace-nowrap",
-    was: "font-body text-body-sm font-regular",
+    // A disabled card greys its words; the struck price's own colour would out-rank the card's.
+    was: "font-body text-body-sm font-regular group-has-disabled/card:text-ink-400",
     description: "text-caption",
     badge: "flex",
     // A line under the description wraps, a Badge's nowrap included: an offer shows in full in a
@@ -186,10 +189,7 @@ export function ChoiceCardGroup({
               {isShown(option.was) ? (
                 <>
                   {" "}
-                  <s className={styles.was()}>
-                    {/* PriceTag's hidden word, lower-case (R94). */}
-                    <span className="sr-only">was</span> {option.was}
-                  </s>
+                  <StruckPrice className={styles.was()}>{option.was}</StruckPrice>
                 </>
               ) : null}
             </span>
