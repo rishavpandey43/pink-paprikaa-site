@@ -108,32 +108,39 @@ Five ways an organism fails in the real world. Each is pinned by a test in its o
 
 Recorded against `2026-09-27-ds-00-contracts.md` §7. Additive props keep every contract name and meaning.
 
-| Component                                                 | Deviation                                                                                                                                                                                                                                                                                                                                                                           | Reason                                                                                                                                                                                                                           |
-| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SiteHeader                                                | `+ compactActions?: ReactNode` (shown below `lg`); `actions` show from `lg`                                                                                                                                                                                                                                                                                                         | Handoff `PPHeader`: below 1024px the two text buttons give way to a WhatsApp icon button beside the menu toggle.                                                                                                                 |
-| SiteHeader                                                | `+ drawerLinks?: NavLink[]` (= `links`)                                                                                                                                                                                                                                                                                                                                             | The handoff drawer lists eight destinations; the inline nav four.                                                                                                                                                                |
-| SiteHeader                                                | `+ navLabel = "Main"`, `+ skipLinkLabel = "Skip to content"`, `+ closeMenuLabel = "Close menu"`                                                                                                                                                                                                                                                                                     | Accessible chrome labels, overridable — the same pattern as the contract's `menuLabel`.                                                                                                                                          |
-| SiteHeader                                                | Responsive rule fixed as: inline nav from `lg`, first three links between `lg` and `xl`, all at `xl`; drawer trigger whenever a link is hidden                                                                                                                                                                                                                                      | Spec §9.3 says "xl → lg → md, drawer below md", but the handoff's compact header (lockup + Pure Veg chip + two buttons) does not fit a nav at 768px; the handoff itself switches to the drawer at 1024px.                        |
-| SiteFooter                                                | `+ pattern?: "none" \| "default" \| "faint"` (default by tone: brand → none, ink → faint)                                                                                                                                                                                                                                                                                           | The design system's pink footer is flat; the handoff's ink footer carries the 4% diamond (C7). Same vocabulary as Section.                                                                                                       |
-| SiteFooter                                                | `+ hasDockClearance?: boolean`                                                                                                                                                                                                                                                                                                                                                      | Review Focus 4: the legal bar must clear the ActionDock (handoff pads 110px).                                                                                                                                                    |
-| SiteFooter                                                | `+ headingLevel = 2` (column headings); exports `FooterItem`, `FooterColumn`, `FooterSocialLink`, `FooterPolicy`                                                                                                                                                                                                                                                                    | Spec §5.5: heading levels configurable; named types for the app.                                                                                                                                                                 |
-| HeroBanner                                                | `+ titleSize?: "display-1" \| "display-2"`                                                                                                                                                                                                                                                                                                                                          | Handoff Catering's long headline is display-2.                                                                                                                                                                                   |
-| HeroBanner                                                | `+ pattern?` (default by tone: alt → none, others → default)                                                                                                                                                                                                                                                                                                                        | Flooded tones carry the diamond (design system); the handoff's pink-50 heroes are plain.                                                                                                                                         |
-| CtaBand                                                   | `hasPattern?: boolean` → `pattern?: "none" \| "default" \| "faint"` (= `"default"`)                                                                                                                                                                                                                                                                                                 | Handoff ink bands use the faint 4% pattern; one vocabulary with Section, SiteFooter, HeroBanner.                                                                                                                                 |
-| MenuList                                                  | `extends Omit<ComponentProps<"section">, "title">`                                                                                                                                                                                                                                                                                                                                  | The contract's `extends ComponentProps<"section">` conflicts with `title: ReactNode \| null` (native `title` is a string). Same fix for CartPanel.                                                                               |
-| MenuList                                                  | `categories` lists real categories only; `+ allLabel = "All"` (always first)                                                                                                                                                                                                                                                                                                        | "All" is chrome, not a category; a derived list cannot collide with it.                                                                                                                                                          |
-| MenuList                                                  | `+ filterLabel = "Filter the menu"`, `+ overflowLabel?: string`, `+ emptyState?: ReactNode`; `MenuListItem + imageLabel?`                                                                                                                                                                                                                                                           | FilterBar needs an accessible label; the design system's "Also On The Menu" divider and "Nothing matches that yet." empty state are copy, so they arrive as props; `imageLabel` passes through to MenuItemCard/Row placeholders. |
-| MenuList                                                  | Server organism + client `MenuListFilter` leaf that switches between server-rendered per-category panels                                                                                                                                                                                                                                                                            | `renderItemAction` / `getItemHref` are functions: they can run inside a server component but can never be passed into a client one. Only the chosen-category state is client-side.                                               |
-| CartPanel                                                 | `+ emptyTitle?: ReactNode`, `+ emptyBody?: ReactNode` (the panel renders its own symbol EmptyState with `browseAction`)                                                                                                                                                                                                                                                             | "Nothing here yet." / "Let's fix that." are copy; the panel still owns the empty look, as the design system says ("renders its own empty state").                                                                                |
-| CartPanel                                                 | `+ noteField?: ReactNode`, `+ subtotalLabel = "Subtotal"`, `+ taxLabel = "GST"`, `+ totalLabel = "Total"`, `+ note?: ReactNode`, `+ headingLevel = 2`                                                                                                                                                                                                                               | The design system's kitchen-notes Input and "Inclusive of all taxes." are content; summary labels are overridable chrome.                                                                                                        |
-| CartPanel                                                 | `+ cartTotals(lines, gstRate)` + `CartTotals` exported from `cart-totals.ts` (not the client file)                                                                                                                                                                                                                                                                                  | The app labels its pay button "Pay ₹1,239" with the same maths CartPanel renders; a server caller can import it because it is not in a `"use client"` module.                                                                    |
-| OrderTracker                                              | `+ badge?: ReactNode`, `+ codeLabel = "Order"`, `+ paymentLabel = "Paid"` (the line reads "Paid · UPI"), `+ headingLevel = 2`                                                                                                                                                                                                                                                       | "Preparing"/"Ready" is copy (a slot, like HeroBanner's `badges`); "Order #" and "Paid ·" are overridable chrome.                                                                                                                 |
-| ReviewCarousel                                            | `footerLink + isExternal?: boolean`; controls are `aria-disabled` (not `disabled`) at the ends                                                                                                                                                                                                                                                                                      | A footer link may be internal; a natively disabled button drops keyboard focus to `<body>` the moment the end is reached.                                                                                                        |
-| Dialog                                                    | `+ closeLabel = "Close"`; root props are Radix's own (`Pick<Dialog.DialogProps, "open" \| "defaultOpen" \| "onOpenChange">`)                                                                                                                                                                                                                                                        | The close button needs a name.                                                                                                                                                                                                   |
-| Dialog                                                    | `+ portalContainer?: HTMLElement \| null` (default `document.body`), passed to Radix `Dialog.Portal container` (controller ruling, 2026-09-27)                                                                                                                                                                                                                                      | The App kit renders sheets inside AppShell's `overlay` slot (a `position: relative` frame), as the design system's Dialog note asks ("works inside phone frames").                                                               |
-| SiteHeader                                                | `+ portalContainer?: HTMLElement \| null` (default `document.body`), forwarded to the drawer's Radix portal (same ruling)                                                                                                                                                                                                                                                           | Kits that frame a whole page render the drawer inside the frame. A DOM element can only come from a client caller; server pages omit it.                                                                                         |
-| QuotePanel                                                | `+ wasLabel = "was"` (visually hidden before the struck price, lower-case like PriceTag's, R94; drawn with `lib/struck-price`'s `StruckPrice`). `lines` render through KeyValueList (split rows, compact, no dividers) and `total` as its own `<dl>` row — the spec row's "PriceSummary" does not fit: quote values are pre-formatted strings ("₹99 × 40", "25"), not rupee amounts | Screen readers do not announce strike-through.                                                                                                                                                                                   |
-| TabBar, StatBand, TestimonialWall, FaqSection, ActionDock | None (StatBand exports `StatBandItem`, TabBar exports `TabBarItem`, ActionDock `DockAction`)                                                                                                                                                                                                                                                                                        | —                                                                                                                                                                                                                                |
+| Component                    | Deviation                                                                                                                                                                                                                                                                                                                                                                           | Reason                                                                                                                                                                                                                           |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SiteHeader                   | `+ compactActions?: ReactNode` (shown below `lg`); `actions` show from `lg`                                                                                                                                                                                                                                                                                                         | Handoff `PPHeader`: below 1024px the two text buttons give way to a WhatsApp icon button beside the menu toggle.                                                                                                                 |
+| SiteHeader                   | `+ drawerLinks?: NavLink[]` (= `links`)                                                                                                                                                                                                                                                                                                                                             | The handoff drawer lists eight destinations; the inline nav four.                                                                                                                                                                |
+| SiteHeader                   | `+ navLabel = "Main"`, `+ skipLinkLabel = "Skip to content"`, `+ closeMenuLabel = "Close menu"`                                                                                                                                                                                                                                                                                     | Accessible chrome labels, overridable — the same pattern as the contract's `menuLabel`.                                                                                                                                          |
+| SiteHeader                   | Responsive rule fixed as: inline nav from `lg`, first three links between `lg` and `xl`, all at `xl`; drawer trigger whenever a link is hidden                                                                                                                                                                                                                                      | Spec §9.3 says "xl → lg → md, drawer below md", but the handoff's compact header (lockup + Pure Veg chip + two buttons) does not fit a nav at 768px; the handoff itself switches to the drawer at 1024px.                        |
+| SiteFooter                   | `+ pattern?: "none" \| "default" \| "faint"` (default by tone: brand → none, ink → faint)                                                                                                                                                                                                                                                                                           | The design system's pink footer is flat; the handoff's ink footer carries the 4% diamond (C7). Same vocabulary as Section.                                                                                                       |
+| SiteFooter                   | `+ hasDockClearance?: boolean`                                                                                                                                                                                                                                                                                                                                                      | Review Focus 4: the legal bar must clear the ActionDock (handoff pads 110px).                                                                                                                                                    |
+| SiteFooter                   | `+ headingLevel = 2` (column headings); exports `FooterItem`, `FooterColumn`, `FooterSocialLink`, `FooterPolicy`                                                                                                                                                                                                                                                                    | Spec §5.5: heading levels configurable; named types for the app.                                                                                                                                                                 |
+| HeroBanner                   | `+ titleSize?: "display-1" \| "display-2"`                                                                                                                                                                                                                                                                                                                                          | Handoff Catering's long headline is display-2.                                                                                                                                                                                   |
+| HeroBanner                   | `+ pattern?` (default by tone: alt → none, others → default)                                                                                                                                                                                                                                                                                                                        | Flooded tones carry the diamond (design system); the handoff's pink-50 heroes are plain.                                                                                                                                         |
+| CtaBand                      | `hasPattern?: boolean` → `pattern?: "none" \| "default" \| "faint"` (= `"default"`)                                                                                                                                                                                                                                                                                                 | Handoff ink bands use the faint 4% pattern; one vocabulary with Section, SiteFooter, HeroBanner.                                                                                                                                 |
+| MenuList                     | `extends Omit<ComponentProps<"section">, "title">`                                                                                                                                                                                                                                                                                                                                  | The contract's `extends ComponentProps<"section">` conflicts with `title: ReactNode \| null` (native `title` is a string). Same fix for CartPanel.                                                                               |
+| MenuList                     | `categories` lists real categories only; `+ allLabel = "All"` (always first)                                                                                                                                                                                                                                                                                                        | "All" is chrome, not a category; a derived list cannot collide with it.                                                                                                                                                          |
+| MenuList                     | `+ filterLabel = "Filter the menu"`, `+ overflowLabel?: string`, `+ emptyState?: ReactNode`; `MenuListItem + imageLabel?`                                                                                                                                                                                                                                                           | FilterBar needs an accessible label; the design system's "Also On The Menu" divider and "Nothing matches that yet." empty state are copy, so they arrive as props; `imageLabel` passes through to MenuItemCard/Row placeholders. |
+| MenuList                     | Server organism + client `MenuListFilter` leaf that switches between server-rendered per-category panels                                                                                                                                                                                                                                                                            | `renderItemAction` / `getItemHref` are functions: they can run inside a server component but can never be passed into a client one. Only the chosen-category state is client-side.                                               |
+| CartPanel                    | `+ emptyTitle?: ReactNode`, `+ emptyBody?: ReactNode` (the panel renders its own symbol EmptyState with `browseAction`)                                                                                                                                                                                                                                                             | "Nothing here yet." / "Let's fix that." are copy; the panel still owns the empty look, as the design system says ("renders its own empty state").                                                                                |
+| CartPanel                    | `+ noteField?: ReactNode`, `+ subtotalLabel = "Subtotal"`, `+ taxLabel = "GST"`, `+ totalLabel = "Total"`, `+ note?: ReactNode`, `+ headingLevel = 2`                                                                                                                                                                                                                               | The design system's kitchen-notes Input and "Inclusive of all taxes." are content; summary labels are overridable chrome.                                                                                                        |
+| CartPanel                    | `+ cartTotals(lines, gstRate)` + `CartTotals` exported from `cart-totals.ts` (not the client file)                                                                                                                                                                                                                                                                                  | The app labels its pay button "Pay ₹1,239" with the same maths CartPanel renders; a server caller can import it because it is not in a `"use client"` module.                                                                    |
+| OrderTracker                 | `+ badge?: ReactNode`, `+ codeLabel = "Order"`, `+ paymentLabel = "Paid"` (the line reads "Paid · UPI"), `+ headingLevel = 2`                                                                                                                                                                                                                                                       | "Preparing"/"Ready" is copy (a slot, like HeroBanner's `badges`); "Order #" and "Paid ·" are overridable chrome.                                                                                                                 |
+| ReviewCarousel               | `footerLink + isExternal?: boolean`; controls are `aria-disabled` (not `disabled`) at the ends                                                                                                                                                                                                                                                                                      | A footer link may be internal; a natively disabled button drops keyboard focus to `<body>` the moment the end is reached.                                                                                                        |
+| Dialog                       | `+ closeLabel = "Close"`; root props are Radix's own (`Pick<Dialog.DialogProps, "open" \| "defaultOpen" \| "onOpenChange">`)                                                                                                                                                                                                                                                        | The close button needs a name.                                                                                                                                                                                                   |
+| Dialog                       | `+ portalContainer?: HTMLElement \| null` (default `document.body`), passed to Radix `Dialog.Portal container` (controller ruling, 2026-09-27)                                                                                                                                                                                                                                      | The App kit renders sheets inside AppShell's `overlay` slot (a `position: relative` frame), as the design system's Dialog note asks ("works inside phone frames").                                                               |
+| SiteHeader                   | `+ portalContainer?: HTMLElement \| null` (default `document.body`), forwarded to the drawer's Radix portal (same ruling)                                                                                                                                                                                                                                                           | Kits that frame a whole page render the drawer inside the frame. A DOM element can only come from a client caller; server pages omit it.                                                                                         |
+| QuotePanel                   | `+ wasLabel = "was"` (visually hidden before the struck price, lower-case like PriceTag's, R94; drawn with `lib/struck-price`'s `StruckPrice`). `lines` render through KeyValueList (split rows, compact, no dividers) and `total` as its own `<dl>` row — the spec row's "PriceSummary" does not fit: quote values are pre-formatted strings ("₹99 × 40", "25"), not rupee amounts | Screen readers do not announce strike-through.                                                                                                                                                                                   |
+| TestimonialWall              | `+ lede?: ReactNode`, passed to SectionHeader (contract delta 1, owner ruling R110)                                                                                                                                                                                                                                                                                                 | Dev parity: the August port's wall took a one-sentence lede under the heading, as SectionHeader already does.                                                                                                                    |
+| FaqSection                   | `+ defaultOpen?: string[]` (the answers open on arrival; default the first, `[]` for none), forwarded to Accordion (contract delta 2, R110)                                                                                                                                                                                                                                         | Dev parity: a page that links to one answer opens it; Accordion (Plan 3a) already takes `defaultOpen`.                                                                                                                           |
+| OrderTracker                 | `+ progressLabel = "Order progress"` — the step list's accessible name (contract delta 3, R110)                                                                                                                                                                                                                                                                                     | Dev parity: the tracker list was named; an unnamed second list on the screen tells a screen-reader user nothing. Overridable chrome, like `codeLabel`.                                                                           |
+| Dialog                       | `+ hasCloseButton = true`; `false` hides the close button only — Escape and the scrim still ask to close through `onOpenChange`, and the caller decides (contract delta 4, R110)                                                                                                                                                                                                    | Dev parity: a decision that must be answered drops the close glyph; such a dialog is controlled and gives its own action buttons (story `MustBeAnswered`).                                                                       |
+| Dialog                       | `+ className?: string`, merged onto the panel (contract delta 5, R110)                                                                                                                                                                                                                                                                                                              | Dev parity: every other organism merges a caller class; `DialogProps` does not extend native props, so it is declared.                                                                                                           |
+| MenuList                     | `+ defaultCategory?: string` — seeds the client leaf's chosen option; "All" when omitted or not on offer (contract delta 6, R110)                                                                                                                                                                                                                                                   | Dev parity: a page linked from one category opens on it. A string, so it crosses into the client leaf; controlled `category` still cannot (D6).                                                                                  |
+| MenuList                     | `+ lede?: ReactNode`, passed to SectionHeader (contract delta 7, R110)                                                                                                                                                                                                                                                                                                              | Dev parity, as TestimonialWall.                                                                                                                                                                                                  |
+| TabBar, StatBand, ActionDock | None (StatBand exports `StatBandItem`, TabBar exports `TabBarItem`, ActionDock `DockAction`)                                                                                                                                                                                                                                                                                        | —                                                                                                                                                                                                                                |
 
 **Layout stories.** Plan 2c's layout stories (AppShell, PostFrame, Stack/Cluster demos) use temporary atom-built stand-ins for TabBar, Dialog, FilterBar, MenuItemRow, LoyaltyCard, LogoLockup and OfferSeal. Task 16 replaces them with the real components (layouts are the top tier, so they may import organisms and molecules).
 
@@ -305,7 +312,8 @@ Implementer: copy this table into your report, extended with anything the plan m
     },
     "cta-band-copy": {
       "$value": "36ch",
-      "$description": "Copy measure beside the action in the split layout."
+      "$description": "Copy measure beside the action in the split layout.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
     }
   }
 }
@@ -796,7 +804,7 @@ Expected: green; Storybook lists Organisms/CtaBand with 12 stories.
 
 ```bash
 git add packages/design-tokens/tokens/component/cta-band.json packages/ui/src/organisms packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): CtaBand organism and the organism story fixtures
+git commit -m "feat(ui): add the CtaBand organism and the organism story fixtures
 
 The page-closing band in ink, brand and soft, split or centred, over the
 tiled diamond at the default or the handoff's faint density. Story fixtures
@@ -1149,7 +1157,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/stat-band.json packages/ui/src/organisms/stat-band packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): StatBand organism
+git commit -m "feat(ui): add the StatBand organism
 
 Three or four stats on an auto-fitting grid over the tiled diamond, in the
 soft, brand and ink tones; numbers go brand pink on soft and white on the
@@ -1286,7 +1294,8 @@ describe("HeroBanner", () => {
       .getAllByRole("listitem")
       .map((item) => item.textContent);
     expect(facts).toEqual(META);
-    expect(list.querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(2);
+    // SymbolMark is a masked `<span>`, not an svg.
+    expect(list.querySelectorAll('[aria-hidden="true"]')).toHaveLength(2);
   });
 
   it("puts the media slot in a positioned column for overlays such as an OfferSeal", () => {
@@ -1835,7 +1844,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/hero-banner.json packages/ui/src/organisms/hero-banner packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): HeroBanner organism
+git commit -m "feat(ui): add the HeroBanner organism
 
 Brand, ink and soft floods over the diamond plus the handoff's plain pink-50
 tint; split or centred; fluid display-1 or display-2 headline at any heading
@@ -1853,24 +1862,24 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 **Dev parity:**
 
-| Dev item                                         | Ruling                         | Where / clause                                                                                  |
-| ------------------------------------------------ | ------------------------------ | ----------------------------------------------------------------------------------------------- |
-| Heading and every review render                  | ALREADY                        | tests "heads the wall…", "lists one review card per review…"                                    |
-| The component adds the quote marks               | ALREADY                        | ReviewCard's behaviour (Plan 3b, spec §9.2); this plan asserts the verbatim text                |
-| `lede` under the heading                         | ADD — pending contract delta 1 | not built until the controller rules (report)                                                   |
-| `headingLevel`                                   | ALREADY                        | test "takes its heading level from headingLevel"                                                |
-| Each score announced as an image                 | ADD                            | test "announces each score as an image with its value"                                          |
-| No score when a review carries none              | ADD                            | test "omits the score for a review that carries none"                                           |
-| Cards pale pink by default (`variant = "brand"`) | DROP                           | D1 — the design system's `TestimonialWall.jsx` defaults `variant="default"`; `brand` is tested  |
-| `mark="symbol"` forced on every card             | DROP                           | D1 — the design system passes no `mark`; a review's own `mark` passes through `ReviewCardProps` |
-| Auto-fit grid survives 360px                     | ALREADY                        | `autogrid` test                                                                                 |
-| Merges a caller `className`                      | ADD                            | test "merges a caller className"                                                                |
-| axe                                              | ALREADY                        | test "has no accessibility violations"                                                          |
-| `WallReview` type                                | ALREADY                        | `ReviewCardProps` (contract §7)                                                                 |
-| Stories Default · DefaultCards · Narrow          | ALREADY                        | Default · BrandCards (the other variant) · Mobile                                               |
-| Story SixReviews (invented guests)               | DROP                           | spec §10.1 — real reviews only; four exist (`FourReviews`)                                      |
-| Story WithLede                                   | ADD — pending contract delta 1 | —                                                                                               |
-| Story WithoutScores                              | ADD                            | `WithoutScores`                                                                                 |
+| Dev item                                         | Ruling  | Where / clause                                                                                  |
+| ------------------------------------------------ | ------- | ----------------------------------------------------------------------------------------------- |
+| Heading and every review render                  | ALREADY | tests "heads the wall…", "lists one review card per review…"                                    |
+| The component adds the quote marks               | ALREADY | ReviewCard's behaviour (Plan 3b, spec §9.2); this plan asserts the verbatim text                |
+| `lede` under the heading                         | ADD     | contract delta 1 (R110); test "renders the lede under the heading"                              |
+| `headingLevel`                                   | ALREADY | test "takes its heading level from headingLevel"                                                |
+| Each score announced as an image                 | ADD     | test "announces each score as an image with its value"                                          |
+| No score when a review carries none              | ADD     | test "omits the score for a review that carries none"                                           |
+| Cards pale pink by default (`variant = "brand"`) | DROP    | D1 — the design system's `TestimonialWall.jsx` defaults `variant="default"`; `brand` is tested  |
+| `mark="symbol"` forced on every card             | DROP    | D1 — the design system passes no `mark`; a review's own `mark` passes through `ReviewCardProps` |
+| Auto-fit grid survives 360px                     | ALREADY | `autogrid` test                                                                                 |
+| Merges a caller `className`                      | ADD     | test "merges a caller className"                                                                |
+| axe                                              | ALREADY | test "has no accessibility violations"                                                          |
+| `WallReview` type                                | ALREADY | `ReviewCardProps` (contract §7)                                                                 |
+| Stories Default · DefaultCards · Narrow          | ALREADY | Default · BrandCards (the other variant) · Mobile                                               |
+| Story SixReviews (invented guests)               | DROP    | spec §10.1 — real reviews only; four exist (`FourReviews`)                                      |
+| Story WithLede                                   | ADD     | `WithLede` (contract delta 1)                                                                   |
+| Story WithoutScores                              | ADD     | `WithoutScores`                                                                                 |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -1910,6 +1919,19 @@ describe("TestimonialWall", () => {
     expect(screen.getByText("Guests")).toBeInTheDocument();
   });
 
+  it("renders the lede under the heading", () => {
+    render(
+      <TestimonialWall
+        title="Reviews"
+        lede="Verified Google reviews, in the guests' own words."
+        reviews={REVIEWS}
+      />
+    );
+    expect(
+      screen.getByText("Verified Google reviews, in the guests' own words.")
+    ).toBeInTheDocument();
+  });
+
   it("takes its heading level from headingLevel", () => {
     render(<TestimonialWall title="Reviews" reviews={REVIEWS} headingLevel={3} />);
     expect(screen.getByRole("heading", { level: 3, name: "Reviews" })).toBeInTheDocument();
@@ -1925,8 +1947,9 @@ describe("TestimonialWall", () => {
 
   it("dresses every card in the wall's variant", () => {
     render(<TestimonialWall title="Reviews" reviews={REVIEWS} variant="brand" />);
+    // ReviewCard's brand variant is Card's pale-pink `feature` surface.
     for (const card of screen.getAllByRole("figure")) {
-      expect(card).toHaveAttribute("data-surface", "brand");
+      expect(card).toHaveAttribute("data-surface", "soft");
     }
   });
 
@@ -1995,6 +2018,8 @@ const testimonialWall = componentVariants({
 export interface TestimonialWallProps extends Omit<ComponentProps<"section">, "title"> {
   overline?: ReactNode;
   title: ReactNode;
+  /** One sentence under the heading. */
+  lede?: ReactNode;
   /** Real guest reviews only — three or six read best. */
   reviews: ReviewCardProps[];
   variant?: "default" | "brand" | undefined;
@@ -2005,6 +2030,7 @@ export interface TestimonialWallProps extends Omit<ComponentProps<"section">, "t
 export function TestimonialWall({
   overline,
   title,
+  lede,
   reviews,
   variant = "default",
   headingLevel = 2,
@@ -2015,7 +2041,7 @@ export function TestimonialWall({
   return (
     <section className={slots.root({ className })} {...props}>
       <div className={slots.inner()}>
-        <SectionHeader overline={overline} title={title} headingLevel={headingLevel} />
+        <SectionHeader overline={overline} title={title} lede={lede} headingLevel={headingLevel} />
         <ul className={slots.grid()}>
           {reviews.map((review, index) => (
             <li key={index} className={slots.item()}>
@@ -2036,7 +2062,7 @@ export function TestimonialWall({
 - [ ] **Step 4: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- testimonial-wall 2>&1 | tail -8`
-Expected: PASS (9 tests). The score assertions read Rating's name ("5 out of 5", Plan 2b via ReviewCard); if Task 0 found another wording, match it.
+Expected: PASS (10 tests). The score assertions read Rating's name ("5.0 out of 5", Plan 2b via ReviewCard — `value.toFixed(1)`, confirmed in Task 0).
 
 - [ ] **Step 5: Stories (card parity with `TestimonialWall.card.html`)**
 
@@ -2083,6 +2109,10 @@ export const FourReviews: Story = { args: { reviews: GOOGLE_REVIEWS } };
 
 export const OnTint: Story = { args: { className: "bg-surface-page-alt" } };
 
+export const WithLede: Story = {
+  args: { lede: "Verified Google reviews, in the guests' own words." },
+};
+
 /** Quotes with no score still carry the card — the words are the proof, not the number. */
 export const WithoutScores: Story = {
   args: { reviews: GOOGLE_REVIEWS.slice(1).map((review) => ({ ...review, rating: undefined })) },
@@ -2111,7 +2141,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/ui/src/organisms/testimonial-wall packages/ui/src/index.ts
-git commit -m "feat(ui): TestimonialWall organism
+git commit -m "feat(ui): add the TestimonialWall organism
 
 A section header over an auto-fitting grid of review cards in one variant;
 stories show the verified Google reviews verbatim instead of the design
@@ -2128,22 +2158,22 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 **Dev parity:**
 
-| Dev item                                          | Ruling                         | Where / clause                                                                                                                    |
-| ------------------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| Heading, lede and every question                  | ALREADY                        | test "heads the section with overline, a level-2 title and the lede"                                                              |
-| The first answer open on arrival                  | ALREADY                        | test "opens the first answer by default…"                                                                                         |
-| `defaultOpen` (named questions, or `[]` for none) | ADD — pending contract delta 2 | Accordion already takes `defaultOpen` (Plan 3a); not built until ruled (report)                                                   |
-| Clicking another question swaps the open answer   | ALREADY                        | native `<details name>` (shared `name` asserted); Plan 3a Accordion's `play` proves exclusivity in Chromium                       |
-| `isMultiple` keeps several open                   | ALREADY                        | test "lets several answers stay open with isMultiple"                                                                             |
-| Questions sit one heading level below the section | DROP here                      | Plan 3a's Accordion renders questions in `<summary>` with no heading level (spec §9.2 lists none) — cross-plan note in the report |
-| Two columns stack at 360px                        | ALREADY                        | `lg:grid-cols-2`, one column below                                                                                                |
-| Merges a caller `className`                       | ADD                            | test "merges a caller className"                                                                                                  |
-| axe                                               | ALREADY                        | test "has no accessibility violations"                                                                                            |
-| "A few bakes contain egg" answer                  | DROP                           | C10                                                                                                                               |
-| Stories Default · Multiple · Narrow               | ALREADY                        | Default · Multiple · Mobile                                                                                                       |
-| Story WithoutLede                                 | ADD                            | `WithoutLede`                                                                                                                     |
-| Story HeadingLevels                               | ADD                            | `HeadingLevel3`                                                                                                                   |
-| Stories SecondOpen · AllClosed                    | ADD — pending contract delta 2 | —                                                                                                                                 |
+| Dev item                                          | Ruling    | Where / clause                                                                                                                    |
+| ------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Heading, lede and every question                  | ALREADY   | test "heads the section with overline, a level-2 title and the lede"                                                              |
+| The first answer open on arrival                  | ALREADY   | test "opens the first answer by default…"                                                                                         |
+| `defaultOpen` (named questions, or `[]` for none) | ADD       | contract delta 2 (R110), forwarded to Accordion (Plan 3a); tests "opens the answers named in defaultOpen…", "opens none…"         |
+| Clicking another question swaps the open answer   | ALREADY   | native `<details name>` (shared `name` asserted); Plan 3a Accordion's `play` proves exclusivity in Chromium                       |
+| `isMultiple` keeps several open                   | ALREADY   | test "lets several answers stay open with isMultiple"                                                                             |
+| Questions sit one heading level below the section | DROP here | Plan 3a's Accordion renders questions in `<summary>` with no heading level (spec §9.2 lists none) — cross-plan note in the report |
+| Two columns stack at 360px                        | ALREADY   | `lg:grid-cols-2`, one column below                                                                                                |
+| Merges a caller `className`                       | ADD       | test "merges a caller className"                                                                                                  |
+| axe                                               | ALREADY   | test "has no accessibility violations"                                                                                            |
+| "A few bakes contain egg" answer                  | DROP      | C10                                                                                                                               |
+| Stories Default · Multiple · Narrow               | ALREADY   | Default · Multiple · Mobile                                                                                                       |
+| Story WithoutLede                                 | ADD       | `WithoutLede`                                                                                                                     |
+| Story HeadingLevels                               | ADD       | `HeadingLevel3`                                                                                                                   |
+| Stories SecondOpen · AllClosed                    | ADD       | `SecondOpen` · `AllClosed` (contract delta 2)                                                                                     |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -2237,6 +2267,19 @@ describe("FaqSection", () => {
     expect([...names][0]).toBeTruthy();
   });
 
+  it("opens the answers named in defaultOpen instead of the first", () => {
+    const { container } = render(<FaqSection title="FAQ" items={ITEMS} defaultOpen={["pause"]} />);
+    const answers = [...container.querySelectorAll("details")];
+    expect(answers[0]).not.toHaveAttribute("open");
+    expect(answers[1]).toHaveAttribute("open");
+    expect(container.querySelectorAll("details[open]")).toHaveLength(1);
+  });
+
+  it("opens none when defaultOpen is empty", () => {
+    const { container } = render(<FaqSection title="FAQ" items={ITEMS} defaultOpen={[]} />);
+    expect(container.querySelectorAll("details[open]")).toHaveLength(0);
+  });
+
   it("lets several answers stay open with isMultiple", () => {
     const { container } = render(<FaqSection title="FAQ" items={ITEMS} isMultiple />);
     for (const answer of container.querySelectorAll("details")) {
@@ -2299,6 +2342,8 @@ export interface FaqSectionProps extends Omit<ComponentProps<"section">, "title"
   lede?: ReactNode;
   /** One or two short sentences per answer. The first opens by default. */
   items: AccordionItem[];
+  /** The `value`s of the answers open on arrival (default: the first; `[]` for none). */
+  defaultOpen?: string[] | undefined;
   /** Allow several answers open at once. */
   isMultiple?: boolean | undefined;
   /** Beside the heading, sticky at lg and up — e.g. the handoff's "Still have a question?" card. */
@@ -2312,6 +2357,7 @@ export function FaqSection({
   title,
   lede,
   items,
+  defaultOpen,
   isMultiple = false,
   aside,
   headingLevel = 2,
@@ -2331,7 +2377,7 @@ export function FaqSection({
           />
           {aside}
         </div>
-        <Accordion items={items} isMultiple={isMultiple} />
+        <Accordion items={items} defaultOpen={defaultOpen} isMultiple={isMultiple} />
       </div>
     </section>
   );
@@ -2341,7 +2387,7 @@ export function FaqSection({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- faq-section 2>&1 | tail -8`
-Expected: PASS (6 tests).
+Expected: PASS (8 tests).
 
 - [ ] **Step 6: Stories (card parity with `FaqSection.card.html` + handoff `FaqBlock`)**
 
@@ -2488,6 +2534,11 @@ export const HandoffWithAside: Story = {
 
 export const Multiple: Story = { args: { isMultiple: true } };
 
+/** A page that links to one answer opens that one instead of the first. */
+export const SecondOpen: Story = { args: { defaultOpen: ["pause"] } };
+
+export const AllClosed: Story = { args: { defaultOpen: [] } };
+
 /** No lede: the heading sits alone in its column and the answers carry the section. */
 export const WithoutLede: Story = { args: { lede: undefined } };
 
@@ -2516,7 +2567,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/faq-section.json packages/ui/src/organisms/faq-section packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): FaqSection organism
+git commit -m "feat(ui): add the FaqSection organism
 
 Heading column and native accordion side by side from lg, stacked below;
 the first answer opens by default, one at a time unless isMultiple. The
@@ -3034,7 +3085,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/quote-panel.json packages/ui/src/organisms/quote-panel packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): QuotePanel organism
+git commit -m "feat(ui): add the QuotePanel organism
 
 The calculators' estimate panel in three tones — brand with the diamond,
 ink, and a white light island — with the big amount, a screen-reader-named
@@ -3052,26 +3103,26 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 **Dev parity:**
 
-| Dev item                                              | Ruling                         | Where / clause                                                               |
-| ----------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------- |
-| Leads with the current step's label and note          | ALREADY                        | test "heads the screen with the current step…" (and a `status` live region)  |
-| The heading moves as the kitchen works                | ALREADY                        | same test at `current={1}`                                                   |
-| "Preparing" until the last step, then "Ready"         | DROP                           | D9 — status copy is the `badge` slot (Contract deviations)                   |
-| Clamps an index past the end                          | ALREADY                        | test "clamps a current index past the end…"                                  |
-| Code and outlet on one line                           | ALREADY                        | test "prints the order code with its label and the outlet"                   |
-| StepTracker composed, current step marked             | ALREADY                        | test "marks the current step in the tracker"                                 |
-| The tracker list is named ("Order progress")          | ADD — pending contract delta 3 | not built until ruled (report)                                               |
-| Bare-string steps                                     | DROP                           | spec §8.2 — object lists only                                                |
-| What was paid and how                                 | ALREADY                        | test "formats the total beside the payment line"                             |
-| No action when there is nowhere to go                 | ADD                            | test "renders no action when none is given"                                  |
-| `onDone` / `doneLabel`                                | DROP                           | spec §8.1 — slots, not callbacks (`action`)                                  |
-| Card frame rounds and clips                           | ALREADY                        | test "frames itself as a light card with variant=card"                       |
-| Merges a caller `className`                           | ADD                            | test "merges a caller className"                                             |
-| axe                                                   | ALREADY                        | test "has no accessibility violations"                                       |
-| Default steps, code, outlet, payment, total           | DROP                           | D9                                                                           |
-| Stories Default · EveryState · WithAction · CardFrame | ALREADY                        | Playground · OrderIn/OnTheTandoor/Ready · Playground (`action` arg) · AsCard |
-| Story DeliverySteps                                   | ADD                            | `DeliverySteps`                                                              |
-| Story Smallest                                        | ADD                            | `Mobile`                                                                     |
+| Dev item                                              | Ruling  | Where / clause                                                               |
+| ----------------------------------------------------- | ------- | ---------------------------------------------------------------------------- |
+| Leads with the current step's label and note          | ALREADY | test "heads the screen with the current step…" (and a `status` live region)  |
+| The heading moves as the kitchen works                | ALREADY | same test at `current={1}`                                                   |
+| "Preparing" until the last step, then "Ready"         | DROP    | D9 — status copy is the `badge` slot (Contract deviations)                   |
+| Clamps an index past the end                          | ALREADY | test "clamps a current index past the end…"                                  |
+| Code and outlet on one line                           | ALREADY | test "prints the order code with its label and the outlet"                   |
+| StepTracker composed, current step marked             | ALREADY | test "marks the current step in the tracker"                                 |
+| The tracker list is named ("Order progress")          | ADD     | contract delta 3 (R110): `progressLabel`; test "marks the current step…"     |
+| Bare-string steps                                     | DROP    | spec §8.2 — object lists only                                                |
+| What was paid and how                                 | ALREADY | test "formats the total beside the payment line"                             |
+| No action when there is nowhere to go                 | ADD     | test "renders no action when none is given"                                  |
+| `onDone` / `doneLabel`                                | DROP    | spec §8.1 — slots, not callbacks (`action`)                                  |
+| Card frame rounds and clips                           | ALREADY | test "frames itself as a light card with variant=card"                       |
+| Merges a caller `className`                           | ADD     | test "merges a caller className"                                             |
+| axe                                                   | ALREADY | test "has no accessibility violations"                                       |
+| Default steps, code, outlet, payment, total           | DROP    | D9                                                                           |
+| Stories Default · EveryState · WithAction · CardFrame | ALREADY | Playground · OrderIn/OnTheTandoor/Ready · Playground (`action` arg) · AsCard |
+| Story DeliverySteps                                   | ADD     | `DeliverySteps`                                                              |
+| Story Smallest                                        | ADD     | `Mobile`                                                                     |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -3120,12 +3171,19 @@ describe("OrderTracker", () => {
     expect(screen.getByRole("heading", { level: 2, name: "Ready for pickup" })).toBeInTheDocument();
   });
 
-  it("marks the current step in the tracker", () => {
+  it("marks the current step in the tracker, named Order progress", () => {
     render(<OrderTracker steps={STEPS} current={1} code="PPK-4821" />);
-    const tracker = screen.getByRole("list");
+    const tracker = screen.getByRole("list", { name: "Order progress" });
     expect(
       within(tracker).getByText("On the tandoor").closest('[aria-current="step"]')
     ).not.toBeNull();
+  });
+
+  it("takes the tracker's name from progressLabel", () => {
+    render(
+      <OrderTracker steps={STEPS} current={1} code="PPK-4821" progressLabel="Delivery progress" />
+    );
+    expect(screen.getByRole("list", { name: "Delivery progress" })).toBeInTheDocument();
   });
 
   it("prints the order code with its label and the outlet", () => {
@@ -3252,6 +3310,8 @@ export interface OrderTrackerProps
   payment?: string | undefined;
   /** The word before the method. */
   paymentLabel?: string | undefined;
+  /** The step list's accessible name. */
+  progressLabel?: string | undefined;
   /** The status chip in the header, e.g. `<Badge tone="ink">Preparing</Badge>`. */
   badge?: ReactNode;
   /** Usually one full-width secondary Button ("Back to Home"). */
@@ -3272,6 +3332,7 @@ export function OrderTracker({
   total,
   payment,
   paymentLabel = "Paid",
+  progressLabel = "Order progress",
   badge,
   action,
   variant = "flush",
@@ -3307,7 +3368,7 @@ export function OrderTracker({
         </Text>
       </PatternField>
       <div className={slots.body()}>
-        <StepTracker steps={steps} current={index} />
+        <StepTracker steps={steps} current={index} aria-label={progressLabel} />
         <Divider variant="diamond" className={slots.divider()} />
         {hasReceipt ? (
           <Card variant="quiet" padding="sm">
@@ -3333,7 +3394,7 @@ export function OrderTracker({
 - [ ] **Step 4: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- order-tracker 2>&1 | tail -8`
-Expected: PASS (10 tests).
+Expected: PASS (11 tests).
 
 - [ ] **Step 5: Stories (card parity with `OrderTracker.card.html`)**
 
@@ -3446,7 +3507,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/ui/src/organisms/order-tracker packages/ui/src/index.ts
-git commit -m "feat(ui): OrderTracker organism
+git commit -m "feat(ui): add the OrderTracker organism
 
 A flooded-pink status header that announces the current step politely,
 the step tracker, and the receipt with the total in rupees; flush for the
@@ -4162,7 +4223,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/site-footer.json packages/ui/src/organisms/site-footer packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): SiteFooter organism
+git commit -m "feat(ui): add the SiteFooter organism
 
 Pink or ink footer with brand block, link columns as labelled navs (plain
 lines stay plain), social links and the legal bar, all rendered through
@@ -4481,7 +4542,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/action-dock.json packages/ui/src/organisms/action-dock packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): ActionDock organism
+git commit -m "feat(ui): add the ActionDock organism
 
 The handoff's fixed WhatsApp action as one element restyled by CSS: a white
 bottom bar with the call icon on phones, a floating pill from md. Both
@@ -4542,7 +4603,8 @@ Server-safe and isomorphic: link tabs (items with `href`) render from a server p
     "$type": "dimension",
     "tab-bar-count": {
       "$value": "16px",
-      "$description": "Count pill height and minimum width (design system TabBar)."
+      "$description": "Count pill height and minimum width (design system TabBar).",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
     }
   },
   "text": {
@@ -4939,7 +5001,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/tab-bar.json packages/ui/src/organisms/tab-bar packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): TabBar organism
+git commit -m "feat(ui): add the TabBar organism
 
 The app's 64px bottom navigation as a labelled nav: link tabs through
 linkAs or button tabs that report onValueChange, the current one marked
@@ -4957,30 +5019,30 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 **Dev parity:**
 
-| Dev item                                                     | Ruling                         | Where / clause                                                                                      |
-| ------------------------------------------------------------ | ------------------------------ | --------------------------------------------------------------------------------------------------- |
-| Closed until the trigger is used                             | ALREADY                        | test "opens from its trigger…"                                                                      |
-| Named by its title; described by its description             | ALREADY                        | same test                                                                                           |
-| Escape closes and reports `onOpenChange(false)`              | ALREADY                        | tests "closes on Escape…", "reports open changes…"                                                  |
-| The close glyph closes                                       | ALREADY                        | test "closes from its labelled close button"                                                        |
-| `hasCloseButton={false}` — a decision that must be answered  | ADD — pending contract delta 4 | not built until ruled (report)                                                                      |
-| Focus moves into the dialog when it opens                    | ADD                            | test "moves focus into the dialog when it opens"                                                    |
-| Footer actions render and work                               | ALREADY                        | test "renders the footer actions"                                                                   |
-| Controlled open state holds                                  | ALREADY                        | test "reports open changes and stays open when controlled"                                          |
-| Sheet: top corners only, plus a grab handle                  | ADD                            | the sheet test also asserts no `rounded-xl`                                                         |
-| Three widths                                                 | ALREADY                        | `it.each` sizes (token widths, D4)                                                                  |
-| `position="container"` anchors inside a phone frame          | ALREADY                        | `portalContainer` + the frame's `contain-layout` (AppShell, Plan 2c); story `InsideAPhoneFrame` ADD |
-| A scrim over everything behind it                            | ADD                            | test "lays the ink scrim over the page behind it"                                                   |
-| Merges a caller `className`                                  | ADD — pending contract delta 5 | `DialogProps` does not extend native props (contract §7)                                            |
-| axe                                                          | ALREADY                        | test "has no accessibility violations while open"                                                   |
-| The body scrolls; header and footer never leave the screen   | ADD                            | `body` slot `min-h-0 flex-1 overflow-y-auto`, `shrink-0` header/footer, test "scrolls its body…"    |
-| Footer wraps at 360px                                        | ALREADY                        | `flex-wrap`                                                                                         |
-| `aria-describedby={undefined}` opt-out                       | ALREADY                        | Radix 1.1.23 omits it without a Description, no warning (Interfaces)                                |
-| `isOpen` / `isDefaultOpen` names                             | DROP                           | spec §8.2 — `open` / `defaultOpen` / `onOpenChange`                                                 |
-| Stories Default · Sheet · WithDescription · WithForm · Sizes | ALREADY                        | Playground · Sheet · Large · Playground (`BOOKING_FORM`) · CentredModal/Playground/Large            |
-| Story MustBeAnswered                                         | ADD — pending contract delta 4 | —                                                                                                   |
-| Story InsideAPhoneFrame                                      | ADD                            | `InsideAPhoneFrame`                                                                                 |
-| Story Smallest                                               | ADD                            | `Mobile`                                                                                            |
+| Dev item                                                     | Ruling  | Where / clause                                                                                      |
+| ------------------------------------------------------------ | ------- | --------------------------------------------------------------------------------------------------- |
+| Closed until the trigger is used                             | ALREADY | test "opens from its trigger…"                                                                      |
+| Named by its title; described by its description             | ALREADY | same test                                                                                           |
+| Escape closes and reports `onOpenChange(false)`              | ALREADY | tests "closes on Escape…", "reports open changes…"                                                  |
+| The close glyph closes                                       | ALREADY | test "closes from its labelled close button"                                                        |
+| `hasCloseButton={false}` — a decision that must be answered  | ADD     | contract delta 4 (R110): hides the close button only; test "hides only the close button…"           |
+| Focus moves into the dialog when it opens                    | ADD     | test "moves focus into the dialog when it opens"                                                    |
+| Footer actions render and work                               | ALREADY | test "renders the footer actions"                                                                   |
+| Controlled open state holds                                  | ALREADY | test "reports open changes and stays open when controlled"                                          |
+| Sheet: top corners only, plus a grab handle                  | ADD     | the sheet test also asserts no `rounded-xl`                                                         |
+| Three widths                                                 | ALREADY | `it.each` sizes (token widths, D4)                                                                  |
+| `position="container"` anchors inside a phone frame          | ALREADY | `portalContainer` + the frame's `contain-layout` (AppShell, Plan 2c); story `InsideAPhoneFrame` ADD |
+| A scrim over everything behind it                            | ADD     | test "lays the ink scrim over the page behind it"                                                   |
+| Merges a caller `className`                                  | ADD     | contract delta 5 (R110): onto the panel; test "merges a caller className onto the panel"            |
+| axe                                                          | ALREADY | test "has no accessibility violations while open"                                                   |
+| The body scrolls; header and footer never leave the screen   | ADD     | `body` slot `min-h-0 flex-1 overflow-y-auto`, `shrink-0` header/footer, test "scrolls its body…"    |
+| Footer wraps at 360px                                        | ALREADY | `flex-wrap`                                                                                         |
+| `aria-describedby={undefined}` opt-out                       | ALREADY | Radix 1.1.23 omits it without a Description, no warning (Interfaces)                                |
+| `isOpen` / `isDefaultOpen` names                             | DROP    | spec §8.2 — `open` / `defaultOpen` / `onOpenChange`                                                 |
+| Stories Default · Sheet · WithDescription · WithForm · Sizes | ALREADY | Playground · Sheet · Large · Playground (`BOOKING_FORM`) · CentredModal/Playground/Large            |
+| Story MustBeAnswered                                         | ADD     | `MustBeAnswered` (contract delta 4) — controlled, own footer actions, `play`                        |
+| Story InsideAPhoneFrame                                      | ADD     | `InsideAPhoneFrame`                                                                                 |
+| Story Smallest                                               | ADD     | `Mobile`                                                                                            |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -5003,9 +5065,19 @@ Implementer: copy this table into your report, extended with anything the plan m
 {
   "spacing": {
     "$type": "dimension",
-    "dialog-sm": { "$value": "400px" },
-    "dialog-md": { "$value": "460px", "$description": "Design system Dialog default width." },
-    "dialog-lg": { "$value": "640px" }
+    "dialog-sm": {
+      "$value": "400px",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "dialog-md": {
+      "$value": "460px",
+      "$description": "Design system Dialog default width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "dialog-lg": {
+      "$value": "640px",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    }
   },
   "text": {
     "$type": "typography",
@@ -5103,6 +5175,34 @@ describe("Dialog", () => {
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledWith(false);
     expect(screen.getByRole("dialog", { name: "Remove this item?" })).toBeInTheDocument();
+  });
+
+  it("hides only the close button with hasCloseButton={false}; Escape still asks to close", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <Dialog
+        open
+        onOpenChange={onOpenChange}
+        hasCloseButton={false}
+        title="Remove this item?"
+        footer={<button type="button">Keep it</button>}
+      >
+        Chilli Paneer will come off your order.
+      </Dialog>
+    );
+    const dialog = screen.getByRole("dialog", { name: "Remove this item?" });
+    expect(within(dialog).queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "Keep it" })).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it("merges a caller className onto the panel", () => {
+    render(<Dialog defaultOpen title="Book a table" className="shadow-2" />);
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveClass("shadow-2");
+    expect(dialog).not.toHaveClass("shadow-4");
   });
 
   it("locks page scroll while open", async () => {
@@ -5215,6 +5315,7 @@ import { Dialog as DialogPrimitive } from "radix-ui";
 
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
 
 const dialog = componentVariants({
   slots: {
@@ -5257,8 +5358,16 @@ export interface DialogProps
   /** Buttons, right-aligned. */
   footer?: ReactNode;
   closeLabel?: string | undefined;
+  /**
+   * `false` hides the close button only. Escape and the scrim still ask to close through
+   * `onOpenChange` — a decision that must be answered is controlled, keeps itself open, and gives
+   * its own action buttons in `footer`.
+   */
+  hasCloseButton?: boolean | undefined;
   /** Portal target; default `document.body`. Pass a positioned frame (AppShell's overlay slot) to keep the dialog inside it. */
   portalContainer?: HTMLElement | null | undefined;
+  /** Merged onto the panel (the element with `role="dialog"`). */
+  className?: string | undefined;
 }
 
 /**
@@ -5275,7 +5384,9 @@ export function Dialog({
   variant = "modal",
   size = "md",
   closeLabel = "Close",
+  hasCloseButton = true,
   portalContainer = null,
+  className,
   ...root
 }: DialogProps) {
   const slots = dialog({ variant, size });
@@ -5284,7 +5395,7 @@ export function Dialog({
       {trigger ? <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger> : null}
       <DialogPrimitive.Portal container={portalContainer}>
         <DialogPrimitive.Overlay className={slots.overlay()}>
-          <DialogPrimitive.Content data-surface="light" className={slots.content()}>
+          <DialogPrimitive.Content data-surface="light" className={slots.content({ className })}>
             {variant === "sheet" ? (
               <div aria-hidden className={slots.handle()}>
                 <span className={slots.handleBar()} />
@@ -5292,17 +5403,19 @@ export function Dialog({
             ) : null}
             <div className={slots.header()}>
               <DialogPrimitive.Title className={slots.title()}>{title}</DialogPrimitive.Title>
-              <DialogPrimitive.Close asChild>
-                <IconButton icon={X} label={closeLabel} size="sm" variant="ghost" />
-              </DialogPrimitive.Close>
+              {hasCloseButton ? (
+                <DialogPrimitive.Close asChild>
+                  <IconButton icon={X} label={closeLabel} size="sm" variant="ghost" />
+                </DialogPrimitive.Close>
+              ) : null}
             </div>
-            {description ? (
+            {isShown(description) ? (
               <DialogPrimitive.Description className={slots.description()}>
                 {description}
               </DialogPrimitive.Description>
             ) : null}
-            {children ? <div className={slots.body()}>{children}</div> : null}
-            {footer ? <div className={slots.footer()}>{footer}</div> : null}
+            {isShown(children) ? <div className={slots.body()}>{children}</div> : null}
+            {isShown(footer) ? <div className={slots.footer()}>{footer}</div> : null}
           </DialogPrimitive.Content>
         </DialogPrimitive.Overlay>
       </DialogPrimitive.Portal>
@@ -5314,7 +5427,7 @@ export function Dialog({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- organisms/dialog 2>&1 | tail -8`
-Expected: PASS (15 tests).
+Expected: PASS (17 tests).
 
 - [ ] **Step 6: Stories (card parity with `Dialog.card.html`)**
 
@@ -5327,7 +5440,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { Phone } from "lucide-react";
 import { useState } from "react";
-import { expect, screen, waitFor } from "storybook/test";
+import { expect, screen, waitFor, within } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
 import { Input } from "../../atoms/input/input";
@@ -5429,6 +5542,50 @@ export const KeyboardFlow: Story = {
 };
 
 /**
+ * A decision that must be answered: no close button, and the caller keeps the dialog open when
+ * Escape or the scrim ask to close (it passes no `onOpenChange`), so the footer's buttons are the
+ * only way out.
+ */
+function MustBeAnsweredDialog(args: DialogProps) {
+  const [open, setOpen] = useState(true);
+  return (
+    <Dialog
+      {...args}
+      open={open}
+      hasCloseButton={false}
+      footer={
+        <>
+          <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
+            Keep It
+          </Button>
+          <Button size="sm" onClick={() => setOpen(false)}>
+            Remove
+          </Button>
+        </>
+      }
+    />
+  );
+}
+
+export const MustBeAnswered: Story = {
+  args: {
+    trigger: undefined,
+    title: "Remove this item?",
+    children: "Chilli Paneer will come off your order.",
+  },
+  parameters: OPEN_DIALOG_A11Y,
+  render: (args) => <MustBeAnsweredDialog {...args} />,
+  play: async ({ userEvent }) => {
+    const dialog = await screen.findByRole("dialog", { name: "Remove this item?" });
+    await expect(within(dialog).queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
+    await expect(screen.getByRole("dialog", { name: "Remove this item?" })).toBeVisible();
+    await userEvent.click(within(dialog).getByRole("button", { name: "Keep It" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  },
+};
+
+/**
  * The sheet inside a phone frame: the frame is `portalContainer`, and its `contain-layout` (as
  * AppShell's frame has) makes it the containing block for the fixed scrim, so the sheet anchors to
  * the frame, not the viewport.
@@ -5487,7 +5644,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/dialog.json packages/ui/src/organisms/dialog packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): Dialog organism
+git commit -m "feat(ui): add the Dialog organism
 
 Radix Dialog as the design system's modal and bottom sheet: title-named,
 optionally described, focus-trapped, closed by Escape, the scrim or a named
@@ -5553,11 +5710,13 @@ The responsive rule, all CSS at token breakpoints (readme §3.10 — no `window.
     "$type": "dimension",
     "site-header-logo": {
       "$value": "114px",
-      "$description": "Lockup width at the design system header's 60px logo height (lockup viewBox 361.88 × 190.13)."
+      "$description": "Lockup width at the design system header's 60px logo height (lockup viewBox 361.88 × 190.13).",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
     },
     "site-header-logo-compact": {
       "$value": "76px",
-      "$description": "Lockup width at the handoff header's 40px logo height."
+      "$description": "Lockup width at the handoff header's 40px logo height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
     }
   },
   "text": {
@@ -6260,11 +6419,7 @@ const HANDOFF = {
   links: HANDOFF_LINKS,
   drawerLinks: HANDOFF_DRAWER_LINKS,
   announcement: (
-    <AnnouncementBar
-      href="#homely-meals"
-      endsAt={LAUNCH_ENDS}
-      countdownLabel="Launch price closes in"
-    >
+    <AnnouncementBar href="#homely-meals" endsAt={LAUNCH_ENDS}>
       Launch price: <strong>Classic at ₹130 a meal</strong> for the first 50 subscribers · closes in
     </AnnouncementBar>
   ),
@@ -6419,7 +6574,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/site-header.json packages/design-tokens/contrast-pairs.json packages/ui/src/organisms/site-header packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): SiteHeader organism
+git commit -m "feat(ui): add the SiteHeader organism
 
 Sticky masthead at the design system's 88px or the handoff's 64px, with a
 skip link, announcement and badge slots, and a nav that shortens by CSS at
@@ -7041,7 +7196,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/review-carousel.json packages/ui/eslint.config.mjs packages/ui/src/organisms/review-carousel packages/ui/src/index.ts
-git commit -m "feat(ui): ReviewCarousel organism
+git commit -m "feat(ui): add the ReviewCarousel organism
 
 The handoff's Google reviews as a scroll-snap track that is a focusable
 region named by its heading, paged by previous/next buttons that stay
@@ -7060,30 +7215,30 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 **Dev parity:**
 
-| Dev item                                                                      | Ruling                             | Where / clause                                                                                                                             |
-| ----------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Section header when titled                                                    | ALREADY                            | test "heads the section with overline, a level-2 title and the action"                                                                     |
-| No header at all without a title                                              | ALREADY                            | test "renders only the filters when there is no title"                                                                                     |
-| One pill per category, behind "All"                                           | ALREADY                            | test "offers All first…"                                                                                                                   |
-| The note pinned beside the pills                                              | ADD                                | test "pins the note beside the filters" (its default copy: DROP, D9)                                                                       |
-| First four dishes as cards, the rest as rows                                  | ALREADY                            | test "shows the first gridCount dishes as cards…"                                                                                          |
-| A caller's smaller `gridCount`                                                | ADD                                | test "honours a smaller gridCount and drops the overflow…"                                                                                 |
-| Rows only in `list`                                                           | ALREADY                            | test "shows every dish as a row in the list variant"                                                                                       |
-| No overflow divider when every dish fits                                      | ADD                                | same new test (`gridCount={10}`)                                                                                                           |
-| Filtering by pill; the chosen pill marked                                     | ALREADY                            | tests "filters to a category…", "offers All first…" (`aria-checked`)                                                                       |
-| `defaultCategory`                                                             | ADD — pending contract delta 6     | a string, so it can seed the client leaf; not built until ruled (report)                                                                   |
-| Controlled `category` + `onCategoryChange`                                    | DROP                               | D6 — the filter is a client leaf under a server organism, which cannot pass it a function (Contract deviations); contract §7 lists neither |
-| `onAdd`; no Add control without it                                            | DROP / ALREADY                     | spec §9.2 — the `action` slot replaces `onAdd`: `renderItemAction` (tested); none given, no action                                         |
-| Empty-state copy built in                                                     | DROP                               | D9 — `emptyState` slot (tested)                                                                                                            |
-| Auto-fit grid survives 360px                                                  | ALREADY                            | `autogrid`                                                                                                                                 |
-| Merges a caller `className`                                                   | ADD                                | test "merges a caller className"                                                                                                           |
-| axe                                                                           | ALREADY                            | test "has no accessibility violations"                                                                                                     |
-| `lede` under the heading                                                      | ADD — pending contract delta 7     | not built until ruled (report)                                                                                                             |
-| `diet` per dish                                                               | DROP                               | C10                                                                                                                                        |
-| `href` per dish                                                               | ALREADY                            | `getItemHref`                                                                                                                              |
-| Stories Default · WithAction · ListVariant · WithoutHeader · Empty · Smallest | ALREADY                            | GridWebsite · Playground (`action` arg) · ListApp · ListApp · EmptyCategory · Mobile                                                       |
-| Stories GridOnly · SmallGrid                                                  | ADD                                | `GridOnly`, `SmallGrid`                                                                                                                    |
-| Stories PreselectedCategory · WithLede                                        | ADD — pending contract deltas 6, 7 | —                                                                                                                                          |
+| Dev item                                                                      | Ruling         | Where / clause                                                                                                                             |
+| ----------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Section header when titled                                                    | ALREADY        | test "heads the section with overline, a level-2 title and the action"                                                                     |
+| No header at all without a title                                              | ALREADY        | test "renders only the filters when there is no title"                                                                                     |
+| One pill per category, behind "All"                                           | ALREADY        | test "offers All first…"                                                                                                                   |
+| The note pinned beside the pills                                              | ADD            | test "pins the note beside the filters" (its default copy: DROP, D9)                                                                       |
+| First four dishes as cards, the rest as rows                                  | ALREADY        | test "shows the first gridCount dishes as cards…"                                                                                          |
+| A caller's smaller `gridCount`                                                | ADD            | test "honours a smaller gridCount and drops the overflow…"                                                                                 |
+| Rows only in `list`                                                           | ALREADY        | test "shows every dish as a row in the list variant"                                                                                       |
+| No overflow divider when every dish fits                                      | ADD            | same new test (`gridCount={10}`)                                                                                                           |
+| Filtering by pill; the chosen pill marked                                     | ALREADY        | tests "filters to a category…", "offers All first…" (`aria-checked`)                                                                       |
+| `defaultCategory`                                                             | ADD            | contract delta 6 (R110): a string seeding the client leaf, All when not on offer; tests "opens on defaultCategory", "falls back to All…"   |
+| Controlled `category` + `onCategoryChange`                                    | DROP           | D6 — the filter is a client leaf under a server organism, which cannot pass it a function (Contract deviations); contract §7 lists neither |
+| `onAdd`; no Add control without it                                            | DROP / ALREADY | spec §9.2 — the `action` slot replaces `onAdd`: `renderItemAction` (tested); none given, no action                                         |
+| Empty-state copy built in                                                     | DROP           | D9 — `emptyState` slot (tested)                                                                                                            |
+| Auto-fit grid survives 360px                                                  | ALREADY        | `autogrid`                                                                                                                                 |
+| Merges a caller `className`                                                   | ADD            | test "merges a caller className"                                                                                                           |
+| axe                                                                           | ALREADY        | test "has no accessibility violations"                                                                                                     |
+| `lede` under the heading                                                      | ADD            | contract delta 7 (R110): to SectionHeader; test "renders the lede under the heading"                                                       |
+| `diet` per dish                                                               | DROP           | C10                                                                                                                                        |
+| `href` per dish                                                               | ALREADY        | `getItemHref`                                                                                                                              |
+| Stories Default · WithAction · ListVariant · WithoutHeader · Empty · Smallest | ALREADY        | GridWebsite · Playground (`action` arg) · ListApp · ListApp · EmptyCategory · Mobile                                                       |
+| Stories GridOnly · SmallGrid                                                  | ADD            | `GridOnly`, `SmallGrid`                                                                                                                    |
+| Stories PreselectedCategory · WithLede                                        | ADD            | `PreselectedCategory` · `WithLede` (contract deltas 6, 7)                                                                                  |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -7174,6 +7329,17 @@ describe("MenuList", () => {
     expect(screen.getByRole("link", { name: "See Full Menu" })).toBeInTheDocument();
   });
 
+  it("renders the lede under the heading", () => {
+    render(
+      <MenuList
+        items={MENU}
+        title="Most ordered this week"
+        lede="Cooked to order in one pure-veg kitchen."
+      />
+    );
+    expect(screen.getByText("Cooked to order in one pure-veg kitchen.")).toBeInTheDocument();
+  });
+
   it("renders only the filters when there is no title", () => {
     render(<MenuList items={MENU} variant="list" />);
     expect(screen.queryByRole("heading", { level: 2 })).not.toBeInTheDocument();
@@ -7240,6 +7406,18 @@ describe("MenuList", () => {
     await user.keyboard(" ");
     expect(option("All Day")).toHaveAttribute("aria-checked", "true");
     expect(namesIn(container)).toEqual(["Bombay Toastie"]);
+  });
+
+  it("opens on defaultCategory", () => {
+    const { container } = render(<MenuList items={MENU} variant="list" defaultCategory="Sweets" />);
+    expect(option("Sweets")).toHaveAttribute("aria-checked", "true");
+    expect(namesIn(container)).toEqual(["Gulkand Kulfi"]);
+  });
+
+  it("falls back to All when defaultCategory is not on offer", () => {
+    const { container } = render(<MenuList items={MENU} variant="list" defaultCategory="Thalis" />);
+    expect(option("All")).toHaveAttribute("aria-checked", "true");
+    expect(namesIn(container)).toHaveLength(MENU.length);
   });
 
   it("keeps the current category when the chosen option is pressed again", async () => {
@@ -7329,6 +7507,8 @@ export interface MenuListPanel {
 export interface MenuListFilterProps {
   label: string;
   options: FilterOption[];
+  /** The option chosen on arrival; one of `options`. */
+  defaultValue: string;
   panels: MenuListPanel[];
   note?: ReactNode;
   className?: string | undefined;
@@ -7338,8 +7518,15 @@ export interface MenuListFilterProps {
  * MenuList's client corner: it holds the chosen option and shows that option's pre-rendered
  * panel. (FilterBar already ignores Radix's `""` when the chosen option is pressed again.)
  */
-export function MenuListFilter({ label, options, panels, note, className }: MenuListFilterProps) {
-  const [value, setValue] = useState(options[0]?.value ?? "");
+export function MenuListFilter({
+  label,
+  options,
+  defaultValue,
+  panels,
+  note,
+  className,
+}: MenuListFilterProps) {
+  const [value, setValue] = useState(defaultValue);
   const panel = panels.find((candidate) => candidate.value === value);
   return (
     <div className={className}>
@@ -7433,11 +7620,15 @@ export interface MenuListProps extends Omit<ComponentProps<"section">, "title"> 
   /** Filter order and subset; defaults to every category in the dishes, in order. "All" is always first. */
   categories?: string[] | undefined;
   allLabel?: string | undefined;
+  /** The category chosen on arrival; "All" when omitted or not on offer. */
+  defaultCategory?: string | undefined;
   /** Accessible name of the filter group. */
   filterLabel?: string | undefined;
   overline?: ReactNode;
   /** Omit (or pass null) for filters with no section header — the app pattern. */
   title?: ReactNode | null | undefined;
+  /** One sentence under the heading (shown only with a `title`). */
+  lede?: ReactNode;
   action?: ReactNode;
   /** `grid` = cards then an overflow list (website) · `list` = rows only (app). */
   variant?: "grid" | "list" | undefined;
@@ -7465,9 +7656,11 @@ export function MenuList({
   items,
   categories,
   allLabel = "All",
+  defaultCategory,
   filterLabel = "Filter the menu",
   overline,
   title,
+  lede,
   action,
   variant = "grid",
   gridCount = DEFAULT_GRID_COUNT,
@@ -7488,6 +7681,10 @@ export function MenuList({
     (name) => name !== allLabel
   );
   const options = [allLabel, ...categoryNames].map((name) => ({ value: name, label: name }));
+  const initial =
+    defaultCategory !== undefined && categoryNames.includes(defaultCategory)
+      ? defaultCategory
+      : allLabel;
 
   const panelFor = (dishes: MenuListItem[]): ReactNode => {
     if (dishes.length === 0) {
@@ -7546,6 +7743,7 @@ export function MenuList({
           <SectionHeader
             overline={overline}
             title={title}
+            lede={lede}
             action={action}
             headingLevel={headingLevel}
           />
@@ -7554,6 +7752,7 @@ export function MenuList({
           label={filterLabel}
           options={options}
           panels={panels}
+          defaultValue={initial}
           note={note}
           className={slots.filter()}
         />
@@ -7566,7 +7765,7 @@ export function MenuList({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- menu-list 2>&1 | tail -8`
-Expected: PASS (15 tests). If the keyboard test fails because FilterBar's roving focus starts elsewhere, read `molecules/filter-bar/filter-bar.tsx` and adjust only the key sequence — the assertion (arrowing to the next option and pressing Space selects it) stays.
+Expected: PASS (18 tests). If the keyboard test fails because FilterBar's roving focus starts elsewhere, read `molecules/filter-bar/filter-bar.tsx` and adjust only the key sequence — the assertion (arrowing to the next option and pressing Space selects it) stays.
 
 - [ ] **Step 6: Stories (card parity with `MenuList.card.html`)**
 
@@ -7709,6 +7908,20 @@ export const FilterByCategory: Story = {
   },
 };
 
+/** A page linked from "Chai & Coffee" opens on that category. */
+export const PreselectedCategory: Story = {
+  args: { defaultCategory: "Chai & Coffee" },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("radio", { name: "Chai & Coffee" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
+    await expect(canvas.getAllByRole("article")).toHaveLength(2);
+  },
+};
+
+export const WithLede: Story = { args: { lede: "Cooked to order in one pure-veg kitchen." } };
+
 /** A category with no dishes shows the empty state. */
 export const EmptyCategory: Story = {
   args: { categories: ["Small Plates", "Thalis"] },
@@ -7738,7 +7951,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/ui/src/organisms/menu-list packages/ui/src/index.ts
-git commit -m "feat(ui): MenuList organism
+git commit -m "feat(ui): add the MenuList organism
 
 The filterable menu section: a section header, a FilterBar with All plus
 each category, and per-category panels of cards and overflow rows (grid) or
@@ -7802,7 +8015,8 @@ Implementer: copy this table into your report, extended with anything the plan m
     "$type": "dimension",
     "cart-panel-thumb": {
       "$value": "56px",
-      "$description": "The dish tile beside each cart line (design system CartPanel)."
+      "$description": "The dish tile beside each cart line (design system CartPanel).",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
     }
   }
 }
@@ -8406,7 +8620,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/cart-panel.json packages/ui/src/organisms/cart-panel packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): CartPanel organism
+git commit -m "feat(ui): add the CartPanel organism
 
 The whole cart as a client component: lines with the veg mark, note, unit
 price and a quantity stepper that reports changes up, an optional kitchen
