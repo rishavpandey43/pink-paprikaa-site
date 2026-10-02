@@ -4,7 +4,7 @@ import { expect } from "storybook/test";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
-import { paint } from "../../lib/story-paint";
+import { groundOf, paint } from "../../lib/story-paint";
 import { CheckCard } from "./check-card";
 
 const meta = {
@@ -107,7 +107,17 @@ export const InvalidChecked: Story = {
   },
 };
 
-export const Disabled: Story = { args: { disabled: true } };
+/** Disabled and unticked: the box keeps an ink-400 outline, so it never melts into the grey card. */
+export const Disabled: Story = {
+  args: { disabled: true },
+  play: async ({ canvas }) => {
+    const checkbox = canvas.getByRole("checkbox", { name: "Pay 3 months upfront" });
+    const border = getComputedStyle(checkbox).borderTopColor;
+    await expect(checkbox).toBeDisabled();
+    await expect(border).toBe(paint(checkbox, "borderColor", "--color-ink-400"));
+    await expect(border).not.toBe(groundOf(checkbox));
+  },
+};
 
 /**
  * Disabled and ticked: the box greys like Checkbox's (ink-200 fill, ink-400 tick) and the card
