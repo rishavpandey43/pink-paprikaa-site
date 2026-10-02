@@ -78,7 +78,6 @@ export function ContrastMatrix({ groups }: ContrastMatrixProps) {
         {results.length} pairs · {count("pass")} pass AA · {count("exception")} declared exceptions
         · {count("fail")} fail
       </div>
-      {/* DocTable's `minWidth="narrow"` (960px) maps to Table's `lg` (720px). */}
       <Table
         caption="Every text and background pair the components paint, measured from this build's tokens"
         isCaptionVisible

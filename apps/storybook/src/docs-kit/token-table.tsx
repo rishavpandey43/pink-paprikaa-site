@@ -24,7 +24,6 @@ export interface TokenTableProps {
  */
 export function TokenTable({ caption, selection }: TokenTableProps) {
   return (
-    // DocTable's `minWidth="article"` (760px) maps to Table's `md` (620px).
     <Table caption={caption} isCaptionVisible minWidth="md">
       <TableHead>
         <TableRow>
