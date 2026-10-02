@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { expect } from "storybook/test";
+import { expect, waitFor, within } from "storybook/test";
 
 import { ProseTable } from "./prose";
 
@@ -100,6 +100,65 @@ export const ProseTablesNamedApart: Story = {
     await expect(canvas.getByRole("region", { name: "Packages table 2" })).toBeInTheDocument();
     const ids = [...document.querySelectorAll("[id]")].map((element) => element.id);
     await expect(new Set(ids).size).toBe(ids.length);
+  },
+};
+
+/** The names of the page's scrolling-table regions, in document order (labelledby, else label). */
+function regionNames(canvasElement: HTMLElement) {
+  return within(canvasElement)
+    .queryAllByRole("region")
+    .map((region) => {
+      const ids = region.getAttribute("aria-labelledby")?.split(" ") ?? [];
+      return ids.length === 0
+        ? region.getAttribute("aria-label")
+        : ids.map((id) => document.getElementById(id)?.textContent.trim()).join(" ");
+    });
+}
+
+/**
+ * Two different headings with the same words (rehype-slug ids `examples`, `examples-1`) still
+ * name their tables apart, and a table that starts scrolling later (a resize) renumbers the
+ * others instead of repeating a name.
+ */
+export const ProseTableNamesStayUnique: Story = {
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  render: () => (
+    <div>
+      <h2 id="examples">Examples</h2>
+      <ProseTable>
+        <WideRows />
+      </ProseTable>
+      <h2 id="examples-1">Examples</h2>
+      <ProseTable>
+        <WideRows />
+      </ProseTable>
+      <h2>Packages</h2>
+      <ProseTable data-testid="fits-at-first">
+        <tbody>
+          <tr>
+            <td>Fits</td>
+          </tr>
+        </tbody>
+      </ProseTable>
+      <ProseTable>
+        <WideRows />
+      </ProseTable>
+    </div>
+  ),
+  play: async ({ canvas, canvasElement }) => {
+    await canvas.findByRole("region", { name: "Packages" });
+    await expect(regionNames(canvasElement)).toEqual(["Examples", "Examples table 2", "Packages"]);
+    // The first Packages table widens past the page and starts scrolling: it takes the bare name,
+    // and the one after it becomes "table 2".
+    canvas.getByTestId("fits-at-first").style.width = "600px";
+    await waitFor(async () => {
+      await expect(regionNames(canvasElement)).toEqual([
+        "Examples",
+        "Examples table 2",
+        "Packages",
+        "Packages table 2",
+      ]);
+    });
   },
 };
 
