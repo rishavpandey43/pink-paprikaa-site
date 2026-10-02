@@ -59,6 +59,46 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
+ * The words a label's text is broken inside of, read off the rendered lines: a line that starts
+ * mid-word (no space either side of the break) names that word. `wrap-anywhere` is the safety net
+ * for a word wider than the tile (R108); shipped copy should never need it (R109).
+ */
+function wordsBrokenMidWord(label: HTMLElement) {
+  const text = label.firstChild;
+  if (!(text instanceof Text)) throw new Error("A Badge label without plain text");
+  const content = text.data;
+  const range = document.createRange();
+  const broken: string[] = [];
+  let previousTop: number | undefined;
+  for (let index = 0; index < content.length; index += 1) {
+    range.setStart(text, index);
+    range.setEnd(text, index + 1);
+    const rect = range.getClientRects()[0];
+    if (rect === undefined || content[index] === " ") continue;
+    if (previousTop !== undefined && rect.top > previousTop + 1 && content[index - 1] !== " ") {
+      const start = content.lastIndexOf(" ", index) + 1;
+      const end = content.indexOf(" ", index);
+      broken.push(content.slice(start, end === -1 ? undefined : end));
+    }
+    previousTop = rect.top;
+  }
+  return broken;
+}
+
+/** No Badge in a card (badge or meta) breaks a word across lines. */
+async function expectNoMidWordBreaks(canvasElement: HTMLElement) {
+  const labels = [
+    ...canvasElement.querySelectorAll<HTMLElement>(
+      "label [id$='-badge'] > * > :last-child, label [id$='-meta'] > * > :last-child"
+    ),
+  ];
+  await expect(labels.length).toBeGreaterThan(0);
+  for (const label of labels) {
+    await expect(wordsBrokenMidWord(label)).toEqual([]);
+  }
+}
+
+/**
  * Every Badge in a card shows its whole wording inside the card's content box (R108: it wraps,
  * never truncates). Measured on the label, the element that would clip — the Badge root never
  * overflows, since its label is the part that truncates.
@@ -133,7 +173,7 @@ export const PlanLengths: Story = {
         value: "weekday",
         title: "Weekday plan",
         description: "24 meals · Mon–Sat",
-        badge: <Badge tone="brand">Our recommendation</Badge>,
+        badge: <Badge tone="brand">Our pick</Badge>,
         meta: <Badge tone="success">Offer: +1 free / month</Badge>,
       },
       {
@@ -160,9 +200,10 @@ export const PlanLengths: Story = {
       );
     }
     await expect(canvas.getByRole("radio", { name: "Weekday plan" })).toHaveAccessibleDescription(
-      /Our recommendation/i
+      /Our pick/i
     );
-    await expectBadgesWhole(canvasElement, ["Our recommendation"]);
+    await expectBadgesWhole(canvasElement, ["Our pick"]);
+    await expectNoMidWordBreaks(canvasElement);
   },
 };
 
