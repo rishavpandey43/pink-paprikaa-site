@@ -60,6 +60,10 @@ export const Discount: Story = {
     spice: 2,
     description: "Slow-cooked mushroom keema, buttered pav, pickled onion.",
     action: addButton("Mushroom Keema Pav"),
+    badge: undefined,
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.queryByText("Bestseller")).toBeNull();
   },
 };
 
@@ -72,12 +76,31 @@ export const Devanagari: Story = {
     spice: 1,
     description: "Rose petal preserve, pistachio, saffron.",
     action: addButton("Gulkand Kulfi"),
+    badge: undefined,
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.queryByText("Bestseller")).toBeNull();
   },
 };
 
 /** Card row "minimal": `hasDivider={false}`, no action. */
 export const Minimal: Story = {
-  args: { name: "Kulhad Chai", price: 90, hasDivider: false, action: undefined, badge: undefined },
+  args: {
+    name: "Kulhad Chai",
+    price: 90,
+    hasDivider: false,
+    action: undefined,
+    badge: undefined,
+    spice: undefined,
+    description: undefined,
+  },
+  // The card's minimal row is the name, the price and the photo: no meta leaks in from the defaults.
+  play: async ({ canvas }) => {
+    await expect(canvas.queryByText("Bestseller")).toBeNull();
+    await expect(canvas.queryByRole("img", { name: /Spice level/ })).toBeNull();
+    await expect(canvas.queryByText(/Amritsari paneer/)).toBeNull();
+    await expect(canvas.queryByRole("button")).toBeNull();
+  },
 };
 
 /** A real section: one hairline between rows, and the last row drops its rule. */
