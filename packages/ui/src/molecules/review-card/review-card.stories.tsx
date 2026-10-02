@@ -64,10 +64,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
-/** Card row "default": two cards side by side. */
+/** Card row "default": two cards side by side, stacked at 360px. */
 export const Default: Story = {
   render: () => (
-    <div className="grid grid-cols-2 gap-3.5">
+    <div className="grid gap-3.5 sm:grid-cols-2">
       <ReviewCard name={raj.name} meta={raj.meta} quote={raj.quote} rating={raj.rating} />
       <ReviewCard name={vikas.name} meta={vikas.meta} quote={vikas.quote} rating={vikas.rating} />
     </div>
