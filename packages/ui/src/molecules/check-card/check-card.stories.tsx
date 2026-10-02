@@ -4,6 +4,7 @@ import { expect } from "storybook/test";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
+import { paint } from "../../lib/story-paint";
 import { CheckCard } from "./check-card";
 
 const meta = {
@@ -52,6 +53,57 @@ export const NoOnionGarlic: Story = {
   args: {
     title: `No onion, no garlic · +${formatRupees(30)} a meal`,
     description: "Cooked in a separate pan, off the main batch",
+  },
+};
+
+/**
+ * Invalid: the card border and the box turn red, and the words say why (colour is never the
+ * message). Here the words are a caller's line, joined through `aria-describedby`.
+ */
+export const Invalid: Story = {
+  args: { isInvalid: true, "aria-describedby": "upfront-error" },
+  render: (args) => (
+    <>
+      <CheckCard {...args} />
+      <p id="upfront-error" className="mt-2 text-caption text-text-danger">
+        Tick this to lock the upfront price.
+      </p>
+    </>
+  ),
+  play: async ({ canvas }) => {
+    const checkbox = canvas.getByRole("checkbox", { name: "Pay 3 months upfront" });
+    const card = checkbox.closest("label");
+    await expect(card).toBeInstanceOf(HTMLElement);
+    if (!(card instanceof HTMLElement)) return;
+    await expect(checkbox).toHaveAccessibleDescription(
+      /locked for 3 cycles Tick this to lock the upfront price\./
+    );
+    const danger = paint(card, "borderColor", "--color-status-danger");
+    await expect(getComputedStyle(card).borderTopColor).toBe(danger);
+    await expect(getComputedStyle(checkbox).borderTopColor).toBe(danger);
+    await expect(getComputedStyle(card).boxShadow).toBe("none");
+  },
+};
+
+/** Invalid and ticked: the red border wins, and the pink selected inset goes (no pink-lined red). */
+export const InvalidChecked: Story = {
+  ...Invalid,
+  args: { ...Invalid.args, defaultChecked: true },
+  play: async ({ canvas }) => {
+    const checkbox = canvas.getByRole("checkbox", { name: "Pay 3 months upfront" });
+    const card = checkbox.closest("label");
+    await expect(card).toBeInstanceOf(HTMLElement);
+    if (!(card instanceof HTMLElement)) return;
+    await expect(checkbox).toBeChecked();
+    await expect(getComputedStyle(card).borderTopColor).toBe(
+      paint(card, "borderColor", "--color-status-danger")
+    );
+    await expect(getComputedStyle(checkbox).borderTopColor).toBe(
+      paint(card, "borderColor", "--color-status-danger")
+    );
+    await expect(getComputedStyle(card).boxShadow).not.toContain(
+      paint(card, "color", "--color-pink-500")
+    );
   },
 };
 
