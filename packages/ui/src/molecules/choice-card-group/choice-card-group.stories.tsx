@@ -231,6 +231,22 @@ export const Service: Story = {
   },
 };
 
+/** 360px: a long row price wraps under the words instead of squeezing them into a sliver. */
+export const ServiceAt360: Story = {
+  ...Service,
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  play: async ({ canvas }) => {
+    for (const radio of canvas.getAllByRole("radio")) {
+      const card = radio.closest("label");
+      const body = radio.nextElementSibling;
+      await expect(card).toBeInstanceOf(HTMLElement);
+      await expect(body).toBeInstanceOf(HTMLElement);
+      if (card === null || body === null) return;
+      await expect(body.getBoundingClientRect().width).toBeGreaterThanOrEqual(card.clientWidth / 2);
+    }
+  },
+};
+
 /** Home "Taste it first." — the trial selector on the brand field, 5-meal totals at the end. */
 export const TrialOnBrand: Story = {
   args: {

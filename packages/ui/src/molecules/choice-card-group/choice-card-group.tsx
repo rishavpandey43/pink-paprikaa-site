@@ -87,7 +87,9 @@ const choiceCardGroup = componentVariants({
     layout: {
       // The body stretches to the card, so a long meta Badge truncates inside it, not past it.
       tile: { card: "flex-col items-start gap-1", body: "self-stretch" },
-      row: { card: "items-center gap-3", price: "shrink-0" },
+      // The words keep at least 128px: a price too long to sit beside them wraps under them instead
+      // ("Quoted · 25+ guests" at 360px), never squeezing the description to a word per line.
+      row: { card: "flex-wrap items-center gap-3", body: "min-w-32", price: "shrink-0" },
     },
     tone: {
       light: {
