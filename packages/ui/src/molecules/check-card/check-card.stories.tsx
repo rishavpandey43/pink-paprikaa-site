@@ -56,3 +56,31 @@ export const NoOnionGarlic: Story = {
 };
 
 export const Disabled: Story = { args: { disabled: true } };
+
+/**
+ * Disabled and ticked: the box greys like Checkbox's (ink-200 fill, ink-400 tick) and the card
+ * drops its pink selected inset — nothing brand pink is left.
+ */
+export const DisabledChecked: Story = {
+  args: { disabled: true, defaultChecked: true },
+  play: async ({ canvas }) => {
+    const checkbox = canvas.getByRole("checkbox", { name: "Pay 3 months upfront" });
+    const tick = checkbox.nextElementSibling;
+    const paint = (token: string) => {
+      const probe = document.createElement("span");
+      probe.style.color = `var(${token})`;
+      checkbox.parentElement?.append(probe);
+      const color = getComputedStyle(probe).color;
+      probe.remove();
+      return color;
+    };
+    await expect(checkbox).toBeChecked();
+    await expect(getComputedStyle(checkbox).backgroundColor).toBe(paint("--color-ink-200"));
+    await expect(getComputedStyle(checkbox).borderTopColor).toBe(paint("--color-ink-200"));
+    await expect(tick === null ? "" : getComputedStyle(tick).color).toBe(paint("--color-ink-400"));
+    const card = checkbox.closest("label");
+    await expect(card === null ? "" : getComputedStyle(card).boxShadow).not.toContain(
+      paint("--color-pink-500")
+    );
+  },
+};

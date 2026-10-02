@@ -67,6 +67,15 @@ describe("CheckCard", () => {
     expect(screen.getByRole("checkbox")).toBeDisabled();
   });
 
+  // The class pins the wiring; the DisabledChecked story's play asserts the computed fill in Chromium.
+  it("greys a disabled box like Checkbox: an ink-200 fill and an ink-400 tick, never brand pink", () => {
+    render(<CheckCard {...UPFRONT} disabled defaultChecked />);
+    const checkbox = screen.getByRole("checkbox");
+    expect(checkbox).toHaveClass("disabled:border-ink-200", "disabled:bg-ink-200");
+    expect(checkbox.nextElementSibling).toHaveClass("peer-disabled:text-ink-400");
+    expect(checkbox.closest("label")).toHaveClass("has-disabled:shadow-none");
+  });
+
   it("keeps a caller's description alongside its own", () => {
     render(
       <>
