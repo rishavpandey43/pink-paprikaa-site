@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 
 import { ArrowRight, Star } from "lucide-react";
 import { expect } from "storybook/test";
@@ -40,6 +40,17 @@ const build = (plate: string, variant: "secondary" | "inverse" = "secondary") =>
   </Button>
 );
 
+/**
+ * One card at the prose measure. A story decorator, not a `meta` one: Storybook concatenates story
+ * and meta decorators (`decorators: []` on a story removes nothing), so a meta-level width would
+ * squeeze the page-section stories too.
+ */
+const prose: Decorator = (Story) => (
+  <div className="w-full max-w-text-measure-prose">
+    <Story />
+  </div>
+);
+
 const meta = {
   title: "Molecules/PricingCard",
   component: PricingCard,
@@ -51,13 +62,6 @@ const meta = {
     blurb: "The full Pink Paprikaa menu. Our recommendation.",
     points: [...PLATE_POINTS.classic],
   },
-  decorators: [
-    (Story) => (
-      <div className="w-full max-w-text-measure-prose">
-        <Story />
-      </div>
-    ),
-  ],
   parameters: {
     layout: "padded",
     docs: {
@@ -72,11 +76,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
+export const Playground: Story = { decorators: [prose] };
 
 /** Home "Three plates. Pick yours." */
 export const HomePlates: Story = {
-  decorators: [],
   render: () => (
     <div className="grid max-w-content grid-cols-1 gap-4 md:grid-cols-3">
       <PricingCard
@@ -105,7 +108,6 @@ export const HomePlates: Story = {
 
 /** Homely Meals "You pay per meal." — the flooded recommendation. */
 export const HomelyPlates: Story = {
-  decorators: [],
   render: () => (
     <div className="grid max-w-content grid-cols-1 gap-4 pt-4 md:grid-cols-3">
       <PricingCard
@@ -148,7 +150,6 @@ export const HomelyPlates: Story = {
 
 /** Catering "Dawat packages" — media, per head (`rates.js` → catering.dawats). */
 export const CateringDawats: Story = {
-  decorators: [],
   render: () => (
     <div className="grid max-w-content grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-4">
       {[
@@ -258,7 +259,6 @@ export const CateringDawats: Story = {
 
 /** Office & PG lunch "Two plates" (`rates.js` → office.plates). */
 export const OfficePlates: Story = {
-  decorators: [],
   render: () => (
     <div className="grid max-w-content grid-cols-1 gap-4 md:grid-cols-2">
       <PricingCard
