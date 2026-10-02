@@ -104,7 +104,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'A semantic `<table>` for the handoff\'s price matrix, box comparison, offers, catering glance and plan-vs-app tables (div grids in the handoff). Compose `TableHead` / `TableBody` / `TableRow` / `TableHeaderCell` (`scope="col"`, or `"row"` for row headers) / `TableCell`. `minWidth` makes a narrow screen scroll the table inside a named, keyboard-focusable region. `isHighlighted` on the cells marks the recommended column. The caption names the table and is visually hidden unless `isCaptionVisible`.',
+          'A semantic `<table>` for the handoff\'s price matrix, box comparison, offers, catering glance and plan-vs-app tables (div grids in the handoff). Compose `TableHead` / `TableBody` / `TableRow` / `TableHeaderCell` (`scope="col"`, or `"row"` for row headers) / `TableCell`. `minWidth` makes a narrow screen scroll the table inside a named, keyboard-focusable region. `isHighlighted` on the cells marks the recommended column; colour alone does not say why, so the header text says it too ("Our pick"). The caption names the table and is visually hidden unless `isCaptionVisible`.',
       },
     },
   },

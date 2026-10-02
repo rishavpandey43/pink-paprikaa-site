@@ -56,7 +56,10 @@ export type TableBodyProps = ComponentProps<"tbody">;
 export type TableRowProps = ComponentProps<"tr">;
 
 export interface TableHeaderCellProps extends ComponentProps<"th"> {
-  /** Marks the recommended column (its header turns brand). */
+  /**
+   * Marks the recommended column (its header turns brand). Colour alone does not tell a guest why
+   * (WCAG 1.4.1): say it in the header text too, e.g. "Classic · Our pick".
+   */
   isHighlighted?: boolean | undefined;
 }
 
