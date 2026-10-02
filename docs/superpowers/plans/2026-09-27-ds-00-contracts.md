@@ -716,9 +716,8 @@ interface FilterBarProps {
   options: FilterOption[];
   value?: string;
   defaultValue?: string;
+  /* No name/onBlur: a filter, not a form value (Plan 3b deviation 19, R99). */
   onValueChange?: (value: string) => void;
-  name?: string; /* R32: spec D17 — RHF <Controller> */
-  onBlur?: () => void;
   isWrapping?: boolean;
   note?: ReactNode;
   trailing?: ReactNode;
