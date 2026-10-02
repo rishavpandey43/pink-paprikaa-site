@@ -58,6 +58,23 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** Every Badge in a card sits inside the card's content box and shows without overflowing itself. */
+async function expectBadgesInsideTheirCards(canvasElement: HTMLElement) {
+  const badges = [...canvasElement.querySelectorAll<HTMLElement>("label [id$='-badge'] > *")];
+  await expect(badges.length).toBeGreaterThan(0);
+  for (const badge of badges) {
+    const card = badge.closest("label");
+    if (card === null) throw new Error("A badge outside its card");
+    const style = getComputedStyle(card);
+    const contentRight =
+      card.getBoundingClientRect().right -
+      Number.parseFloat(style.borderRightWidth) -
+      Number.parseFloat(style.paddingRight);
+    await expect(badge.getBoundingClientRect().right).toBeLessThanOrEqual(contentRight);
+    await expect(badge.scrollWidth).toBeLessThanOrEqual(badge.clientWidth);
+  }
+}
+
 export const Playground: Story = {};
 
 /** PlanCalculator — plate cards. */
@@ -110,6 +127,7 @@ export const PlanLengths: Story = {
         value: "weekday",
         title: "Weekday plan",
         description: "24 meals · Mon–Sat",
+        badge: <Badge tone="brand">Our recommendation</Badge>,
         meta: <Badge tone="success">Offer: +1 free / month</Badge>,
       },
       {
@@ -121,7 +139,7 @@ export const PlanLengths: Story = {
     ],
   },
   globals: { viewport: { value: "floor360", isRotated: false } },
-  play: async ({ canvas }) => {
+  play: async ({ canvas, canvasElement }) => {
     // At 360 the uppercase offer Badge is wider than its tile: it wraps inside the card, so the
     // whole offer shows (never truncated) and is read with the option.
     for (const card of canvas.getAllByRole("radio").map((radio) => radio.closest("label"))) {
@@ -135,6 +153,42 @@ export const PlanLengths: Story = {
         /Offer: \+1 free \/ month/i
       );
     }
+    await expect(canvas.getByRole("radio", { name: "Weekday plan" })).toHaveAccessibleDescription(
+      /Our recommendation/i
+    );
+    await expectBadgesInsideTheirCards(canvasElement);
+  },
+};
+
+/** A long Badge in a 150px tile is bounded by the tile, not by its own text, and still read whole. */
+export const LongBadgeInNarrowTile: Story = {
+  args: {
+    name: "length",
+    legend: "3. How many meals",
+    defaultValue: "weekday",
+    options: [
+      {
+        value: "weekday",
+        title: "Weekday plan",
+        description: "24 meals · Mon–Sat",
+        badge: <Badge tone="success">Offer: +1 free / month</Badge>,
+      },
+    ],
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-37.5">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvas, canvasElement }) => {
+    const card = canvas.getByRole("radio", { name: "Weekday plan" }).closest("label");
+    await expect(card?.getBoundingClientRect().width).toBe(150);
+    await expectBadgesInsideTheirCards(canvasElement);
+    await expect(canvas.getByRole("radio", { name: "Weekday plan" })).toHaveAccessibleDescription(
+      /Offer: \+1 free \/ month/i
+    );
   },
 };
 
