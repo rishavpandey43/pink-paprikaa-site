@@ -43,6 +43,9 @@ export default [
       ...react.configs.flat.recommended.rules,
       ...reactHooks.configs["recommended-latest"].rules,
       ...jsxA11y.flatConfigs.recommended.rules,
+      // Safari/VoiceOver drops list semantics from a `list-style: none` list (Tailwind's preflight
+      // sets it on every list), so `role="list"` restores them. `nav` is the rule's default entry.
+      "jsx-a11y/no-redundant-roles": ["error", { nav: ["navigation"], ol: ["list"], ul: ["list"] }],
       "react/react-in-jsx-scope": "off",
       "pink-paprikaa/no-raw-hex": "error",
       // Curated addition ported from a predecessor workspace.

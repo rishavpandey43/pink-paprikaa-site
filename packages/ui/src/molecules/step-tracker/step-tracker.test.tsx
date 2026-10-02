@@ -54,6 +54,11 @@ describe("StepTracker", () => {
     );
   });
 
+  it("keeps its unstyled steps a list for Safari, with an explicit list role", () => {
+    render(<StepTracker steps={ORDER} current={0} />);
+    expect(screen.getByRole("list")).toHaveAttribute("role", "list");
+  });
+
   it("merges a caller className over its own gap", () => {
     render(<StepTracker steps={ORDER} current={0} className="gap-8" />);
     const list = screen.getByRole("list");

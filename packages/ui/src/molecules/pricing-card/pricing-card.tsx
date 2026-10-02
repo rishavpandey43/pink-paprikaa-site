@@ -115,7 +115,8 @@ export function PricingCard({
       </p>
       {isShown(blurb) ? <p className={styles.blurb()}>{blurb}</p> : null}
       {points && points.length > 0 ? (
-        <ul className={styles.points()}>
+        // Safari/VoiceOver drops list semantics from a list-style:none list; the role restores them.
+        <ul role="list" className={styles.points()}>
           {points.map((point, index) => (
             <li key={index} className={styles.point()}>
               <Icon icon={Check} size="sm" className={styles.pointIcon()} />

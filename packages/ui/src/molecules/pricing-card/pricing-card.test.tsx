@@ -48,6 +48,11 @@ describe("PricingCard", () => {
     for (const item of items) expect(item.querySelector("svg")).not.toBeNull();
   });
 
+  it("keeps its unstyled points a list for Safari, with an explicit list role", () => {
+    render(<PricingCard {...CLASSIC} points={[...CLASSIC.points]} />);
+    expect(screen.getByRole("list")).toHaveAttribute("role", "list");
+  });
+
   it.each([
     ["default", "light"],
     ["featured", "light"],

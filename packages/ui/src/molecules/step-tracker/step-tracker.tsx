@@ -92,7 +92,9 @@ export function StepTracker({
   const styles = stepTracker({ orientation });
 
   return (
-    <ol className={styles.root({ className })} {...props}>
+    // Safari/VoiceOver drops list semantics from a list-style:none list; the explicit role
+    // restores them.
+    <ol role="list" className={styles.root({ className })} {...props}>
       {steps.map((step, index) => {
         const state = stateOf(index, current);
         return (
