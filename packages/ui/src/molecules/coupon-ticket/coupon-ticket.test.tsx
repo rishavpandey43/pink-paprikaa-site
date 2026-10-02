@@ -12,7 +12,6 @@ const TICKET = {
 
 afterEach(() => {
   vi.useRealTimers();
-  vi.restoreAllMocks();
 });
 
 describe("CouponTicket", () => {
