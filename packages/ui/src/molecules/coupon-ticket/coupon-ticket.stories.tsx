@@ -51,6 +51,54 @@ export const Brand: Story = {
   },
 };
 
+/**
+ * The overflow `ancestors` of `element` whose padding box cuts its focus outline (an outline is
+ * clipped like any other paint, so a ring drawn outside a flush child of an `overflow-hidden` box
+ * all but vanishes).
+ */
+function ringClippers(element: HTMLElement) {
+  const style = getComputedStyle(element);
+  const reach = Number.parseFloat(style.outlineWidth) + Number.parseFloat(style.outlineOffset);
+  // Scroll extents are whole pixels, so a child scrolled fully into view can sit a fraction past.
+  const box = element.getBoundingClientRect();
+  const slack = 1;
+  const clippers: HTMLElement[] = [];
+  for (let node = element.parentElement; node !== null; node = node.parentElement) {
+    const { overflowX, overflowY } = getComputedStyle(node);
+    if (overflowX === "visible" && overflowY === "visible") continue;
+    const frame = node.getBoundingClientRect();
+    const left = frame.left + node.clientLeft;
+    const top = frame.top + node.clientTop;
+    if (
+      box.left - reach < left - slack ||
+      box.top - reach < top - slack ||
+      box.right + reach > left + node.clientWidth + slack ||
+      box.bottom + reach > top + node.clientHeight + slack
+    ) {
+      clippers.push(node);
+    }
+  }
+  return clippers;
+}
+
+/** Keyboard focus on the stub: the ring is drawn inset, inside the ticket's notch clip. */
+export const StubFocusRing: Story = {
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.tab();
+    const stub = canvas.getByRole("button", { name: /Use code PAPRIKAA50/ });
+    await expect(stub).toHaveFocus();
+    await expect(stub.matches(":focus-visible")).toBe(true);
+    await expect(getComputedStyle(stub).outlineStyle).toBe("solid");
+    await expect(ringClippers(stub)).toEqual([]);
+  },
+};
+
+/** The stacked `md` ticket at 360px: the stub is the bottom row, its ring still clear of the clip. */
+export const StubFocusRingNarrow: Story = {
+  ...StubFocusRing,
+  globals: { viewport: { value: "floor360", isRotated: false } },
+};
+
 /** Card row "light". */
 export const Light: Story = {
   args: {

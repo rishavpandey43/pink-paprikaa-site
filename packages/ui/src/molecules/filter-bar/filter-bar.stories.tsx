@@ -40,6 +40,32 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** The overflow ancestors of `element` whose padding box cuts its focus outline. */
+function ringClippers(element: HTMLElement) {
+  const style = getComputedStyle(element);
+  const reach = Number.parseFloat(style.outlineWidth) + Number.parseFloat(style.outlineOffset);
+  // Scroll extents are whole pixels, so a child scrolled fully into view can sit a fraction past.
+  const box = element.getBoundingClientRect();
+  const slack = 1;
+  const clippers: HTMLElement[] = [];
+  for (let node = element.parentElement; node !== null; node = node.parentElement) {
+    const { overflowX, overflowY } = getComputedStyle(node);
+    if (overflowX === "visible" && overflowY === "visible") continue;
+    const frame = node.getBoundingClientRect();
+    const left = frame.left + node.clientLeft;
+    const top = frame.top + node.clientTop;
+    if (
+      box.left - reach < left - slack ||
+      box.top - reach < top - slack ||
+      box.right + reach > left + node.clientWidth + slack ||
+      box.bottom + reach > top + node.clientHeight + slack
+    ) {
+      clippers.push(node);
+    }
+  }
+  return clippers;
+}
+
 export const Playground: Story = {};
 
 /** Card row "wrap" — the website, with the statement badge. */
@@ -72,6 +98,19 @@ export const Scroll: Story = {
       </div>
     ),
   ],
+  // The rail is a scroll container, so a chip's focus ring is clipped like any other paint: the
+  // first chip's and, scrolled to the end, the last chip's ring must both stay whole.
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.tab();
+    const first = canvas.getByRole("radio", { name: "All" });
+    await expect(first).toHaveFocus();
+    await expect(first.matches(":focus-visible")).toBe(true);
+    await expect(ringClippers(first)).toEqual([]);
+    await userEvent.keyboard("{End}");
+    const last = canvas.getByRole("radio", { name: "Bar" });
+    await expect(last).toHaveFocus();
+    await expect(ringClippers(last)).toEqual([]);
+  },
 };
 
 /** Card row "icons". */

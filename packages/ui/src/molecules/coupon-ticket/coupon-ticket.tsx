@@ -41,7 +41,8 @@ const couponTicket = componentVariants({
         logo: "h-10",
         headline: "mt-4 text-coupon-ticket-headline-md",
         terms: "mt-3 text-body-sm",
-        stub: "sm:w-coupon-ticket-stub-md",
+        // The stub's corners follow the ticket's, so its inset focus ring is not cut by the clip.
+        stub: "rounded-b-xl sm:w-coupon-ticket-stub-md sm:rounded-tr-xl sm:rounded-bl-none",
         stubLabel: "text-overline",
         code: "text-coupon-ticket-code-md",
         hint: "text-caption",
@@ -56,7 +57,7 @@ const couponTicket = componentVariants({
         logo: "h-17",
         headline: "mt-7 text-coupon-ticket-headline-lg",
         terms: "mt-5 text-body-lg",
-        stub: "w-coupon-ticket-stub-lg",
+        stub: "w-coupon-ticket-stub-lg rounded-r-xl",
         stubLabel: "text-coupon-ticket-stub-label-lg",
         code: "text-coupon-ticket-code-lg",
         hint: "text-body-sm",
@@ -68,9 +69,12 @@ const couponTicket = componentVariants({
       sunken: { notchStart: "bg-surface-sunken", notchEnd: "bg-surface-sunken" },
       brand: { notchStart: "bg-surface-brand", notchEnd: "bg-surface-brand" },
     },
-    // Press = the system's scale (Button's treatment).
+    // Press = the system's scale (Button's treatment). The root clips (it cuts the notches), and the
+    // stub runs flush to its edges, so the focus ring is drawn inset.
     isCopyable: {
-      true: { stub: "cursor-pointer transition-control active:press-scale" },
+      true: {
+        stub: "cursor-pointer transition-control focus-visible:-outline-offset-4 active:press-scale",
+      },
       false: {},
     },
   },

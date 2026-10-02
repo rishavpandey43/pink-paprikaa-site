@@ -43,7 +43,12 @@ const filterBar = componentVariants({
     isWrapping: {
       true: { root: "flex-wrap", group: "flex-wrap" },
       // The group scrolls, not the root, so the note and the trailing control stay pinned in view.
-      false: { root: "flex-nowrap", group: "min-w-0 flex-nowrap overflow-x-auto pb-1" },
+      // A scroller clips its chips' focus rings: p-1 (with scroll-px-1 for a chip scrolled into
+      // view) gives the ring room, and -m-1 keeps the rail where it was.
+      false: {
+        root: "flex-nowrap",
+        group: "-m-1 min-w-0 scroll-px-1 flex-nowrap overflow-x-auto p-1 pb-2",
+      },
     },
   },
 });
