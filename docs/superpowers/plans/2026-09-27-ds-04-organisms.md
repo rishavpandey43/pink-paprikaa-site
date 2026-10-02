@@ -548,7 +548,7 @@ const ctaBand = componentVariants({
   slots: {
     root: "relative",
     pattern: "absolute inset-0",
-    inner: "py-cta-band-y relative container-page flex flex-wrap gap-8",
+    inner: "relative container-page flex flex-wrap gap-8 py-cta-band-y",
     copy: "flex min-w-0 flex-col gap-2.5",
     action: "flex shrink-0 flex-wrap items-center gap-2.5",
   },
