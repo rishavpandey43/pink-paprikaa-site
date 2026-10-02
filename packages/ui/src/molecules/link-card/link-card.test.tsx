@@ -80,6 +80,12 @@ describe("LinkCard", () => {
         <RouterLink href="/homely-meals" target="_blank" />
       </LinkCard>,
     ],
+    [
+      "asChild, target on the card",
+      <LinkCard key="card" asChild title="Homely Meals" target="_blank">
+        <RouterLink href="/homely-meals" />
+      </LinkCard>,
+    ],
   ])("says a new-tab card opens in a new tab (%s)", (_, card) => {
     render(card);
     expect(screen.getByRole("link")).toHaveAccessibleName(/Opens in a new tab/);

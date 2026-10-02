@@ -92,9 +92,10 @@ export function LinkCard({
 }: LinkCardProps) {
   const styles = linkCard({ layout, tone });
   const Component: ElementType = asChild ? Slot.Root : "a";
+  // Slot merges the card's own props onto the child (the child's win), so either may set it.
   const target =
     asChild && isValidElement<{ target?: unknown }>(children)
-      ? children.props.target
+      ? (children.props.target ?? props.target)
       : props.target;
   const content = (
     <>
