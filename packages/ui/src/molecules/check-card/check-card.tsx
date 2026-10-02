@@ -30,8 +30,9 @@ export interface CheckCardProps extends Omit<ComponentProps<"input">, "size" | "
   description?: ReactNode | undefined;
   /**
    * Sets `aria-invalid`; the box and the card border turn red (Checkbox's rule). Colour is never
-   * the message: pair it with the words, or wrap the card in Field (`status` + `message`), whose
-   * `aria-describedby` joins the card's own description.
+   * the message: pair it with the words, or wrap the card in Field (`status` + `message`) and pass
+   * on its `aria-describedby` and `aria-invalid` — never its `id`, or Field's `<label>` labels the
+   * input a second time. The `aria-describedby` joins the card's own description.
    */
   isInvalid?: boolean | undefined;
 }

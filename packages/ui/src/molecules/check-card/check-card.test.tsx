@@ -91,10 +91,19 @@ describe("CheckCard", () => {
   it("takes Field's error: invalid, and described by the words that say why", () => {
     render(
       <Field label="Terms" status="error" message="Tick this to place the order.">
-        {(control) => <CheckCard {...UPFRONT} {...control} />}
+        {(control) => (
+          <CheckCard
+            {...UPFRONT}
+            aria-describedby={control["aria-describedby"]}
+            aria-invalid={control["aria-invalid"]}
+          />
+        )}
       </Field>
     );
     const checkbox = screen.getByRole("checkbox", { name: UPFRONT.title });
+    // The card's own label only: Field's `<label htmlFor>` would be a second one (axe
+    // form-field-multiple-labels).
+    expect((checkbox as HTMLInputElement).labels).toHaveLength(1);
     expect(checkbox).toBeInvalid();
     expect(checkbox).toHaveAccessibleDescription(
       `${UPFRONT.description} Tick this to place the order.`
