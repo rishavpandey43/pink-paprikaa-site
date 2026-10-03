@@ -1,7 +1,10 @@
 import { ringClippers } from "./story-ring";
 
 type RingStyle = Partial<
-  Pick<CSSStyleDeclaration, "boxShadow" | "outlineOffset" | "outlineStyle" | "outlineWidth">
+  Pick<
+    CSSStyleDeclaration,
+    "boxShadow" | "outlineOffset" | "outlineStyle" | "outlineWidth" | "position"
+  >
 >;
 
 /** A control `inset` px inside a 100px `overflow: hidden` frame (jsdom has no layout, so both are stubbed). */
@@ -55,6 +58,17 @@ describe("ringClippers", () => {
 
   it("measures an inset outline, whose reach is negative", () => {
     expect(ringClippers(framed({ ...OUTLINE, outlineOffset: "-4px" }, 0).control)).toEqual([]);
+  });
+
+  it("skips a frame a fixed control escapes", () => {
+    expect(ringClippers(framed({ ...OUTLINE, position: "fixed" }, 2).control)).toEqual([]);
+  });
+
+  it("skips a static frame an absolute control escapes, but not a positioned one", () => {
+    expect(ringClippers(framed({ ...OUTLINE, position: "absolute" }, 2).control)).toEqual([]);
+    const positioned = framed({ ...OUTLINE, position: "absolute" }, 2);
+    positioned.frame.style.position = "relative";
+    expect(ringClippers(positioned.control)).toEqual([positioned.frame]);
   });
 
   it("measures a box-shadow ring (a field's) by its spread when there is no outline", () => {

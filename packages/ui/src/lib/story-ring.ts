@@ -30,7 +30,8 @@ export function ringClippers(element: HTMLElement) {
   const box = element.getBoundingClientRect();
   const slack = 1;
   const clippers: HTMLElement[] = [];
-  for (let node = element.parentElement; node !== null; node = node.parentElement) {
+  // Only a box in the containing-block chain clips: a fixed scrim escapes an `overflow-hidden` body.
+  for (let node = containingBlock(element); node !== null; node = containingBlock(node)) {
     const { overflowX, overflowY } = getComputedStyle(node);
     if (overflowX === "visible" && overflowY === "visible") continue;
     const frame = node.getBoundingClientRect();
@@ -46,6 +47,31 @@ export function ringClippers(element: HTMLElement) {
     }
   }
   return clippers;
+}
+
+/** The box `node` is laid out in — the one whose `overflow` can clip it; `null` for the viewport. */
+function containingBlock(node: HTMLElement) {
+  const { position } = getComputedStyle(node);
+  if (position !== "absolute" && position !== "fixed") return node.parentElement;
+  for (let ancestor = node.parentElement; ancestor !== null; ancestor = ancestor.parentElement) {
+    const style = getComputedStyle(ancestor);
+    if (position === "absolute" && isSet(style.position) && style.position !== "static") {
+      return ancestor;
+    }
+    if (
+      isSet(style.transform) ||
+      isSet(style.filter) ||
+      isSet(style.perspective) ||
+      /layout|paint|strict|content/.test(style.contain)
+    ) {
+      return ancestor;
+    }
+  }
+  return null;
+}
+
+function isSet(value: string) {
+  return value !== "" && value !== "none";
 }
 
 /** How far the outer shadows of a computed `box-shadow` reach past the box; NaN when none do. */
