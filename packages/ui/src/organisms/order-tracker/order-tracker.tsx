@@ -92,7 +92,7 @@ export function OrderTracker({
       className={slots.root({ className })}
       {...props}
     >
-      <PatternField tone="brand" tile={56} className={slots.header()}>
+      <PatternField surface="brand" tile={56} className={slots.header()}>
         <div role="status" className={slots.status()}>
           {badge}
           {step === undefined ? null : (

@@ -132,7 +132,7 @@ export function SiteFooter({
       {density === "none" ? null : (
         <PatternField
           aria-hidden
-          tone={tone}
+          surface={tone}
           tile={80}
           density={density}
           className={slots.pattern()}

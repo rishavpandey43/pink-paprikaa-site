@@ -70,7 +70,7 @@ export function Section({
         <>
           <PatternField
             aria-hidden
-            tone={dataSurface}
+            surface={dataSurface === "light" ? "page" : dataSurface}
             density={pattern}
             className="pointer-events-none absolute inset-0 bg-transparent"
           />

@@ -81,7 +81,7 @@ function MenuScreen() {
 /** The pink-header home screen that `statusTone="light"` is for. */
 function DemoHomeScreen() {
   return (
-    <PatternField tone="brand" className="px-5 pt-1 pb-6">
+    <PatternField surface="brand" className="px-5 pt-1 pb-6">
       <Stack space={4}>
         <Logo color="inverse" className="w-24" />
         <Typography as="h1" variant="h2">

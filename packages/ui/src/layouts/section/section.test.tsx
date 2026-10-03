@@ -142,7 +142,7 @@ describe("Section", () => {
       ["brand", "brand"],
       ["ink", "ink"],
       ["soft", "soft"],
-      ["alt", "light"],
+      ["alt", "page"],
     ] as const)(
       "on surface=%s lays a %s PatternField behind the content",
       (surfaceProp, surface) => {
@@ -152,7 +152,7 @@ describe("Section", () => {
           </Section>
         );
         expect(vi.mocked(PatternField).mock.calls[0]?.[0]).toMatchObject({
-          tone: surface,
+          surface,
           density: "faint",
           "aria-hidden": true,
         });

@@ -189,7 +189,7 @@ export const MarkLegibility: Story = {
 export const PatternFields: Story = {
   render: () => (
     <div className="flex flex-col gap-4">
-      <PatternField tone="brand" radius="lg" className="flex flex-col gap-1.5 px-7 py-6">
+      <PatternField surface="brand" radius="lg" className="flex flex-col gap-1.5 px-7 py-6">
         <Typography variant="overline" color="muted" as="span">
           Loyalty
         </Typography>
@@ -198,16 +198,16 @@ export const PatternFields: Story = {
         </Typography>
       </PatternField>
       <div className="grid gap-4 md:grid-cols-4">
-        <PatternField tone="ink" radius="lg" className="h-24 p-4">
+        <PatternField surface="ink" radius="lg" className="h-24 p-4">
           <span className="font-mono text-mono">tone=&quot;ink&quot;</span>
         </PatternField>
-        <PatternField tone="ink" density="faint" radius="lg" className="h-24 p-4">
+        <PatternField surface="ink" density="faint" radius="lg" className="h-24 p-4">
           <span className="font-mono text-mono">density=&quot;faint&quot;</span>
         </PatternField>
-        <PatternField tone="soft" radius="lg" className="h-24 p-4">
+        <PatternField surface="soft" radius="lg" className="h-24 p-4">
           <span className="font-mono text-mono">tone=&quot;soft&quot;</span>
         </PatternField>
-        <PatternField tone="light" radius="lg" className="h-24 p-4">
+        <PatternField surface="page" radius="lg" className="h-24 p-4">
           <span className="font-mono text-mono">tone=&quot;light&quot;</span>
         </PatternField>
       </div>

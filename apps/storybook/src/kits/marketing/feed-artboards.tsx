@@ -22,7 +22,7 @@ const CANVAS_PAD = `var(${token("canvas-pad").cssVar})`;
 export function OfferPost() {
   return (
     <PostFrame format="post" surface="brand" isFit>
-      <PatternField tone="brand" tile={96} className="absolute inset-0" />
+      <PatternField surface="brand" tile={96} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between">
         <SocialHeadline size="overline" as="p">
           Tonight Only
@@ -77,7 +77,7 @@ export function DishLaunchPost() {
 export function StatementPost() {
   return (
     <PostFrame format="portrait" surface="ink" isFit>
-      <PatternField tone="ink" tile={96} className="absolute inset-0" />
+      <PatternField surface="ink" tile={96} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between">
         <div className="flex flex-col gap-10">
           <SocialHeadline size="overline" as="p">

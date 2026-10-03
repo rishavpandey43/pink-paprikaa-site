@@ -35,7 +35,7 @@ function Caption({ children }: { children: string }) {
 function OfferBoard() {
   return (
     <>
-      <PatternField tone="brand" tile={96} className="absolute inset-0" />
+      <PatternField surface="brand" tile={96} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between">
         <SocialHeadline size="overline" as="p">
           Tonight Only
@@ -52,7 +52,7 @@ function OfferBoard() {
 function StatementBoard() {
   return (
     <>
-      <PatternField tone="ink" tile={96} className="absolute inset-0" />
+      <PatternField surface="ink" tile={96} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between">
         <SocialHeadline size="overline" as="p" className="text-text-brand">
           Since 2025

@@ -103,7 +103,7 @@ export function QuotePanel({
       {...props}
     >
       {tone === "brand" ? (
-        <PatternField aria-hidden tone="brand" tile={64} className={slots.pattern()} />
+        <PatternField aria-hidden surface="brand" tile={64} className={slots.pattern()} />
       ) : null}
       <div className={slots.body()}>
         <div className={slots.header()}>

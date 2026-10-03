@@ -109,7 +109,7 @@ export function HeroBanner({
       {density === "none" ? null : (
         <PatternField
           aria-hidden
-          tone={SURFACE[tone]}
+          surface={SURFACE[tone] === "light" ? "page" : SURFACE[tone]}
           tile={86}
           density={density}
           className={slots.pattern()}

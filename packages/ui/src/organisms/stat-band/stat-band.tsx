@@ -50,7 +50,7 @@ export function StatBand({ stats, tone = "soft", className, ...props }: StatBand
   const slots = statBand({ tone });
   return (
     <section data-surface={tone} className={slots.root({ className })} {...props}>
-      <PatternField aria-hidden tone={tone} tile={80} className={slots.pattern()} />
+      <PatternField aria-hidden surface={tone} tile={80} className={slots.pattern()} />
       <ul role="list" className={slots.grid()}>
         {stats.map((stat, index) => (
           <li key={index}>

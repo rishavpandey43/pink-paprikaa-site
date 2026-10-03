@@ -69,7 +69,7 @@ export function CtaBand({
       {pattern === "none" ? null : (
         <PatternField
           aria-hidden
-          tone={tone}
+          surface={tone}
           tile={72}
           density={pattern}
           className={slots.pattern()}

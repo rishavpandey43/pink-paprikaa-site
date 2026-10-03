@@ -39,7 +39,7 @@ export interface HomeScreenProps {
 export function HomeScreen({ onOpenItem, onSeeMenu }: HomeScreenProps) {
   return (
     <div className="flex-1 overflow-y-auto bg-surface-page">
-      <PatternField tone="brand" tile={56}>
+      <PatternField surface="brand" tile={56}>
         <div className="flex flex-col gap-4.5 px-5 pt-1 pb-6.5">
           <div className="flex items-center justify-between">
             <Logo variant="wordmark" color="inverse" className="w-35" />
@@ -113,7 +113,7 @@ export function HomeScreen({ onOpenItem, onSeeMenu }: HomeScreenProps) {
 
       <div className="px-5 pt-6 pb-7">
         <Card surface="ink" padding="none" className="overflow-hidden">
-          <PatternField tone="ink" tile={56}>
+          <PatternField surface="ink" tile={56}>
             <div className="flex flex-col gap-2.5 p-5">
               <Badge color="brand" variant="solid" className="self-start">
                 Tonight Only

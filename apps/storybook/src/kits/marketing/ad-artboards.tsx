@@ -28,7 +28,7 @@ export interface StoryArtboardProps {
 export function OfferStory({ hasSafeArea = false }: StoryArtboardProps) {
   return (
     <PostFrame format="story" surface="brand" padding="none" hasSafeArea={hasSafeArea} isFit>
-      <PatternField tone="brand" tile={96} className="absolute inset-0" />
+      <PatternField surface="brand" tile={96} className="absolute inset-0" />
       <div
         className="relative flex h-full flex-col justify-between"
         style={{ padding: `${STORY_SAFE_TOP} ${CANVAS_PAD} ${STORY_SAFE_BOTTOM}` }}
@@ -115,7 +115,7 @@ export function LinkBanner() {
 export function Leaderboard() {
   return (
     <PostFrame format="leaderboard" surface="brand" padding="none" isFit>
-      <PatternField tone="brand" tile={56} className="absolute inset-0" />
+      <PatternField surface="brand" tile={56} className="absolute inset-0" />
       <div className="relative flex h-full items-center gap-4.5 px-4.5">
         <Logo variant="wordmark" color="inverse" className="w-35 shrink-0" />
         <Divider orientation="vertical" className="h-10" />
@@ -134,7 +134,7 @@ export function Leaderboard() {
 export function Mpu() {
   return (
     <PostFrame format="mpu" surface="ink" padding="none" isFit>
-      <PatternField tone="ink" tile={56} className="absolute inset-0" />
+      <PatternField surface="ink" tile={56} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between p-4.5">
         <Logo variant="wordmark" color="inverse" className="w-35" />
         <SocialHeadline size="caption" as="p">

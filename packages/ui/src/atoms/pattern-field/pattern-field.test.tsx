@@ -20,13 +20,26 @@ describe("PatternField", () => {
     ["brand", "bg-surface-brand", "bg-ink-000"],
     ["ink", "bg-surface-inverse", "bg-ink-000"],
     ["soft", "bg-surface-brand-soft", "bg-pink-500"],
-    ["light", "bg-surface-page", "bg-pink-500"],
-  ] as const)("tone %s sets data-surface, the %s field and a %s mark", (tone, field, mark) => {
-    const { container } = render(<PatternField tone={tone}>Field</PatternField>);
-    const root = container.firstElementChild;
-    expect(root).toHaveAttribute("data-surface", tone);
-    expect(root).toHaveClass(field);
-    expect(root?.firstElementChild).toHaveClass(mark);
+    ["page", "bg-surface-page", "bg-pink-500"],
+  ] as const)(
+    "surface %s sets data-surface, the %s field and a %s mark",
+    (surface, field, mark) => {
+      const { container } = render(<PatternField surface={surface}>Field</PatternField>);
+      const root = container.firstElementChild;
+      expect(root).toHaveAttribute("data-surface", surface === "page" ? "light" : surface);
+      expect(root).toHaveClass(field);
+      expect(root?.firstElementChild).toHaveClass(mark);
+    }
+  );
+
+  it("sx lands on the root and beats its own radius", () => {
+    const { container } = render(
+      <PatternField radius="lg" sx={{ radius: "xl", mt: 4 }}>
+        Field
+      </PatternField>
+    );
+    expect(container.firstElementChild).toHaveClass("rounded-xl", "mt-4");
+    expect(container.firstElementChild).not.toHaveClass("rounded-lg");
   });
 
   it("tiles the symbol at 64px by default and at any tile token", () => {
@@ -40,9 +53,9 @@ describe("PatternField", () => {
     ["brand", "pattern-opacity-default"],
     ["ink", "pattern-opacity-default"],
     ["soft", "pattern-opacity-light"],
-    ["light", "pattern-opacity-light"],
-  ] as const)("uses the %s field's default density (%s) and only that one", (tone, opacity) => {
-    const { container } = render(<PatternField tone={tone}>Field</PatternField>);
+    ["page", "pattern-opacity-light"],
+  ] as const)("uses the %s field's default density (%s) and only that one", (surface, opacity) => {
+    const { container } = render(<PatternField surface={surface}>Field</PatternField>);
     const pattern = container.firstElementChild?.firstElementChild;
     expect(pattern).toHaveClass(opacity);
     expect(pattern?.className.match(/pattern-opacity-/g)).toHaveLength(1);
@@ -50,7 +63,7 @@ describe("PatternField", () => {
 
   it("whispers at 4% when density is faint", () => {
     const { container } = render(
-      <PatternField tone="ink" density="faint">
+      <PatternField surface="ink" density="faint">
         Field
       </PatternField>
     );
@@ -67,7 +80,7 @@ describe("PatternField", () => {
   });
 
   it("paints the tile through the white symbol mask, rendered on the server", () => {
-    const html = renderToStaticMarkup(<PatternField tone="ink">Statement</PatternField>);
+    const html = renderToStaticMarkup(<PatternField surface="ink">Statement</PatternField>);
     expect(html).toContain('data-surface="ink"');
     expect(html).toContain("mask-image:var(--pp-symbol-mask)");
   });
@@ -93,7 +106,7 @@ describe("PatternField", () => {
 
   it("patterns an existing element through asChild", () => {
     render(
-      <PatternField asChild tone="ink">
+      <PatternField asChild surface="ink">
         <section aria-label="Delivery zones">
           <h2>Delivery zones</h2>
         </section>
@@ -128,7 +141,7 @@ describe("PatternField", () => {
 
   it("has no accessibility violations", async () => {
     const { container } = render(
-      <PatternField tone="brand">
+      <PatternField surface="brand">
         <h2>Tonight only</h2>
         <p>Chai at 8am, chilli paneer at midnight.</p>
       </PatternField>
