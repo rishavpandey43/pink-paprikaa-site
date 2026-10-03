@@ -164,6 +164,13 @@ export {
   type ActionDockProps,
   type DockAction,
 } from "./organisms/action-dock/action-dock";
+export {
+  CartPanel,
+  type CartLine,
+  type CartPanelProps,
+  type CartTotals,
+  cartTotals,
+} from "./organisms/cart-panel/cart-panel";
 export { CtaBand, type CtaBandProps } from "./organisms/cta-band/cta-band";
 export { Dialog, type DialogProps } from "./organisms/dialog/dialog";
 export { FaqSection, type FaqSectionProps } from "./organisms/faq-section/faq-section";

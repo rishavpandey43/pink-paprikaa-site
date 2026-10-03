@@ -229,6 +229,7 @@ const SPACING = [
   "story-safe-top",
   "story-safe-bottom",
   "quantity-stepper-count",
+  "cart-panel-thumb",
   "snackbar",
   "empty-state-symbol-lg",
   "section-header-measure",
