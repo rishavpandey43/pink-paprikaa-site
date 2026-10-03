@@ -1,12 +1,15 @@
-import type { ComponentProps, ElementType, ReactElement } from "react";
+import type { ElementType, ReactElement } from "react";
 
 import { Slot } from "radix-ui";
 
+import type { BaseProps } from "../../lib/common-props";
+
 import { componentVariants } from "../../lib/component-variants";
 import { controlStates } from "../../lib/control-states";
+import { withSx } from "../../lib/sx";
 import { Icon, type IconComponent } from "../icon/icon";
 
-export interface IconButtonProps extends Omit<ComponentProps<"button">, "children" | "aria-label"> {
+export interface IconButtonProps extends Omit<BaseProps<"button">, "children" | "aria-label"> {
   icon: IconComponent;
   /** The accessible name — required: an icon-only control has no other (spec §5.5). */
   label: string;
@@ -61,6 +64,7 @@ export function IconButton({
   asChild = false,
   disabled = false,
   type = "button",
+  sx,
   className,
   children,
   ...props
@@ -71,7 +75,7 @@ export function IconButton({
   const state = asChild ? { "aria-disabled": disabled || undefined } : { type, disabled };
   return (
     <Component
-      className={slots.root({ className })}
+      className={slots.root({ className: withSx(sx, className) })}
       aria-label={hasCount ? `${label} (${String(count)})` : label}
       {...state}
       {...props}

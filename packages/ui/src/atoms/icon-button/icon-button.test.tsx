@@ -131,6 +131,13 @@ describe("IconButton", () => {
     expect(button).not.toHaveClass("rounded-pill");
   });
 
+  it("sx lands on the button and beats its own position", () => {
+    render(<IconButton icon={Heart} label="Save" sx={{ position: "absolute", mt: 2 }} />);
+    const button = screen.getByRole("button", { name: "Save" });
+    expect(button).toHaveClass("absolute", "mt-2");
+    expect(button).not.toHaveClass("relative");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
