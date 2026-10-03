@@ -26,6 +26,11 @@ describe("OrderTracker", () => {
     expect(screen.getByRole("heading", { level: 2, name: "Ready for pickup" })).toBeInTheDocument();
   });
 
+  it("clamps a negative current index to the first step", () => {
+    render(<OrderTracker steps={STEPS} current={-1} code="PPK-4821" />);
+    expect(screen.getByRole("heading", { level: 2, name: "Order in" })).toBeInTheDocument();
+  });
+
   it("renders no empty heading and no empty step list when there are no steps", async () => {
     const { container } = render(
       <OrderTracker steps={[]} current={0} code="PPK-4821" badge={<span>Preparing</span>} />
