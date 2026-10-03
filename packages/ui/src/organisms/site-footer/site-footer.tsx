@@ -87,10 +87,13 @@ export interface SiteFooterProps
   extends ComponentProps<"footer">, Pick<VariantProps<typeof siteFooter>, "tone"> {
   /** The brand block — lockup, veg chip, licence line, blurb, contact lines: whatever the app passes. */
   brand?: ReactNode;
+  /** Unique by `heading` (it keys the column). */
   columns: FooterColumn[];
+  /** Unique by `network` (it keys the link). */
   social?: FooterSocialLink[] | undefined;
   /** Legal lines (©, GSTIN), rendered verbatim. The system holds no company facts. */
   legal?: ReactNode;
+  /** Unique by `href` (it keys the link). */
   policies?: FooterPolicy[] | undefined;
   linkAs?: LinkAs | undefined;
   /** Defaults to `none` on brand and `faint` on ink. */
@@ -142,23 +145,26 @@ export function SiteFooter({
             {social.length > 0 ? (
               // Safari/VoiceOver drops list semantics from a list-style:none list outside a nav.
               <ul role="list" className={slots.social()}>
-                {social.map((link) => (
-                  <li key={link.network}>
-                    <IconButton
-                      asChild
-                      icon={SOCIAL_GLYPH[link.network]}
-                      label={`${link.label} (Opens in a new tab)`}
-                      variant="secondary"
-                    >
-                      <a
-                        href={link.href}
-                        aria-label={`${link.label} (Opens in a new tab)`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      />
-                    </IconButton>
-                  </li>
-                ))}
+                {social.map((link) => {
+                  const label = `${link.label} (Opens in a new tab)`;
+                  return (
+                    <li key={link.network}>
+                      <IconButton
+                        asChild
+                        icon={SOCIAL_GLYPH[link.network]}
+                        label={label}
+                        variant="secondary"
+                      >
+                        <a
+                          href={link.href}
+                          aria-label={label}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        />
+                      </IconButton>
+                    </li>
+                  );
+                })}
               </ul>
             ) : null}
           </div>
