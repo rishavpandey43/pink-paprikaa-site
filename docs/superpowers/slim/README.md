@@ -20,3 +20,5 @@ Task order:
 8. `p5-t12-marketing-kit.md`
 9. `p5-t13-rhf-zod.md`
 10. `p5-t14-docs.md`
+
+- Component API migration + MUI gap components (2026-10-04): spec `docs/superpowers/specs/2026-10-04-component-api-design.md`, plan `docs/superpowers/plans/2026-10-04-ds-06-component-api.md` (supersedes `p6-*.md`).
