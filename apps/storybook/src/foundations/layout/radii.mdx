@@ -1,0 +1,17 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./layout.stories";
+
+<Meta title="Layout/Radii" />
+
+{/* source: guidelines/radii.card.html */}
+
+# Corner radii
+
+Geometric, never blobby — the brand's forms are circles and straight lines.
+
+<Canvas of={Specimens.Radii} meta={Specimens} sourceState="none" />
+
+Chips and buttons are `pill`; cards `lg`; sheets and modals `xl` (top corners only on a bottom
+sheet); inputs and thumbnails `md`; avatars are circles. Images carry the radius of the card they
+sit in, except when full-bleed.

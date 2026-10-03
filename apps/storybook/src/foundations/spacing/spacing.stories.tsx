@@ -4,11 +4,9 @@ import { expect } from "storybook/test";
 
 import { AutoGrid, Card, Section, type StackProps } from "@pink-paprikaa-web/ui";
 
-import { cssValue, stepUtilities, tokensWithPrefix, utilitiesOf } from "../../docs-kit/catalogue";
+import { cssValue, stepUtilities } from "../../docs-kit/catalogue";
 import { spyOnClipboard } from "../../docs-kit/clipboard";
 import { requireElement } from "../../docs-kit/dom";
-import { RadiusScale } from "../../docs-kit/radius-scale";
-import { ShadowLadder } from "../../docs-kit/shadow-ladder";
 import { SpacingScale } from "../../docs-kit/spacing-scale";
 import { TokenTable } from "../../docs-kit/token-table";
 
@@ -51,9 +49,6 @@ const CHROME_TOKENS = [
   "spacing-dock-clearance",
   "spacing-hit",
 ];
-
-/** The primitive shadows — the ladder and its two specials — read from the catalogue, never retyped. */
-const DEPTH_LADDER = tokensWithPrefix("shadow-", "primitive").map((entry) => entry.name);
 
 /** R56: a chip copies exactly its class, and says so in the scope's status line. */
 async function expectChipCopies(
@@ -128,23 +123,4 @@ export const ComponentSizes: Story = {
     await expect(canvas.getByRole("button", { name: "size-icon-sm" })).toBeVisible();
     await expect(canvas.queryByRole("button", { name: "p-icon-sm" })).toBeNull();
   },
-};
-
-export const Radii: Story = { render: () => <RadiusScale /> };
-
-export const BorderWidths: Story = {
-  render: () => <TokenTable caption="Border widths" selection={{ prefix: "border-width-" }} />,
-  // R56: the strong width's numeric chip copies `border-2`.
-  play: async ({ canvas, userEvent }) => {
-    const numeric = utilitiesOf("border-width-strong").at(-1);
-    if (numeric === undefined) throw new Error("border-width-strong has no utility");
-    await expect(numeric).toBe("border-2");
-    await expectChipCopies(canvas, (element) => userEvent.click(element), numeric);
-  },
-};
-
-export const Elevation: Story = { render: () => <ShadowLadder names={DEPTH_LADDER} /> };
-
-export const Stacking: Story = {
-  render: () => <TokenTable caption="Stacking order" selection={{ prefix: "z-" }} />,
 };

@@ -1,0 +1,20 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./layout.stories";
+
+<Meta title="Layout/AutoGrid" />
+
+{/* source: guidelines/autogrid.card.html */}
+
+# Auto grid
+
+`repeat(auto-fit, minmax(min(<minimum>, 100%), 1fr))` — the grid collapses a column instead of
+clipping a card.
+
+<Canvas of={Specimens.AutoGridCards} meta={Specimens} sourceState="none" />
+
+`AutoGrid min` picks the track minimum from its component tokens (`xs` to `2xl`); `columns` fixes
+a count instead. Every track is `minmax(0, 1fr)`, so a long label wraps instead of widening its
+track. Menus and card grids are honest grids with `gap` — never masonry.
+
+<Canvas of={Specimens.AutoGridTokens} meta={Specimens} sourceState="none" />

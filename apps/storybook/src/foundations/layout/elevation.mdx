@@ -1,0 +1,21 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./layout.stories";
+
+<Meta title="Layout/Elevation" />
+
+{/* source: guidelines/elevation.card.html */}
+
+# Elevation — the depth ladder
+
+Warm-ink tinted, used sparingly, picked by _meaning_ rather than taste. `shadow-brand`, the pink
+glow, is reserved for the primary CTA and the floating add button.
+
+<Canvas of={Specimens.DepthLadder} meta={Specimens} sourceState="none" />
+
+The ladder's first step is **none**: flat panels, feature and quiet cards, and menu rows carry no
+shadow at all. Transparency and blur appear in exactly three places — the scrolled site header,
+the modal and sheet scrim, and the legibility scrim over photography — never on cards and never as
+decoration.
+
+<Canvas of={Specimens.Stacking} meta={Specimens} sourceState="none" />

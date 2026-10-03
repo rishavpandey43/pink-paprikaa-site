@@ -1,0 +1,25 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./layout.stories";
+
+<Meta title="Layout/Borders" />
+
+{/* source: guidelines/borders.card.html */}
+
+# Borders & focus
+
+The default border width for rules and controls, the strong width on focus and selection, and the
+pink focus ring.
+
+<Canvas of={Specimens.Borders} meta={Specimens} sourceState="none" />
+
+Inputs rest on `border-default`, and on focus take the strong width in `border-brand` plus the 3px
+focus ring (`shadow-focus-ring`, an outer spread). Everything else keyboard-focusable gets a 2px
+outline in `--color-focus` with a 2px offset — white on pink and ink. No card ever gets a coloured
+left border.
+
+<Canvas of={Specimens.BorderTokens} meta={Specimens} sourceState="none" />
+
+Tailwind has no name for a 1px step: `border` is the default width, `border-2` the strong one.
+
+<Canvas of={Specimens.BorderWidths} meta={Specimens} sourceState="none" />
