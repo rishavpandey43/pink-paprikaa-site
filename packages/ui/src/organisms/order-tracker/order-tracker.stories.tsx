@@ -38,12 +38,13 @@ const meta = {
   },
   decorators: [
     // The flush tracker fills a phone screen; the card sits on a page at its own width, so the
-    // 340px frame would cut its edge. The frame shrinks to the 328px a 360 canvas leaves.
+    // 340px frame would cut its edge. A centred canvas grows to hold a fixed frame (and a fluid
+    // one shrinks to its content), so the 360 story runs fullscreen, where 340px fits.
     (Story, { args }) =>
       args.variant === "card" ? (
         <Story />
       ) : (
-        <div className="flex h-165 w-full max-w-85 flex-col overflow-hidden rounded-lg border border-border-subtle">
+        <div className="flex h-165 w-85 max-w-full flex-col overflow-hidden rounded-lg border border-border-subtle">
           <Story />
         </div>
       ),
@@ -110,6 +111,7 @@ export const DeliverySteps: Story = {
 export const Mobile: Story = {
   args: { current: 1 },
   globals: VIEWPORT_360,
+  parameters: { layout: "fullscreen" },
   play: async (context) => {
     await expect(context.canvasElement.scrollWidth).toBeLessThanOrEqual(
       context.canvasElement.clientWidth

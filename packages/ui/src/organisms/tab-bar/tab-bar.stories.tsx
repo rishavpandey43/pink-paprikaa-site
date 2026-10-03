@@ -23,11 +23,11 @@ const FIVE: TabBarItem[] = [
   { value: "you", label: "You", icon: User },
 ];
 
-/** A phone-width frame, as on the card; it shrinks with a narrower canvas. */
+/** A phone-width frame, as on the card; it shrinks to a narrower canvas. */
 function Frame({ items, initial }: { items: TabBarItem[]; initial: string }) {
   const [value, setValue] = useState(initial);
   return (
-    <div className="w-full max-w-97.5 overflow-hidden rounded-lg border border-border-subtle">
+    <div className="w-97.5 max-w-full overflow-hidden rounded-lg border border-border-subtle">
       <TabBar items={items} value={value} onValueChange={setValue} />
     </div>
   );
@@ -92,7 +92,7 @@ export const FiveTabs: Story = {
 export const AsLinks: Story = {
   args: { items: FOUR.map((item) => ({ ...item, href: `#${item.value}` })), value: "home" },
   render: (args) => (
-    <div className="w-full max-w-97.5 overflow-hidden rounded-lg border border-border-subtle">
+    <div className="w-97.5 max-w-full overflow-hidden rounded-lg border border-border-subtle">
       <TabBar {...args} />
     </div>
   ),
@@ -105,7 +105,7 @@ export const AsLinks: Story = {
  */
 export const EachDestinationActive: Story = {
   render: () => (
-    <div className="flex w-full max-w-97.5 flex-col gap-4">
+    <div className="flex w-97.5 max-w-full flex-col gap-4">
       {FOUR.map((item) => (
         <div key={item.value} className="overflow-hidden rounded-lg border border-border-subtle">
           <TabBar items={FOUR} value={item.value} label={`Primary, ${item.label} in view`} />
