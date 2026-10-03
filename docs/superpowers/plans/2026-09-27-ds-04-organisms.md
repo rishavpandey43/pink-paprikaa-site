@@ -997,7 +997,7 @@ const statBand = componentVariants({
   slots: {
     root: "relative",
     pattern: "absolute inset-0",
-    grid: "gap-stat-band-gap py-stat-band-y relative container-page grid autogrid-min-sm",
+    grid: "relative container-page grid autogrid-min-sm gap-stat-band-gap py-stat-band-y",
   },
   variants: {
     tone: {
