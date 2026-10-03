@@ -1,12 +1,14 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { useId } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { FieldStatus } from "../../lib/field-status";
 
 import { joinIds } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import { withSx } from "../../lib/sx";
 
 const slotPicker = componentVariants({
   slots: {
@@ -51,10 +53,7 @@ export interface SlotOption {
   isDisabled?: boolean | undefined;
 }
 
-export interface SlotPickerProps extends Omit<
-  ComponentProps<"fieldset">,
-  "onChange" | "defaultValue"
-> {
+export interface SlotPickerProps extends Omit<BaseProps<"fieldset">, "onChange" | "defaultValue"> {
   /** The radios' shared name — what a native form posts. */
   name: string;
   legend: ReactNode;
@@ -90,6 +89,7 @@ export function SlotPicker({
   columns,
   status = "default",
   message,
+  sx,
   className,
   "aria-describedby": describedBy,
   ...props
@@ -107,7 +107,7 @@ export function SlotPicker({
         describedBy,
         hasFieldMessage({ status, message }) ? messageId : undefined
       )}
-      className={styles.root({ className })}
+      className={styles.root({ className: withSx(sx, className) })}
     >
       <legend className={styles.legend()}>{legend}</legend>
       <div

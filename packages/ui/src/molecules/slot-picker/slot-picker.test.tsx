@@ -1,5 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { createRef } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { type SlotOption, SlotPicker } from "./slot-picker";
@@ -231,5 +232,28 @@ describe("SlotPicker", () => {
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx, id and data-* on its fieldset", () => {
+    render(
+      <SlotPicker
+        name="pickup"
+        legend="Pickup time"
+        slots={SLOTS}
+        id="pickup"
+        data-section="order"
+        sx={{ mt: 4 }}
+      />
+    );
+    const group = screen.getByRole("group", { name: "Pickup time" });
+    expect(group).toHaveAttribute("id", "pickup");
+    expect(group).toHaveAttribute("data-section", "order");
+    expect(group).toHaveClass("mt-4");
+  });
+
+  it("forwards a ref to the fieldset", () => {
+    const ref = createRef<HTMLFieldSetElement>();
+    render(<SlotPicker ref={ref} name="pickup" legend="Pickup time" slots={SLOTS} />);
+    expect(ref.current).toBe(screen.getByRole("group", { name: "Pickup time" }));
   });
 });
