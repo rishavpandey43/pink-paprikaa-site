@@ -1,99 +1,80 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { House, ShoppingBag, User, Utensils } from "lucide-react";
+import { House, Plus, ShoppingBag, User, Utensils } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "../../atoms/button/button";
-import { Card } from "../../atoms/card/card";
-import { Icon } from "../../atoms/icon/icon";
+import { IconButton } from "../../atoms/icon-button/icon-button";
 import { Logo } from "../../atoms/logo/logo";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { Tag } from "../../atoms/tag/tag";
 import { Text } from "../../atoms/text/text";
+import { FilterBar } from "../../molecules/filter-bar/filter-bar";
+import { LoyaltyCard } from "../../molecules/loyalty-card/loyalty-card";
+import { MenuItemRow } from "../../molecules/menu-item-row/menu-item-row";
+import { Dialog } from "../../organisms/dialog/dialog";
+import { TabBar, type TabBarItem } from "../../organisms/tab-bar/tab-bar";
 import { Cluster } from "../cluster/cluster";
 import { Stack } from "../stack/stack";
 import { AppShell } from "./app-shell";
 
-const TABS = [
-  { label: "Home", href: "#home", icon: House },
-  { label: "Menu", href: "#menu", icon: Utensils },
-  { label: "Cart", href: "#cart", icon: ShoppingBag },
-  { label: "You", href: "#you", icon: User },
+const TABS: TabBarItem[] = [
+  { value: "home", label: "Home", icon: House, href: "#home" },
+  { value: "menu", label: "Menu", icon: Utensils, href: "#menu" },
+  { value: "cart", label: "Cart", icon: ShoppingBag, href: "#cart", count: 2 },
+  { value: "you", label: "You", icon: User, href: "#you" },
 ];
 
-/**
- * Stand-in for the TabBar organism (Plan 4): four links on the 64px bar. A story that draws two
- * frames draws two `navigation` landmarks, which must differ by name, hence `label`.
- */
-function DemoTabBar({
-  current,
-  label = "Primary",
-}: {
-  current: string;
-  label?: string | undefined;
-}) {
-  return (
-    <nav
-      aria-label={label}
-      className="grid h-tabbar flex-none grid-cols-4 border-t border-border-subtle"
-    >
-      {TABS.map(({ label, href, icon }) => (
-        <a
-          key={label}
-          href={href}
-          aria-current={label === current ? "page" : undefined}
-          className={
-            label === current
-              ? "flex flex-col items-center justify-center gap-1 text-caption text-text-brand no-underline"
-              : "flex flex-col items-center justify-center gap-1 text-caption text-text-muted no-underline"
-          }
-        >
-          <Icon icon={icon} size="lg" />
-          {label}
-        </a>
-      ))}
-    </nav>
-  );
+const CATEGORIES = ["All", "Small Plates", "All Day", "Sweets"].map((label) => ({
+  value: label,
+  label,
+}));
+
+function AppTabBar({ current, label }: { current: string; label?: string | undefined }) {
+  return <TabBar items={TABS} value={current} label={label} />;
 }
 
-/** Stand-in for the menu screen (FilterBar + MenuItemRow land in Plan 3b). */
-function DemoMenuScreen() {
+/** The app's menu screen, as on the card: filters, the loyalty card, dish rows. */
+function MenuScreen() {
   return (
     <Stack space={4} className="px-5 pt-2 pb-5">
       <Text as="h1" variant="h3">
         Menu
       </Text>
-      <Cluster isScrollable role="group" aria-label="Categories">
-        {["All", "Small Plates", "All Day", "Sweets"].map((label) => (
-          <Tag key={label} isSelected={label === "All"}>
-            {label}
-          </Tag>
-        ))}
-      </Cluster>
-      <Card padding="md">
-        <Stack space={1}>
-          <Text as="h2" variant="h4">
-            Paprikaa Chilli Paneer
-          </Text>
-          <Text variant="body-sm" tone="muted">
-            Amritsari paneer, burnt chilli mayo.
-          </Text>
-        </Stack>
-      </Card>
-      <Card padding="md">
-        <Stack space={1}>
-          <Text as="h2" variant="h4">
-            Masala Cold Brew
-          </Text>
-          <Text variant="body-sm" tone="muted">
-            Cold brew, jaggery, cardamom.
-          </Text>
-        </Stack>
-      </Card>
+      <FilterBar label="Menu category" options={CATEGORIES} />
+      <LoyaltyCard visits={6} goal={10} reward="chai" />
+      <div>
+        <MenuItemRow
+          name="Paprikaa Chilli Paneer"
+          description="Amritsari paneer, burnt chilli chutney, spring onion."
+          price={280}
+          spice={3}
+          hasDivider
+          headingLevel={2}
+          action={
+            <IconButton
+              icon={Plus}
+              label="Add Paprikaa Chilli Paneer"
+              variant="primary"
+              size="sm"
+            />
+          }
+        />
+        <MenuItemRow
+          name="Masala Cold Brew"
+          description="Cold brew, jaggery, cardamom."
+          price={220}
+          spice={1}
+          headingLevel={2}
+          action={
+            <IconButton icon={Plus} label="Add Masala Cold Brew" variant="primary" size="sm" />
+          }
+        />
+      </div>
     </Stack>
   );
 }
 
-/** Stand-in for the pink-header home screen that `statusTone="light"` is for. */
+/** The pink-header home screen that `statusTone="light"` is for. */
 function DemoHomeScreen() {
   return (
     <PatternField tone="brand" className="px-5 pt-1 pb-6">
@@ -110,31 +91,31 @@ function DemoHomeScreen() {
   );
 }
 
-/** Stand-in for the Dialog organism's sheet variant (Plan 4). */
-function DemoSheet() {
+/** The card's "with overlay sheet" frame: the real Dialog sheet, portalled into the phone. */
+function SheetInFrame() {
+  const [frame, setFrame] = useState<HTMLDivElement | null>(null);
   return (
-    <div className="absolute inset-0 flex flex-col justify-end bg-surface-overlay">
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="remove-title"
-        data-surface="light"
-        className="rounded-t-xl bg-surface-card p-6 shadow-4"
-      >
-        <Stack space={2}>
-          <Text as="h2" id="remove-title" variant="h4">
-            Remove this item?
-          </Text>
-          <Text>Chilli Paneer will come off your order.</Text>
-          <Cluster justify="end" className="pt-4">
-            <Button variant="ghost" size="sm">
-              Keep It
-            </Button>
-            <Button size="sm">Remove</Button>
-          </Cluster>
-        </Stack>
-      </div>
-    </div>
+    <AppShell ref={setFrame} statusTone="ink" tabBar={<AppTabBar current="menu" />}>
+      <MenuScreen />
+      {frame === null ? null : (
+        <Dialog
+          defaultOpen
+          variant="sheet"
+          title="Remove this item?"
+          portalContainer={frame}
+          footer={
+            <>
+              <Button variant="ghost" size="sm">
+                Keep It
+              </Button>
+              <Button size="sm">Remove</Button>
+            </>
+          }
+        >
+          Chilli Paneer will come off your order.
+        </Dialog>
+      )}
+    </AppShell>
   );
 }
 
@@ -145,15 +126,15 @@ const meta = {
     statusTone: "ink",
     time: "9:41",
     size: "phone",
-    tabBar: <DemoTabBar current="Menu" />,
-    children: <DemoMenuScreen />,
+    tabBar: <AppTabBar current="menu" />,
+    children: <MenuScreen />,
   },
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "Wraps every app screen so sheets and toasts position correctly: the frame is position: relative and contains fixed-position children, which is what overlays anchor to. The `overlay` slot renders inside the frame, and the frame element (take it with `ref`) is the portal container — Dialog's `portalContainer`, or the ToastProvider viewport. `children` is the scrolling screen body — keep at least one control in it so keyboard users can reach, and so scroll, it. Set `statusTone=\"light\"` whenever the screen opens on a pink header; the status row floods brand to meet it. The tab bar, menu screen and sheet here are temporary stand-ins; Plan 4's final task replaces them with TabBar, Dialog and the Plan 3b molecules.",
+          'Wraps every app screen so sheets and toasts position correctly: the frame is position: relative and contains fixed-position children, which is what overlays anchor to. The `overlay` slot renders inside the frame, and the frame element (take it with `ref`) is the portal container — Dialog\'s `portalContainer`, or the ToastProvider viewport. `children` is the scrolling screen body — keep at least one control in it so keyboard users can reach, and so scroll, it. Set `statusTone="light"` whenever the screen opens on a pink header; the status row floods brand to meet it. The tab bar is TabBar, the sheet is Dialog (`variant="sheet"`, portalled into the frame), the screen uses FilterBar, LoyaltyCard and MenuItemRow.',
       },
     },
   },
@@ -168,19 +149,30 @@ export const WithTabBar: Story = { name: "with tabBar" };
 
 export const WithOverlaySheet: Story = {
   name: "with overlay sheet",
-  args: { overlay: <DemoSheet /> },
+  render: () => <SheetInFrame />,
+  parameters: {
+    // Story `rules` replace the preview list: keep token contrast off, as Dialog does.
+    a11y: {
+      config: {
+        rules: [
+          { id: "color-contrast", enabled: false },
+          { id: "aria-hidden-focus", enabled: false },
+        ],
+      },
+    },
+  },
 };
 
 export const StatusTones: Story = {
   name: "statusTone",
   render: () => (
     <Cluster space={6} align="start">
-      <AppShell statusTone="ink" tabBar={<DemoTabBar current="Menu" label="Primary, ink status" />}>
-        <DemoMenuScreen />
+      <AppShell statusTone="ink" tabBar={<AppTabBar current="menu" label="Primary, ink status" />}>
+        <MenuScreen />
       </AppShell>
       <AppShell
         statusTone="light"
-        tabBar={<DemoTabBar current="Home" label="Primary, light status" />}
+        tabBar={<AppTabBar current="home" label="Primary, light status" />}
       >
         <DemoHomeScreen />
       </AppShell>
@@ -202,9 +194,9 @@ export const Sizes: Story = {
         <AppShell
           key={size}
           size={size}
-          tabBar={<DemoTabBar current="Menu" label={`Primary, ${size}`} />}
+          tabBar={<AppTabBar current="menu" label={`Primary, ${size}`} />}
         >
-          <DemoMenuScreen />
+          <MenuScreen />
         </AppShell>
       ))}
     </Cluster>

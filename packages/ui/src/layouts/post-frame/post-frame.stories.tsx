@@ -7,6 +7,8 @@ import { Logo } from "../../atoms/logo/logo";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { SocialHeadline } from "../../atoms/social-headline/social-headline";
 import { Text } from "../../atoms/text/text";
+import { LogoLockup } from "../../molecules/logo-lockup/logo-lockup";
+import { OfferSeal } from "../../molecules/offer-seal/offer-seal";
 import { Stack } from "../stack/stack";
 import { POST_FORMATS, type PostFormat } from "./post-formats";
 import { PostFrame } from "./post-frame";
@@ -39,7 +41,8 @@ function OfferBoard() {
           Tonight Only
         </SocialHeadline>
         <SocialHeadline size="hero">Chai first, decisions later.</SocialHeadline>
-        <Logo tone="white" className="w-65" />
+        <LogoLockup tone="white" size="lg" />
+        <OfferSeal value="50%" label="Off" size="lg" tone="light" corner="top-right" bleed="none" />
       </div>
     </>
   );
@@ -55,7 +58,7 @@ function StatementBoard() {
           Since 2025
         </SocialHeadline>
         <SocialHeadline size="hero">Desi at heart. Urban by nature.</SocialHeadline>
-        <Logo tone="white" className="w-60" />
+        <LogoLockup tone="white" size="md" />
       </div>
     </>
   );
