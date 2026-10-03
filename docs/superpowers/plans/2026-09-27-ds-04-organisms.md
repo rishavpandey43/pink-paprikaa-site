@@ -3809,12 +3809,13 @@ const meta = {
   },
   decorators: [
     // The flush tracker fills a phone screen; the card sits on a page at its own width, so the
-    // 340px frame would cut its edge. The frame shrinks to the 328px a 360 canvas leaves.
+    // 340px frame would cut its edge. A centred canvas grows to hold a fixed frame (and a fluid
+    // one shrinks to its content), so the 360 story runs fullscreen, where 340px fits.
     (Story, { args }) =>
       args.variant === "card" ? (
         <Story />
       ) : (
-        <div className="flex h-165 w-full max-w-85 flex-col overflow-hidden rounded-lg border border-border-subtle">
+        <div className="flex h-165 w-85 max-w-full flex-col overflow-hidden rounded-lg border border-border-subtle">
           <Story />
         </div>
       ),
@@ -3881,6 +3882,7 @@ export const DeliverySteps: Story = {
 export const Mobile: Story = {
   args: { current: 1 },
   globals: VIEWPORT_360,
+  parameters: { layout: "fullscreen" },
   play: async (context) => {
     await expect(context.canvasElement.scrollWidth).toBeLessThanOrEqual(
       context.canvasElement.clientWidth
@@ -5376,11 +5378,11 @@ const FIVE: TabBarItem[] = [
   { value: "you", label: "You", icon: User },
 ];
 
-/** A phone-width frame, as on the card; it shrinks with a narrower canvas. */
+/** A phone-width frame, as on the card; it shrinks to a narrower canvas. */
 function Frame({ items, initial }: { items: TabBarItem[]; initial: string }) {
   const [value, setValue] = useState(initial);
   return (
-    <div className="w-full max-w-97.5 overflow-hidden rounded-lg border border-border-subtle">
+    <div className="w-97.5 max-w-full overflow-hidden rounded-lg border border-border-subtle">
       <TabBar items={items} value={value} onValueChange={setValue} />
     </div>
   );
@@ -5445,7 +5447,7 @@ export const FiveTabs: Story = {
 export const AsLinks: Story = {
   args: { items: FOUR.map((item) => ({ ...item, href: `#${item.value}` })), value: "home" },
   render: (args) => (
-    <div className="w-full max-w-97.5 overflow-hidden rounded-lg border border-border-subtle">
+    <div className="w-97.5 max-w-full overflow-hidden rounded-lg border border-border-subtle">
       <TabBar {...args} />
     </div>
   ),
@@ -5458,7 +5460,7 @@ export const AsLinks: Story = {
  */
 export const EachDestinationActive: Story = {
   render: () => (
-    <div className="flex w-full max-w-97.5 flex-col gap-4">
+    <div className="flex w-97.5 max-w-full flex-col gap-4">
       {FOUR.map((item) => (
         <div key={item.value} className="overflow-hidden rounded-lg border border-border-subtle">
           <TabBar items={FOUR} value={item.value} label={`Primary, ${item.label} in view`} />
