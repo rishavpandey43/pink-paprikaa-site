@@ -1,10 +1,14 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Typography } from "../../atoms/typography/typography";
+import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 const ctaBand = componentVariants({
   slots: {
@@ -16,7 +20,7 @@ const ctaBand = componentVariants({
     action: "flex shrink-0 flex-wrap items-center gap-2.5",
   },
   variants: {
-    tone: {
+    surface: {
       ink: { root: "bg-surface-inverse" },
       brand: { root: "bg-surface-brand" },
       soft: { root: "bg-surface-brand-soft" },
@@ -30,13 +34,13 @@ const ctaBand = componentVariants({
       },
     },
   },
-  defaultVariants: { tone: "ink", align: "split" },
+  defaultVariants: { surface: "ink", align: "split" },
 });
 
 export interface CtaBandProps
   extends
-    Omit<ComponentProps<"section">, "title">,
-    Pick<VariantProps<typeof ctaBand>, "tone" | "align"> {
+    Omit<BaseProps<"section">, "title">,
+    Pick<VariantProps<typeof ctaBand>, "surface" | "align"> {
   overline?: ReactNode;
   title: ReactNode;
   body?: ReactNode;
@@ -56,20 +60,25 @@ export function CtaBand({
   title,
   body,
   action,
-  tone = "ink",
+  surface = "ink",
   align,
   pattern = "default",
   headingLevel = 2,
+  sx,
   className,
   ...props
 }: CtaBandProps) {
-  const slots = ctaBand({ tone, align });
+  const slots = ctaBand({ surface, align });
   return (
-    <section data-surface={tone} className={slots.root({ className })} {...props}>
+    <section
+      data-surface={SURFACE_DATA[surface]}
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       {pattern === "none" ? null : (
         <PatternField
           aria-hidden
-          surface={tone}
+          surface={surface}
           tile={72}
           density={pattern}
           className={slots.pattern()}

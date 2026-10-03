@@ -71,9 +71,9 @@ describe("CtaBand", () => {
     ["ink", "bg-surface-inverse"],
     ["brand", "bg-surface-brand"],
     ["soft", "bg-surface-brand-soft"],
-  ] as const)("paints the %s field and sets its surface", (tone, background) => {
-    const { container } = render(<CtaBand title={COPY.title} tone={tone} />);
-    expect(container.firstElementChild).toHaveAttribute("data-surface", tone);
+  ] as const)("paints the %s field and sets its surface", (surfaceName, background) => {
+    const { container } = render(<CtaBand title={COPY.title} surface={surfaceName} />);
+    expect(container.firstElementChild).toHaveAttribute("data-surface", surfaceName);
     expect(container.firstElementChild).toHaveClass(background);
   });
 
@@ -119,8 +119,13 @@ describe("CtaBand", () => {
 
   it("has no accessibility violations", async () => {
     const { container } = render(
-      <CtaBand {...COPY} tone="brand" action={<a href="#trial">Book a trial Dawat</a>} />
+      <CtaBand {...COPY} surface="brand" action={<a href="#trial">Book a trial Dawat</a>} />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(<CtaBand title={COPY.title} sx={{ mt: 4 }} className="italic" />);
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });

@@ -24,7 +24,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The band that closes a page — franchise, newsletter, a free tasting. One per page, never two. Copy left and action right (`align="split"`) or stacked and centred. Carries the tiled diamond (`pattern`; `faint` is the handoff\'s 4% ink band). The tone sets the surface, so buttons inside take no colour props.',
+          'The band that closes a page — franchise, newsletter, a free tasting. One per page, never two. Copy left and action right (`align="split"`) or stacked and centred. Carries the tiled diamond (`pattern`; `faint` is the handoff\'s 4% ink band). The surface sets the ground, so buttons inside take no colour props.',
       },
     },
   },
@@ -35,10 +35,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
-/** Card row: `tone="ink"` split. */
+/** Card row: `surface="ink"` split. */
 export const InkSplit: Story = {
   args: {
-    tone: "ink",
+    surface: "ink",
     align: "split",
     overline: "Catering",
     title: "Feeding thirty people? It has to be right the first time.",
@@ -51,10 +51,10 @@ export const InkSplit: Story = {
   },
 };
 
-/** Card row: `tone="brand"` centred. */
+/** Card row: `surface="brand"` centred. */
 export const BrandCentred: Story = {
   args: {
-    tone: "brand",
+    surface: "brand",
     align: "center",
     overline: "Office & PG lunch",
     title: "₹99 / ₹119 a meal for your team",
@@ -67,10 +67,10 @@ export const BrandCentred: Story = {
   },
 };
 
-/** Card row: `tone="soft"` split. */
+/** Card row: `surface="soft"` split. */
 export const SoftSplit: Story = {
   args: {
-    tone: "soft",
+    surface: "soft",
     overline: "Homely Meals",
     title: "Home-style food, delivered every day.",
     body: "Pure veg lunch and dinner from our restaurant kitchen in MKM Market, Sector 57.",
@@ -85,7 +85,7 @@ export const SoftSplit: Story = {
 /** Handoff Home — the office strip: brand, split, two actions. */
 export const HandoffOfficeStrip: Story = {
   args: {
-    tone: "brand",
+    surface: "brand",
     overline: "Office & PG lunch",
     title: "₹99 / ₹119 a meal for your team",
     body: "20+ meals at one address · fixed slot · one GST invoice a month",
@@ -105,7 +105,7 @@ export const HandoffOfficeStrip: Story = {
 /** Handoff Catering — "Taste first": ink with the faint 4% diamond. */
 export const HandoffTasteFirst: Story = {
   args: {
-    tone: "ink",
+    surface: "ink",
     pattern: "faint",
     action: (
       <>
