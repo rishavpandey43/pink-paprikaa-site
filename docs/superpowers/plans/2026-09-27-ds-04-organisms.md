@@ -6936,7 +6936,7 @@ const siteHeader = componentVariants({
     navList: "flex flex-nowrap items-center gap-6",
     navItem: "shrink-0",
     navLink:
-      "text-site-header-link inline-flex border-b-2 border-transparent py-1.5 font-display whitespace-nowrap text-text-heading no-underline transition-colors duration-fast ease-out hover:text-text-brand",
+      "inline-flex border-b-2 border-transparent py-1.5 font-display text-site-header-link whitespace-nowrap text-text-heading no-underline transition-colors duration-fast ease-out hover:text-text-brand",
     spacer: "flex-1",
     actions: "hidden shrink-0 items-center gap-2 lg:flex",
     compactActions: "flex shrink-0 items-center gap-2 lg:hidden",
