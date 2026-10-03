@@ -5057,7 +5057,7 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 | `aria-describedby={undefined}` opt-out                       | ALREADY | Radix 1.1.23 omits it without a Description, no warning (Interfaces)                                |
 | `isOpen` / `isDefaultOpen` names                             | DROP    | spec §8.2 — `open` / `defaultOpen` / `onOpenChange`                                                 |
 | Stories Default · Sheet · WithDescription · WithForm · Sizes | ALREADY | Playground · Sheet · Large · Playground (`BOOKING_FORM`) · CentredModal/Playground/Large            |
-| Story MustBeAnswered                                         | ADD     | `MustBeAnswered` (contract delta 4) — controlled, own footer actions, `play`                        |
+| Story MustBeAnswered                                         | ADD     | `MustBeAnswered` (contract delta 4) — controlled, own footer actions, `play` (Escape, scrim click)  |
 | Story InsideAPhoneFrame                                      | ADD     | `InsideAPhoneFrame`                                                                                 |
 | Story Smallest                                               | ADD     | `Mobile`                                                                                            |
 
@@ -5194,7 +5194,7 @@ describe("Dialog", () => {
     expect(screen.getByRole("dialog", { name: "Remove this item?" })).toBeInTheDocument();
   });
 
-  it("hides only the close button with hasCloseButton={false}; Escape still asks to close", async () => {
+  it("hides only the close button with hasCloseButton={false}; Escape and the scrim still ask to close", async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
     render(
@@ -5213,6 +5213,13 @@ describe("Dialog", () => {
     expect(within(dialog).getByRole("button", { name: "Keep it" })).toBeInTheDocument();
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledWith(false);
+    onOpenChange.mockClear();
+    // A click outside the panel lands on the scrim: it asks too, and the controlled dialog stays.
+    const scrim = document.querySelector<HTMLElement>(".bg-surface-overlay");
+    if (scrim === null) throw new Error("no scrim");
+    await user.click(scrim);
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(screen.getByRole("dialog", { name: "Remove this item?" })).toBeInTheDocument();
   });
 
   it("merges a caller className onto the panel", () => {
@@ -5596,6 +5603,11 @@ export const MustBeAnswered: Story = {
     const dialog = await screen.findByRole("dialog", { name: "Remove this item?" });
     await expect(within(dialog).queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
     await userEvent.keyboard("{Escape}");
+    await expect(screen.getByRole("dialog", { name: "Remove this item?" })).toBeVisible();
+    // A click outside the panel lands on the scrim; it cannot close the dialog either.
+    const scrim = document.querySelector<HTMLElement>(".bg-surface-overlay");
+    if (scrim === null) throw new Error("no scrim");
+    await userEvent.click(scrim);
     await expect(screen.getByRole("dialog", { name: "Remove this item?" })).toBeVisible();
     await userEvent.click(within(dialog).getByRole("button", { name: "Keep It" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
