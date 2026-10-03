@@ -242,6 +242,8 @@ const SPACING = [
   "table-lg",
   "cta-band-y",
   "cta-band-copy",
+  "stat-band-y",
+  "stat-band-gap",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

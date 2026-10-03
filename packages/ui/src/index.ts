@@ -160,3 +160,4 @@ export {
   type ToastProviderProps,
 } from "./molecules/toast/toast";
 export { CtaBand, type CtaBandProps } from "./organisms/cta-band/cta-band";
+export { StatBand, type StatBandItem, type StatBandProps } from "./organisms/stat-band/stat-band";
