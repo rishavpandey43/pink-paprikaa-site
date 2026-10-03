@@ -8146,7 +8146,9 @@ The handoff's Google reviews as a scroll-snap track that is a focusable
 region named by its heading, paged by previous/next buttons that stay
 focusable (aria-disabled) at the ends. No auto-advance; smooth scrolling is
 motion-safe CSS; one review drops the controls, none shows the empty state.
-Lint now lets a scrolling region take focus, as WCAG 2.1.1 requires.
+Lint now lets a scrolling region take focus, as WCAG 2.1.1 requires. An
+empty eyebrow renders no wrapper, and the Mobile and Desktop stories tab
+through every stop to prove no focus ring is clipped.
 
 Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
