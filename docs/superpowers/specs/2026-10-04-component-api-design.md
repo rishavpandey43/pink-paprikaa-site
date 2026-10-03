@@ -117,17 +117,18 @@ mono` + new `link-sm link-md link-lg`, the link text styles, like MUI's `button`
 
 ## 6. New components (on the new API)
 
-| Component             | Tier     | MUI equivalent | Summary                                                                                                         |
-| --------------------- | -------- | -------------- | --------------------------------------------------------------------------------------------------------------- |
-| Box                   | layout   | Box            | Polymorphic `as`, `surface`, `sx`. Its padding/radius/shadow/border props from X1 are removed in favour of `sx` |
-| Grid + GridItem       | layout   | Grid v2        | 12/6/4 columns, `gap`, responsive `span`/`start` per item                                                       |
-| Drawer                | organism | Drawer         | `Dialog variant="drawer"` + `side`, and a `Drawer` alias                                                        |
-| Popover               | molecule | Popover        | Radix Popover with title, side/align, close button                                                              |
-| DropdownMenu          | molecule | Menu           | Radix DropdownMenu compound API: items, labels, separators, checkbox/radio items, submenus                      |
-| Combobox              | molecule | Autocomplete   | WAI-ARIA 1.2 combobox, hand-built (no dependency)                                                               |
-| Fab                   | atom     | Fab            | Round floating button, extended label, fixed positions                                                          |
-| SpeedDial             | molecule | SpeedDial      | Fab that fans out actions                                                                                       |
-| DatePicker + Calendar | molecule | X DatePicker   | `react-day-picker` (one new dependency), styled with tokens only                                                |
+| Component                         | Tier            | MUI equivalent      | Summary                                                                                                                                                                     |
+| --------------------------------- | --------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Box                               | layout          | Box                 | Polymorphic `as`, `surface`, `sx`. Its padding/radius/shadow/border props from X1 are removed in favour of `sx`                                                             |
+| Grid + GridItem                   | layout          | Grid v2             | 12/6/4 columns, `gap`, responsive `span`/`start` per item                                                                                                                   |
+| Drawer                            | organism        | Drawer              | `Dialog variant="drawer"` + `side`, and a `Drawer` alias                                                                                                                    |
+| Popover                           | molecule        | Popover             | Radix Popover with title, side/align, close button                                                                                                                          |
+| Menu (+ MenuItem, MenuDivider, …) | molecule        | Menu                | MUI names and behaviour, including the 3-dot "more options" menu, icon/dense/selected/long/positioned menus, checkbox/radio items and submenus; built on Radix DropdownMenu |
+| ToggleButton + ToggleButtonGroup  | atom + molecule | ToggleButton(Group) | `value`; `exclusive` (null on re-click unless `isValueRequired`); multiple → array; orientation, size, color, fullWidth; Radix Toggle/ToggleGroup                           |
+| Combobox                          | molecule        | Autocomplete        | WAI-ARIA 1.2 combobox, hand-built (no dependency)                                                                                                                           |
+| Fab                               | atom            | Fab                 | Round floating button, extended label, fixed positions                                                                                                                      |
+| SpeedDial                         | molecule        | SpeedDial           | Fab that fans out actions                                                                                                                                                   |
+| DatePicker + Calendar             | molecule        | X DatePicker        | `react-day-picker` (one new dependency), styled with tokens only                                                                                                            |
 
 ### 6.1 No native popups (owner, 2026-10-04)
 
