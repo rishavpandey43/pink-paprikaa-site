@@ -162,3 +162,7 @@ export {
 export { CtaBand, type CtaBandProps } from "./organisms/cta-band/cta-band";
 export { HeroBanner, type HeroBannerProps } from "./organisms/hero-banner/hero-banner";
 export { StatBand, type StatBandItem, type StatBandProps } from "./organisms/stat-band/stat-band";
+export {
+  TestimonialWall,
+  type TestimonialWallProps,
+} from "./organisms/testimonial-wall/testimonial-wall";
