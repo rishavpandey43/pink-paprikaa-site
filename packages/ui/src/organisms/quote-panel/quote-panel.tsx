@@ -1,11 +1,15 @@
-import { type ComponentProps, type ReactNode, useId } from "react";
+import { type ReactNode, useId } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Typography } from "../../atoms/typography/typography";
+import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
 import { StruckPrice } from "../../lib/struck-price";
+import { withSx } from "../../lib/sx";
 import { type KeyValueItem, KeyValueList } from "../../molecules/key-value-list/key-value-list";
 
 const quotePanel = componentVariants({
@@ -28,27 +32,28 @@ const quotePanel = componentVariants({
     footnote: "text-center text-caption text-text-muted",
   },
   variants: {
-    tone: {
+    surface: {
       brand: { root: "bg-surface-brand" },
       // The Dawat and Office quotes set their lines in mono (handoff).
       ink: { root: "bg-surface-inverse", lines: "font-mono" },
-      light: { root: "bg-surface-card", lines: "font-mono" },
+      // A white card: the light island inside an ink section. `page` is its nearest ground.
+      page: { root: "bg-surface-card", lines: "font-mono" },
     },
   },
-  defaultVariants: { tone: "brand" },
+  defaultVariants: { surface: "brand" },
 });
 
-type QuoteTone = NonNullable<VariantProps<typeof quotePanel>["tone"]>;
+type QuoteSurface = NonNullable<VariantProps<typeof quotePanel>["surface"]>;
 
 /** Title colour: white on brand and pink-300 on ink (both `brand` there), ink-600 on the white card. */
-const TITLE_TONE: Readonly<Record<QuoteTone, "brand" | "muted">> = {
+const TITLE_COLOR: Readonly<Record<QuoteSurface, "brand" | "muted">> = {
   brand: "brand",
   ink: "brand",
-  light: "muted",
+  page: "muted",
 };
 
 export interface QuotePanelProps
-  extends Omit<ComponentProps<"section">, "title">, Pick<VariantProps<typeof quotePanel>, "tone"> {
+  extends Omit<BaseProps<"section">, "title">, Pick<VariantProps<typeof quotePanel>, "surface"> {
   /** The overline title, e.g. "Classic · Weekday plan". */
   title: ReactNode;
   badge?: ReactNode;
@@ -76,7 +81,7 @@ export interface QuotePanelProps
  * pricing logic lives in the app.
  */
 export function QuotePanel({
-  tone = "brand",
+  surface = "brand",
   title,
   badge,
   amount,
@@ -90,19 +95,20 @@ export function QuotePanel({
   action,
   footnote,
   headingLevel = 3,
+  sx,
   className,
   ...props
 }: QuotePanelProps) {
   const titleId = useId();
-  const slots = quotePanel({ tone });
+  const slots = quotePanel({ surface });
   return (
     <section
-      data-surface={tone}
+      data-surface={SURFACE_DATA[surface]}
       aria-labelledby={titleId}
-      className={slots.root({ className })}
+      className={slots.root({ className: withSx(sx, className) })}
       {...props}
     >
-      {tone === "brand" ? (
+      {surface === "brand" ? (
         <PatternField aria-hidden surface="brand" tile={64} className={slots.pattern()} />
       ) : null}
       <div className={slots.body()}>
@@ -111,7 +117,7 @@ export function QuotePanel({
             as={headingTag(headingLevel)}
             id={titleId}
             variant="overline"
-            color={TITLE_TONE[tone]}
+            color={TITLE_COLOR[surface]}
           >
             {title}
           </Typography>

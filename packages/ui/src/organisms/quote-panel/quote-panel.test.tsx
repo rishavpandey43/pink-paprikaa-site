@@ -47,7 +47,7 @@ describe("QuotePanel", () => {
   it("picks an emphasised line out in the brand colour, as KeyValueList does", () => {
     render(
       <QuotePanel
-        tone="ink"
+        surface="ink"
         title="Your Dawat estimate"
         amount="₹6,269"
         lines={[{ key: "50% to hold the date", value: "₹3,135", isEmphasised: true }]}
@@ -56,16 +56,21 @@ describe("QuotePanel", () => {
     expect(screen.getByText("₹3,135")).toHaveClass("text-text-brand");
   });
 
-  it.each(["brand", "ink", "light"] as const)("sets the %s surface", (tone) => {
-    render(<QuotePanel {...PLAN} tone={tone} />);
-    expect(screen.getByRole("region")).toHaveAttribute("data-surface", tone);
+  it.each([
+    ["brand", "brand", "bg-surface-brand"],
+    ["ink", "ink", "bg-surface-inverse"],
+    ["page", "light", "bg-surface-card"],
+  ] as const)("surface %s sets data-surface %s and its field", (surface, data, background) => {
+    render(<QuotePanel {...PLAN} surface={surface} />);
+    expect(screen.getByRole("region")).toHaveAttribute("data-surface", data);
+    expect(screen.getByRole("region")).toHaveClass(background);
   });
 
-  it("floods only the brand tone with the diamond", () => {
-    const { container, rerender } = render(<QuotePanel {...PLAN} tone="brand" />);
+  it("floods only the brand surface with the diamond", () => {
+    const { container, rerender } = render(<QuotePanel {...PLAN} surface="brand" />);
     const layer = () => container.querySelector('section > [aria-hidden="true"]');
     expect(layer()).toBeInTheDocument();
-    rerender(<QuotePanel {...PLAN} tone="ink" />);
+    rerender(<QuotePanel {...PLAN} surface="ink" />);
     expect(layer()).not.toBeInTheDocument();
   });
 
@@ -101,7 +106,7 @@ describe("QuotePanel", () => {
   it("renders no wrapper for an empty unit, was, note, alerts, action or footnote", () => {
     const { container } = render(
       <QuotePanel
-        tone="ink"
+        surface="ink"
         title="Estimate"
         amount="₹99,792"
         unit=""
@@ -120,7 +125,7 @@ describe("QuotePanel", () => {
   it("renders the wrapper for a 0 unit, was, note, alerts, action or footnote — a number is content", () => {
     const { container } = render(
       <QuotePanel
-        tone="ink"
+        surface="ink"
         title="Estimate"
         amount="₹99,792"
         unit={0}
@@ -151,5 +156,10 @@ describe("QuotePanel", () => {
       <QuotePanel {...PLAN} action={<a href="#send">Send this plan on WhatsApp</a>} />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(<QuotePanel {...PLAN} sx={{ mt: 4 }} className="italic" />);
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });

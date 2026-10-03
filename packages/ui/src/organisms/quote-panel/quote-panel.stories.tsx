@@ -14,7 +14,7 @@ const meta = {
   title: "Organisms/QuotePanel",
   component: QuotePanel,
   args: {
-    tone: "brand",
+    surface: "brand",
     title: "Classic · Weekday plan",
     badge: <Badge color="brand">Launch price</Badge>,
     amount: "₹130",
@@ -51,7 +51,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The estimate panel of the handoff\'s Plan, Dawat and Office calculators. `tone="brand"` is flooded pink with the diamond; `ink` is the Dawat panel; `light` is the white card on an ink section (a light island — text goes dark again). It renders the numbers it is given; pricing logic stays in the app.',
+          'The estimate panel of the handoff\'s Plan, Dawat and Office calculators. `surface="brand"` is flooded pink with the diamond; `ink` is the Dawat panel; `light` is the white card on an ink section (a light island — text goes dark again). It renders the numbers it is given; pricing logic stays in the app.',
       },
     },
   },
@@ -81,7 +81,7 @@ export const HandoffPlan: Story = { play: proveRingsWhole };
 /** Handoff DawatCalculator — ink panel. */
 export const HandoffDawat: Story = {
   args: {
-    tone: "ink",
+    surface: "ink",
     title: "Your Dawat estimate",
     badge: undefined,
     amount: "₹6,269",
@@ -112,7 +112,7 @@ export const HandoffDawat: Story = {
 /** Handoff OfficeLunch — white card on the ink quote section. */
 export const HandoffOffice: Story = {
   args: {
-    tone: "light",
+    surface: "page",
     title: "Estimated per cycle",
     badge: undefined,
     amount: "₹99,792",
