@@ -26,6 +26,17 @@ describe("OrderTracker", () => {
     expect(screen.getByRole("heading", { level: 2, name: "Ready for pickup" })).toBeInTheDocument();
   });
 
+  it("renders no empty heading and no empty step list when there are no steps", async () => {
+    const { container } = render(
+      <OrderTracker steps={[]} current={0} code="PPK-4821" badge={<span>Preparing</span>} />
+    );
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+    expect(within(screen.getByRole("status")).getByText("Preparing")).toBeInTheDocument();
+    expect(screen.getByText("Order #PPK-4821")).toBeInTheDocument();
+    await expectNoA11yViolations(container);
+  });
+
   it("marks the current step in the tracker, named Order progress", () => {
     render(<OrderTracker steps={STEPS} current={1} code="PPK-4821" />);
     const tracker = screen.getByRole("list", { name: "Order progress" });

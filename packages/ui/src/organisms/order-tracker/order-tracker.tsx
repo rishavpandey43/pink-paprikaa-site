@@ -35,7 +35,10 @@ const orderTracker = componentVariants({
 
 export interface OrderTrackerProps
   extends ComponentProps<"section">, Pick<VariantProps<typeof orderTracker>, "variant"> {
-  /** Brand-voice steps ("Kitchen's on it."), never system status. */
+  /**
+   * Brand-voice steps ("Kitchen's on it."), never system status. With none there is no heading
+   * and no step list; the badge, code and receipt still render.
+   */
   steps: TrackerStep[];
   /** Index of the current step; clamped to the steps given. */
   current: number;
@@ -92,14 +95,18 @@ export function OrderTracker({
       <PatternField tone="brand" tile={56} className={slots.header()}>
         <div role="status" className={slots.status()}>
           {badge}
-          <Text as={headingTag(headingLevel)} variant="h2" className={slots.title()}>
-            {step?.label}
-          </Text>
-          {step?.note ? (
-            <Text as="div" tone="muted">
-              {step.note}
-            </Text>
-          ) : null}
+          {step === undefined ? null : (
+            <>
+              <Text as={headingTag(headingLevel)} variant="h2" className={slots.title()}>
+                {step.label}
+              </Text>
+              {step.note ? (
+                <Text as="div" tone="muted">
+                  {step.note}
+                </Text>
+              ) : null}
+            </>
+          )}
         </div>
         <Text as="div" variant="mono" tone="muted" className={slots.code()}>
           {codeLabel} #{code}
@@ -107,8 +114,12 @@ export function OrderTracker({
         </Text>
       </PatternField>
       <div className={slots.body()}>
-        <StepTracker steps={steps} current={index} aria-label={progressLabel} />
-        <Divider variant="diamond" className={slots.divider()} />
+        {step === undefined ? null : (
+          <>
+            <StepTracker steps={steps} current={index} aria-label={progressLabel} />
+            <Divider variant="diamond" className={slots.divider()} />
+          </>
+        )}
         {hasReceipt ? (
           <Card variant="quiet" padding="sm">
             <div className={slots.receipt()}>
