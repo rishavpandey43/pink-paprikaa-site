@@ -846,26 +846,26 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 **Dev parity:**
 
-| Dev item                                          | Ruling  | Where / clause                                                           |
-| ------------------------------------------------- | ------- | ------------------------------------------------------------------------ |
-| Every value and label render                      | ALREADY | test "lists every stat with its value, label and sub-line"               |
-| A sub-line only on the stat that carries one      | ADD     | test "renders a sub-line only for the stat that carries one"             |
-| One glyph per stat that asks for one              | ADD     | test "draws one glyph per stat that asks for one"                        |
-| Each tone floods its `bg-surface-*` ground        | ADD     | the tone `it.each` asserts the background class                          |
-| Numbers white on brand/ink, pink on soft          | ADD     | test "colours the numbers brand on soft and white on the flooded fields" |
-| Every column centred                              | ADD     | test "centres every stat so the row reads as one band"                   |
-| Auto-fit grid survives 360px (`min(200px,100%)`)  | ALREADY | `autogrid-min-sm` test                                                   |
-| Merges a caller `className`                       | ADD     | test "merges a caller className over its own"                            |
-| axe                                               | ALREADY | test "has no accessibility violations"                                   |
-| `label`/`sub` as `string`, `icon` as `LucideIcon` | ALREADY | `ReactNode` / `IconComponent` (D10)                                      |
-| Exported `StatBandTone`                           | ALREADY | `StatBandProps["tone"]`                                                  |
-| Stories Default · Tones · FourAcross · Narrow     | ALREADY | Playground · Soft/Brand/Ink · FourStats · Mobile                         |
-| Story WithIcons                                   | ADD     | `WithIcons`                                                              |
-| Story WithSubLines                                | ADD     | `WithSubLines`                                                           |
-| "4.6 average guest rating", "7 sections" copy     | DROP    | prompt "only real, verifiable numbers" + spec §10.1 (Step 6 note)        |
-| _(not in dev)_ empty `sub` no wrapper; `0` does   | ADD     | fold item 18 (Stat's `isShown`); tests "…for an empty sub", "…for a 0…"  |
-| _(not in dev)_ explicit list semantics            | ADD     | fold item 19 (`role="list"`); the grid test                              |
-| _(not in dev)_ caller ground through the diamond  | ADD     | fold item 21 (`bg-transparent` layer); the merge test                    |
+| Dev item                                          | Ruling  | Where / clause                                                                             |
+| ------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------ |
+| Every value and label render                      | ALREADY | test "lists every stat with its value, label and sub-line"                                 |
+| A sub-line only on the stat that carries one      | ADD     | test "renders a sub-line only for the stat that carries one"                               |
+| One glyph per stat that asks for one              | ADD     | test "draws one glyph per stat that asks for one"                                          |
+| Each tone floods its `bg-surface-*` ground        | ADD     | the tone `it.each` asserts the background class                                            |
+| Numbers white on brand/ink, pink on soft          | ADD     | test "colours the numbers brand on soft and white on the flooded fields" (all three tones) |
+| Every column centred                              | ADD     | test "centres every stat so the row reads as one band"                                     |
+| Auto-fit grid survives 360px (`min(200px,100%)`)  | ALREADY | `autogrid-min-sm` test                                                                     |
+| Merges a caller `className`                       | ADD     | test "merges a caller className over its own"                                              |
+| axe                                               | ALREADY | test "has no accessibility violations"                                                     |
+| `label`/`sub` as `string`, `icon` as `LucideIcon` | ALREADY | `ReactNode` / `IconComponent` (D10)                                                        |
+| Exported `StatBandTone`                           | ALREADY | `StatBandProps["tone"]`                                                                    |
+| Stories Default · Tones · FourAcross · Narrow     | ALREADY | Playground · Soft/Brand/Ink · FourStats · Mobile                                           |
+| Story WithIcons                                   | ADD     | `WithIcons`                                                                                |
+| Story WithSubLines                                | ADD     | `WithSubLines`                                                                             |
+| "4.6 average guest rating", "7 sections" copy     | DROP    | prompt "only real, verifiable numbers" + spec §10.1 (Step 6 note)                          |
+| _(not in dev)_ a `0` sub keeps its wrapper        | ADD     | fold item 18 (Stat's `isShown`, which Stat's own tests own for `""`); test "…for a 0 sub…" |
+| _(not in dev)_ explicit list semantics            | ADD     | fold item 19 (`role="list"`); the grid test                                                |
+| _(not in dev)_ caller ground through the diamond  | ADD     | fold item 21 (`bg-transparent` layer); the merge test                                      |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -892,7 +892,10 @@ Implementer: copy this table into your report, extended with anything the plan m
       "$value": "clamp(40px, 5vw, 64px)",
       "$description": "StatBand vertical rhythm (design system StatBand)."
     },
-    "stat-band-gap": { "$value": "clamp(24px, 3vw, 40px)" }
+    "stat-band-gap": {
+      "$value": "clamp(24px, 3vw, 40px)",
+      "$description": "Gap between the stats on the band's grid (design system StatBand)."
+    }
   }
 }
 ```
@@ -944,11 +947,6 @@ describe("StatBand", () => {
     expect(items[2]).toHaveTextContent("No egg, no meat, ever");
   });
 
-  it("renders no sub-line wrapper for an empty sub", () => {
-    render(<StatBand stats={[{ value: "3 km", label: "free delivery radius", sub: "" }]} />);
-    expect(screen.getByText("3 km").parentElement?.children).toHaveLength(2);
-  });
-
   it("renders the sub-line wrapper for a 0 sub — a number is content", () => {
     render(<StatBand stats={[{ value: "3 km", label: "free delivery radius", sub: 0 }]} />);
     expect(screen.getByText("3 km").parentElement?.children).toHaveLength(3);
@@ -976,6 +974,8 @@ describe("StatBand", () => {
   it("colours the numbers brand on soft and white on the flooded fields", () => {
     const { rerender } = render(<StatBand stats={STATS} tone="soft" />);
     expect(screen.getByText("3 km")).toHaveClass("text-text-brand");
+    rerender(<StatBand stats={STATS} tone="brand" />);
+    expect(screen.getByText("3 km")).toHaveClass("text-text-on-inverse");
     rerender(<StatBand stats={STATS} tone="ink" />);
     expect(screen.getByText("3 km")).toHaveClass("text-text-on-inverse");
   });
@@ -1091,7 +1091,7 @@ export function StatBand({ stats, tone = "soft", className, ...props }: StatBand
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- stat-band 2>&1 | tail -8`
-Expected: PASS (14 tests). The number-colour and centring assertions read Stat's own classes (Plan 3a: `text-text-brand` / `text-text-on-inverse` on the value, `text-center` on the root); if Task 0 found them renamed, use the built names.
+Expected: PASS (13 tests). The number-colour and centring assertions read Stat's own classes (Plan 3a: `text-text-brand` / `text-text-on-inverse` on the value, `text-center` on the root); if Task 0 found them renamed, use the built names.
 
 - [ ] **Step 6: Stories (card parity with `StatBand.card.html`)**
 
@@ -1231,7 +1231,7 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 | `image` / `imageAlt` / `imageCaption` props                                    | DROP    | contract §7 / spec §9.3 `media` slot (ImageSlot + overlays)                                             |
 | Caption on the `scrim-bottom` over a real photograph, never over a placeholder | ADD     | story `WithPhotograph` composes it in the media slot                                                    |
 | Centred layout shows no image                                                  | ALREADY | `media` renders only when passed (SoftCentred passes none)                                              |
-| Split tracks stack the photo under the copy at 360px                           | ALREADY | one column below `lg`                                                                                   |
+| Split tracks stack the photo under the copy at 360px                           | ALREADY | test "sets the split media beside the copy from lg and stacks it below…" (one column below `lg`)        |
 | Merges a caller `className`                                                    | ADD     | test "merges a caller className over its own"                                                           |
 | axe                                                                            | ALREADY | test "has no accessibility violations"                                                                  |
 | `variant` split/center                                                         | ALREADY | contract `layout`                                                                                       |
@@ -1241,8 +1241,10 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 | Story HeadlineOnly                                                             | ADD     | `HeadlineOnly`                                                                                          |
 | Story WithPhotograph                                                           | ADD     | `WithPhotograph`                                                                                        |
 | _(not in dev)_ an empty slot renders no wrapper; a `0` slot does               | ADD     | fold item 18 (`isShown`); tests "renders no wrapper…", "renders the wrapper for a 0…"                   |
+| _(not in dev)_ an empty meta fact renders no item and no diamond               | ADD     | `isShown` filter; test "skips an empty meta fact…"                                                      |
 | _(not in dev)_ explicit list semantics on the meta row                         | ADD     | fold item 19 (`role="list"`); the meta test                                                             |
 | _(not in dev)_ a caller's ground shows through the diamond                     | ADD     | fold item 21 (`bg-transparent` layer); the merge test                                                   |
+| _(not in dev)_ pattern defaults per tone; `none` and `faint` honoured          | ADD     | tests "carries the diamond on the %s field…", "carries no diamond on the alt tint…", "hands the faint…" |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -1375,6 +1377,20 @@ describe("HeroBanner", () => {
     expect(list.querySelectorAll('[aria-hidden="true"]')).toHaveLength(2);
   });
 
+  it("skips an empty meta fact — no bare item, no stray diamond — and a list of none", () => {
+    const { rerender } = render(
+      <HeroBanner title={TITLE} meta={["Est. 2025", "", "Sector 57, Gurgaon"]} />
+    );
+    const list = screen.getByRole("list");
+    const facts = within(list)
+      .getAllByRole("listitem")
+      .map((item) => item.textContent);
+    expect(facts).toEqual(["Est. 2025", "Sector 57, Gurgaon"]);
+    expect(list.querySelectorAll('[aria-hidden="true"]')).toHaveLength(1);
+    rerender(<HeroBanner title={TITLE} meta={["", null]} />);
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+  });
+
   it("puts the media slot in a positioned column for overlays such as an OfferSeal", () => {
     render(
       <HeroBanner
@@ -1398,13 +1414,38 @@ describe("HeroBanner", () => {
     expect(container.firstElementChild).toHaveAttribute("data-surface", surface);
   });
 
-  it("carries the diamond on the flooded tones and not on the alt tint unless asked", () => {
-    const { container, rerender } = render(<HeroBanner title={TITLE} tone="brand" />);
-    expect(patternLayer(container)).toBeInTheDocument();
-    rerender(<HeroBanner title={TITLE} tone="alt" />);
+  it.each(["brand", "ink", "soft"] as const)(
+    "carries the diamond on the %s field by default",
+    (tone) => {
+      const { container } = render(<HeroBanner title={TITLE} tone={tone} />);
+      expect(patternLayer(container)).toBeInTheDocument();
+    }
+  );
+
+  it("carries no diamond on the alt tint unless asked, nor on a flooded field with pattern=none", () => {
+    const { container, rerender } = render(<HeroBanner title={TITLE} tone="alt" />);
     expect(patternLayer(container)).not.toBeInTheDocument();
     rerender(<HeroBanner title={TITLE} tone="alt" pattern="faint" />);
     expect(patternLayer(container)).toBeInTheDocument();
+    rerender(<HeroBanner title={TITLE} tone="brand" pattern="none" />);
+    expect(patternLayer(container)).not.toBeInTheDocument();
+  });
+
+  it("hands the faint density to the diamond", () => {
+    const { container, rerender } = render(<HeroBanner title={TITLE} tone="ink" pattern="faint" />);
+    const tint = () => patternLayer(container)?.firstElementChild;
+    expect(tint()).toHaveClass("pattern-opacity-faint");
+    rerender(<HeroBanner title={TITLE} tone="ink" />);
+    expect(tint()).toHaveClass("pattern-opacity-default");
+  });
+
+  it("sets the split media beside the copy from lg and stacks it below; center has one column", () => {
+    const { container, rerender } = render(<HeroBanner title={TITLE} pattern="none" />);
+    const inner = () => container.querySelector("section > div");
+    expect(inner()).toHaveClass("grid", "lg:grid-cols-2");
+    expect(inner()?.className).not.toMatch(/(^|\s)grid-cols-/);
+    rerender(<HeroBanner title={TITLE} layout="center" pattern="none" />);
+    expect(inner()).not.toHaveClass("lg:grid-cols-2");
   });
 
   it("uses the display-2 ramp for a long headline", () => {
@@ -1560,6 +1601,7 @@ export function HeroBanner({
 }: HeroBannerProps) {
   const slots = heroBanner({ tone, layout });
   const density = pattern ?? DEFAULT_PATTERN[tone];
+  const facts = meta.filter(isShown);
   return (
     <section data-surface={SURFACE[tone]} className={slots.root({ className })} {...props}>
       {density === "none" ? null : (
@@ -1588,9 +1630,9 @@ export function HeroBanner({
             </Text>
           ) : null}
           {isShown(actions) ? <div className={slots.actions()}>{actions}</div> : null}
-          {meta.length > 0 ? (
+          {facts.length > 0 ? (
             <ul role="list" className={slots.meta()}>
-              {meta.map((fact, index) => (
+              {facts.map((fact, index) => (
                 <li key={index} className={slots.metaItem()}>
                   {index > 0 ? <SymbolMark className={slots.metaMark()} /> : null}
                   <Text as="span" variant="body-sm" tone="muted">
@@ -1611,7 +1653,7 @@ export function HeroBanner({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- hero-banner 2>&1 | tail -8`
-Expected: PASS (17 tests).
+Expected: PASS (23 tests).
 
 - [ ] **Step 6: Stories (card parity with `HeroBanner.card.html` + the handoff heroes)**
 
@@ -1961,6 +2003,7 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 | Story SixReviews (invented guests)               | DROP    | spec §10.1 — real reviews only; four exist (`FourReviews`)                                      |
 | Story WithLede                                   | ADD     | `WithLede` (contract delta 1)                                                                   |
 | Story WithoutScores                              | ADD     | `WithoutScores`                                                                                 |
+| _(not in dev)_ explicit list semantics           | ADD     | fold item 19 (`role="list"`); test "lists one review card per review…"                          |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -2020,7 +2063,10 @@ describe("TestimonialWall", () => {
 
   it("lists one review card per review, quotes verbatim", () => {
     render(<TestimonialWall title="Reviews" reviews={REVIEWS} />);
-    const items = within(screen.getByRole("list")).getAllByRole("listitem");
+    const list = screen.getByRole("list");
+    // Safari drops list semantics under `list-style: none` unless the role is explicit.
+    expect(list).toHaveAttribute("role", "list");
+    const items = within(list).getAllByRole("listitem");
     expect(items).toHaveLength(REVIEWS.length);
     expect(screen.getAllByRole("figure")).toHaveLength(REVIEWS.length);
     expect(screen.getByText(/Had Honey chili potato and it was good/)).toBeInTheDocument();
@@ -2123,7 +2169,7 @@ export function TestimonialWall({
     <section className={slots.root({ className })} {...props}>
       <div className={slots.inner()}>
         <SectionHeader overline={overline} title={title} lede={lede} headingLevel={headingLevel} />
-        <ul className={slots.grid()}>
+        <ul role="list" className={slots.grid()}>
           {reviews.map((review, index) => (
             <li key={index} className={slots.item()}>
               <ReviewCard
