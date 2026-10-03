@@ -72,11 +72,10 @@ export const AsHeadings: Story = {
   play: async ({ canvasElement }) => {
     const summaries = [...canvasElement.querySelectorAll("summary")];
     await expect(summaries).toHaveLength(FAQ.length);
-    for (const summary of summaries) {
-      await expect(within(summary).getByRole("heading", { level: 3 })).toHaveTextContent(
-        summary.textContent
-      );
-    }
+    const headings = summaries.map((summary) => within(summary).getByRole("heading", { level: 3 }));
+    await expect(headings.map((heading) => heading.textContent)).toEqual(
+      FAQ.map(({ question }) => question)
+    );
   },
 };
 
