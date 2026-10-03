@@ -4,11 +4,13 @@ import type { ReactNode, Ref } from "react";
 
 import { useId, useState } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { FieldStatus } from "../../lib/field-status";
 
 import { componentVariants } from "../../lib/component-variants";
 import { fieldControlVariants } from "../../lib/field-control";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
 
 const otpInput = componentVariants({
@@ -48,7 +50,11 @@ const otpInput = componentVariants({
 
 type CellState = "empty" | "filled" | "active";
 
-export interface OtpInputProps {
+/** The wrapper takes the div's native props; the code field keeps `ref`, `name`, `disabled`, `onBlur`. */
+export interface OtpInputProps extends Omit<
+  BaseProps<"div">,
+  "ref" | "onBlur" | "defaultValue" | "children" | "aria-describedby" | "aria-invalid"
+> {
   /** Accessible name of the code field, e.g. "Login code". */
   label: string;
   length?: 4 | 6 | undefined;
@@ -65,7 +71,6 @@ export interface OtpInputProps {
   message?: ReactNode;
   disabled?: boolean | undefined;
   name?: string | undefined;
-  className?: string | undefined;
   /** The code field — react-hook-form's Controller focuses it on error. */
   ref?: Ref<HTMLInputElement> | undefined;
 }
@@ -86,8 +91,10 @@ export function OtpInput({
   message,
   disabled = false,
   name,
+  sx,
   className,
   ref,
+  ...props
 }: OtpInputProps) {
   const [code, setCode] = useControllableState({
     value,
@@ -106,7 +113,7 @@ export function OtpInput({
   }
 
   return (
-    <div className={styles.root({ className })}>
+    <div {...props} className={styles.root({ className: withSx(sx, className) })}>
       <div className={styles.field()}>
         <div aria-hidden="true" data-surface="light" className={styles.cells()}>
           {Array.from({ length }, (_, index) => {

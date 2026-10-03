@@ -226,4 +226,23 @@ describe("OtpInput", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("forwards id, data-* and aria-* to its wrapper, and takes sx there; ref stays on the code field", () => {
+    const ref = createRef<HTMLInputElement>();
+    const { container } = render(
+      <OtpInput
+        ref={ref}
+        label="Login code"
+        id="otp"
+        data-section="login"
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    const wrapper = container.firstElementChild;
+    expect(wrapper).toHaveAttribute("id", "otp");
+    expect(wrapper).toHaveAttribute("data-section", "login");
+    expect(wrapper).toHaveClass("mt-4", "italic");
+    expect(ref.current).toBe(screen.getByRole("textbox", { name: "Login code" }));
+  });
 });
