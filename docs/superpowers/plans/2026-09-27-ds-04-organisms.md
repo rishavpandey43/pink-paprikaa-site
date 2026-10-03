@@ -5830,9 +5830,9 @@ const dialog = componentVariants({
     handle: "flex shrink-0 justify-center pt-2.5",
     handleBar: "h-1 w-10 rounded-pill bg-ink-300",
     header: "flex shrink-0 items-start justify-between gap-4 px-6 pt-5",
-    title: "text-dialog-title font-display text-text-heading",
+    title: "font-display text-dialog-title text-text-heading",
     description: "shrink-0 px-6 pt-1 text-body-sm text-text-muted",
-    body: "text-dialog-body min-h-0 flex-1 overflow-y-auto px-6 pt-3 pb-5 text-text-body",
+    body: "min-h-0 flex-1 overflow-y-auto px-6 pt-3 pb-5 text-dialog-body text-text-body",
     footer: "flex shrink-0 flex-wrap justify-end gap-2.5 px-6 pb-6",
   },
   variants: {
