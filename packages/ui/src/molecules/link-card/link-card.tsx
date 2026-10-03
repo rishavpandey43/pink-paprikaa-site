@@ -1,22 +1,19 @@
 import { ArrowRight } from "lucide-react";
 import { Slot } from "radix-ui";
-import {
-  type ComponentProps,
-  createElement,
-  type ElementType,
-  isValidElement,
-  type ReactNode,
-} from "react";
+import { createElement, type ElementType, isValidElement, type ReactNode } from "react";
+
+import type { BaseProps, SurfaceProp } from "../../lib/common-props";
 
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
-type LinkCardTone = "default" | "brand" | "ink" | "soft";
+type LinkCardSurface = Extract<SurfaceProp, "page" | "brand" | "ink" | "soft">;
 
-const SURFACE_OF: Readonly<Record<LinkCardTone, "light" | "brand" | "ink" | "soft">> = {
-  default: "light",
+const SURFACE_OF: Readonly<Record<LinkCardSurface, "light" | "brand" | "ink" | "soft">> = {
+  page: "light",
   brand: "brand",
   ink: "ink",
   soft: "soft",
@@ -48,8 +45,8 @@ const linkCard = componentVariants({
         description: "text-body text-text-body",
       },
     },
-    tone: {
-      default: { root: "border border-border-subtle bg-surface-card shadow-1 hover:shadow-3" },
+    surface: {
+      page: { root: "border border-border-subtle bg-surface-card shadow-1 hover:shadow-3" },
       brand: { root: "bg-surface-brand" },
       ink: { root: "bg-surface-inverse" },
       soft: { root: "bg-surface-brand-soft" },
@@ -58,7 +55,7 @@ const linkCard = componentVariants({
 });
 
 // The anchor's own `media` (a media query string) gives way to the media slot.
-export interface LinkCardProps extends Omit<ComponentProps<"a">, "media" | "title"> {
+export interface LinkCardProps extends Omit<BaseProps<"a">, "media" | "title"> {
   title: ReactNode;
   description?: ReactNode | undefined;
   /** Link words under the text, followed by an arrow ("See plans"). */
@@ -66,14 +63,14 @@ export interface LinkCardProps extends Omit<ComponentProps<"a">, "media" | "titl
   /** An ImageSlot: 88px square in a row, full width in a stack. */
   media?: ReactNode | undefined;
   layout?: "row" | "stack" | undefined;
-  tone?: LinkCardTone | undefined;
+  surface?: LinkCardSurface | undefined;
   /** Render into the child link element (next/link, an external anchor) instead of an `<a>`. */
   asChild?: boolean | undefined;
   headingLevel?: HeadingLevel | undefined;
 }
 
 /**
- * A whole-card link: Home's three "doors" (row) and About's CTA cards (stack, tones). The card IS
+ * A whole-card link: Home's three "doors" (row) and About's CTA cards (stack, surfaces). The card IS
  * the link (its title a heading inside it), so it takes the link's own focus ring — no stretched
  * overlay. A `target="_blank"` card, on it or on the asChild link, says it opens in a new tab.
  */
@@ -83,14 +80,15 @@ export function LinkCard({
   cta,
   media,
   layout = "row",
-  tone = "default",
+  surface = "page",
   asChild = false,
   headingLevel = 3,
+  sx,
   className,
   children,
   ...props
 }: LinkCardProps) {
-  const styles = linkCard({ layout, tone });
+  const styles = linkCard({ layout, surface });
   const Component: ElementType = asChild ? Slot.Root : "a";
   // Slot merges the card's own props onto the child (the child's win), so either may set it.
   const target =
@@ -117,7 +115,11 @@ export function LinkCard({
   );
 
   return (
-    <Component data-surface={SURFACE_OF[tone]} className={styles.root({ className })} {...props}>
+    <Component
+      data-surface={SURFACE_OF[surface]}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       {asChild ? <Slot.Slottable child={children}>{() => content}</Slot.Slottable> : content}
     </Component>
   );

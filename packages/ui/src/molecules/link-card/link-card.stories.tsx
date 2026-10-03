@@ -87,21 +87,21 @@ export const AboutCtas: Story = {
     <div className="grid max-w-content grid-cols-1 gap-4 md:grid-cols-3">
       <LinkCard
         layout="stack"
-        tone="brand"
+        surface="brand"
         href="#homely-meals"
         title="Homely Meals"
         description="Eat from our kitchen every day"
       />
       <LinkCard
         layout="stack"
-        tone="ink"
+        surface="ink"
         href="#catering"
         title="Dawat catering"
         description="For your next occasion"
       />
       <LinkCard
         layout="stack"
-        tone="soft"
+        surface="soft"
         href="#contact"
         title="Visit us"
         description="MKM Market, Sector 57"

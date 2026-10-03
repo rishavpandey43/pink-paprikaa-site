@@ -38,13 +38,13 @@ describe("LinkCard", () => {
   });
 
   it.each([
-    ["default", "light"],
+    ["page", "light"],
     ["brand", "brand"],
     ["ink", "ink"],
     ["soft", "soft"],
-  ] as const)("sets the %s tone's surface to %s", (tone, surface) => {
-    render(<LinkCard {...DOOR} tone={tone} />);
-    expect(screen.getByRole("link")).toHaveAttribute("data-surface", surface);
+  ] as const)("sets the %s surface's data-surface to %s", (surface, dataSurface) => {
+    render(<LinkCard {...DOOR} surface={surface} />);
+    expect(screen.getByRole("link")).toHaveAttribute("data-surface", dataSurface);
   });
 
   it("puts 88px media beside the text in a row, and full-width media above it in a stack", () => {
@@ -99,5 +99,13 @@ describe("LinkCard", () => {
   it("has no accessibility violations", async () => {
     const { container } = render(<LinkCard {...DOOR} media={<span>Box</span>} />);
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, beating a default class and keeping className", () => {
+    const { container } = render(
+      <LinkCard {...DOOR} sx={{ display: "grid", mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("grid", "mt-4", "italic");
+    expect(container.firstElementChild).not.toHaveClass("flex");
   });
 });
