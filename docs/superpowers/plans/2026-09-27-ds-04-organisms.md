@@ -4145,6 +4145,14 @@ describe("SiteFooter", () => {
     expect(screen.getByText("8am – 11:30pm, every day").closest("a")).toBeNull();
   });
 
+  it("skips a column with no items, heading and all", () => {
+    render(<SiteFooter columns={[...COLUMNS, { heading: "Coming soon", items: [] }]} />);
+    expect(screen.queryByRole("heading", { name: "Coming soon" })).not.toBeInTheDocument();
+    expect(screen.getByRole("contentinfo").firstElementChild?.children).toHaveLength(
+      COLUMNS.length
+    );
+  });
+
   it("renders exactly what it is given — no licence, tax, contact or social defaults", () => {
     const { container } = render(
       <SiteFooter
@@ -4395,10 +4403,13 @@ export interface SiteFooterProps
   extends ComponentProps<"footer">, Pick<VariantProps<typeof siteFooter>, "tone"> {
   /** The brand block — lockup, veg chip, licence line, blurb, contact lines: whatever the app passes. */
   brand?: ReactNode;
+  /** Unique by `heading` (it keys the column). A column with no items is skipped. */
   columns: FooterColumn[];
+  /** Unique by `network` (it keys the link). */
   social?: FooterSocialLink[] | undefined;
   /** Legal lines (©, GSTIN), rendered verbatim. The system holds no company facts. */
   legal?: ReactNode;
+  /** Unique by `href` (it keys the link). */
   policies?: FooterPolicy[] | undefined;
   linkAs?: LinkAs | undefined;
   /** Defaults to `none` on brand and `faint` on ink. */
@@ -4450,28 +4461,32 @@ export function SiteFooter({
             {social.length > 0 ? (
               // Safari/VoiceOver drops list semantics from a list-style:none list outside a nav.
               <ul role="list" className={slots.social()}>
-                {social.map((link) => (
-                  <li key={link.network}>
-                    <IconButton
-                      asChild
-                      icon={SOCIAL_GLYPH[link.network]}
-                      label={`${link.label} (Opens in a new tab)`}
-                      variant="secondary"
-                    >
-                      <a
-                        href={link.href}
-                        aria-label={`${link.label} (Opens in a new tab)`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      />
-                    </IconButton>
-                  </li>
-                ))}
+                {social.map((link) => {
+                  const label = `${link.label} (Opens in a new tab)`;
+                  return (
+                    <li key={link.network}>
+                      <IconButton
+                        asChild
+                        icon={SOCIAL_GLYPH[link.network]}
+                        label={label}
+                        variant="secondary"
+                      >
+                        <a
+                          href={link.href}
+                          aria-label={label}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        />
+                      </IconButton>
+                    </li>
+                  );
+                })}
               </ul>
             ) : null}
           </div>
         ) : null}
         {columns.map((column) => {
+          if (column.items.length === 0) return null;
           const Column = column.items.some((item) => item.href !== undefined) ? "nav" : "div";
           return (
             <Column
@@ -4534,7 +4549,7 @@ export function SiteFooter({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- site-footer 2>&1 | tail -8`
-Expected: PASS (14 tests).
+Expected: PASS (15 tests).
 
 - [ ] **Step 6: Stories (card parity with `SiteFooter.card.html` + handoff `PPFooter`)**
 
