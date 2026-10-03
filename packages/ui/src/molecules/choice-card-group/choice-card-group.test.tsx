@@ -192,7 +192,7 @@ describe("ChoiceCardGroup", () => {
       <ChoiceCardGroup name="plate" legend="Your plate" options={PLATES} />
     );
     expect(screen.getByRole("radio", { name: /Classic/ })).toHaveClass("sr-only");
-    rerender(<ChoiceCardGroup name="plate" legend="Your plate" options={PLATES} tone="on-brand" />);
+    rerender(<ChoiceCardGroup name="plate" legend="Your plate" options={PLATES} surface="brand" />);
     expect(screen.getByRole("radio", { name: /Classic/ })).not.toHaveClass("sr-only");
     expect(screen.getByRole("radio", { name: /Classic/ })).toHaveClass("appearance-none");
   });
@@ -273,16 +273,16 @@ describe("ChoiceCardGroup", () => {
     expect(group).not.toHaveAttribute("aria-describedby");
   });
 
-  it.each(["light", "on-brand"] as const)(
+  it.each(["page", "brand"] as const)(
     "reddens the checked card's border too when the group is in error (%s)",
-    (tone) => {
+    (surface) => {
       render(
         <ChoiceCardGroup
           name="plate"
           legend="Your plate"
           options={PLATES}
           defaultValue="classic"
-          tone={tone}
+          surface={surface}
           status="error"
           message="Choose a plate to see your total."
         />
@@ -331,18 +331,32 @@ describe("ChoiceCardGroup", () => {
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
-  it.each(["light", "on-brand"] as const)("has no accessibility violations (%s)", async (tone) => {
+  it.each(["page", "brand"] as const)("has no accessibility violations (%s)", async (surface) => {
     const { container } = render(
       <ChoiceCardGroup
         name="plate"
         legend="Your plate"
         options={PLATES}
-        tone={tone}
+        surface={surface}
         defaultValue="classic"
         status="error"
         message="Choose a plate to see your total."
       />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, beating a default class and keeping className", () => {
+    const { container } = render(
+      <ChoiceCardGroup
+        name="plate"
+        legend="Your plate"
+        options={PLATES}
+        sx={{ minW: "full", mt: 4 }}
+        className="italic"
+      />
+    );
+    expect(container.firstElementChild).toHaveClass("min-w-full", "mt-4", "italic");
+    expect(container.firstElementChild).not.toHaveClass("min-w-0");
   });
 });

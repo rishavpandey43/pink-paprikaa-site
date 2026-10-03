@@ -53,7 +53,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Card-style single choice from the handoff calculators: native radios in a fieldset, so arrow keys, forms and react-hook-form\'s `register()` work unmodified (`ref`, `onChange`, `onBlur` reach every radio). `layout="tile"` stacks cards in an AutoGrid (`min`); `layout="row"` gives full-width rows with the price at the end. `tone="on-brand"` is the Home trial selector: white cards with a visible radio on a pink field. Prices arrive formatted (`formatRupees`) or as words.',
+          'Card-style single choice from the handoff calculators: native radios in a fieldset, so arrow keys, forms and react-hook-form\'s `register()` work unmodified (`ref`, `onChange`, `onBlur` reach every radio). `layout="tile"` stacks cards in an AutoGrid (`min`); `layout="row"` gives full-width rows with the price at the end. `surface="on-brand"` is the Home trial selector: white cards with a visible radio on a pink field. Prices arrive formatted (`formatRupees`) or as words.',
       },
     },
   },
@@ -369,7 +369,7 @@ export const TrialOnBrand: Story = {
     legend: "Trial plate",
     isLegendHidden: true,
     layout: "row",
-    tone: "on-brand",
+    surface: "brand",
     defaultValue: "classic",
     options: [
       {

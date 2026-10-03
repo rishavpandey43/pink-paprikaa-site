@@ -7,6 +7,7 @@ import {
   useId,
 } from "react";
 
+import type { SxProp } from "../../lib/common-props";
 import type { FieldStatus } from "../../lib/field-status";
 
 import { joinIds } from "../../lib/choice-control";
@@ -14,6 +15,7 @@ import { componentVariants } from "../../lib/component-variants";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
 import { isShown } from "../../lib/is-shown";
 import { StruckPrice } from "../../lib/struck-price";
+import { withSx } from "../../lib/sx";
 
 /**
  * A grid minimum on the AutoGrid scale (xs 140 · sm 200 · md 260 · lg 320 · xl 380 · 2xl 420px).
@@ -36,10 +38,8 @@ export interface ChoiceOption {
   isDisabled?: boolean | undefined;
 }
 
-export interface ChoiceCardGroupProps extends Omit<
-  ComponentProps<"fieldset">,
-  "defaultValue" | "onBlur" | "onChange" | "ref"
-> {
+export interface ChoiceCardGroupProps
+  extends Omit<ComponentProps<"fieldset">, "defaultValue" | "onBlur" | "onChange" | "ref">, SxProp {
   name: string;
   legend: ReactNode;
   isLegendHidden?: boolean | undefined;
@@ -56,8 +56,8 @@ export interface ChoiceCardGroupProps extends Omit<
   min?: ChoiceGridMin | undefined;
   /** `tile`: stacked cards in a grid, price under the title. `row`: full-width rows, price at the end. */
   layout?: "tile" | "row" | undefined;
-  /** `on-brand`: white cards with a visible radio, for a pink field (the Home trial selector). */
-  tone?: "light" | "on-brand" | undefined;
+  /** `brand`: white cards with a visible radio, for a pink field (the Home trial selector). */
+  surface?: "page" | "brand" | undefined;
   /**
    * `error` marks the group invalid and reddens every card's border. A status shows only with its
    * `message`: without words it is ignored, so a card is never marked by colour alone.
@@ -101,15 +101,15 @@ const choiceCardGroup = componentVariants({
       // ("Quoted · 25+ guests" at 360px), never squeezing the description to a word per line.
       row: { card: "flex-wrap items-center gap-3", body: "min-w-32", price: "shrink-0" },
     },
-    tone: {
-      light: {
+    surface: {
+      page: {
         // 1px border + the inset `selected` shadow = a 2px border that never shifts the layout.
         // In error the checked card turns red too (its brand border would out-rank the red), and
         // drops the pink inset so the red is not lined with pink.
         card: "border border-border-default bg-surface-card text-text-heading in-aria-invalid:border-status-danger has-checked:border-border-brand has-checked:bg-pink-50 has-checked:text-pink-700 has-checked:shadow-selected in-aria-invalid:has-checked:border-status-danger in-aria-invalid:has-checked:shadow-none",
         input: "sr-only",
       },
-      "on-brand": {
+      brand: {
         card: "border-2 border-transparent bg-white-alpha-92 text-text-heading in-aria-invalid:border-status-danger has-checked:border-ink-900 has-checked:bg-ink-000 in-aria-invalid:has-checked:border-status-danger",
         input:
           "size-4.5 shrink-0 cursor-pointer appearance-none rounded-pill border-2 border-ink-600 bg-ink-000 checked:border-pink-600 checked:bg-pink-600 checked:shadow-choice-card-radio focus-visible:outline-none",
@@ -148,9 +148,10 @@ export function ChoiceCardGroup({
   ref,
   min = "xs",
   layout = "tile",
-  tone = "light",
+  surface = "page",
   status = "default",
   message,
+  sx,
   className,
   "aria-describedby": describedBy,
   // Dropped: the group's own invalid state wins, so a bare aria-invalid cannot mark it by colour alone.
@@ -162,7 +163,7 @@ export function ChoiceCardGroup({
   const hasMessage = hasFieldMessage({ message });
   const styles = choiceCardGroup({
     layout,
-    tone,
+    surface,
     isLegendHidden,
     ...(layout === "tile" ? { min } : {}),
   });
@@ -179,7 +180,7 @@ export function ChoiceCardGroup({
     <fieldset
       aria-invalid={hasMessage && status === "error" ? true : undefined}
       aria-describedby={joinIds(hasMessage ? messageId : undefined, describedBy)}
-      className={styles.root({ className })}
+      className={styles.root({ className: withSx(sx, className) })}
       {...props}
     >
       <legend className={styles.legend()}>{legend}</legend>
