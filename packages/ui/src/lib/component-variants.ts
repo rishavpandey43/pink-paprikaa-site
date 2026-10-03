@@ -107,6 +107,8 @@ const TEXT = [
   "quote-panel-amount",
   "tab-bar-label",
   "tab-bar-count",
+  "dialog-title",
+  "dialog-body",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -258,6 +260,9 @@ const SPACING = [
   "action-dock-bottom",
   "action-dock-float",
   "tab-bar-count",
+  "dialog-sm",
+  "dialog-md",
+  "dialog-lg",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

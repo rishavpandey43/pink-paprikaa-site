@@ -165,6 +165,7 @@ export {
   type DockAction,
 } from "./organisms/action-dock/action-dock";
 export { CtaBand, type CtaBandProps } from "./organisms/cta-band/cta-band";
+export { Dialog, type DialogProps } from "./organisms/dialog/dialog";
 export { FaqSection, type FaqSectionProps } from "./organisms/faq-section/faq-section";
 export { HeroBanner, type HeroBannerProps } from "./organisms/hero-banner/hero-banner";
 export { OrderTracker, type OrderTrackerProps } from "./organisms/order-tracker/order-tracker";
