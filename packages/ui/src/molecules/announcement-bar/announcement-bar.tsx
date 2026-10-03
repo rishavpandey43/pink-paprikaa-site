@@ -1,9 +1,11 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { LinkAs } from "../../lib/link-as";
 
 import { Countdown } from "../../atoms/countdown/countdown";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { AnnouncementExpiry } from "./announcement-expiry";
 
 const announcementBar = componentVariants({
@@ -14,7 +16,7 @@ const announcementBar = componentVariants({
   },
 });
 
-export interface AnnouncementBarProps extends Omit<ComponentProps<"div">, "children"> {
+export interface AnnouncementBarProps extends Omit<BaseProps<"div">, "children"> {
   /** The message. Bold the offer with `<strong>`. */
   children: ReactNode;
   /** Makes the whole strip one link. */
@@ -46,6 +48,7 @@ export function AnnouncementBar({
   endsAt,
   countdownLabel,
   linkAs: LinkComponent = "a",
+  sx,
   className,
   ...props
 }: AnnouncementBarProps) {
@@ -57,7 +60,11 @@ export function AnnouncementBar({
     </>
   );
   const bar = (
-    <div data-surface="brand" className={styles.root({ className })} {...props}>
+    <div
+      data-surface="brand"
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       {href === undefined ? (
         <div className={styles.content()}>{content}</div>
       ) : (

@@ -118,4 +118,15 @@ describe("Accordion", () => {
     const { container } = render(<Accordion items={FAQ} />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <Accordion
+        items={[{ value: "a", question: "Q", answer: "A" }]}
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });

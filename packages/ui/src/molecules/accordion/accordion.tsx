@@ -1,11 +1,14 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { ChevronDown } from "lucide-react";
 import { createElement, useId } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
+
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { withSx } from "../../lib/sx";
 
 const accordion = componentVariants({
   slots: {
@@ -27,7 +30,7 @@ export interface AccordionItem {
   answer: ReactNode;
 }
 
-export interface AccordionProps extends ComponentProps<"div"> {
+export interface AccordionProps extends BaseProps<"div"> {
   items: AccordionItem[];
   /** Let several answers stay open at once. */
   isMultiple?: boolean | undefined;
@@ -56,6 +59,7 @@ export function Accordion({
   defaultOpen,
   name,
   headingLevel,
+  sx,
   className,
   ...props
 }: AccordionProps) {
@@ -65,7 +69,7 @@ export function Accordion({
   const styles = accordion();
 
   return (
-    <div className={styles.root({ className })} {...props}>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
       {items.map((item) => (
         <details
           key={item.value}

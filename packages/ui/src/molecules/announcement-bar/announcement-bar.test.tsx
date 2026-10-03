@@ -99,4 +99,13 @@ describe("AnnouncementBar", () => {
     expect(screen.getByRole("link").textContent.match(/closes in/g)).toHaveLength(1);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <AnnouncementBar sx={{ mt: 4 }} className="italic">
+        Launch week
+      </AnnouncementBar>
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });

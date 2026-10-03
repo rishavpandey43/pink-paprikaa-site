@@ -1,11 +1,11 @@
-import type { ComponentProps } from "react";
-
 import { ChevronRight } from "lucide-react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { LinkAs } from "../../lib/link-as";
 
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const breadcrumb = componentVariants({
   slots: {
@@ -25,7 +25,7 @@ export interface BreadcrumbItem {
   href?: string | undefined;
 }
 
-export interface BreadcrumbProps extends ComponentProps<"nav"> {
+export interface BreadcrumbProps extends BaseProps<"nav"> {
   items: BreadcrumbItem[];
   /** The link component for each crumb (default `"a"`; pass `next/link` in an app). */
   linkAs?: LinkAs | undefined;
@@ -40,6 +40,7 @@ export function Breadcrumb({
   items,
   linkAs: LinkComponent = "a",
   "aria-label": ariaLabel = "Breadcrumb",
+  sx,
   className,
   ...props
 }: BreadcrumbProps) {
@@ -47,7 +48,11 @@ export function Breadcrumb({
   const lastIndex = items.length - 1;
 
   return (
-    <nav aria-label={ariaLabel} className={styles.root({ className })} {...props}>
+    <nav
+      aria-label={ariaLabel}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       <ol className={styles.list()}>
         {items.map((item, index) => {
           const isCurrent = index === lastIndex;

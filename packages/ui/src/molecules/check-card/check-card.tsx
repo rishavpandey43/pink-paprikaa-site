@@ -1,10 +1,13 @@
 import { Check } from "lucide-react";
-import { type ComponentProps, type ReactNode, useId } from "react";
+import { type ReactNode, useId } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { Icon } from "../../atoms/icon/icon";
 import { joinIds } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 const checkCard = componentVariants({
   slots: {
@@ -25,7 +28,7 @@ const checkCard = componentVariants({
   },
 });
 
-export interface CheckCardProps extends Omit<ComponentProps<"input">, "size" | "title" | "type"> {
+export interface CheckCardProps extends Omit<BaseProps<"input">, "size" | "title" | "type"> {
   title: ReactNode;
   description?: ReactNode | undefined;
   /**
@@ -42,6 +45,7 @@ export function CheckCard({
   title,
   description,
   isInvalid = false,
+  sx,
   className,
   id,
   "aria-describedby": describedBy,
@@ -54,7 +58,7 @@ export function CheckCard({
   const styles = checkCard();
 
   return (
-    <label data-surface="light" className={styles.root({ className })}>
+    <label data-surface="light" className={styles.root({ className: withSx(sx, className) })}>
       <span className={styles.box()}>
         <input
           type="checkbox"

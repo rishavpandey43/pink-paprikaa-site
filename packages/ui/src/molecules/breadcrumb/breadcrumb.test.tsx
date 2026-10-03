@@ -85,4 +85,15 @@ describe("Breadcrumb", () => {
     const { container } = render(<Breadcrumb items={MENU_TRAIL} />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <Breadcrumb
+        items={[{ label: "Home", href: "/" }, { label: "Menu" }]}
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });
