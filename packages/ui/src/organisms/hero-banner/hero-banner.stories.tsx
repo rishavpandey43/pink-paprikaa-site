@@ -210,7 +210,7 @@ export const HandoffCatering: Story = {
       <ImageSlot
         ratio="4:3"
         radius="xl"
-        tone="strong"
+        fill="strong"
         label="PHOTO: Real Dawat spread from our kitchen — tandoori roti, paneer, dal"
       />
     ),

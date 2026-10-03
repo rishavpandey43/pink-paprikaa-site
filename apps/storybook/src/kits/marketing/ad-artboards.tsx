@@ -61,7 +61,7 @@ export function DishStory({ hasSafeArea = false }: StoryArtboardProps) {
   return (
     <PostFrame format="story" surface="ink" padding="none" hasSafeArea={hasSafeArea} isFit>
       <div className="flex h-full flex-col">
-        <ImageSlot ratio="square" radius="none" tone="soft" label="Dish photo 1:1" />
+        <ImageSlot ratio="square" radius="none" fill="soft" label="Dish photo 1:1" />
         <div
           className="flex flex-1 flex-col gap-7 pt-14"
           style={{ paddingInline: CANVAS_PAD, paddingBottom: STORY_SAFE_BOTTOM }}
@@ -101,7 +101,7 @@ export function LinkBanner() {
           <ImageSlot
             ratio="3:4"
             radius="xl"
-            tone="strong"
+            fill="strong"
             label="Photo 3:4"
             className="h-full w-auto"
           />

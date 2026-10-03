@@ -46,11 +46,24 @@ describe("ImageSlot", () => {
     ["soft", "bg-pink-100", "text-pink-700"],
     ["strong", "bg-pink-200", "text-pink-800"],
     ["ink", "bg-ink-200", "text-ink-600"],
-  ] as const)("tone %s fills %s and labels in %s (AA, spec §5.3)", (tone, fill, label) => {
-    render(<ImageSlot label="Kitchen" tone={tone} />);
+  ] as const)("fill %s paints %s and labels in %s (AA, spec §5.3)", (fill, bg, label) => {
+    render(<ImageSlot label="Kitchen" fill={fill} />);
     const slot = screen.getByRole("img");
-    expect(slot).toHaveClass(fill);
+    expect(slot).toHaveClass(bg);
     expect(slot.firstElementChild).toHaveClass(label);
+  });
+
+  it("sx lands on the placeholder and beats its own radius", () => {
+    render(<ImageSlot label="Kitchen" sx={{ radius: "xl", mt: 4 }} />);
+    expect(screen.getByRole("img")).toHaveClass("rounded-xl", "mt-4");
+    expect(screen.getByRole("img")).not.toHaveClass("rounded-md");
+  });
+
+  it("sx lands on the root of a real image too", () => {
+    const { container } = render(
+      <ImageSlot src="/x.jpg" alt="Thali" width={4} height={3} sx={{ mt: 4 }} />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4");
   });
 
   it.each([

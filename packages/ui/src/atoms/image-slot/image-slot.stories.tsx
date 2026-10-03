@@ -37,13 +37,13 @@ export const Ratios: Story = {
   ),
 };
 
-export const Tones: Story = {
-  name: "tone",
+export const Fills: Story = {
+  name: "fill",
   render: () => (
     <div className="flex items-start gap-3">
-      <ImageSlot tone="soft" label="soft" className="w-30" />
-      <ImageSlot tone="strong" label="strong" className="w-30" />
-      <ImageSlot tone="ink" label="ink" className="w-30" />
+      <ImageSlot fill="soft" label="soft" className="w-30" />
+      <ImageSlot fill="strong" label="strong" className="w-30" />
+      <ImageSlot fill="ink" label="ink" className="w-30" />
     </div>
   ),
 };
@@ -68,7 +68,7 @@ export const Photo: Story = {
       width={358}
       height={358}
       ratio="square"
-      tone="ink"
+      fill="ink"
       className="w-40"
     />
   ),
@@ -92,4 +92,8 @@ export const Radii: Story = {
       ))}
     </div>
   ),
+};
+
+export const Sx: Story = {
+  render: () => <ImageSlot label="Dish 4:3" sx={{ radius: "xl", mt: 4 }} className="w-40" />,
 };
