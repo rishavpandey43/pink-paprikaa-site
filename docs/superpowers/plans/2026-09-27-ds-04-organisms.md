@@ -2773,7 +2773,7 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 - Create: `packages/design-tokens/tokens/component/quote-panel.json`
 - Create: `packages/ui/src/organisms/quote-panel/quote-panel.tsx`, `quote-panel.test.tsx`, `quote-panel.stories.tsx`
-- Create: `packages/ui/src/lib/story-ring.ts` (`ringClippers`, promoted from Plan 3b's CouponTicket and FilterBar stories on its third use; a `story-*` file — never exported, outside the library-source scan)
+- Create: `packages/ui/src/lib/story-ring.ts`, `story-ring.spec.ts` (`ringClippers`, promoted from Plan 3b's CouponTicket and FilterBar stories on its third use; a `story-*` file — never exported, outside the library-source scan)
 - Modify: `packages/ui/src/lib/component-variants.ts` (`SPACING`, `TEXT`), `packages/ui/src/index.ts`
 
 **Interfaces:**
@@ -3163,11 +3163,19 @@ The panel clips (`overflow-hidden`), so a `play` tabs to every action and proves
  * Stories only — never exported from the barrel. The `overflow` ancestors of `element` whose
  * padding box cuts its focus outline (an outline is clipped like any other paint, so a ring drawn
  * outside a flush child of an `overflow-hidden` box all but vanishes). A `play` that focuses a
- * control inside a clipping frame asserts this is `[]`.
+ * control inside a clipping frame asserts this is `[]`. Throws when `element` draws no outline (not
+ * focused, or a box-shadow ring): there is nothing to measure, and an empty list would pass.
  */
 export function ringClippers(element: HTMLElement) {
   const style = getComputedStyle(element);
-  const reach = Number.parseFloat(style.outlineWidth) + Number.parseFloat(style.outlineOffset);
+  const width = Number.parseFloat(style.outlineWidth);
+  // Negative for an inset ring (`-outline-offset-4`): its outer edge sits inside the box.
+  const reach = width + Number.parseFloat(style.outlineOffset);
+  if (style.outlineStyle === "none" || !(width > 0) || !Number.isFinite(reach)) {
+    throw new Error(
+      `ringClippers: <${element.tagName.toLowerCase()}> draws no focus outline (outline-style "${style.outlineStyle}", width "${style.outlineWidth}")`
+    );
+  }
   // Scroll extents are whole pixels, so a child scrolled fully into view can sit a fraction past.
   const box = element.getBoundingClientRect();
   const slack = 1;
@@ -3189,6 +3197,45 @@ export function ringClippers(element: HTMLElement) {
   }
   return clippers;
 }
+```
+
+The helper throws on a control that draws no outline (a box-shadow ring, or one not focused), so a `play` can never pass with nothing measured (batch F carried fix F1). `packages/ui/src/lib/story-ring.spec.ts`:
+
+```ts
+import { ringClippers } from "./story-ring";
+
+function control(
+  outline: Partial<Pick<CSSStyleDeclaration, "outlineOffset" | "outlineStyle" | "outlineWidth">>
+) {
+  const button = document.createElement("button");
+  Object.assign(button.style, outline);
+  document.body.append(button);
+  return button;
+}
+
+describe("ringClippers", () => {
+  it("throws when the element draws no outline, so a play cannot pass without a ring to measure", () => {
+    expect(() => ringClippers(control({}))).toThrow(/draws no focus outline/);
+  });
+
+  it("throws on an outline styled none, whatever its width", () => {
+    expect(() =>
+      ringClippers(control({ outlineStyle: "none", outlineWidth: "2px", outlineOffset: "2px" }))
+    ).toThrow(/draws no focus outline/);
+  });
+
+  it("throws on a zero-width outline", () => {
+    expect(() =>
+      ringClippers(control({ outlineStyle: "solid", outlineWidth: "0px", outlineOffset: "2px" }))
+    ).toThrow(/draws no focus outline/);
+  });
+
+  it("measures an inset ring, whose reach is negative", () => {
+    expect(
+      ringClippers(control({ outlineStyle: "solid", outlineWidth: "2px", outlineOffset: "-4px" }))
+    ).toEqual([]);
+  });
+});
 ```
 
 `packages/ui/src/organisms/quote-panel/quote-panel.stories.tsx`:
@@ -3370,12 +3417,12 @@ export { QuotePanel, type QuotePanelProps } from "./organisms/quote-panel/quote-
 - [ ] **Step 8: Format, gate, commit**
 
 ```bash
-pnpm exec prettier --write packages/ui/src/organisms/quote-panel packages/ui/src/lib/story-ring.ts packages/design-tokens/tokens/component/quote-panel.json packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
+pnpm exec prettier --write packages/ui/src/organisms/quote-panel packages/ui/src/lib/story-ring.ts packages/ui/src/lib/story-ring.spec.ts packages/design-tokens/tokens/component/quote-panel.json packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
 pnpm nx lint @pink-paprikaa-web/ui --fix --skip-nx-cache >/dev/null
 pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
-git add packages/design-tokens/tokens/component/quote-panel.json packages/ui/src/organisms/quote-panel packages/ui/src/lib/story-ring.ts packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
+git add packages/design-tokens/tokens/component/quote-panel.json packages/ui/src/organisms/quote-panel packages/ui/src/lib/story-ring.ts packages/ui/src/lib/story-ring.spec.ts packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
 git commit -m "feat(ui): add the QuotePanel organism
 
 The calculators' estimate panel in three tones — brand with the diamond,
@@ -3463,6 +3510,11 @@ describe("OrderTracker", () => {
   it("clamps a current index past the end to the last step", () => {
     render(<OrderTracker steps={STEPS} current={7} code="PPK-4821" />);
     expect(screen.getByRole("heading", { level: 2, name: "Ready for pickup" })).toBeInTheDocument();
+  });
+
+  it("clamps a negative current index to the first step", () => {
+    render(<OrderTracker steps={STEPS} current={-1} code="PPK-4821" />);
+    expect(screen.getByRole("heading", { level: 2, name: "Order in" })).toBeInTheDocument();
   });
 
   it("renders no empty heading and no empty step list when there are no steps", async () => {
@@ -3710,7 +3762,7 @@ export function OrderTracker({
 - [ ] **Step 4: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- order-tracker 2>&1 | tail -8`
-Expected: PASS (12 tests).
+Expected: PASS (13 tests).
 
 - [ ] **Step 5: Stories (card parity with `OrderTracker.card.html`)**
 
@@ -3757,12 +3809,12 @@ const meta = {
   },
   decorators: [
     // The flush tracker fills a phone screen; the card sits on a page at its own width, so the
-    // 340px frame would cut its edge.
+    // 340px frame would cut its edge. The frame shrinks to the 328px a 360 canvas leaves.
     (Story, { args }) =>
       args.variant === "card" ? (
         <Story />
       ) : (
-        <div className="flex h-165 w-85 flex-col overflow-hidden rounded-lg border border-border-subtle">
+        <div className="flex h-165 w-full max-w-85 flex-col overflow-hidden rounded-lg border border-border-subtle">
           <Story />
         </div>
       ),
@@ -3829,7 +3881,12 @@ export const DeliverySteps: Story = {
 export const Mobile: Story = {
   args: { current: 1 },
   globals: VIEWPORT_360,
-  play: proveActionRingWhole,
+  play: async (context) => {
+    await expect(context.canvasElement.scrollWidth).toBeLessThanOrEqual(
+      context.canvasElement.clientWidth
+    );
+    await proveActionRingWhole(context);
+  },
 };
 ```
 
