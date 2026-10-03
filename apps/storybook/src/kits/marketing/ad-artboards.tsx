@@ -75,7 +75,7 @@ export function DishStory({ hasSafeArea = false }: StoryArtboardProps) {
           <SocialHeadline size="body" measure="wide" as="p">
             Charred paneer, burnt garlic rice, pickled slaw.
           </SocialHeadline>
-          <PriceTag amount={420} size="canvas" tone="inverse" />
+          <PriceTag amount={420} size="canvas" color="inverse" />
           <LogoLockup tone="white" size="md" className="mt-3" />
         </div>
       </div>

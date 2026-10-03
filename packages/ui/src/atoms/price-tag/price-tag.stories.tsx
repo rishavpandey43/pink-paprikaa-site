@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The only correct way to render a price: `₹` with no space, no decimals on whole rupees, Indian digit grouping, an en-dash range (`to`), the original struck through (`was`). `tone="inverse"` on pink or ink panels — though `ink` already follows the surface. `size="canvas"` (56px) prints a price on a 1080px artboard. Never hand-write a price string. A struck price must be higher than the price, and a range must run upwards: anything else throws. The size sits on the tag and the parts are relative to it, so one text class also scales the whole price.',
+          'The only correct way to render a price: `₹` with no space, no decimals on whole rupees, Indian digit grouping, an en-dash range (`to`), the original struck through (`was`). `color="inverse"` on pink or ink panels — though `neutral` already follows the surface. `size="canvas"` (56px) prints a price on a 1080px artboard. Never hand-write a price string. A struck price must be higher than the price, and a range must run upwards: anything else throws. The size sits on the tag and the parts are relative to it, so one text class also scales the whole price.',
       },
     },
   },
@@ -49,20 +49,20 @@ export const Sizes: Story = {
   ),
 };
 
-export const Inverse: Story = {
-  name: "tone",
+export const Colors: Story = {
+  name: "color",
   render: () => (
     <div className="grid gap-4">
       <div className="flex flex-wrap items-baseline gap-6">
-        <PriceTag amount={280} was={320} tone="ink" />
-        <PriceTag amount={280} was={320} tone="brand" />
+        <PriceTag amount={280} was={320} color="neutral" />
+        <PriceTag amount={280} was={320} color="brand" />
       </div>
       <div
         data-surface="brand"
         className="flex flex-wrap items-baseline gap-6 rounded-lg bg-surface-brand p-4"
       >
-        <PriceTag amount={280} tone="inverse" size="lg" />
-        <PriceTag amount={240} was={320} tone="inverse" />
+        <PriceTag amount={280} color="inverse" size="lg" />
+        <PriceTag amount={240} was={320} color="inverse" />
       </div>
     </div>
   ),
@@ -78,6 +78,10 @@ export const Canvas: Story = {
       <PriceTag amount={180} to={320} size="canvas" />
     </div>
   ),
+};
+
+export const Sx: Story = {
+  render: () => <PriceTag amount={280} was={320} sx={{ mt: 4, gap: 4 }} />,
 };
 
 export const OnSurfacesStory: Story = {

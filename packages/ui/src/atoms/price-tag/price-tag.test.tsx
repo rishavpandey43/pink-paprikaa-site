@@ -73,11 +73,11 @@ describe("PriceTag", () => {
   });
 
   it.each([
-    ["ink", "text-text-heading"],
+    ["neutral", "text-text-heading"],
     ["brand", "text-text-brand"],
     ["inverse", "text-text-on-inverse"],
-  ] as const)("paints tone %s with %s", (tone, colour) => {
-    render(<PriceTag amount={280} tone={tone} />);
+  ] as const)("paints color %s with %s", (color, colour) => {
+    render(<PriceTag amount={280} color={color} />);
     expect(screen.getByText("₹280")).toHaveClass(colour);
   });
 
@@ -86,6 +86,13 @@ describe("PriceTag", () => {
     const tag = screen.getByText("₹280").parentElement;
     expect(tag).toHaveClass("text-canvas-h2");
     expect(tag).not.toHaveClass("text-price-md");
+  });
+
+  it("sx lands on the root and beats its own gap", () => {
+    render(<PriceTag amount={280} sx={{ mt: 4, gap: 4 }} />);
+    const tag = screen.getByText("₹280").parentElement;
+    expect(tag).toHaveClass("mt-4", "gap-4");
+    expect(tag?.className).not.toMatch(/\bgap-2\b/);
   });
 
   it("has no accessibility violations", async () => {

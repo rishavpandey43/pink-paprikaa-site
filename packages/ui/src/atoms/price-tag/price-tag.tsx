@@ -1,9 +1,10 @@
-import type { ComponentProps } from "react";
-
 import { formatRupeeRange, formatRupees } from "@pink-paprikaa-web/utils";
+
+import type { BasePropsWithColor } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
 import { assertStruckAbove, StruckPrice } from "../../lib/struck-price";
+import { withSx } from "../../lib/sx";
 
 /** Size on the tag, amount and struck price in em — one class scales the whole price. */
 const priceTag = componentVariants({
@@ -19,16 +20,16 @@ const priceTag = componentVariants({
       lg: { root: "text-price-lg" },
       canvas: { root: "text-price-canvas" },
     },
-    tone: {
-      ink: { amount: "text-text-heading" },
+    color: {
+      neutral: { amount: "text-text-heading" },
       brand: { amount: "text-text-brand" },
       inverse: { amount: "text-text-on-inverse" },
     },
   },
-  defaultVariants: { size: "md", tone: "ink" },
+  defaultVariants: { size: "md", color: "neutral" },
 });
 
-export interface PriceTagProps extends ComponentProps<"span"> {
+export interface PriceTagProps extends BasePropsWithColor<"span"> {
   /** Whole rupees. */
   amount: number;
   /** The original price, struck through. Must be higher than the price it replaces. */
@@ -37,8 +38,8 @@ export interface PriceTagProps extends ComponentProps<"span"> {
   to?: number | undefined;
   /** sm 14 · md 17 · lg 22px · canvas 56px (1080px artboards); a text class also scales the tag. = "md" */
   size?: "sm" | "md" | "lg" | "canvas" | undefined;
-  /** `inverse` on pink or ink panels (`ink` already follows the surface). = "ink" */
-  tone?: "ink" | "brand" | "inverse" | undefined;
+  /** `inverse` on pink or ink panels (`neutral` already follows the surface). = "neutral" */
+  color?: "neutral" | "brand" | "inverse" | undefined;
 }
 
 /**
@@ -51,15 +52,16 @@ export function PriceTag({
   was,
   to,
   size = "md",
-  tone = "ink",
+  color = "neutral",
+  sx,
   className,
   ...props
 }: PriceTagProps) {
   assertStruckAbove("PriceTag", was, to ?? amount);
-  const styles = priceTag({ size, tone });
+  const styles = priceTag({ size, color });
 
   return (
-    <span className={styles.root({ className })} {...props}>
+    <span className={styles.root({ className: withSx(sx, className) })} {...props}>
       <span className={styles.amount()}>
         {to === undefined ? formatRupees(amount) : formatRupeeRange(amount, to)}
       </span>
