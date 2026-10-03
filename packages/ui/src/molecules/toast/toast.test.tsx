@@ -1,7 +1,7 @@
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Heart } from "lucide-react";
-import { useState } from "react";
+import { createRef, useState } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 
@@ -323,5 +323,46 @@ describe("Toast", () => {
       </ToastProvider>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("forwards id, data-*, aria-* and ref to its root, and takes sx", () => {
+    const ref = createRef<HTMLLIElement>();
+    render(
+      <ToastProvider>
+        <Toast
+          ref={ref}
+          id="added"
+          data-section="cart"
+          aria-describedby="hint"
+          sx={{ mt: 4 }}
+          className="italic"
+        >
+          Added to your order.
+        </Toast>
+      </ToastProvider>
+    );
+    expect(ref.current).toBeInstanceOf(HTMLLIElement);
+    expect(ref.current).toHaveAttribute("id", "added");
+    expect(ref.current).toHaveAttribute("data-section", "cart");
+    expect(ref.current).toHaveAttribute("aria-describedby", "hint");
+    expect(ref.current).toHaveClass("mt-4", "italic");
+  });
+
+  it("calls a caller's onFocus and onBlur alongside its own focus tracking", async () => {
+    const user = userEvent.setup();
+    const onFocus = vi.fn();
+    const onBlur = vi.fn();
+    render(
+      <ToastProvider>
+        <Toast onFocus={onFocus} onBlur={onBlur} action={{ ...VIEW_CART, onClick: vi.fn() }}>
+          Added to your order.
+        </Toast>
+        <button type="button">Elsewhere</button>
+      </ToastProvider>
+    );
+    await user.click(screen.getByRole("button", { name: "View Cart" }));
+    expect(onFocus).toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: "Elsewhere" }));
+    expect(onBlur).toHaveBeenCalled();
   });
 });

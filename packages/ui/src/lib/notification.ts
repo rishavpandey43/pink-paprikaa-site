@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Check, Info, TriangleAlert } from "lucide-react";
 
 import type { IconComponent } from "../atoms/icon/icon";
+import type { BaseProps } from "./common-props";
 
 export type NotificationTone = "brand" | "ink" | "success" | "danger";
 
@@ -14,7 +15,8 @@ export interface NotificationAction {
 }
 
 /** What Toast and Snackbar share (contract §5: `SnackbarProps extends Omit<ToastProps, "isPop">`). */
-export interface NotificationProps {
+/** `onPause` / `onResume` are Radix's timer callbacks here, not the media events an `<li>` types. */
+export interface NotificationProps extends Omit<BaseProps<"li">, "onPause" | "onResume"> {
   open?: boolean | undefined;
   /** Shown on mount unless `false` (Radix default). */
   defaultOpen?: boolean | undefined;
@@ -25,7 +27,6 @@ export interface NotificationProps {
   action?: NotificationAction | undefined;
   /** Time on screen, ms. `Infinity` keeps it until dismissed. */
   duration?: number | undefined;
-  className?: string | undefined;
   /** One short sentence, no exclamation mark. */
   children: ReactNode;
 }

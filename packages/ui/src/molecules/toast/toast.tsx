@@ -6,12 +6,14 @@ import { Toast as RadixToast } from "radix-ui";
 import { useRef } from "react";
 
 import { Icon } from "../../atoms/icon/icon";
+import { assignRef } from "../../lib/assign-ref";
 import { componentVariants } from "../../lib/component-variants";
 import {
   NOTIFICATION_ICON,
   NOTIFICATION_SURFACE,
   type NotificationProps,
 } from "../../lib/notification";
+import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
 import { useFocusReturn } from "../../lib/use-focus-return";
 
@@ -95,8 +97,13 @@ export function Toast({
   action,
   isPop = false,
   duration,
+  sx,
   className,
   children,
+  ref,
+  onFocus,
+  onBlur,
+  ...props
 }: ToastProps) {
   const [isOpen, setIsOpen] = useControllableState({
     value: open,
@@ -116,15 +123,26 @@ export function Toast({
 
   return (
     <RadixToast.Root
-      ref={rootRef}
+      {...props}
+      ref={(node) => {
+        rootRef.current = node;
+        assignRef(ref, node);
+      }}
       open={isOpen}
       onOpenChange={handleOpenChange}
       // Severity picks the politeness (dev parity): a failure interrupts, a confirmation waits.
       type={tone === "danger" ? "foreground" : "background"}
       {...(duration === undefined ? {} : { duration })}
       data-surface={NOTIFICATION_SURFACE[tone]}
-      className={styles.root({ className })}
-      {...focusProps}
+      className={styles.root({ className: withSx(sx, className) })}
+      onFocus={(event) => {
+        focusProps.onFocus();
+        onFocus?.(event);
+      }}
+      onBlur={(event) => {
+        focusProps.onBlur(event);
+        onBlur?.(event);
+      }}
     >
       <Icon icon={icon ?? NOTIFICATION_ICON[tone]} size="md" />
       <RadixToast.Description className={styles.message()}>{children}</RadixToast.Description>
