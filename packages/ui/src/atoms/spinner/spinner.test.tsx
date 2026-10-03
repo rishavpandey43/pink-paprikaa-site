@@ -49,10 +49,10 @@ describe("Spinner", () => {
 
   it.each([
     ["brand", "text-pink-500"],
-    ["ink", "text-ink-900"],
+    ["neutral", "text-ink-900"],
     ["inverse", "text-ink-000"],
-  ] as const)("paints tone %s with %s", (tone, colour) => {
-    const { container } = render(<Spinner tone={tone} />);
+  ] as const)("paints color %s with %s", (color, colour) => {
+    const { container } = render(<Spinner color={color} />);
     expect(markIn(container)).toHaveClass(colour);
   });
 
@@ -60,6 +60,13 @@ describe("Spinner", () => {
     render(<Spinner className="flex" />);
     const status = screen.getByRole("status");
     expect(status).toHaveClass("flex");
+    expect(status).not.toHaveClass("inline-flex");
+  });
+
+  it("sx lands on the status and beats its own display", () => {
+    render(<Spinner sx={{ display: "flex", mt: 4 }} />);
+    const status = screen.getByRole("status");
+    expect(status).toHaveClass("flex", "mt-4");
     expect(status).not.toHaveClass("inline-flex");
   });
 
