@@ -6,9 +6,12 @@ import { X } from "lucide-react";
 import { Dialog as DialogPrimitive } from "radix-ui";
 import { useRef } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
+
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 const dialog = componentVariants({
   slots: {
@@ -41,6 +44,7 @@ const dialog = componentVariants({
 
 export interface DialogProps
   extends
+    Omit<BaseProps<"div">, "title" | "children">,
     Pick<DialogPrimitive.DialogProps, "open" | "defaultOpen" | "onOpenChange">,
     Pick<VariantProps<typeof dialog>, "variant" | "size"> {
   /**
@@ -64,8 +68,6 @@ export interface DialogProps
   hasCloseButton?: boolean | undefined;
   /** Portal target; default `document.body`. Pass a positioned frame (AppShell's overlay slot) to keep the dialog inside it. */
   portalContainer?: HTMLElement | null | undefined;
-  /** Merged onto the panel (the element with `role="dialog"`). */
-  className?: string | undefined;
 }
 
 /**
@@ -73,6 +75,9 @@ export interface DialogProps
  * or a bottom sheet with a grab handle — the app default. Radix Dialog: focus is trapped, Escape
  * and the scrim close it, focus returns to the trigger (or, without one, to what had focus when it
  * opened — see `trigger` for pointer opens), the page behind cannot scroll.
+ *
+ * The Radix root renders no element, so the native props, `ref`, `className` and `sx` all land on
+ * the panel (the element with `role="dialog"`).
  */
 export function Dialog({
   trigger,
@@ -85,20 +90,29 @@ export function Dialog({
   closeLabel = "Close",
   hasCloseButton = true,
   portalContainer = null,
+  open,
+  defaultOpen,
+  onOpenChange,
+  sx,
   className,
-  ...root
+  ...props
 }: DialogProps) {
   const slots = dialog({ variant, size });
   // Radix refocuses only its own trigger on close; without one, focus would drop to <body>.
   const returnFocusRef = useRef<HTMLElement | null>(null);
   return (
-    <DialogPrimitive.Root {...root}>
+    <DialogPrimitive.Root
+      {...(open === undefined ? {} : { open })}
+      {...(defaultOpen === undefined ? {} : { defaultOpen })}
+      {...(onOpenChange === undefined ? {} : { onOpenChange })}
+    >
       {trigger ? <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger> : null}
       <DialogPrimitive.Portal container={portalContainer}>
         <DialogPrimitive.Overlay className={slots.overlay()}>
           <DialogPrimitive.Content
             data-surface="light"
-            className={slots.content({ className })}
+            {...props}
+            className={slots.content({ className: withSx(sx, className) })}
             onOpenAutoFocus={() => {
               const active = document.activeElement;
               returnFocusRef.current = active instanceof HTMLElement ? active : null;

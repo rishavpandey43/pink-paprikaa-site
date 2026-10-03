@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import { createRef, useState } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { Dialog } from "./dialog";
@@ -228,5 +228,37 @@ describe("Dialog", () => {
     );
     // Scoped to the dialog: Radix hides the rest of the page (aria-hidden) while focus is trapped.
     await expectNoA11yViolations(screen.getByRole("dialog"));
+  });
+
+  it("forwards id, data-*, aria-* and ref to its panel, and takes sx", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(
+      <Dialog
+        ref={ref}
+        defaultOpen
+        title="Book a table"
+        id="booking"
+        data-section="reserve"
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    const panel = screen.getByRole("dialog", { name: "Book a table" });
+    expect(ref.current).toBe(panel);
+    expect(panel).toHaveAttribute("id", "booking");
+    expect(panel).toHaveAttribute("data-section", "reserve");
+    expect(panel).toHaveClass("mt-4", "italic");
+  });
+
+  it("still opens, names and closes through the Radix root with native props on the panel", async () => {
+    const user = userEvent.setup();
+    render(<Dialog trigger={TRIGGER} title="Book a table" data-section="reserve" />);
+    await user.click(screen.getByRole("button", { name: "Book a table" }));
+    expect(screen.getByRole("dialog", { name: "Book a table" })).toHaveAttribute(
+      "data-section",
+      "reserve"
+    );
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });
