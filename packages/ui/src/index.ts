@@ -171,6 +171,10 @@ export { HeroBanner, type HeroBannerProps } from "./organisms/hero-banner/hero-b
 export { OrderTracker, type OrderTrackerProps } from "./organisms/order-tracker/order-tracker";
 export { QuotePanel, type QuotePanelProps } from "./organisms/quote-panel/quote-panel";
 export {
+  ReviewCarousel,
+  type ReviewCarouselProps,
+} from "./organisms/review-carousel/review-carousel";
+export {
   type FooterColumn,
   type FooterItem,
   type FooterPolicy,
