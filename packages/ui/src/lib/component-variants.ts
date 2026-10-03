@@ -250,6 +250,9 @@ const SPACING = [
   "faq-section-gap",
   "faq-section-sticky",
   "quote-panel-pad",
+  "site-footer-top",
+  "site-footer-gap",
+  "site-footer-dock-clearance",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

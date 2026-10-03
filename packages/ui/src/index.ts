@@ -164,6 +164,14 @@ export { FaqSection, type FaqSectionProps } from "./organisms/faq-section/faq-se
 export { HeroBanner, type HeroBannerProps } from "./organisms/hero-banner/hero-banner";
 export { OrderTracker, type OrderTrackerProps } from "./organisms/order-tracker/order-tracker";
 export { QuotePanel, type QuotePanelProps } from "./organisms/quote-panel/quote-panel";
+export {
+  type FooterColumn,
+  type FooterItem,
+  type FooterPolicy,
+  type FooterSocialLink,
+  SiteFooter,
+  type SiteFooterProps,
+} from "./organisms/site-footer/site-footer";
 export { StatBand, type StatBandItem, type StatBandProps } from "./organisms/stat-band/stat-band";
 export {
   TestimonialWall,
