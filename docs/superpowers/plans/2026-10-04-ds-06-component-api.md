@@ -158,7 +158,8 @@ describe("withSx", () => {
 
 describe("SX_SAFELIST", () => {
   it("is declared verbatim in styles.css, so every runtime class has CSS", () => {
-    const css = readFileSync(join(import.meta.dirname, "../styles.css"), "utf8") // repo convention (brand-artwork.spec.ts);
+    // join(import.meta.dirname, …) is the repo convention (brand-artwork.spec.ts)
+    const css = readFileSync(join(import.meta.dirname, "../styles.css"), "utf8");
     for (const line of SX_SAFELIST) expect(css).toContain(`@source inline("${line}");`);
   });
 });
