@@ -51,6 +51,15 @@ export { AutoGrid, type AutoGridMin, type AutoGridProps } from "./layouts/auto-g
 export { Box, type BoxProps } from "./layouts/box/box";
 export { Cluster, type ClusterProps } from "./layouts/cluster/cluster";
 export { Container, type ContainerProps, type ContainerSize } from "./layouts/container/container";
+export {
+  Grid,
+  GridItem,
+  type GridItemProps,
+  type GridProps,
+  type GridResponsive,
+  type GridSpan,
+  type GridStart,
+} from "./layouts/grid/grid";
 export { POST_FORMATS, type PostFormat } from "./layouts/post-frame/post-formats";
 export { PostFrame, type PostFrameProps } from "./layouts/post-frame/post-frame";
 export { Section, type SectionProps } from "./layouts/section/section";
