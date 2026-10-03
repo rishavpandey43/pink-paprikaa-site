@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Clock, Flame } from "lucide-react";
+import { createRef } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { FilterBar } from "./filter-bar";
@@ -125,5 +126,26 @@ describe("FilterBar", () => {
       />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("forwards id, data-*, aria-* and ref to its root, and takes sx", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(
+      <FilterBar
+        ref={ref}
+        label="Menu category"
+        options={CATEGORIES}
+        id="filters"
+        data-section="menu"
+        aria-describedby="hint"
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    expect(ref.current).toHaveAttribute("id", "filters");
+    expect(ref.current).toHaveAttribute("data-section", "menu");
+    expect(ref.current).toHaveAttribute("aria-describedby", "hint");
+    expect(ref.current).toHaveClass("mt-4", "italic");
+    expect(ref.current).toContainElement(screen.getByRole("radiogroup"));
   });
 });

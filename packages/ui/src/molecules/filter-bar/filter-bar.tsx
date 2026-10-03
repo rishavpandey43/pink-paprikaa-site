@@ -4,11 +4,14 @@ import { Leaf } from "lucide-react";
 import { ToggleGroup } from "radix-ui";
 import { type ReactNode, useState } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
+
 import { Badge } from "../../atoms/badge/badge";
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { tagVariants } from "../../atoms/tag/tag";
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 export interface FilterOption {
   value: string;
@@ -16,7 +19,7 @@ export interface FilterOption {
   icon?: IconComponent | undefined;
 }
 
-export interface FilterBarProps {
+export interface FilterBarProps extends Omit<BaseProps<"div">, "defaultValue" | "children"> {
   /** Accessible name of the radio group, e.g. "Menu category". */
   label: string;
   options: FilterOption[];
@@ -33,7 +36,6 @@ export interface FilterBarProps {
   /** A static statement pinned after the filters, e.g. "100% Vegetarian". */
   note?: ReactNode | undefined;
   trailing?: ReactNode | undefined;
-  className?: string | undefined;
 }
 
 const filterBar = componentVariants({
@@ -68,7 +70,9 @@ export function FilterBar({
   isWrapping = false,
   note,
   trailing,
+  sx,
   className,
+  ...props
 }: FilterBarProps) {
   const [uncontrolledValue, setUncontrolledValue] = useState(
     defaultValue ?? options[0]?.value ?? ""
@@ -84,7 +88,7 @@ export function FilterBar({
   };
 
   return (
-    <div className={styles.root({ className })}>
+    <div {...props} className={styles.root({ className: withSx(sx, className) })}>
       <ToggleGroup.Root
         type="single"
         aria-label={label}
