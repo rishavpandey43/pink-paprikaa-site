@@ -1,0 +1,13 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "faq-section-gap": {
+      "$value": "clamp(28px, 4vw, 56px)",
+      "$description": "Gap between the heading column and the answers (design system FaqSection)."
+    },
+    "faq-section-sticky": {
+      "$value": "120px",
+      "$description": "Sticky offset of the heading column at lg and up — clears the compact header and its announcement bar (handoff FaqBlock)."
+    }
+  }
+}

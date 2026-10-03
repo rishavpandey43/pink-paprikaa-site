@@ -246,6 +246,8 @@ const SPACING = [
   "stat-band-gap",
   "hero-banner-y",
   "hero-banner-gap",
+  "faq-section-gap",
+  "faq-section-sticky",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];
