@@ -1,8 +1,10 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { HeadingLevel } from "../../lib/heading";
 
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { ReviewCard, type ReviewCardProps } from "../../molecules/review-card/review-card";
 import { SectionHeader } from "../../molecules/section-header/section-header";
 
@@ -16,7 +18,7 @@ const testimonialWall = componentVariants({
   },
 });
 
-export interface TestimonialWallProps extends Omit<ComponentProps<"section">, "title"> {
+export interface TestimonialWallProps extends Omit<BaseProps<"section">, "title"> {
   overline?: ReactNode;
   title: ReactNode;
   /** One sentence under the heading. */
@@ -35,12 +37,13 @@ export function TestimonialWall({
   reviews,
   variant = "default",
   headingLevel = 2,
+  sx,
   className,
   ...props
 }: TestimonialWallProps) {
   const slots = testimonialWall();
   return (
-    <section className={slots.root({ className })} {...props}>
+    <section className={slots.root({ className: withSx(sx, className) })} {...props}>
       <div className={slots.inner()}>
         <SectionHeader overline={overline} title={title} lede={lede} headingLevel={headingLevel} />
         <ul role="list" className={slots.grid()}>

@@ -1,10 +1,13 @@
-import { type ComponentProps, type ReactNode, useId } from "react";
+import { type ReactNode, useId } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { Link } from "../../atoms/link/link";
 import { Typography } from "../../atoms/typography/typography";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 import { ReviewCard, type ReviewCardProps } from "../../molecules/review-card/review-card";
 import { ReviewCarouselTrack } from "./review-carousel-track";
 
@@ -18,7 +21,7 @@ const reviewCarousel = componentVariants({
   },
 });
 
-export interface ReviewCarouselProps extends Omit<ComponentProps<"section">, "title"> {
+export interface ReviewCarouselProps extends Omit<BaseProps<"section">, "title"> {
   /** e.g. `<><Icon icon={BadgeCheck} size="sm" />4.6 on Google · 120 verified reviews</>`. */
   eyebrow?: ReactNode;
   heading: ReactNode;
@@ -46,6 +49,7 @@ export function ReviewCarousel({
   headingLevel = 2,
   previousLabel = "Previous reviews",
   nextLabel = "Next reviews",
+  sx,
   className,
   ...props
 }: ReviewCarouselProps) {
@@ -70,7 +74,7 @@ export function ReviewCarousel({
     </div>
   );
   return (
-    <section className={slots.root({ className })} {...props}>
+    <section className={slots.root({ className: withSx(sx, className) })} {...props}>
       <div className={slots.inner()}>
         {reviews.length === 0 ? (
           <>

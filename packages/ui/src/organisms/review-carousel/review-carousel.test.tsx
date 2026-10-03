@@ -155,4 +155,17 @@ describe("ReviewCarousel", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <ReviewCarousel
+        eyebrow="Verified"
+        heading={HEADING}
+        reviews={GOOGLE_REVIEWS}
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });

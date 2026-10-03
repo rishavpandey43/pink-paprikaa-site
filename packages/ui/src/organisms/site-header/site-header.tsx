@@ -1,13 +1,15 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { ChevronRight } from "lucide-react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { LinkAs } from "../../lib/link-as";
 
 import { Icon } from "../../atoms/icon/icon";
 import { Logo } from "../../atoms/logo/logo";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 import { SiteHeaderBar } from "./site-header-bar";
 import { SiteHeaderDrawer } from "./site-header-drawer";
 
@@ -60,7 +62,7 @@ const siteHeader = componentVariants({
 });
 
 export interface SiteHeaderProps
-  extends ComponentProps<"header">, Pick<VariantProps<typeof siteHeader>, "size"> {
+  extends BaseProps<"header">, Pick<VariantProps<typeof siteHeader>, "size"> {
   homeHref: string;
   /**
    * Inline nav links. Three show between lg and 2xl, all from 2xl (the rest are in the drawer).
@@ -117,6 +119,7 @@ export function SiteHeader({
   menuLabel = "Menu",
   closeMenuLabel = "Close menu",
   portalContainer = null,
+  sx,
   className,
   ...props
 }: SiteHeaderProps) {
@@ -124,7 +127,7 @@ export function SiteHeader({
   const hasHiddenLinks = links.length > INLINE_LINKS_BELOW_2XL;
   const hasDrawer = drawerLinks.length > 0 || isShown(drawerActions);
   return (
-    <header className={slots.root({ className })} {...props}>
+    <header className={slots.root({ className: withSx(sx, className) })} {...props}>
       <a href={skipLinkHref} className={slots.skipLink()}>
         {skipLinkLabel}
       </a>

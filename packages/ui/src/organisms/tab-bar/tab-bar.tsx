@@ -1,9 +1,9 @@
-import type { ComponentProps } from "react";
-
+import type { BaseProps } from "../../lib/common-props";
 import type { LinkAs } from "../../lib/link-as";
 
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 export interface TabBarItem {
   value: string;
@@ -34,7 +34,7 @@ const tabBar = componentVariants({
   },
 });
 
-export interface TabBarProps extends ComponentProps<"nav"> {
+export interface TabBarProps extends BaseProps<"nav"> {
   /** Four or five destinations, never more. */
   items: TabBarItem[];
   value: string;
@@ -55,12 +55,18 @@ export function TabBar({
   onValueChange,
   linkAs: LinkComponent = "a",
   label = "Primary",
+  sx,
   className,
   ...props
 }: TabBarProps) {
   const slots = tabBar();
   return (
-    <nav aria-label={label} data-surface="light" className={slots.root({ className })} {...props}>
+    <nav
+      aria-label={label}
+      data-surface="light"
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       <ul className={slots.list()}>
         {items.map((item) => {
           const isActive = item.value === value;

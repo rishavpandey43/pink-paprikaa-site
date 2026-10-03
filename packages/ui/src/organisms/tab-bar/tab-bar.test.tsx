@@ -103,4 +103,11 @@ describe("TabBar", () => {
     const { container } = render(<TabBar items={ITEMS} value="cart" />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <TabBar items={ITEMS} value="home" sx={{ mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });

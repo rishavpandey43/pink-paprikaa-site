@@ -298,4 +298,11 @@ describe("SiteHeader", () => {
     await user.click(screen.getByRole("button", { name: "Menu" }));
     await expectNoA11yViolations(screen.getByRole("dialog"));
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <SiteHeader homeHref="#home" links={LINKS} sx={{ mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });
