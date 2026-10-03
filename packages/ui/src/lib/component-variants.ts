@@ -104,6 +104,7 @@ const TEXT = [
   "link-card-title-lg",
   "sticky-action-bar-amount",
   "table-head",
+  "quote-panel-amount",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -248,6 +249,7 @@ const SPACING = [
   "hero-banner-gap",
   "faq-section-gap",
   "faq-section-sticky",
+  "quote-panel-pad",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];
