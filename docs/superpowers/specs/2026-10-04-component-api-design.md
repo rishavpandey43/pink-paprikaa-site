@@ -129,6 +129,20 @@ mono` + new `link-sm link-md link-lg`, the link text styles, like MUI's `button`
 | SpeedDial             | molecule | SpeedDial      | Fab that fans out actions                                                                                       |
 | DatePicker + Calendar | molecule | X DatePicker   | `react-day-picker` (one new dependency), styled with tokens only                                                |
 
+### 6.1 No native popups (owner, 2026-10-04)
+
+Every popup is ours, never the browser's or the OS's. This **supersedes spec 2026-09-27 D7** for Select and
+dates, whose own deferral row said to revisit "when a searchable/multi select is designed" (Combobox).
+
+| Control | Before                                                       | After                                                                                                                                                          |
+| ------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Select  | Native `<select>`: styled box, but the open list is the OS's | Radix Select in the same field box. Our panel, items, check mark, typeahead and scroll. A hidden native select keeps form posts working. RHF via `Controller`. |
+| Dates   | Native `<input type="date">` (enquiry form)                  | `DatePicker` (react-day-picker grid, token-styled)                                                                                                             |
+
+Native inputs that never open a popup stay native and restyled: Checkbox, Radio, Switch, Slider. Forms keep
+`noValidate`, so the browser's validation bubbles never show. Trade-off accepted: on phones a custom list
+replaces the OS wheel.
+
 ## 7. Quality bar (unchanged, binding)
 
 Tests first, by role and label, every variant, keyboard paths, empty slots, and

@@ -39,7 +39,7 @@
 - Work task by task in order. Each task ends green (its tests + the listed gate) and committed before the next starts.
 - **Ledger:** append one line per finished task to `.superpowers/sdd/2026-10-04-ds-06-mui-gaps/progress.md`: `Task N: done <first-sha>..<last-sha> (ui X, sb Y)`. If you must decide something the plan doesn't, add `Ruling: <decision> — <why> — <cost if wrong>` and continue.
 - **Interrupted?** Run `git status` and read the last ledger line. Uncommitted files are a previous run's partial work: finish them, never delete them.
-- **Batch gate** (after Tasks 5, 9, 12, 13 and 16): `pnpm nx run-many -t typecheck lint test build && pnpm nx format:check && pnpm nx sync:check && pnpm nx run storybook:test && pnpm guard:founder`
+- **Batch gate** (after Tasks 5, 9, 12, 13, 15c and 16): `pnpm nx run-many -t typecheck lint test build && pnpm nx format:check && pnpm nx sync:check && pnpm nx run storybook:test && pnpm guard:founder`
 - **Per-component commands:** `pnpm nx test ui -- <name>` (unit) · `pnpm nx run storybook:test -- <name>.stories` (plays).
 - **Review:** after each batch gate, review the batch diff against the spec and this task list (self-review, or a reviewer agent if available): props as specified, no visual change, tests present. Fix Critical/Important findings at once. Collect Minor ones in `.superpowers/sdd/2026-10-04-ds-06-mui-gaps/minors.md` and fix them in Task 17.
 
@@ -1143,6 +1143,144 @@ Write the stubs out. Run → FAIL.
 
 ---
 
+### Task 15b: Select becomes our own dropdown (no OS list)
+
+**Why:** spec 2026-09-27 D7 chose the platform `<select>`, and its deferral row said to revisit "when a searchable/multi select is designed". Combobox (Task 15) meets that condition. The owner wants every popup to be ours: today the closed box is styled, but the open list is the OS's (an iOS wheel, an Android sheet, a grey desktop list). Spec 2026-10-04 §6 records this.
+
+**Files:**
+- Modify: `packages/ui/src/atoms/select/select.{tsx,test.tsx,stories.tsx}`
+- Modify: `packages/design-tokens/tokens/component/select.json` (create if missing) + `lib/component-variants.ts` for any new token class
+- Modify: `apps/storybook/src/patterns/enquiry-form.tsx` (the `occasion` field: `register` → `Controller`)
+- Modify: `packages/ui/AUTHORING.md` (one line in the Shared API section: "Select is Radix Select; RHF via Controller")
+
+**Interfaces (the public API stays the same, except the change event):**
+```ts
+export interface SelectOption { value: string; label: string; isDisabled?: boolean | undefined }
+export interface SelectProps extends Omit<ComponentProps<"button">, "value" | "defaultValue" | "onChange" | "color"> {
+  options: SelectOption[];
+  value?: string | undefined; defaultValue?: string | undefined;
+  onValueChange?: ((value: string) => void) | undefined;   // replaces the native onChange event
+  name?: string | undefined;                               // Radix renders a hidden native select with it: form posts still work
+  placeholder?: string | undefined;
+  size?: "sm" | "md" | "lg" | undefined;
+  status?: FieldStatus | undefined;
+  icon?: IconComponent | undefined;
+  readOnly?: boolean | undefined;                          // unchanged meaning: readable, not changeable, still posts
+  disabled?: boolean | undefined; required?: boolean | undefined;
+  portalContainer?: HTMLElement | null | undefined;        // AppShell overlay slot, like Dialog
+  sx?: Sx | undefined;
+}
+```
+**Ruling (pre-made):** `register()` spreads a native `onChange`/`ref` that expects a `<select>` element. Radix Select's trigger is a button, so RHF uses `Controller` for Select from now on (the same contract as ChipGroup and QuantityStepper). Cost if wrong: one Controller per Select in forms.
+
+- [ ] **Step 1: Failing tests** (add to `select.test.tsx`; keep the existing status/size/readOnly/placeholder cases, rewritten for the trigger):
+
+```tsx
+const OUTLETS = [
+  { value: "sector-57", label: "Sector 57" },
+  { value: "mkm", label: "MKM Market" },
+  { value: "closed", label: "Golf Course Road (opening soon)", isDisabled: true },
+];
+it("opens our own listbox, not a native select", async () => {
+  const user = userEvent.setup();
+  render(<Select aria-label="Outlet" options={OUTLETS} placeholder="Choose an outlet" />);
+  expect(document.querySelector("select:not([aria-hidden])")).toBeNull(); // no visible native select
+  const trigger = screen.getByRole("combobox", { name: "Outlet" });
+  expect(trigger).toHaveTextContent("Choose an outlet");
+  await user.click(trigger);
+  expect(screen.getByRole("listbox")).toBeVisible();
+  expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual(["Sector 57", "MKM Market", "Golf Course Road (opening soon)"]);
+});
+it("keyboard: Enter opens, arrows move (skipping disabled), Enter selects, focus returns", async () => {
+  const user = userEvent.setup(); const onValueChange = vi.fn();
+  render(<Select aria-label="Outlet" options={OUTLETS} onValueChange={onValueChange} />);
+  const trigger = screen.getByRole("combobox", { name: "Outlet" });
+  trigger.focus();
+  await user.keyboard("{Enter}{ArrowDown}{Enter}");
+  expect(onValueChange).toHaveBeenCalledWith("mkm");
+  expect(trigger).toHaveTextContent("MKM Market");
+  expect(trigger).toHaveFocus();
+});
+it("typeahead jumps to the matching option", async () => { /* focus trigger, Enter, type "m" → MKM Market highlighted (data-highlighted) */ });
+it("disabled options cannot be chosen", async () => { /* click the opening-soon option → onValueChange not called, aria-disabled="true" */ });
+it("posts its value through a hidden native select (form submit)", () => {
+  render(<form data-testid="f"><Select aria-label="Outlet" name="outlet" options={OUTLETS} defaultValue="sector-57" /></form>);
+  expect(new FormData(screen.getByTestId("f") as HTMLFormElement).get("outlet")).toBe("sector-57");
+});
+it("readOnly shows the value, cannot open, and still posts", async () => { /* trigger aria-readonly or data-readonly, click → no listbox, FormData has value */ });
+it("status=error sets aria-invalid and the danger border on the trigger", () => {});
+it("takes sx on its outermost element", () => {});
+it("is accessible closed and open", async () => { /* expectNoA11yViolations(container) closed; open; expectNoA11yViolations(document.body) */ });
+```
+Write the stubbed tests out fully in the same style. Run `pnpm nx test ui -- select` → FAIL.
+
+- [ ] **Step 2: Implement with `Select as RadixSelect` from `radix-ui`.**
+  - **Trigger:** keep `FieldControl` (same heights, radius, status colours, glyphs, read-only lock, chevron affordance), so the closed state is pixel-identical to today. The trigger replaces the native select inside FieldControl's render prop: `RadixSelect.Trigger` with `controlClassName`, `aria-invalid` when status is error, and `RadixSelect.Value placeholder={placeholder}`.
+  - **readOnly:** Radix has no read-only mode. Render the trigger with `disabled` for the interaction, keep FieldControl's `isReadOnly` styling (readable, not greyed), and keep today's hidden `<input type="hidden" name value>` so it still posts. Mark it `aria-readonly="true"` via a `data-readonly` wrapper note in the JSDoc.
+  - **Content:** `RadixSelect.Portal container={portalContainer}` → `RadixSelect.Content position="popper" sideOffset={4} collisionPadding={16}` with the shared panel look (`bg-surface-card border-default border-border-subtle rounded-lg shadow-3 z-overlay`), `min-w-(--radix-select-trigger-width)`, and `max-h-(--radix-select-content-available-height)` with `RadixSelect.Viewport` scrolling. If the `(--x)` shorthand is banned by the lint (RULES: no `(--x)` shorthand), add two `@utility` rules in styles.css instead (`select-min-trigger`, `select-max-available`) and register them.
+  - **Item:** `RadixSelect.Item` = 44px min height, `px-3 py-2.5 text-body-sm`, `data-highlighted:bg-surface-brand-soft`, `data-disabled:text-ink-400 data-disabled:cursor-not-allowed`, `RadixSelect.ItemText`, plus `RadixSelect.ItemIndicator` with the Icon atom `Check` (18px, `text-text-brand`) at the end. Scroll buttons (`ScrollUpButton`/`ScrollDownButton`) use `ChevronUp`/`ChevronDown`.
+  - **Placeholder:** Radix shows it while the value is `undefined` (not `""`): map today's "placeholder = disabled first option" behaviour onto `RadixSelect.Value placeholder`.
+  - `name`, `required`, `disabled` and `defaultValue`/`value`/`onValueChange` pass to `RadixSelect.Root` (Radix renders the hidden native select for forms). `sx` → the FieldControl outer `className` via `withSx`.
+  - Update the JSDoc: "Our own dropdown (Radix Select) in Input's field box. Spec 2026-10-04 supersedes D7 for Select. RHF: use Controller."
+  Run → PASS.
+
+- [ ] **Step 3: Move the call sites.** `grep -rnE "<Select\b" packages apps --include=*.tsx --include=*.mdx`. Any `{...register("x")}` on a Select (today only `enquiry-form.tsx:226`, `occasion`) becomes:
+```tsx
+<Controller
+  control={control}
+  name="occasion"
+  render={({ field: rhf }) => (
+    <Select
+      {...field}
+      name={rhf.name}
+      value={rhf.value}
+      onValueChange={rhf.onChange}
+      onBlur={rhf.onBlur}
+      ref={rhf.ref}
+      options={OCCASIONS}
+      placeholder="Choose an occasion"
+      status={statusOf(errors.occasion)}
+    />
+  )}
+/>
+```
+(`field` is the Field render-prop's a11y props, as for the other fields in that file; keep the existing options constant and placeholder text.) Any `onChange={(e) => …e.target.value}` becomes `onValueChange={(v) => …v}`. Run `pnpm nx run-many -t typecheck -p @pink-paprikaa-web/ui @pink-paprikaa-web/storybook` → PASS.
+
+- [ ] **Step 4: Stories.** Keep the existing ones (sizes, statuses, readOnly, disabled, placeholder, OnSurfaces) and add: `OpenList` (play opens it and asserts `listbox` visible and the check on the selected option), `Keyboard` (play: Enter → ArrowDown ×2 → Enter → value), `LongList` (20 veg dishes; play: the list scrolls, `scrollHeight > clientHeight`), `InDialog` (inside `Dialog`, opens above the overlay), `InAppShell` (with `portalContainer`), and `Mobile360` (the list stays inside the viewport). Run `pnpm nx run storybook:test -- select.stories field.stories dialog.stories enquiry` → PASS, then the RHF pattern stories (`pnpm nx run storybook:test -- patterns`) → PASS.
+
+- [ ] **Step 5: Commit** `feat(ui): make select our own dropdown instead of the native list`.
+
+### Task 15c: The enquiry form's date uses DatePicker
+
+**Files:** Modify `apps/storybook/src/patterns/enquiry-form.tsx` (the `date` field, ~line 242), the pattern's stories/plays if they type into the date input, and the zod schema only if the value type changes.
+
+- [ ] **Step 1: Failing play.** In the enquiry-form story file, add or adjust the play: open the "Date" field, `expect(canvas.queryByDisplayValue(/\d{4}-\d{2}-\d{2}/))` is not a native `input[type=date]` (`canvasElement.querySelector('input[type="date"]')` is `null`), click the trigger, pick a day in the grid with the keyboard, and assert the trigger shows the `formatDate` text. Run `pnpm nx run storybook:test -- enquiry` → FAIL (the native input still exists).
+
+- [ ] **Step 2: Replace the field.**
+```tsx
+<Controller
+  control={control}
+  name="date"
+  render={({ field: rhf }) => (
+    <DatePicker
+      {...field}
+      name={rhf.name}
+      value={rhf.value ? new Date(`${rhf.value}T00:00:00`) : null}
+      onValueChange={(d) => rhf.onChange(d ? toIsoDate(d) : "")}
+      disabledDays={{ before: new Date() }}
+      status={statusOf(errors.date)}
+    />
+  )}
+/>
+```
+The schema keeps its ISO string (`yyyy-mm-dd`), so validation and the submitted payload don't change. `toIsoDate` comes from `@pink-paprikaa-web/ui` (export it from index.ts in Task 15 if it isn't already). Run → PASS.
+
+- [ ] **Step 3: Grep gate.** `grep -rnE 'type="(date|time|datetime-local|month|week|color)"|<select\b|<datalist' packages/ui/src apps/storybook/src --include=*.tsx | grep -vE "test|select\.tsx"` → no output (Radix's own hidden select lives in node_modules, not in our source).
+
+- [ ] **Step 4: Commit** `feat(storybook): pick the enquiry date with our date picker`.
+
+---
+
 ### Task 16: Final gate and records
 
 - [ ] **Step 1: Batch gate 5** (full) → green. Record the counts.
@@ -1159,6 +1297,6 @@ Write the stubs out. Run → FAIL.
 
 ## Self-review (planner)
 
-- **Spec coverage:** §3 sx → Task 1; §4 vocabulary → Tasks 2, 5–12; §4 native props → Task 10 (+ BaseProps in every task); §5 Typography/Link → Task 3; §6 Box/Grid → Task 4, Drawer/Popover/Menu → Task 14, Combobox/Fab/SpeedDial/DatePicker → Task 15; §7 quality → Global Constraints + gates; docs → Task 13.
+- **Spec coverage:** §3 sx → Task 1; §4 vocabulary → Tasks 2, 5–12; §4 native props → Task 10 (+ BaseProps in every task); §5 Typography/Link → Task 3; §6 Box/Grid → Task 4, Drawer/Popover/Menu → Task 14, Combobox/Fab/SpeedDial/DatePicker → Task 15; no native popups (custom Select, enquiry date) → Tasks 15b–15c; §7 quality → Global Constraints + gates; docs → Task 13.
 - **Placeholders:** some test bodies in Tasks 14–15 are named stubs with the behaviour spelled out in the comment. Each step says "write the stubs out fully in the same style", and the first test in each block is complete as the model. The Badge/StatusDot parity tests deliberately say "copy the old classes", because the exact strings must come from the code at that moment, not from this plan.
 - **Type consistency:** `withSx(sx, className)`, `Sx`, `SurfaceProp`, `SURFACE_DATA`, `SURFACE_BG`, `TypographyProps`, `BaseProps`, `BasePropsWithColor` and `SxProp` are used with the same names in every task.
