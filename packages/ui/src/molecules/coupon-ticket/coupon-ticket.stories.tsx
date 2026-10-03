@@ -102,7 +102,7 @@ export const StubFocusRingNarrow: Story = {
 /** Card row "light". */
 export const Light: Story = {
   args: {
-    tone: "light",
+    surface: "page",
     code: "CHAI20",
     headline: "20% off all chai, all week",
     terms: "Dine-in only. Till 30 Sep.",
@@ -111,7 +111,7 @@ export const Light: Story = {
 
 /** The marketing kit's ticket: artwork size, light, on a pink field, not tappable. */
 export const OnPinkArtwork: Story = {
-  args: { tone: "light", size: "lg", notch: "brand", isCopyable: false },
+  args: { surface: "page", size: "lg", notch: "brand", isCopyable: false },
   render: (args) => (
     <div data-surface="brand" className="rounded-xl bg-surface-brand p-10">
       <CouponTicket {...args} />
@@ -121,7 +121,7 @@ export const OnPinkArtwork: Story = {
 
 /** The notches are punched holes: on a tinted page `notch="tint"` keeps them from reading as blobs. */
 export const OnTintedPage: Story = {
-  args: { tone: "light", notch: "tint" },
+  args: { surface: "page", notch: "tint" },
   render: (args) => (
     <div className="bg-surface-page-alt p-8">
       <CouponTicket {...args} />

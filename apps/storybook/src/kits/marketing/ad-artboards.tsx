@@ -42,7 +42,7 @@ export function OfferStory({ hasSafeArea = false }: StoryArtboardProps) {
           </SocialHeadline>
         </div>
         <CouponTicket
-          tone="light"
+          surface="page"
           size="lg"
           notch="brand"
           isCopyable={false}

@@ -89,10 +89,10 @@ describe("CouponTicket", () => {
 
   it.each([
     ["brand", "brand"],
-    ["light", "light"],
-  ] as const)("sets the %s surface so its text follows the field", (tone, surface) => {
-    const { container } = render(<CouponTicket {...TICKET} tone={tone} />);
-    expect(container.firstElementChild).toHaveAttribute("data-surface", surface);
+    ["page", "light"],
+  ] as const)("sets the %s surface so its text follows the field", (surface, dataSurface) => {
+    const { container } = render(<CouponTicket {...TICKET} surface={surface} />);
+    expect(container.firstElementChild).toHaveAttribute("data-surface", dataSurface);
   });
 
   it("colours the punched notches to match the ground behind the ticket", () => {
@@ -128,11 +128,19 @@ describe("CouponTicket", () => {
           code="CHAI20"
           headline="20% off all chai, all week"
           terms="Dine-in only. Till 30 Sep."
-          tone="light"
+          surface="page"
           isCopyable={false}
         />
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, beating a default class and keeping className", () => {
+    const { container } = render(
+      <CouponTicket {...TICKET} sx={{ shadow: 1, mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("shadow-1", "mt-4", "italic");
+    expect(container.firstElementChild).not.toHaveClass("shadow-3");
   });
 });

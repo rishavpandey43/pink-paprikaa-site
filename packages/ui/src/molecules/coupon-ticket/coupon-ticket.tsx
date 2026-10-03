@@ -1,7 +1,9 @@
-import type { ComponentProps } from "react";
+import type { BaseProps } from "../../lib/common-props";
 
 import { Logo } from "../../atoms/logo/logo";
+import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { CouponCopyButton } from "./coupon-copy-button";
 
 const couponTicket = componentVariants({
@@ -25,9 +27,9 @@ const couponTicket = componentVariants({
     hint: "inline-flex items-center gap-1.5 text-text-muted",
   },
   variants: {
-    tone: {
+    surface: {
       brand: { root: "bg-surface-brand", stub: "bg-surface-card" },
-      light: { root: "border border-border-default bg-surface-card", stub: "bg-surface-page-alt" },
+      page: { root: "border border-border-default bg-surface-card", stub: "bg-surface-page-alt" },
     },
     size: {
       md: {
@@ -80,14 +82,14 @@ const couponTicket = componentVariants({
   },
 });
 
-export interface CouponTicketProps extends Omit<ComponentProps<"div">, "onCopy"> {
+export interface CouponTicketProps extends Omit<BaseProps<"div">, "onCopy"> {
   /** Uppercase promo code, set in Space Mono. */
   code: string;
   /** Eight words at most. */
   headline: string;
   /** Full sentences; always state the expiry. */
   terms: string;
-  tone?: "brand" | "light" | undefined;
+  surface?: "brand" | "page" | undefined;
   /** md = 560px (screens), lg = 900px (artwork). The ticket never exceeds its container. */
   size?: "md" | "lg" | undefined;
   /** Colour of the punched notches — match the ground behind the ticket. */
@@ -106,7 +108,7 @@ export function CouponTicket({
   code,
   headline,
   terms,
-  tone = "brand",
+  surface = "brand",
   size = "md",
   notch = "page",
   isCopyable = true,
@@ -114,15 +116,20 @@ export function CouponTicket({
   codeLabel = "Use code",
   copyHint = "Tap to copy",
   copiedLabel = "Copied",
+  sx,
   className,
   ...props
 }: CouponTicketProps) {
-  const styles = couponTicket({ tone, size, notch, isCopyable });
+  const styles = couponTicket({ surface, size, notch, isCopyable });
 
   return (
-    <div data-surface={tone} className={styles.root({ className })} {...props}>
+    <div
+      data-surface={SURFACE_DATA[surface]}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       <div className={styles.main()}>
-        <Logo color={tone === "brand" ? "inverse" : "brand"} className={styles.logo()} />
+        <Logo color={surface === "brand" ? "inverse" : "brand"} className={styles.logo()} />
         <p className={styles.headline()}>{headline}</p>
         <p className={styles.terms()}>{terms}</p>
       </div>
