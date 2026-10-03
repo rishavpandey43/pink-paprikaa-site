@@ -1388,7 +1388,7 @@ const heroBanner = componentVariants({
   slots: {
     root: "relative",
     pattern: "absolute inset-0",
-    inner: "gap-hero-banner-gap py-hero-banner-y relative container-page grid items-center",
+    inner: "relative container-page grid items-center gap-hero-banner-gap py-hero-banner-y",
     copy: "flex min-w-0 flex-col gap-5",
     badges: "flex flex-wrap gap-2",
     actions: "flex flex-wrap gap-3",
