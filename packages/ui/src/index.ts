@@ -168,6 +168,7 @@ export { CtaBand, type CtaBandProps } from "./organisms/cta-band/cta-band";
 export { Dialog, type DialogProps } from "./organisms/dialog/dialog";
 export { FaqSection, type FaqSectionProps } from "./organisms/faq-section/faq-section";
 export { HeroBanner, type HeroBannerProps } from "./organisms/hero-banner/hero-banner";
+export { MenuList, type MenuListItem, type MenuListProps } from "./organisms/menu-list/menu-list";
 export { OrderTracker, type OrderTrackerProps } from "./organisms/order-tracker/order-tracker";
 export { QuotePanel, type QuotePanelProps } from "./organisms/quote-panel/quote-panel";
 export {
