@@ -22,7 +22,7 @@ export function pendingFacts(value: unknown, path = ""): string[] {
 }
 
 function fact(value: string | number | null): ReactNode {
-  return value ?? <Badge tone="danger">{OWNER_TO_SUPPLY}</Badge>;
+  return value ?? <Badge color="danger">{OWNER_TO_SUPPLY}</Badge>;
 }
 
 function percent(rate: number): string {

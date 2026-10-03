@@ -54,7 +54,7 @@ export interface OrderTrackerProps
   paymentLabel?: string | undefined;
   /** The step list's accessible name. */
   progressLabel?: string | undefined;
-  /** The status chip in the header, e.g. `<Badge tone="ink">Preparing</Badge>`. */
+  /** The status chip in the header, e.g. `<Badge color="neutral" variant="solid">Preparing</Badge>`. */
   badge?: ReactNode;
   /** Usually one full-width secondary Button ("Back to Home"). */
   action?: ReactNode;

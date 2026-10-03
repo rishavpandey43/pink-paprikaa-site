@@ -88,7 +88,7 @@ const HANDOFF = {
     </AnnouncementBar>
   ),
   badge: (
-    <Badge tone="success">
+    <Badge color="success">
       <DietMark size="sm" />
       Pure Veg
     </Badge>

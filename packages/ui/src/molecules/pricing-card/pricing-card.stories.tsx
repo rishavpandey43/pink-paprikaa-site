@@ -91,7 +91,11 @@ export const HomePlates: Story = {
       <PricingCard
         variant="featured"
         name="Classic"
-        tag={<Badge tone="brand">Launch price</Badge>}
+        tag={
+          <Badge color="brand" variant="solid">
+            Launch price
+          </Badge>
+        }
         price={130}
         unit="a meal"
         blurb={PLATE_POINTS.classic.join(" · ")}
@@ -122,7 +126,7 @@ export const HomelyPlates: Story = {
       <PricingCard
         variant="flooded"
         badge={
-          <Badge tone="ink" icon={Star}>
+          <Badge color="neutral" variant="solid" icon={Star}>
             Our recommendation
           </Badge>
         }
@@ -172,7 +176,7 @@ export const CateringDawats: Story = {
         {
           name: "Signature Dawat",
           price: 199,
-          tag: <Badge tone="soft">Most ordered</Badge>,
+          tag: <Badge color="brand">Most ordered</Badge>,
           isFlooded: true,
           blurb: "The one we would put in front of our own family.",
           points: [
@@ -210,7 +214,11 @@ export const CateringDawats: Story = {
         {
           name: "Royal Dawat",
           price: 549,
-          tag: <Badge tone="ink">50+ guests</Badge>,
+          tag: (
+            <Badge color="neutral" variant="solid">
+              50+ guests
+            </Badge>
+          ),
           blurb: "The full evening, course by course. 50 guests and above.",
           points: [
             "Soup — Manchow, Tomato or Sweet Corn",
@@ -285,7 +293,11 @@ export const OfficePlates: Story = {
 export const LongName: Story = {
   args: {
     name: "ClassicWithDalMakhaniJeeraRiceAndGulabJamunEverySingleDay",
-    tag: <Badge tone="brand">Launch price</Badge>,
+    tag: (
+      <Badge color="brand" variant="solid">
+        Launch price
+      </Badge>
+    ),
     variant: "featured",
   },
   decorators: [

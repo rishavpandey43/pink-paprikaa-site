@@ -153,7 +153,7 @@ export const HandoffInk: Story = {
     brand: (
       <>
         <Logo tone="white" className="w-50" />
-        <Badge tone="success">
+        <Badge color="success">
           <DietMark size="sm" />
           100% Pure Veg Kitchen
         </Badge>

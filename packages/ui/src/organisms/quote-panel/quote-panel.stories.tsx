@@ -16,7 +16,7 @@ const meta = {
   args: {
     tone: "brand",
     title: "Classic · Weekday plan",
-    badge: <Badge tone="soft">Launch price</Badge>,
+    badge: <Badge color="brand">Launch price</Badge>,
     amount: "₹130",
     unit: "a meal",
     was: "₹140",

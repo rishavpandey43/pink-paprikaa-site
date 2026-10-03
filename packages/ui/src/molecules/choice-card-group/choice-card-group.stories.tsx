@@ -22,7 +22,11 @@ const PLATES: ChoiceOption[] = [
     title: "Classic",
     price: formatRupees(130),
     was: formatRupees(140),
-    badge: <Badge tone="brand">Pick</Badge>,
+    badge: (
+      <Badge color="brand" variant="solid">
+        Pick
+      </Badge>
+    ),
     description: "The full Pink Paprikaa menu. Our recommendation.",
   },
   {
@@ -173,14 +177,18 @@ export const PlanLengths: Story = {
         value: "weekday",
         title: "Weekday plan",
         description: "24 meals · Mon–Sat",
-        badge: <Badge tone="brand">Our pick</Badge>,
-        meta: <Badge tone="success">Offer: +1 free / month</Badge>,
+        badge: (
+          <Badge color="brand" variant="solid">
+            Our pick
+          </Badge>
+        ),
+        meta: <Badge color="success">Offer: +1 free / month</Badge>,
       },
       {
         value: "full",
         title: "Full month",
         description: "30 meals · every day",
-        meta: <Badge tone="success">Offer: +1 free / month</Badge>,
+        meta: <Badge color="success">Offer: +1 free / month</Badge>,
       },
     ],
   },
@@ -218,7 +226,7 @@ export const LongBadgeInNarrowTile: Story = {
         value: "weekday",
         title: "Weekday plan",
         description: "24 meals · Mon–Sat",
-        badge: <Badge tone="success">Offer: +1 free / month</Badge>,
+        badge: <Badge color="success">Offer: +1 free / month</Badge>,
       },
     ],
   },
@@ -374,7 +382,7 @@ export const TrialOnBrand: Story = {
         value: "classic",
         title: "Classic",
         badge: (
-          <Badge tone="brand" icon={Star}>
+          <Badge color="brand" variant="solid" icon={Star}>
             Recommended
           </Badge>
         ),

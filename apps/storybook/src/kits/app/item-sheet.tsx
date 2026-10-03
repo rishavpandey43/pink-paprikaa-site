@@ -77,7 +77,7 @@ export function ItemSheet({ item, portalContainer, onClose, onAdd }: ItemSheetPr
         <ImageSlot ratio="16:10" radius="lg" label="Dish photo 16:10" />
         <Cluster space={3}>
           <DietMark />
-          {item.badge === undefined ? null : <Badge tone="soft">{item.badge}</Badge>}
+          {item.badge === undefined ? null : <Badge color="brand">{item.badge}</Badge>}
           <PriceTag amount={portionPrice} was={item.was} />
           <SpiceLevel level={heat} hasLabel />
         </Cluster>

@@ -81,7 +81,7 @@ export function ReviewCard({
           <div className={styles.header()}>
             {rating === undefined ? null : <Rating value={rating} variant={mark} />}
             {isVerified ? (
-              <Badge tone="success" icon={BadgeCheck}>
+              <Badge color="success" icon={BadgeCheck}>
                 {verifiedLabel}
               </Badge>
             ) : null}

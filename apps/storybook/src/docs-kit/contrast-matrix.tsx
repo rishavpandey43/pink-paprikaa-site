@@ -28,7 +28,7 @@ export const VERDICT_LABEL: Readonly<Record<ContrastVerdict, string>> = {
   fail: "Fail",
 };
 
-const VERDICT_TONE: Readonly<Record<ContrastVerdict, NonNullable<BadgeProps["tone"]>>> = {
+const VERDICT_COLOR: Readonly<Record<ContrastVerdict, NonNullable<BadgeProps["color"]>>> = {
   pass: "success",
   exception: "warning",
   fail: "danger",
@@ -111,7 +111,7 @@ export function ContrastMatrix({ groups }: ContrastMatrixProps) {
               </TableCell>
               <TableCell className="font-mono text-mono tabular-nums">{result.min}:1</TableCell>
               <TableCell>
-                <Badge tone={VERDICT_TONE[result.verdict]}>{VERDICT_LABEL[result.verdict]}</Badge>
+                <Badge color={VERDICT_COLOR[result.verdict]}>{VERDICT_LABEL[result.verdict]}</Badge>
               </TableCell>
             </TableRow>
           ))}

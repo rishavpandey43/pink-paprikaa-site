@@ -54,7 +54,7 @@ export const WithDescription: Story = {
 export const TrailingBadge: Story = {
   args: { icon: Gift, title: "Loyalty", value: undefined },
   render: (args) => (
-    <ListRow {...args} trailing={<Badge tone="soft">4 of 6</Badge>} asChild>
+    <ListRow {...args} trailing={<Badge color="brand">4 of 6</Badge>} asChild>
       <a href="#loyalty">{/* ListRow renders its content here */}</a>
     </ListRow>
   ),

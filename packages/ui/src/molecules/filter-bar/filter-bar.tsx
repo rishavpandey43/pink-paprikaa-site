@@ -103,7 +103,7 @@ export function FilterBar({
         })}
       </ToggleGroup.Root>
       {isShown(note) ? (
-        <Badge tone="success" icon={Leaf} className={styles.note()}>
+        <Badge color="success" icon={Leaf} className={styles.note()}>
           {note}
         </Badge>
       ) : null}

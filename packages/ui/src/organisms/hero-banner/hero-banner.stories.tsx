@@ -29,7 +29,7 @@ const BLANK_PHOTOGRAPH =
   "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5'%3E%3Crect width='4' height='5' fill='white'/%3E%3C/svg%3E";
 
 const VEG_BADGE = (
-  <Badge tone="success">
+  <Badge color="success">
     <DietMark size="sm" />
     100% Pure Veg
   </Badge>
@@ -104,7 +104,9 @@ export const HandoffHome: Story = {
     overline: undefined,
     badges: (
       <>
-        <Badge tone="brand">Homely Meals by Pink Paprikaa</Badge>
+        <Badge color="brand" variant="solid">
+          Homely Meals by Pink Paprikaa
+        </Badge>
         {VEG_BADGE}
       </>
     ),
@@ -172,7 +174,9 @@ export const HandoffCatering: Story = {
     overline: undefined,
     badges: (
       <>
-        <Badge tone="ink">Pink Paprikaa Catering</Badge>
+        <Badge color="neutral" variant="solid">
+          Pink Paprikaa Catering
+        </Badge>
         {VEG_BADGE}
       </>
     ),
@@ -220,7 +224,9 @@ export const HandoffOffice: Story = {
     overline: undefined,
     badges: (
       <>
-        <Badge tone="brand">Office &amp; PG Lunch</Badge>
+        <Badge color="brand" variant="solid">
+          Office &amp; PG Lunch
+        </Badge>
         {VEG_BADGE}
       </>
     ),

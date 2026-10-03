@@ -101,7 +101,7 @@ export function WebsiteKit() {
         <SiteHeader
           homeHref="#top"
           links={NAV_LINKS}
-          badge={<Badge tone="success">Pure veg</Badge>}
+          badge={<Badge color="success">Pure veg</Badge>}
           actions={
             <>
               <IconButton icon={Search} label="Search the menu" variant="ghost" />
@@ -283,7 +283,7 @@ export function WebsiteKit() {
             <Stack space={3}>
               <Logo tone="white" className="w-50" />
               <Typography variant="body-sm">{`${brand.statement} ${brand.hours.display}.`}</Typography>
-              <Badge tone="soft" className="self-start">
+              <Badge color="brand" className="self-start">
                 {brand.vegStatement}
               </Badge>
               <Typography variant="caption">{LINES.fssai}</Typography>

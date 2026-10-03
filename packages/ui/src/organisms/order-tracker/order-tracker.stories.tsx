@@ -33,7 +33,11 @@ const meta = {
     outlet: "Sector 57, Gurgaon",
     total: 1239,
     payment: "UPI",
-    badge: <Badge tone="ink">Preparing</Badge>,
+    badge: (
+      <Badge color="neutral" variant="solid">
+        Preparing
+      </Badge>
+    ),
     action: BACK_HOME,
   },
   decorators: [
@@ -82,7 +86,16 @@ export const OrderIn: Story = { args: { current: 0 }, play: proveActionRingWhole
 export const OnTheTandoor: Story = { args: { current: 1 } };
 
 /** Card row: ready for pickup. */
-export const Ready: Story = { args: { current: 2, badge: <Badge tone="ink">Ready</Badge> } };
+export const Ready: Story = {
+  args: {
+    current: 2,
+    badge: (
+      <Badge color="neutral" variant="solid">
+        Ready
+      </Badge>
+    ),
+  },
+};
 
 export const AsCard: Story = {
   args: { variant: "card", current: 1 },

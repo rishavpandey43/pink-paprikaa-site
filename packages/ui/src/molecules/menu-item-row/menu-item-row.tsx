@@ -93,7 +93,7 @@ export function MenuItemRow({
               {nameDevanagari}
             </span>
           ) : null}
-          {badge ? <Badge tone="soft">{badge}</Badge> : null}
+          {badge ? <Badge color="brand">{badge}</Badge> : null}
         </div>
         <div className={styles.meta()}>
           <PriceTag amount={price} was={was} size="sm" />

@@ -89,7 +89,7 @@ export function MenuItemCard({
         <div className={styles.media()}>
           <ImageSlot ratio="4:3" radius="none" {...(image ?? { label: imageLabel })} />
           {badge ? (
-            <Badge tone="brand" className={styles.badge()}>
+            <Badge color="brand" variant="solid" className={styles.badge()}>
               {badge}
             </Badge>
           ) : null}

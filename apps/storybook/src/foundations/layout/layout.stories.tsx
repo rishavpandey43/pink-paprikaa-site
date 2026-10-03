@@ -246,8 +246,8 @@ export const UtilityClasses: Story = {
       <SpecimenRow label="cluster">
         <div className="cluster">
           <Badge>Bestseller</Badge>
-          <Badge tone="success">Pure veg</Badge>
-          <Badge tone="warning">Extra Hot</Badge>
+          <Badge color="success">Pure veg</Badge>
+          <Badge color="warning">Extra Hot</Badge>
         </div>
       </SpecimenRow>
       <SpecimenRow label="line-clamp-2 · text-h1-fluid">

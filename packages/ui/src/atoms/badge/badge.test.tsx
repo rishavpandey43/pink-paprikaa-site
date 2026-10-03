@@ -24,16 +24,35 @@ describe("Badge", () => {
   });
 
   it.each([
-    ["brand", "bg-badge-brand-bg", "text-badge-brand-fg"],
-    ["soft", "bg-pink-100", "text-pink-700"],
-    ["ink", "bg-ink-900", "text-ink-000"],
-    ["success", "bg-status-success-soft", "text-mint-strong"],
-    ["warning", "bg-status-warning-soft", "text-turmeric-strong"],
-    ["danger", "bg-status-danger-soft", "text-danger"],
-    ["neutral", "bg-ink-100", "text-ink-700"],
-  ] as const)("paints the %s tone with %s and %s", (tone, fill, text) => {
-    render(<Badge tone={tone}>Bestseller</Badge>);
-    expect(screen.getByText("Bestseller").parentElement).toHaveClass(fill, text);
+    [{ color: "brand", variant: "solid" }, "bg-badge-brand-bg text-badge-brand-fg"],
+    [{ color: "brand", variant: "soft" }, "bg-pink-100 text-pink-700"],
+    [{ color: "neutral", variant: "solid" }, "bg-ink-900 text-ink-000"],
+    [{ color: "neutral", variant: "soft" }, "bg-ink-100 text-ink-700"],
+    [{ color: "success", variant: "soft" }, "bg-status-success-soft text-mint-strong"],
+    [{ color: "warning", variant: "soft" }, "bg-status-warning-soft text-turmeric-strong"],
+    [{ color: "danger", variant: "soft" }, "bg-status-danger-soft text-danger"],
+  ] as const)("%o renders the old tone's classes", (props, classes) => {
+    render(<Badge {...props}>Bestseller</Badge>);
+    expect(screen.getByText("Bestseller").parentElement).toHaveClass(...classes.split(" "));
+  });
+
+  it("keeps the soft skin of a status colour whichever variant is asked for", () => {
+    render(
+      <Badge color="success" variant="solid">
+        Pure veg
+      </Badge>
+    );
+    expect(screen.getByText("Pure veg").parentElement).toHaveClass(
+      "bg-status-success-soft",
+      "text-mint-strong"
+    );
+  });
+
+  it("sx lands on the badge and beats its own padding", () => {
+    render(<Badge sx={{ px: 4, ms: 2 }}>Pick</Badge>);
+    const badge = screen.getByText("Pick").parentElement;
+    expect(badge).toHaveClass("px-4", "ms-2");
+    expect(badge).not.toHaveClass("px-2.5");
   });
 
   it("draws a 12px glyph at the heavy 2px stroke", () => {
@@ -79,8 +98,10 @@ describe("Badge", () => {
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
-        <Badge tone="brand">Bestseller</Badge>
-        <Badge tone="success" icon={Flame}>
+        <Badge color="brand" variant="solid">
+          Bestseller
+        </Badge>
+        <Badge color="success" icon={Flame}>
           100% Veg
         </Badge>
       </>
