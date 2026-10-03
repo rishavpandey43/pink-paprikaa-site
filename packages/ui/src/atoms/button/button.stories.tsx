@@ -218,6 +218,18 @@ export const FullWidth: Story = {
   ),
 };
 
+export const Sx: Story = {
+  name: "sx",
+  render: () => (
+    <div className="grid w-90 gap-2.5">
+      <Button sx={{ mt: 4 }}>Order Now</Button>
+      <Button sx={{ w: "full" }} variant="secondary">
+        See the Full Menu
+      </Button>
+    </div>
+  ),
+};
+
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (

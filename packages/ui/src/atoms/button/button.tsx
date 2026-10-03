@@ -1,13 +1,16 @@
-import type { ComponentProps, ElementType } from "react";
+import type { ElementType } from "react";
 
 import { LoaderCircle } from "lucide-react";
 import { Slot } from "radix-ui";
 
+import type { BaseProps } from "../../lib/common-props";
+
 import { componentVariants } from "../../lib/component-variants";
 import { controlStates } from "../../lib/control-states";
+import { withSx } from "../../lib/sx";
 import { Icon, type IconComponent } from "../icon/icon";
 
-export interface ButtonProps extends ComponentProps<"button"> {
+export interface ButtonProps extends BaseProps<"button"> {
   /** primary = flooded pink · secondary = pink outline · ghost = text only · inverse = ink. */
   variant?: "primary" | "secondary" | "ghost" | "inverse" | undefined;
   size?: "sm" | "md" | "lg" | undefined;
@@ -75,6 +78,7 @@ export function Button({
   asChild = false,
   disabled = false,
   type = "button",
+  sx,
   className,
   children,
   ...props
@@ -88,7 +92,7 @@ export function Button({
   const leading = isLoading ? LoaderCircle : icon;
   return (
     <Component
-      className={slots.root({ className })}
+      className={slots.root({ className: withSx(sx, className) })}
       aria-busy={isLoading || undefined}
       {...state}
       {...props}

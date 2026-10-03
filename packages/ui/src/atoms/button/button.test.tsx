@@ -219,6 +219,27 @@ describe("Button", () => {
     expect(screen.getByRole("button")).not.toHaveClass("px-5");
   });
 
+  it("sx lands on the button and replaces its own padding rather than stacking", () => {
+    render(<Button sx={{ px: 8, mt: 4 }}>Order now</Button>);
+    const button = screen.getByRole("button", { name: "Order now" });
+    expect(button).toHaveClass("px-8", "mt-4");
+    expect(button).not.toHaveClass("px-5");
+  });
+
+  it("sx lands on an asChild link", () => {
+    render(
+      <Button asChild sx={{ w: "full" }}>
+        <a href="/menu">Menu</a>
+      </Button>
+    );
+    expect(screen.getByRole("link", { name: "Menu" })).toHaveClass("w-full");
+  });
+
+  it("does not leak sx onto the DOM", () => {
+    render(<Button sx={{ mt: 4 }}>Order now</Button>);
+    expect(screen.getByRole("button")).not.toHaveAttribute("sx");
+  });
+
   it("has no accessibility violations in its default, loading, disabled and link forms", async () => {
     const { container } = render(
       <>
