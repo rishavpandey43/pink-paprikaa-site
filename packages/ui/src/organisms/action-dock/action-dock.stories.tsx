@@ -21,7 +21,7 @@ const meta = {
           <div className="h-full rounded-lg bg-surface-page-alt" />
         </div>
         <SiteFooter
-          tone="ink"
+          surface="ink"
           hasDockClearance
           columns={[
             {

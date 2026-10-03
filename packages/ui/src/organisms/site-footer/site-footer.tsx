@@ -1,5 +1,6 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { LinkAs } from "../../lib/link-as";
 
 import { IconButton } from "../../atoms/icon-button/icon-button";
@@ -7,9 +8,11 @@ import { InstagramGlyph, LinkedinGlyph, YoutubeGlyph } from "../../atoms/icon/br
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Typography } from "../../atoms/typography/typography";
+import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 export interface FooterItem {
   label: ReactNode;
@@ -62,7 +65,7 @@ const siteFooter = componentVariants({
     policyLink: "text-text-muted no-underline hover:underline",
   },
   variants: {
-    tone: {
+    surface: {
       brand: { root: "bg-surface-brand" },
       ink: { root: "bg-surface-inverse" },
     },
@@ -71,20 +74,20 @@ const siteFooter = componentVariants({
       false: { root: "pb-10" },
     },
   },
-  defaultVariants: { tone: "brand", hasDockClearance: false },
+  defaultVariants: { surface: "brand", hasDockClearance: false },
 });
 
-type FooterTone = NonNullable<VariantProps<typeof siteFooter>["tone"]>;
+type FooterSurface = NonNullable<VariantProps<typeof siteFooter>["surface"]>;
 type FooterPattern = "none" | "default" | "faint";
 
 /** The design system's pink footer is flat; the handoff's ink footer carries the 4% diamond. */
-const DEFAULT_PATTERN: Readonly<Record<FooterTone, FooterPattern>> = {
+const DEFAULT_PATTERN: Readonly<Record<FooterSurface, FooterPattern>> = {
   brand: "none",
   ink: "faint",
 };
 
 export interface SiteFooterProps
-  extends ComponentProps<"footer">, Pick<VariantProps<typeof siteFooter>, "tone"> {
+  extends BaseProps<"footer">, Pick<VariantProps<typeof siteFooter>, "surface"> {
   /** The brand block — lockup, veg chip, licence line, blurb, contact lines: whatever the app passes. */
   brand?: ReactNode;
   /** Unique by `heading` (it keys the column). A column with no items is skipped. */
@@ -109,7 +112,7 @@ export interface SiteFooterProps
  * is given — the FSSAI line, GSTIN and © come from the app's brand facts, never from here.
  */
 export function SiteFooter({
-  tone = "brand",
+  surface = "brand",
   brand,
   columns,
   social = [],
@@ -119,20 +122,25 @@ export function SiteFooter({
   pattern,
   hasDockClearance = false,
   headingLevel = 2,
+  sx,
   className,
   ...props
 }: SiteFooterProps) {
-  const slots = siteFooter({ tone, hasDockClearance });
-  const density = pattern ?? DEFAULT_PATTERN[tone];
+  const slots = siteFooter({ surface, hasDockClearance });
+  const density = pattern ?? DEFAULT_PATTERN[surface];
   const heading = headingTag(headingLevel);
   const hasBrandBlock = isShown(brand) || social.length > 0;
   const hasLegalBar = isShown(legal) || policies.length > 0;
   return (
-    <footer data-surface={tone} className={slots.root({ className })} {...props}>
+    <footer
+      data-surface={SURFACE_DATA[surface]}
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       {density === "none" ? null : (
         <PatternField
           aria-hidden
-          surface={tone}
+          surface={surface}
           tile={80}
           density={density}
           className={slots.pattern()}

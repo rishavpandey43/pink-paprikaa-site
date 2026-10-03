@@ -278,7 +278,7 @@ export function WebsiteKit() {
         </main>
 
         <SiteFooter
-          tone="brand"
+          surface="brand"
           brand={
             <Stack space={3}>
               <Logo color="inverse" className="w-50" />

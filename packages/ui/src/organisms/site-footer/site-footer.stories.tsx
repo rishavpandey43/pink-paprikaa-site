@@ -82,7 +82,7 @@ const meta = {
   title: "Organisms/SiteFooter",
   component: SiteFooter,
   args: {
-    tone: "brand",
+    surface: "brand",
     columns: DS_COLUMNS,
     brand: (
       <>
@@ -142,13 +142,13 @@ const proveRingsWhole: Story["play"] = async ({ canvas, userEvent }) => {
 
 export const Playground: Story = {};
 
-/** Card row: the full design-system footer (brand tone). */
+/** Card row: the full design-system footer (brand surface). */
 export const DesignSystemPink: Story = { play: proveRingsWhole };
 
 /** Handoff PPFooter — ink, faint diamond, contact rows with icons, dock clearance. */
 export const HandoffInk: Story = {
   args: {
-    tone: "ink",
+    surface: "ink",
     columns: HANDOFF_COLUMNS,
     brand: (
       <>

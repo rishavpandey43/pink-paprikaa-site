@@ -157,9 +157,9 @@ describe("SiteFooter", () => {
   it.each([
     ["brand", "bg-surface-brand"],
     ["ink", "bg-surface-inverse"],
-  ] as const)("sets the %s surface and paints its field", (tone, background) => {
-    render(<SiteFooter columns={COLUMNS} tone={tone} />);
-    expect(screen.getByRole("contentinfo")).toHaveAttribute("data-surface", tone);
+  ] as const)("sets the %s surface and paints its field", (surfaceName, background) => {
+    render(<SiteFooter columns={COLUMNS} surface={surfaceName} />);
+    expect(screen.getByRole("contentinfo")).toHaveAttribute("data-surface", surfaceName);
     expect(screen.getByRole("contentinfo")).toHaveClass(background);
   });
 
@@ -175,12 +175,12 @@ describe("SiteFooter", () => {
   });
 
   it("carries the faint diamond on ink by default and none on brand", () => {
-    const { container, rerender } = render(<SiteFooter columns={COLUMNS} tone="ink" />);
+    const { container, rerender } = render(<SiteFooter columns={COLUMNS} surface="ink" />);
     const layer = () => container.querySelector('footer > [aria-hidden="true"]');
     expect(layer()).toBeInTheDocument();
-    rerender(<SiteFooter columns={COLUMNS} tone="brand" />);
+    rerender(<SiteFooter columns={COLUMNS} surface="brand" />);
     expect(layer()).not.toBeInTheDocument();
-    rerender(<SiteFooter columns={COLUMNS} tone="brand" pattern="default" />);
+    rerender(<SiteFooter columns={COLUMNS} surface="brand" pattern="default" />);
     expect(layer()).toBeInTheDocument();
   });
 
@@ -195,7 +195,7 @@ describe("SiteFooter", () => {
   it("has no accessibility violations", async () => {
     const { container } = render(
       <SiteFooter
-        tone="ink"
+        surface="ink"
         columns={COLUMNS}
         brand={<p>100% Pure Veg Kitchen</p>}
         social={[
@@ -206,5 +206,12 @@ describe("SiteFooter", () => {
       />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <SiteFooter columns={COLUMNS} sx={{ mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });
