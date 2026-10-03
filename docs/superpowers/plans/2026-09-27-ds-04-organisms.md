@@ -4162,7 +4162,7 @@ const siteFooter = componentVariants({
     root: "relative",
     // A decorative layer only: the footer's own ground (or a caller's) shows through it.
     pattern: "absolute inset-0 bg-transparent",
-    grid: "gap-site-footer-gap pt-site-footer-top relative container-page grid autogrid-min-sm pb-8",
+    grid: "relative container-page grid autogrid-min-sm gap-site-footer-gap pt-site-footer-top pb-8",
     brand: "flex flex-col items-start gap-3.5",
     social: "flex gap-2",
     column: "flex min-w-0 flex-col gap-3.5",
