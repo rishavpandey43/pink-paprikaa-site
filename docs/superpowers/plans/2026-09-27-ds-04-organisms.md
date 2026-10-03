@@ -72,7 +72,7 @@ Organism-tier rules (this plan):
 
 - **Composition.** Organisms import atoms, molecules, `lib/*` and `@pink-paprikaa-web/utils`; never a layout (atomic-layering LAW — this covers the stories and tests in `src/organisms/**` too, so frames in stories use token utilities such as `w-90 h-165`, not `AppShell`). A test or story may import a sibling organism (same tier).
 - **Width and rhythm are the organism's.** Full-bleed organisms: root `<section|footer|header>` + inner `container-page`. Vertical rhythm is `section-y` unless the design system or handoff specifies a different one — then it is a component token (`py-cta-band-y`). Background is set on the root; an app that wants a tint behind a light organism passes `className="bg-surface-page-alt"`.
-- **Fields and the pattern.** An organism that paints a field sets `data-surface` on its root (brand · ink · soft · light) and a token background. The diamond is `<PatternField aria-hidden tone=… tile=… density=… className="absolute inset-0" />` as the root's first child; the content wrapper after it carries `relative` so it paints above the layer. `pattern` props use Section's vocabulary: `"none" | "default" | "faint"` (C7).
+- **Fields and the pattern.** An organism that paints a field sets `data-surface` on its root (brand · ink · soft · light) and a token background. The diamond is `<PatternField aria-hidden tone=… tile=… density=… className="absolute inset-0 bg-transparent" />` as the root's first child; the content wrapper after it carries `relative` so it paints above the layer. The layer paints no ground of its own: PatternField's root carries its tone's `bg-surface-*`, which would cover the organism's ground and hide a caller's override (`className="bg-surface-page-alt"`), so the slot adds `bg-transparent` (twMerge drops the tone background; the mask keeps its tint) and the organism's merge test asserts the layer has `bg-transparent`. `pattern` props use Section's vocabulary: `"none" | "default" | "faint"` (C7).
 - **No content (D9).** Every visible string, link, fact and price arrives through props. The only strings a component may default are accessible chrome labels (`menuLabel = "Menu"`, `previousLabel`, `closeLabel`, `skipLinkLabel`, `allLabel`, `wasLabel`), always overridable. Story fixtures hold real copy (`src/organisms/story-fixtures.ts`), never component defaults.
 - **Server-first (D6).** No `"use client"` in an organism file unless the contract marks it C (Dialog, CartPanel). An interactive corner is a separate `<organism>-<part>.tsx` client leaf that receives only serialisable props — strings, booleans, and `ReactNode` rendered by the server organism; it never receives a component or a function from it. Effects never set state synchronously (`react-hooks/set-state-in-effect` is an error): subscribe with `useSyncExternalStore`, or set state in event handlers.
 - **Links and actions.** Lists of links render through `linkAs` (default `"a"`); a single action is a slot (`action`, `actions`, `drawerActions`) the app fills with `<Button asChild><a …/></Button>`. External links a component owns (social, reviews) are plain `<a target="_blank" rel="noopener noreferrer">`.
@@ -2710,6 +2710,15 @@ describe("QuotePanel", () => {
     expect(layer()).not.toBeInTheDocument();
   });
 
+  it("merges a caller className over its own, and the diamond layer lets that ground show", () => {
+    const { container } = render(<QuotePanel {...PLAN} className="bg-surface-page-alt" />);
+    const layer = container.querySelector('section > [aria-hidden="true"]');
+    expect(screen.getByRole("region")).toHaveClass("bg-surface-page-alt");
+    expect(screen.getByRole("region")).not.toHaveClass("bg-surface-brand");
+    expect(layer).toHaveClass("bg-transparent");
+    expect(layer).not.toHaveClass("bg-surface-brand");
+  });
+
   it("renders the note, alerts, action and footnote in that order", () => {
     const { container } = render(
       <QuotePanel
@@ -2771,7 +2780,8 @@ import { type KeyValueItem, KeyValueList } from "../../molecules/key-value-list/
 const quotePanel = componentVariants({
   slots: {
     root: "p-quote-panel-pad relative overflow-hidden rounded-xl",
-    pattern: "absolute inset-0",
+    // A decorative layer only: the panel's own ground (or a caller's) shows through it.
+    pattern: "absolute inset-0 bg-transparent",
     body: "relative flex flex-col gap-4",
     header: "flex flex-wrap items-start justify-between gap-3",
     price: "flex flex-wrap items-baseline gap-x-2.5 gap-y-1",
@@ -2912,7 +2922,7 @@ export function QuotePanel({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- quote-panel 2>&1 | tail -8`
-Expected: PASS (12 tests).
+Expected: PASS (13 tests).
 
 - [ ] **Step 6: Stories (the three handoff calculators)**
 
@@ -3525,23 +3535,23 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 **Dev parity:**
 
-| Dev item                                                                         | Ruling  | Where / clause                                                      |
-| -------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------- |
-| The `contentinfo` landmark                                                       | ALREADY | test "is the page's contentinfo landmark…"                          |
-| White lockup built in                                                            | DROP    | D9 — the `brand` slot (stories pass `<Logo tone="white">`)          |
-| Floods `bg-surface-brand`                                                        | ADD     | the tone `it.each` asserts the background class                     |
-| Default columns, blurb, statement, FSSAI licence, legal entity, policies, social | DROP    | D9 — the August fake FSSAI default; Review Focus 5 test             |
-| Caller columns replace everything                                                | ALREADY | test "renders exactly what it is given…"                            |
-| Social links named, new tab, `rel`                                               | ALREADY | test "names each social link and opens it in a new tab"             |
-| Social links keep the 44px hit target                                            | ALREADY | IconButton's `::before` hit area (Plan 2a)                          |
-| Generic glyphs for the networks (AtSign, Play, Briefcase)                        | DROP    | D10 — the real brand glyphs                                         |
-| Policy links                                                                     | ALREADY | test "renders the brand block, legal lines and policy links…"       |
-| Column headings as `<p>`                                                         | DROP    | spec §9.3 — "headings not `<p>`"                                    |
-| `Link variant="inverse"`, `Divider on="brand"`                                   | DROP    | D5                                                                  |
-| Merges a caller `className`                                                      | ADD     | test "merges a caller className over its own"                       |
-| axe                                                                              | ALREADY | test "has no accessibility violations"                              |
-| Stories Default · OneColumn · OwnCopy · Smallest                                 | ALREADY | DesignSystemPink · ColumnsOnly · Playground (`brand` slot) · Mobile |
-| Story FourColumns                                                                | ADD     | `FourColumns`                                                       |
+| Dev item                                                                         | Ruling  | Where / clause                                                                             |
+| -------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------ |
+| The `contentinfo` landmark                                                       | ALREADY | test "is the page's contentinfo landmark…"                                                 |
+| White lockup built in                                                            | DROP    | D9 — the `brand` slot (stories pass `<Logo tone="white">`)                                 |
+| Floods `bg-surface-brand`                                                        | ADD     | the tone `it.each` asserts the background class                                            |
+| Default columns, blurb, statement, FSSAI licence, legal entity, policies, social | DROP    | D9 — the August fake FSSAI default; Review Focus 5 test                                    |
+| Caller columns replace everything                                                | ALREADY | test "renders exactly what it is given…"                                                   |
+| Social links named, new tab, `rel`                                               | ALREADY | test "names each social link and opens it in a new tab"                                    |
+| Social links keep the 44px hit target                                            | ALREADY | IconButton's `::before` hit area (Plan 2a)                                                 |
+| Generic glyphs for the networks (AtSign, Play, Briefcase)                        | DROP    | D10 — the real brand glyphs                                                                |
+| Policy links                                                                     | ALREADY | test "renders the brand block, legal lines and policy links…"                              |
+| Column headings as `<p>`                                                         | DROP    | spec §9.3 — "headings not `<p>`"                                                           |
+| `Link variant="inverse"`, `Divider on="brand"`                                   | DROP    | D5                                                                                         |
+| Merges a caller `className`                                                      | ADD     | test "merges a caller className over its own, and the diamond layer lets that ground show" |
+| axe                                                                              | ALREADY | test "has no accessibility violations"                                                     |
+| Stories Default · OneColumn · OwnCopy · Smallest                                 | ALREADY | DesignSystemPink · ColumnsOnly · Playground (`brand` slot) · Mobile                        |
+| Story FourColumns                                                                | ADD     | `FourColumns`                                                                              |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -3717,10 +3727,15 @@ describe("SiteFooter", () => {
     expect(screen.getByRole("contentinfo")).toHaveClass(background);
   });
 
-  it("merges a caller className over its own", () => {
-    render(<SiteFooter columns={COLUMNS} className="bg-surface-inverse" />);
+  it("merges a caller className over its own, and the diamond layer lets that ground show", () => {
+    const { container } = render(
+      <SiteFooter columns={COLUMNS} pattern="default" className="bg-surface-inverse" />
+    );
+    const layer = container.querySelector('footer > [aria-hidden="true"]');
     expect(screen.getByRole("contentinfo")).toHaveClass("bg-surface-inverse");
     expect(screen.getByRole("contentinfo")).not.toHaveClass("bg-surface-brand");
+    expect(layer).toHaveClass("bg-transparent");
+    expect(layer).not.toHaveClass("bg-surface-brand");
   });
 
   it("carries the faint diamond on ink by default and none on brand", () => {
@@ -3814,7 +3829,8 @@ const SOCIAL_GLYPH: Readonly<Record<FooterSocialLink["network"], IconComponent>>
 const siteFooter = componentVariants({
   slots: {
     root: "relative",
-    pattern: "absolute inset-0",
+    // A decorative layer only: the footer's own ground (or a caller's) shows through it.
+    pattern: "absolute inset-0 bg-transparent",
     grid: "gap-site-footer-gap pt-site-footer-top relative container-page grid autogrid-min-sm pb-8",
     brand: "flex flex-col items-start gap-3.5",
     social: "flex gap-2",
