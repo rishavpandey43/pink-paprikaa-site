@@ -87,7 +87,7 @@ export interface SiteFooterProps
   extends ComponentProps<"footer">, Pick<VariantProps<typeof siteFooter>, "tone"> {
   /** The brand block — lockup, veg chip, licence line, blurb, contact lines: whatever the app passes. */
   brand?: ReactNode;
-  /** Unique by `heading` (it keys the column). */
+  /** Unique by `heading` (it keys the column). A column with no items is skipped. */
   columns: FooterColumn[];
   /** Unique by `network` (it keys the link). */
   social?: FooterSocialLink[] | undefined;
@@ -170,6 +170,7 @@ export function SiteFooter({
           </div>
         ) : null}
         {columns.map((column) => {
+          if (column.items.length === 0) return null;
           const Column = column.items.some((item) => item.href !== undefined) ? "nav" : "div";
           return (
             <Column

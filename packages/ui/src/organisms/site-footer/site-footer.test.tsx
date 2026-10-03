@@ -51,6 +51,14 @@ describe("SiteFooter", () => {
     expect(screen.getByText("8am – 11:30pm, every day").closest("a")).toBeNull();
   });
 
+  it("skips a column with no items, heading and all", () => {
+    render(<SiteFooter columns={[...COLUMNS, { heading: "Coming soon", items: [] }]} />);
+    expect(screen.queryByRole("heading", { name: "Coming soon" })).not.toBeInTheDocument();
+    expect(screen.getByRole("contentinfo").firstElementChild?.children).toHaveLength(
+      COLUMNS.length
+    );
+  });
+
   it("renders exactly what it is given — no licence, tax, contact or social defaults", () => {
     const { container } = render(
       <SiteFooter
