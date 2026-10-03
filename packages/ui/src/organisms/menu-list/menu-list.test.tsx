@@ -246,4 +246,11 @@ describe("MenuList", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <MenuList items={MENU} title="Menu" sx={{ mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });

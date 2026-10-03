@@ -1,8 +1,10 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { HeadingLevel } from "../../lib/heading";
 
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { Accordion, type AccordionItem } from "../../molecules/accordion/accordion";
 import { SectionHeader } from "../../molecules/section-header/section-header";
 
@@ -14,7 +16,7 @@ const faqSection = componentVariants({
   },
 });
 
-export interface FaqSectionProps extends Omit<ComponentProps<"section">, "title"> {
+export interface FaqSectionProps extends Omit<BaseProps<"section">, "title"> {
   overline?: ReactNode;
   title: ReactNode;
   lede?: ReactNode;
@@ -52,12 +54,13 @@ export function FaqSection({
   isMultiple = false,
   aside,
   headingLevel = 2,
+  sx,
   className,
   ...props
 }: FaqSectionProps) {
   const slots = faqSection();
   return (
-    <section className={slots.root({ className })} {...props}>
+    <section className={slots.root({ className: withSx(sx, className) })} {...props}>
       <div className={slots.inner()}>
         <div className={slots.lead()}>
           <SectionHeader

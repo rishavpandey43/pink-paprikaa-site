@@ -117,4 +117,11 @@ describe("OrderTracker", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <OrderTracker steps={STEPS} current={1} code="PPK-4821" sx={{ mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });

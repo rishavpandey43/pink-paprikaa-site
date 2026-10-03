@@ -1,6 +1,8 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { Card } from "../../atoms/card/card";
 import { Divider } from "../../atoms/divider/divider";
@@ -8,6 +10,7 @@ import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Typography } from "../../atoms/typography/typography";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { withSx } from "../../lib/sx";
 import { StepTracker, type TrackerStep } from "../../molecules/step-tracker/step-tracker";
 
 const orderTracker = componentVariants({
@@ -34,7 +37,7 @@ const orderTracker = componentVariants({
 });
 
 export interface OrderTrackerProps
-  extends ComponentProps<"section">, Pick<VariantProps<typeof orderTracker>, "variant"> {
+  extends BaseProps<"section">, Pick<VariantProps<typeof orderTracker>, "variant"> {
   /**
    * Brand-voice steps ("Kitchen's on it."), never system status. With none there is no heading
    * and no step list; the badge, code and receipt still render.
@@ -79,6 +82,7 @@ export function OrderTracker({
   action,
   variant = "flush",
   headingLevel = 2,
+  sx,
   className,
   ...props
 }: OrderTrackerProps) {
@@ -89,7 +93,7 @@ export function OrderTracker({
   return (
     <section
       data-surface={variant === "card" ? "light" : undefined}
-      className={slots.root({ className })}
+      className={slots.root({ className: withSx(sx, className) })}
       {...props}
     >
       <PatternField surface="brand" tile={56} className={slots.header()}>

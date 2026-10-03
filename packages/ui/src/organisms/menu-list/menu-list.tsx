@@ -1,11 +1,13 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { HeadingLevel } from "../../lib/heading";
 import type { LinkAs } from "../../lib/link-as";
 
 import { Divider } from "../../atoms/divider/divider";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 import { MenuItemCard } from "../../molecules/menu-item-card/menu-item-card";
 import { type MenuItemImage, MenuItemRow } from "../../molecules/menu-item-row/menu-item-row";
 import { SectionHeader } from "../../molecules/section-header/section-header";
@@ -66,7 +68,7 @@ function dishOf({ id: _id, category: _category, ...dish }: MenuListItem) {
 }
 
 export interface MenuListProps
-  extends Omit<ComponentProps<"section">, "title">, Pick<VariantProps<typeof menuList>, "variant"> {
+  extends Omit<BaseProps<"section">, "title">, Pick<VariantProps<typeof menuList>, "variant"> {
   items: MenuListItem[];
   /** Filter order and subset; defaults to every category in the dishes, in order. "All" is always first. */
   categories?: string[] | undefined;
@@ -120,6 +122,7 @@ export function MenuList({
   getItemHref,
   linkAs = "a",
   headingLevel = 2,
+  sx,
   className,
   ...props
 }: MenuListProps) {
@@ -186,7 +189,7 @@ export function MenuList({
   }));
 
   return (
-    <section className={slots.root({ className })} {...props}>
+    <section className={slots.root({ className: withSx(sx, className) })} {...props}>
       <div className={slots.inner()}>
         {hasHeader ? (
           <SectionHeader
