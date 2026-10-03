@@ -6,7 +6,7 @@ import { SocialHeadline } from "./social-headline";
 const meta = {
   title: "Atoms/SocialHeadline",
   component: SocialHeadline,
-  args: { children: "Chai first, decisions later.", size: "hero", measure: "default" },
+  args: { children: "Chai first, decisions later.", variant: "hero", measure: "default" },
   parameters: {
     layout: "padded",
     docs: {
@@ -24,21 +24,21 @@ type Story = StoryObj<typeof meta>;
 export const Playground: Story = {};
 
 export const Overline: Story = {
-  name: 'size="overline"',
-  args: { size: "overline", className: "text-text-brand", children: "Tonight Only" },
+  name: 'variant="overline"',
+  args: { variant: "overline", className: "text-text-brand", children: "Tonight Only" },
 };
 
 export const Hero: Story = {
-  name: 'size="hero"',
-  args: { size: "hero", children: "Chai first, decisions later." },
+  name: 'variant="hero"',
+  args: { variant: "hero", children: "Chai first, decisions later." },
 };
 
 export const H1H2: Story = {
-  name: 'size="h1" · "h2"',
+  name: 'variant="h1" · "h2"',
   render: () => (
     <div className="grid gap-4">
-      <SocialHeadline size="h1">Masala Cold Brew</SocialHeadline>
-      <SocialHeadline size="h2" as="h3">
+      <SocialHeadline variant="h1">Masala Cold Brew</SocialHeadline>
+      <SocialHeadline variant="h2" as="h3">
         One kitchen. One grinder.
       </SocialHeadline>
     </div>
@@ -46,13 +46,13 @@ export const H1H2: Story = {
 };
 
 export const BodyCaption: Story = {
-  name: 'size="body" · "caption"',
+  name: 'variant="body" · "caption"',
   render: () => (
     <div className="grid gap-4">
-      <SocialHeadline size="body" measure="wide">
+      <SocialHeadline variant="body" measure="wide">
         Cold brew, jaggery, cardamom.
       </SocialHeadline>
-      <SocialHeadline size="caption" measure="wide">
+      <SocialHeadline variant="caption" measure="wide">
         Sector 57, Gurgaon · 8am – 11:30pm
       </SocialHeadline>
     </div>
@@ -63,13 +63,13 @@ export const Alignment: Story = {
   name: "align",
   render: () => (
     <div className="grid gap-4">
-      <SocialHeadline size="h2" align="start">
+      <SocialHeadline variant="h2" align="start">
         Start
       </SocialHeadline>
-      <SocialHeadline size="h2" align="center">
+      <SocialHeadline variant="h2" align="center">
         Center
       </SocialHeadline>
-      <SocialHeadline size="h2" align="end">
+      <SocialHeadline variant="h2" align="end">
         End
       </SocialHeadline>
     </div>
@@ -82,11 +82,11 @@ export const OnACanvas: Story = {
   parameters: { layout: "fullscreen" },
   render: () => (
     <div data-surface="brand" className="grid gap-8 bg-surface-brand p-18">
-      <SocialHeadline size="overline">Tonight Only</SocialHeadline>
-      <SocialHeadline size="hero" measure="tight">
+      <SocialHeadline variant="overline">Tonight Only</SocialHeadline>
+      <SocialHeadline variant="hero" measure="tight">
         Chai first, decisions later.
       </SocialHeadline>
-      <SocialHeadline size="body" measure="wide">
+      <SocialHeadline variant="body" measure="wide">
         Kadak chai and hot momos · ₹180–₹320
       </SocialHeadline>
     </div>
@@ -97,8 +97,10 @@ export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
     <OnSurfaces>
-      <SocialHeadline size="overline">Tonight Only</SocialHeadline>
-      <SocialHeadline size="body">Cold brew, jaggery, cardamom.</SocialHeadline>
+      <SocialHeadline variant="overline">Tonight Only</SocialHeadline>
+      <SocialHeadline variant="body">Cold brew, jaggery, cardamom.</SocialHeadline>
     </OnSurfaces>
   ),
 };
+
+export const Sx: Story = { args: { sx: { mt: 4, textAlign: "center" } } };

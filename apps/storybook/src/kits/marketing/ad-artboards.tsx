@@ -34,10 +34,10 @@ export function OfferStory({ hasSafeArea = false }: StoryArtboardProps) {
         style={{ padding: `${STORY_SAFE_TOP} ${CANVAS_PAD} ${STORY_SAFE_BOTTOM}` }}
       >
         <div className="flex flex-col gap-8">
-          <SocialHeadline size="overline" as="p">
+          <SocialHeadline variant="overline" as="p">
             First Order
           </SocialHeadline>
-          <SocialHeadline size="hero" measure="tight" as="h2">
+          <SocialHeadline variant="hero" measure="tight" as="h2">
             Half off, on us.
           </SocialHeadline>
         </div>
@@ -66,13 +66,13 @@ export function DishStory({ hasSafeArea = false }: StoryArtboardProps) {
           className="flex flex-1 flex-col gap-7 pt-14"
           style={{ paddingInline: CANVAS_PAD, paddingBottom: STORY_SAFE_BOTTOM }}
         >
-          <SocialHeadline size="overline" as="p">
+          <SocialHeadline variant="overline" as="p">
             On The Tandoor
           </SocialHeadline>
-          <SocialHeadline size="h1" measure="tight" as="h2">
+          <SocialHeadline variant="h1" measure="tight" as="h2">
             Tandoori Paneer Bowl
           </SocialHeadline>
-          <SocialHeadline size="body" measure="wide" as="p">
+          <SocialHeadline variant="body" measure="wide" as="p">
             Charred paneer, burnt garlic rice, pickled slaw.
           </SocialHeadline>
           <PriceTag amount={420} size="canvas" color="inverse" />
@@ -89,10 +89,10 @@ export function LinkBanner() {
     <PostFrame format="landscape" surface="soft" padding="tight" isFit>
       <div className="flex h-full items-center gap-12">
         <div className="flex min-w-0 flex-1 flex-col gap-6">
-          <SocialHeadline size="overline" as="p">
+          <SocialHeadline variant="overline" as="p">
             {brand.tagline}
           </SocialHeadline>
-          <SocialHeadline size="h2" as="h2">
+          <SocialHeadline variant="h2" as="h2">
             One kitchen. One grinder.
           </SocialHeadline>
           <LogoLockup color="brand" size="md" />
@@ -119,7 +119,7 @@ export function Leaderboard() {
       <div className="relative flex h-full items-center gap-4.5 px-4.5">
         <Logo variant="wordmark" color="inverse" className="w-35 shrink-0" />
         <Divider orientation="vertical" className="h-10" />
-        <SocialHeadline size="caption" as="p" className="min-w-0 flex-1 truncate">
+        <SocialHeadline variant="caption" as="p" className="min-w-0 flex-1 truncate">
           50% off your first order
         </SocialHeadline>
         <Button size="sm" asChild>
@@ -137,7 +137,7 @@ export function Mpu() {
       <PatternField surface="ink" tile={56} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between p-4.5">
         <Logo variant="wordmark" color="inverse" className="w-35" />
-        <SocialHeadline size="caption" as="p">
+        <SocialHeadline variant="caption" as="p">
           Chai first, decisions later.
         </SocialHeadline>
         <Button size="sm" isFullWidth asChild>

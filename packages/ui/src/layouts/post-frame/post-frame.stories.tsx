@@ -37,10 +37,10 @@ function OfferBoard() {
     <>
       <PatternField surface="brand" tile={96} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between">
-        <SocialHeadline size="overline" as="p">
+        <SocialHeadline variant="overline" as="p">
           Tonight Only
         </SocialHeadline>
-        <SocialHeadline size="hero">Chai first, decisions later.</SocialHeadline>
+        <SocialHeadline variant="hero">Chai first, decisions later.</SocialHeadline>
         <LogoLockup color="inverse" size="lg" />
         <OfferSeal value="50%" label="Off" size="lg" tone="light" corner="top-right" bleed="none" />
       </div>
@@ -54,10 +54,10 @@ function StatementBoard() {
     <>
       <PatternField surface="ink" tile={96} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between">
-        <SocialHeadline size="overline" as="p" className="text-text-brand">
+        <SocialHeadline variant="overline" as="p" className="text-text-brand">
           Since 2025
         </SocialHeadline>
-        <SocialHeadline size="hero">Desi at heart. Urban by nature.</SocialHeadline>
+        <SocialHeadline variant="hero">Desi at heart. Urban by nature.</SocialHeadline>
         <LogoLockup color="inverse" size="md" />
       </div>
     </>
@@ -114,10 +114,10 @@ export const StoryWithSafeArea: Story = {
     <div>
       <PostFrame format="story" scale={0.115} surface="brand" hasSafeArea>
         <div className="flex h-full flex-col justify-center gap-10">
-          <SocialHeadline size="overline" as="p">
+          <SocialHeadline variant="overline" as="p">
             First Order
           </SocialHeadline>
-          <SocialHeadline size="h1">Half off, on us.</SocialHeadline>
+          <SocialHeadline variant="h1">Half off, on us.</SocialHeadline>
         </div>
       </PostFrame>
       <Caption>story 1080x1920 + hasSafeArea</Caption>
@@ -131,7 +131,7 @@ export const Landscape: Story = {
     <div>
       <PostFrame format="landscape" scale={0.28} surface="soft">
         <div className="flex h-full flex-col justify-between">
-          <SocialHeadline size="h2">One kitchen. One grinder.</SocialHeadline>
+          <SocialHeadline variant="h2">One kitchen. One grinder.</SocialHeadline>
           <Logo className="w-50" />
         </div>
       </PostFrame>
@@ -147,7 +147,7 @@ export const Wide: Story = {
     <div>
       <PostFrame format="wide" scale={0.16} surface="ink">
         <div className="flex h-full flex-col justify-between">
-          <SocialHeadline size="hero">100% vegetarian kitchen.</SocialHeadline>
+          <SocialHeadline variant="hero">100% vegetarian kitchen.</SocialHeadline>
           <Logo color="inverse" className="w-65" />
         </div>
       </PostFrame>
@@ -165,10 +165,10 @@ export const SafeAreaGuides: Story = {
         <div key={String(hasSafeArea)}>
           <PostFrame format="story" scale={0.16} surface="brand" hasSafeArea={hasSafeArea}>
             <div className="flex h-full flex-col justify-center gap-10">
-              <SocialHeadline size="overline" as="p">
+              <SocialHeadline variant="overline" as="p">
                 First Order
               </SocialHeadline>
-              <SocialHeadline size="h1">Half off, on us.</SocialHeadline>
+              <SocialHeadline variant="h1">Half off, on us.</SocialHeadline>
             </div>
           </PostFrame>
           <Caption>{hasSafeArea ? "guides on · 250px top, 320px bottom" : "guides off"}</Caption>
@@ -202,10 +202,10 @@ export const AltBoard: Story = {
     <div>
       <PostFrame format="post" scale={0.2} surface="alt">
         <div className="flex h-full flex-col justify-between">
-          <SocialHeadline size="overline" as="p" className="text-text-brand">
+          <SocialHeadline variant="overline" as="p" className="text-text-brand">
             New on the menu
           </SocialHeadline>
-          <SocialHeadline size="h1">Masala Cold Brew.</SocialHeadline>
+          <SocialHeadline variant="h1">Masala Cold Brew.</SocialHeadline>
           <Logo className="w-60" />
         </div>
       </PostFrame>

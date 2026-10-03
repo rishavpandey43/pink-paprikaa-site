@@ -1,10 +1,11 @@
-import type { ComponentProps } from "react";
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
-export interface SocialHeadlineProps extends ComponentProps<"h2"> {
+export interface SocialHeadlineProps extends BaseProps<"h2"> {
   /** Canvas px: hero 132 · h1 96 · h2 72 · body 34 · caption 26 · overline 24. */
-  size?: "hero" | "h1" | "h2" | "body" | "caption" | "overline" | undefined;
+  variant?: "hero" | "h1" | "h2" | "body" | "caption" | "overline" | undefined;
   align?: "start" | "center" | "end" | undefined;
   /** Line-length cap: tight 12ch · default 18ch (2–3 balanced lines) · wide 30ch (body copy). */
   measure?: "tight" | "default" | "wide" | undefined;
@@ -12,9 +13,9 @@ export interface SocialHeadlineProps extends ComponentProps<"h2"> {
   as?: "h1" | "h2" | "h3" | "p" | "span" | undefined;
 }
 
-type Size = NonNullable<SocialHeadlineProps["size"]>;
+type Variant = NonNullable<SocialHeadlineProps["variant"]>;
 
-const DEFAULT_ELEMENT: Readonly<Record<Size, "h2" | "p">> = {
+const DEFAULT_ELEMENT: Readonly<Record<Variant, "h2" | "p">> = {
   hero: "h2",
   h1: "h2",
   h2: "h2",
@@ -26,7 +27,7 @@ const DEFAULT_ELEMENT: Readonly<Record<Size, "h2" | "p">> = {
 const socialHeadline = componentVariants({
   base: "m-0 text-balance text-text-heading",
   variants: {
-    size: {
+    variant: {
       hero: "font-display text-canvas-hero",
       h1: "font-display text-canvas-h1",
       h2: "font-display text-canvas-h2",
@@ -41,21 +42,27 @@ const socialHeadline = componentVariants({
       wide: "max-w-social-headline-wide",
     },
   },
-  defaultVariants: { size: "h1", align: "start", measure: "default" },
+  defaultVariants: { variant: "h1", align: "start", measure: "default" },
 });
 
 /** Canvas-scale type for marketing artboards. Balanced wrapping, never clipped. */
 export function SocialHeadline({
-  size = "h1",
+  variant = "h1",
   align,
   measure,
   as,
+  sx,
   className,
   ...props
 }: SocialHeadlineProps) {
   // Every allowed element takes the heading's props (the contract types them as `<h2>`'s).
   // TypeScript checks a union tag against each element's own `ref` type, so the tag is typed as
   // the `<h2>`.
-  const Component = (as ?? DEFAULT_ELEMENT[size]) as "h2";
-  return <Component className={socialHeadline({ size, align, measure, className })} {...props} />;
+  const Component = (as ?? DEFAULT_ELEMENT[variant]) as "h2";
+  return (
+    <Component
+      className={socialHeadline({ variant, align, measure, className: withSx(sx, className) })}
+      {...props}
+    />
+  );
 }

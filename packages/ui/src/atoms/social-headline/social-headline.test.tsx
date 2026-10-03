@@ -24,8 +24,8 @@ describe("SocialHeadline", () => {
     ["body", "text-canvas-body", "P", "font-body"],
     ["caption", "text-canvas-caption", "P", "font-body"],
     ["overline", "text-canvas-overline", "P", "font-display"],
-  ] as const)("size %s uses %s on a <%s> in %s", (size, sizeClass, tag, face) => {
-    render(<SocialHeadline size={size}>Chai first</SocialHeadline>);
+  ] as const)("variant %s uses %s on a <%s> in %s", (variant, sizeClass, tag, face) => {
+    render(<SocialHeadline variant={variant}>Chai first</SocialHeadline>);
     const text = screen.getByText("Chai first");
     expect(text.tagName).toBe(tag);
     expect(text).toHaveClass(sizeClass, face);
@@ -36,15 +36,15 @@ describe("SocialHeadline", () => {
     ["caption", "text-text-body"],
     ["hero", "text-text-heading"],
     ["overline", "text-text-heading"],
-  ] as const)("paints %s in the surface's %s token — never its own colour", (size, colour) => {
-    render(<SocialHeadline size={size}>Cold brew, jaggery, cardamom.</SocialHeadline>);
+  ] as const)("paints %s in the surface's %s token — never its own colour", (variant, colour) => {
+    render(<SocialHeadline variant={variant}>Cold brew, jaggery, cardamom.</SocialHeadline>);
     const text = screen.getByText("Cold brew, jaggery, cardamom.");
     expect(text).toHaveClass(colour);
     expect(text.className.match(/(^|\s)text-text-/g)).toHaveLength(1);
   });
 
   it("sets the overline in capitals", () => {
-    render(<SocialHeadline size="overline">Tonight Only</SocialHeadline>);
+    render(<SocialHeadline variant="overline">Tonight Only</SocialHeadline>);
     expect(screen.getByText("Tonight Only")).toHaveClass("uppercase");
   });
 
@@ -71,11 +71,22 @@ describe("SocialHeadline", () => {
 
   it("lets `as` make it the artboard's one h1", () => {
     render(
-      <SocialHeadline size="hero" as="h1">
+      <SocialHeadline variant="hero" as="h1">
         Chai first, decisions later.
       </SocialHeadline>
     );
     expect(screen.getByRole("heading", { level: 1 })).toHaveClass("text-canvas-hero");
+  });
+
+  it("sx lands on the headline and beats its own alignment", () => {
+    render(
+      <SocialHeadline align="center" sx={{ mt: 4, textAlign: "start" }}>
+        Chai first
+      </SocialHeadline>
+    );
+    const headline = screen.getByRole("heading");
+    expect(headline).toHaveClass("mt-4", "text-start");
+    expect(headline).not.toHaveClass("text-center");
   });
 
   it("merges a consumer className", () => {
@@ -93,8 +104,8 @@ describe("SocialHeadline", () => {
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
-        <SocialHeadline size="overline">Tonight Only</SocialHeadline>
-        <SocialHeadline size="hero">Chai first, decisions later.</SocialHeadline>
+        <SocialHeadline variant="overline">Tonight Only</SocialHeadline>
+        <SocialHeadline variant="hero">Chai first, decisions later.</SocialHeadline>
       </>
     );
     await expectNoA11yViolations(container);

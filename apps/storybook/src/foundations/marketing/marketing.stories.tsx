@@ -75,7 +75,7 @@ export const CanvasType: Story = {
       <PostFrame format="post" surface="page" isFit>
         <div className="flex flex-col gap-6">
           {CANVAS_STEPS.map(([size, sample]) => (
-            <SocialHeadline key={size} size={size} as="p">
+            <SocialHeadline key={size} variant={size} as="p">
               {sample} · {formatValue(token(`text-canvas-${size}`).value)}
             </SocialHeadline>
           ))}
