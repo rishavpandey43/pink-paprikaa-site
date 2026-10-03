@@ -103,6 +103,7 @@ export function HeroBanner({
 }: HeroBannerProps) {
   const slots = heroBanner({ tone, layout });
   const density = pattern ?? DEFAULT_PATTERN[tone];
+  const facts = meta.filter(isShown);
   return (
     <section data-surface={SURFACE[tone]} className={slots.root({ className })} {...props}>
       {density === "none" ? null : (
@@ -131,9 +132,9 @@ export function HeroBanner({
             </Text>
           ) : null}
           {isShown(actions) ? <div className={slots.actions()}>{actions}</div> : null}
-          {meta.length > 0 ? (
+          {facts.length > 0 ? (
             <ul role="list" className={slots.meta()}>
-              {meta.map((fact, index) => (
+              {facts.map((fact, index) => (
                 <li key={index} className={slots.metaItem()}>
                   {index > 0 ? <SymbolMark className={slots.metaMark()} /> : null}
                   <Text as="span" variant="body-sm" tone="muted">

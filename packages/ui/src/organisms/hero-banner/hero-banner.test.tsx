@@ -81,6 +81,20 @@ describe("HeroBanner", () => {
     expect(list.querySelectorAll('[aria-hidden="true"]')).toHaveLength(2);
   });
 
+  it("skips an empty meta fact — no bare item, no stray diamond — and a list of none", () => {
+    const { rerender } = render(
+      <HeroBanner title={TITLE} meta={["Est. 2025", "", "Sector 57, Gurgaon"]} />
+    );
+    const list = screen.getByRole("list");
+    const facts = within(list)
+      .getAllByRole("listitem")
+      .map((item) => item.textContent);
+    expect(facts).toEqual(["Est. 2025", "Sector 57, Gurgaon"]);
+    expect(list.querySelectorAll('[aria-hidden="true"]')).toHaveLength(1);
+    rerender(<HeroBanner title={TITLE} meta={["", null]} />);
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+  });
+
   it("puts the media slot in a positioned column for overlays such as an OfferSeal", () => {
     render(
       <HeroBanner
