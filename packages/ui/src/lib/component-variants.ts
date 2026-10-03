@@ -109,6 +109,7 @@ const TEXT = [
   "tab-bar-count",
   "dialog-title",
   "dialog-body",
+  "site-header-link",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -263,6 +264,8 @@ const SPACING = [
   "dialog-sm",
   "dialog-md",
   "dialog-lg",
+  "site-header-logo",
+  "site-header-logo-compact",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

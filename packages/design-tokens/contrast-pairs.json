@@ -448,6 +448,14 @@
         ["color-pink-700", "color-surface-brand-soft"]
       ],
       "min": 4.5
+    },
+    {
+      "id": "site-header-glass",
+      "surface": null,
+      "foregrounds": ["color-text-heading", "color-text-brand", "color-text-link"],
+      "backgrounds": ["color-surface-glass"],
+      "backdrop": "color-surface-page-alt",
+      "min": 4.5
     }
   ]
 }

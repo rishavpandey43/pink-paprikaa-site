@@ -178,6 +178,11 @@ export {
   SiteFooter,
   type SiteFooterProps,
 } from "./organisms/site-footer/site-footer";
+export {
+  type NavLink,
+  SiteHeader,
+  type SiteHeaderProps,
+} from "./organisms/site-header/site-header";
 export { StatBand, type StatBandItem, type StatBandProps } from "./organisms/stat-band/stat-band";
 export { TabBar, type TabBarItem, type TabBarProps } from "./organisms/tab-bar/tab-bar";
 export {
