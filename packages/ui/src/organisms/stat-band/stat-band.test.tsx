@@ -48,18 +48,18 @@ describe("StatBand", () => {
     ["soft", "bg-surface-brand-soft"],
     ["brand", "bg-surface-brand"],
     ["ink", "bg-surface-inverse"],
-  ] as const)("paints the %s field and sets its surface", (tone, background) => {
-    const { container } = render(<StatBand stats={STATS} tone={tone} />);
-    expect(container.firstElementChild).toHaveAttribute("data-surface", tone);
+  ] as const)("paints the %s field and sets its surface", (surfaceName, background) => {
+    const { container } = render(<StatBand stats={STATS} surface={surfaceName} />);
+    expect(container.firstElementChild).toHaveAttribute("data-surface", surfaceName);
     expect(container.firstElementChild).toHaveClass(background);
   });
 
   it("colours the numbers brand on soft and white on the flooded fields", () => {
-    const { rerender } = render(<StatBand stats={STATS} tone="soft" />);
+    const { rerender } = render(<StatBand stats={STATS} surface="soft" />);
     expect(screen.getByText("3 km")).toHaveClass("text-text-brand");
-    rerender(<StatBand stats={STATS} tone="brand" />);
+    rerender(<StatBand stats={STATS} surface="brand" />);
     expect(screen.getByText("3 km")).toHaveClass("text-text-on-inverse");
-    rerender(<StatBand stats={STATS} tone="ink" />);
+    rerender(<StatBand stats={STATS} surface="ink" />);
     expect(screen.getByText("3 km")).toHaveClass("text-text-on-inverse");
   });
 
@@ -90,7 +90,12 @@ describe("StatBand", () => {
   });
 
   it("has no accessibility violations", async () => {
-    const { container } = render(<StatBand stats={STATS} tone="brand" />);
+    const { container } = render(<StatBand stats={STATS} surface="brand" />);
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(<StatBand stats={STATS} sx={{ mt: 4 }} className="italic" />);
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });

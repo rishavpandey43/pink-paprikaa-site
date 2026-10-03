@@ -31,14 +31,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
-/** Card row: `tone="soft"` (default). */
-export const Soft: Story = { args: { tone: "soft" } };
+/** Card row: `surface="soft"` (default). */
+export const Soft: Story = { args: { surface: "soft" } };
 
-/** Card row: `tone="brand"`. */
-export const Brand: Story = { args: { tone: "brand" } };
+/** Card row: `surface="brand"`. */
+export const Brand: Story = { args: { surface: "brand" } };
 
-/** The third tone named on the card. */
-export const Ink: Story = { args: { tone: "ink" } };
+/** The third surface named on the card. */
+export const Ink: Story = { args: { surface: "ink" } };
 
 export const FourStats: Story = {
   args: { stats: [...STATS, { value: "8 km", label: "free catering delivery" }] },

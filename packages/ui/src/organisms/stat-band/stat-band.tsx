@@ -1,9 +1,12 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import type { IconComponent } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
 
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
+import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { Stat } from "../../molecules/stat/stat";
 
 export interface StatBandItem {
@@ -21,40 +24,44 @@ const statBand = componentVariants({
     grid: "relative container-page grid autogrid-min-sm gap-stat-band-gap py-stat-band-y",
   },
   variants: {
-    tone: {
+    surface: {
       soft: { root: "bg-surface-brand-soft" },
       brand: { root: "bg-surface-brand" },
       ink: { root: "bg-surface-inverse" },
     },
   },
-  defaultVariants: { tone: "soft" },
+  defaultVariants: { surface: "soft" },
 });
 
-type StatBandTone = NonNullable<VariantProps<typeof statBand>["tone"]>;
+type StatBandSurface = NonNullable<VariantProps<typeof statBand>["surface"]>;
 
 /** Numbers read in brand pink on the soft field and white on the flooded ones (design system). */
-const STAT_COLOR: Readonly<Record<StatBandTone, "brand" | "inverse">> = {
+const STAT_COLOR: Readonly<Record<StatBandSurface, "brand" | "inverse">> = {
   soft: "brand",
   brand: "inverse",
   ink: "inverse",
 };
 
 export interface StatBandProps
-  extends ComponentProps<"section">, Pick<VariantProps<typeof statBand>, "tone"> {
+  extends BaseProps<"section">, Pick<VariantProps<typeof statBand>, "surface"> {
   /** Three or four real, verifiable numbers — more reads as noise. */
   stats: StatBandItem[];
 }
 
 /** A proof band of big numbers between two content sections, over the tiled diamond. */
-export function StatBand({ stats, tone = "soft", className, ...props }: StatBandProps) {
-  const slots = statBand({ tone });
+export function StatBand({ stats, surface = "soft", sx, className, ...props }: StatBandProps) {
+  const slots = statBand({ surface });
   return (
-    <section data-surface={tone} className={slots.root({ className })} {...props}>
-      <PatternField aria-hidden surface={tone} tile={80} className={slots.pattern()} />
+    <section
+      data-surface={SURFACE_DATA[surface]}
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      <PatternField aria-hidden surface={surface} tile={80} className={slots.pattern()} />
       <ul role="list" className={slots.grid()}>
         {stats.map((stat, index) => (
           <li key={index}>
-            <Stat {...stat} color={STAT_COLOR[tone]} align="center" />
+            <Stat {...stat} color={STAT_COLOR[surface]} align="center" />
           </li>
         ))}
       </ul>
