@@ -1,14 +1,9 @@
 "use client";
 
 import { MapPin } from "lucide-react";
-import {
-  type ComponentProps,
-  createElement,
-  type ReactNode,
-  useId,
-  useLayoutEffect,
-  useRef,
-} from "react";
+import { createElement, type ReactNode, useId, useLayoutEffect, useRef } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { Card } from "../../atoms/card/card";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
@@ -18,6 +13,7 @@ import { Typography } from "../../atoms/typography/typography";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 import { EmptyState } from "../../molecules/empty-state/empty-state";
 import { PriceSummary } from "../../molecules/price-summary/price-summary";
 import { QuantityStepper } from "../../molecules/quantity-stepper/quantity-stepper";
@@ -47,7 +43,7 @@ const cartPanel = componentVariants({
   },
 });
 
-export interface CartPanelProps extends Omit<ComponentProps<"section">, "title"> {
+export interface CartPanelProps extends Omit<BaseProps<"section">, "title"> {
   lines: CartLine[];
   title?: ReactNode | undefined;
   meta?: ReactNode | undefined;
@@ -86,6 +82,7 @@ export function CartPanel({
   taxLabel = "GST",
   totalLabel = "Total",
   headingLevel = 2,
+  sx,
   className,
   ...props
 }: CartPanelProps) {
@@ -121,7 +118,11 @@ export function CartPanel({
 
   if (!hasLines) {
     return (
-      <section className={slots.root({ className })} {...props} ref={rootRef}>
+      <section
+        className={slots.root({ className: withSx(sx, className) })}
+        {...props}
+        ref={rootRef}
+      >
         <div className={slots.empty()}>
           <EmptyState
             variant="symbol"
@@ -138,7 +139,7 @@ export function CartPanel({
   return (
     <section
       aria-labelledby={hasTitle ? headingId : undefined}
-      className={slots.root({ className })}
+      className={slots.root({ className: withSx(sx, className) })}
       {...props}
       ref={rootRef}
     >

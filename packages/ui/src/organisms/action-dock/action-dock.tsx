@@ -1,10 +1,10 @@
-import type { ComponentProps } from "react";
-
 import type { IconComponent } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
 
 import { Button } from "../../atoms/button/button";
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 export interface DockAction {
   label: string;
@@ -21,7 +21,7 @@ const actionDock = componentVariants({
   },
 });
 
-export interface ActionDockProps extends ComponentProps<"div"> {
+export interface ActionDockProps extends BaseProps<"div"> {
   primary: DockAction;
   /** Phones only, as an icon beside the primary pill (the handoff's Call). */
   secondary?: DockAction | undefined;
@@ -32,10 +32,14 @@ export interface ActionDockProps extends ComponentProps<"div"> {
  * icon and the primary pill, padded for the iOS home indicator. From md: the primary pill alone,
  * floating bottom-right. Pair it with `SiteFooter hasDockClearance` so it never covers the footer.
  */
-export function ActionDock({ primary, secondary, className, ...props }: ActionDockProps) {
+export function ActionDock({ primary, secondary, sx, className, ...props }: ActionDockProps) {
   const slots = actionDock();
   return (
-    <div data-surface="light" className={slots.root({ className })} {...props}>
+    <div
+      data-surface="light"
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       {secondary ? (
         <IconButton
           asChild

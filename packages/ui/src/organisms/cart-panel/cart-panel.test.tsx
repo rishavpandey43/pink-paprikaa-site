@@ -233,4 +233,11 @@ describe("CartPanel", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <CartPanel lines={LINES} title="Your order" sx={{ mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });
