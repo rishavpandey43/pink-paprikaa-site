@@ -201,8 +201,32 @@ describe("SiteHeader", () => {
     const drawerNav = within(screen.getByRole("dialog")).getByRole("navigation");
     expect(drawerNav.parentElement?.children).toHaveLength(1);
     await user.keyboard("{Escape}");
+    rerender(
+      <SiteHeader
+        homeHref="#home"
+        links={LINKS}
+        badge={false}
+        actions={false}
+        compactActions={false}
+      />
+    );
+    expect(glassBar()?.firstElementChild?.children).toHaveLength(4);
+    // React prints 0, so a 0 slot keeps its wrapper (a truthiness gate would drop it).
+    rerender(
+      <SiteHeader homeHref="#home" links={LINKS} badge={0} actions={0} compactActions={0} />
+    );
+    expect(glassBar()?.firstElementChild?.children).toHaveLength(7);
+    expect(screen.getAllByText("0")).toHaveLength(3);
     rerender(<SiteHeader homeHref="#home" links={LINKS} drawerLinks={[]} drawerActions="" />);
     expect(screen.queryByRole("button", { name: "Menu" })).not.toBeInTheDocument();
+  });
+
+  it("falls back to the default lockup inside the home link when the logo slot is blank", () => {
+    render(<SiteHeader homeHref="#home" links={LINKS} logo="" />);
+    expect(screen.getByRole("img", { name: /Pink Paprikaa/ }).closest("a")).toHaveAttribute(
+      "href",
+      "#home"
+    );
   });
 
   it("shows actions from lg and compact actions below it", () => {
