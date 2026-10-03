@@ -11,6 +11,7 @@ import {
   NOTIFICATION_SURFACE,
   type NotificationProps,
 } from "../../lib/notification";
+import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
 import { useFocusReturn } from "../../lib/use-focus-return";
 
@@ -97,8 +98,13 @@ export function Snackbar({
   duration = SNACKBAR_DURATION,
   position = "bottom-center",
   isContained = true,
+  sx,
   className,
   children,
+  ref,
+  onFocus,
+  onBlur,
+  ...props
 }: SnackbarProps) {
   const [isOpen, setIsOpen] = useControllableState({
     value: open,
@@ -121,13 +127,22 @@ export function Snackbar({
   return (
     <RadixToast.Provider duration={duration} swipeDirection={SWIPE_DIRECTION[position]}>
       <RadixToast.Root
+        {...props}
+        ref={ref}
         open={isOpen}
         onOpenChange={handleOpenChange}
         // Severity picks the politeness (dev parity): a failure interrupts, a confirmation waits.
         type={tone === "danger" ? "foreground" : "background"}
         data-surface={NOTIFICATION_SURFACE[tone]}
-        className={styles.root({ className })}
-        {...focusProps}
+        className={styles.root({ className: withSx(sx, className) })}
+        onFocus={(event) => {
+          focusProps.onFocus();
+          onFocus?.(event);
+        }}
+        onBlur={(event) => {
+          focusProps.onBlur(event);
+          onBlur?.(event);
+        }}
       >
         <Icon icon={icon ?? NOTIFICATION_ICON[tone]} size="md" />
         <RadixToast.Description className={styles.message()}>{children}</RadixToast.Description>

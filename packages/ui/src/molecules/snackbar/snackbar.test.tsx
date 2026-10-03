@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import { createRef, useState } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { Snackbar, type SnackbarProps } from "./snackbar";
@@ -343,5 +343,26 @@ describe("Snackbar", () => {
       </div>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("forwards id, data-*, aria-* and ref to its root, and takes sx", () => {
+    const ref = createRef<HTMLLIElement>();
+    render(
+      <Snackbar
+        ref={ref}
+        id="copied"
+        data-section="codes"
+        aria-describedby="hint"
+        sx={{ mt: 4 }}
+        className="italic"
+      >
+        Code copied.
+      </Snackbar>
+    );
+    expect(ref.current).toBeInstanceOf(HTMLLIElement);
+    expect(ref.current).toHaveAttribute("id", "copied");
+    expect(ref.current).toHaveAttribute("data-section", "codes");
+    expect(ref.current).toHaveAttribute("aria-describedby", "hint");
+    expect(ref.current).toHaveClass("mt-4", "italic");
   });
 });
