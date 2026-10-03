@@ -38,12 +38,12 @@ const meta = {
   },
   decorators: [
     // The flush tracker fills a phone screen; the card sits on a page at its own width, so the
-    // 340px frame would cut its edge.
+    // 340px frame would cut its edge. The frame shrinks to the 328px a 360 canvas leaves.
     (Story, { args }) =>
       args.variant === "card" ? (
         <Story />
       ) : (
-        <div className="flex h-165 w-85 flex-col overflow-hidden rounded-lg border border-border-subtle">
+        <div className="flex h-165 w-full max-w-85 flex-col overflow-hidden rounded-lg border border-border-subtle">
           <Story />
         </div>
       ),
@@ -110,5 +110,10 @@ export const DeliverySteps: Story = {
 export const Mobile: Story = {
   args: { current: 1 },
   globals: VIEWPORT_360,
-  play: proveActionRingWhole,
+  play: async (context) => {
+    await expect(context.canvasElement.scrollWidth).toBeLessThanOrEqual(
+      context.canvasElement.clientWidth
+    );
+    await proveActionRingWhole(context);
+  },
 };
