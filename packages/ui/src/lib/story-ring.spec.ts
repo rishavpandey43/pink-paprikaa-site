@@ -71,6 +71,45 @@ describe("ringClippers", () => {
     expect(ringClippers(positioned.control)).toEqual([positioned.frame]);
   });
 
+  it.each([
+    ["will-change", "transform"],
+    ["will-change", "filter"],
+    ["container-type", "inline-size"],
+    ["content-visibility", "auto"],
+    ["translate", "4px 0px"],
+    ["rotate", "1deg"],
+    ["scale", "2"],
+  ])("stops a fixed control at a frame with %s: %s, which contains it", (property, value) => {
+    const contained = framed({ ...OUTLINE, position: "fixed" }, 2);
+    contained.frame.style.setProperty(property, value);
+    expect(ringClippers(contained.control)).toEqual([contained.frame]);
+  });
+
+  it("stops a fixed control at a frame with a backdrop-filter, which contains it", () => {
+    const contained = framed({ ...OUTLINE, position: "fixed" }, 2);
+    const realStyle = globalThis.getComputedStyle.bind(globalThis);
+    vi.spyOn(globalThis, "getComputedStyle").mockImplementation((element) => {
+      const style = realStyle(element);
+      if (element === contained.frame) {
+        // jsdom drops `backdrop-filter`; Chromium reports it.
+        const read = style.getPropertyValue.bind(style);
+        style.getPropertyValue = (name) => (name === "backdrop-filter" ? "blur(4px)" : read(name));
+      }
+      return style;
+    });
+    expect(ringClippers(contained.control)).toEqual([contained.frame]);
+  });
+
+  it.each([
+    ["will-change", "opacity"],
+    ["container-type", "normal"],
+    ["content-visibility", "visible"],
+  ])("lets a fixed control escape a frame with %s: %s", (property, value) => {
+    const escaped = framed({ ...OUTLINE, position: "fixed" }, 2);
+    escaped.frame.style.setProperty(property, value);
+    expect(ringClippers(escaped.control)).toEqual([]);
+  });
+
   it("measures a box-shadow ring (a field's) by its spread when there is no outline", () => {
     const tight = framed({ boxShadow: "0 0 0 3px red" }, 1);
     expect(ringClippers(tight.control)).toEqual([tight.frame]);

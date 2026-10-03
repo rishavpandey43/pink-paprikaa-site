@@ -60,9 +60,16 @@ function containingBlock(node: HTMLElement) {
     }
     if (
       isSet(style.transform) ||
+      isSet(style.translate) ||
+      isSet(style.rotate) ||
+      isSet(style.scale) ||
       isSet(style.filter) ||
+      isSet(style.getPropertyValue("backdrop-filter")) ||
       isSet(style.perspective) ||
-      /layout|paint|strict|content/.test(style.contain)
+      /transform|translate|rotate|scale|perspective|filter|contain/.test(style.willChange) ||
+      /layout|paint|strict|content/.test(style.contain) ||
+      (isSet(style.containerType) && style.containerType !== "normal") ||
+      style.contentVisibility === "auto"
     ) {
       return ancestor;
     }
