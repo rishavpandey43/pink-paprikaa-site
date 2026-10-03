@@ -78,4 +78,12 @@ describe("ringClippers", () => {
       ringClippers(framed({ boxShadow: "rgb(255, 185, 206) 0px 0px 0px 3px" }, 4).control)
     ).toEqual([]);
   });
+
+  it("reads no lengths from a colour function's channels (Chromium keeps oklch() computed)", () => {
+    const tight = framed({ boxShadow: "oklch(0.75 0.12 350) 0px 0px 0px 3px" }, 1);
+    expect(ringClippers(tight.control)).toEqual([tight.frame]);
+    expect(
+      ringClippers(framed({ boxShadow: "color(srgb 9 0.7 0.8) 0px 0px 0px 3px" }, 4).control)
+    ).toEqual([]);
+  });
 });

@@ -77,7 +77,8 @@ function isSet(value: string) {
 /** How far the outer shadows of a computed `box-shadow` reach past the box; NaN when none do. */
 function shadowReach(boxShadow: string) {
   let reach = Number.NaN;
-  for (const shadow of boxShadow.replaceAll(/rgba?\([^)]*\)/g, "").split(",")) {
+  // A colour function's channels (`oklch(0.75 0.12 350)`) are not lengths.
+  for (const shadow of boxShadow.replaceAll(/\w+\([^)]*\)/g, "").split(",")) {
     if (shadow.includes("inset")) continue;
     const lengths = shadow
       .trim()
