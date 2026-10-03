@@ -1,13 +1,16 @@
 import { Check } from "lucide-react";
-import { type ComponentProps, createElement, type ReactNode } from "react";
+import { createElement, type ReactNode } from "react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
 import { assertStruckAbove, StruckPrice } from "../../lib/struck-price";
+import { withSx } from "../../lib/sx";
 
 type PricingCardVariant = "default" | "featured" | "flooded";
 
@@ -46,7 +49,7 @@ const pricingCard = componentVariants({
   },
 });
 
-export interface PricingCardProps extends Omit<ComponentProps<"article">, "title"> {
+export interface PricingCardProps extends Omit<BaseProps<"article">, "title"> {
   name: ReactNode;
   /** A chip beside the name, e.g. "Launch price". */
   tag?: ReactNode | undefined;
@@ -83,6 +86,7 @@ export function PricingCard({
   media,
   variant = "default",
   headingLevel = 3,
+  sx,
   className,
   ...props
 }: PricingCardProps) {
@@ -90,7 +94,11 @@ export function PricingCard({
   const styles = pricingCard({ variant });
 
   return (
-    <article data-surface={SURFACE_OF[variant]} className={styles.root({ className })} {...props}>
+    <article
+      data-surface={SURFACE_OF[variant]}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       {isShown(badge) ? <div className={styles.badge()}>{badge}</div> : null}
       {media}
       <div className={styles.header()}>

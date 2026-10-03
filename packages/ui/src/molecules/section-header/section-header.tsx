@@ -1,10 +1,13 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { createElement } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 const sectionHeader = componentVariants({
   slots: {
@@ -28,7 +31,7 @@ const sectionHeader = componentVariants({
   defaultVariants: { align: "start", hasOverline: false },
 });
 
-export interface SectionHeaderProps extends Omit<ComponentProps<"div">, "title"> {
+export interface SectionHeaderProps extends Omit<BaseProps<"div">, "title"> {
   /** Uppercase eyebrow. */
   overline?: ReactNode;
   title: ReactNode;
@@ -48,6 +51,7 @@ export function SectionHeader({
   lede,
   action,
   align = "start",
+  sx,
   className,
   ...props
 }: SectionHeaderProps) {
@@ -55,7 +59,7 @@ export function SectionHeader({
   const styles = sectionHeader({ align, hasOverline });
 
   return (
-    <div className={styles.root({ className })} {...props}>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
       <div className={styles.copy()}>
         {hasOverline ? <p className={styles.overline()}>{overline}</p> : null}
         {/* createElement, not `const Heading = headingTag(…)` (R83): the React Compiler lint reads

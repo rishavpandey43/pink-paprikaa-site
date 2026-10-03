@@ -1,10 +1,13 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { PriceTag } from "../../atoms/price-tag/price-tag";
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 const priceSummary = componentVariants({
   slots: {
@@ -34,7 +37,7 @@ export interface PriceLine {
   isStrong?: boolean | undefined;
 }
 
-export interface PriceSummaryProps extends ComponentProps<"div"> {
+export interface PriceSummaryProps extends BaseProps<"div"> {
   lines: PriceLine[];
   /** Whole rupees. */
   total: number;
@@ -52,13 +55,14 @@ export function PriceSummary({
   total,
   totalLabel = "Total",
   note,
+  sx,
   className,
   ...props
 }: PriceSummaryProps) {
   const styles = priceSummary();
 
   return (
-    <div className={styles.root({ className })} {...props}>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
       <dl className={styles.list()}>
         {lines.map((line, index) => {
           const isDiscount = line.isDiscount === true;

@@ -1,11 +1,11 @@
-import type { ComponentProps } from "react";
-
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { LinkAs } from "../../lib/link-as";
 
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const pagination = componentVariants({
   slots: {
@@ -41,7 +41,7 @@ function pageSlots(page: number, pages: number): PageSlot[] {
   return slots;
 }
 
-export interface PaginationProps extends ComponentProps<"nav"> {
+export interface PaginationProps extends BaseProps<"nav"> {
   page: number;
   pages: number;
   /** The href of a page — paging is navigation, not a callback. */
@@ -59,6 +59,7 @@ export function Pagination({
   getPageHref,
   linkAs: LinkComponent = "a",
   label = "Pagination",
+  sx,
   className,
   ...props
 }: PaginationProps) {
@@ -68,7 +69,11 @@ export function Pagination({
   const styles = pagination();
 
   return (
-    <nav aria-label={label} className={styles.root({ className })} {...props}>
+    <nav
+      aria-label={label}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       {/* An ordered list: the pages are a sequence (dev parity). */}
       <ol data-surface="light" className={styles.list()}>
         {current > 1 ? (
