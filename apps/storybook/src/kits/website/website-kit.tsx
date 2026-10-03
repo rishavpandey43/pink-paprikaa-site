@@ -1,5 +1,5 @@
 import { ArrowRight, ArrowUpRight, Phone, Plus, Search, ShoppingBag } from "lucide-react";
-import { useState } from "react";
+import { type MouseEvent, useState } from "react";
 
 import { brand, toBrandLines } from "@pink-paprikaa-web/content";
 import {
@@ -71,21 +71,28 @@ export function WebsiteKit() {
     setToast(`${item.name} added to your order.`);
   }
 
-  function openBooking() {
+  function openBooking(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
     setIsBooked(false);
     setIsBooking(true);
   }
 
-  const bookButton = (
-    <Button variant="secondary" size="sm" onClick={openBooking}>
-      Book a Table
-    </Button>
-  );
-  const orderButton = (
-    <Button size="sm" icon={ShoppingBag} asChild>
-      <a href="#menu">Order Now</a>
-    </Button>
-  );
+  function bookButton() {
+    return (
+      <Button variant="secondary" size="sm" asChild>
+        <a href="#book" onClick={openBooking}>
+          Book a Table
+        </a>
+      </Button>
+    );
+  }
+  function orderButton() {
+    return (
+      <Button size="sm" icon={ShoppingBag} asChild>
+        <a href="#menu">Order Now</a>
+      </Button>
+    );
+  }
 
   return (
     <ToastProvider duration={2600} label="Notifications">
@@ -99,14 +106,14 @@ export function WebsiteKit() {
             <>
               <IconButton icon={Search} label="Search the menu" variant="ghost" />
               <IconButton icon={ShoppingBag} label="Your order" variant="ghost" count={cartCount} />
-              {bookButton}
-              {orderButton}
+              {bookButton()}
+              {orderButton()}
             </>
           }
           drawerActions={
             <>
-              {bookButton}
-              {orderButton}
+              {bookButton()}
+              {orderButton()}
             </>
           }
         />

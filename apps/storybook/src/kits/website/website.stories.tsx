@@ -34,7 +34,7 @@ export const Homepage: Story = {
     ).toBeInTheDocument();
 
     await userEvent.click(
-      within(canvas.getByRole("banner")).getByRole("button", { name: "Book a Table" })
+      within(canvas.getByRole("banner")).getByRole("link", { name: "Book a Table" })
     );
     const booking = await screen.findByRole("dialog", { name: "Book a table" });
     await userEvent.click(within(booking).getByRole("button", { name: "Hold My Table" }));
@@ -47,9 +47,17 @@ export const Homepage: Story = {
 export const Homepage360: Story = {
   name: "Homepage at 360px",
   globals: { viewport: { value: "floor360", isRotated: false } },
-  play: async ({ canvas, canvasElement }) => {
+  play: async ({ canvas, canvasElement, userEvent }) => {
     await expectNoHorizontalOverflow(canvasElement, 360);
     await expect(canvas.getByText(KIT_NOTICE)).toBeVisible();
-    await expect(canvas.getByRole("button", { name: "Menu" })).toBeVisible();
+    const menuButton = canvas.getByRole("button", { name: "Menu" });
+    await expect(menuButton).toBeVisible();
+
+    await userEvent.click(menuButton);
+    const drawer = await screen.findByRole("dialog", { name: "Menu" });
+    await userEvent.click(within(drawer).getByRole("link", { name: "Book a Table" }));
+
+    await expect(await screen.findByRole("dialog", { name: "Book a table" })).toBeVisible();
+    await expect(screen.queryByRole("dialog", { name: "Menu" })).not.toBeInTheDocument();
   },
 };
