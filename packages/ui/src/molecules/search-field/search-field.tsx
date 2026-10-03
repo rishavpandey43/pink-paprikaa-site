@@ -5,6 +5,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { Search, X } from "lucide-react";
 import { useId, useRef } from "react";
 
+import type { SxProp } from "../../lib/common-props";
 import type { FieldStatus } from "../../lib/field-status";
 
 import { Icon } from "../../atoms/icon/icon";
@@ -13,6 +14,7 @@ import { joinIds } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
 import { FieldControl } from "../../lib/field-control";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
 
 const searchField = componentVariants({
@@ -28,10 +30,10 @@ const searchField = componentVariants({
   },
 });
 
-export interface SearchFieldProps extends Omit<
-  ComponentProps<"input">,
-  "size" | "type" | "value" | "defaultValue" | "onChange"
-> {
+export interface SearchFieldProps
+  extends
+    Omit<ComponentProps<"input">, "size" | "type" | "value" | "defaultValue" | "onChange">,
+    SxProp {
   /** Accessible name of the search box, e.g. "Search the menu". */
   label: string;
   value?: string | undefined;
@@ -67,6 +69,7 @@ export function SearchField({
   hint,
   disabled,
   readOnly,
+  sx,
   className,
   ref,
   "aria-describedby": describedBy,
@@ -90,7 +93,7 @@ export function SearchField({
   }
 
   return (
-    <div className={styles.root({ className })}>
+    <div className={styles.root({ className: withSx(sx, className) })}>
       <FieldControl
         size={size}
         status={status}

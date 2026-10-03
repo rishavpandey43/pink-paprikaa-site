@@ -191,4 +191,22 @@ describe("SearchField", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its outermost element, and keeps native props and ref on the input", () => {
+    const ref = createRef<HTMLInputElement>();
+    const { container } = render(
+      <SearchField
+        ref={ref}
+        label="Search the menu"
+        id="menu-search"
+        data-section="menu"
+        sx={{ mt: 4 }}
+      />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4");
+    const input = screen.getByRole("searchbox");
+    expect(input).toHaveAttribute("id", "menu-search");
+    expect(input).toHaveAttribute("data-section", "menu");
+    expect(ref.current).toBe(input);
+  });
 });
