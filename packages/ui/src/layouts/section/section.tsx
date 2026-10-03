@@ -1,35 +1,15 @@
 import type { ComponentProps } from "react";
 
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
+import { SURFACE_BG, SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { Container, type ContainerSize } from "../container/container";
 
 export type SectionTone = "page" | "alt" | "sunken" | "soft" | "brand" | "ink";
 
-/**
- * The surface each tone establishes. Light tones say `light` explicitly, so a light band nested in
- * a dark one restores dark text (the light island, spec §3.2.3) instead of inheriting white. The
- * same value is the PatternField tone, whose four tones are the surfaces.
- */
-const SURFACE = {
-  page: "light",
-  alt: "light",
-  sunken: "light",
-  soft: "soft",
-  brand: "brand",
-  ink: "ink",
-} as const satisfies Record<SectionTone, "light" | "soft" | "brand" | "ink">;
-
 const section = componentVariants({
   variants: {
-    tone: {
-      page: "bg-surface-page",
-      alt: "bg-surface-page-alt",
-      sunken: "bg-surface-sunken",
-      soft: "bg-surface-brand-soft",
-      brand: "bg-surface-brand",
-      ink: "bg-surface-inverse",
-    },
+    tone: SURFACE_BG,
     space: {
       none: "py-0",
       tight: "py-section-tight",
@@ -74,7 +54,7 @@ export function Section({
   // tsc -b TS2322: the spread `ref` is an HTMLElement ref, which a div ref rejects. A narrow cast,
   // not a looser type — every member of the `as` union is an HTMLElement with the same props shape.
   const Element = as as "section";
-  const surface = SURFACE[tone];
+  const surface = SURFACE_DATA[tone];
   const hasPattern = pattern !== "none";
   const content = isBare ? children : <Container size={size}>{children}</Container>;
 
