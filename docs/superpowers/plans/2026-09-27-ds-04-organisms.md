@@ -2714,6 +2714,7 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 - Create: `packages/design-tokens/tokens/component/quote-panel.json`
 - Create: `packages/ui/src/organisms/quote-panel/quote-panel.tsx`, `quote-panel.test.tsx`, `quote-panel.stories.tsx`
+- Create: `packages/ui/src/lib/story-ring.ts` (`ringClippers`, promoted from Plan 3b's CouponTicket and FilterBar stories on its third use; a `story-*` file — never exported, outside the library-source scan)
 - Modify: `packages/ui/src/lib/component-variants.ts` (`SPACING`, `TEXT`), `packages/ui/src/index.ts`
 
 **Interfaces:**
@@ -2855,7 +2856,7 @@ describe("QuotePanel", () => {
         footnote="We confirm within the hour."
       />
     );
-    const text = container.textContent ?? "";
+    const text = container.textContent;
     const positions = [
       "Delivery free",
       "You save ₹2,880",
@@ -2864,6 +2865,44 @@ describe("QuotePanel", () => {
     ].map((fragment) => text.indexOf(fragment));
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect(positions).toEqual([...positions].sort((a, b) => a - b));
+  });
+
+  it("renders no wrapper for an empty unit, was, note, alerts, action or footnote", () => {
+    const { container } = render(
+      <QuotePanel
+        tone="ink"
+        title="Estimate"
+        amount="₹99,792"
+        unit=""
+        was=""
+        note=""
+        alerts=""
+        action=""
+        footnote=""
+      />
+    );
+    const body = container.querySelector("section > div");
+    expect(body?.children).toHaveLength(2);
+    expect(screen.getByText("₹99,792").parentElement?.children).toHaveLength(1);
+  });
+
+  it("renders the wrapper for a 0 unit, was, note, alerts, action or footnote — a number is content", () => {
+    const { container } = render(
+      <QuotePanel
+        tone="ink"
+        title="Estimate"
+        amount="₹99,792"
+        unit={0}
+        was={0}
+        note={0}
+        alerts={0}
+        action={0}
+        footnote={0}
+      />
+    );
+    const body = container.querySelector("section > div");
+    expect(body?.children).toHaveLength(6);
+    expect(screen.getByText("₹99,792").parentElement?.children).toHaveLength(3);
   });
 
   it("renders no summary list without lines or a total", () => {
@@ -2901,18 +2940,19 @@ import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Text } from "../../atoms/text/text";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
 import { StruckPrice } from "../../lib/struck-price";
 import { type KeyValueItem, KeyValueList } from "../../molecules/key-value-list/key-value-list";
 
 const quotePanel = componentVariants({
   slots: {
-    root: "p-quote-panel-pad relative overflow-hidden rounded-xl",
+    root: "relative overflow-hidden rounded-xl p-quote-panel-pad",
     // A decorative layer only: the panel's own ground (or a caller's) shows through it.
     pattern: "absolute inset-0 bg-transparent",
     body: "relative flex flex-col gap-4",
     header: "flex flex-wrap items-start justify-between gap-3",
     price: "flex flex-wrap items-baseline gap-x-2.5 gap-y-1",
-    amount: "text-quote-panel-amount font-display text-text-heading",
+    amount: "font-display text-quote-panel-amount text-text-heading",
     unit: "text-body-sm text-text-muted",
     was: "text-body-sm",
     lines: "border-t border-border-subtle pt-1.5",
@@ -3015,8 +3055,8 @@ export function QuotePanel({
         </div>
         <div className={slots.price()}>
           <span className={slots.amount()}>{amount}</span>
-          {unit ? <span className={slots.unit()}>{unit}</span> : null}
-          {was ? (
+          {isShown(unit) ? <span className={slots.unit()}>{unit}</span> : null}
+          {isShown(was) ? (
             <StruckPrice label={wasLabel} className={slots.was()}>
               {was}
             </StruckPrice>
@@ -3036,10 +3076,10 @@ export function QuotePanel({
             <dd>{total.value}</dd>
           </dl>
         ) : null}
-        {note ? <div className={slots.note()}>{note}</div> : null}
-        {alerts ? <div className={slots.alerts()}>{alerts}</div> : null}
-        {action ? <div className={slots.action()}>{action}</div> : null}
-        {footnote ? <div className={slots.footnote()}>{footnote}</div> : null}
+        {isShown(note) ? <div className={slots.note()}>{note}</div> : null}
+        {isShown(alerts) ? <div className={slots.alerts()}>{alerts}</div> : null}
+        {isShown(action) ? <div className={slots.action()}>{action}</div> : null}
+        {isShown(footnote) ? <div className={slots.footnote()}>{footnote}</div> : null}
       </div>
     </section>
   );
@@ -3049,11 +3089,48 @@ export function QuotePanel({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- quote-panel 2>&1 | tail -8`
-Expected: PASS (13 tests).
+Expected: PASS (15 tests).
 
 - [ ] **Step 6: Stories (the three handoff calculators)**
 
 Numbers are the handoff calculators' own outputs for their default states (`rates.js`): Plan — Classic launch ₹130 × 24 = ₹3,120 + GST ₹156; Dawat — Signature ₹199 × 30 = ₹5,970 + GST ₹299 = ₹6,269; Office — Everyday ₹99 × 40 × 24 = ₹95,040 + GST ₹4,752 = ₹99,792.
+
+The panel clips (`overflow-hidden`), so a `play` tabs to every action and proves its focus ring whole. The check is the third copy of Plan 3b's `ringClippers` (CouponTicket, FilterBar), so it moves to `lib` here; Tasks 7, 10–15 import it. The two 3b copies stay until the final fix wave.
+
+`packages/ui/src/lib/story-ring.ts`:
+
+```ts
+/**
+ * Stories only — never exported from the barrel. The `overflow` ancestors of `element` whose
+ * padding box cuts its focus outline (an outline is clipped like any other paint, so a ring drawn
+ * outside a flush child of an `overflow-hidden` box all but vanishes). A `play` that focuses a
+ * control inside a clipping frame asserts this is `[]`.
+ */
+export function ringClippers(element: HTMLElement) {
+  const style = getComputedStyle(element);
+  const reach = Number.parseFloat(style.outlineWidth) + Number.parseFloat(style.outlineOffset);
+  // Scroll extents are whole pixels, so a child scrolled fully into view can sit a fraction past.
+  const box = element.getBoundingClientRect();
+  const slack = 1;
+  const clippers: HTMLElement[] = [];
+  for (let node = element.parentElement; node !== null; node = node.parentElement) {
+    const { overflowX, overflowY } = getComputedStyle(node);
+    if (overflowX === "visible" && overflowY === "visible") continue;
+    const frame = node.getBoundingClientRect();
+    const left = frame.left + node.clientLeft;
+    const top = frame.top + node.clientTop;
+    if (
+      box.left - reach < left - slack ||
+      box.top - reach < top - slack ||
+      box.right + reach > left + node.clientWidth + slack ||
+      box.bottom + reach > top + node.clientHeight + slack
+    ) {
+      clippers.push(node);
+    }
+  }
+  return clippers;
+}
+```
 
 `packages/ui/src/organisms/quote-panel/quote-panel.stories.tsx`:
 
@@ -3061,9 +3138,11 @@ Numbers are the handoff calculators' own outputs for their default states (`rate
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { MessageCircle, Utensils } from "lucide-react";
+import { expect } from "storybook/test";
 
 import { Badge } from "../../atoms/badge/badge";
 import { Button } from "../../atoms/button/button";
+import { ringClippers } from "../../lib/story-ring";
 import { Alert } from "../../molecules/alert/alert";
 import { BRAND, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
 import { QuotePanel } from "./quote-panel";
@@ -3118,10 +3197,23 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * The panel clips (`overflow-hidden`, for its rounded corners and the diamond), so its padding
+ * must hold every focus ring whole: tab to each action in turn and prove nothing cuts its ring.
+ */
+const proveRingsWhole: Story["play"] = async ({ canvas, userEvent }) => {
+  for (const link of canvas.getAllByRole("link")) {
+    await userEvent.tab();
+    await expect(link).toHaveFocus();
+    await expect(link.matches(":focus-visible")).toBe(true);
+    await expect(ringClippers(link)).toEqual([]);
+  }
+};
+
 export const Playground: Story = {};
 
 /** Handoff PlanCalculator — brand panel. */
-export const HandoffPlan: Story = {};
+export const HandoffPlan: Story = { play: proveRingsWhole };
 
 /** Handoff DawatCalculator — ink panel. */
 export const HandoffDawat: Story = {
@@ -3151,6 +3243,7 @@ export const HandoffDawat: Story = {
     ),
     footnote: "We confirm within the hour. 50% holds the date, balance on delivery.",
   },
+  play: proveRingsWhole,
 };
 
 /** Handoff OfficeLunch — white card on the ink quote section. */
@@ -3189,6 +3282,7 @@ export const HandoffOffice: Story = {
       </div>
     ),
   ],
+  play: proveRingsWhole,
 };
 
 export const AmountOnly: Story = {
@@ -3202,7 +3296,8 @@ export const AmountOnly: Story = {
   },
 };
 
-export const Mobile: Story = { globals: VIEWPORT_360 };
+/** The smallest supported viewport: the padding shrinks to 18px and still holds the ring. */
+export const Mobile: Story = { globals: VIEWPORT_360, play: proveRingsWhole };
 export const Tablet: Story = { globals: VIEWPORT_768 };
 export const Desktop: Story = { globals: VIEWPORT_1280 };
 ```
@@ -3216,12 +3311,12 @@ export { QuotePanel, type QuotePanelProps } from "./organisms/quote-panel/quote-
 - [ ] **Step 8: Format, gate, commit**
 
 ```bash
-pnpm exec prettier --write packages/ui/src/organisms/quote-panel packages/design-tokens/tokens/component/quote-panel.json packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
+pnpm exec prettier --write packages/ui/src/organisms/quote-panel packages/ui/src/lib/story-ring.ts packages/design-tokens/tokens/component/quote-panel.json packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
 pnpm nx lint @pink-paprikaa-web/ui --fix --skip-nx-cache >/dev/null
 pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
-git add packages/design-tokens/tokens/component/quote-panel.json packages/ui/src/organisms/quote-panel packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
+git add packages/design-tokens/tokens/component/quote-panel.json packages/ui/src/organisms/quote-panel packages/ui/src/lib/story-ring.ts packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
 git commit -m "feat(ui): add the QuotePanel organism
 
 The calculators' estimate panel in three tones — brand with the diamond,
