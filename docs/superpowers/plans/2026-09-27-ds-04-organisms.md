@@ -7760,7 +7760,7 @@ const carouselTrack = componentVariants({
     header: "flex flex-wrap items-end justify-between gap-5",
     controls: "flex shrink-0 items-center gap-2",
     track:
-      "auto-cols-review-carousel grid snap-x snap-mandatory grid-flow-col gap-5 overflow-x-auto overscroll-x-contain px-1 pt-1 pb-4 *:min-w-0 *:snap-start motion-safe:scroll-smooth",
+      "grid snap-x snap-mandatory auto-cols-review-carousel grid-flow-col gap-5 overflow-x-auto overscroll-x-contain px-1 pt-1 pb-4 *:min-w-0 *:snap-start motion-safe:scroll-smooth",
   },
 });
 
