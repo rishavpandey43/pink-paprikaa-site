@@ -4,30 +4,30 @@
 
 **Dev parity:**
 
-| Dev item                                                                      | Ruling                             | Where / clause                                                                                                                             |
-| ----------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Section header when titled                                                    | ALREADY                            | test "heads the section with overline, a level-2 title and the action"                                                                     |
-| No header at all without a title                                              | ALREADY                            | test "renders only the filters when there is no title"                                                                                     |
-| One pill per category, behind "All"                                           | ALREADY                            | test "offers All first…"                                                                                                                   |
-| The note pinned beside the pills                                              | ADD                                | test "pins the note beside the filters" (its default copy: DROP, D9)                                                                       |
-| First four dishes as cards, the rest as rows                                  | ALREADY                            | test "shows the first gridCount dishes as cards…"                                                                                          |
-| A caller's smaller `gridCount`                                                | ADD                                | test "honours a smaller gridCount and drops the overflow…"                                                                                 |
-| Rows only in `list`                                                           | ALREADY                            | test "shows every dish as a row in the list variant"                                                                                       |
-| No overflow divider when every dish fits                                      | ADD                                | same new test (`gridCount={10}`)                                                                                                           |
-| Filtering by pill; the chosen pill marked                                     | ALREADY                            | tests "filters to a category…", "offers All first…" (`aria-checked`)                                                                       |
-| `defaultCategory`                                                             | ADD — pending contract delta 6     | a string, so it can seed the client leaf; not built until ruled (report)                                                                   |
-| Controlled `category` + `onCategoryChange`                                    | DROP                               | D6 — the filter is a client leaf under a server organism, which cannot pass it a function (Contract deviations); contract §7 lists neither |
-| `onAdd`; no Add control without it                                            | DROP / ALREADY                     | spec §9.2 — the `action` slot replaces `onAdd`: `renderItemAction` (tested); none given, no action                                         |
-| Empty-state copy built in                                                     | DROP                               | D9 — `emptyState` slot (tested)                                                                                                            |
-| Auto-fit grid survives 360px                                                  | ALREADY                            | `autogrid`                                                                                                                                 |
-| Merges a caller `className`                                                   | ADD                                | test "merges a caller className"                                                                                                           |
-| axe                                                                           | ALREADY                            | test "has no accessibility violations"                                                                                                     |
-| `lede` under the heading                                                      | ADD — pending contract delta 7     | not built until ruled (report)                                                                                                             |
-| `diet` per dish                                                               | DROP                               | C10                                                                                                                                        |
-| `href` per dish                                                               | ALREADY                            | `getItemHref`                                                                                                                              |
-| Stories Default · WithAction · ListVariant · WithoutHeader · Empty · Smallest | ALREADY                            | GridWebsite · Playground (`action` arg) · ListApp · ListApp · EmptyCategory · Mobile                                                       |
-| Stories GridOnly · SmallGrid                                                  | ADD                                | `GridOnly`, `SmallGrid`                                                                                                                    |
-| Stories PreselectedCategory · WithLede                                        | ADD — pending contract deltas 6, 7 | —                                                                                                                                          |
+| Dev item                                                                      | Ruling         | Where / clause                                                                                                                             |
+| ----------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Section header when titled                                                    | ALREADY        | test "heads the section with overline, a level-2 title and the action"                                                                     |
+| No header at all without a title                                              | ALREADY        | test "renders only the filters when there is no title"                                                                                     |
+| One pill per category, behind "All"                                           | ALREADY        | test "offers All first…"                                                                                                                   |
+| The note pinned beside the pills                                              | ADD            | test "pins the note beside the filters" (its default copy: DROP, D9)                                                                       |
+| First four dishes as cards, the rest as rows                                  | ALREADY        | test "shows the first gridCount dishes as cards…"                                                                                          |
+| A caller's smaller `gridCount`                                                | ADD            | test "honours a smaller gridCount and drops the overflow…"                                                                                 |
+| Rows only in `list`                                                           | ALREADY        | test "shows every dish as a row in the list variant"                                                                                       |
+| No overflow divider when every dish fits                                      | ADD            | same new test (`gridCount={10}`)                                                                                                           |
+| Filtering by pill; the chosen pill marked                                     | ALREADY        | tests "filters to a category…", "offers All first…" (`aria-checked`)                                                                       |
+| `defaultCategory`                                                             | ADD            | contract delta 6 (R110): a string seeding the client leaf, All when not on offer; tests "opens on defaultCategory", "falls back to All…"   |
+| Controlled `category` + `onCategoryChange`                                    | DROP           | D6 — the filter is a client leaf under a server organism, which cannot pass it a function (Contract deviations); contract §7 lists neither |
+| `onAdd`; no Add control without it                                            | DROP / ALREADY | spec §9.2 — the `action` slot replaces `onAdd`: `renderItemAction` (tested); none given, no action                                         |
+| Empty-state copy built in                                                     | DROP           | D9 — `emptyState` slot (tested)                                                                                                            |
+| Auto-fit grid survives 360px                                                  | ALREADY        | `autogrid`                                                                                                                                 |
+| Merges a caller `className`                                                   | ADD            | test "merges a caller className"                                                                                                           |
+| axe                                                                           | ALREADY        | test "has no accessibility violations"                                                                                                     |
+| `lede` under the heading                                                      | ADD            | contract delta 7 (R110): to SectionHeader; test "renders the lede under the heading"                                                       |
+| `diet` per dish                                                               | DROP           | C10                                                                                                                                        |
+| `href` per dish                                                               | ALREADY        | `getItemHref`                                                                                                                              |
+| Stories Default · WithAction · ListVariant · WithoutHeader · Empty · Smallest | ALREADY        | GridWebsite · Playground (`action` arg) · ListApp · ListApp · EmptyCategory · Mobile                                                       |
+| Stories GridOnly · SmallGrid                                                  | ADD            | `GridOnly`, `SmallGrid`                                                                                                                    |
+| Stories PreselectedCategory · WithLede                                        | ADD            | `PreselectedCategory` · `WithLede` (contract deltas 6, 7)                                                                                  |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -118,6 +118,17 @@ describe("MenuList", () => {
     expect(screen.getByRole("link", { name: "See Full Menu" })).toBeInTheDocument();
   });
 
+  it("renders the lede under the heading", () => {
+    render(
+      <MenuList
+        items={MENU}
+        title="Most ordered this week"
+        lede="Cooked to order in one pure-veg kitchen."
+      />
+    );
+    expect(screen.getByText("Cooked to order in one pure-veg kitchen.")).toBeInTheDocument();
+  });
+
   it("renders only the filters when there is no title", () => {
     render(<MenuList items={MENU} variant="list" />);
     expect(screen.queryByRole("heading", { level: 2 })).not.toBeInTheDocument();
@@ -184,6 +195,18 @@ describe("MenuList", () => {
     await user.keyboard(" ");
     expect(option("All Day")).toHaveAttribute("aria-checked", "true");
     expect(namesIn(container)).toEqual(["Bombay Toastie"]);
+  });
+
+  it("opens on defaultCategory", () => {
+    const { container } = render(<MenuList items={MENU} variant="list" defaultCategory="Sweets" />);
+    expect(option("Sweets")).toHaveAttribute("aria-checked", "true");
+    expect(namesIn(container)).toEqual(["Gulkand Kulfi"]);
+  });
+
+  it("falls back to All when defaultCategory is not on offer", () => {
+    const { container } = render(<MenuList items={MENU} variant="list" defaultCategory="Thalis" />);
+    expect(option("All")).toHaveAttribute("aria-checked", "true");
+    expect(namesIn(container)).toHaveLength(MENU.length);
   });
 
   it("keeps the current category when the chosen option is pressed again", async () => {
@@ -273,6 +296,8 @@ export interface MenuListPanel {
 export interface MenuListFilterProps {
   label: string;
   options: FilterOption[];
+  /** The option chosen on arrival; one of `options`. */
+  defaultValue: string;
   panels: MenuListPanel[];
   note?: ReactNode;
   className?: string | undefined;
@@ -282,8 +307,15 @@ export interface MenuListFilterProps {
  * MenuList's client corner: it holds the chosen option and shows that option's pre-rendered
  * panel. (FilterBar already ignores Radix's `""` when the chosen option is pressed again.)
  */
-export function MenuListFilter({ label, options, panels, note, className }: MenuListFilterProps) {
-  const [value, setValue] = useState(options[0]?.value ?? "");
+export function MenuListFilter({
+  label,
+  options,
+  defaultValue,
+  panels,
+  note,
+  className,
+}: MenuListFilterProps) {
+  const [value, setValue] = useState(defaultValue);
   const panel = panels.find((candidate) => candidate.value === value);
   return (
     <div className={className}>
@@ -377,11 +409,15 @@ export interface MenuListProps extends Omit<ComponentProps<"section">, "title"> 
   /** Filter order and subset; defaults to every category in the dishes, in order. "All" is always first. */
   categories?: string[] | undefined;
   allLabel?: string | undefined;
+  /** The category chosen on arrival; "All" when omitted or not on offer. */
+  defaultCategory?: string | undefined;
   /** Accessible name of the filter group. */
   filterLabel?: string | undefined;
   overline?: ReactNode;
   /** Omit (or pass null) for filters with no section header — the app pattern. */
   title?: ReactNode | null | undefined;
+  /** One sentence under the heading (shown only with a `title`). */
+  lede?: ReactNode;
   action?: ReactNode;
   /** `grid` = cards then an overflow list (website) · `list` = rows only (app). */
   variant?: "grid" | "list" | undefined;
@@ -409,9 +445,11 @@ export function MenuList({
   items,
   categories,
   allLabel = "All",
+  defaultCategory,
   filterLabel = "Filter the menu",
   overline,
   title,
+  lede,
   action,
   variant = "grid",
   gridCount = DEFAULT_GRID_COUNT,
@@ -432,6 +470,10 @@ export function MenuList({
     (name) => name !== allLabel
   );
   const options = [allLabel, ...categoryNames].map((name) => ({ value: name, label: name }));
+  const initial =
+    defaultCategory !== undefined && categoryNames.includes(defaultCategory)
+      ? defaultCategory
+      : allLabel;
 
   const panelFor = (dishes: MenuListItem[]): ReactNode => {
     if (dishes.length === 0) {
@@ -490,6 +532,7 @@ export function MenuList({
           <SectionHeader
             overline={overline}
             title={title}
+            lede={lede}
             action={action}
             headingLevel={headingLevel}
           />
@@ -498,6 +541,7 @@ export function MenuList({
           label={filterLabel}
           options={options}
           panels={panels}
+          defaultValue={initial}
           note={note}
           className={slots.filter()}
         />
@@ -510,7 +554,7 @@ export function MenuList({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- menu-list 2>&1 | tail -8`
-Expected: PASS (15 tests). If the keyboard test fails because FilterBar's roving focus starts elsewhere, read `molecules/filter-bar/filter-bar.tsx` and adjust only the key sequence — the assertion (arrowing to the next option and pressing Space selects it) stays.
+Expected: PASS (18 tests). If the keyboard test fails because FilterBar's roving focus starts elsewhere, read `molecules/filter-bar/filter-bar.tsx` and adjust only the key sequence — the assertion (arrowing to the next option and pressing Space selects it) stays.
 
 - [ ] **Step 6: Stories (card parity with `MenuList.card.html`)**
 
@@ -653,6 +697,20 @@ export const FilterByCategory: Story = {
   },
 };
 
+/** A page linked from "Chai & Coffee" opens on that category. */
+export const PreselectedCategory: Story = {
+  args: { defaultCategory: "Chai & Coffee" },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("radio", { name: "Chai & Coffee" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
+    await expect(canvas.getAllByRole("article")).toHaveLength(2);
+  },
+};
+
+export const WithLede: Story = { args: { lede: "Cooked to order in one pure-veg kitchen." } };
+
 /** A category with no dishes shows the empty state. */
 export const EmptyCategory: Story = {
   args: { categories: ["Small Plates", "Thalis"] },
@@ -682,7 +740,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/ui/src/organisms/menu-list packages/ui/src/index.ts
-git commit -m "feat(ui): MenuList organism
+git commit -m "feat(ui): add the MenuList organism
 
 The filterable menu section: a section header, a FilterBar with All plus
 each category, and per-category panels of cards and overflow rows (grid) or

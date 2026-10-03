@@ -91,7 +91,7 @@ describe("QuotePanel", () => {
     const { container } = render(<QuotePanel {...PLAN} />);
     expect(screen.getByText("₹130")).toBeInTheDocument();
     expect(screen.getByText("a meal")).toBeInTheDocument();
-    expect(container.querySelector("s")).toHaveTextContent("Was ₹140");
+    expect(container.querySelector("s")).toHaveTextContent("was ₹140");
   });
 
   it("lists every line as a term and its value, then the total", () => {
@@ -184,6 +184,7 @@ import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Text } from "../../atoms/text/text";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { StruckPrice } from "../../lib/struck-price";
 import { type KeyValueItem, KeyValueList } from "../../molecules/key-value-list/key-value-list";
 
 const quotePanel = componentVariants({
@@ -195,7 +196,7 @@ const quotePanel = componentVariants({
     price: "flex flex-wrap items-baseline gap-x-2.5 gap-y-1",
     amount: "text-quote-panel-amount font-display text-text-heading",
     unit: "text-body-sm text-text-muted",
-    was: "text-body-sm text-text-muted line-through",
+    was: "text-body-sm",
     lines: "border-t border-border-subtle pt-1.5",
     total:
       "flex justify-between gap-3 border-t border-border-subtle pt-2.5 font-display text-h4 font-black text-text-heading",
@@ -259,7 +260,7 @@ export function QuotePanel({
   amount,
   unit,
   was,
-  wasLabel = "Was",
+  wasLabel = "was",
   lines = [],
   total,
   note,
@@ -298,10 +299,9 @@ export function QuotePanel({
           <span className={slots.amount()}>{amount}</span>
           {unit ? <span className={slots.unit()}>{unit}</span> : null}
           {was ? (
-            <s className={slots.was()}>
-              <span className="sr-only">{wasLabel} </span>
+            <StruckPrice label={wasLabel} className={slots.was()}>
               {was}
-            </s>
+            </StruckPrice>
           ) : null}
         </div>
         {lines.length > 0 ? (
@@ -504,7 +504,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/quote-panel.json packages/ui/src/organisms/quote-panel packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): QuotePanel organism
+git commit -m "feat(ui): add the QuotePanel organism
 
 The calculators' estimate panel in three tones — brand with the diamond,
 ink, and a white light island — with the big amount, a screen-reader-named

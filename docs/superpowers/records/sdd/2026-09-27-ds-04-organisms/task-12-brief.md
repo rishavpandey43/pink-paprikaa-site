@@ -52,11 +52,13 @@ The responsive rule, all CSS at token breakpoints (readme §3.10 — no `window.
     "$type": "dimension",
     "site-header-logo": {
       "$value": "114px",
-      "$description": "Lockup width at the design system header's 60px logo height (lockup viewBox 361.88 × 190.13)."
+      "$description": "Lockup width at the design system header's 60px logo height (lockup viewBox 361.88 × 190.13).",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
     },
     "site-header-logo-compact": {
       "$value": "76px",
-      "$description": "Lockup width at the handoff header's 40px logo height."
+      "$description": "Lockup width at the handoff header's 40px logo height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
     }
   },
   "text": {
@@ -759,11 +761,7 @@ const HANDOFF = {
   links: HANDOFF_LINKS,
   drawerLinks: HANDOFF_DRAWER_LINKS,
   announcement: (
-    <AnnouncementBar
-      href="#homely-meals"
-      endsAt={LAUNCH_ENDS}
-      countdownLabel="Launch price closes in"
-    >
+    <AnnouncementBar href="#homely-meals" endsAt={LAUNCH_ENDS}>
       Launch price: <strong>Classic at ₹130 a meal</strong> for the first 50 subscribers · closes in
     </AnnouncementBar>
   ),
@@ -918,7 +916,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/site-header.json packages/design-tokens/contrast-pairs.json packages/ui/src/organisms/site-header packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): SiteHeader organism
+git commit -m "feat(ui): add the SiteHeader organism
 
 Sticky masthead at the design system's 88px or the handoff's 64px, with a
 skip link, announcement and badge slots, and a nav that shortens by CSS at

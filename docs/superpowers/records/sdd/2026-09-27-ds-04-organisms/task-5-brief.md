@@ -4,22 +4,22 @@
 
 **Dev parity:**
 
-| Dev item                                          | Ruling                         | Where / clause                                                                                                                    |
-| ------------------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| Heading, lede and every question                  | ALREADY                        | test "heads the section with overline, a level-2 title and the lede"                                                              |
-| The first answer open on arrival                  | ALREADY                        | test "opens the first answer by default…"                                                                                         |
-| `defaultOpen` (named questions, or `[]` for none) | ADD — pending contract delta 2 | Accordion already takes `defaultOpen` (Plan 3a); not built until ruled (report)                                                   |
-| Clicking another question swaps the open answer   | ALREADY                        | native `<details name>` (shared `name` asserted); Plan 3a Accordion's `play` proves exclusivity in Chromium                       |
-| `isMultiple` keeps several open                   | ALREADY                        | test "lets several answers stay open with isMultiple"                                                                             |
-| Questions sit one heading level below the section | DROP here                      | Plan 3a's Accordion renders questions in `<summary>` with no heading level (spec §9.2 lists none) — cross-plan note in the report |
-| Two columns stack at 360px                        | ALREADY                        | `lg:grid-cols-2`, one column below                                                                                                |
-| Merges a caller `className`                       | ADD                            | test "merges a caller className"                                                                                                  |
-| axe                                               | ALREADY                        | test "has no accessibility violations"                                                                                            |
-| "A few bakes contain egg" answer                  | DROP                           | C10                                                                                                                               |
-| Stories Default · Multiple · Narrow               | ALREADY                        | Default · Multiple · Mobile                                                                                                       |
-| Story WithoutLede                                 | ADD                            | `WithoutLede`                                                                                                                     |
-| Story HeadingLevels                               | ADD                            | `HeadingLevel3`                                                                                                                   |
-| Stories SecondOpen · AllClosed                    | ADD — pending contract delta 2 | —                                                                                                                                 |
+| Dev item                                          | Ruling    | Where / clause                                                                                                                    |
+| ------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Heading, lede and every question                  | ALREADY   | test "heads the section with overline, a level-2 title and the lede"                                                              |
+| The first answer open on arrival                  | ALREADY   | test "opens the first answer by default…"                                                                                         |
+| `defaultOpen` (named questions, or `[]` for none) | ADD       | contract delta 2 (R110), forwarded to Accordion (Plan 3a); tests "opens the answers named in defaultOpen…", "opens none…"         |
+| Clicking another question swaps the open answer   | ALREADY   | native `<details name>` (shared `name` asserted); Plan 3a Accordion's `play` proves exclusivity in Chromium                       |
+| `isMultiple` keeps several open                   | ALREADY   | test "lets several answers stay open with isMultiple"                                                                             |
+| Questions sit one heading level below the section | DROP here | Plan 3a's Accordion renders questions in `<summary>` with no heading level (spec §9.2 lists none) — cross-plan note in the report |
+| Two columns stack at 360px                        | ALREADY   | `lg:grid-cols-2`, one column below                                                                                                |
+| Merges a caller `className`                       | ADD       | test "merges a caller className"                                                                                                  |
+| axe                                               | ALREADY   | test "has no accessibility violations"                                                                                            |
+| "A few bakes contain egg" answer                  | DROP      | C10                                                                                                                               |
+| Stories Default · Multiple · Narrow               | ALREADY   | Default · Multiple · Mobile                                                                                                       |
+| Story WithoutLede                                 | ADD       | `WithoutLede`                                                                                                                     |
+| Story HeadingLevels                               | ADD       | `HeadingLevel3`                                                                                                                   |
+| Stories SecondOpen · AllClosed                    | ADD       | `SecondOpen` · `AllClosed` (contract delta 2)                                                                                     |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -113,6 +113,19 @@ describe("FaqSection", () => {
     expect([...names][0]).toBeTruthy();
   });
 
+  it("opens the answers named in defaultOpen instead of the first", () => {
+    const { container } = render(<FaqSection title="FAQ" items={ITEMS} defaultOpen={["pause"]} />);
+    const answers = [...container.querySelectorAll("details")];
+    expect(answers[0]).not.toHaveAttribute("open");
+    expect(answers[1]).toHaveAttribute("open");
+    expect(container.querySelectorAll("details[open]")).toHaveLength(1);
+  });
+
+  it("opens none when defaultOpen is empty", () => {
+    const { container } = render(<FaqSection title="FAQ" items={ITEMS} defaultOpen={[]} />);
+    expect(container.querySelectorAll("details[open]")).toHaveLength(0);
+  });
+
   it("lets several answers stay open with isMultiple", () => {
     const { container } = render(<FaqSection title="FAQ" items={ITEMS} isMultiple />);
     for (const answer of container.querySelectorAll("details")) {
@@ -175,6 +188,8 @@ export interface FaqSectionProps extends Omit<ComponentProps<"section">, "title"
   lede?: ReactNode;
   /** One or two short sentences per answer. The first opens by default. */
   items: AccordionItem[];
+  /** The `value`s of the answers open on arrival (default: the first; `[]` for none). */
+  defaultOpen?: string[] | undefined;
   /** Allow several answers open at once. */
   isMultiple?: boolean | undefined;
   /** Beside the heading, sticky at lg and up — e.g. the handoff's "Still have a question?" card. */
@@ -188,6 +203,7 @@ export function FaqSection({
   title,
   lede,
   items,
+  defaultOpen,
   isMultiple = false,
   aside,
   headingLevel = 2,
@@ -207,7 +223,7 @@ export function FaqSection({
           />
           {aside}
         </div>
-        <Accordion items={items} isMultiple={isMultiple} />
+        <Accordion items={items} defaultOpen={defaultOpen} isMultiple={isMultiple} />
       </div>
     </section>
   );
@@ -217,7 +233,7 @@ export function FaqSection({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- faq-section 2>&1 | tail -8`
-Expected: PASS (6 tests).
+Expected: PASS (8 tests).
 
 - [ ] **Step 6: Stories (card parity with `FaqSection.card.html` + handoff `FaqBlock`)**
 
@@ -364,6 +380,11 @@ export const HandoffWithAside: Story = {
 
 export const Multiple: Story = { args: { isMultiple: true } };
 
+/** A page that links to one answer opens that one instead of the first. */
+export const SecondOpen: Story = { args: { defaultOpen: ["pause"] } };
+
+export const AllClosed: Story = { args: { defaultOpen: [] } };
+
 /** No lede: the heading sits alone in its column and the answers carry the section. */
 export const WithoutLede: Story = { args: { lede: undefined } };
 
@@ -392,7 +413,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/faq-section.json packages/ui/src/organisms/faq-section packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): FaqSection organism
+git commit -m "feat(ui): add the FaqSection organism
 
 Heading column and native accordion side by side from lg, stacked below;
 the first answer opens by default, one at a time unless isMultiple. The

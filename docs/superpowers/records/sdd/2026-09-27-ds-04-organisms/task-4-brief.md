@@ -4,24 +4,24 @@
 
 **Dev parity:**
 
-| Dev item                                         | Ruling                         | Where / clause                                                                                  |
-| ------------------------------------------------ | ------------------------------ | ----------------------------------------------------------------------------------------------- |
-| Heading and every review render                  | ALREADY                        | tests "heads the wall…", "lists one review card per review…"                                    |
-| The component adds the quote marks               | ALREADY                        | ReviewCard's behaviour (Plan 3b, spec §9.2); this plan asserts the verbatim text                |
-| `lede` under the heading                         | ADD — pending contract delta 1 | not built until the controller rules (report)                                                   |
-| `headingLevel`                                   | ALREADY                        | test "takes its heading level from headingLevel"                                                |
-| Each score announced as an image                 | ADD                            | test "announces each score as an image with its value"                                          |
-| No score when a review carries none              | ADD                            | test "omits the score for a review that carries none"                                           |
-| Cards pale pink by default (`variant = "brand"`) | DROP                           | D1 — the design system's `TestimonialWall.jsx` defaults `variant="default"`; `brand` is tested  |
-| `mark="symbol"` forced on every card             | DROP                           | D1 — the design system passes no `mark`; a review's own `mark` passes through `ReviewCardProps` |
-| Auto-fit grid survives 360px                     | ALREADY                        | `autogrid` test                                                                                 |
-| Merges a caller `className`                      | ADD                            | test "merges a caller className"                                                                |
-| axe                                              | ALREADY                        | test "has no accessibility violations"                                                          |
-| `WallReview` type                                | ALREADY                        | `ReviewCardProps` (contract §7)                                                                 |
-| Stories Default · DefaultCards · Narrow          | ALREADY                        | Default · BrandCards (the other variant) · Mobile                                               |
-| Story SixReviews (invented guests)               | DROP                           | spec §10.1 — real reviews only; four exist (`FourReviews`)                                      |
-| Story WithLede                                   | ADD — pending contract delta 1 | —                                                                                               |
-| Story WithoutScores                              | ADD                            | `WithoutScores`                                                                                 |
+| Dev item                                         | Ruling  | Where / clause                                                                                  |
+| ------------------------------------------------ | ------- | ----------------------------------------------------------------------------------------------- |
+| Heading and every review render                  | ALREADY | tests "heads the wall…", "lists one review card per review…"                                    |
+| The component adds the quote marks               | ALREADY | ReviewCard's behaviour (Plan 3b, spec §9.2); this plan asserts the verbatim text                |
+| `lede` under the heading                         | ADD     | contract delta 1 (R110); test "renders the lede under the heading"                              |
+| `headingLevel`                                   | ALREADY | test "takes its heading level from headingLevel"                                                |
+| Each score announced as an image                 | ADD     | test "announces each score as an image with its value"                                          |
+| No score when a review carries none              | ADD     | test "omits the score for a review that carries none"                                           |
+| Cards pale pink by default (`variant = "brand"`) | DROP    | D1 — the design system's `TestimonialWall.jsx` defaults `variant="default"`; `brand` is tested  |
+| `mark="symbol"` forced on every card             | DROP    | D1 — the design system passes no `mark`; a review's own `mark` passes through `ReviewCardProps` |
+| Auto-fit grid survives 360px                     | ALREADY | `autogrid` test                                                                                 |
+| Merges a caller `className`                      | ADD     | test "merges a caller className"                                                                |
+| axe                                              | ALREADY | test "has no accessibility violations"                                                          |
+| `WallReview` type                                | ALREADY | `ReviewCardProps` (contract §7)                                                                 |
+| Stories Default · DefaultCards · Narrow          | ALREADY | Default · BrandCards (the other variant) · Mobile                                               |
+| Story SixReviews (invented guests)               | DROP    | spec §10.1 — real reviews only; four exist (`FourReviews`)                                      |
+| Story WithLede                                   | ADD     | `WithLede` (contract delta 1)                                                                   |
+| Story WithoutScores                              | ADD     | `WithoutScores`                                                                                 |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -61,6 +61,19 @@ describe("TestimonialWall", () => {
     expect(screen.getByText("Guests")).toBeInTheDocument();
   });
 
+  it("renders the lede under the heading", () => {
+    render(
+      <TestimonialWall
+        title="Reviews"
+        lede="Verified Google reviews, in the guests' own words."
+        reviews={REVIEWS}
+      />
+    );
+    expect(
+      screen.getByText("Verified Google reviews, in the guests' own words.")
+    ).toBeInTheDocument();
+  });
+
   it("takes its heading level from headingLevel", () => {
     render(<TestimonialWall title="Reviews" reviews={REVIEWS} headingLevel={3} />);
     expect(screen.getByRole("heading", { level: 3, name: "Reviews" })).toBeInTheDocument();
@@ -76,8 +89,9 @@ describe("TestimonialWall", () => {
 
   it("dresses every card in the wall's variant", () => {
     render(<TestimonialWall title="Reviews" reviews={REVIEWS} variant="brand" />);
+    // ReviewCard's brand variant is Card's pale-pink `feature` surface.
     for (const card of screen.getAllByRole("figure")) {
-      expect(card).toHaveAttribute("data-surface", "brand");
+      expect(card).toHaveAttribute("data-surface", "soft");
     }
   });
 
@@ -146,6 +160,8 @@ const testimonialWall = componentVariants({
 export interface TestimonialWallProps extends Omit<ComponentProps<"section">, "title"> {
   overline?: ReactNode;
   title: ReactNode;
+  /** One sentence under the heading. */
+  lede?: ReactNode;
   /** Real guest reviews only — three or six read best. */
   reviews: ReviewCardProps[];
   variant?: "default" | "brand" | undefined;
@@ -156,6 +172,7 @@ export interface TestimonialWallProps extends Omit<ComponentProps<"section">, "t
 export function TestimonialWall({
   overline,
   title,
+  lede,
   reviews,
   variant = "default",
   headingLevel = 2,
@@ -166,7 +183,7 @@ export function TestimonialWall({
   return (
     <section className={slots.root({ className })} {...props}>
       <div className={slots.inner()}>
-        <SectionHeader overline={overline} title={title} headingLevel={headingLevel} />
+        <SectionHeader overline={overline} title={title} lede={lede} headingLevel={headingLevel} />
         <ul className={slots.grid()}>
           {reviews.map((review, index) => (
             <li key={index} className={slots.item()}>
@@ -187,7 +204,7 @@ export function TestimonialWall({
 - [ ] **Step 4: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- testimonial-wall 2>&1 | tail -8`
-Expected: PASS (9 tests). The score assertions read Rating's name ("5 out of 5", Plan 2b via ReviewCard); if Task 0 found another wording, match it.
+Expected: PASS (10 tests). The score assertions read Rating's name ("5.0 out of 5", Plan 2b via ReviewCard — `value.toFixed(1)`, confirmed in Task 0).
 
 - [ ] **Step 5: Stories (card parity with `TestimonialWall.card.html`)**
 
@@ -234,6 +251,10 @@ export const FourReviews: Story = { args: { reviews: GOOGLE_REVIEWS } };
 
 export const OnTint: Story = { args: { className: "bg-surface-page-alt" } };
 
+export const WithLede: Story = {
+  args: { lede: "Verified Google reviews, in the guests' own words." },
+};
+
 /** Quotes with no score still carry the card — the words are the proof, not the number. */
 export const WithoutScores: Story = {
   args: { reviews: GOOGLE_REVIEWS.slice(1).map((review) => ({ ...review, rating: undefined })) },
@@ -262,7 +283,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/ui/src/organisms/testimonial-wall packages/ui/src/index.ts
-git commit -m "feat(ui): TestimonialWall organism
+git commit -m "feat(ui): add the TestimonialWall organism
 
 A section header over an auto-fitting grid of review cards in one variant;
 stories show the verified Google reviews verbatim instead of the design

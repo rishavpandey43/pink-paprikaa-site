@@ -4,30 +4,30 @@
 
 **Dev parity:**
 
-| Dev item                                                     | Ruling                         | Where / clause                                                                                      |
-| ------------------------------------------------------------ | ------------------------------ | --------------------------------------------------------------------------------------------------- |
-| Closed until the trigger is used                             | ALREADY                        | test "opens from its trigger…"                                                                      |
-| Named by its title; described by its description             | ALREADY                        | same test                                                                                           |
-| Escape closes and reports `onOpenChange(false)`              | ALREADY                        | tests "closes on Escape…", "reports open changes…"                                                  |
-| The close glyph closes                                       | ALREADY                        | test "closes from its labelled close button"                                                        |
-| `hasCloseButton={false}` — a decision that must be answered  | ADD — pending contract delta 4 | not built until ruled (report)                                                                      |
-| Focus moves into the dialog when it opens                    | ADD                            | test "moves focus into the dialog when it opens"                                                    |
-| Footer actions render and work                               | ALREADY                        | test "renders the footer actions"                                                                   |
-| Controlled open state holds                                  | ALREADY                        | test "reports open changes and stays open when controlled"                                          |
-| Sheet: top corners only, plus a grab handle                  | ADD                            | the sheet test also asserts no `rounded-xl`                                                         |
-| Three widths                                                 | ALREADY                        | `it.each` sizes (token widths, D4)                                                                  |
-| `position="container"` anchors inside a phone frame          | ALREADY                        | `portalContainer` + the frame's `contain-layout` (AppShell, Plan 2c); story `InsideAPhoneFrame` ADD |
-| A scrim over everything behind it                            | ADD                            | test "lays the ink scrim over the page behind it"                                                   |
-| Merges a caller `className`                                  | ADD — pending contract delta 5 | `DialogProps` does not extend native props (contract §7)                                            |
-| axe                                                          | ALREADY                        | test "has no accessibility violations while open"                                                   |
-| The body scrolls; header and footer never leave the screen   | ADD                            | `body` slot `min-h-0 flex-1 overflow-y-auto`, `shrink-0` header/footer, test "scrolls its body…"    |
-| Footer wraps at 360px                                        | ALREADY                        | `flex-wrap`                                                                                         |
-| `aria-describedby={undefined}` opt-out                       | ALREADY                        | Radix 1.1.23 omits it without a Description, no warning (Interfaces)                                |
-| `isOpen` / `isDefaultOpen` names                             | DROP                           | spec §8.2 — `open` / `defaultOpen` / `onOpenChange`                                                 |
-| Stories Default · Sheet · WithDescription · WithForm · Sizes | ALREADY                        | Playground · Sheet · Large · Playground (`BOOKING_FORM`) · CentredModal/Playground/Large            |
-| Story MustBeAnswered                                         | ADD — pending contract delta 4 | —                                                                                                   |
-| Story InsideAPhoneFrame                                      | ADD                            | `InsideAPhoneFrame`                                                                                 |
-| Story Smallest                                               | ADD                            | `Mobile`                                                                                            |
+| Dev item                                                     | Ruling  | Where / clause                                                                                      |
+| ------------------------------------------------------------ | ------- | --------------------------------------------------------------------------------------------------- |
+| Closed until the trigger is used                             | ALREADY | test "opens from its trigger…"                                                                      |
+| Named by its title; described by its description             | ALREADY | same test                                                                                           |
+| Escape closes and reports `onOpenChange(false)`              | ALREADY | tests "closes on Escape…", "reports open changes…"                                                  |
+| The close glyph closes                                       | ALREADY | test "closes from its labelled close button"                                                        |
+| `hasCloseButton={false}` — a decision that must be answered  | ADD     | contract delta 4 (R110): hides the close button only; test "hides only the close button…"           |
+| Focus moves into the dialog when it opens                    | ADD     | test "moves focus into the dialog when it opens"                                                    |
+| Footer actions render and work                               | ALREADY | test "renders the footer actions"                                                                   |
+| Controlled open state holds                                  | ALREADY | test "reports open changes and stays open when controlled"                                          |
+| Sheet: top corners only, plus a grab handle                  | ADD     | the sheet test also asserts no `rounded-xl`                                                         |
+| Three widths                                                 | ALREADY | `it.each` sizes (token widths, D4)                                                                  |
+| `position="container"` anchors inside a phone frame          | ALREADY | `portalContainer` + the frame's `contain-layout` (AppShell, Plan 2c); story `InsideAPhoneFrame` ADD |
+| A scrim over everything behind it                            | ADD     | test "lays the ink scrim over the page behind it"                                                   |
+| Merges a caller `className`                                  | ADD     | contract delta 5 (R110): onto the panel; test "merges a caller className onto the panel"            |
+| axe                                                          | ALREADY | test "has no accessibility violations while open"                                                   |
+| The body scrolls; header and footer never leave the screen   | ADD     | `body` slot `min-h-0 flex-1 overflow-y-auto`, `shrink-0` header/footer, test "scrolls its body…"    |
+| Footer wraps at 360px                                        | ALREADY | `flex-wrap`                                                                                         |
+| `aria-describedby={undefined}` opt-out                       | ALREADY | Radix 1.1.23 omits it without a Description, no warning (Interfaces)                                |
+| `isOpen` / `isDefaultOpen` names                             | DROP    | spec §8.2 — `open` / `defaultOpen` / `onOpenChange`                                                 |
+| Stories Default · Sheet · WithDescription · WithForm · Sizes | ALREADY | Playground · Sheet · Large · Playground (`BOOKING_FORM`) · CentredModal/Playground/Large            |
+| Story MustBeAnswered                                         | ADD     | `MustBeAnswered` (contract delta 4) — controlled, own footer actions, `play`                        |
+| Story InsideAPhoneFrame                                      | ADD     | `InsideAPhoneFrame`                                                                                 |
+| Story Smallest                                               | ADD     | `Mobile`                                                                                            |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -50,9 +50,19 @@ Implementer: copy this table into your report, extended with anything the plan m
 {
   "spacing": {
     "$type": "dimension",
-    "dialog-sm": { "$value": "400px" },
-    "dialog-md": { "$value": "460px", "$description": "Design system Dialog default width." },
-    "dialog-lg": { "$value": "640px" }
+    "dialog-sm": {
+      "$value": "400px",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "dialog-md": {
+      "$value": "460px",
+      "$description": "Design system Dialog default width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "dialog-lg": {
+      "$value": "640px",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    }
   },
   "text": {
     "$type": "typography",
@@ -150,6 +160,34 @@ describe("Dialog", () => {
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledWith(false);
     expect(screen.getByRole("dialog", { name: "Remove this item?" })).toBeInTheDocument();
+  });
+
+  it("hides only the close button with hasCloseButton={false}; Escape still asks to close", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <Dialog
+        open
+        onOpenChange={onOpenChange}
+        hasCloseButton={false}
+        title="Remove this item?"
+        footer={<button type="button">Keep it</button>}
+      >
+        Chilli Paneer will come off your order.
+      </Dialog>
+    );
+    const dialog = screen.getByRole("dialog", { name: "Remove this item?" });
+    expect(within(dialog).queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "Keep it" })).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it("merges a caller className onto the panel", () => {
+    render(<Dialog defaultOpen title="Book a table" className="shadow-2" />);
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveClass("shadow-2");
+    expect(dialog).not.toHaveClass("shadow-4");
   });
 
   it("locks page scroll while open", async () => {
@@ -262,6 +300,7 @@ import { Dialog as DialogPrimitive } from "radix-ui";
 
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
 
 const dialog = componentVariants({
   slots: {
@@ -304,8 +343,16 @@ export interface DialogProps
   /** Buttons, right-aligned. */
   footer?: ReactNode;
   closeLabel?: string | undefined;
+  /**
+   * `false` hides the close button only. Escape and the scrim still ask to close through
+   * `onOpenChange` — a decision that must be answered is controlled, keeps itself open, and gives
+   * its own action buttons in `footer`.
+   */
+  hasCloseButton?: boolean | undefined;
   /** Portal target; default `document.body`. Pass a positioned frame (AppShell's overlay slot) to keep the dialog inside it. */
   portalContainer?: HTMLElement | null | undefined;
+  /** Merged onto the panel (the element with `role="dialog"`). */
+  className?: string | undefined;
 }
 
 /**
@@ -322,7 +369,9 @@ export function Dialog({
   variant = "modal",
   size = "md",
   closeLabel = "Close",
+  hasCloseButton = true,
   portalContainer = null,
+  className,
   ...root
 }: DialogProps) {
   const slots = dialog({ variant, size });
@@ -331,7 +380,7 @@ export function Dialog({
       {trigger ? <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger> : null}
       <DialogPrimitive.Portal container={portalContainer}>
         <DialogPrimitive.Overlay className={slots.overlay()}>
-          <DialogPrimitive.Content data-surface="light" className={slots.content()}>
+          <DialogPrimitive.Content data-surface="light" className={slots.content({ className })}>
             {variant === "sheet" ? (
               <div aria-hidden className={slots.handle()}>
                 <span className={slots.handleBar()} />
@@ -339,17 +388,19 @@ export function Dialog({
             ) : null}
             <div className={slots.header()}>
               <DialogPrimitive.Title className={slots.title()}>{title}</DialogPrimitive.Title>
-              <DialogPrimitive.Close asChild>
-                <IconButton icon={X} label={closeLabel} size="sm" variant="ghost" />
-              </DialogPrimitive.Close>
+              {hasCloseButton ? (
+                <DialogPrimitive.Close asChild>
+                  <IconButton icon={X} label={closeLabel} size="sm" variant="ghost" />
+                </DialogPrimitive.Close>
+              ) : null}
             </div>
-            {description ? (
+            {isShown(description) ? (
               <DialogPrimitive.Description className={slots.description()}>
                 {description}
               </DialogPrimitive.Description>
             ) : null}
-            {children ? <div className={slots.body()}>{children}</div> : null}
-            {footer ? <div className={slots.footer()}>{footer}</div> : null}
+            {isShown(children) ? <div className={slots.body()}>{children}</div> : null}
+            {isShown(footer) ? <div className={slots.footer()}>{footer}</div> : null}
           </DialogPrimitive.Content>
         </DialogPrimitive.Overlay>
       </DialogPrimitive.Portal>
@@ -361,7 +412,7 @@ export function Dialog({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- organisms/dialog 2>&1 | tail -8`
-Expected: PASS (15 tests).
+Expected: PASS (17 tests).
 
 - [ ] **Step 6: Stories (card parity with `Dialog.card.html`)**
 
@@ -374,7 +425,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { Phone } from "lucide-react";
 import { useState } from "react";
-import { expect, screen, waitFor } from "storybook/test";
+import { expect, screen, waitFor, within } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
 import { Input } from "../../atoms/input/input";
@@ -476,6 +527,50 @@ export const KeyboardFlow: Story = {
 };
 
 /**
+ * A decision that must be answered: no close button, and the caller keeps the dialog open when
+ * Escape or the scrim ask to close (it passes no `onOpenChange`), so the footer's buttons are the
+ * only way out.
+ */
+function MustBeAnsweredDialog(args: DialogProps) {
+  const [open, setOpen] = useState(true);
+  return (
+    <Dialog
+      {...args}
+      open={open}
+      hasCloseButton={false}
+      footer={
+        <>
+          <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
+            Keep It
+          </Button>
+          <Button size="sm" onClick={() => setOpen(false)}>
+            Remove
+          </Button>
+        </>
+      }
+    />
+  );
+}
+
+export const MustBeAnswered: Story = {
+  args: {
+    trigger: undefined,
+    title: "Remove this item?",
+    children: "Chilli Paneer will come off your order.",
+  },
+  parameters: OPEN_DIALOG_A11Y,
+  render: (args) => <MustBeAnsweredDialog {...args} />,
+  play: async ({ userEvent }) => {
+    const dialog = await screen.findByRole("dialog", { name: "Remove this item?" });
+    await expect(within(dialog).queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
+    await expect(screen.getByRole("dialog", { name: "Remove this item?" })).toBeVisible();
+    await userEvent.click(within(dialog).getByRole("button", { name: "Keep It" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  },
+};
+
+/**
  * The sheet inside a phone frame: the frame is `portalContainer`, and its `contain-layout` (as
  * AppShell's frame has) makes it the containing block for the fixed scrim, so the sheet anchors to
  * the frame, not the viewport.
@@ -534,7 +629,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/dialog.json packages/ui/src/organisms/dialog packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): Dialog organism
+git commit -m "feat(ui): add the Dialog organism
 
 Radix Dialog as the design system's modal and bottom sheet: title-named,
 optionally described, focus-trapped, closed by Escape, the scrim or a named

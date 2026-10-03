@@ -605,7 +605,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/review-carousel.json packages/ui/eslint.config.mjs packages/ui/src/organisms/review-carousel packages/ui/src/index.ts
-git commit -m "feat(ui): ReviewCarousel organism
+git commit -m "feat(ui): add the ReviewCarousel organism
 
 The handoff's Google reviews as a scroll-snap track that is a focusable
 region named by its heading, paged by previous/next buttons that stay

@@ -50,7 +50,8 @@ Implementer: copy this table into your report, extended with anything the plan m
     "$type": "dimension",
     "cart-panel-thumb": {
       "$value": "56px",
-      "$description": "The dish tile beside each cart line (design system CartPanel)."
+      "$description": "The dish tile beside each cart line (design system CartPanel).",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
     }
   }
 }
@@ -654,7 +655,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/cart-panel.json packages/ui/src/organisms/cart-panel packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): CartPanel organism
+git commit -m "feat(ui): add the CartPanel organism
 
 The whole cart as a client component: lines with the veg mark, note, unit
 price and a quantity stepper that reports changes up, an optional kitchen

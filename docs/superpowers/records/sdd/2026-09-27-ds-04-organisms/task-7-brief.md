@@ -4,26 +4,26 @@
 
 **Dev parity:**
 
-| Dev item                                              | Ruling                         | Where / clause                                                               |
-| ----------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------- |
-| Leads with the current step's label and note          | ALREADY                        | test "heads the screen with the current step…" (and a `status` live region)  |
-| The heading moves as the kitchen works                | ALREADY                        | same test at `current={1}`                                                   |
-| "Preparing" until the last step, then "Ready"         | DROP                           | D9 — status copy is the `badge` slot (Contract deviations)                   |
-| Clamps an index past the end                          | ALREADY                        | test "clamps a current index past the end…"                                  |
-| Code and outlet on one line                           | ALREADY                        | test "prints the order code with its label and the outlet"                   |
-| StepTracker composed, current step marked             | ALREADY                        | test "marks the current step in the tracker"                                 |
-| The tracker list is named ("Order progress")          | ADD — pending contract delta 3 | not built until ruled (report)                                               |
-| Bare-string steps                                     | DROP                           | spec §8.2 — object lists only                                                |
-| What was paid and how                                 | ALREADY                        | test "formats the total beside the payment line"                             |
-| No action when there is nowhere to go                 | ADD                            | test "renders no action when none is given"                                  |
-| `onDone` / `doneLabel`                                | DROP                           | spec §8.1 — slots, not callbacks (`action`)                                  |
-| Card frame rounds and clips                           | ALREADY                        | test "frames itself as a light card with variant=card"                       |
-| Merges a caller `className`                           | ADD                            | test "merges a caller className"                                             |
-| axe                                                   | ALREADY                        | test "has no accessibility violations"                                       |
-| Default steps, code, outlet, payment, total           | DROP                           | D9                                                                           |
-| Stories Default · EveryState · WithAction · CardFrame | ALREADY                        | Playground · OrderIn/OnTheTandoor/Ready · Playground (`action` arg) · AsCard |
-| Story DeliverySteps                                   | ADD                            | `DeliverySteps`                                                              |
-| Story Smallest                                        | ADD                            | `Mobile`                                                                     |
+| Dev item                                              | Ruling  | Where / clause                                                               |
+| ----------------------------------------------------- | ------- | ---------------------------------------------------------------------------- |
+| Leads with the current step's label and note          | ALREADY | test "heads the screen with the current step…" (and a `status` live region)  |
+| The heading moves as the kitchen works                | ALREADY | same test at `current={1}`                                                   |
+| "Preparing" until the last step, then "Ready"         | DROP    | D9 — status copy is the `badge` slot (Contract deviations)                   |
+| Clamps an index past the end                          | ALREADY | test "clamps a current index past the end…"                                  |
+| Code and outlet on one line                           | ALREADY | test "prints the order code with its label and the outlet"                   |
+| StepTracker composed, current step marked             | ALREADY | test "marks the current step in the tracker"                                 |
+| The tracker list is named ("Order progress")          | ADD     | contract delta 3 (R110): `progressLabel`; test "marks the current step…"     |
+| Bare-string steps                                     | DROP    | spec §8.2 — object lists only                                                |
+| What was paid and how                                 | ALREADY | test "formats the total beside the payment line"                             |
+| No action when there is nowhere to go                 | ADD     | test "renders no action when none is given"                                  |
+| `onDone` / `doneLabel`                                | DROP    | spec §8.1 — slots, not callbacks (`action`)                                  |
+| Card frame rounds and clips                           | ALREADY | test "frames itself as a light card with variant=card"                       |
+| Merges a caller `className`                           | ADD     | test "merges a caller className"                                             |
+| axe                                                   | ALREADY | test "has no accessibility violations"                                       |
+| Default steps, code, outlet, payment, total           | DROP    | D9                                                                           |
+| Stories Default · EveryState · WithAction · CardFrame | ALREADY | Playground · OrderIn/OnTheTandoor/Ready · Playground (`action` arg) · AsCard |
+| Story DeliverySteps                                   | ADD     | `DeliverySteps`                                                              |
+| Story Smallest                                        | ADD     | `Mobile`                                                                     |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -72,12 +72,19 @@ describe("OrderTracker", () => {
     expect(screen.getByRole("heading", { level: 2, name: "Ready for pickup" })).toBeInTheDocument();
   });
 
-  it("marks the current step in the tracker", () => {
+  it("marks the current step in the tracker, named Order progress", () => {
     render(<OrderTracker steps={STEPS} current={1} code="PPK-4821" />);
-    const tracker = screen.getByRole("list");
+    const tracker = screen.getByRole("list", { name: "Order progress" });
     expect(
       within(tracker).getByText("On the tandoor").closest('[aria-current="step"]')
     ).not.toBeNull();
+  });
+
+  it("takes the tracker's name from progressLabel", () => {
+    render(
+      <OrderTracker steps={STEPS} current={1} code="PPK-4821" progressLabel="Delivery progress" />
+    );
+    expect(screen.getByRole("list", { name: "Delivery progress" })).toBeInTheDocument();
   });
 
   it("prints the order code with its label and the outlet", () => {
@@ -204,6 +211,8 @@ export interface OrderTrackerProps
   payment?: string | undefined;
   /** The word before the method. */
   paymentLabel?: string | undefined;
+  /** The step list's accessible name. */
+  progressLabel?: string | undefined;
   /** The status chip in the header, e.g. `<Badge tone="ink">Preparing</Badge>`. */
   badge?: ReactNode;
   /** Usually one full-width secondary Button ("Back to Home"). */
@@ -224,6 +233,7 @@ export function OrderTracker({
   total,
   payment,
   paymentLabel = "Paid",
+  progressLabel = "Order progress",
   badge,
   action,
   variant = "flush",
@@ -259,7 +269,7 @@ export function OrderTracker({
         </Text>
       </PatternField>
       <div className={slots.body()}>
-        <StepTracker steps={steps} current={index} />
+        <StepTracker steps={steps} current={index} aria-label={progressLabel} />
         <Divider variant="diamond" className={slots.divider()} />
         {hasReceipt ? (
           <Card variant="quiet" padding="sm">
@@ -285,7 +295,7 @@ export function OrderTracker({
 - [ ] **Step 4: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- order-tracker 2>&1 | tail -8`
-Expected: PASS (10 tests).
+Expected: PASS (11 tests).
 
 - [ ] **Step 5: Stories (card parity with `OrderTracker.card.html`)**
 
@@ -398,7 +408,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/ui/src/organisms/order-tracker packages/ui/src/index.ts
-git commit -m "feat(ui): OrderTracker organism
+git commit -m "feat(ui): add the OrderTracker organism
 
 A flooded-pink status header that announces the current step politely,
 the step tracker, and the receipt with the total in rupees; flush for the

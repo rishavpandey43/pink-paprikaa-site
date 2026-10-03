@@ -293,7 +293,7 @@ const siteFooter = componentVariants({
   slots: {
     root: "relative",
     pattern: "absolute inset-0",
-    grid: "autogrid-min-sm gap-site-footer-gap pt-site-footer-top relative container-page grid pb-8",
+    grid: "gap-site-footer-gap pt-site-footer-top relative container-page grid autogrid-min-sm pb-8",
     brand: "flex flex-col items-start gap-3.5",
     social: "flex gap-2",
     column: "flex min-w-0 flex-col gap-3.5",
@@ -702,7 +702,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/site-footer.json packages/ui/src/organisms/site-footer packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): SiteFooter organism
+git commit -m "feat(ui): add the SiteFooter organism
 
 Pink or ink footer with brand block, link columns as labelled navs (plain
 lines stay plain), social links and the legal bar, all rendered through

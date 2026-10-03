@@ -27,3 +27,26 @@ Ledger: P5-D fixes ride with 2b batch E implementer (base a8cbad4)
 P5-D: done inside 2b batch E dispatch (21cf1a2 R63 markers, 6ee9190 items 1–8). R65 + hit marker carried to 2b batch F.
 Review P5-D: items 1–4, 6–8 ADDRESSED; item 5 Important — marker spec doesn't implement R63 for used non-size markers (dock-clearance ["bottom"] will fail when 3a lands) → 2b carried-fixes-G item 1. Note: DietMark uses text-veg → R65 covers.
 Deferred plan 5 specimens (DiamondMotif, HeatScale, MarkLegibility rows) now unblocked → 2b carried-fixes-G item 4.
+SLIM MODE. Remaining: T7, T9–T14 then T15 gauntlet. Plans frozen at f1a6c3e.
+Ledger 2026-10-03: P5-E = T7 Layout + T9 Marketing foundations + T10 Website kit dispatched base c66c71d — foreground. Review of P5-E runs in parallel with P5-F (T11–T13).
+P5-E: DONE_WITH_CONCERNS (db81a7e T7, a2c7d09 T9, cbb384b T10; sb 103/970). Rulings: DepthLadder from tokensWithPrefix; no compactActions below-lg; toast in-document; Cluster min-w-0.
+Ledger: P5-F = T11 App kit + T12 Marketing kit + T13 RHF/Zod dispatched base cbb384b; review E (c66c71d..cbb384b) in parallel — foreground.
+Review E: T7✅ T9✅ T10✅; 1 Important (nested booking/menu dialogs @ website-kit.tsx:79); Minors → T15 wave.
+P5-F: DONE (8a6a58c T11, 4cc5243 T12, 463018d T13; sb 107/989).
+Ledger: T14 docs + carried E Important dispatched base 463018d; review F (cbb384b..463018d) in parallel — foreground.
+Review F: T11✅ T12✅ T13✅ Approve; Minors → T15 wave.
+T14: DONE_WITH_CONCERNS (4b7cd58 drawer/booking, 5b9147a docs; sb 107/989).
+Ledger: T15 gauntlet + whole-branch review (c66c71d..HEAD) + T14 review in parallel — foreground; then ONE fix wave.
+T15 gauntlet (pre-wave, 5b9147a): run-many 12 projects; tokens 288; ui 108/1619; storybook 107/989; format/sync/founder clean.
+Review T14: ✅ + Important fix ✅ Approve; Minors → wave.
+P5 whole-branch: With fixes; 2 Important (ItemSheet frame, Guests Field) + minors.
+T15 fix wave: complete (21f4185, 6301784; ui 1620; sb 989/107).
+P5 remaining work: complete. HEAD 6301784.
+Ruling R121: DepthLadder names from tokensWithPrefix("shadow-","primitive") including shadow-inset — cost if wrong: extra chip.
+Ruling R122: no compactActions; drawer covers below-lg — cost if wrong: 360 overflow vs a compact row.
+Ruling R123: toast play is in-document (pop starts opacity 0) — cost if wrong: flake.
+Ruling R124: Cluster cards min-w-0 not min-w-50 — cost if wrong: layout specimen width.
+Ruling R125: T13 shouldFocusError false; empty submit focuses [name=name] — cost if wrong: RHF default focus.
+Ruling R126: living founder check is guard:founder exit 0 — cost if wrong: raw grep on the ban sentence.
+Ruling R127: QuantityStepper takes Field control a11y props; stepper min 1 so KeyboardOnly +1×5 from 10 hits schema 15 — cost if wrong: guests a11y or the play.
+RESUME HERE: all remaining slim tasks done; do not push.

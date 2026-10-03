@@ -304,7 +304,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/action-dock.json packages/ui/src/organisms/action-dock packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): ActionDock organism
+git commit -m "feat(ui): add the ActionDock organism
 
 The handoff's fixed WhatsApp action as one element restyled by CSS: a white
 bottom bar with the call icon on phones, a floating pill from md. Both

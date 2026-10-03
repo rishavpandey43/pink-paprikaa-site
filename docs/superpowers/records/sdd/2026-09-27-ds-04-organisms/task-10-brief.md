@@ -47,7 +47,8 @@ Server-safe and isomorphic: link tabs (items with `href`) render from a server p
     "$type": "dimension",
     "tab-bar-count": {
       "$value": "16px",
-      "$description": "Count pill height and minimum width (design system TabBar)."
+      "$description": "Count pill height and minimum width (design system TabBar).",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
     }
   },
   "text": {
@@ -444,7 +445,7 @@ pnpm nx build @pink-paprikaa-web/design-tokens --skip-nx-cache \
   && pnpm nx run-many -t typecheck lint test -p @pink-paprikaa-web/ui @pink-paprikaa-web/design-tokens --skip-nx-cache --outputStyle=static \
   && pnpm nx run @pink-paprikaa-web/storybook:build
 git add packages/design-tokens/tokens/component/tab-bar.json packages/ui/src/organisms/tab-bar packages/ui/src/lib/component-variants.ts packages/ui/src/index.ts
-git commit -m "feat(ui): TabBar organism
+git commit -m "feat(ui): add the TabBar organism
 
 The app's 64px bottom navigation as a labelled nav: link tabs through
 linkAs or button tabs that report onValueChange, the current one marked

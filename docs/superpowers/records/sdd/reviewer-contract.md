@@ -1,7 +1,7 @@
-# Task reviewer contract (design-system rewrite, plans 2b–5)
+# Reviewer contract (slim, from 2026-10-03)
 
-Read-only: no edits, commits, or subagents. Method and output contract: `/Users/rishavpa/.claude/plugins/cache/claude-plugins-official/superpowers/6.4.1/skills/subagent-driven-development/task-reviewer-prompt.md` — follow it exactly (spec compliance AND task quality; Critical/Important/Minor; "⚠️ Cannot verify from diff").
+Read-only. No edits, commits or subagents. Inputs: the task file(s) in `docs/superpowers/slim/`, `docs/superpowers/slim/RULES.md`, the batch report, and the diff file.
 
-Inputs are in the plan workspace `W` the dispatch names: the briefs, `task-0-fold-list.md` (binding overlay), `global-constraints.md` (attention lens), `progress.md` (Ruling lines are decided), the batch report (carries test evidence — do not re-run suites), and the review package diff.
+Check: (1) the task file is fully met (every prop, variant, story and test listed); (2) correctness and a11y; (3) consistency with sibling components and RULES.md. Do NOT compare against plan code — the plans are condensed. Do not re-run suites; the report has the evidence.
 
-Check verbatim-vs-brief by diffing the brief's code blocks against the committed files where practical. Return inline, concise: Spec ✅/❌ per task, issues as `path:line — severity — problem — fix`, Task quality verdict.
+Return inline: Spec ✅/❌ per task; issues as `path:line — Critical/Important/Minor — problem — fix`; verdict. Minors are listed only, and fixed once in the final fix wave.
