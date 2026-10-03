@@ -135,6 +135,7 @@ Recorded against `2026-09-27-ds-00-contracts.md` §7. Additive props keep every 
 | QuotePanel                   | `+ wasLabel = "was"` (visually hidden before the struck price, lower-case like PriceTag's, R94; drawn with `lib/struck-price`'s `StruckPrice`). `lines` render through KeyValueList (split rows, compact, no dividers) and `total` as its own `<dl>` row — the spec row's "PriceSummary" does not fit: quote values are pre-formatted strings ("₹99 × 40", "25"), not rupee amounts | Screen readers do not announce strike-through.                                                                                                                                                                                   |
 | TestimonialWall              | `+ lede?: ReactNode`, passed to SectionHeader (contract delta 1, owner ruling R110)                                                                                                                                                                                                                                                                                                 | Dev parity: the August port's wall took a one-sentence lede under the heading, as SectionHeader already does.                                                                                                                    |
 | FaqSection                   | `+ defaultOpen?: string[]` (the answers open on arrival; default the first, `[]` for none), forwarded to Accordion (contract delta 2, R110)                                                                                                                                                                                                                                         | Dev parity: a page that links to one answer opens it; Accordion (Plan 3a) already takes `defaultOpen`.                                                                                                                           |
+| FaqSection · Accordion (3a)  | Accordion `+ headingLevel?: HeadingLevel` — each question becomes a heading inside its `<summary>`; omitted, nothing changes (a Plan 3a additive change). FaqSection passes its own level + 1, h6 at most (owner ruling R112)                                                                                                                                                       | Spec §5.5 heading outline: an FAQ's questions are headings under its title. Chromium exposes a heading inside `<summary>` (CDP `Accessibility.getFullAXTree`, batch E), so the outline survives the disclosure.                  |
 | OrderTracker                 | `+ progressLabel = "Order progress"` — the step list's accessible name (contract delta 3, R110)                                                                                                                                                                                                                                                                                     | Dev parity: the tracker list was named; an unnamed second list on the screen tells a screen-reader user nothing. Overridable chrome, like `codeLabel`.                                                                           |
 | Dialog                       | `+ hasCloseButton = true`; `false` hides the close button only — Escape and the scrim still ask to close through `onOpenChange`, and the caller decides (contract delta 4, R110)                                                                                                                                                                                                    | Dev parity: a decision that must be answered drops the close glyph; such a dialog is controlled and gives its own action buttons (story `MustBeAnswered`).                                                                       |
 | Dialog                       | `+ className?: string`, merged onto the panel (contract delta 5, R110)                                                                                                                                                                                                                                                                                                              | Dev parity: every other organism merges a caller class; `DialogProps` does not extend native props, so it is declared.                                                                                                           |
@@ -2285,22 +2286,23 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 **Dev parity:**
 
-| Dev item                                          | Ruling    | Where / clause                                                                                                                    |
-| ------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Heading, lede and every question                  | ALREADY   | test "heads the section with overline, a level-2 title and the lede"                                                              |
-| The first answer open on arrival                  | ALREADY   | test "opens the first answer by default…"                                                                                         |
-| `defaultOpen` (named questions, or `[]` for none) | ADD       | contract delta 2 (R110), forwarded to Accordion (Plan 3a); tests "opens the answers named in defaultOpen…", "opens none…"         |
-| Clicking another question swaps the open answer   | ALREADY   | native `<details name>` (shared `name` asserted); Plan 3a Accordion's `play` proves exclusivity in Chromium                       |
-| `isMultiple` keeps several open                   | ALREADY   | test "lets several answers stay open with isMultiple"                                                                             |
-| Questions sit one heading level below the section | DROP here | Plan 3a's Accordion renders questions in `<summary>` with no heading level (spec §9.2 lists none) — cross-plan note in the report |
-| Two columns stack at 360px                        | ALREADY   | `lg:grid-cols-2`, one column below                                                                                                |
-| Merges a caller `className`                       | ADD       | test "merges a caller className"                                                                                                  |
-| axe                                               | ALREADY   | test "has no accessibility violations"                                                                                            |
-| "A few bakes contain egg" answer                  | DROP      | C10                                                                                                                               |
-| Stories Default · Multiple · Narrow               | ALREADY   | Default · Multiple · Mobile                                                                                                       |
-| Story WithoutLede                                 | ADD       | `WithoutLede`                                                                                                                     |
-| Story HeadingLevels                               | ADD       | `HeadingLevel3`                                                                                                                   |
-| Stories SecondOpen · AllClosed                    | ADD       | `SecondOpen` · `AllClosed` (contract delta 2)                                                                                     |
+| Dev item                                                    | Ruling  | Where / clause                                                                                                                                                                                                                                                                                                                                    |
+| ----------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Heading, lede and every question                            | ALREADY | test "heads the section with overline, a level-2 title and the lede"                                                                                                                                                                                                                                                                              |
+| The first answer open on arrival                            | ALREADY | test "opens the first answer by default…"                                                                                                                                                                                                                                                                                                         |
+| `defaultOpen` (named questions, or `[]` for none)           | ADD     | contract delta 2 (R110), forwarded to Accordion (Plan 3a); tests "opens the answers named in defaultOpen…", "opens none…"                                                                                                                                                                                                                         |
+| Clicking another question swaps the open answer             | ALREADY | native `<details name>` (shared `name` asserted); Plan 3a Accordion's `play` proves exclusivity in Chromium                                                                                                                                                                                                                                       |
+| `isMultiple` keeps several open                             | ALREADY | test "lets several answers stay open with isMultiple"                                                                                                                                                                                                                                                                                             |
+| Questions sit one heading level below the section           | ADD     | R112: Accordion (Plan 3a) gains `headingLevel` (a heading inside each `<summary>`, which Chromium exposes — CDP probe in batch E); FaqSection passes its level + 1 (h6 at most); tests "makes each question a heading one level below the title", "takes its heading level from headingLevel and steps the questions down…"; `HeadingLevel3` play |
+| Two columns stack at 360px                                  | ALREADY | `lg:grid-cols-2`, one column below                                                                                                                                                                                                                                                                                                                |
+| Merges a caller `className`                                 | ADD     | test "merges a caller className"                                                                                                                                                                                                                                                                                                                  |
+| axe                                                         | ALREADY | test "has no accessibility violations"                                                                                                                                                                                                                                                                                                            |
+| "A few bakes contain egg" answer                            | DROP    | C10                                                                                                                                                                                                                                                                                                                                               |
+| Stories Default · Multiple · Narrow                         | ALREADY | Default · Multiple · Mobile                                                                                                                                                                                                                                                                                                                       |
+| Story WithoutLede                                           | ADD     | `WithoutLede`                                                                                                                                                                                                                                                                                                                                     |
+| Story HeadingLevels                                         | ADD     | `HeadingLevel3`                                                                                                                                                                                                                                                                                                                                   |
+| Stories SecondOpen · AllClosed                              | ADD     | `SecondOpen` · `AllClosed` (contract delta 2), each with a `play` counting the open answers in Chromium                                                                                                                                                                                                                                           |
+| _(not in dev)_ several named answers open with `isMultiple` | ADD     | test "lets several answers stay open with isMultiple" (`defaultOpen={["veg", "pause"]}` → two open)                                                                                                                                                                                                                                               |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -2309,10 +2311,11 @@ Implementer: copy this table into your report, extended with anything the plan m
 - Create: `packages/design-tokens/tokens/component/faq-section.json`
 - Create: `packages/ui/src/organisms/faq-section/faq-section.tsx`, `faq-section.test.tsx`, `faq-section.stories.tsx`
 - Modify: `packages/ui/src/lib/component-variants.ts` (`SPACING`), `packages/ui/src/index.ts`
+- Modify (R112, batch E carried fix E1 — a Plan 3a additive change): `packages/ui/src/molecules/accordion/accordion.tsx` (`headingLevel?: HeadingLevel | undefined` — each question inside its `<summary>` becomes `createElement(headingTag(level))`; omitted, it stays a `span`), `accordion.test.tsx` (tests "keeps the questions plain summary text unless a headingLevel is given", "wraps each question in a heading at headingLevel, inside its summary"), `accordion.stories.tsx` (`AsHeadings`, a `play` finding an h3 inside every summary)
 
 **Interfaces:**
 
-- Consumes: `Accordion`/`AccordionItem`, `SectionHeader`, `componentVariants`, `HeadingLevel`; stories: `Button`, `Card`, `Logo`, `StatusDot`, `Text`.
+- Consumes: `Accordion`/`AccordionItem` (with its `headingLevel`, R112), `SectionHeader`, `componentVariants`, `HeadingLevel`; stories: `Button`, `Card`, `Logo`, `StatusDot`, `Text`.
 - Produces: `FaqSection`, `FaqSectionProps`.
 
 - [ ] **Step 1: Component tokens**
@@ -2383,6 +2386,23 @@ describe("FaqSection", () => {
     expect(screen.getByText("The things people ask us most.")).toBeInTheDocument();
   });
 
+  it("makes each question a heading one level below the title", () => {
+    render(<FaqSection title="FAQ" items={ITEMS} />);
+    const questions = screen.getAllByRole("heading", { level: 3 });
+    expect(questions.map((question) => question.textContent)).toEqual(
+      ITEMS.map((item) => item.question)
+    );
+    for (const question of questions) expect(question.closest("summary")).not.toBeNull();
+  });
+
+  it("takes its heading level from headingLevel and steps the questions down with it, to h6 at most", () => {
+    const { rerender } = render(<FaqSection title="FAQ" items={ITEMS} headingLevel={3} />);
+    expect(screen.getByRole("heading", { level: 3, name: "FAQ" })).toBeInTheDocument();
+    expect(screen.getAllByRole("heading", { level: 4 })).toHaveLength(ITEMS.length);
+    rerender(<FaqSection title="FAQ" items={ITEMS} headingLevel={6} />);
+    expect(screen.getAllByRole("heading", { level: 6 })).toHaveLength(ITEMS.length + 1);
+  });
+
   it("opens the first answer by default and keeps one open at a time", () => {
     const { container } = render(<FaqSection title="FAQ" items={ITEMS} />);
     const answers = [...container.querySelectorAll("details")];
@@ -2408,10 +2428,13 @@ describe("FaqSection", () => {
   });
 
   it("lets several answers stay open with isMultiple", () => {
-    const { container } = render(<FaqSection title="FAQ" items={ITEMS} isMultiple />);
+    const { container } = render(
+      <FaqSection title="FAQ" items={ITEMS} isMultiple defaultOpen={["veg", "pause"]} />
+    );
     for (const answer of container.querySelectorAll("details")) {
       expect(answer).not.toHaveAttribute("name");
     }
+    expect(container.querySelectorAll("details[open]")).toHaveLength(2);
   });
 
   it("puts the aside beside the heading in the column that sticks at lg", () => {
@@ -2469,14 +2492,27 @@ export interface FaqSectionProps extends Omit<ComponentProps<"section">, "title"
   lede?: ReactNode;
   /** One or two short sentences per answer. The first opens by default. */
   items: AccordionItem[];
-  /** The `value`s of the answers open on arrival (default: the first; `[]` for none). */
+  /**
+   * The `value`s of the answers open on arrival (default: the first; `[]` for none). Name more
+   * than one only with `isMultiple`: a single-open group keeps one answer open.
+   */
   defaultOpen?: string[] | undefined;
   /** Allow several answers open at once. */
   isMultiple?: boolean | undefined;
   /** Beside the heading, sticky at lg and up — e.g. the handoff's "Still have a question?" card. */
   aside?: ReactNode;
+  /** The title's level; each question is a heading one level below it (h6 at most). */
   headingLevel?: HeadingLevel | undefined;
 }
+
+const QUESTION_LEVEL: Readonly<Record<HeadingLevel, HeadingLevel>> = {
+  1: 2,
+  2: 3,
+  3: 4,
+  4: 5,
+  5: 6,
+  6: 6,
+};
 
 /** Two-column FAQ — heading (and aside) left, native accordion right, stacking below lg. */
 export function FaqSection({
@@ -2504,7 +2540,12 @@ export function FaqSection({
           />
           {aside}
         </div>
-        <Accordion items={items} defaultOpen={defaultOpen} isMultiple={isMultiple} />
+        <Accordion
+          items={items}
+          defaultOpen={defaultOpen}
+          isMultiple={isMultiple}
+          headingLevel={QUESTION_LEVEL[headingLevel]}
+        />
       </div>
     </section>
   );
@@ -2514,7 +2555,7 @@ export function FaqSection({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- faq-section 2>&1 | tail -8`
-Expected: PASS (8 tests).
+Expected: PASS (10 tests).
 
 - [ ] **Step 6: Stories (card parity with `FaqSection.card.html` + handoff `FaqBlock`)**
 
@@ -2526,6 +2567,7 @@ The card's first answer mentions egg-containing bakes, which the owner has ruled
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { MessageCircle, Phone } from "lucide-react";
+import { expect } from "storybook/test";
 
 import type { AccordionItem } from "../../molecules/accordion/accordion";
 
@@ -2662,9 +2704,22 @@ export const HandoffWithAside: Story = {
 export const Multiple: Story = { args: { isMultiple: true } };
 
 /** A page that links to one answer opens that one instead of the first. */
-export const SecondOpen: Story = { args: { defaultOpen: ["pause"] } };
+export const SecondOpen: Story = {
+  args: { defaultOpen: ["pause"] },
+  play: async ({ canvas, canvasElement }) => {
+    await expect(canvasElement.querySelectorAll("details[open]")).toHaveLength(1);
+    await expect(canvas.getByText("Can I pause or skip a day?").closest("details")).toHaveAttribute(
+      "open"
+    );
+  },
+};
 
-export const AllClosed: Story = { args: { defaultOpen: [] } };
+export const AllClosed: Story = {
+  args: { defaultOpen: [] },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelectorAll("details[open]")).toHaveLength(0);
+  },
+};
 
 /** No lede: the heading sits alone in its column and the answers carry the section. */
 export const WithoutLede: Story = { args: { lede: undefined } };
@@ -2672,6 +2727,10 @@ export const WithoutLede: Story = { args: { lede: undefined } };
 /** Under a page section that already owns the h2, the FAQ steps down a level. */
 export const HeadingLevel3: Story = {
   args: { headingLevel: 3, overline: "Homely Meals", title: "Plans and delivery" },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("heading", { level: 3 })).toHaveTextContent("Plans and delivery");
+    await expect(canvas.getAllByRole("heading", { level: 4 })).toHaveLength(FAQ.length);
+  },
 };
 
 export const Mobile: Story = { ...HandoffWithAside, globals: VIEWPORT_360 };
@@ -3335,28 +3394,29 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 **Dev parity:**
 
-| Dev item                                              | Ruling  | Where / clause                                                               |
-| ----------------------------------------------------- | ------- | ---------------------------------------------------------------------------- |
-| Leads with the current step's label and note          | ALREADY | test "heads the screen with the current step…" (and a `status` live region)  |
-| The heading moves as the kitchen works                | ALREADY | same test at `current={1}`                                                   |
-| "Preparing" until the last step, then "Ready"         | DROP    | D9 — status copy is the `badge` slot (Contract deviations)                   |
-| Clamps an index past the end                          | ALREADY | test "clamps a current index past the end…"                                  |
-| Code and outlet on one line                           | ALREADY | test "prints the order code with its label and the outlet"                   |
-| StepTracker composed, current step marked             | ALREADY | test "marks the current step in the tracker"                                 |
-| The tracker list is named ("Order progress")          | ADD     | contract delta 3 (R110): `progressLabel`; test "marks the current step…"     |
-| Bare-string steps                                     | DROP    | spec §8.2 — object lists only                                                |
-| What was paid and how                                 | ALREADY | test "formats the total beside the payment line"                             |
-| No action when there is nowhere to go                 | ADD     | test "renders no action when none is given"                                  |
-| `onDone` / `doneLabel`                                | DROP    | spec §8.1 — slots, not callbacks (`action`)                                  |
-| Card frame rounds and clips                           | ALREADY | test "frames itself as a light card with variant=card"                       |
-| Merges a caller `className`                           | ADD     | test "merges a caller className"                                             |
-| axe                                                   | ALREADY | test "has no accessibility violations"                                       |
-| Default steps, code, outlet, payment, total           | DROP    | D9                                                                           |
-| Stories Default · EveryState · WithAction · CardFrame | ALREADY | Playground · OrderIn/OnTheTandoor/Ready · Playground (`action` arg) · AsCard |
-| Story DeliverySteps                                   | ADD     | `DeliverySteps`                                                              |
-| Story Smallest                                        | ADD     | `Mobile`                                                                     |
-| _(not in dev)_ the action's ring clears every clip    | ADD     | fold item 20; `play` on `OrderIn`, `AsCard`, `Mobile` (`ringClippers`)       |
-| _(not in dev)_ the card is not framed as a phone      | ADD     | the 340px phone frame wraps only `variant="flush"` (`AsCard` is 400px)       |
+| Dev item                                                       | Ruling  | Where / clause                                                                                                                                                                                     |
+| -------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Leads with the current step's label and note                   | ALREADY | test "heads the screen with the current step…" (and a `status` live region)                                                                                                                        |
+| The heading moves as the kitchen works                         | ALREADY | same test at `current={1}`                                                                                                                                                                         |
+| "Preparing" until the last step, then "Ready"                  | DROP    | D9 — status copy is the `badge` slot (Contract deviations)                                                                                                                                         |
+| Clamps an index past the end                                   | ALREADY | test "clamps a current index past the end…"                                                                                                                                                        |
+| Code and outlet on one line                                    | ALREADY | test "prints the order code with its label and the outlet"                                                                                                                                         |
+| StepTracker composed, current step marked                      | ALREADY | test "marks the current step in the tracker"                                                                                                                                                       |
+| The tracker list is named ("Order progress")                   | ADD     | contract delta 3 (R110): `progressLabel`; test "marks the current step…"                                                                                                                           |
+| Bare-string steps                                              | DROP    | spec §8.2 — object lists only                                                                                                                                                                      |
+| What was paid and how                                          | ALREADY | test "formats the total beside the payment line"                                                                                                                                                   |
+| No action when there is nowhere to go                          | ADD     | test "renders no action when none is given"                                                                                                                                                        |
+| `onDone` / `doneLabel`                                         | DROP    | spec §8.1 — slots, not callbacks (`action`)                                                                                                                                                        |
+| Card frame rounds and clips                                    | ALREADY | test "frames itself as a light card with variant=card"                                                                                                                                             |
+| Merges a caller `className`                                    | ADD     | test "merges a caller className"                                                                                                                                                                   |
+| axe                                                            | ALREADY | test "has no accessibility violations"                                                                                                                                                             |
+| Default steps, code, outlet, payment, total                    | DROP    | D9                                                                                                                                                                                                 |
+| Stories Default · EveryState · WithAction · CardFrame          | ALREADY | Playground · OrderIn/OnTheTandoor/Ready · Playground (`action` arg) · AsCard                                                                                                                       |
+| Story DeliverySteps                                            | ADD     | `DeliverySteps`                                                                                                                                                                                    |
+| Story Smallest                                                 | ADD     | `Mobile`                                                                                                                                                                                           |
+| _(not in dev)_ the action's ring clears every clip             | ADD     | fold item 20; `play` on `OrderIn`, `AsCard`, `Mobile` (`ringClippers`)                                                                                                                             |
+| _(not in dev)_ the card is not framed as a phone               | ADD     | the 340px phone frame wraps only `variant="flush"` (`AsCard` is 400px)                                                                                                                             |
+| No steps → no empty heading (dev's `steps.length === 0` guard) | ADD     | batch E carried fix E5: with no step there is no heading, note, step list or divider; badge, code and receipt stay; test "renders no empty heading and no empty step list when there are no steps" |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -3403,6 +3463,17 @@ describe("OrderTracker", () => {
   it("clamps a current index past the end to the last step", () => {
     render(<OrderTracker steps={STEPS} current={7} code="PPK-4821" />);
     expect(screen.getByRole("heading", { level: 2, name: "Ready for pickup" })).toBeInTheDocument();
+  });
+
+  it("renders no empty heading and no empty step list when there are no steps", async () => {
+    const { container } = render(
+      <OrderTracker steps={[]} current={0} code="PPK-4821" badge={<span>Preparing</span>} />
+    );
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+    expect(within(screen.getByRole("status")).getByText("Preparing")).toBeInTheDocument();
+    expect(screen.getByText("Order #PPK-4821")).toBeInTheDocument();
+    await expectNoA11yViolations(container);
   });
 
   it("marks the current step in the tracker, named Order progress", () => {
@@ -3530,7 +3601,10 @@ const orderTracker = componentVariants({
 
 export interface OrderTrackerProps
   extends ComponentProps<"section">, Pick<VariantProps<typeof orderTracker>, "variant"> {
-  /** Brand-voice steps ("Kitchen's on it."), never system status. */
+  /**
+   * Brand-voice steps ("Kitchen's on it."), never system status. With none there is no heading
+   * and no step list; the badge, code and receipt still render.
+   */
   steps: TrackerStep[];
   /** Index of the current step; clamped to the steps given. */
   current: number;
@@ -3587,14 +3661,18 @@ export function OrderTracker({
       <PatternField tone="brand" tile={56} className={slots.header()}>
         <div role="status" className={slots.status()}>
           {badge}
-          <Text as={headingTag(headingLevel)} variant="h2" className={slots.title()}>
-            {step?.label}
-          </Text>
-          {step?.note ? (
-            <Text as="div" tone="muted">
-              {step.note}
-            </Text>
-          ) : null}
+          {step === undefined ? null : (
+            <>
+              <Text as={headingTag(headingLevel)} variant="h2" className={slots.title()}>
+                {step.label}
+              </Text>
+              {step.note ? (
+                <Text as="div" tone="muted">
+                  {step.note}
+                </Text>
+              ) : null}
+            </>
+          )}
         </div>
         <Text as="div" variant="mono" tone="muted" className={slots.code()}>
           {codeLabel} #{code}
@@ -3602,8 +3680,12 @@ export function OrderTracker({
         </Text>
       </PatternField>
       <div className={slots.body()}>
-        <StepTracker steps={steps} current={index} aria-label={progressLabel} />
-        <Divider variant="diamond" className={slots.divider()} />
+        {step === undefined ? null : (
+          <>
+            <StepTracker steps={steps} current={index} aria-label={progressLabel} />
+            <Divider variant="diamond" className={slots.divider()} />
+          </>
+        )}
         {hasReceipt ? (
           <Card variant="quiet" padding="sm">
             <div className={slots.receipt()}>
@@ -3628,7 +3710,7 @@ export function OrderTracker({
 - [ ] **Step 4: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- order-tracker 2>&1 | tail -8`
-Expected: PASS (11 tests).
+Expected: PASS (12 tests).
 
 - [ ] **Step 5: Stories (card parity with `OrderTracker.card.html`)**
 
