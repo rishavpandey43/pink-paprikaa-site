@@ -62,7 +62,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The top of any marketing page. The headline is fluid display type, so it never overflows; `titleSize="display-2"` for long ones. Tones brand/ink/soft flood the field with the diamond; `alt` is the handoff\'s pink-50 tint with no pattern. Buttons inside take no colour props — the tone sets the surface. `media` holds an ImageSlot and any overlay (an OfferSeal positions itself on the media column).',
+          'The top of any marketing page. The headline is fluid display type, so it never overflows; `titleSize="display-2"` for long ones. Surfaces brand/ink/soft flood the field with the diamond; `alt` is the handoff\'s pink-50 tint with no pattern. Buttons inside take no colour props — the surface sets the ground. `media` holds an ImageSlot and any overlay (an OfferSeal positions itself on the media column).',
       },
     },
   },
@@ -73,13 +73,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
-/** Card row: `tone="brand"` (default), split. */
-export const BrandSplit: Story = { args: { tone: "brand" } };
+/** Card row: `surface="brand"` (default), split. */
+export const BrandSplit: Story = { args: { surface: "brand" } };
 
-/** Card row: `tone="soft"` + `layout="center"`. */
+/** Card row: `surface="soft"` + `layout="center"`. */
 export const SoftCentred: Story = {
   args: {
-    tone: "soft",
+    surface: "soft",
     layout: "center",
     overline: "Homely Meals",
     title: "Home-style food, delivered every day.",
@@ -94,13 +94,13 @@ export const SoftCentred: Story = {
   },
 };
 
-/** The ink tone named on the card. */
-export const InkSplit: Story = { args: { tone: "ink" } };
+/** The ink surface named on the card. */
+export const InkSplit: Story = { args: { surface: "ink" } };
 
 /** Handoff Home — pink-50 split hero with the launch OfferSeal on the photo. */
 export const HandoffHome: Story = {
   args: {
-    tone: "alt",
+    surface: "alt",
     overline: undefined,
     badges: (
       <>
@@ -169,7 +169,7 @@ export const HandoffHome: Story = {
 /** Handoff Catering — brand flood with the diamond and a display-2 headline. */
 export const HandoffCatering: Story = {
   args: {
-    tone: "brand",
+    surface: "brand",
     titleSize: "display-2",
     overline: undefined,
     badges: (
@@ -220,7 +220,7 @@ export const HandoffCatering: Story = {
 /** Handoff Office & PG Lunch — pink-50 split hero. */
 export const HandoffOffice: Story = {
   args: {
-    tone: "alt",
+    surface: "alt",
     overline: undefined,
     badges: (
       <>

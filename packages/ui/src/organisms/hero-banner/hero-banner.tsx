@@ -1,10 +1,14 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Typography } from "../../atoms/typography/typography";
+import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 import { SymbolMark } from "../../lib/symbol-mark";
 
 const heroBanner = componentVariants({
@@ -22,7 +26,7 @@ const heroBanner = componentVariants({
     media: "relative min-w-0",
   },
   variants: {
-    tone: {
+    surface: {
       // The diamond between meta facts: white on the dark fields, brand pink on the light ones.
       brand: { root: "bg-surface-brand", metaMark: "text-ink-000" },
       ink: { root: "bg-surface-inverse", metaMark: "text-ink-000" },
@@ -40,22 +44,14 @@ const heroBanner = componentVariants({
       },
     },
   },
-  defaultVariants: { tone: "brand", layout: "split" },
+  defaultVariants: { surface: "brand", layout: "split" },
 });
 
-type HeroTone = NonNullable<VariantProps<typeof heroBanner>["tone"]>;
+type HeroSurface = NonNullable<VariantProps<typeof heroBanner>["surface"]>;
 type HeroPattern = "none" | "default" | "faint";
 
-/** The surface each tone paints; `alt` is the handoff's pink-50 tint, a light surface. */
-const SURFACE: Readonly<Record<HeroTone, "brand" | "ink" | "soft" | "light">> = {
-  brand: "brand",
-  ink: "ink",
-  soft: "soft",
-  alt: "light",
-};
-
 /** Flooded tones carry the diamond (design system); the alt tint is plain (handoff heroes). */
-const DEFAULT_PATTERN: Readonly<Record<HeroTone, HeroPattern>> = {
+const DEFAULT_PATTERN: Readonly<Record<HeroSurface, HeroPattern>> = {
   brand: "default",
   ink: "default",
   soft: "default",
@@ -64,8 +60,8 @@ const DEFAULT_PATTERN: Readonly<Record<HeroTone, HeroPattern>> = {
 
 export interface HeroBannerProps
   extends
-    Omit<ComponentProps<"section">, "title">,
-    Pick<VariantProps<typeof heroBanner>, "tone" | "layout"> {
+    Omit<BaseProps<"section">, "title">,
+    Pick<VariantProps<typeof heroBanner>, "surface" | "layout"> {
   overline?: ReactNode;
   /** Badge row above the title (handoff): the product badge and the Pure Veg badge. */
   badges?: ReactNode;
@@ -95,21 +91,26 @@ export function HeroBanner({
   actions,
   meta = [],
   media,
-  tone = "brand",
+  surface = "brand",
   layout,
   pattern,
+  sx,
   className,
   ...props
 }: HeroBannerProps) {
-  const slots = heroBanner({ tone, layout });
-  const density = pattern ?? DEFAULT_PATTERN[tone];
+  const slots = heroBanner({ surface, layout });
+  const density = pattern ?? DEFAULT_PATTERN[surface];
   const facts = meta.filter(isShown);
   return (
-    <section data-surface={SURFACE[tone]} className={slots.root({ className })} {...props}>
+    <section
+      data-surface={SURFACE_DATA[surface]}
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       {density === "none" ? null : (
         <PatternField
           aria-hidden
-          surface={SURFACE[tone] === "light" ? "page" : SURFACE[tone]}
+          surface={surface === "alt" ? "page" : surface}
           tile={86}
           density={density}
           className={slots.pattern()}

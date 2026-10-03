@@ -113,33 +113,35 @@ describe("HeroBanner", () => {
     ["ink", "ink"],
     ["soft", "soft"],
     ["alt", "light"],
-  ] as const)("tone %s sets the %s surface", (tone, surface) => {
-    const { container } = render(<HeroBanner title={TITLE} tone={tone} />);
-    expect(container.firstElementChild).toHaveAttribute("data-surface", surface);
+  ] as const)("surface %s sets data-surface %s", (surface, data) => {
+    const { container } = render(<HeroBanner title={TITLE} surface={surface} />);
+    expect(container.firstElementChild).toHaveAttribute("data-surface", data);
   });
 
   it.each(["brand", "ink", "soft"] as const)(
     "carries the diamond on the %s field by default",
-    (tone) => {
-      const { container } = render(<HeroBanner title={TITLE} tone={tone} />);
+    (surface) => {
+      const { container } = render(<HeroBanner title={TITLE} surface={surface} />);
       expect(patternLayer(container)).toBeInTheDocument();
     }
   );
 
   it("carries no diamond on the alt tint unless asked, nor on a flooded field with pattern=none", () => {
-    const { container, rerender } = render(<HeroBanner title={TITLE} tone="alt" />);
+    const { container, rerender } = render(<HeroBanner title={TITLE} surface="alt" />);
     expect(patternLayer(container)).not.toBeInTheDocument();
-    rerender(<HeroBanner title={TITLE} tone="alt" pattern="faint" />);
+    rerender(<HeroBanner title={TITLE} surface="alt" pattern="faint" />);
     expect(patternLayer(container)).toBeInTheDocument();
-    rerender(<HeroBanner title={TITLE} tone="brand" pattern="none" />);
+    rerender(<HeroBanner title={TITLE} surface="brand" pattern="none" />);
     expect(patternLayer(container)).not.toBeInTheDocument();
   });
 
   it("hands the faint density to the diamond", () => {
-    const { container, rerender } = render(<HeroBanner title={TITLE} tone="ink" pattern="faint" />);
+    const { container, rerender } = render(
+      <HeroBanner title={TITLE} surface="ink" pattern="faint" />
+    );
     const tint = () => patternLayer(container)?.firstElementChild;
     expect(tint()).toHaveClass("pattern-opacity-faint");
-    rerender(<HeroBanner title={TITLE} tone="ink" />);
+    rerender(<HeroBanner title={TITLE} surface="ink" />);
     expect(tint()).toHaveClass("pattern-opacity-default");
   });
 
@@ -186,5 +188,10 @@ describe("HeroBanner", () => {
       />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(<HeroBanner title={TITLE} sx={{ mt: 4 }} className="italic" />);
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });
