@@ -3355,6 +3355,8 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 | Stories Default · EveryState · WithAction · CardFrame | ALREADY | Playground · OrderIn/OnTheTandoor/Ready · Playground (`action` arg) · AsCard |
 | Story DeliverySteps                                   | ADD     | `DeliverySteps`                                                              |
 | Story Smallest                                        | ADD     | `Mobile`                                                                     |
+| _(not in dev)_ the action's ring clears every clip    | ADD     | fold item 20; `play` on `OrderIn`, `AsCard`, `Mobile` (`ringClippers`)       |
+| _(not in dev)_ the card is not framed as a phone      | ADD     | the 340px phone frame wraps only `variant="flush"` (`AsCard` is 400px)       |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -3635,10 +3637,13 @@ Expected: PASS (11 tests).
 ```tsx
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { expect } from "storybook/test";
+
 import type { TrackerStep } from "../../molecules/step-tracker/step-tracker";
 
 import { Badge } from "../../atoms/badge/badge";
 import { Button } from "../../atoms/button/button";
+import { ringClippers } from "../../lib/story-ring";
 import { VIEWPORT_360 } from "../story-fixtures";
 import { OrderTracker } from "./order-tracker";
 
@@ -3669,11 +3674,16 @@ const meta = {
     action: BACK_HOME,
   },
   decorators: [
-    (Story) => (
-      <div className="flex h-165 w-85 flex-col overflow-hidden rounded-lg border border-border-subtle">
+    // The flush tracker fills a phone screen; the card sits on a page at its own width, so the
+    // 340px frame would cut its edge.
+    (Story, { args }) =>
+      args.variant === "card" ? (
         <Story />
-      </div>
-    ),
+      ) : (
+        <div className="flex h-165 w-85 flex-col overflow-hidden rounded-lg border border-border-subtle">
+          <Story />
+        </div>
+      ),
   ],
   parameters: {
     docs: {
@@ -3688,10 +3698,22 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * The flush tracker scrolls (`overflow-y-auto`) and the card clips (`overflow-hidden`), so the
+ * body's padding must hold the action's focus ring whole: tab to it and prove nothing cuts it.
+ */
+const proveActionRingWhole: Story["play"] = async ({ canvas, userEvent }) => {
+  await userEvent.tab();
+  const action = canvas.getByRole("link", { name: "Back to Home" });
+  await expect(action).toHaveFocus();
+  await expect(action.matches(":focus-visible")).toBe(true);
+  await expect(ringClippers(action)).toEqual([]);
+};
+
 export const Playground: Story = {};
 
 /** Card row: the start — order in. */
-export const OrderIn: Story = { args: { current: 0 } };
+export const OrderIn: Story = { args: { current: 0 }, play: proveActionRingWhole };
 
 export const OnTheTandoor: Story = { args: { current: 1 } };
 
@@ -3707,6 +3729,7 @@ export const AsCard: Story = {
       </div>
     ),
   ],
+  play: proveActionRingWhole,
 };
 
 /** Delivery runs its own two steps — as short as the tracker is worth drawing. */
@@ -3721,7 +3744,11 @@ export const DeliverySteps: Story = {
 };
 
 /** The smallest supported viewport: the header copy wraps, nothing clips. */
-export const Mobile: Story = { args: { current: 1 }, globals: VIEWPORT_360 };
+export const Mobile: Story = {
+  args: { current: 1 },
+  globals: VIEWPORT_360,
+  play: proveActionRingWhole,
+};
 ```
 
 - [ ] **Step 6: Export**
