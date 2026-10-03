@@ -1,10 +1,13 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { Check, CircleAlert, Info, Megaphone, TriangleAlert } from "lucide-react";
+
+import type { BasePropsWithColor } from "../../lib/common-props";
 
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 import { AlertDismiss } from "./alert-dismiss";
 
 const alert = componentVariants({
@@ -17,7 +20,7 @@ const alert = componentVariants({
     action: "mt-2.5",
   },
   variants: {
-    tone: {
+    color: {
       info: { root: "border-status-info bg-status-info-soft text-text-info" },
       success: { root: "border-status-success bg-status-success-soft text-text-success" },
       warning: { root: "border-status-warning bg-status-warning-soft text-text-warning" },
@@ -30,12 +33,12 @@ const alert = componentVariants({
     },
     hasTitle: { true: { content: "mt-0.75" } },
   },
-  defaultVariants: { tone: "info", hasTitle: false },
+  defaultVariants: { color: "info", hasTitle: false },
 });
 
-type AlertTone = NonNullable<AlertProps["tone"]>;
+type AlertColor = NonNullable<AlertProps["color"]>;
 
-const TONE_ICON: Readonly<Record<AlertTone, IconComponent>> = {
+const COLOR_ICON: Readonly<Record<AlertColor, IconComponent>> = {
   info: Info,
   success: Check,
   warning: TriangleAlert,
@@ -44,8 +47,8 @@ const TONE_ICON: Readonly<Record<AlertTone, IconComponent>> = {
   neutral: Info,
 };
 
-export interface AlertProps extends Omit<ComponentProps<"div">, "title"> {
-  tone?: "info" | "success" | "warning" | "danger" | "brand" | "neutral" | undefined;
+export interface AlertProps extends Omit<BasePropsWithColor<"div">, "title"> {
+  color?: "info" | "success" | "warning" | "danger" | "brand" | "neutral" | undefined;
   title?: ReactNode;
   /** Usually one small ghost Button. */
   action?: ReactNode;
@@ -55,7 +58,7 @@ export interface AlertProps extends Omit<ComponentProps<"div">, "title"> {
    * drops to `<body>`.
    */
   onDismiss?: (() => void) | undefined;
-  /** Replaces the tone's glyph (the handoff's PG hint uses Building2). */
+  /** Replaces the colour's glyph (the handoff's PG hint uses Building2). */
   icon?: IconComponent | undefined;
 }
 
@@ -65,18 +68,19 @@ export interface AlertProps extends Omit<ComponentProps<"div">, "title"> {
  * any surface. Use Toast for transient confirmations instead.
  */
 export function Alert({
-  tone = "info",
+  color = "info",
   title,
   action,
   onDismiss,
   icon,
+  sx,
   className,
   children,
   ...props
 }: AlertProps) {
   const hasTitle = isShown(title);
-  const styles = alert({ tone, hasTitle });
-  const role = tone === "danger" ? "alert" : "status";
+  const styles = alert({ color, hasTitle });
+  const role = color === "danger" ? "alert" : "status";
 
   return (
     <div
@@ -85,10 +89,10 @@ export function Alert({
       key={role}
       role={role}
       data-surface="light"
-      className={styles.root({ className })}
+      className={styles.root({ className: withSx(sx, className) })}
       {...props}
     >
-      <Icon icon={icon ?? TONE_ICON[tone]} size="md" className={styles.icon()} />
+      <Icon icon={icon ?? COLOR_ICON[color]} size="md" className={styles.icon()} />
       <div className={styles.body()}>
         {hasTitle ? <p className={styles.title()}>{title}</p> : null}
         {isShown(children) ? <div className={styles.content()}>{children}</div> : null}

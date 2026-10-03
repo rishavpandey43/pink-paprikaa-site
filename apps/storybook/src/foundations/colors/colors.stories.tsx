@@ -241,16 +241,16 @@ export const StatusSwatches: Story = { render: () => <Swatches selection={{ name
 export const StatusAlerts: Story = {
   render: () => (
     <div className="grid gap-3">
-      <Alert tone="info" title="Pickup only">
+      <Alert color="info" title="Pickup only">
         Delivery starts in 2027.
       </Alert>
-      <Alert tone="success" title="Order confirmed">
+      <Alert color="success" title="Order confirmed">
         Kitchen has it. Counter 2.
       </Alert>
-      <Alert tone="warning" title="Kitchen is busy">
+      <Alert color="warning" title="Kitchen is busy">
         Pickup is running 25 minutes today.
       </Alert>
-      <Alert tone="danger" title="That card didn't go through">
+      <Alert color="danger" title="That card didn't go through">
         Try another card or pay by UPI.
       </Alert>
     </div>

@@ -29,7 +29,7 @@ const meta = {
     total: { label: "Total", value: "₹3,276" },
     note: "Delivery free within 3 km · no packaging or platform fee",
     alerts: (
-      <Alert tone="neutral">
+      <Alert color="neutral">
         You save ₹2,880 vs ordering the same meals on a food app at ₹250+.
       </Alert>
     ),
@@ -95,7 +95,7 @@ export const HandoffDawat: Story = {
     total: undefined,
     note: undefined,
     alerts: (
-      <Alert tone="neutral" icon={Utensils}>
+      <Alert color="neutral" icon={Utensils}>
         Taste first: one Dawat at ₹199, credited in full when you confirm.
       </Alert>
     ),

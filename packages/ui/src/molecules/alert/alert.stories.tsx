@@ -11,7 +11,7 @@ const meta = {
   title: "Molecules/Alert",
   component: Alert,
   args: {
-    tone: "warning",
+    color: "warning",
     title: "Kitchen is busy",
     children: "Pickup is running 25 minutes today.",
   },
@@ -30,14 +30,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
-/** Card row "tone" — info and success. */
+/** Card row "color" — info and success. */
 export const InfoAndSuccess: Story = {
   render: () => (
     <div className="grid gap-3">
-      <Alert tone="info" title="Pickup only">
+      <Alert color="info" title="Pickup only">
         Delivery starts in 2027.
       </Alert>
-      <Alert tone="success" title="Order confirmed">
+      <Alert color="success" title="Order confirmed">
         Kitchen has it. Counter 2.
       </Alert>
     </div>
@@ -48,10 +48,10 @@ export const InfoAndSuccess: Story = {
 export const WarningAndDanger: Story = {
   render: () => (
     <div className="grid gap-3">
-      <Alert tone="warning" title="Kitchen is busy">
+      <Alert color="warning" title="Kitchen is busy">
         Pickup is running 25 minutes today.
       </Alert>
-      <Alert tone="danger" title="That card didn't go through">
+      <Alert color="danger" title="That card didn't go through">
         Try another card or pay by UPI.
       </Alert>
     </div>
@@ -61,7 +61,7 @@ export const WarningAndDanger: Story = {
 /** Card row "brand + action". */
 export const BrandWithAction: Story = {
   args: {
-    tone: "brand",
+    color: "brand",
     title: "New in Sector 57",
     children: "Doors open Friday, 8am.",
     action: <Button size="sm">See the Menu</Button>,
@@ -71,7 +71,7 @@ export const BrandWithAction: Story = {
 /** Card row "dismissible". */
 export const Dismissible: Story = {
   args: {
-    tone: "info",
+    color: "info",
     title: undefined,
     children: "We now take UPI at every counter.",
     onDismiss: fn(),
@@ -82,20 +82,20 @@ export const Dismissible: Story = {
   },
 };
 
-/** Handoff Plan calculator nudge — `tone="brand"`, own glyph, no title. */
+/** Handoff Plan calculator nudge — `color="brand"`, own glyph, no title. */
 export const Nudge: Story = {
   args: {
-    tone: "brand",
+    color: "brand",
     title: undefined,
     icon: TrendingDown,
     children: "Add 2 more people and every meal drops to ₹120.",
   },
 };
 
-/** Handoff Plan calculator PG hint — `tone="neutral"`. */
+/** Handoff Plan calculator PG hint — `color="neutral"`. */
 export const Neutral: Story = {
   args: {
-    tone: "neutral",
+    color: "neutral",
     title: undefined,
     icon: Building2,
     children: "Ordering for a PG, hostel or office of 20+? Talk to us about group pricing.",
@@ -105,7 +105,7 @@ export const Neutral: Story = {
 /** Dev parity: 360px, the floor — title, message and dismiss wrap; the glyphs hold their size. */
 export const Narrow: Story = {
   args: {
-    tone: "danger",
+    color: "danger",
     title: "That card didn't go through",
     children: "Try another card or pay by UPI at the counter.",
     onDismiss: fn(),

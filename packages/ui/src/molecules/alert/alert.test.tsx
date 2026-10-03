@@ -15,7 +15,7 @@ describe("Alert", () => {
 
   it("interrupts for danger", () => {
     render(
-      <Alert tone="danger" title="That card didn't go through">
+      <Alert color="danger" title="That card didn't go through">
         Try another card or pay by UPI.
       </Alert>
     );
@@ -29,14 +29,17 @@ describe("Alert", () => {
     ["danger", "lucide-circle-alert", "text-text-danger", "bg-status-danger-soft"],
     ["brand", "lucide-megaphone", "text-pink-800", "bg-surface-brand-soft"],
     ["neutral", "lucide-info", "text-text-heading", "bg-surface-sunken"],
-  ] as const)("paints the %s tone with its glyph and soft ground", (tone, glyph, colour, fill) => {
-    const { container } = render(<Alert tone={tone}>Message.</Alert>);
-    expect(container.firstElementChild).toHaveClass(colour, fill);
-    expect(container.querySelector(`svg.${glyph}`)).toBeInTheDocument();
-  });
+  ] as const)(
+    "paints the %s color with its glyph and soft ground",
+    (color, glyph, colour, fill) => {
+      const { container } = render(<Alert color={color}>Message.</Alert>);
+      expect(container.firstElementChild).toHaveClass(colour, fill);
+      expect(container.querySelector(`svg.${glyph}`)).toBeInTheDocument();
+    }
+  );
 
   it("carries a full border rather than a coloured left edge", () => {
-    const { container } = render(<Alert tone="danger">Try another card or pay by UPI.</Alert>);
+    const { container } = render(<Alert color="danger">Try another card or pay by UPI.</Alert>);
     expect(container.firstElementChild).toHaveClass("border", "border-status-danger");
     expect(container.firstElementChild).not.toHaveClass("border-l-4");
   });
@@ -49,7 +52,7 @@ describe("Alert", () => {
 
   it("takes a glyph of its own", () => {
     const { container } = render(
-      <Alert tone="neutral" icon={Building2}>
+      <Alert color="neutral" icon={Building2}>
         Ordering for a PG, hostel or office of 20+? Talk to us about group pricing.
       </Alert>
     );
@@ -59,7 +62,7 @@ describe("Alert", () => {
   it("renders its action slot under the message", () => {
     render(
       <Alert
-        tone="brand"
+        color="brand"
         title="New in Sector 57"
         action={<button type="button">See the Menu</button>}
       >
@@ -77,9 +80,9 @@ describe("Alert", () => {
   });
 
   it("mounts a fresh node when a status turns into an alert", () => {
-    const { rerender } = render(<Alert tone="warning">Card machine is slow today.</Alert>);
+    const { rerender } = render(<Alert color="warning">Card machine is slow today.</Alert>);
     const status = screen.getByRole("status");
-    rerender(<Alert tone="danger">Card machine is down. Pay by UPI.</Alert>);
+    rerender(<Alert color="danger">Card machine is down. Pay by UPI.</Alert>);
     const alert = screen.getByRole("alert");
     expect(alert).not.toBe(status);
     expect(status).not.toBeInTheDocument();
@@ -100,7 +103,7 @@ describe("Alert", () => {
 
   it("is a light island, so its action and links keep light skins on a dark field", () => {
     const { container } = render(
-      <Alert tone="warning">Full setup and service starts at 50 guests.</Alert>
+      <Alert color="warning">Full setup and service starts at 50 guests.</Alert>
     );
     expect(container.firstElementChild).toHaveAttribute("data-surface", "light");
   });
@@ -108,7 +111,7 @@ describe("Alert", () => {
   it("has no accessibility violations with a title, an action and a dismiss", async () => {
     const { container } = render(
       <Alert
-        tone="brand"
+        color="brand"
         title="New in Sector 57"
         action={<button type="button">See the Menu</button>}
         onDismiss={vi.fn()}
@@ -117,5 +120,15 @@ describe("Alert", () => {
       </Alert>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, beating a default class and keeping className", () => {
+    const { container } = render(
+      <Alert sx={{ py: 2, mt: 4 }} className="italic">
+        Message.
+      </Alert>
+    );
+    expect(container.firstElementChild).toHaveClass("py-2", "mt-4", "italic");
+    expect(container.firstElementChild).not.toHaveClass("py-3.5");
   });
 });

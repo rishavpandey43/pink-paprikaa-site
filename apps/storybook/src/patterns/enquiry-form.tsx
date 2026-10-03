@@ -373,7 +373,7 @@ export function EnquiryForm({ onSubmit }: EnquiryFormProps) {
             Send enquiry
           </Button>
           {isSubmitSuccessful ? (
-            <Alert tone="success" title="Enquiry sent">
+            <Alert color="success" title="Enquiry sent">
               We&apos;ll reply on WhatsApp.
             </Alert>
           ) : null}
