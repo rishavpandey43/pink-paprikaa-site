@@ -3161,26 +3161,38 @@ The panel clips (`overflow-hidden`), so a `play` tabs to every action and proves
 ```ts
 /**
  * Stories only — never exported from the barrel. The `overflow` ancestors of `element` whose
- * padding box cuts its focus outline (an outline is clipped like any other paint, so a ring drawn
- * outside a flush child of an `overflow-hidden` box all but vanishes). A `play` that focuses a
- * control inside a clipping frame asserts this is `[]`. Throws when `element` draws no outline (not
- * focused, or a box-shadow ring): there is nothing to measure, and an empty list would pass.
+ * padding box cuts its focus ring (a ring is clipped like any other paint, so one drawn outside a
+ * flush child of an `overflow-hidden` box all but vanishes). A `play` that focuses a control inside
+ * a clipping frame asserts this is `[]`. The ring is the element's outline or, without one, its
+ * outer box-shadow (a field's `shadow-focus-ring`, drawn on the field box, not the `<input>`).
+ * Throws when `element` draws neither (not focused, or the wrong element): there is nothing to
+ * measure, and an empty list would pass.
  */
 export function ringClippers(element: HTMLElement) {
+  // A ring that transitions in (`transition-control` on a field box) is measured where it settles.
+  if ("getAnimations" in element) {
+    for (const animation of element.getAnimations()) {
+      if (animation instanceof CSSTransition) animation.finish();
+    }
+  }
   const style = getComputedStyle(element);
   const width = Number.parseFloat(style.outlineWidth);
-  // Negative for an inset ring (`-outline-offset-4`): its outer edge sits inside the box.
-  const reach = width + Number.parseFloat(style.outlineOffset);
-  if (style.outlineStyle === "none" || !(width > 0) || !Number.isFinite(reach)) {
+  const hasOutline = style.outlineStyle !== "none" && width > 0;
+  // Negative for an inset outline (`-outline-offset-4`): its outer edge sits inside the box.
+  const reach = hasOutline
+    ? width + Number.parseFloat(style.outlineOffset)
+    : shadowReach(style.boxShadow);
+  if (!Number.isFinite(reach) || (!hasOutline && !(reach > 0))) {
     throw new Error(
-      `ringClippers: <${element.tagName.toLowerCase()}> draws no focus outline (outline-style "${style.outlineStyle}", width "${style.outlineWidth}")`
+      `ringClippers: <${element.tagName.toLowerCase()}> draws no focus ring (outline-style "${style.outlineStyle}", width "${style.outlineWidth}", box-shadow "${style.boxShadow}")`
     );
   }
   // Scroll extents are whole pixels, so a child scrolled fully into view can sit a fraction past.
   const box = element.getBoundingClientRect();
   const slack = 1;
   const clippers: HTMLElement[] = [];
-  for (let node = element.parentElement; node !== null; node = node.parentElement) {
+  // Only a box in the containing-block chain clips: a fixed scrim escapes an `overflow-hidden` body.
+  for (let node = containingBlock(element); node !== null; node = containingBlock(node)) {
     const { overflowX, overflowY } = getComputedStyle(node);
     if (overflowX === "visible" && overflowY === "visible") continue;
     const frame = node.getBoundingClientRect();
@@ -3197,6 +3209,49 @@ export function ringClippers(element: HTMLElement) {
   }
   return clippers;
 }
+
+/** The box `node` is laid out in — the one whose `overflow` can clip it; `null` for the viewport. */
+function containingBlock(node: HTMLElement) {
+  const { position } = getComputedStyle(node);
+  if (position !== "absolute" && position !== "fixed") return node.parentElement;
+  for (let ancestor = node.parentElement; ancestor !== null; ancestor = ancestor.parentElement) {
+    const style = getComputedStyle(ancestor);
+    if (position === "absolute" && isSet(style.position) && style.position !== "static") {
+      return ancestor;
+    }
+    if (
+      isSet(style.transform) ||
+      isSet(style.filter) ||
+      isSet(style.perspective) ||
+      /layout|paint|strict|content/.test(style.contain)
+    ) {
+      return ancestor;
+    }
+  }
+  return null;
+}
+
+function isSet(value: string) {
+  return value !== "" && value !== "none";
+}
+
+/** How far the outer shadows of a computed `box-shadow` reach past the box; NaN when none do. */
+function shadowReach(boxShadow: string) {
+  let reach = Number.NaN;
+  for (const shadow of boxShadow.replaceAll(/rgba?\([^)]*\)/g, "").split(",")) {
+    if (shadow.includes("inset")) continue;
+    const lengths = shadow
+      .trim()
+      .split(/\s+/)
+      .filter((token) => /^-?[\d.]+(px)?$/.test(token))
+      .map((token) => Number.parseFloat(token));
+    if (lengths.length < 2) continue;
+    const [x = 0, y = 0, blur = 0, spread = 0] = lengths;
+    const shadowEdge = Math.max(Math.abs(x), Math.abs(y)) + blur + spread;
+    reach = Number.isNaN(reach) ? shadowEdge : Math.max(reach, shadowEdge);
+  }
+  return reach;
+}
 ```
 
 The helper throws on a control that draws no outline (a box-shadow ring, or one not focused), so a `play` can never pass with nothing measured (batch F carried fix F1). `packages/ui/src/lib/story-ring.spec.ts`:
@@ -3204,35 +3259,82 @@ The helper throws on a control that draws no outline (a box-shadow ring, or one 
 ```ts
 import { ringClippers } from "./story-ring";
 
-function control(
-  outline: Partial<Pick<CSSStyleDeclaration, "outlineOffset" | "outlineStyle" | "outlineWidth">>
-) {
-  const button = document.createElement("button");
-  Object.assign(button.style, outline);
-  document.body.append(button);
-  return button;
+type RingStyle = Partial<
+  Pick<
+    CSSStyleDeclaration,
+    "boxShadow" | "outlineOffset" | "outlineStyle" | "outlineWidth" | "position"
+  >
+>;
+
+/** A control `inset` px inside a 100px `overflow: hidden` frame (jsdom has no layout, so both are stubbed). */
+function framed(ring: RingStyle, inset = 8) {
+  const frame = document.createElement("div");
+  frame.style.overflow = "hidden";
+  Object.defineProperties(frame, { clientWidth: { value: 100 }, clientHeight: { value: 100 } });
+  frame.getBoundingClientRect = () => rect(0, 100);
+  const control = document.createElement("button");
+  Object.assign(control.style, ring);
+  control.getBoundingClientRect = () => rect(inset, 100 - inset);
+  frame.append(control);
+  return { frame, control };
 }
 
+function rect(start: number, end: number) {
+  const size = end - start;
+  return { left: start, top: start, right: end, bottom: end, width: size, height: size } as DOMRect;
+}
+
+const OUTLINE = { outlineStyle: "solid", outlineWidth: "2px", outlineOffset: "2px" };
+
 describe("ringClippers", () => {
-  it("throws when the element draws no outline, so a play cannot pass without a ring to measure", () => {
-    expect(() => ringClippers(control({}))).toThrow(/draws no focus outline/);
+  it("throws when the element draws no ring, so a play cannot pass with nothing measured", () => {
+    expect(() => ringClippers(framed({}).control)).toThrow(/draws no focus ring/);
   });
 
   it("throws on an outline styled none, whatever its width", () => {
-    expect(() =>
-      ringClippers(control({ outlineStyle: "none", outlineWidth: "2px", outlineOffset: "2px" }))
-    ).toThrow(/draws no focus outline/);
+    expect(() => ringClippers(framed({ ...OUTLINE, outlineStyle: "none" }).control)).toThrow(
+      /draws no focus ring/
+    );
   });
 
   it("throws on a zero-width outline", () => {
-    expect(() =>
-      ringClippers(control({ outlineStyle: "solid", outlineWidth: "0px", outlineOffset: "2px" }))
-    ).toThrow(/draws no focus outline/);
+    expect(() => ringClippers(framed({ ...OUTLINE, outlineWidth: "0px" }).control)).toThrow(
+      /draws no focus ring/
+    );
   });
 
-  it("measures an inset ring, whose reach is negative", () => {
+  it("throws on an inset box-shadow, which draws nothing outside the box", () => {
+    expect(() => ringClippers(framed({ boxShadow: "inset 0 0 0 3px red" }).control)).toThrow(
+      /draws no focus ring/
+    );
+  });
+
+  it("names the frame that cuts an outline, and none when the outline fits", () => {
+    const tight = framed(OUTLINE, 2);
+    expect(ringClippers(tight.control)).toEqual([tight.frame]);
+    expect(ringClippers(framed(OUTLINE, 5).control)).toEqual([]);
+  });
+
+  it("measures an inset outline, whose reach is negative", () => {
+    expect(ringClippers(framed({ ...OUTLINE, outlineOffset: "-4px" }, 0).control)).toEqual([]);
+  });
+
+  it("skips a frame a fixed control escapes", () => {
+    expect(ringClippers(framed({ ...OUTLINE, position: "fixed" }, 2).control)).toEqual([]);
+  });
+
+  it("skips a static frame an absolute control escapes, but not a positioned one", () => {
+    expect(ringClippers(framed({ ...OUTLINE, position: "absolute" }, 2).control)).toEqual([]);
+    const positioned = framed({ ...OUTLINE, position: "absolute" }, 2);
+    positioned.frame.style.position = "relative";
+    expect(ringClippers(positioned.control)).toEqual([positioned.frame]);
+  });
+
+  it("measures a box-shadow ring (a field's) by its spread when there is no outline", () => {
+    const tight = framed({ boxShadow: "0 0 0 3px red" }, 1);
+    expect(ringClippers(tight.control)).toEqual([tight.frame]);
     expect(
-      ringClippers(control({ outlineStyle: "solid", outlineWidth: "2px", outlineOffset: "-4px" }))
+      ringClippers(framed({ boxShadow: "rgb(255, 185, 206) 0px 0px 0px 3px" }, 4).control)
     ).toEqual([]);
   });
 });
@@ -5518,30 +5620,31 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 **Dev parity:**
 
-| Dev item                                                     | Ruling  | Where / clause                                                                                      |
-| ------------------------------------------------------------ | ------- | --------------------------------------------------------------------------------------------------- |
-| Closed until the trigger is used                             | ALREADY | test "opens from its trigger…"                                                                      |
-| Named by its title; described by its description             | ALREADY | same test                                                                                           |
-| Escape closes and reports `onOpenChange(false)`              | ALREADY | tests "closes on Escape…", "reports open changes…"                                                  |
-| The close glyph closes                                       | ALREADY | test "closes from its labelled close button"                                                        |
-| `hasCloseButton={false}` — a decision that must be answered  | ADD     | contract delta 4 (R110): hides the close button only; test "hides only the close button…"           |
-| Focus moves into the dialog when it opens                    | ADD     | test "moves focus into the dialog when it opens"                                                    |
-| Footer actions render and work                               | ALREADY | test "renders the footer actions"                                                                   |
-| Controlled open state holds                                  | ALREADY | test "reports open changes and stays open when controlled"                                          |
-| Sheet: top corners only, plus a grab handle                  | ADD     | the sheet test also asserts no `rounded-xl`                                                         |
-| Three widths                                                 | ALREADY | `it.each` sizes (token widths, D4)                                                                  |
-| `position="container"` anchors inside a phone frame          | ALREADY | `portalContainer` + the frame's `contain-layout` (AppShell, Plan 2c); story `InsideAPhoneFrame` ADD |
-| A scrim over everything behind it                            | ADD     | test "lays the ink scrim over the page behind it"                                                   |
-| Merges a caller `className`                                  | ADD     | contract delta 5 (R110): onto the panel; test "merges a caller className onto the panel"            |
-| axe                                                          | ALREADY | test "has no accessibility violations while open"                                                   |
-| The body scrolls; header and footer never leave the screen   | ADD     | `body` slot `min-h-0 flex-1 overflow-y-auto`, `shrink-0` header/footer, test "scrolls its body…"    |
-| Footer wraps at 360px                                        | ALREADY | `flex-wrap`                                                                                         |
-| `aria-describedby={undefined}` opt-out                       | ALREADY | Radix 1.1.23 omits it without a Description, no warning (Interfaces)                                |
-| `isOpen` / `isDefaultOpen` names                             | DROP    | spec §8.2 — `open` / `defaultOpen` / `onOpenChange`                                                 |
-| Stories Default · Sheet · WithDescription · WithForm · Sizes | ALREADY | Playground · Sheet · Large · Playground (`BOOKING_FORM`) · CentredModal/Playground/Large            |
-| Story MustBeAnswered                                         | ADD     | `MustBeAnswered` (contract delta 4) — controlled, own footer actions, `play` (Escape, scrim click)  |
-| Story InsideAPhoneFrame                                      | ADD     | `InsideAPhoneFrame`                                                                                 |
-| Story Smallest                                               | ADD     | `Mobile`                                                                                            |
+| Dev item                                                     | Ruling  | Where / clause                                                                                                   |
+| ------------------------------------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------------- |
+| Closed until the trigger is used                             | ALREADY | test "opens from its trigger…"                                                                                   |
+| Named by its title; described by its description             | ALREADY | same test                                                                                                        |
+| Escape closes and reports `onOpenChange(false)`              | ALREADY | tests "closes on Escape…", "reports open changes…"                                                               |
+| The close glyph closes                                       | ALREADY | test "closes from its labelled close button"                                                                     |
+| `hasCloseButton={false}` — a decision that must be answered  | ADD     | contract delta 4 (R110): hides the close button only; test "hides only the close button…"                        |
+| Focus moves into the dialog when it opens                    | ADD     | test "moves focus into the dialog when it opens"                                                                 |
+| Focus returns without a trigger (R82)                        | ADD     | Radix refocuses only its own trigger; test "returns focus to what had it when a dialog without a trigger closes" |
+| Footer actions render and work                               | ALREADY | test "renders the footer actions"                                                                                |
+| Controlled open state holds                                  | ALREADY | test "reports open changes and stays open when controlled"                                                       |
+| Sheet: top corners only, plus a grab handle                  | ADD     | the sheet test also asserts no `rounded-xl`                                                                      |
+| Three widths                                                 | ALREADY | `it.each` sizes (token widths, D4)                                                                               |
+| `position="container"` anchors inside a phone frame          | ALREADY | `portalContainer` + the frame's `contain-layout` (AppShell, Plan 2c); story `InsideAPhoneFrame` ADD              |
+| A scrim over everything behind it                            | ADD     | test "lays the ink scrim over the page behind it"                                                                |
+| Merges a caller `className`                                  | ADD     | contract delta 5 (R110): onto the panel; test "merges a caller className onto the panel"                         |
+| axe                                                          | ALREADY | test "has no accessibility violations while open"                                                                |
+| The body scrolls; header and footer never leave the screen   | ADD     | `body` slot `min-h-0 flex-1 overflow-y-auto`, `shrink-0` header/footer, test "scrolls its body…"                 |
+| Footer wraps at 360px                                        | ALREADY | `flex-wrap`                                                                                                      |
+| `aria-describedby={undefined}` opt-out                       | ALREADY | Radix 1.1.23 omits it without a Description, no warning (Interfaces)                                             |
+| `isOpen` / `isDefaultOpen` names                             | DROP    | spec §8.2 — `open` / `defaultOpen` / `onOpenChange`                                                              |
+| Stories Default · Sheet · WithDescription · WithForm · Sizes | ALREADY | Playground · Sheet · Large · Playground (`BOOKING_FORM`) · CentredModal/Playground/Large                         |
+| Story MustBeAnswered                                         | ADD     | `MustBeAnswered` (contract delta 4) — controlled, own footer actions, `play` (Escape, scrim click)               |
+| Story InsideAPhoneFrame                                      | ADD     | `InsideAPhoneFrame`                                                                                              |
+| Story Smallest                                               | ADD     | `Mobile`                                                                                                         |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -5617,11 +5720,44 @@ Append to `TEXT`:
 ```tsx
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useState } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { Dialog } from "./dialog";
 
 const TRIGGER = <button type="button">Book a table</button>;
+
+/** A dialog the app opens from its own button: no `trigger`, so Radix has nothing to refocus. */
+function ConfirmRemoval() {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        Remove
+      </button>
+      <Dialog
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        title="Remove this item?"
+        footer={
+          <button
+            type="button"
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
+            Keep it
+          </button>
+        }
+      />
+    </>
+  );
+}
 
 describe("Dialog", () => {
   it("opens from its trigger, named by its title and described by its description", async () => {
@@ -5646,6 +5782,20 @@ describe("Dialog", () => {
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();
+  });
+
+  it("returns focus to what had it when a dialog without a trigger closes", async () => {
+    const user = userEvent.setup();
+    render(<ConfirmRemoval />);
+    const opener = screen.getByRole("button", { name: "Remove" });
+    await user.click(opener);
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Keep it" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(opener).toHaveFocus();
+    await user.click(opener);
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(opener).toHaveFocus();
   });
 
   it("moves focus into the dialog when it opens", async () => {
@@ -5818,6 +5968,7 @@ import type { ReactElement, ReactNode } from "react";
 
 import { X } from "lucide-react";
 import { Dialog as DialogPrimitive } from "radix-ui";
+import { useRef } from "react";
 
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
@@ -5879,7 +6030,8 @@ export interface DialogProps
 /**
  * A decision that must be made now: a centred modal (24px radius, `--shadow-4`, 56% ink scrim),
  * or a bottom sheet with a grab handle — the app default. Radix Dialog: focus is trapped, Escape
- * and the scrim close it, focus returns to the trigger, the page behind cannot scroll.
+ * and the scrim close it, focus returns to the trigger (or, without one, to what had focus when it
+ * opened), the page behind cannot scroll.
  */
 export function Dialog({
   trigger,
@@ -5896,12 +6048,30 @@ export function Dialog({
   ...root
 }: DialogProps) {
   const slots = dialog({ variant, size });
+  // Radix refocuses only its own trigger on close; without one, focus would drop to <body>.
+  const returnFocusRef = useRef<HTMLElement | null>(null);
   return (
     <DialogPrimitive.Root {...root}>
       {trigger ? <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger> : null}
       <DialogPrimitive.Portal container={portalContainer}>
         <DialogPrimitive.Overlay className={slots.overlay()}>
-          <DialogPrimitive.Content data-surface="light" className={slots.content({ className })}>
+          <DialogPrimitive.Content
+            data-surface="light"
+            className={slots.content({ className })}
+            onOpenAutoFocus={() => {
+              const active = document.activeElement;
+              returnFocusRef.current = active instanceof HTMLElement ? active : null;
+            }}
+            onCloseAutoFocus={
+              trigger
+                ? undefined
+                : (event) => {
+                    event.preventDefault();
+                    if (returnFocusRef.current?.isConnected === true)
+                      returnFocusRef.current.focus();
+                  }
+            }
+          >
             {variant === "sheet" ? (
               <div aria-hidden className={slots.handle()}>
                 <span className={slots.handleBar()} />
@@ -5933,11 +6103,13 @@ export function Dialog({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- organisms/dialog 2>&1 | tail -8`
-Expected: PASS (17 tests).
+Expected: PASS (18 tests).
 
 - [ ] **Step 6: Stories (card parity with `Dialog.card.html`)**
 
-Stories that render open set `a11y` to skip `aria-hidden-focus` only: Radix marks the rest of the page `aria-hidden` while it traps focus inside the dialog, which that rule reports although the hidden content cannot receive focus. Every other rule still runs. Each story renders in its own iframe so open dialogs do not stack on the docs page.
+Stories that render open set `a11y` to skip `aria-hidden-focus` only (the story's `rules` replace the preview's list, so `color-contrast` is switched off again beside it): Radix marks the rest of the page `aria-hidden` while it traps focus inside the dialog, which that rule reports although the hidden content cannot receive focus. Every other rule still runs. Each story renders in its own iframe so open dialogs do not stack on the docs page.
+
+The panel clips and its body scrolls, so `CentredModal`, `Sheet`, `InsideAPhoneFrame` and `Mobile` tab round the trapped focus and prove every ring whole with `lib/story-ring` (fold item 20) — a field's ring is its field box's box-shadow — after the panel's entrance animation settles.
 
 `packages/ui/src/organisms/dialog/dialog.stories.tsx`:
 
@@ -5951,13 +6123,25 @@ import { expect, screen, waitFor, within } from "storybook/test";
 import { Button } from "../../atoms/button/button";
 import { Input } from "../../atoms/input/input";
 import { Select } from "../../atoms/select/select";
+import { ringClippers } from "../../lib/story-ring";
 import { Field } from "../../molecules/field/field";
 import { VIEWPORT_360 } from "../story-fixtures";
 import { Dialog, type DialogProps } from "./dialog";
 
-/** Radix hides the page behind an open dialog while trapping focus; that rule misreads it. */
+/**
+ * Radix hides the page behind an open dialog while trapping focus; `aria-hidden-focus` misreads
+ * it. A story's `rules` replace the preview's list, so `color-contrast` (owned by the token
+ * contrast policy) is switched off again here.
+ */
 const OPEN_DIALOG_A11Y = {
-  a11y: { config: { rules: [{ id: "aria-hidden-focus", enabled: false }] } },
+  a11y: {
+    config: {
+      rules: [
+        { id: "color-contrast", enabled: false },
+        { id: "aria-hidden-focus", enabled: false },
+      ],
+    },
+  },
 };
 
 const BOOKING_FORM = (
@@ -5994,7 +6178,7 @@ const meta = {
       story: { inline: false, height: "480px" },
       description: {
         component:
-          'A decision that must be made now. `variant="modal"` is centred (24px radius, shadow-4, 56% ink scrim); `variant="sheet"` is the app\'s bottom sheet with a grab handle and top corners only. Focus is trapped, Escape and the scrim close it, focus returns to the trigger, the page cannot scroll. `portalContainer` renders it inside a positioned frame (AppShell\'s overlay slot) instead of the page body.',
+          'A decision that must be made now. `variant="modal"` is centred (24px radius, shadow-4, 56% ink scrim); `variant="sheet"` is the app\'s bottom sheet with a grab handle and top corners only. Focus is trapped, Escape and the scrim close it, focus returns to the trigger (or, without one, to what had focus when it opened), the page cannot scroll. `portalContainer` renders it inside a positioned frame (AppShell\'s overlay slot) instead of the page body.',
       },
     },
   },
@@ -6003,12 +6187,42 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** The panel fades and slides in (`animate-sheet-in`): wait for it to land before measuring. */
+async function settle(dialog: HTMLElement) {
+  await Promise.all(dialog.getAnimations().map((animation) => animation.finished));
+  return dialog;
+}
+
+/**
+ * The panel clips (`overflow-hidden`) and its body scrolls (`overflow-y-auto`), so the padding must
+ * hold every focus ring whole: tab round the trapped focus — close button, fields (whose ring is
+ * the field box's), footer buttons — and prove nothing cuts any of them.
+ */
+function proveRingsWhole(stops: number): NonNullable<Story["play"]> {
+  return async ({ userEvent }) => {
+    const dialog = await settle(await screen.findByRole("dialog"));
+    const seen = new Set<Element>();
+    for (let step = 0; step <= stops; step += 1) {
+      await userEvent.tab();
+      const active = document.activeElement;
+      if (!(active instanceof HTMLElement) || seen.has(active)) break;
+      seen.add(active);
+      await expect(dialog).toContainElement(active);
+      const ring = active.matches("input, select, textarea") ? active.parentElement : active;
+      if (ring === null) throw new Error("a field control outside its field box");
+      await expect(ringClippers(ring)).toEqual([]);
+    }
+    await expect(seen.size).toBe(stops);
+  };
+}
+
 export const Playground: Story = {};
 
 /** Card row: centred modal. */
 export const CentredModal: Story = {
   args: { defaultOpen: true, size: "sm" },
   parameters: OPEN_DIALOG_A11Y,
+  play: proveRingsWhole(5),
 };
 
 /** Card row: sheet. */
@@ -6028,6 +6242,7 @@ export const Sheet: Story = {
     ),
   },
   parameters: OPEN_DIALOG_A11Y,
+  play: proveRingsWhole(3),
 };
 
 export const Large: Story = {
@@ -6040,7 +6255,9 @@ export const KeyboardFlow: Story = {
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole("button", { name: "Book a table" });
     await userEvent.click(trigger);
-    await expect(await screen.findByRole("dialog", { name: "Book a table" })).toBeVisible();
+    await expect(
+      await settle(await screen.findByRole("dialog", { name: "Book a table" }))
+    ).toBeVisible();
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     await expect(trigger).toHaveFocus();
@@ -6053,18 +6270,29 @@ export const KeyboardFlow: Story = {
  * only way out.
  */
 function MustBeAnsweredDialog(args: DialogProps) {
-  const [open, setOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
   return (
     <Dialog
       {...args}
-      open={open}
+      open={isOpen}
       hasCloseButton={false}
       footer={
         <>
-          <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
             Keep It
           </Button>
-          <Button size="sm" onClick={() => setOpen(false)}>
+          <Button
+            size="sm"
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
             Remove
           </Button>
         </>
@@ -6082,7 +6310,7 @@ export const MustBeAnswered: Story = {
   parameters: OPEN_DIALOG_A11Y,
   render: (args) => <MustBeAnsweredDialog {...args} />,
   play: async ({ userEvent }) => {
-    const dialog = await screen.findByRole("dialog", { name: "Remove this item?" });
+    const dialog = await settle(await screen.findByRole("dialog", { name: "Remove this item?" }));
     await expect(within(dialog).queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
     await userEvent.keyboard("{Escape}");
     await expect(screen.getByRole("dialog", { name: "Remove this item?" })).toBeVisible();
@@ -6130,6 +6358,7 @@ export const InsideAPhoneFrame: Story = {
   },
   parameters: OPEN_DIALOG_A11Y,
   render: (args) => <FramedSheet {...args} />,
+  play: proveRingsWhole(3),
 };
 
 /** The smallest supported viewport: the modal keeps its gutter on both sides. */
@@ -6137,6 +6366,7 @@ export const Mobile: Story = {
   args: { defaultOpen: true },
   globals: VIEWPORT_360,
   parameters: OPEN_DIALOG_A11Y,
+  play: proveRingsWhole(5),
 };
 ```
 
@@ -6159,8 +6389,11 @@ git commit -m "feat(ui): add the Dialog organism
 
 Radix Dialog as the design system's modal and bottom sheet: title-named,
 optionally described, focus-trapped, closed by Escape, the scrim or a named
-close button, with focus returned and page scroll locked. Sizes come from
-component tokens; portalContainer keeps it inside a phone frame.
+close button, with focus returned and page scroll locked. Without a
+trigger, focus goes back to what had it when the dialog opened (R82).
+hasCloseButton={false} hides only the close button; a caller className
+lands on the panel. Sizes come from component tokens; portalContainer
+keeps it inside a phone frame.
 
 Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
