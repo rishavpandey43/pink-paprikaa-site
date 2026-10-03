@@ -42,4 +42,9 @@ describe("DietMark", () => {
     const { container } = render(<DietMark />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(<DietMark sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
 });

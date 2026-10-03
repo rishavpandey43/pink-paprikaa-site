@@ -1,11 +1,13 @@
 import type { ComponentProps, ReactNode } from "react";
 
+import type { SxProp } from "../../lib/common-props";
 import type { FieldStatus } from "../../lib/field-status";
 import type { IconComponent } from "../icon/icon";
 
 import { FieldControl } from "../../lib/field-control";
+import { withSx } from "../../lib/sx";
 
-interface InputOwnProps {
+interface InputOwnProps extends SxProp {
   size?: "sm" | "md" | "lg" | undefined;
   /** A status raises the border to 2px, tints the icon and shows its glyph. Field shows the message. */
   status?: FieldStatus | undefined;
@@ -22,7 +24,7 @@ interface InputOwnProps {
 /**
  * The text field (spec §9.1): one line, or a textarea with `isMultiline`. `readOnly` gives the
  * sunken fill and a lock; `status="error"` sets `aria-invalid`. Label, hint and message are Field's.
- * `className` styles the box; every other prop — `register()` included — lands on the native control.
+ * `sx` and `className` style the box; every other prop — `register()` included — lands on the native control.
  */
 export type InputProps = InputOwnProps &
   (
@@ -37,6 +39,7 @@ export function Input({
   suffix,
   trailing,
   isLoading = false,
+  sx,
   className,
   ...control
 }: InputProps) {
@@ -47,7 +50,7 @@ export function Input({
     suffix,
     trailing,
     isLoading,
-    className,
+    className: withSx(sx, className),
     isReadOnly: control.readOnly === true,
   };
   const state = {

@@ -179,4 +179,14 @@ describe("Input", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(<Input aria-label="Name" sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
+
+  it("takes sx on a multiline input's box", () => {
+    const { container } = render(<Input isMultiline aria-label="Note" sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
 });

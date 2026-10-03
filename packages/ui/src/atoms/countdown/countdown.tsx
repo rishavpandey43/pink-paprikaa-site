@@ -2,7 +2,10 @@
 
 import { type ComponentProps, type ReactNode, useSyncExternalStore } from "react";
 
+import type { SxProp } from "../../lib/common-props";
+
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const SECOND_MS = 1000;
 /** What the server and the hydration pass render: a reading's shape without time-dependent digits. */
@@ -53,7 +56,8 @@ function formatRemaining(totalSeconds: number): string {
   return `${String(days)}d ${pad(hours)}h ${pad(minutes)}m ${pad(totalSeconds % 60)}s`;
 }
 
-export interface CountdownProps extends Omit<ComponentProps<"time">, "children" | "dateTime"> {
+export interface CountdownProps
+  extends Omit<ComponentProps<"time">, "children" | "dateTime">, SxProp {
   /** ISO 8601 with an offset, e.g. "2026-10-31T23:59:59+05:30". */
   endsAt: string;
   /** Rendered once `endsAt` has passed. = null (nothing). */
@@ -66,7 +70,14 @@ export interface CountdownProps extends Omit<ComponentProps<"time">, "children" 
  * Time left on an offer, ticking every second. Server-rendered HTML carries a placeholder, so there
  * is no hydration mismatch and no stale time in a static page; the live reading starts on mount.
  */
-export function Countdown({ endsAt, fallback = null, label, className, ...props }: CountdownProps) {
+export function Countdown({
+  endsAt,
+  fallback = null,
+  label,
+  sx,
+  className,
+  ...props
+}: CountdownProps) {
   const endsMs = parseEndsAt(endsAt);
   const hasLabel = label !== undefined && label.trim() !== "";
   const nowSecond = useSyncExternalStore<number | null>(
@@ -80,7 +91,7 @@ export function Countdown({ endsAt, fallback = null, label, className, ...props 
   if (remaining === 0) return fallback;
 
   return (
-    <time dateTime={endsAt} className={countdown({ className })} {...props}>
+    <time dateTime={endsAt} className={countdown({ className: withSx(sx, className) })} {...props}>
       {hasLabel ? <span className="sr-only">{`${label} `}</span> : null}
       {remaining === null ? (
         <span aria-hidden="true">{PLACEHOLDER}</span>

@@ -50,4 +50,9 @@ describe("Slider", () => {
     const { container } = render(<Slider label="Guests" min={15} max={300} defaultValue={60} />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(<Slider label="Guests" sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
 });

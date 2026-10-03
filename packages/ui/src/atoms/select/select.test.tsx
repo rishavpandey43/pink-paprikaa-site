@@ -257,4 +257,11 @@ describe("Select", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(
+      <Select aria-label="Guests" options={[{ value: "2", label: "2" }]} sx={{ mt: 4 }} />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
 });

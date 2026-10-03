@@ -113,4 +113,9 @@ describe("Switch", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(<Switch label="Order updates" sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
 });

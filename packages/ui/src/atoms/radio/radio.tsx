@@ -2,9 +2,12 @@ import { type ComponentProps, type ReactElement, type ReactNode, useId } from "r
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
+import type { SxProp } from "../../lib/common-props";
+
 import { ChoiceControl, joinIds } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
 import { FIELD_STATUS_ICON, type FieldStatus } from "../../lib/field-status";
+import { withSx } from "../../lib/sx";
 import { Icon } from "../icon/icon";
 
 /** 22px circle; checked is a 6px pink ring around a white centre — never a filled dot. */
@@ -43,7 +46,7 @@ const radioGroup = componentVariants({
   defaultVariants: { orientation: "vertical", status: "default", isLegendHidden: false },
 });
 
-export interface RadioProps extends Omit<ComponentProps<"input">, "type" | "size"> {
+export interface RadioProps extends Omit<ComponentProps<"input">, "type" | "size">, SxProp {
   label: ReactNode;
   description?: ReactNode;
   /** Absolute price of this option in whole rupees; renders as "₹280". */
@@ -63,7 +66,7 @@ export function Radio({ price, ...props }: RadioProps) {
   );
 }
 
-interface RadioGroupOwnProps extends ComponentProps<"fieldset"> {
+interface RadioGroupOwnProps extends ComponentProps<"fieldset">, SxProp {
   legend: ReactNode;
   isLegendHidden?: boolean | undefined;
   orientation?: "vertical" | "horizontal" | undefined;
@@ -95,6 +98,7 @@ export function RadioGroup({
   orientation = "vertical",
   status = "default",
   message,
+  sx,
   className,
   children,
   "aria-describedby": describedBy,
@@ -114,7 +118,7 @@ export function RadioGroup({
       role="radiogroup"
       aria-invalid={status === "error" ? true : undefined}
       aria-describedby={joinIds(hasMessage ? messageId : undefined, describedBy)}
-      className={styles.root({ className })}
+      className={styles.root({ className: withSx(sx, className) })}
       {...props}
     >
       <legend className={styles.legend()}>{legend}</legend>

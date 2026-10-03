@@ -1,6 +1,9 @@
 import type { ComponentProps, ComponentType, SVGProps } from "react";
 
+import type { SxProp } from "../../lib/common-props";
+
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 /**
  * Anything that renders an icon glyph: a lucide-react icon or one of the brand glyphs. The SVG
@@ -43,17 +46,17 @@ const STROKE_WIDTH: Readonly<Record<IconSize, number>> = {
 };
 
 export interface IconProps
-  extends Omit<ComponentProps<"span">, "children">, VariantProps<typeof icon> {
+  extends Omit<ComponentProps<"span">, "children">, VariantProps<typeof icon>, SxProp {
   icon: IconComponent;
   /** Accessible name. Omit for a decorative icon (then it is hidden from assistive tech). */
   label?: string | undefined;
 }
 
 /** A Lucide-style glyph in the system's sizes, painted with `currentColor`. */
-export function Icon({ icon: Glyph, size = "md", label, className, ...props }: IconProps) {
+export function Icon({ icon: Glyph, size = "md", label, sx, className, ...props }: IconProps) {
   return (
     <span
-      className={icon({ size, className })}
+      className={icon({ size, className: withSx(sx, className) })}
       role={label === undefined ? undefined : "img"}
       aria-label={label}
       aria-hidden={label === undefined ? true : undefined}

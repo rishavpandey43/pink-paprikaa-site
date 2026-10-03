@@ -2,10 +2,12 @@ import type { ComponentProps } from "react";
 
 import { ChevronDown } from "lucide-react";
 
+import type { SxProp } from "../../lib/common-props";
 import type { FieldStatus } from "../../lib/field-status";
 import type { IconComponent } from "../icon/icon";
 
 import { FieldControl } from "../../lib/field-control";
+import { withSx } from "../../lib/sx";
 
 export interface SelectOption {
   value: string;
@@ -13,7 +15,7 @@ export interface SelectOption {
   isDisabled?: boolean | undefined;
 }
 
-export interface SelectProps extends Omit<ComponentProps<"select">, "size" | "children"> {
+export interface SelectProps extends Omit<ComponentProps<"select">, "size" | "children">, SxProp {
   options: SelectOption[];
   /** A disabled first option, shown until something is chosen. */
   placeholder?: string | undefined;
@@ -32,7 +34,7 @@ export interface SelectProps extends Omit<ComponentProps<"select">, "size" | "ch
 
 /**
  * The platform `<select>` in Input's field box (spec D7): same heights, radius, status colours and
- * glyphs. For short, known lists — outlet, table size, pickup slot. `className` styles the box;
+ * glyphs. For short, known lists — outlet, table size, pickup slot. `sx` and `className` style the box;
  * every other prop, `register()` included, lands on the native select.
  */
 export function Select({
@@ -46,6 +48,7 @@ export function Select({
   name,
   value,
   defaultValue,
+  sx,
   className,
   ...props
 }: SelectProps) {
@@ -65,7 +68,7 @@ export function Select({
       // Disabled and read-only greys as disabled; read-only alone stays readable.
       isReadOnly={readOnly && disabled !== true}
       affordance={ChevronDown}
-      className={className}
+      className={withSx(sx, className)}
     >
       {(controlClassName) => (
         <>

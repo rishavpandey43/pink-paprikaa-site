@@ -1,5 +1,7 @@
 import type { ComponentProps, ReactNode } from "react";
 
+import type { SxProp } from "../../lib/common-props";
+
 import { ChoiceControl } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
 
@@ -16,7 +18,7 @@ const toggle = componentVariants({
   },
 });
 
-export interface SwitchProps extends Omit<ComponentProps<"input">, "type" | "size"> {
+export interface SwitchProps extends Omit<ComponentProps<"input">, "type" | "size">, SxProp {
   label: ReactNode;
   description?: ReactNode;
   /** Hides the label visually — it stays the accessible name — for a row that already labels it. */

@@ -48,4 +48,9 @@ describe("Icon", () => {
     const { container } = render(<Icon icon={MessageCircle} label="WhatsApp" />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(<Icon icon={MessageCircle} sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
 });

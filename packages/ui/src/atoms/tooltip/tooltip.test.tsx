@@ -128,4 +128,15 @@ describe("Tooltip", () => {
     await expectNoA11yViolations(container);
     await expectNoA11yViolations(tooltip);
   });
+
+  it("takes sx on its content", async () => {
+    const user = userEvent.setup();
+    render(
+      <Tooltip label="Contains dairy" sx={{ mt: 4 }}>
+        <button type="button">Dairy</button>
+      </Tooltip>
+    );
+    await user.tab();
+    expect(await screen.findByRole("tooltip")).toHaveClass("mt-4");
+  });
 });

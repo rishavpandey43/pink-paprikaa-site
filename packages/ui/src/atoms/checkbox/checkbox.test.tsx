@@ -139,4 +139,9 @@ describe("Checkbox", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(<Checkbox label="Jain (no onion, garlic)" sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
 });

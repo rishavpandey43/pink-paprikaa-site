@@ -4,6 +4,8 @@ import { Check } from "lucide-react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
+import type { SxProp } from "../../lib/common-props";
+
 import { ChoiceControl } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
 import { Icon } from "../icon/icon";
@@ -19,7 +21,7 @@ const box = componentVariants({
   ],
 });
 
-export interface CheckboxProps extends Omit<ComponentProps<"input">, "type" | "size"> {
+export interface CheckboxProps extends Omit<ComponentProps<"input">, "type" | "size">, SxProp {
   label: ReactNode;
   /** Secondary line under the label, announced as the description. */
   description?: ReactNode;

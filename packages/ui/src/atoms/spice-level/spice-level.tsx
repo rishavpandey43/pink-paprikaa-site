@@ -1,7 +1,10 @@
 import type { ComponentProps } from "react";
 
+import type { SxProp } from "../../lib/common-props";
+
 import { BrandDiamond, type BrandDiamondSize } from "../../lib/brand-diamond";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 type Level = 1 | 2 | 3 | 4;
 type SpiceSize = "sm" | "md" | "lg";
@@ -32,7 +35,7 @@ const spiceLevel = componentVariants({
   },
 });
 
-export interface SpiceLevelProps extends ComponentProps<"span"> {
+export interface SpiceLevelProps extends ComponentProps<"span">, SxProp {
   level: Level;
   /** = 4 */
   max?: 4 | undefined;
@@ -48,6 +51,7 @@ export function SpiceLevel({
   max = 4,
   hasLabel = false,
   size = "md",
+  sx,
   className,
   ...props
 }: SpiceLevelProps) {
@@ -56,7 +60,7 @@ export function SpiceLevel({
     <span
       role="img"
       aria-label={`Spice level ${String(level)} of ${String(max)}`}
-      className={styles.root({ className })}
+      className={styles.root({ className: withSx(sx, className) })}
       {...props}
     >
       <span className={styles.diamonds()}>

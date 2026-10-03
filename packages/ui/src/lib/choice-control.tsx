@@ -1,6 +1,9 @@
 import { type ComponentProps, type ReactNode, useId } from "react";
 
+import type { SxProp } from "./common-props";
+
 import { componentVariants } from "./component-variants";
+import { withSx } from "./sx";
 
 /**
  * The one choice row — Checkbox, Radio and Switch. A <label> holds a visually hidden native input,
@@ -37,7 +40,7 @@ export function joinIds(...ids: (string | undefined)[]): string | undefined {
   return joined === "" ? undefined : joined;
 }
 
-export interface ChoiceControlProps extends Omit<ComponentProps<"input">, "size" | "type"> {
+export interface ChoiceControlProps extends Omit<ComponentProps<"input">, "size" | "type">, SxProp {
   type: "checkbox" | "radio";
   /** The drawn box, ring or track. Decorative: the native input carries every semantic. */
   control: ReactNode;
@@ -54,7 +57,7 @@ export interface ChoiceControlProps extends Omit<ComponentProps<"input">, "size"
   isLabelHidden?: boolean | undefined;
 }
 
-/** `className` styles the row; every other prop lands on the native input. */
+/** `sx` and `className` style the row; every other prop lands on the native input. */
 export function ChoiceControl({
   type,
   control,
@@ -64,6 +67,7 @@ export function ChoiceControl({
   isInvalid = false,
   placement,
   isLabelHidden,
+  sx,
   className,
   "aria-describedby": describedBy,
   "aria-invalid": ariaInvalid,
@@ -73,7 +77,7 @@ export function ChoiceControl({
   const styles = choiceVariants({ placement, isLabelHidden });
 
   return (
-    <label className={styles.root({ className })}>
+    <label className={styles.root({ className: withSx(sx, className) })}>
       <input
         type={type}
         className={styles.input()}

@@ -1,6 +1,9 @@
 import type { ComponentProps } from "react";
 
+import type { SxProp } from "../../lib/common-props";
+
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const dietMark = componentVariants({
   base: "inline-flex shrink-0 text-veg",
@@ -10,7 +13,7 @@ const dietMark = componentVariants({
   defaultVariants: { size: "md" },
 });
 
-export interface DietMarkProps extends ComponentProps<"span"> {
+export interface DietMarkProps extends ComponentProps<"span">, SxProp {
   /** sm 14px (beside a dish name) · md 16px · lg 20px. = "md" */
   size?: "sm" | "md" | "lg" | undefined;
   /** = "Vegetarian" */
@@ -25,11 +28,17 @@ export interface DietMarkProps extends ComponentProps<"span"> {
 export function DietMark({
   size = "md",
   label = "Vegetarian",
+  sx,
   className,
   ...props
 }: DietMarkProps) {
   return (
-    <span role="img" aria-label={label} className={dietMark({ size, className })} {...props}>
+    <span
+      role="img"
+      aria-label={label}
+      className={dietMark({ size, className: withSx(sx, className) })}
+      {...props}
+    >
       <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" className="size-full">
         <rect
           x="0.75"

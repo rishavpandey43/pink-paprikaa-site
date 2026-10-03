@@ -4,7 +4,10 @@ import type { ReactElement } from "react";
 
 import { Tooltip as TooltipPrimitive } from "radix-ui";
 
+import type { SxProp } from "../../lib/common-props";
+
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 /** Tooltip.jsx shows the hint the moment the pointer arrives — no hover-intent delay. */
 const OPEN_DELAY_MS = 0;
@@ -20,7 +23,7 @@ const tooltip = componentVariants({
   base: "z-tooltip max-w-56 rounded-sm bg-surface-inverse px-2.5 py-1.5 font-body text-caption text-text-on-inverse shadow-2 transition-opacity duration-fast ease-out starting:opacity-0",
 });
 
-export interface TooltipProps {
+export interface TooltipProps extends SxProp {
   /** Short hint, no full stop — never essential copy. Blank renders the trigger alone. */
   label: string;
   /** = "top" */
@@ -30,7 +33,7 @@ export interface TooltipProps {
 }
 
 /** Names an icon-only control or explains a mark. Opens on hover and focus, closes on Escape. */
-export function Tooltip({ label, side = "top", children }: TooltipProps) {
+export function Tooltip({ label, side = "top", sx, children }: TooltipProps) {
   // R48: a blank label is no label — an empty pill would describe the trigger as nothing.
   if (label.trim() === "") return children;
   return (
@@ -38,7 +41,11 @@ export function Tooltip({ label, side = "top", children }: TooltipProps) {
       <TooltipPrimitive.Root>
         <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
         <TooltipPrimitive.Portal>
-          <TooltipPrimitive.Content side={side} sideOffset={SIDE_OFFSET_PX} className={tooltip()}>
+          <TooltipPrimitive.Content
+            side={side}
+            sideOffset={SIDE_OFFSET_PX}
+            className={tooltip({ className: withSx(sx, undefined) })}
+          >
             {label}
           </TooltipPrimitive.Content>
         </TooltipPrimitive.Portal>

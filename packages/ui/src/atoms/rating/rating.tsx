@@ -2,8 +2,11 @@ import type { ComponentProps } from "react";
 
 import { formatCount } from "@pink-paprikaa-web/utils";
 
+import type { SxProp } from "../../lib/common-props";
+
 import { BrandDiamond, type BrandDiamondSize } from "../../lib/brand-diamond";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { SymbolMark } from "../../lib/symbol-mark";
 
 type RatingSize = "sm" | "md" | "lg";
@@ -83,7 +86,7 @@ function SymbolUnit({ fill, size }: UnitProps) {
   );
 }
 
-export interface RatingProps extends ComponentProps<"span"> {
+export interface RatingProps extends ComponentProps<"span">, SxProp {
   /** 0…max; any fraction (4.3 fills 30% of the fifth diamond). */
   value: number;
   /** = 5 */
@@ -106,6 +109,7 @@ export function Rating({
   size = "md",
   variant = "diamond",
   hasValue = true,
+  sx,
   className,
   ...props
 }: RatingProps) {
@@ -125,7 +129,12 @@ export function Rating({
   const name = count === undefined ? score : `${score}, ${formatCount(count)} reviews`;
 
   return (
-    <span role="img" aria-label={name} className={styles.root({ className })} {...props}>
+    <span
+      role="img"
+      aria-label={name}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       <span className={styles.units()}>
         {Array.from({ length: max }, (_, index) => {
           const fill = Math.min(Math.max(value - index, 0), 1);

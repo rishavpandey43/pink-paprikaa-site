@@ -213,4 +213,18 @@ describe("RadioGroup", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(<Radio label="Half portion" sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
+
+  it("takes sx on a radio group's fieldset", () => {
+    const { container } = render(
+      <RadioGroup legend="Portion" sx={{ mt: 4 }}>
+        <Radio label="Half" name="portion" />
+      </RadioGroup>
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
 });

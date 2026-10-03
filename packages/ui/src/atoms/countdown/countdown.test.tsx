@@ -118,4 +118,9 @@ describe("Countdown", () => {
     const { container } = render(<Countdown endsAt={ENDS_AT} label="Offer closes in" />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(<Countdown endsAt={ENDS_AT} sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
 });
