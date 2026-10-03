@@ -169,7 +169,7 @@ export function OrderingApp({
       <KitNotice source="ui_kits/app" />
       <AppShell
         ref={setFrame}
-        size={size}
+        frame={size}
         statusTone={screen === "home" || isTracking ? "light" : "ink"}
         tabBar={
           isTracking ? undefined : (

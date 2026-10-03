@@ -1,6 +1,7 @@
 import type { ComponentProps, CSSProperties } from "react";
 
 import { componentVariants } from "../../lib/component-variants";
+import { type Sx, withSx } from "../../lib/sx";
 import { POST_FORMATS, type PostFormat, scaledSize } from "./post-formats";
 import { PostFrameScaler } from "./post-frame-scaler";
 
@@ -18,11 +19,11 @@ const postFrame = componentVariants({
   },
   variants: {
     isFit: { true: { base: "w-full" } },
-    tone: {
+    surface: {
       brand: { canvas: "bg-surface-brand" },
       ink: { canvas: "bg-surface-inverse" },
       soft: { canvas: "bg-surface-brand-soft" },
-      light: { canvas: "bg-surface-page" },
+      page: { canvas: "bg-surface-page" },
       alt: { canvas: "bg-surface-page-alt" },
     },
     padding: { none: { canvas: "p-0" }, default: {}, tight: { canvas: "p-canvas-pad-tight" } },
@@ -49,26 +50,28 @@ const postFrame = componentVariants({
   ],
 });
 
-type PostFrameTone = "brand" | "ink" | "soft" | "light" | "alt";
+type PostFrameSurface = "brand" | "ink" | "soft" | "page" | "alt";
 
-/** The surface each board tone establishes: `alt` (pink-50) is a light field, like `light`. */
+/** The data-surface each board surface establishes: `alt` (pink-50) is a light field, like `page`. */
 const SURFACE = {
   brand: "brand",
   ink: "ink",
   soft: "soft",
-  light: "light",
+  page: "light",
   alt: "light",
-} as const satisfies Record<PostFrameTone, "brand" | "ink" | "soft" | "light">;
+} as const satisfies Record<PostFrameSurface, "brand" | "ink" | "soft" | "light">;
 
 interface PostFrameBaseProps extends ComponentProps<"div"> {
   /** post 1080² · portrait 1080×1350 · story 1080×1920 · landscape 1200×628 · wide 1920×1080 · mpu 300×250 · leaderboard 728×90. */
   format: PostFormat;
-  /** The board's field: brand · ink · soft (pink-100) · light (white) · alt (pink-50). Sets data-surface. */
-  tone?: PostFrameTone | undefined;
+  /** The board's field: brand · ink · soft (pink-100) · page (white) · alt (pink-50). Sets data-surface. */
+  surface?: PostFrameSurface | undefined;
   /** Canvas padding: `default` is the format's safe margin, `tight` 48px, `none` 0. */
   padding?: "none" | "default" | "tight" | undefined;
   /** Draw the story chrome guides (story format only): keep the top 250px and bottom 320px clear. */
   hasSafeArea?: boolean | undefined;
+  /** Token-typed spacing, look and layout overrides (spec §3). */
+  sx?: Sx | undefined;
 }
 
 /** Either a fixed display `scale` (e.g. 0.32), or `isFit` to scale to the parent's width — never both. */
@@ -83,16 +86,17 @@ export function PostFrame({
   format,
   scale = 1,
   isFit = false,
-  tone = "light",
+  surface = "page",
   padding = "default",
   hasSafeArea = false,
+  sx,
   className,
   style,
   children,
   ...props
 }: PostFrameProps) {
   const { width, height } = POST_FORMATS[format];
-  const slots = postFrame({ format, tone, padding, isFit });
+  const slots = postFrame({ format, surface, padding, isFit });
   // A fit frame is fluid (full width, canvas aspect ratio, never wider than the canvas); a scaled
   // frame is exactly the canvas times the scale. Both are computed numbers, so they are inline.
   const frameSize: CSSProperties = isFit
@@ -100,7 +104,7 @@ export function PostFrame({
     : scaledSize(format, scale);
 
   const canvas = (
-    <div data-surface={SURFACE[tone]} className={slots.canvas()} style={{ width, height }}>
+    <div data-surface={SURFACE[surface]} className={slots.canvas()} style={{ width, height }}>
       {hasSafeArea && format === "story" ? (
         <>
           <div aria-hidden className={slots.safeTop()} />
@@ -112,7 +116,11 @@ export function PostFrame({
   );
 
   return (
-    <div className={slots.base({ className })} style={{ ...style, ...frameSize }} {...props}>
+    <div
+      className={slots.base({ className: withSx(sx, className) })}
+      style={{ ...style, ...frameSize }}
+      {...props}
+    >
       {isFit ? (
         <PostFrameScaler width={width} className={slots.scaler()}>
           {canvas}

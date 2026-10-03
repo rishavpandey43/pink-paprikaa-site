@@ -4,6 +4,7 @@ import { BatteryFull } from "lucide-react";
 
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
+import { type Sx, withSx } from "../../lib/sx";
 
 const appShell = componentVariants({
   slots: {
@@ -17,7 +18,7 @@ const appShell = componentVariants({
     homeBar: "h-app-shell-home-bar-h w-app-shell-home-bar-w rounded-pill bg-ink-300",
   },
   variants: {
-    size: {
+    frame: {
       phone: { base: "h-app-shell-h w-app-shell-w" },
       "phone-sm": { base: "h-app-shell-sm-h w-app-shell-sm-w" },
     },
@@ -46,7 +47,9 @@ export interface AppShellProps extends ComponentProps<"div"> {
    */
   overlay?: ReactNode | undefined;
   /** phone 390×844 · phone-sm 360×780 (the system's 360px floor). */
-  size?: "phone" | "phone-sm" | undefined;
+  frame?: "phone" | "phone-sm" | undefined;
+  /** Token-typed spacing, look and layout overrides (spec §3). */
+  sx?: Sx | undefined;
 }
 
 /**
@@ -58,14 +61,19 @@ export function AppShell({
   time = "9:41",
   tabBar,
   overlay,
-  size = "phone",
+  frame = "phone",
+  sx,
   className,
   children,
   ...props
 }: AppShellProps) {
-  const slots = appShell({ size, statusTone });
+  const slots = appShell({ frame, statusTone });
   return (
-    <div data-surface="light" className={slots.base({ className })} {...props}>
+    <div
+      data-surface="light"
+      className={slots.base({ className: withSx(sx, className) })}
+      {...props}
+    >
       {/* Device chrome, not content: hidden from assistive tech. */}
       <div aria-hidden data-surface={STATUS_SURFACE[statusTone]} className={slots.status()}>
         <span>{time}</span>

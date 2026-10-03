@@ -109,4 +109,13 @@ describe("Stack", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root", () => {
+    render(
+      <Stack data-testid="root" sx={{ mt: 6, px: { md: 4 } }}>
+        x
+      </Stack>
+    );
+    expect(screen.getByTestId("root")).toHaveClass("mt-6", "md:px-4");
+  });
 });

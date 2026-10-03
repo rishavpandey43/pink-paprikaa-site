@@ -21,7 +21,7 @@ const CANVAS_PAD = `var(${token("canvas-pad").cssVar})`;
 /** 1:1 offer post — flooded pink, the pattern, one cornered seal. */
 export function OfferPost() {
   return (
-    <PostFrame format="post" tone="brand" isFit>
+    <PostFrame format="post" surface="brand" isFit>
       <PatternField tone="brand" tile={96} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between">
         <SocialHeadline size="overline" as="p">
@@ -45,7 +45,7 @@ export function OfferPost() {
 /** 1:1 dish launch — photo half, copy half. */
 export function DishLaunchPost() {
   return (
-    <PostFrame format="post" tone="light" padding="none" isFit>
+    <PostFrame format="post" surface="page" padding="none" isFit>
       <div className="flex h-full flex-col">
         <ImageSlot ratio="16:9" radius="none" label="Dish photo 16:9" />
         <div className="flex flex-1 flex-col justify-between" style={{ padding: CANVAS_PAD }}>
@@ -76,7 +76,7 @@ export function DishLaunchPost() {
 /** 4:5 statement post — the brand's loudest format, on ink. */
 export function StatementPost() {
   return (
-    <PostFrame format="portrait" tone="ink" isFit>
+    <PostFrame format="portrait" surface="ink" isFit>
       <PatternField tone="ink" tile={96} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between">
         <div className="flex flex-col gap-10">
@@ -104,7 +104,7 @@ export function StatementPost() {
 /** 1:1 carousel slide — one dish per slide, the index top-right. */
 export function CarouselSlide() {
   return (
-    <PostFrame format="post" tone="alt" isFit>
+    <PostFrame format="post" surface="alt" isFit>
       <div className="flex h-full flex-col gap-10">
         <div className="flex items-center justify-between">
           <SocialHeadline size="overline" as="p">

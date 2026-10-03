@@ -2,6 +2,7 @@ import type { ComponentProps } from "react";
 
 import { componentVariants } from "../../lib/component-variants";
 import { GAP_CLASS, type SpaceStep } from "../../lib/space";
+import { type Sx, withSx } from "../../lib/sx";
 
 const cluster = componentVariants({
   base: "flex min-w-0",
@@ -43,6 +44,8 @@ export interface ClusterProps extends ComponentProps<"div"> {
    */
   isScrollable?: boolean | undefined;
   as?: "div" | "ul" | "ol" | "nav" | undefined;
+  /** Token-typed spacing, look and layout overrides (spec §3). */
+  sx?: Sx | undefined;
 }
 
 /** Any horizontal run of small things — buttons, tags, badges, meta. Wraps, so a row can never clip. */
@@ -53,6 +56,7 @@ export function Cluster({
   justify = "start",
   isNowrap = false,
   isScrollable = false,
+  sx,
   className,
   ...props
 }: ClusterProps) {
@@ -64,7 +68,14 @@ export function Cluster({
   return (
     <Element
       tabIndex={tabIndex}
-      className={cluster({ space, align, justify, isNowrap, isScrollable, className })}
+      className={cluster({
+        space,
+        align,
+        justify,
+        isNowrap,
+        isScrollable,
+        className: withSx(sx, className),
+      })}
       {...props}
     />
   );

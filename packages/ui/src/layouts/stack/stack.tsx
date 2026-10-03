@@ -2,6 +2,7 @@ import { Children, type ComponentProps, type ElementType, Fragment, isValidEleme
 
 import { componentVariants } from "../../lib/component-variants";
 import { GAP_CLASS, type SpaceStep } from "../../lib/space";
+import { type Sx, withSx } from "../../lib/sx";
 
 const stack = componentVariants({
   slots: {
@@ -37,6 +38,8 @@ export interface StackProps extends ComponentProps<"div"> {
   /** A hairline rule between rows — menu rows, list items. The rule follows the surface. */
   isDivided?: boolean | undefined;
   as?: "div" | "ul" | "ol" | "section" | "article" | undefined;
+  /** Token-typed spacing, look and layout overrides (spec §3). */
+  sx?: Sx | undefined;
 }
 
 /** Vertical rhythm: gap-based, never margins. Each direct child is one row. */
@@ -46,6 +49,7 @@ export function Stack({
   align,
   justify,
   isDivided = false,
+  sx,
   className,
   children,
   ...props
@@ -58,7 +62,7 @@ export function Stack({
   const slots = stack({ space, align, justify });
 
   return (
-    <Element className={slots.base({ className })} {...props}>
+    <Element className={slots.base({ className: withSx(sx, className) })} {...props}>
       {isDivided
         ? Children.toArray(children).map((child, index) => (
             <Fragment key={isValidElement(child) ? (child.key ?? index) : index}>

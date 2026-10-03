@@ -72,7 +72,7 @@ export const CanvasTokens: Story = {
 export const CanvasType: Story = {
   render: () => (
     <div className="w-full max-w-150">
-      <PostFrame format="post" tone="light" isFit>
+      <PostFrame format="post" surface="page" isFit>
         <div className="flex flex-col gap-6">
           {CANVAS_STEPS.map(([size, sample]) => (
             <SocialHeadline key={size} size={size} as="p">

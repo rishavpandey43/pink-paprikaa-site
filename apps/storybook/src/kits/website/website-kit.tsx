@@ -173,7 +173,7 @@ export function WebsiteKit() {
             )}
           />
 
-          <Section id="story" tone="alt">
+          <Section id="story" surface="alt">
             <AutoGrid min="lg" className="items-center">
               <div className="grid grid-cols-2 gap-4">
                 <ImageSlot ratio="3:4" tone="strong" radius="lg" label="Kitchen portrait 3:4" />

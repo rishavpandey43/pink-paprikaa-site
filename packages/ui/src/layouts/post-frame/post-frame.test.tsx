@@ -49,12 +49,12 @@ describe("PostFrame", () => {
     ["brand", "bg-surface-brand", "brand"],
     ["ink", "bg-surface-inverse", "ink"],
     ["soft", "bg-surface-brand-soft", "soft"],
-    ["light", "bg-surface-page", "light"],
+    ["page", "bg-surface-page", "light"],
     ["alt", "bg-surface-page-alt", "light"],
   ] as const)(
-    "tone=%s paints the board %s and sets data-surface=%s",
-    (tone, background, surface) => {
-      const { container } = render(<PostFrame format="post" tone={tone} />);
+    "surface=%s paints the board %s and sets data-surface=%s",
+    (surfaceProp, background, surface) => {
+      const { container } = render(<PostFrame format="post" surface={surfaceProp} />);
       const canvas = canvasOf(container);
       expect(canvas).toHaveAttribute("data-surface", surface);
       expect(canvas).toHaveClass(background);
@@ -88,7 +88,7 @@ describe("PostFrame", () => {
   });
 
   it("draws the story chrome guides, hidden from assistive tech", () => {
-    const { container } = render(<PostFrame format="story" hasSafeArea tone="brand" />);
+    const { container } = render(<PostFrame format="story" hasSafeArea surface="brand" />);
     const guides = [...canvasOf(container).querySelectorAll("[aria-hidden='true']")];
     expect(guides).toHaveLength(2);
     expect(guides[0]).toHaveClass("top-0", "h-story-safe-top");
@@ -213,11 +213,20 @@ describe("PostFrame", () => {
 
   it("has no accessibility violations", async () => {
     const { container } = render(
-      <PostFrame format="story" scale={0.25} tone="brand" hasSafeArea>
+      <PostFrame format="story" scale={0.25} surface="brand" hasSafeArea>
         <h2>Half off, on us.</h2>
       </PostFrame>
     );
     await expectNoA11yViolations(container);
     expect(screen.getByRole("heading", { name: "Half off, on us." })).toBeInTheDocument();
+  });
+
+  it("takes sx on its root", () => {
+    render(
+      <PostFrame format="post" data-testid="root" sx={{ mt: 6, px: { md: 4 } }}>
+        x
+      </PostFrame>
+    );
+    expect(screen.getByTestId("root")).toHaveClass("mt-6", "md:px-4");
   });
 });

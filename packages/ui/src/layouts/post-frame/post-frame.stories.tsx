@@ -67,13 +67,13 @@ function StatementBoard() {
 const meta = {
   title: "Layouts/PostFrame",
   component: PostFrame,
-  args: { format: "post", scale: 0.3, tone: "brand", children: <OfferBoard /> },
+  args: { format: "post", scale: 0.3, surface: "brand", children: <OfferBoard /> },
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "Every Instagram post, story, banner or OG image starts here — it fixes the exact pixel canvas so nothing is designed at an invented size. Children are authored at true canvas pixels (the canvas type scale through SocialHeadline, never screen sizes); the frame scales the whole board for preview with `scale`, or `isFit` to fit its parent's width (never above 1). `tone` is the board's one field colour: flooded `brand` (the house look), `ink` (statements), or the light product-led fields `soft` (pink-100), `alt` (pink-50) and `light` (white). `padding` defaults to the format's safe margin (72px on 1080 canvases, 48px on 1200×628, 20px on display ads). `hasSafeArea` draws the story chrome guides. Never design a marketing asset outside the seven `POST_FORMATS`.",
+          "Every Instagram post, story, banner or OG image starts here — it fixes the exact pixel canvas so nothing is designed at an invented size. Children are authored at true canvas pixels (the canvas type scale through SocialHeadline, never screen sizes); the frame scales the whole board for preview with `scale`, or `isFit` to fit its parent's width (never above 1). `surface` is the board's one field colour: flooded `brand` (the house look), `ink` (statements), or the light product-led fields `soft` (pink-100), `alt` (pink-50) and `page` (white). `padding` defaults to the format's safe margin (72px on 1080 canvases, 48px on 1200×628, 20px on display ads). `hasSafeArea` draws the story chrome guides. Never design a marketing asset outside the seven `POST_FORMATS`.",
       },
     },
   },
@@ -88,7 +88,7 @@ export const Post: Story = {
   name: "post 1080×1080 · scale 0.2",
   render: () => (
     <div>
-      <PostFrame format="post" scale={0.2} tone="brand">
+      <PostFrame format="post" scale={0.2} surface="brand">
         <OfferBoard />
       </PostFrame>
       <Caption>post 1080x1080</Caption>
@@ -100,7 +100,7 @@ export const Portrait: Story = {
   name: "portrait 1080×1350 · scale 0.16",
   render: () => (
     <div>
-      <PostFrame format="portrait" scale={0.16} tone="ink">
+      <PostFrame format="portrait" scale={0.16} surface="ink">
         <StatementBoard />
       </PostFrame>
       <Caption>portrait 1080x1350</Caption>
@@ -112,7 +112,7 @@ export const StoryWithSafeArea: Story = {
   name: "story 1080×1920 · hasSafeArea",
   render: () => (
     <div>
-      <PostFrame format="story" scale={0.115} tone="brand" hasSafeArea>
+      <PostFrame format="story" scale={0.115} surface="brand" hasSafeArea>
         <div className="flex h-full flex-col justify-center gap-10">
           <SocialHeadline size="overline" as="p">
             First Order
@@ -129,7 +129,7 @@ export const Landscape: Story = {
   name: "landscape 1200×628 · the 48px default",
   render: () => (
     <div>
-      <PostFrame format="landscape" scale={0.28} tone="soft">
+      <PostFrame format="landscape" scale={0.28} surface="soft">
         <div className="flex h-full flex-col justify-between">
           <SocialHeadline size="h2">One kitchen. One grinder.</SocialHeadline>
           <Logo className="w-50" />
@@ -145,7 +145,7 @@ export const Wide: Story = {
   name: "wide 1920×1080 · scale 0.16",
   render: () => (
     <div>
-      <PostFrame format="wide" scale={0.16} tone="ink">
+      <PostFrame format="wide" scale={0.16} surface="ink">
         <div className="flex h-full flex-col justify-between">
           <SocialHeadline size="hero">100% vegetarian kitchen.</SocialHeadline>
           <Logo tone="white" className="w-65" />
@@ -163,7 +163,7 @@ export const SafeAreaGuides: Story = {
     <div className="flex flex-wrap items-start gap-6">
       {([false, true] as const).map((hasSafeArea) => (
         <div key={String(hasSafeArea)}>
-          <PostFrame format="story" scale={0.16} tone="brand" hasSafeArea={hasSafeArea}>
+          <PostFrame format="story" scale={0.16} surface="brand" hasSafeArea={hasSafeArea}>
             <div className="flex h-full flex-col justify-center gap-10">
               <SocialHeadline size="overline" as="p">
                 First Order
@@ -185,7 +185,7 @@ export const Padding: Story = {
     <div className="flex flex-wrap items-start gap-6">
       {(["default", "tight", "none"] as const).map((padding) => (
         <div key={padding}>
-          <PostFrame format="post" scale={0.2} tone="brand" padding={padding}>
+          <PostFrame format="post" scale={0.2} surface="brand" padding={padding}>
             <div className="size-full outline-2 -outline-offset-2 outline-border-default outline-dashed" />
           </PostFrame>
           <Caption>{`padding="${padding}"`}</Caption>
@@ -197,10 +197,10 @@ export const Padding: Story = {
 
 /** The pink-50 board — light and product-led (the marketing kit's pink-50 feed post). */
 export const AltBoard: Story = {
-  name: 'post · tone="alt" (pink-50)',
+  name: 'post · surface="alt" (pink-50)',
   render: () => (
     <div>
-      <PostFrame format="post" scale={0.2} tone="alt">
+      <PostFrame format="post" scale={0.2} surface="alt">
         <div className="flex h-full flex-col justify-between">
           <SocialHeadline size="overline" as="p" className="text-text-brand">
             New on the menu
@@ -209,7 +209,7 @@ export const AltBoard: Story = {
           <Logo className="w-60" />
         </div>
       </PostFrame>
-      <Caption>post 1080x1080 · tone alt</Caption>
+      <Caption>post 1080x1080 · surface alt</Caption>
     </div>
   ),
 };
@@ -218,7 +218,7 @@ export const Leaderboard: Story = {
   name: 'leaderboard 728×90 · padding="none"',
   render: () => (
     <div>
-      <PostFrame format="leaderboard" scale={0.46} tone="brand" padding="none">
+      <PostFrame format="leaderboard" scale={0.46} surface="brand" padding="none">
         <div className="flex h-full items-center gap-4 px-4">
           <Logo tone="white" className="w-21" />
           <Typography variant="h4" as="span" weight="black" className="min-w-0 flex-1 truncate">
@@ -236,7 +236,7 @@ export const Mpu: Story = {
   name: 'mpu 300×250 · padding="none"',
   render: () => (
     <div>
-      <PostFrame format="mpu" scale={0.6} tone="ink" padding="none">
+      <PostFrame format="mpu" scale={0.6} surface="ink" padding="none">
         <div className="flex h-full flex-col justify-between p-4">
           <Logo tone="white" className="w-19" />
           <Typography variant="h3" as="span" weight="black">
@@ -261,7 +261,7 @@ export const AllFormats: Story = {
         const { width, height, label } = POST_FORMATS[format];
         return (
           <div key={format}>
-            <PostFrame format={format} scale={0.1} tone="brand" padding="none" />
+            <PostFrame format={format} scale={0.1} surface="brand" padding="none" />
             <Caption>{`${format} ${String(width)}x${String(height)} · ${label}`}</Caption>
           </div>
         );
@@ -274,7 +274,7 @@ export const FitToParent: Story = {
   name: "isFit — scales to its parent's width",
   render: () => (
     <div className="max-w-120">
-      <PostFrame format="post" isFit tone="brand">
+      <PostFrame format="post" isFit surface="brand">
         <OfferBoard />
       </PostFrame>
     </div>
@@ -291,12 +291,12 @@ export const FitsItsParentAt360: Story = {
   render: () => (
     <Stack space={6}>
       <div data-testid="fixed-parent">
-        <PostFrame data-testid="fixed" format="post" scale={0.25} tone="brand">
+        <PostFrame data-testid="fixed" format="post" scale={0.25} surface="brand">
           <OfferBoard />
         </PostFrame>
       </div>
       <div data-testid="fit-parent" className="max-w-75">
-        <PostFrame data-testid="fit" format="portrait" isFit tone="ink">
+        <PostFrame data-testid="fit" format="portrait" isFit surface="ink">
           <StatementBoard />
         </PostFrame>
       </div>

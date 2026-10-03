@@ -1,6 +1,7 @@
 import type { ComponentProps } from "react";
 
 import { componentVariants } from "../../lib/component-variants";
+import { type Sx, withSx } from "../../lib/sx";
 
 export type ContainerSize = "content" | "wide" | "narrow" | "article" | "prose" | "full";
 
@@ -25,6 +26,8 @@ export interface ContainerProps extends ComponentProps<"div"> {
   /** Drop the gutters, for a child that must run edge to edge. */
   isBleed?: boolean | undefined;
   as?: "div" | "main" | "section" | "article" | "header" | "footer" | "nav" | undefined;
+  /** Token-typed spacing, look and layout overrides (spec §3). */
+  sx?: Sx | undefined;
 }
 
 /**
@@ -35,11 +38,17 @@ export function Container({
   as = "div",
   size = "content",
   isBleed = false,
+  sx,
   className,
   ...props
 }: ContainerProps) {
   // A narrow cast (the Stack trap): every member of the `as` union takes the same props, and the
   // spread props stay type-checked, which `ElementType` would not do.
   const Element = as as "div";
-  return <Element className={container({ size, isBleed, className })} {...props} />;
+  return (
+    <Element
+      className={container({ size, isBleed, className: withSx(sx, className) })}
+      {...props}
+    />
+  );
 }

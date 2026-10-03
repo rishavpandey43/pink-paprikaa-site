@@ -1,17 +1,19 @@
 import { render, screen } from "@testing-library/react";
 
+import type { SurfaceProp } from "../../lib/common-props";
+
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { Section, type SectionTone } from "./section";
+import { Section } from "./section";
 
-// Spy on the real atom: Section's wiring (tone, density) is asserted here; the pattern's own
+// Spy on the real atom: Section's wiring (surface, density) is asserted here; the pattern's own
 // rendering belongs to PatternField's suite.
 vi.mock("../../atoms/pattern-field/pattern-field", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../atoms/pattern-field/pattern-field")>();
   return { ...actual, PatternField: vi.fn(actual.PatternField) };
 });
 
-const TONES: [SectionTone, string, string][] = [
+const SURFACES: [SurfaceProp, string, string][] = [
   ["page", "bg-surface-page", "light"],
   ["alt", "bg-surface-page-alt", "light"],
   ["sunken", "bg-surface-sunken", "light"],
@@ -44,16 +46,19 @@ describe("Section", () => {
     expect(screen.getByText("Our story").parentElement).toHaveClass("max-w-content", "px-gutter");
   });
 
-  it.each(TONES)("tone=%s paints %s and sets data-surface=%s", (tone, background, surface) => {
-    const { container } = render(
-      <Section tone={tone}>
-        <p>Band</p>
-      </Section>
-    );
-    const band = bandOf(container);
-    expect(band).toHaveClass(background);
-    expect(band).toHaveAttribute("data-surface", surface);
-  });
+  it.each(SURFACES)(
+    "surface=%s paints %s and sets data-surface=%s",
+    (surfaceProp, background, surface) => {
+      const { container } = render(
+        <Section surface={surfaceProp}>
+          <p>Band</p>
+        </Section>
+      );
+      const band = bandOf(container);
+      expect(band).toHaveClass(background);
+      expect(band).toHaveAttribute("data-surface", surface);
+    }
+  );
 
   it.each([
     ["none", "py-0"],
@@ -111,8 +116,8 @@ describe("Section", () => {
   // Review Focus 2, pure half — the rendered-CSS half is the NestedSurfaces story.
   it("resets to the light surface when a light band sits inside a dark one", () => {
     const { container } = render(
-      <Section tone="ink">
-        <Section tone="alt">
+      <Section surface="ink">
+        <Section surface="alt">
           <p>Light island</p>
         </Section>
       </Section>
@@ -138,28 +143,31 @@ describe("Section", () => {
       ["ink", "ink"],
       ["soft", "soft"],
       ["alt", "light"],
-    ] as const)("on tone=%s lays a %s PatternField behind the content", (tone, surface) => {
-      const { container } = render(
-        <Section tone={tone} pattern="faint">
-          <p>Band</p>
-        </Section>
-      );
-      expect(vi.mocked(PatternField).mock.calls[0]?.[0]).toMatchObject({
-        tone: surface,
-        density: "faint",
-        "aria-hidden": true,
-      });
-      const band = bandOf(container);
-      const [layer, content] = [...band.children];
-      expect(band).toHaveClass("relative");
-      expect(layer).toHaveClass("pointer-events-none", "absolute", "inset-0", "bg-transparent");
-      expect(content).toHaveClass("relative");
-      expect(content).toContainElement(screen.getByText("Band"));
-    });
+    ] as const)(
+      "on surface=%s lays a %s PatternField behind the content",
+      (surfaceProp, surface) => {
+        const { container } = render(
+          <Section surface={surfaceProp} pattern="faint">
+            <p>Band</p>
+          </Section>
+        );
+        expect(vi.mocked(PatternField).mock.calls[0]?.[0]).toMatchObject({
+          tone: surface,
+          density: "faint",
+          "aria-hidden": true,
+        });
+        const band = bandOf(container);
+        const [layer, content] = [...band.children];
+        expect(band).toHaveClass("relative");
+        expect(layer).toHaveClass("pointer-events-none", "absolute", "inset-0", "bg-transparent");
+        expect(content).toHaveClass("relative");
+        expect(content).toContainElement(screen.getByText("Band"));
+      }
+    );
 
     it("keeps the band's own colour under the pattern", () => {
       const { container } = render(
-        <Section tone="alt" pattern="default">
+        <Section surface="alt" pattern="default">
           <p>Band</p>
         </Section>
       );
@@ -169,10 +177,29 @@ describe("Section", () => {
 
   it("has no accessibility violations", async () => {
     const { container } = render(
-      <Section tone="brand" pattern="default" aria-labelledby="story-title">
+      <Section surface="brand" pattern="default" aria-labelledby="story-title">
         <h2 id="story-title">Our story</h2>
       </Section>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root", () => {
+    render(
+      <Section data-testid="root" sx={{ mt: 6, px: { md: 4 } }}>
+        x
+      </Section>
+    );
+    expect(screen.getByTestId("root")).toHaveClass("mt-6", "md:px-4");
+  });
+
+  it("takes surface, setting data-surface and the ground", () => {
+    render(
+      <Section surface="brand" data-testid="s">
+        x
+      </Section>
+    );
+    expect(screen.getByTestId("s")).toHaveAttribute("data-surface", "brand");
+    expect(screen.getByTestId("s")).toHaveClass("bg-surface-brand");
   });
 });

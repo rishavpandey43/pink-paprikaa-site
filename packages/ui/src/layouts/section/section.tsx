@@ -1,15 +1,14 @@
 import type { ComponentProps } from "react";
 
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { SURFACE_BG, SURFACE_DATA } from "../../lib/common-props";
+import { SURFACE_BG, SURFACE_DATA, type SurfaceProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import { type Sx, withSx } from "../../lib/sx";
 import { Container, type ContainerSize } from "../container/container";
-
-export type SectionTone = "page" | "alt" | "sunken" | "soft" | "brand" | "ink";
 
 const section = componentVariants({
   variants: {
-    tone: SURFACE_BG,
+    surface: SURFACE_BG,
     space: {
       none: "py-0",
       tight: "py-section-tight",
@@ -23,7 +22,7 @@ const section = componentVariants({
 
 export interface SectionProps extends ComponentProps<"section"> {
   /** page · alt (pink-50) · sunken · soft (pink-100) · brand (flooded pink) · ink. Sets data-surface. */
-  tone?: SectionTone | undefined;
+  surface?: SurfaceProp | undefined;
   /** The diamond tile behind the band. `faint` (4%) is the handoff's ink-section texture. */
   pattern?: "none" | "default" | "faint" | undefined;
   /** Container size passed through; ignored when `isBare`. */
@@ -33,6 +32,8 @@ export interface SectionProps extends ComponentProps<"section"> {
   /** Skip the Container — the child handles its own width. */
   isBare?: boolean | undefined;
   as?: "section" | "div" | "header" | "footer" | "aside" | undefined;
+  /** Token-typed spacing, look and layout overrides (spec §3). */
+  sx?: Sx | undefined;
 }
 
 /**
@@ -42,11 +43,12 @@ export interface SectionProps extends ComponentProps<"section"> {
  */
 export function Section({
   as = "section",
-  tone = "page",
+  surface = "page",
   pattern = "none",
   size = "content",
   space = "default",
   isBare = false,
+  sx,
   className,
   children,
   ...props
@@ -54,21 +56,21 @@ export function Section({
   // tsc -b TS2322: the spread `ref` is an HTMLElement ref, which a div ref rejects. A narrow cast,
   // not a looser type — every member of the `as` union is an HTMLElement with the same props shape.
   const Element = as as "section";
-  const surface = SURFACE_DATA[tone];
+  const dataSurface = SURFACE_DATA[surface];
   const hasPattern = pattern !== "none";
   const content = isBare ? children : <Container size={size}>{children}</Container>;
 
   return (
     <Element
-      data-surface={surface}
-      className={section({ tone, space, hasPattern, className })}
+      data-surface={dataSurface}
+      className={section({ surface, space, hasPattern, className: withSx(sx, className) })}
       {...props}
     >
       {hasPattern ? (
         <>
           <PatternField
             aria-hidden
-            tone={surface}
+            tone={dataSurface}
             density={pattern}
             className="pointer-events-none absolute inset-0 bg-transparent"
           />

@@ -81,7 +81,7 @@ export const Scale: Story = {
 
 export const Rhythm: Story = {
   render: () => (
-    <Section tone="alt" space="tight">
+    <Section surface="alt" space="tight">
       <AutoGrid min="xs">
         {["card 1", "card 2", "card 3", "card 4"].map((label) => (
           <Card key={label} padding="sm">

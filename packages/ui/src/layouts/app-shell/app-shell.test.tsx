@@ -26,7 +26,7 @@ describe("AppShell", () => {
   });
 
   it("offers the 360×780 phone, the system's smallest screen", () => {
-    render(<AppShell size="phone-sm" data-testid="shell" />);
+    render(<AppShell frame="phone-sm" data-testid="shell" />);
     expect(screen.getByTestId("shell")).toHaveClass("w-app-shell-sm-w", "h-app-shell-sm-h");
   });
 
@@ -122,5 +122,14 @@ describe("AppShell", () => {
       </AppShell>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root", () => {
+    render(
+      <AppShell data-testid="root" sx={{ mt: 6, px: { md: 4 } }}>
+        x
+      </AppShell>
+    );
+    expect(screen.getByTestId("root")).toHaveClass("mt-6", "md:px-4");
   });
 });

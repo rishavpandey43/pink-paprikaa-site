@@ -2,38 +2,44 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { expect, within } from "storybook/test";
 
+import type { SurfaceProp } from "../../lib/common-props";
+
 import { Typography } from "../../atoms/typography/typography";
 import { Stack } from "../stack/stack";
-import { Section, type SectionTone } from "./section";
+import { Section } from "./section";
 
-const TONES: { tone: SectionTone; label: string }[] = [
-  { tone: "page", label: 'tone="page"' },
-  { tone: "alt", label: 'tone="alt" · pink-50' },
-  { tone: "sunken", label: 'tone="sunken"' },
-  { tone: "soft", label: 'tone="soft" · pink-100' },
-  { tone: "brand", label: 'tone="brand"' },
-  { tone: "ink", label: 'tone="ink"' },
+const SURFACES: { surface: SurfaceProp; label: string }[] = [
+  { surface: "page", label: 'surface="page"' },
+  { surface: "alt", label: 'surface="alt" · pink-50' },
+  { surface: "sunken", label: 'surface="sunken"' },
+  { surface: "soft", label: 'surface="soft" · pink-100' },
+  { surface: "brand", label: 'surface="brand"' },
+  { surface: "ink", label: 'surface="ink"' },
 ];
 
 const RHYTHM = [
-  { space: "none", tone: "page", label: 'space="none" · 0' },
-  { space: "tight", tone: "alt", label: 'space="tight" · clamp(36px, 4vw, 56px)' },
-  { space: "default", tone: "page", label: 'space="default" · clamp(48px, 8vw, 96px)' },
-  { space: "loose", tone: "alt", label: 'space="loose" · clamp(72px, 9vw, 128px)' },
+  { space: "none", surface: "page", label: 'space="none" · 0' },
+  { space: "tight", surface: "alt", label: 'space="tight" · clamp(36px, 4vw, 56px)' },
+  { space: "default", surface: "page", label: 'space="default" · clamp(48px, 8vw, 96px)' },
+  { space: "loose", surface: "alt", label: 'space="loose" · clamp(72px, 9vw, 128px)' },
 ] as const;
 
 const PATTERNS = [
-  { tone: "brand", pattern: "default", label: 'tone="brand" pattern="default"' },
-  { tone: "ink", pattern: "faint", label: 'tone="ink" pattern="faint" · the handoff ink band' },
-  { tone: "soft", pattern: "default", label: 'tone="soft" pattern="default"' },
-  { tone: "alt", pattern: "default", label: 'tone="alt" pattern="default"' },
+  { surface: "brand", pattern: "default", label: 'surface="brand" pattern="default"' },
+  {
+    surface: "ink",
+    pattern: "faint",
+    label: 'surface="ink" pattern="faint" · the handoff ink band',
+  },
+  { surface: "soft", pattern: "default", label: 'surface="soft" pattern="default"' },
+  { surface: "alt", pattern: "default", label: 'surface="alt" pattern="default"' },
 ] as const;
 
 const meta = {
   title: "Layouts/Section",
   component: Section,
   args: {
-    tone: "page",
+    surface: "page",
     pattern: "none",
     size: "content",
     space: "default",
@@ -49,7 +55,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'One page band. Owns the background colour and the vertical rhythm, and sets `data-surface` so text inside follows the band — no `tone="inverse"` needed on brand or ink. Light tones set the light surface explicitly, so a light band nested in a dark one restores dark text. Maximum two background colours per page: white/alt plus one flooded brand or ink band. `pattern` lays the diamond tile behind the band (`faint` on ink, as the handoff pages do). Content sits in a Container (`size`) unless `isBare`. Sections are what RevealObserver reveals.',
+          "One page band. Owns the background colour and the vertical rhythm, and sets `data-surface` so text inside follows the band — no inverse tone needed on brand or ink. Light surfaces set the light surface explicitly, so a light band nested in a dark one restores dark text. Maximum two background colours per page: white/alt plus one flooded brand or ink band. `pattern` lays the diamond tile behind the band (`faint` on ink, as the handoff pages do). Content sits in a Container (`size`) unless `isBare`. Sections are what RevealObserver reveals.",
       },
     },
   },
@@ -60,13 +66,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
-/** Card rows: every tone at `space="tight"`; the label's colour comes from the surface. */
-export const Tones: Story = {
-  name: "tone (text follows the surface)",
+/** Card rows: every surface at `space="tight"`; the label's colour comes from the surface. */
+export const Surfaces: Story = {
+  name: "surface (text follows the surface)",
   render: () => (
     <div>
-      {TONES.map(({ tone, label }) => (
-        <Section key={tone} tone={tone} space="tight">
+      {SURFACES.map(({ surface, label }) => (
+        <Section key={surface} surface={surface} space="tight">
           <Typography variant="h4" as="div">
             {label}
           </Typography>
@@ -76,9 +82,9 @@ export const Tones: Story = {
   ),
 };
 
-export const TonesAt360: Story = {
-  ...Tones,
-  name: "360px — tones at the floor (tight = 36px)",
+export const SurfacesAt360: Story = {
+  ...Surfaces,
+  name: "360px — surfaces at the floor (tight = 36px)",
   globals: { viewport: { value: "floor360", isRotated: false } },
 };
 
@@ -86,8 +92,8 @@ export const Rhythm: Story = {
   name: "space (vertical rhythm)",
   render: () => (
     <div>
-      {RHYTHM.map(({ space, tone, label }) => (
-        <Section key={space} space={space} tone={tone}>
+      {RHYTHM.map(({ space, surface, label }) => (
+        <Section key={space} space={space} surface={surface}>
           <Typography variant="body" as="div">
             {label}
           </Typography>
@@ -101,8 +107,8 @@ export const Patterns: Story = {
   name: "pattern",
   render: () => (
     <div>
-      {PATTERNS.map(({ tone, pattern, label }) => (
-        <Section key={tone} tone={tone} pattern={pattern}>
+      {PATTERNS.map(({ surface, pattern, label }) => (
+        <Section key={surface} surface={surface} pattern={pattern}>
           <Typography variant="h4" as="div">
             {label}
           </Typography>
@@ -120,7 +126,7 @@ export const Widths: Story = {
       <Section size="prose" space="tight">
         <Typography as="div">{'size="prose" · 64ch measure'}</Typography>
       </Section>
-      <Section size="wide" space="tight" tone="alt">
+      <Section size="wide" space="tight" surface="alt">
         <Typography as="div">{'size="wide" · 1440px'}</Typography>
       </Section>
       <Section isBare space="tight">
@@ -139,7 +145,7 @@ export const InContext: Story = {
   name: "in context — brand band, then prose",
   render: () => (
     <div>
-      <Section tone="brand" pattern="default">
+      <Section surface="brand" pattern="default">
         <Stack space={3}>
           <Typography variant="overline" as="p">
             Sector 57, Gurgaon
@@ -166,13 +172,13 @@ export const NestedSurfaces: Story = {
   name: "nested — a light band inside an ink band",
   render: () => (
     <div>
-      <Section tone="page" space="tight" data-testid="page">
+      <Section surface="page" space="tight" data-testid="page">
         <Typography data-testid="page-text">A top-level page band</Typography>
       </Section>
-      <Section tone="ink" space="tight">
+      <Section surface="ink" space="tight">
         <Stack space={6}>
           <Typography data-testid="ink-text">An ink band</Typography>
-          <Section tone="page" space="tight" data-testid="island">
+          <Section surface="page" space="tight" data-testid="island">
             <Typography data-testid="island-text">A light island inside it</Typography>
           </Section>
         </Stack>

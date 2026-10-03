@@ -129,7 +129,7 @@ const meta = {
   args: {
     statusTone: "ink",
     time: "9:41",
-    size: "phone",
+    frame: "phone",
     tabBar: tabBar("menu"),
     children: <MenuScreen />,
   },
@@ -182,17 +182,17 @@ export const StatusTones: Story = {
 };
 
 export const PhoneSm: Story = {
-  name: 'size="phone-sm" · 360×780',
-  args: { size: "phone-sm" },
+  name: 'frame="phone-sm" · 360×780',
+  args: { frame: "phone-sm" },
 };
 
 /** Both frames side by side: 390×844 and the 360×780 floor (dev parity). */
 export const Sizes: Story = {
-  name: "size — phone and phone-sm",
+  name: "frame — phone and phone-sm",
   render: () => (
     <Cluster space={6} align="start">
-      {(["phone", "phone-sm"] as const).map((size) => (
-        <AppShell key={size} size={size} tabBar={tabBar("menu", `Primary, ${size}`)}>
+      {(["phone", "phone-sm"] as const).map((frame) => (
+        <AppShell key={frame} frame={frame} tabBar={tabBar("menu", `Primary, ${frame}`)}>
           <MenuScreen />
         </AppShell>
       ))}

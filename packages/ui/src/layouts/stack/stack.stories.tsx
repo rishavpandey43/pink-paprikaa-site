@@ -158,3 +158,14 @@ export const LongWordAt360: Story = {
     );
   },
 };
+
+/** `sx` takes token-typed spacing and look overrides on the root, without a one-off className. */
+export const WithSx: Story = {
+  name: "sx — padding, surface and radius",
+  render: () => (
+    <Stack space={3} sx={{ p: 6, bg: "soft", radius: "lg" }}>
+      <Typography>Small Plates</Typography>
+      <Typography>Momos</Typography>
+    </Stack>
+  ),
+};

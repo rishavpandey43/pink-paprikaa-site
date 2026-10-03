@@ -27,7 +27,7 @@ export interface StoryArtboardProps {
 /** 9:16 story — the offer with a coupon stub, inside the chrome safe area. */
 export function OfferStory({ hasSafeArea = false }: StoryArtboardProps) {
   return (
-    <PostFrame format="story" tone="brand" padding="none" hasSafeArea={hasSafeArea} isFit>
+    <PostFrame format="story" surface="brand" padding="none" hasSafeArea={hasSafeArea} isFit>
       <PatternField tone="brand" tile={96} className="absolute inset-0" />
       <div
         className="relative flex h-full flex-col justify-between"
@@ -59,7 +59,7 @@ export function OfferStory({ hasSafeArea = false }: StoryArtboardProps) {
 /** 9:16 story — a dish, photo on top, copy below. */
 export function DishStory({ hasSafeArea = false }: StoryArtboardProps) {
   return (
-    <PostFrame format="story" tone="ink" padding="none" hasSafeArea={hasSafeArea} isFit>
+    <PostFrame format="story" surface="ink" padding="none" hasSafeArea={hasSafeArea} isFit>
       <div className="flex h-full flex-col">
         <ImageSlot ratio="square" radius="none" tone="soft" label="Dish photo 1:1" />
         <div
@@ -86,7 +86,7 @@ export function DishStory({ hasSafeArea = false }: StoryArtboardProps) {
 /** 1200×628 link preview / OG image. */
 export function LinkBanner() {
   return (
-    <PostFrame format="landscape" tone="soft" padding="tight" isFit>
+    <PostFrame format="landscape" surface="soft" padding="tight" isFit>
       <div className="flex h-full items-center gap-12">
         <div className="flex min-w-0 flex-1 flex-col gap-6">
           <SocialHeadline size="overline" as="p">
@@ -114,7 +114,7 @@ export function LinkBanner() {
 /** 728×90 leaderboard — mark, one line, one button. */
 export function Leaderboard() {
   return (
-    <PostFrame format="leaderboard" tone="brand" padding="none" isFit>
+    <PostFrame format="leaderboard" surface="brand" padding="none" isFit>
       <PatternField tone="brand" tile={56} className="absolute inset-0" />
       <div className="relative flex h-full items-center gap-4.5 px-4.5">
         <Logo variant="wordmark" tone="white" className="w-35 shrink-0" />
@@ -133,7 +133,7 @@ export function Leaderboard() {
 /** 300×250 MPU — mark, one line, one button, one seal. */
 export function Mpu() {
   return (
-    <PostFrame format="mpu" tone="ink" padding="none" isFit>
+    <PostFrame format="mpu" surface="ink" padding="none" isFit>
       <PatternField tone="ink" tile={56} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between p-4.5">
         <Logo variant="wordmark" tone="white" className="w-35" />
