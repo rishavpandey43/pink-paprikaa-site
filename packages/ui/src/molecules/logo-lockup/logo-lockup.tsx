@@ -51,7 +51,7 @@ export function LogoLockup({
     <div className={styles.root({ className })} {...props}>
       <Logo
         variant={hasTagline ? "lockup" : "wordmark"}
-        tone={tone}
+        color={tone === "pink" ? "brand" : tone === "white" ? "inverse" : "badge"}
         isDecorative={isDecorative}
         className={styles.logo()}
       />

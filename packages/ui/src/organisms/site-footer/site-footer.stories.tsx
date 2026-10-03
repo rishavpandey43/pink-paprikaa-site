@@ -86,7 +86,7 @@ const meta = {
     columns: DS_COLUMNS,
     brand: (
       <>
-        <Logo tone="white" className="w-65" />
+        <Logo color="inverse" className="w-65" />
         <Typography variant="body-sm" color="muted">
           Chai at 8am, chilli paneer at midnight. One kitchen in Sector 57, Gurgaon.
         </Typography>
@@ -152,7 +152,7 @@ export const HandoffInk: Story = {
     columns: HANDOFF_COLUMNS,
     brand: (
       <>
-        <Logo tone="white" className="w-50" />
+        <Logo color="inverse" className="w-50" />
         <Badge color="success">
           <DietMark size="sm" />
           100% Pure Veg Kitchen

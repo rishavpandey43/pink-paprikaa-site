@@ -1,15 +1,18 @@
-import { type ComponentProps, useId } from "react";
+import { useId } from "react";
+
+import type { BasePropsWithColor } from "../../lib/common-props";
 
 import { ARTWORK, type Mark } from "../../lib/brand-artwork";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const logo = componentVariants({
   base: "inline-block h-auto shrink-0",
   variants: {
     variant: { lockup: "w-logo-lockup", wordmark: "w-logo-wordmark", symbol: "w-logo-symbol" },
-    tone: { pink: "text-pink-500", white: "text-ink-000", badge: "" },
+    color: { brand: "text-pink-500", inverse: "text-ink-000", badge: "" },
   },
-  defaultVariants: { variant: "lockup", tone: "pink" },
+  defaultVariants: { variant: "lockup", color: "brand" },
 });
 
 /** Badge plate: the artwork sits centred on a 100×100 pink square at the design system's inset. */
@@ -27,7 +30,7 @@ const DEFAULT_TITLE: Readonly<Record<Mark, string>> = {
 export interface LogoProps
   extends
     Omit<
-      ComponentProps<"svg">,
+      BasePropsWithColor<"svg">,
       "children" | "dangerouslySetInnerHTML" | "viewBox" | "width" | "height"
     >,
     VariantProps<typeof logo> {
@@ -39,7 +42,7 @@ export interface LogoProps
 
 /**
  * The brand marks. `lockup` (with the drawn tagline) is the default everywhere; `wordmark` only
- * below ~120px wide; `symbol` is the diamond mark. Tones: `pink` on light, `white` on pink or ink,
+ * below ~120px wide; `symbol` is the diamond mark. Colors: `brand` on light, `inverse` on pink or ink,
  * `badge` on its own pink plate. Size it with classes only (no width/height attributes): `w-50` to
  * set the width, or `h-12 w-auto` in a header to set the height — the other side follows the
  * artwork. The root paints with `fill="currentColor"`, so an unfilled path never renders black.
@@ -49,9 +52,10 @@ export interface LogoProps
  */
 export function Logo({
   variant = "lockup",
-  tone = "pink",
+  color = "brand",
   title,
   isDecorative = false,
+  sx,
   className,
   ...props
 }: LogoProps) {
@@ -63,13 +67,13 @@ export function Logo({
     ? { "aria-hidden": true as const }
     : { role: "img", "aria-label": title ?? DEFAULT_TITLE[mark] };
 
-  if (tone === "badge") {
+  if (color === "badge") {
     const width = BADGE_ARTWORK_WIDTH[mark];
     const height = (width * artwork.height) / artwork.width;
     return (
       <svg
         viewBox="0 0 100 100"
-        className={logo({ variant, tone, className })}
+        className={logo({ variant, color, className: withSx(sx, className) })}
         {...a11y}
         {...props}
       >
@@ -92,7 +96,7 @@ export function Logo({
     <svg
       viewBox={artwork.viewBox}
       fill="currentColor"
-      className={logo({ variant, tone, className })}
+      className={logo({ variant, color, className: withSx(sx, className) })}
       {...a11y}
       {...props}
       dangerouslySetInnerHTML={{ __html: markup }}

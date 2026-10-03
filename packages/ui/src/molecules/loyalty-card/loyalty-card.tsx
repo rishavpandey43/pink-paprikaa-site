@@ -68,7 +68,7 @@ export function LoyaltyCard({
     >
       <Logo
         variant="symbol"
-        tone={isBrand ? "white" : "pink"}
+        color={isBrand ? "inverse" : "brand"}
         isDecorative
         className={styles.mark()}
       />

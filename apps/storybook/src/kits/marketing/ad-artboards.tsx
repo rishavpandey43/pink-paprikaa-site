@@ -117,7 +117,7 @@ export function Leaderboard() {
     <PostFrame format="leaderboard" surface="brand" padding="none" isFit>
       <PatternField tone="brand" tile={56} className="absolute inset-0" />
       <div className="relative flex h-full items-center gap-4.5 px-4.5">
-        <Logo variant="wordmark" tone="white" className="w-35 shrink-0" />
+        <Logo variant="wordmark" color="inverse" className="w-35 shrink-0" />
         <Divider orientation="vertical" className="h-10" />
         <SocialHeadline size="caption" as="p" className="min-w-0 flex-1 truncate">
           50% off your first order
@@ -136,7 +136,7 @@ export function Mpu() {
     <PostFrame format="mpu" surface="ink" padding="none" isFit>
       <PatternField tone="ink" tile={56} className="absolute inset-0" />
       <div className="relative flex h-full flex-col justify-between p-4.5">
-        <Logo variant="wordmark" tone="white" className="w-35" />
+        <Logo variant="wordmark" color="inverse" className="w-35" />
         <SocialHeadline size="caption" as="p">
           Chai first, decisions later.
         </SocialHeadline>

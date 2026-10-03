@@ -281,7 +281,7 @@ export function WebsiteKit() {
           tone="brand"
           brand={
             <Stack space={3}>
-              <Logo tone="white" className="w-50" />
+              <Logo color="inverse" className="w-50" />
               <Typography variant="body-sm">{`${brand.statement} ${brand.hours.display}.`}</Typography>
               <Badge color="brand" className="self-start">
                 {brand.vegStatement}

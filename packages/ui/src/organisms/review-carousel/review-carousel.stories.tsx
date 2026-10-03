@@ -28,7 +28,7 @@ const EMPTY = (
   <Card>
     <div className="flex flex-wrap items-center justify-between gap-4">
       <div className="flex min-w-0 flex-1 items-center gap-3.5">
-        <Logo variant="symbol" tone="badge" isDecorative className="w-12" />
+        <Logo variant="symbol" color="badge" isDecorative className="w-12" />
         <div className="flex min-w-0 flex-col gap-1">
           <Typography as="span" weight="bold" className="font-display">
             Read what our guests say on Google

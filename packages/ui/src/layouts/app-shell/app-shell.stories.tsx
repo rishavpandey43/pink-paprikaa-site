@@ -83,7 +83,7 @@ function DemoHomeScreen() {
   return (
     <PatternField tone="brand" className="px-5 pt-1 pb-6">
       <Stack space={4}>
-        <Logo tone="white" className="w-24" />
+        <Logo color="inverse" className="w-24" />
         <Typography as="h1" variant="h2">
           Chai first, decisions later.
         </Typography>

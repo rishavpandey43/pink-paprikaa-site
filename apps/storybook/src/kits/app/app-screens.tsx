@@ -42,7 +42,7 @@ export function HomeScreen({ onOpenItem, onSeeMenu }: HomeScreenProps) {
       <PatternField tone="brand" tile={56}>
         <div className="flex flex-col gap-4.5 px-5 pt-1 pb-6.5">
           <div className="flex items-center justify-between">
-            <Logo variant="wordmark" tone="white" className="w-35" />
+            <Logo variant="wordmark" color="inverse" className="w-35" />
             <IconButton icon={Bell} label="Notifications" variant="ghost" />
           </div>
           <Typography variant="h2" as="p">

@@ -6,12 +6,12 @@ import { Logo } from "./logo";
 const meta = {
   title: "Atoms/Logo",
   component: Logo,
-  args: { variant: "lockup", tone: "pink" },
+  args: { variant: "lockup", color: "brand" },
   parameters: {
     docs: {
       description: {
         component:
-          "The only correct way to place the brand mark — never rebuild, retype or recolour it. `lockup` is the official logo and the default almost everywhere: the tagline “India's First Desi Urban Café” is drawn artwork, never live type, and it tucks beside the “P” descender, so the lockup and the wordmark share one ~1.9:1 box. Use `wordmark` only below ~120px wide, where the tagline turns to mud; `symbol` is the square diamond mark for avatars, favicons, loaders and tight badges. Tones: `pink` on light surfaces, `white` on pink or ink, `badge` on its own pink plate. Minimum lockup width 200px (wordmark 140px). Clear space around any logo = the height of the “P”. Never apply a filter, shadow, outline, rotation or opacity to the mark, and never place the pink logo on anything darker than pink-100.",
+          "The only correct way to place the brand mark — never rebuild, retype or recolour it. `lockup` is the official logo and the default almost everywhere: the tagline “India's First Desi Urban Café” is drawn artwork, never live type, and it tucks beside the “P” descender, so the lockup and the wordmark share one ~1.9:1 box. Use `wordmark` only below ~120px wide, where the tagline turns to mud; `symbol` is the square diamond mark for avatars, favicons, loaders and tight badges. Colors: `brand` on light surfaces, `inverse` on pink or ink, `badge` on its own pink plate. Minimum lockup width 200px (wordmark 140px). Clear space around any logo = the height of the “P”. Never apply a filter, shadow, outline, rotation or opacity to the mark, and never place the pink logo on anything darker than pink-100.",
       },
     },
   },
@@ -49,49 +49,49 @@ export const Variants: Story = {
   ),
 };
 
-/** Card rows "white", "on ink" and "badge": each tone on the only ground it belongs on. */
-export const Tones: Story = {
+/** Card rows "white", "on ink" and "badge": each color on the only ground it belongs on. */
+export const Colors: Story = {
   render: () => (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-end gap-8 bg-surface-page p-6">
-        <Specimen prop='tone="pink"'>
-          <Logo tone="pink" />
+        <Specimen prop='color="brand"'>
+          <Logo color="brand" />
         </Specimen>
-        <Specimen prop='tone="pink" variant="symbol"'>
-          <Logo tone="pink" variant="symbol" />
+        <Specimen prop='color="brand" variant="symbol"'>
+          <Logo color="brand" variant="symbol" />
         </Specimen>
       </div>
       <div
         data-surface="brand"
         className="flex flex-wrap items-end gap-8 rounded-lg bg-surface-brand p-6"
       >
-        <Specimen prop='tone="white" (on pink)'>
-          <Logo tone="white" />
+        <Specimen prop='color="inverse" (on pink)'>
+          <Logo color="inverse" />
         </Specimen>
-        <Specimen prop='tone="white" variant="wordmark"'>
-          <Logo tone="white" variant="wordmark" />
+        <Specimen prop='color="inverse" variant="wordmark"'>
+          <Logo color="inverse" variant="wordmark" />
         </Specimen>
-        <Specimen prop='tone="white" variant="symbol"'>
-          <Logo tone="white" variant="symbol" />
+        <Specimen prop='color="inverse" variant="symbol"'>
+          <Logo color="inverse" variant="symbol" />
         </Specimen>
       </div>
       <div
         data-surface="ink"
         className="flex flex-wrap items-end gap-8 rounded-lg bg-surface-inverse p-6"
       >
-        <Specimen prop='tone="white" (on ink)'>
-          <Logo tone="white" />
+        <Specimen prop='color="inverse" (on ink)'>
+          <Logo color="inverse" />
         </Specimen>
       </div>
       <div className="flex flex-wrap items-end gap-8 bg-surface-page p-6">
-        <Specimen prop='tone="badge"'>
-          <Logo tone="badge" className="w-40" />
+        <Specimen prop='color="badge"'>
+          <Logo color="badge" className="w-40" />
         </Specimen>
-        <Specimen prop='tone="badge" variant="wordmark"'>
-          <Logo tone="badge" variant="wordmark" className="w-40" />
+        <Specimen prop='color="badge" variant="wordmark"'>
+          <Logo color="badge" variant="wordmark" className="w-40" />
         </Specimen>
-        <Specimen prop='tone="badge" variant="symbol"'>
-          <Logo tone="badge" variant="symbol" className="w-18" />
+        <Specimen prop='color="badge" variant="symbol"'>
+          <Logo color="badge" variant="symbol" className="w-18" />
         </Specimen>
       </div>
     </div>
@@ -119,6 +119,15 @@ export const HeaderHeight: Story = {
       <div className="flex h-header-compact items-center border-b-default border-border-subtle bg-surface-page px-6">
         <Logo className="h-10 w-auto" />
       </div>
+    </Specimen>
+  ),
+};
+
+/** `sx` sets spacing and width on the svg without a className. */
+export const Sx: Story = {
+  render: () => (
+    <Specimen prop='sx={{ w: "full", mt: 4 }}'>
+      <Logo sx={{ w: "full", mt: 4 }} />
     </Specimen>
   ),
 };

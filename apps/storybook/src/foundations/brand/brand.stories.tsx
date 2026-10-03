@@ -56,13 +56,13 @@ export const Lockup: Story = {
         surface="ink"
         className="h-30 items-center justify-center bg-surface-inverse p-6"
       >
-        <Logo tone="white" className="w-44" />
+        <Logo color="inverse" className="w-44" />
       </SpecimenTile>
       <SpecimenTile
         caption='tone="badge"'
         className="h-30 items-center justify-center bg-surface-sunken p-3"
       >
-        <Logo tone="badge" className="w-24" />
+        <Logo color="badge" className="w-24" />
       </SpecimenTile>
     </div>
   ),
@@ -82,13 +82,13 @@ export const Wordmark: Story = {
         surface="ink"
         className="h-30 items-center justify-center bg-surface-inverse p-6"
       >
-        <Logo variant="wordmark" tone="white" className="w-44" />
+        <Logo variant="wordmark" color="inverse" className="w-44" />
       </SpecimenTile>
       <SpecimenTile
         caption='tone="badge"'
         className="h-30 items-center justify-center bg-surface-sunken p-3"
       >
-        <Logo variant="wordmark" tone="badge" className="w-24" />
+        <Logo variant="wordmark" color="badge" className="w-24" />
       </SpecimenTile>
     </div>
   ),
@@ -138,21 +138,21 @@ export const SymbolMark: Story = {
         surface="brand"
         className="size-30 items-center justify-center bg-surface-brand"
       >
-        <Logo variant="symbol" tone="white" className="w-16" />
+        <Logo variant="symbol" color="inverse" className="w-16" />
       </SpecimenTile>
       <SpecimenTile
         caption='tone="white" · on ink'
         surface="ink"
         className="size-30 items-center justify-center bg-surface-inverse"
       >
-        <Logo variant="symbol" tone="white" className="w-16" />
+        <Logo variant="symbol" color="inverse" className="w-16" />
       </SpecimenTile>
       <SpecimenTile
         caption='tone="badge" · app icon'
         className="size-30 items-center justify-center"
       >
         <span className="block overflow-hidden rounded-xl shadow-brand">
-          <Logo variant="symbol" tone="badge" className="block w-30" />
+          <Logo variant="symbol" color="badge" className="block w-30" />
         </span>
       </SpecimenTile>
     </div>

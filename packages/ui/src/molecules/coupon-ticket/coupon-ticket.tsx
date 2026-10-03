@@ -122,7 +122,7 @@ export function CouponTicket({
   return (
     <div data-surface={tone} className={styles.root({ className })} {...props}>
       <div className={styles.main()}>
-        <Logo tone={tone === "brand" ? "white" : "pink"} className={styles.logo()} />
+        <Logo color={tone === "brand" ? "inverse" : "brand"} className={styles.logo()} />
         <p className={styles.headline()}>{headline}</p>
         <p className={styles.terms()}>{terms}</p>
       </div>

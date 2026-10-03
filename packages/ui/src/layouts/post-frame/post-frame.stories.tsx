@@ -148,7 +148,7 @@ export const Wide: Story = {
       <PostFrame format="wide" scale={0.16} surface="ink">
         <div className="flex h-full flex-col justify-between">
           <SocialHeadline size="hero">100% vegetarian kitchen.</SocialHeadline>
-          <Logo tone="white" className="w-65" />
+          <Logo color="inverse" className="w-65" />
         </div>
       </PostFrame>
       <Caption>wide 1920x1080</Caption>
@@ -220,7 +220,7 @@ export const Leaderboard: Story = {
     <div>
       <PostFrame format="leaderboard" scale={0.46} surface="brand" padding="none">
         <div className="flex h-full items-center gap-4 px-4">
-          <Logo tone="white" className="w-21" />
+          <Logo color="inverse" className="w-21" />
           <Typography variant="h4" as="span" weight="black" className="min-w-0 flex-1 truncate">
             50% off your first order
           </Typography>
@@ -238,7 +238,7 @@ export const Mpu: Story = {
     <div>
       <PostFrame format="mpu" scale={0.6} surface="ink" padding="none">
         <div className="flex h-full flex-col justify-between p-4">
-          <Logo tone="white" className="w-19" />
+          <Logo color="inverse" className="w-19" />
           <Typography variant="h3" as="span" weight="black">
             Chai first, decisions later.
           </Typography>

@@ -25,26 +25,29 @@ describe("Logo", () => {
     expect(screen.getByRole("img", { name: "Pink Paprikaa home" })).toBeInTheDocument();
   });
 
-  it("paints the white tone for pink and ink fields", () => {
-    render(<Logo tone="white" />);
+  it("paints the inverse color for pink and ink fields", () => {
+    render(<Logo color="inverse" />);
     expect(screen.getByRole("img")).toHaveClass("text-ink-000");
   });
 
-  it("puts the badge tone on a square brand plate", () => {
-    const { container } = render(<Logo tone="badge" variant="symbol" />);
+  it("puts the badge color on a square brand plate", () => {
+    const { container } = render(<Logo color="badge" variant="symbol" />);
     expect(container.querySelector("svg")).toHaveAttribute("viewBox", "0 0 100 100");
     expect(container.querySelector("rect")).toHaveClass("fill-pink-500");
     expect(container.querySelector("svg svg")).toHaveAttribute("fill", "currentColor");
   });
 
-  it.each(["pink", "white"] as const)("leaves the plate off the transparent %s tone", (tone) => {
-    const { container } = render(<Logo tone={tone} />);
-    expect(container.querySelector("rect")).not.toBeInTheDocument();
-    expect(container.querySelector("svg svg")).not.toBeInTheDocument();
-  });
+  it.each(["brand", "inverse"] as const)(
+    "leaves the plate off the transparent %s color",
+    (color) => {
+      const { container } = render(<Logo color={color} />);
+      expect(container.querySelector("rect")).not.toBeInTheDocument();
+      expect(container.querySelector("svg svg")).not.toBeInTheDocument();
+    }
+  );
 
   it("insets the symbol badge's artwork 20 units on every side (60 of 100)", () => {
-    const { container } = render(<Logo tone="badge" variant="symbol" />);
+    const { container } = render(<Logo color="badge" variant="symbol" />);
     const artwork = container.querySelector("svg svg");
     expect(artwork).toHaveAttribute("x", "20");
     expect(artwork).toHaveAttribute("y", "20");
@@ -52,8 +55,15 @@ describe("Logo", () => {
   });
 
   it("sets the lockup badge's artwork 76 of 100 units wide", () => {
-    const { container } = render(<Logo tone="badge" />);
+    const { container } = render(<Logo color="badge" />);
     expect(container.querySelector("svg svg")).toHaveAttribute("width", "76");
+  });
+
+  it("sx lands on the svg and beats its own width", () => {
+    render(<Logo sx={{ w: "full", mt: 4 }} />);
+    const logo = screen.getByRole("img");
+    expect(logo).toHaveClass("w-full", "mt-4");
+    expect(logo).not.toHaveClass("w-logo-lockup");
   });
 
   it("hides a decorative logo from assistive tech", () => {
@@ -66,7 +76,7 @@ describe("Logo", () => {
     const { container } = render(
       <>
         <Logo />
-        <Logo tone="white" />
+        <Logo color="inverse" />
       </>
     );
     const ids = [...container.querySelectorAll("[id]")].map((el) => el.id);
@@ -104,8 +114,8 @@ describe("Logo", () => {
     const { container } = render(
       <>
         <Logo />
-        <Logo tone="badge" variant="symbol" />
-        <Logo tone="white" isDecorative />
+        <Logo color="badge" variant="symbol" />
+        <Logo color="inverse" isDecorative />
       </>
     );
     await expectNoA11yViolations(container);

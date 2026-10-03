@@ -62,7 +62,7 @@ function HelpCard() {
     <Card>
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
-          <Logo variant="symbol" tone="badge" isDecorative className="w-11" />
+          <Logo variant="symbol" color="badge" isDecorative className="w-11" />
           <div className="flex min-w-0 flex-col gap-0.5">
             <Typography as="span" weight="bold" className="font-display">
               Still have a question?
