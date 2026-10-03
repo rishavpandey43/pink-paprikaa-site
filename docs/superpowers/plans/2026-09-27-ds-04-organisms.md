@@ -4792,7 +4792,7 @@ export interface DockAction {
 
 const actionDock = componentVariants({
   slots: {
-    root: "pb-action-dock-bottom md:bottom-action-dock-float fixed inset-x-0 bottom-0 z-dock flex gap-2 border-t border-border-subtle bg-surface-card px-3 pt-2.5 shadow-4 md:inset-x-auto md:right-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none",
+    root: "fixed inset-x-0 bottom-0 z-dock flex gap-2 border-t border-border-subtle bg-surface-card px-3 pt-2.5 pb-action-dock-bottom shadow-4 md:inset-x-auto md:right-6 md:bottom-action-dock-float md:border-0 md:bg-transparent md:p-0 md:shadow-none",
     secondary: "md:hidden",
     primary: "min-w-0 flex-1 shadow-brand md:flex-none",
   },
