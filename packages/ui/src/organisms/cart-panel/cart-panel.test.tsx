@@ -1,5 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useState } from "react";
 
 import type { CartLine } from "./cart-totals";
 
@@ -20,6 +21,23 @@ const LINES: CartLine[] = [
 
 function stepper(name: string) {
   return screen.getByRole("group", { name });
+}
+
+function LiveCart({ initial }: { initial: CartLine[] }) {
+  const [lines, setLines] = useState(initial);
+  return (
+    <CartPanel
+      lines={lines}
+      title="Your order"
+      onQuantityChange={(id, quantity) => {
+        setLines((current) =>
+          quantity <= 0
+            ? current.filter((line) => line.id !== id)
+            : current.map((line) => (line.id === id ? { ...line, quantity } : line))
+        );
+      }}
+    />
+  );
 }
 
 describe("CartPanel", () => {
@@ -52,6 +70,37 @@ describe("CartPanel", () => {
     expect(onQuantityChange).toHaveBeenCalledWith("cold-brew", 2);
     await user.click(within(group).getByRole("button", { name: "Remove one" }));
     expect(onQuantityChange).toHaveBeenCalledWith("cold-brew", 0);
+  });
+
+  it("moves focus to the next stepper after quantity 0 removes a line", async () => {
+    const user = userEvent.setup();
+    render(
+      <LiveCart
+        initial={[
+          { id: "chilli-paneer", name: "Paprikaa Chilli Paneer", price: 280, quantity: 1 },
+          { id: "cold-brew", name: "Masala Cold Brew", price: 220, quantity: 1 },
+        ]}
+      />
+    );
+    await user.click(
+      within(stepper("Paprikaa Chilli Paneer")).getByRole("button", { name: "Remove one" })
+    );
+    expect(
+      within(stepper("Masala Cold Brew")).getByRole("button", { name: "Remove one" })
+    ).toHaveFocus();
+  });
+
+  it("moves focus to the cart heading after quantity 0 empties the cart", async () => {
+    const user = userEvent.setup();
+    render(
+      <LiveCart
+        initial={[{ id: "cold-brew", name: "Masala Cold Brew", price: 220, quantity: 1 }]}
+      />
+    );
+    await user.click(
+      within(stepper("Masala Cold Brew")).getByRole("button", { name: "Remove one" })
+    );
+    expect(screen.getByRole("heading", { name: "Nothing here yet." })).toHaveFocus();
   });
 
   it("prints GST (5%) as ₹48 and the total as ₹1,008", () => {
@@ -106,6 +155,12 @@ describe("CartPanel", () => {
     expect(screen.getByRole("link", { name: "Browse the Menu" })).toBeInTheDocument();
     expect(screen.queryByRole("list")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Pay ₹0" })).not.toBeInTheDocument();
+  });
+
+  it("falls back to Nothing here yet. for a blank emptyTitle, with no empty heading", () => {
+    render(<CartPanel lines={[]} emptyTitle="" />);
+    expect(screen.getByRole("heading", { name: "Nothing here yet." })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "" })).not.toBeInTheDocument();
   });
 
   it("truncates a long name and note", () => {

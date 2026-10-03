@@ -91,7 +91,7 @@ export const Surfaces: Story = {
 export const Narrow: Story = {
   decorators: [
     (Story) => (
-      <div className="w-full max-w-80">
+      <div className="w-80 max-w-full">
         <Story />
       </div>
     ),

@@ -21,7 +21,7 @@ function RouterLink({ children, ...props }: ComponentProps<"a">) {
  * squeeze the page-section stories too.
  */
 const prose: Decorator = (Story) => (
-  <div className="w-full max-w-text-measure-prose">
+  <div className="w-160 max-w-full">
     <Story />
   </div>
 );

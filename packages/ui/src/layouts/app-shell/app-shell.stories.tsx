@@ -12,25 +12,29 @@ import { FilterBar } from "../../molecules/filter-bar/filter-bar";
 import { LoyaltyCard } from "../../molecules/loyalty-card/loyalty-card";
 import { MenuItemRow } from "../../molecules/menu-item-row/menu-item-row";
 import { Dialog } from "../../organisms/dialog/dialog";
-import { TabBar, type TabBarItem } from "../../organisms/tab-bar/tab-bar";
+import { TabBar } from "../../organisms/tab-bar/tab-bar";
 import { Cluster } from "../cluster/cluster";
 import { Stack } from "../stack/stack";
 import { AppShell } from "./app-shell";
-
-const TABS: TabBarItem[] = [
-  { value: "home", label: "Home", icon: House, href: "#home" },
-  { value: "menu", label: "Menu", icon: Utensils, href: "#menu" },
-  { value: "cart", label: "Cart", icon: ShoppingBag, href: "#cart", count: 2 },
-  { value: "you", label: "You", icon: User, href: "#you" },
-];
 
 const CATEGORIES = ["All", "Small Plates", "All Day", "Sweets"].map((label) => ({
   value: label,
   label,
 }));
 
-function AppTabBar({ current, label }: { current: string; label?: string | undefined }) {
-  return <TabBar items={TABS} value={current} label={label} />;
+function tabBar(current: string, label?: string) {
+  return (
+    <TabBar
+      items={[
+        { value: "home", label: "Home", icon: House, href: "#home" },
+        { value: "menu", label: "Menu", icon: Utensils, href: "#menu" },
+        { value: "cart", label: "Cart", icon: ShoppingBag, href: "#cart", count: 2 },
+        { value: "you", label: "You", icon: User, href: "#you" },
+      ]}
+      value={current}
+      label={label}
+    />
+  );
 }
 
 /** The app's menu screen, as on the card: filters, the loyalty card, dish rows. */
@@ -95,7 +99,7 @@ function DemoHomeScreen() {
 function SheetInFrame() {
   const [frame, setFrame] = useState<HTMLDivElement | null>(null);
   return (
-    <AppShell ref={setFrame} statusTone="ink" tabBar={<AppTabBar current="menu" />}>
+    <AppShell ref={setFrame} statusTone="ink" tabBar={tabBar("menu")}>
       <MenuScreen />
       {frame === null ? null : (
         <Dialog
@@ -126,7 +130,7 @@ const meta = {
     statusTone: "ink",
     time: "9:41",
     size: "phone",
-    tabBar: <AppTabBar current="menu" />,
+    tabBar: tabBar("menu"),
     children: <MenuScreen />,
   },
   parameters: {
@@ -167,13 +171,10 @@ export const StatusTones: Story = {
   name: "statusTone",
   render: () => (
     <Cluster space={6} align="start">
-      <AppShell statusTone="ink" tabBar={<AppTabBar current="menu" label="Primary, ink status" />}>
+      <AppShell statusTone="ink" tabBar={tabBar("menu", "Primary, ink status")}>
         <MenuScreen />
       </AppShell>
-      <AppShell
-        statusTone="light"
-        tabBar={<AppTabBar current="home" label="Primary, light status" />}
-      >
+      <AppShell statusTone="light" tabBar={tabBar("home", "Primary, light status")}>
         <DemoHomeScreen />
       </AppShell>
     </Cluster>
@@ -191,11 +192,7 @@ export const Sizes: Story = {
   render: () => (
     <Cluster space={6} align="start">
       {(["phone", "phone-sm"] as const).map((size) => (
-        <AppShell
-          key={size}
-          size={size}
-          tabBar={<AppTabBar current="menu" label={`Primary, ${size}`} />}
-        >
+        <AppShell key={size} size={size} tabBar={tabBar("menu", `Primary, ${size}`)}>
           <MenuScreen />
         </AppShell>
       ))}

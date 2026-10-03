@@ -8,7 +8,7 @@ const meta = {
   args: { visits: 3, goal: 6, reward: "chai" },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-text-measure-prose">
+      <div className="w-160 max-w-full">
         <Story />
       </div>
     ),

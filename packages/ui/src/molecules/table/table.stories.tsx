@@ -119,7 +119,7 @@ export const PriceList: Story = { render: () => <PriceMatrix /> };
 /** The matrix at 360px: it scrolls inside its region; headers stay associated. */
 export const ScrollsAt360: Story = {
   render: () => (
-    <div className="w-full max-w-90">
+    <div className="w-90 max-w-full">
       <PriceMatrix />
     </div>
   ),

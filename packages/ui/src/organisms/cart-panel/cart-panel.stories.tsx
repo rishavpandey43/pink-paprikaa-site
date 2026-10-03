@@ -145,6 +145,7 @@ export const Playground: Story = {
       meta={typeof args.meta === "string" ? args.meta : undefined}
     />
   ),
+  play: proveRingsWhole,
 };
 
 /** Card row: a filled pickup cart. Adding one Masala Cold Brew pays ₹1,239. */
@@ -168,7 +169,11 @@ export const Empty: Story = {
 
 export const OneLine: Story = {
   render: () => <LiveCart initial={ONE} />,
-  play: proveRingsWhole,
+  play: async (context) => {
+    await proveRingsWhole(context);
+    await context.userEvent.click(context.canvas.getByRole("button", { name: "Remove one" }));
+    await expect(context.canvas.getByRole("heading", { name: "Nothing here yet." })).toHaveFocus();
+  },
 };
 
 export const DineIn: Story = {

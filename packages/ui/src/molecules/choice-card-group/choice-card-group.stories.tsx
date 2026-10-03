@@ -39,7 +39,7 @@ const meta = {
   args: { name: "plate", legend: "1. Your plate", options: PLATES, defaultValue: "classic" },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-article">
+      <div className="w-190 max-w-full">
         <Story />
       </div>
     ),

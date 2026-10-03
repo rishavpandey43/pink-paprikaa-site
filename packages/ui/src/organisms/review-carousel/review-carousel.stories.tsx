@@ -41,7 +41,7 @@ const EMPTY = (
       <Button asChild iconAfter={ArrowUpRight}>
         <a href={BRAND.directionsHref} target="_blank" rel="noopener noreferrer">
           Open Google reviews
-          <span className="sr-only"> Opens in a new tab</span>
+          <span className="sr-only"> (Opens in a new tab)</span>
         </a>
       </Button>
     </div>
@@ -123,9 +123,11 @@ export const Paging: Story = {
     next.focus();
     await userEvent.keyboard("{Enter}");
     await waitFor(() => expect(track.scrollLeft).toBeGreaterThan(0));
-    await expect(canvas.getByRole("button", { name: "Previous reviews" })).toHaveAttribute(
-      "aria-disabled",
-      "false"
+    await waitFor(() =>
+      expect(canvas.getByRole("button", { name: "Previous reviews" })).toHaveAttribute(
+        "aria-disabled",
+        "false"
+      )
     );
   },
 };

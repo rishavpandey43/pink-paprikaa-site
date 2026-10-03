@@ -4,7 +4,7 @@ import type { HeadingLevel } from "../../lib/heading";
 import type { LinkAs } from "../../lib/link-as";
 
 import { Divider } from "../../atoms/divider/divider";
-import { componentVariants } from "../../lib/component-variants";
+import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
 import { MenuItemCard } from "../../molecules/menu-item-card/menu-item-card";
 import { type MenuItemImage, MenuItemRow } from "../../molecules/menu-item-row/menu-item-row";
@@ -65,7 +65,8 @@ function dishOf({ id: _id, category: _category, ...dish }: MenuListItem) {
   return dish;
 }
 
-export interface MenuListProps extends Omit<ComponentProps<"section">, "title"> {
+export interface MenuListProps
+  extends Omit<ComponentProps<"section">, "title">, Pick<VariantProps<typeof menuList>, "variant"> {
   items: MenuListItem[];
   /** Filter order and subset; defaults to every category in the dishes, in order. "All" is always first. */
   categories?: string[] | undefined;
@@ -80,8 +81,6 @@ export interface MenuListProps extends Omit<ComponentProps<"section">, "title"> 
   /** One sentence under the heading (shown only with a `title`). */
   lede?: ReactNode;
   action?: ReactNode;
-  /** `grid` = cards then an overflow list (website) · `list` = rows only (app). */
-  variant?: "grid" | "list" | undefined;
   /** How many dishes show as cards before rows take over. */
   gridCount?: number | undefined;
   /** Statement badge in the filter bar, e.g. "100% Vegetarian". */

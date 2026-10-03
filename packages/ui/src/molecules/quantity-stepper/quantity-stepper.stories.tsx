@@ -69,7 +69,7 @@ export const InACartRow: Story = {
     incrementLabel: "Add one Paneer Butter Masala",
   },
   render: (args) => (
-    <div className="flex w-full max-w-120 items-center gap-4 rounded-lg bg-surface-card p-4">
+    <div className="flex w-120 max-w-full items-center gap-4 rounded-lg bg-surface-card p-4">
       <div className="flex min-w-0 flex-col gap-0.5">
         <span className="font-display text-body font-bold text-text-heading">
           Paneer Butter Masala

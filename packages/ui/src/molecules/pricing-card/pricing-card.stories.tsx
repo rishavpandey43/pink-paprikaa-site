@@ -46,7 +46,7 @@ const build = (plate: string, variant: "secondary" | "inverse" = "secondary") =>
  * squeeze the page-section stories too.
  */
 const prose: Decorator = (Story) => (
-  <div className="w-full max-w-text-measure-prose">
+  <div className="w-160 max-w-full">
     <Story />
   </div>
 );
@@ -290,7 +290,7 @@ export const LongName: Story = {
   },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-90">
+      <div className="w-90 max-w-full">
         <Story />
       </div>
     ),

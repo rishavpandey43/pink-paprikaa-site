@@ -84,7 +84,7 @@ export const Narrow: Story = {
   args: { lede: "One kitchen, one grinder and a menu that changes with the season." },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-80">
+      <div className="w-80 max-w-full">
         <Story />
       </div>
     ),

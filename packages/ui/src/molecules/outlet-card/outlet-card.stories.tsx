@@ -32,7 +32,7 @@ const meta = {
   args: { city: "Gurgaon", name: "Sector 57", address: ADDRESS, hours: HOURS },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-article">
+      <div className="w-190 max-w-full">
         <Story />
       </div>
     ),

@@ -24,7 +24,7 @@ const meta = {
   args: { items: HOW_IT_WORKS },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-article">
+      <div className="w-190 max-w-full">
         <Story />
       </div>
     ),

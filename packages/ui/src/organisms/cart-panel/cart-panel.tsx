@@ -1,7 +1,14 @@
 "use client";
 
 import { MapPin } from "lucide-react";
-import { type ComponentProps, createElement, type ReactNode, useId } from "react";
+import {
+  type ComponentProps,
+  createElement,
+  type ReactNode,
+  useId,
+  useLayoutEffect,
+  useRef,
+} from "react";
 
 import { Card } from "../../atoms/card/card";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
@@ -42,17 +49,17 @@ const cartPanel = componentVariants({
 
 export interface CartPanelProps extends Omit<ComponentProps<"section">, "title"> {
   lines: CartLine[];
-  title?: ReactNode;
-  meta?: ReactNode;
+  title?: ReactNode | undefined;
+  meta?: ReactNode | undefined;
   /** Defaults to 0.05 (5% GST). */
   gstRate?: number | undefined;
   onQuantityChange?: ((id: string, quantity: number) => void) | undefined;
-  placeAction?: ReactNode;
-  browseAction?: ReactNode;
-  emptyTitle?: ReactNode;
-  emptyBody?: ReactNode;
-  noteField?: ReactNode;
-  note?: ReactNode;
+  placeAction?: ReactNode | undefined;
+  browseAction?: ReactNode | undefined;
+  emptyTitle?: ReactNode | undefined;
+  emptyBody?: ReactNode | undefined;
+  noteField?: ReactNode | undefined;
+  note?: ReactNode | undefined;
   subtotalLabel?: string | undefined;
   taxLabel?: string | undefined;
   totalLabel?: string | undefined;
@@ -83,20 +90,42 @@ export function CartPanel({
   ...props
 }: CartPanelProps) {
   const headingId = useId();
+  const rootRef = useRef<HTMLElement>(null);
+  const pendingFocus = useRef<"heading" | { line: string } | null>(null);
   const slots = cartPanel();
   const hasTitle = isShown(title);
   const hasLines = lines.length > 0;
   const totals = cartTotals(lines, gstRate);
   const taxPercent = Math.round(gstRate * 100);
   const taxName = `${taxLabel} (${String(taxPercent)}%)`;
+  const emptyHeading = isShown(emptyTitle) ? emptyTitle : "Nothing here yet.";
+
+  useLayoutEffect(() => {
+    const target = pendingFocus.current;
+    if (target === null) return;
+    pendingFocus.current = null;
+    const root = rootRef.current;
+    if (root === null) return;
+    if (target === "heading") {
+      const heading = root.querySelector("h1, h2, h3, h4, h5, h6");
+      if (heading instanceof HTMLElement) {
+        heading.tabIndex = -1;
+        heading.focus();
+      }
+      return;
+    }
+    const group = root.querySelector(`[role="group"][aria-label="${CSS.escape(target.line)}"]`);
+    const decrement = group?.querySelector("button");
+    if (decrement instanceof HTMLElement) decrement.focus();
+  }, [lines]);
 
   if (!hasLines) {
     return (
-      <section className={slots.root({ className })} {...props}>
+      <section className={slots.root({ className })} {...props} ref={rootRef}>
         <div className={slots.empty()}>
           <EmptyState
             variant="symbol"
-            title={emptyTitle}
+            title={emptyHeading}
             body={emptyBody}
             action={browseAction}
             headingLevel={headingLevel}
@@ -111,13 +140,18 @@ export function CartPanel({
       aria-labelledby={hasTitle ? headingId : undefined}
       className={slots.root({ className })}
       {...props}
+      ref={rootRef}
     >
       {hasTitle || isShown(meta) ? (
         <header className={slots.header()}>
           {hasTitle
             ? createElement(
                 headingTag(headingLevel),
-                { id: headingId, className: "font-display text-h3 text-text-heading" },
+                {
+                  id: headingId,
+                  tabIndex: -1,
+                  className: "font-display text-h3 text-text-heading",
+                },
                 title
               )
             : null}
@@ -152,6 +186,11 @@ export function CartPanel({
                 min={0}
                 value={line.quantity}
                 onValueChange={(quantity) => {
+                  if (quantity <= 0) {
+                    const index = lines.findIndex((item) => item.id === line.id);
+                    const next = lines[index + 1] ?? lines[index - 1];
+                    pendingFocus.current = next === undefined ? "heading" : { line: next.name };
+                  }
                   onQuantityChange?.(line.id, quantity);
                 }}
               />

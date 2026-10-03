@@ -21,7 +21,7 @@ const meta = {
   args: { label: "Menu category", options: WEBSITE, note: "100% Vegetarian", isWrapping: true },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-article">
+      <div className="w-190 max-w-full">
         <Story />
       </div>
     ),
@@ -93,7 +93,7 @@ export const Scroll: Story = {
   },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-90">
+      <div className="w-90 max-w-full">
         <Story />
       </div>
     ),

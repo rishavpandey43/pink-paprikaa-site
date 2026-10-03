@@ -106,7 +106,7 @@ export const FullWidth: Story = {
   },
   decorators: [
     (Story) => (
-      <div className="w-full max-w-120">
+      <div className="w-120 max-w-full">
         <Story />
       </div>
     ),
@@ -192,7 +192,7 @@ export const WithIcons: Story = {
 export const Narrow: Story = {
   decorators: [
     (Story) => (
-      <div className="w-full max-w-80">
+      <div className="w-80 max-w-full">
         <Story />
       </div>
     ),
