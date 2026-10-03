@@ -1,0 +1,20 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "tab-bar-count": {
+      "$value": "16px",
+      "$description": "Count pill height and minimum width (design system TabBar).",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "tab-bar-label": {
+      "$value": { "fontSize": "11px", "lineHeight": 1.2, "fontWeight": "{font-weight.medium}" },
+      "$description": "Tab label; bold when active."
+    },
+    "tab-bar-count": {
+      "$value": { "fontSize": "10px", "lineHeight": 1, "fontWeight": "{font-weight.bold}" }
+    }
+  }
+}

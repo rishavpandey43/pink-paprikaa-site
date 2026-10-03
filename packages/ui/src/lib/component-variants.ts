@@ -105,6 +105,8 @@ const TEXT = [
   "sticky-action-bar-amount",
   "table-head",
   "quote-panel-amount",
+  "tab-bar-label",
+  "tab-bar-count",
 ];
 const FONT = ["display", "body", "devanagari", "mono"];
 const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
@@ -255,6 +257,7 @@ const SPACING = [
   "site-footer-dock-clearance",
   "action-dock-bottom",
   "action-dock-float",
+  "tab-bar-count",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

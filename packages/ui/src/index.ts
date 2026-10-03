@@ -178,6 +178,7 @@ export {
   type SiteFooterProps,
 } from "./organisms/site-footer/site-footer";
 export { StatBand, type StatBandItem, type StatBandProps } from "./organisms/stat-band/stat-band";
+export { TabBar, type TabBarItem, type TabBarProps } from "./organisms/tab-bar/tab-bar";
 export {
   TestimonialWall,
   type TestimonialWallProps,
