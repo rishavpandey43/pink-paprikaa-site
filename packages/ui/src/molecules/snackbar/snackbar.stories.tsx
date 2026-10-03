@@ -30,18 +30,18 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Card row "tones" — ink. */
+/** Card row "colours" — neutral. */
 export const Playground: Story = {};
 
-/** Card row "tones" — success. */
+/** Card row "colours" — success. */
 export const Success: Story = {
-  args: { tone: "success", children: "Code copied. Paste it at checkout." },
+  args: { color: "success", children: "Code copied. Paste it at checkout." },
 };
 
-/** Card row "tones" — danger with Retry. */
+/** Card row "colours" — danger with Retry. */
 export const DangerWithRetry: Story = {
   args: {
-    tone: "danger",
+    color: "danger",
     children: "That card didn't go through.",
     action: { label: "Retry", altText: "Retry the payment", onClick: fn() },
   },
@@ -72,7 +72,7 @@ function LiveCopyDemo() {
       >
         Copy PAPRIKAA50
       </Button>
-      <Snackbar tone="success" position="bottom-left" open={isCopied} onOpenChange={setIsCopied}>
+      <Snackbar color="success" position="bottom-left" open={isCopied} onOpenChange={setIsCopied}>
         Code copied. Paste it at checkout.
       </Snackbar>
     </div>
@@ -148,8 +148,8 @@ export const BottomRight: Story = {
   args: { position: "bottom-right", children: "Order updated." },
 };
 
-/** Dev parity: the brand tone. */
-export const Brand: Story = { args: { tone: "brand", children: "Added to your order." } };
+/** Dev parity: the brand colour. */
+export const Brand: Story = { args: { color: "brand", children: "Added to your order." } };
 
 /** Dev parity: 360px is the floor — the bar caps at 420px and shrinks with the 24px gutter. */
 export const Narrow: Story = {

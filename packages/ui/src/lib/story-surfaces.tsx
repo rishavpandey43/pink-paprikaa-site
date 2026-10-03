@@ -9,7 +9,7 @@ import { componentVariants } from "./component-variants";
  *
  * `grounds` narrows the rows to the grounds a component is designed for (R67: the choice controls
  * have no on-brand skin, so they leave `brand` out). A function child renders per ground, for a
- * component whose prop changes with it (ProgressBar's `tone="inverse"` on brand).
+ * component whose prop changes with it (ProgressBar's `color="inverse"` on brand).
  */
 const GROUNDS = [
   { ground: "page", surface: undefined },

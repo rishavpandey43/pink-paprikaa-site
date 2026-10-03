@@ -4,13 +4,13 @@ import { CATALOGUE, formatValue, token, typographyOf, utilitiesOf } from "./cata
 import { CopyChips } from "./copy";
 
 export type TypeFamily = "display" | "body" | "devanagari" | "mono";
-export type TypeTone = "heading" | "body" | "muted" | "subtle" | "brand";
+export type TypeColor = "heading" | "body" | "muted" | "subtle" | "brand";
 
 export interface TypeSpecimenProps {
   /** A `text-*` step without the prefix: `h1`, `body-sm`, `display-2-fluid`. */
   step: string;
   family: TypeFamily;
-  tone?: TypeTone | undefined;
+  color?: TypeColor | undefined;
   isUppercase?: boolean | undefined;
   children: ReactNode;
 }
@@ -33,13 +33,13 @@ function weightTokenOf(step: string): string | undefined {
 export function TypeSpecimen({
   step,
   family,
-  tone = "heading",
+  color = "heading",
   isUppercase = false,
   children,
 }: TypeSpecimenProps) {
   const size = token(`text-${step}`);
   const font = token(`font-${family}`);
-  const color = token(`color-text-${tone}`);
+  const ink = token(`color-text-${color}`);
   const weight = weightTokenOf(step);
   return (
     <figure className="flex min-w-0 flex-col gap-2">
@@ -51,7 +51,7 @@ export function TypeSpecimen({
           lineHeight: `var(${size.cssVar}--line-height, normal)`,
           letterSpacing: `var(${size.cssVar}--letter-spacing, normal)`,
           fontWeight: `var(${size.cssVar}--font-weight, inherit)`,
-          color: `var(${color.cssVar})`,
+          color: `var(${ink.cssVar})`,
         }}
       >
         {children}

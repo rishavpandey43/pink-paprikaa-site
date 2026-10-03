@@ -27,6 +27,9 @@ Detail: `packages/ui/AUTHORING.md`. Built code beats plan text. Never edit the p
 
 **Storybook app**: MDX holds prose and `<Canvas of>` only, with no `className`. Values come from `docs-kit/catalogue`. Inline `style` uses only `var(--…)`. Kits use public ui exports and facts from `content`.
 
+**Shared API** (AUTHORING §13): every component takes `sx` via `withSx(sx, className)` on its root and extends `BaseProps<"el">` (`BasePropsWithColor` with a `color` prop). Ground → `surface`, palette → `color`, state → `status`; never a new `tone`.
+Size is `sm | md | lg`. Text is `Typography`, never `Text`; text-rooted components extend `TypographyProps`. `className` beats `sx`.
+
 **Brand**: "Pink Paprikaa" (two a's) · pure veg, no egg · no founder identity · no invented reviews.
 
 **Commit and gates**: one commit per component, `feat(ui): add the <Name> <tier>`. End every message with the harness `Co-Authored-By` line. pnpm only. Never `--no-verify`, LAW eslint-disables or destructive git. Per batch:

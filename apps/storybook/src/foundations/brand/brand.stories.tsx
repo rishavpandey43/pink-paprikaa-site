@@ -46,7 +46,7 @@ export const Lockup: Story = {
   render: () => (
     <div className="grid gap-4 md:grid-cols-3">
       <SpecimenTile
-        caption='variant="lockup" tone="pink"'
+        caption='variant="lockup" color="brand"'
         className="h-30 items-center justify-center border border-border-subtle bg-surface-page p-6"
       >
         <Logo className="w-44" />
@@ -59,7 +59,7 @@ export const Lockup: Story = {
         <Logo color="inverse" className="w-44" />
       </SpecimenTile>
       <SpecimenTile
-        caption='tone="badge"'
+        caption='color="badge"'
         className="h-30 items-center justify-center bg-surface-sunken p-3"
       >
         <Logo color="badge" className="w-24" />
@@ -72,7 +72,7 @@ export const Wordmark: Story = {
   render: () => (
     <div className="grid gap-4 md:grid-cols-3">
       <SpecimenTile
-        caption='variant="wordmark" tone="pink"'
+        caption='variant="wordmark" color="brand"'
         className="h-30 items-center justify-center border border-border-subtle bg-surface-page p-6"
       >
         <Logo variant="wordmark" className="w-44" />
@@ -85,7 +85,7 @@ export const Wordmark: Story = {
         <Logo variant="wordmark" color="inverse" className="w-44" />
       </SpecimenTile>
       <SpecimenTile
-        caption='tone="badge"'
+        caption='color="badge"'
         className="h-30 items-center justify-center bg-surface-sunken p-3"
       >
         <Logo variant="wordmark" color="badge" className="w-24" />
@@ -128,13 +128,13 @@ export const SymbolMark: Story = {
   render: () => (
     <div className="flex flex-wrap items-start gap-4">
       <SpecimenTile
-        caption='tone="pink"'
+        caption='color="brand"'
         className="size-30 items-center justify-center bg-surface-page-alt"
       >
         <Logo variant="symbol" className="w-16" />
       </SpecimenTile>
       <SpecimenTile
-        caption='tone="white"'
+        caption='color="inverse" · on brand'
         surface="brand"
         className="size-30 items-center justify-center bg-surface-brand"
       >
@@ -148,7 +148,7 @@ export const SymbolMark: Story = {
         <Logo variant="symbol" color="inverse" className="w-16" />
       </SpecimenTile>
       <SpecimenTile
-        caption='tone="badge" · app icon'
+        caption='color="badge" · app icon'
         className="size-30 items-center justify-center"
       >
         <span className="block overflow-hidden rounded-xl shadow-brand">
@@ -199,16 +199,16 @@ export const PatternFields: Story = {
       </PatternField>
       <div className="grid gap-4 md:grid-cols-4">
         <PatternField surface="ink" radius="lg" className="h-24 p-4">
-          <span className="font-mono text-mono">tone=&quot;ink&quot;</span>
+          <span className="font-mono text-mono">surface=&quot;ink&quot;</span>
         </PatternField>
         <PatternField surface="ink" density="faint" radius="lg" className="h-24 p-4">
           <span className="font-mono text-mono">density=&quot;faint&quot;</span>
         </PatternField>
         <PatternField surface="soft" radius="lg" className="h-24 p-4">
-          <span className="font-mono text-mono">tone=&quot;soft&quot;</span>
+          <span className="font-mono text-mono">surface=&quot;soft&quot;</span>
         </PatternField>
         <PatternField surface="page" radius="lg" className="h-24 p-4">
-          <span className="font-mono text-mono">tone=&quot;light&quot;</span>
+          <span className="font-mono text-mono">surface=&quot;page&quot;</span>
         </PatternField>
       </div>
     </div>

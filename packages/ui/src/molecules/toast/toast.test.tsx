@@ -30,20 +30,23 @@ describe("Toast", () => {
 
   it.each([
     ["brand", "brand", "bg-surface-brand", "lucide-check"],
-    ["ink", "ink", "bg-surface-inverse", "lucide-info"],
+    ["neutral", "ink", "bg-surface-inverse", "lucide-info"],
     ["success", "ink", "bg-toast-success-bg", "lucide-check"],
     ["danger", "ink", "bg-status-danger", "lucide-triangle-alert"],
-  ] as const)("paints the %s tone as a %s field with its glyph", (tone, surface, fill, glyph) => {
-    render(
-      <ToastProvider>
-        <Toast tone={tone}>Order confirmed.</Toast>
-      </ToastProvider>
-    );
-    const item = within(notifications()).getByRole("listitem");
-    expect(item).toHaveAttribute("data-surface", surface);
-    expect(item).toHaveClass(fill);
-    expect(item.querySelector(`svg.${glyph}`)).toBeInTheDocument();
-  });
+  ] as const)(
+    "paints the %s colour as a %s field with its glyph",
+    (color, surface, fill, glyph) => {
+      render(
+        <ToastProvider>
+          <Toast color={color}>Order confirmed.</Toast>
+        </ToastProvider>
+      );
+      const item = within(notifications()).getByRole("listitem");
+      expect(item).toHaveAttribute("data-surface", surface);
+      expect(item).toHaveClass(fill);
+      expect(item.querySelector(`svg.${glyph}`)).toBeInTheDocument();
+    }
+  );
 
   it("takes a glyph of its own", () => {
     render(
@@ -58,15 +61,15 @@ describe("Toast", () => {
 
   it.each([
     ["brand", "polite"],
-    ["ink", "polite"],
+    ["neutral", "polite"],
     ["success", "polite"],
     ["danger", "assertive"],
   ] as const)(
     "announces a %s toast %sly — a failure interrupts, a confirmation waits",
-    (tone, politeness) => {
+    (color, politeness) => {
       render(
         <ToastProvider>
-          <Toast tone={tone}>Order update.</Toast>
+          <Toast color={color}>Order update.</Toast>
         </ToastProvider>
       );
       // Radix portals its announcer into the body: `type` "background" → polite, "foreground" → assertive.
@@ -93,7 +96,7 @@ describe("Toast", () => {
     const onOpenChange = vi.fn();
     render(
       <ToastProvider>
-        <Toast tone="brand" onOpenChange={onOpenChange} action={{ ...VIEW_CART, onClick }}>
+        <Toast color="brand" onOpenChange={onOpenChange} action={{ ...VIEW_CART, onClick }}>
           Added to your order.
         </Toast>
       </ToastProvider>
@@ -317,7 +320,7 @@ describe("Toast", () => {
   it("has no accessibility violations with an action", async () => {
     const { container } = render(
       <ToastProvider>
-        <Toast tone="brand" isPop action={{ ...VIEW_CART, onClick: vi.fn() }}>
+        <Toast color="brand" isPop action={{ ...VIEW_CART, onClick: vi.fn() }}>
           Chilli Paneer added.
         </Toast>
       </ToastProvider>

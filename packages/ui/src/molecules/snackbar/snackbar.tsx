@@ -47,8 +47,8 @@ const snackbar = componentVariants({
       "top-center": { anchor: "top-6 justify-center" },
       "top-right": { anchor: "top-6 justify-end" },
     },
-    tone: {
-      ink: { root: "bg-surface-inverse", action: "text-text-brand" },
+    color: {
+      neutral: { root: "bg-surface-inverse", action: "text-text-brand" },
       brand: { root: "bg-surface-brand", action: "text-text-body" },
       success: { root: "bg-snackbar-success-bg", action: "text-text-body" },
       danger: { root: "bg-status-danger", action: "text-text-body" },
@@ -61,7 +61,7 @@ const snackbar = componentVariants({
       class: { anchor: "bottom-dock-clearance md:bottom-6" },
     },
   ],
-  defaultVariants: { isContained: true, position: "bottom-center", tone: "ink" },
+  defaultVariants: { isContained: true, position: "bottom-center", color: "neutral" },
 });
 
 type SnackbarPosition =
@@ -92,7 +92,7 @@ export function Snackbar({
   open,
   defaultOpen,
   onOpenChange,
-  tone = "ink",
+  color = "neutral",
   icon,
   action,
   duration = SNACKBAR_DURATION,
@@ -111,7 +111,7 @@ export function Snackbar({
     defaultValue: defaultOpen ?? true,
     onChange: onOpenChange,
   });
-  const styles = snackbar({ tone, position, isContained });
+  const styles = snackbar({ color, position, isContained });
   const viewportRef = useRef<HTMLOListElement>(null);
   const { returnFocus, focusProps } = useFocusReturn(isOpen);
 
@@ -132,8 +132,8 @@ export function Snackbar({
         open={isOpen}
         onOpenChange={handleOpenChange}
         // Severity picks the politeness (dev parity): a failure interrupts, a confirmation waits.
-        type={tone === "danger" ? "foreground" : "background"}
-        data-surface={NOTIFICATION_SURFACE[tone]}
+        type={color === "danger" ? "foreground" : "background"}
+        data-surface={NOTIFICATION_SURFACE[color]}
         className={styles.root({ className: withSx(sx, className) })}
         onFocus={(event) => {
           focusProps.onFocus();
@@ -144,7 +144,7 @@ export function Snackbar({
           onBlur?.(event);
         }}
       >
-        <Icon icon={icon ?? NOTIFICATION_ICON[tone]} size="md" />
+        <Icon icon={icon ?? NOTIFICATION_ICON[color]} size="md" />
         <RadixToast.Description className={styles.message()}>{children}</RadixToast.Description>
         {action === undefined ? null : (
           <RadixToast.Action

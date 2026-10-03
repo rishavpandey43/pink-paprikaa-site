@@ -55,13 +55,13 @@ describe("Snackbar", () => {
   });
 
   it.each([
-    ["ink", "ink", "bg-surface-inverse", "text-text-brand"],
+    ["neutral", "ink", "bg-surface-inverse", "text-text-brand"],
     ["brand", "brand", "bg-surface-brand", "text-text-body"],
     ["success", "ink", "bg-snackbar-success-bg", "text-text-body"],
     ["danger", "ink", "bg-status-danger", "text-text-body"],
-  ] as const)("paints the %s tone and its action", (tone, surface, fill, actionColour) => {
+  ] as const)("paints the %s colour and its action", (color, surface, fill, actionColour) => {
     render(
-      <Snackbar tone={tone} action={{ ...UNDO, onClick: vi.fn() }}>
+      <Snackbar color={color} action={{ ...UNDO, onClick: vi.fn() }}>
         Chilli Paneer removed.
       </Snackbar>
     );
@@ -72,14 +72,14 @@ describe("Snackbar", () => {
   });
 
   it.each([
-    ["ink", "polite"],
+    ["neutral", "polite"],
     ["brand", "polite"],
     ["success", "polite"],
     ["danger", "assertive"],
   ] as const)(
     "announces a %s bar %sly — a failure interrupts, a confirmation waits",
-    (tone, politeness) => {
-      render(<Snackbar tone={tone}>Code copied.</Snackbar>);
+    (color, politeness) => {
+      render(<Snackbar color={color}>Code copied.</Snackbar>);
       expect(
         document.body.querySelector(`[role="status"][aria-live="${politeness}"]`)
       ).toBeInTheDocument();

@@ -358,3 +358,45 @@ pnpm nx test storybook        # every story in Chromium: render, play, axe
 pnpm nx test design-tokens    # when you touched tokens or contrast-pairs.json
 pnpm verify
 ```
+
+## 13. Shared API: sx, surface, color, status, size, Typography
+
+Every component speaks one vocabulary (spec `2026-10-04-component-api-design.md`; `lib/common-props.ts`).
+
+**`sx`: the style override.**
+
+- Every component takes `sx` and applies it with `withSx(sx, className)` on its outermost slot, so
+  `className` still wins on a conflict. `sx` keys are token-typed (spacing steps, radius names,
+  light grounds); a raw length, hex or class is a type error. Responsive: `{ base, sm, md, lg, xl }`.
+- Never widen `Sx` for one component. What `sx` cannot say becomes a variant.
+- Add the `Sx` test to every component: it lands on the root, and beats a default of the same group.
+
+**Props types.**
+
+- `interface FooProps extends BaseProps<"div">`: the root element's native props plus `sx`.
+  Components with a palette `color` use `BasePropsWithColor<"div">`, which drops the native
+  `color` attribute. Spread `...props` on the root and pass `ref` through (React 19, ref as prop).
+- Compound and Radix components too: native props, `ref` and `sx` reach the root slot.
+
+**`surface` vs `color` vs `status`: the decision rule.**
+
+| Prop      | Answers                              | Example                                               |
+| --------- | ------------------------------------ | ----------------------------------------------------- |
+| `surface` | what ground does it paint or sit on? | `<CtaBand surface="ink">` sets `data-surface`         |
+| `color`   | which palette colour is it?          | `<Badge color="success">`, `<Toast color="brand">`    |
+| `status`  | what state is it in?                 | `<StatusDot status="open">`, `<Field status="error">` |
+
+If the value changes the text colour of what is inside, it is a `surface`. If it is a palette name, it
+is a `color`. If it is a domain state, it is a `status`. A new `tone` prop is never the answer.
+`surface` values map to `data-surface` through `SURFACE_DATA`; `sx.bg` paints light grounds only.
+
+**Size.** One scale: `sm | md | lg` (`SizeProp`). `xs` and `xl` exist only where they already did
+(Icon). A device frame is a `frame`, not a size.
+
+**Typography.**
+
+- Text is `Typography` (`Text` stays as a deprecated alias). Its props (`variant`, `color`, `weight`,
+  `align`, `noWrap`, `lineClamp`, `measure`, `isBalanced`) are `TypographyProps`.
+- A component whose root is text extends `TypographyProps` and forwards them. `Link` is the model:
+  it renders through Typography and keeps only its own colours.
+- Use `variant="inherit"` for a run of text that takes its parent's size.

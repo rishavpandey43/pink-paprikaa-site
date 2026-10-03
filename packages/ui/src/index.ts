@@ -68,7 +68,7 @@ export type { ColorProp, SizeProp, SurfaceProp, SxProp } from "./lib/common-prop
 export type { FieldStatus } from "./lib/field-status";
 export { type HeadingLevel, headingTag } from "./lib/heading";
 export type { LinkAs, LinkAsProps } from "./lib/link-as";
-export type { NotificationAction, NotificationTone } from "./lib/notification";
+export type { NotificationAction, NotificationColor } from "./lib/notification";
 export { RevealObserver, type RevealObserverProps } from "./lib/reveal-observer";
 export { GAP_CLASS, type SpaceStep } from "./lib/space";
 export type { Responsive, Sx } from "./lib/sx";

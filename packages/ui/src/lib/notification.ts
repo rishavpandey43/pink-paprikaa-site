@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 import { Check, Info, TriangleAlert } from "lucide-react";
 
 import type { IconComponent } from "../atoms/icon/icon";
-import type { BaseProps } from "./common-props";
+import type { BasePropsWithColor } from "./common-props";
 
-export type NotificationTone = "brand" | "ink" | "success" | "danger";
+export type NotificationColor = "brand" | "neutral" | "success" | "danger";
 
 export interface NotificationAction {
   label: string;
@@ -16,13 +16,13 @@ export interface NotificationAction {
 
 /** What Toast and Snackbar share (contract §5: `SnackbarProps extends Omit<ToastProps, "isPop">`). */
 /** `onPause` / `onResume` are Radix's timer callbacks here, not the media events an `<li>` types. */
-export interface NotificationProps extends Omit<BaseProps<"li">, "onPause" | "onResume"> {
+export interface NotificationProps extends Omit<BasePropsWithColor<"li">, "onPause" | "onResume"> {
   open?: boolean | undefined;
   /** Shown on mount unless `false` (Radix default). */
   defaultOpen?: boolean | undefined;
   onOpenChange?: ((open: boolean) => void) | undefined;
-  tone?: NotificationTone | undefined;
-  /** Replaces the tone's glyph. */
+  color?: NotificationColor | undefined;
+  /** Replaces the colour's glyph. */
   icon?: IconComponent | undefined;
   action?: NotificationAction | undefined;
   /** Time on screen, ms. `Infinity` keeps it until dismissed. */
@@ -31,17 +31,17 @@ export interface NotificationProps extends Omit<BaseProps<"li">, "onPause" | "on
   children: ReactNode;
 }
 
-export const NOTIFICATION_ICON: Readonly<Record<NotificationTone, IconComponent>> = {
+export const NOTIFICATION_ICON: Readonly<Record<NotificationColor, IconComponent>> = {
   brand: Check,
-  ink: Info,
+  neutral: Info,
   success: Check,
   danger: TriangleAlert,
 };
 
 /** A brand notification is a brand field; the rest are dark fields. On both, text and focus turn white. */
-export const NOTIFICATION_SURFACE: Readonly<Record<NotificationTone, "brand" | "ink">> = {
+export const NOTIFICATION_SURFACE: Readonly<Record<NotificationColor, "brand" | "ink">> = {
   brand: "brand",
-  ink: "ink",
+  neutral: "ink",
   success: "ink",
   danger: "ink",
 };

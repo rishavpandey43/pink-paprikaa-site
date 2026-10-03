@@ -104,6 +104,8 @@ const preview: Preview = {
           ["Motion", "States", "Form states", "Section reveal"],
           "Marketing",
           ["Canvas formats", "Canvas type", "Kit", ["Feed", "Ads"]],
+          "Foundations",
+          ["System (sx)"],
           "Atoms",
           "Molecules",
           "Organisms",

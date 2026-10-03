@@ -12,7 +12,7 @@ const VIEW_CART = { label: "View Cart", altText: "View your cart", onClick: fn()
 const meta = {
   title: "Molecules/Toast",
   component: Toast,
-  args: { tone: "brand", duration: Infinity, action: VIEW_CART, children: "Added to your order." },
+  args: { color: "brand", duration: Infinity, action: VIEW_CART, children: "Added to your order." },
   render: (args) => (
     <ToastProvider>
       <Toast {...args} />
@@ -34,14 +34,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
-/** Card row "tone" — brand with its action, ink. */
+/** Card row "colours" — brand with its action, ink. */
 export const Tones: Story = {
   render: () => (
     <ToastProvider>
-      <Toast tone="brand" duration={Infinity} action={VIEW_CART}>
+      <Toast color="brand" duration={Infinity} action={VIEW_CART}>
         Added to your order.
       </Toast>
-      <Toast tone="ink" duration={Infinity}>
+      <Toast color="neutral" duration={Infinity}>
         Table held for 10 minutes.
       </Toast>
     </ToastProvider>
@@ -52,11 +52,11 @@ export const Tones: Story = {
 export const Status: Story = {
   render: () => (
     <ToastProvider>
-      <Toast tone="success" duration={Infinity}>
+      <Toast color="success" duration={Infinity}>
         Order confirmed.
       </Toast>
       <Toast
-        tone="danger"
+        color="danger"
         duration={Infinity}
         action={{ label: "Retry", altText: "Try the payment again", onClick: fn() }}
       >
@@ -69,7 +69,7 @@ export const Status: Story = {
 /** Card row "pop" — add-to-cart only. */
 export const Pop: Story = { args: { isPop: true, children: "Chilli Paneer added." } };
 
-/** Dev parity: `icon` overrides the tone's glyph. */
+/** Dev parity: `icon` overrides the colour's glyph. */
 export const CustomGlyph: Story = {
   args: { icon: Gift, action: undefined, children: "You earned a free masala chai." },
 };
@@ -86,7 +86,7 @@ function AddToOrderDemo() {
         Add Chilli Paneer
       </Button>
       {added === 0 ? null : (
-        <Toast key={added} tone="brand" isPop duration={4000} action={VIEW_CART}>
+        <Toast key={added} color="brand" isPop duration={4000} action={VIEW_CART}>
           Chilli Paneer added.
         </Toast>
       )}

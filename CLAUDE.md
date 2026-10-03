@@ -161,6 +161,8 @@ pages, the Website / App / Marketing reference kits and the React Hook Form + Zo
 `docs/superpowers/specs/2026-09-27-design-system-rewrite-design.md`. Step 2 (the web app) gets its
 own spec.
 
+Every component now takes a token-typed `sx` prop and one shared vocabulary (`surface`, `color`, `status`, `size`, `Typography`); see `packages/ui/AUTHORING.md` §13.
+
 The item-by-item record lives in **§15 of the architecture spec** ("Phase 0 progress", "Phase 1
 progress"). Read it before planning the next step, and update it as items land — it is the only
 place that state is tracked, so do not duplicate it here.

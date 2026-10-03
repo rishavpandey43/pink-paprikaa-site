@@ -79,16 +79,16 @@ export const HeadingSteps: Story = {
 export const BodySteps: Story = {
   render: () => (
     <div className="flex max-w-text-measure-prose flex-col gap-4">
-      <TypeSpecimen step="body-lg" family="body" tone="body">
+      <TypeSpecimen step="body-lg" family="body" color="body">
         We roast our own masala every morning, then build the rest of the day around it.
       </TypeSpecimen>
-      <TypeSpecimen step="body" family="body" tone="body">
+      <TypeSpecimen step="body" family="body" color="body">
         Amritsari paneer, burnt chilli mayo, potato brioche. Served with masala fries.
       </TypeSpecimen>
-      <TypeSpecimen step="body-sm" family="body" tone="muted">
+      <TypeSpecimen step="body-sm" family="body" color="muted">
         Contains dairy and gluten. Ask us about swaps.
       </TypeSpecimen>
-      <TypeSpecimen step="caption" family="body" tone="subtle">
+      <TypeSpecimen step="caption" family="body" color="subtle">
         {brand.billing.taxNote}
       </TypeSpecimen>
     </div>
@@ -98,10 +98,10 @@ export const BodySteps: Story = {
 export const OverlineAndMono: Story = {
   render: () => (
     <div className="flex flex-col gap-4">
-      <TypeSpecimen step="overline" family="display" tone="brand" isUppercase>
+      <TypeSpecimen step="overline" family="display" color="brand" isUppercase>
         {brand.tagline}
       </TypeSpecimen>
-      <TypeSpecimen step="overline" family="display" tone="muted" isUppercase>
+      <TypeSpecimen step="overline" family="display" color="muted" isUppercase>
         {`Now Serving · ${OUTLET.name}, ${OUTLET.city}`}
       </TypeSpecimen>
       <TypeSpecimen step="mono" family="mono">
@@ -114,7 +114,7 @@ export const OverlineAndMono: Story = {
 export const Devanagari: Story = {
   render: () => (
     <div className="flex flex-col gap-4">
-      <TypeSpecimen step="h1" family="devanagari" tone="brand">
+      <TypeSpecimen step="h1" family="devanagari" color="brand">
         {brand.nameDevanagari}
       </TypeSpecimen>
       <div className="flex flex-wrap items-baseline gap-7">

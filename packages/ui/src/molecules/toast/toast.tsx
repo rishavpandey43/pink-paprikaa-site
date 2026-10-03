@@ -42,15 +42,15 @@ const toast = componentVariants({
       "-my-3 inline-flex min-h-hit shrink-0 items-center rounded-xs px-0.5 font-display text-toast-action font-bold text-current uppercase active:press-scale",
   },
   variants: {
-    tone: {
+    color: {
       brand: { root: "bg-surface-brand" },
-      ink: { root: "bg-surface-inverse" },
+      neutral: { root: "bg-surface-inverse" },
       success: { root: "bg-toast-success-bg" },
       danger: { root: "bg-status-danger" },
     },
     isPop: { true: { root: "animate-toast-pop" } },
   },
-  defaultVariants: { tone: "ink", isPop: false },
+  defaultVariants: { color: "neutral", isPop: false },
 });
 
 export interface ToastProviderProps {
@@ -92,7 +92,7 @@ export function Toast({
   open,
   defaultOpen,
   onOpenChange,
-  tone = "ink",
+  color = "neutral",
   icon,
   action,
   isPop = false,
@@ -110,7 +110,7 @@ export function Toast({
     defaultValue: defaultOpen ?? true,
     onChange: onOpenChange,
   });
-  const styles = toast({ tone, isPop });
+  const styles = toast({ color, isPop });
   const rootRef = useRef<HTMLLIElement>(null);
   const { returnFocus, focusProps } = useFocusReturn(isOpen);
 
@@ -131,9 +131,9 @@ export function Toast({
       open={isOpen}
       onOpenChange={handleOpenChange}
       // Severity picks the politeness (dev parity): a failure interrupts, a confirmation waits.
-      type={tone === "danger" ? "foreground" : "background"}
+      type={color === "danger" ? "foreground" : "background"}
       {...(duration === undefined ? {} : { duration })}
-      data-surface={NOTIFICATION_SURFACE[tone]}
+      data-surface={NOTIFICATION_SURFACE[color]}
       className={styles.root({ className: withSx(sx, className) })}
       onFocus={(event) => {
         focusProps.onFocus();
@@ -144,7 +144,7 @@ export function Toast({
         onBlur?.(event);
       }}
     >
-      <Icon icon={icon ?? NOTIFICATION_ICON[tone]} size="md" />
+      <Icon icon={icon ?? NOTIFICATION_ICON[color]} size="md" />
       <RadixToast.Description className={styles.message()}>{children}</RadixToast.Description>
       {action === undefined ? null : (
         <RadixToast.Action

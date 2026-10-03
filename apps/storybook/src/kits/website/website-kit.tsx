@@ -309,7 +309,7 @@ export function WebsiteKit() {
           onOpenChange={(isOpen) => {
             if (!isOpen) setToast(null);
           }}
-          tone="brand"
+          color="brand"
           icon={ShoppingBag}
           isPop
           action={{
