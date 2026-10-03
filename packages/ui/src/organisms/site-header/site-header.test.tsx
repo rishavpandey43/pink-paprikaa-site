@@ -12,13 +12,14 @@ const LINKS: NavLink[] = [
   { label: "Menu", href: "#menu" },
 ];
 
-const LONG_LINKS: NavLink[] = [
-  { label: "Homely Meals subscriptions", href: "#homely-meals" },
-  { label: "Catering and bulk orders", href: "#catering" },
-  { label: "The restaurant menu", href: "#menu" },
-  { label: "Office and PG lunch", href: "#office-lunch" },
-  { label: "About our kitchen", href: "#about" },
-  { label: "Contact and directions", href: "#contact" },
+/** The site's six widest real destinations (the stories' stress case). */
+const WIDEST_LINKS: NavLink[] = [
+  { label: "Homely Meals", href: "#homely-meals" },
+  { label: "This week’s menu", href: "#this-week" },
+  { label: "Catering", href: "#catering" },
+  { label: "Office & PG Lunch", href: "#office-lunch" },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const DRAWER_LINKS: NavLink[] = [
@@ -74,22 +75,22 @@ describe("SiteHeader", () => {
     expect(screen.queryByRole("navigation", { name: "Main" })).not.toBeInTheDocument();
   });
 
-  it("keeps three links inline below xl, never wrapping, and moves the rest into the drawer", async () => {
+  it("keeps three links inline below 2xl, never wrapping, and moves the rest into the drawer", async () => {
     const user = userEvent.setup();
-    render(<SiteHeader homeHref="#home" links={LONG_LINKS} />);
+    render(<SiteHeader homeHref="#home" links={WIDEST_LINKS} />);
     const nav = screen.getByRole("navigation", { name: "Main" });
     const items = within(nav).getAllByRole("listitem");
     for (const item of items.slice(0, 3)) expect(item).not.toHaveClass("hidden");
-    for (const item of items.slice(3)) expect(item).toHaveClass("hidden", "xl:block");
+    for (const item of items.slice(3)) expect(item).toHaveClass("hidden", "2xl:block");
     for (const link of within(nav).getAllByRole("link")) {
       expect(link).toHaveClass("whitespace-nowrap");
     }
     expect(within(nav).getByRole("list")).toHaveClass("flex-nowrap");
     const menuButton = screen.getByRole("button", { name: "Menu" });
-    expect(menuButton).toHaveClass("xl:hidden");
+    expect(menuButton).toHaveClass("2xl:hidden");
     await user.click(menuButton);
     const drawer = screen.getByRole("dialog", { name: "Menu" });
-    for (const { label } of LONG_LINKS) {
+    for (const { label } of WIDEST_LINKS) {
       expect(within(drawer).getByRole("link", { name: label })).toBeInTheDocument();
     }
   });

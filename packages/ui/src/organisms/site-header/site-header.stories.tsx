@@ -41,13 +41,17 @@ const HANDOFF_DRAWER_LINKS: NavLink[] = [
   { label: "Contact", href: "#contact" },
 ];
 
-const LONG_LINKS: NavLink[] = [
-  { label: "Homely Meals subscriptions", href: "#homely-meals" },
-  { label: "Catering and bulk orders", href: "#catering" },
-  { label: "The restaurant menu", href: "#menu" },
-  { label: "Office and PG lunch", href: "#office-lunch" },
-  { label: "About our kitchen", href: "#about" },
-  { label: "Contact and directions", href: "#contact" },
+/**
+ * The stress case: the six longest labels the site's real destinations carry (the handoff drawer's
+ * pages, Home and the four-letter Menu aside), in its order — the widest inline nav it can ask for.
+ */
+const WIDEST_LINKS: NavLink[] = [
+  { label: "Homely Meals", href: "#homely-meals" },
+  { label: "This week’s menu", href: "#this-week" },
+  { label: "Catering", href: "#catering" },
+  { label: "Office & PG Lunch", href: "#office-lunch" },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const handoffButtons = (size: "sm" | "md", isFullWidth: boolean) => (
@@ -118,7 +122,7 @@ const meta = {
       story: { inline: false, height: "420px" },
       description: {
         component:
-          'The website masthead — sticky, solid at rest and glass once scrolled past 24px. `size="default"` is the design system\'s 88px bar; `size="compact"` the handoff\'s 64px row under the launch AnnouncementBar. The nav never wraps or clips: from lg it shows inline, between lg and xl only its first three links, and the menu drawer (a focus-trapped sheet) carries every destination whenever the bar cannot. Never add a third CTA.',
+          'The website masthead — sticky, solid at rest and glass once scrolled past 24px. `size="default"` is the design system\'s 88px bar; `size="compact"` the handoff\'s 64px row under the launch AnnouncementBar. The nav never wraps or clips: from lg it shows inline, between lg and 2xl only its first three links, and the menu drawer (a focus-trapped sheet) carries every destination whenever the bar cannot. Never add a third CTA.',
       },
     },
   },
@@ -190,25 +194,83 @@ export const CartCounts: Story = {
 /** Handoff PPHeader — launch bar, Pure Veg chip, four links, two actions. */
 export const HandoffCompact: Story = {};
 
-/** Six long links at 1024px: three inline, the menu button carries the rest. */
-export const LongLinksAtLg: Story = {
-  args: { links: LONG_LINKS, drawerLinks: LONG_LINKS },
-  globals: VIEWPORT_1024,
-  play: async ({ canvas }) => {
+/** The widths either side of the nav's steps that no system breakpoint names. */
+const NAV_EDGE_VIEWPORTS = {
+  viewport: {
+    options: {
+      navEdge1279: {
+        name: "1279 — one below xl",
+        styles: { width: "1279px", height: "900px" },
+        type: "desktop",
+      },
+      navEdge1536: { name: "1536", styles: { width: "1536px", height: "900px" }, type: "desktop" },
+    },
+  },
+};
+
+/**
+ * Review Focus 2 on the real page: the first `inline` links show and the rest are `display:
+ * none`, the document never scrolls sideways, and the menu button (whenever a link is hidden) and
+ * the last action end inside the viewport.
+ */
+const fitsWith =
+  (inline: number): NonNullable<Story["play"]> =>
+  async ({ canvas }) => {
     const nav = canvas.getByRole("navigation", { name: "Main" });
     await expect(nav).toBeVisible();
     const items = [...nav.querySelectorAll("li")];
-    await expect(items.map((item) => getComputedStyle(item).display)).toEqual([
-      "list-item",
-      "list-item",
-      "list-item",
-      "none",
-      "none",
-      "none",
-    ]);
-    await expect(nav.scrollWidth).toBeLessThanOrEqual(nav.clientWidth);
-    await expect(canvas.getByRole("button", { name: "Menu" })).toBeVisible();
-  },
+    await expect(items.map((item) => getComputedStyle(item).display !== "none")).toEqual(
+      items.map((_, index) => index < inline)
+    );
+    const page = document.documentElement;
+    await expect(page.scrollWidth).toBeLessThanOrEqual(page.clientWidth);
+    const menuButton = canvas.queryByRole("button", { name: "Menu" });
+    if (inline < items.length) await expect(menuButton).toBeVisible();
+    const lastAction = canvas.getByRole("link", { name: "WhatsApp us" });
+    for (const control of [menuButton, lastAction]) {
+      if (control !== null) {
+        await expect(control.getBoundingClientRect().right).toBeLessThanOrEqual(innerWidth);
+      }
+    }
+  };
+
+const SIX_LINKS = { links: WIDEST_LINKS, drawerLinks: WIDEST_LINKS };
+
+/** Six links at 1024px: three inline, the menu button carries the rest. */
+export const SixLinksAt1024: Story = {
+  args: SIX_LINKS,
+  globals: VIEWPORT_1024,
+  play: fitsWith(3),
+};
+
+/** Six links one pixel below xl: three inline. */
+export const SixLinksAt1279: Story = {
+  args: SIX_LINKS,
+  parameters: NAV_EDGE_VIEWPORTS,
+  globals: { viewport: { value: "navEdge1279", isRotated: false } },
+  play: fitsWith(3),
+};
+
+/** Six links at xl: still three inline — all six run 23px past a 1280px page. */
+export const SixLinksAt1280: Story = {
+  args: SIX_LINKS,
+  globals: VIEWPORT_1280,
+  play: fitsWith(3),
+};
+
+/** Six links at 2xl, the narrowest page that shows them all. */
+export const SixLinksAt1440: Story = {
+  args: SIX_LINKS,
+  globals: { viewport: { value: "xxl", isRotated: false } },
+  play: fitsWith(6),
+};
+
+/** Six links at 1536px: all inline. */
+export const SixLinksAt1536: Story = {
+  args: SIX_LINKS,
+  parameters: NAV_EDGE_VIEWPORTS,
+  globals: { viewport: { value: "navEdge1536", isRotated: false } },
+  play: fitsWith(6),
 };
 
 /**

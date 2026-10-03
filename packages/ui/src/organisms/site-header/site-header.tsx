@@ -17,8 +17,8 @@ export interface NavLink {
   isActive?: boolean | undefined;
 }
 
-/** Between lg and xl the inline nav keeps its first three links; the rest wait for xl (readme §3.10). */
-const INLINE_LINKS_BELOW_XL = 3;
+/** Between lg and 2xl the inline nav keeps its first three links; the rest wait for 2xl (readme §3.10). */
+const INLINE_LINKS_BELOW_2XL = 3;
 
 const siteHeader = componentVariants({
   slots: {
@@ -53,8 +53,8 @@ const siteHeader = componentVariants({
     isActive: {
       true: { navLink: "border-border-brand text-text-brand", drawerLink: "text-text-brand" },
     },
-    isHiddenBelowXl: { true: { navItem: "hidden xl:block" } },
-    hasHiddenLinks: { true: { menuButton: "xl:hidden" }, false: { menuButton: "lg:hidden" } },
+    isHiddenBelow2xl: { true: { navItem: "hidden 2xl:block" } },
+    hasHiddenLinks: { true: { menuButton: "2xl:hidden" }, false: { menuButton: "lg:hidden" } },
   },
   defaultVariants: { size: "default" },
 });
@@ -62,7 +62,12 @@ const siteHeader = componentVariants({
 export interface SiteHeaderProps
   extends ComponentProps<"header">, Pick<VariantProps<typeof siteHeader>, "size"> {
   homeHref: string;
-  /** Inline nav links. Three show between lg and xl, all from xl (the rest are in the drawer). */
+  /**
+   * Inline nav links. Three show between lg and 2xl, all from 2xl (the rest are in the drawer).
+   * The budget the `SixLinksAt*` stories prove beside the handoff's badge and two actions: the
+   * first three labels 36 characters together, all six 65, none longer than 17 ("Office & PG
+   * Lunch"). Longer names belong in `drawerLinks`.
+   */
   links: NavLink[];
   /** The drawer's links; defaults to `links` (the handoff drawer lists more destinations). */
   drawerLinks?: NavLink[] | undefined;
@@ -116,7 +121,7 @@ export function SiteHeader({
   ...props
 }: SiteHeaderProps) {
   const slots = siteHeader({ size });
-  const hasHiddenLinks = links.length > INLINE_LINKS_BELOW_XL;
+  const hasHiddenLinks = links.length > INLINE_LINKS_BELOW_2XL;
   const hasDrawer = drawerLinks.length > 0 || isShown(drawerActions);
   return (
     <header className={slots.root({ className })} {...props}>
@@ -136,7 +141,9 @@ export function SiteHeader({
                 {links.map((link, index) => (
                   <li
                     key={link.href}
-                    className={slots.navItem({ isHiddenBelowXl: index >= INLINE_LINKS_BELOW_XL })}
+                    className={slots.navItem({
+                      isHiddenBelow2xl: index >= INLINE_LINKS_BELOW_2XL,
+                    })}
                   >
                     <LinkComponent
                       href={link.href}
