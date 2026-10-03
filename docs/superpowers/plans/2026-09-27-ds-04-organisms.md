@@ -5240,8 +5240,10 @@ const tabBar = componentVariants({
     root: "h-tabbar border-t border-border-subtle bg-surface-card",
     list: "flex h-full",
     item: "flex min-w-0 flex-1",
+    // The controls fill the bar edge to edge, so a ring drawn outside them is cut by the screen or
+    // a phone frame's clip: it is drawn inset.
     control:
-      "flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 font-display text-tab-bar-label text-text-subtle no-underline transition-colors duration-fast ease-out hover:text-text-heading active:press-scale",
+      "flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 font-display text-tab-bar-label text-text-subtle no-underline transition-colors duration-fast ease-out hover:text-text-heading focus-visible:-outline-offset-4 active:press-scale",
     glyph: "relative inline-flex",
     label: "max-w-full truncate",
     count:
@@ -5295,7 +5297,13 @@ export function TabBar({
                 ) : null}
               </span>
               <span className={slots.label()}>{item.label}</span>
-              {hasCount ? <span className="sr-only"> ({item.count})</span> : null}
+              {/* The space sits outside the span: a name drops a child's edge whitespace. */}
+              {hasCount ? (
+                <>
+                  {" "}
+                  <span className="sr-only">({item.count})</span>
+                </>
+              ) : null}
             </>
           );
           return (
@@ -5349,6 +5357,7 @@ import { House, Receipt, ShoppingBag, User, Utensils } from "lucide-react";
 import { useState } from "react";
 import { expect } from "storybook/test";
 
+import { ringClippers } from "../../lib/story-ring";
 import { VIEWPORT_360 } from "../story-fixtures";
 import { TabBar, type TabBarItem } from "./tab-bar";
 
@@ -5367,14 +5376,32 @@ const FIVE: TabBarItem[] = [
   { value: "you", label: "You", icon: User },
 ];
 
-/** A phone-width frame, as on the card. */
+/** A phone-width frame, as on the card; it shrinks with a narrower canvas. */
 function Frame({ items, initial }: { items: TabBarItem[]; initial: string }) {
   const [value, setValue] = useState(initial);
   return (
-    <div className="w-97.5 overflow-hidden rounded-lg border border-border-subtle">
+    <div className="w-full max-w-97.5 overflow-hidden rounded-lg border border-border-subtle">
       <TabBar items={items} value={value} onValueChange={setValue} />
     </div>
   );
+}
+
+/**
+ * The tabs fill the bar edge to edge inside a clipping frame, so their rings are drawn inset: tab
+ * to the first and the last and prove nothing cuts either.
+ */
+function proveEndRingsWhole(role: "button" | "link"): NonNullable<Story["play"]> {
+  return async ({ canvas, userEvent }) => {
+    const controls = canvas.getAllByRole(role);
+    for (const [index, control] of controls.entries()) {
+      await userEvent.tab();
+      await expect(control).toHaveFocus();
+      if (index === 0 || index === controls.length - 1) {
+        await expect(control.matches(":focus-visible")).toBe(true);
+        await expect(ringClippers(control)).toEqual([]);
+      }
+    }
+  };
 }
 
 const meta = {
@@ -5410,15 +5437,19 @@ export const FourTabsWithCount: Story = {
 };
 
 /** Card row: 5 tabs. */
-export const FiveTabs: Story = { render: () => <Frame items={FIVE} initial="home" /> };
+export const FiveTabs: Story = {
+  render: () => <Frame items={FIVE} initial="home" />,
+  play: proveEndRingsWhole("button"),
+};
 
 export const AsLinks: Story = {
   args: { items: FOUR.map((item) => ({ ...item, href: `#${item.value}` })), value: "home" },
   render: (args) => (
-    <div className="w-97.5 overflow-hidden rounded-lg border border-border-subtle">
+    <div className="w-full max-w-97.5 overflow-hidden rounded-lg border border-border-subtle">
       <TabBar {...args} />
     </div>
   ),
+  play: proveEndRingsWhole("link"),
 };
 
 /**
@@ -5427,12 +5458,9 @@ export const AsLinks: Story = {
  */
 export const EachDestinationActive: Story = {
   render: () => (
-    <div className="flex flex-col gap-4">
+    <div className="flex w-full max-w-97.5 flex-col gap-4">
       {FOUR.map((item) => (
-        <div
-          key={item.value}
-          className="w-97.5 overflow-hidden rounded-lg border border-border-subtle"
-        >
+        <div key={item.value} className="overflow-hidden rounded-lg border border-border-subtle">
           <TabBar items={FOUR} value={item.value} label={`Primary, ${item.label} in view`} />
         </div>
       ))}
@@ -5445,6 +5473,12 @@ export const Mobile: Story = {
   globals: VIEWPORT_360,
   parameters: { layout: "fullscreen" },
   render: () => <TabBar items={FIVE} value="home" />,
+  play: async (context) => {
+    await expect(context.canvasElement.scrollWidth).toBeLessThanOrEqual(
+      context.canvasElement.clientWidth
+    );
+    await proveEndRingsWhole("button")(context);
+  },
 };
 ```
 
@@ -5468,7 +5502,8 @@ git commit -m "feat(ui): add the TabBar organism
 The app's 64px bottom navigation as a labelled nav: link tabs through
 linkAs or button tabs that report onValueChange, the current one marked
 aria-current in brand pink, counts shown as a pill and read with the label.
-Labels use the passing ink-600 and pink-600 text tokens.
+Labels use the passing ink-600 and pink-600 text tokens. The tabs fill the
+bar edge to edge, so their focus ring is drawn inset.
 
 Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
