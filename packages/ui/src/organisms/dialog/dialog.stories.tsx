@@ -62,7 +62,7 @@ const meta = {
       story: { inline: false, height: "480px" },
       description: {
         component:
-          'A decision that must be made now. `variant="modal"` is centred (24px radius, shadow-4, 56% ink scrim); `variant="sheet"` is the app\'s bottom sheet with a grab handle and top corners only. Focus is trapped, Escape and the scrim close it, focus returns to the trigger (or, without one, to what had focus when it opened), the page cannot scroll. `portalContainer` renders it inside a positioned frame (AppShell\'s overlay slot) instead of the page body.',
+          'A decision that must be made now. `variant="modal"` is centred (24px radius, shadow-4, 56% ink scrim); `variant="sheet"` is the app\'s bottom sheet with a grab handle and top corners only. Focus is trapped, Escape and the scrim close it, focus returns to the trigger (or, without one, to what had focus when it opened — Safari and Firefox on macOS do not focus a clicked button, so pass a `trigger` where a pointer open must get focus back), the page cannot scroll. `portalContainer` renders it inside a positioned frame (AppShell\'s overlay slot) instead of the page body.',
       },
     },
   },

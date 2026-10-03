@@ -43,7 +43,12 @@ export interface DialogProps
   extends
     Pick<DialogPrimitive.DialogProps, "open" | "defaultOpen" | "onOpenChange">,
     Pick<VariantProps<typeof dialog>, "variant" | "size"> {
-  /** The element that opens the dialog, e.g. a Button. */
+  /**
+   * The element that opens the dialog, e.g. a Button; focus returns to it on close. Without one,
+   * focus returns to the element focused when the dialog opened — reliable for keyboard opens, but
+   * Safari and Firefox on macOS do not focus a button on click, so a dialog opened by pointer
+   * returns focus to `<body>`. Pass a trigger where focus return must survive a pointer open.
+   */
   trigger?: ReactElement | undefined;
   title: ReactNode;
   description?: ReactNode;
@@ -67,7 +72,7 @@ export interface DialogProps
  * A decision that must be made now: a centred modal (24px radius, `--shadow-4`, 56% ink scrim),
  * or a bottom sheet with a grab handle — the app default. Radix Dialog: focus is trapped, Escape
  * and the scrim close it, focus returns to the trigger (or, without one, to what had focus when it
- * opened), the page behind cannot scroll.
+ * opened — see `trigger` for pointer opens), the page behind cannot scroll.
  */
 export function Dialog({
   trigger,
