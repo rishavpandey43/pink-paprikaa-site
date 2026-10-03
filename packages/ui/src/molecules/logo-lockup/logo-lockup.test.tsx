@@ -26,8 +26,8 @@ describe("LogoLockup", () => {
     expect(screen.getByRole("img")).toHaveClass(width);
   });
 
-  it("paints the pink tone on light artwork", () => {
-    render(<LogoLockup tone="pink" />);
+  it("paints the brand color on light artwork", () => {
+    render(<LogoLockup color="brand" />);
     expect(screen.getByRole("img")).toHaveClass("text-pink-500");
   });
 
@@ -47,12 +47,23 @@ describe("LogoLockup", () => {
     expect(container.firstElementChild).not.toHaveClass("p-11");
   });
 
+  it("sx lands on the root and beats its own clear space", () => {
+    const { container } = render(<LogoLockup sx={{ p: 0, mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("p-0", "mt-4");
+    expect(container.firstElementChild).not.toHaveClass("p-11");
+  });
+
+  it("paints the badge color on its own plate", () => {
+    const { container } = render(<LogoLockup color="badge" />);
+    expect(container.querySelector("rect")).toHaveClass("fill-pink-500");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
-        <LogoLockup tone="pink" />
-        <LogoLockup tone="white" align="center" size="lg" />
-        <LogoLockup tone="pink" size="sm" hasTagline={false} isDecorative />
+        <LogoLockup color="brand" />
+        <LogoLockup color="inverse" align="center" size="lg" />
+        <LogoLockup color="brand" size="sm" hasTagline={false} isDecorative />
       </>
     );
     await expectNoA11yViolations(container);

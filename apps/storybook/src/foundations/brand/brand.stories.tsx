@@ -111,14 +111,14 @@ export const ClearSpace: Story = {
         caption='LogoLockup — clear space = the first "P"'
         className="items-center justify-center border border-dashed border-border-brand bg-surface-page"
       >
-        <LogoLockup tone="pink" size="md" />
+        <LogoLockup color="brand" size="md" />
       </SpecimenTile>
       <SpecimenTile
         caption='tone="white" · on ink'
         surface="ink"
         className="items-center justify-center bg-surface-inverse"
       >
-        <LogoLockup tone="white" size="md" />
+        <LogoLockup color="inverse" size="md" />
       </SpecimenTile>
     </div>
   ),

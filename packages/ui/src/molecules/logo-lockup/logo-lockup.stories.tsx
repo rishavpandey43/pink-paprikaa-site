@@ -5,13 +5,13 @@ import { LogoLockup } from "./logo-lockup";
 const meta = {
   title: "Molecules/LogoLockup",
   component: LogoLockup,
-  args: { tone: "pink", size: "sm" },
+  args: { color: "brand", size: "sm" },
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          'The signature that closes a piece of marketing artwork — a post, a story, an ad. The tagline is part of the supplied logo artwork, so it scales with the mark and can never drift out of sync. Keep the lockup at 200px or wider; below that pass `hasTagline={false}` for the wordmark. On a coloured field use `tone="white"`; on light artwork `tone="pink"`. The padding is the brand\'s clear space (the height of the "P"); pass `className="p-0"` only where the parent already reserves it (a PostFrame\'s canvas pad). `isDecorative` hides the logo from assistive tech when the artwork names the brand in text nearby.',
+          'The signature that closes a piece of marketing artwork — a post, a story, an ad. The tagline is part of the supplied logo artwork, so it scales with the mark and can never drift out of sync. Keep the lockup at 200px or wider; below that pass `hasTagline={false}` for the wordmark. On a coloured field use `color="inverse"`; on light artwork `color="brand"`. The padding is the brand\'s clear space (the height of the "P"); pass `className="p-0"` only where the parent already reserves it (a PostFrame\'s canvas pad). `isDecorative` hides the logo from assistive tech when the artwork names the brand in text nearby.',
       },
     },
   },
@@ -27,7 +27,7 @@ export const Pink: Story = {};
 
 /** Card row "white", on the brand field. */
 export const White: Story = {
-  args: { tone: "white" },
+  args: { color: "inverse" },
   render: (args) => (
     <div data-surface="brand" className="rounded-lg bg-surface-brand">
       <LogoLockup {...args} />
@@ -37,7 +37,7 @@ export const White: Story = {
 
 /** Card row "centred", on ink (the card's 180px snaps to the 200px minimum). */
 export const Centred: Story = {
-  args: { tone: "white", align: "center" },
+  args: { color: "inverse", align: "center" },
   render: (args) => (
     <div data-surface="ink" className="w-full rounded-lg bg-surface-inverse">
       <LogoLockup {...args} />
@@ -46,11 +46,11 @@ export const Centred: Story = {
 };
 
 /**
- * `tone="badge"`: the lockup on its own pink plate (Logo's badge tone), for grounds the white and
- * pink tones cannot sit on. The design-system card shows only pink and white; the tone is kept
+ * `color="badge"`: the lockup on its own pink plate (Logo's badge color), for grounds the inverse and
+ * brand colors cannot sit on. The design-system card shows only pink and white; the color is kept
  * because contract §6 and the design-system types allow it.
  */
-export const Badge: Story = { args: { tone: "badge" } };
+export const Badge: Story = { args: { color: "badge" } };
 
 /** Card row `hasTagline={false}` — the wordmark. */
 export const Wordmark: Story = { args: { hasTagline: false } };
@@ -85,3 +85,5 @@ export const ClearSpace: Story = {
     </div>
   ),
 };
+
+export const Sx: Story = { args: { sx: { p: 0, mt: 4 } } };

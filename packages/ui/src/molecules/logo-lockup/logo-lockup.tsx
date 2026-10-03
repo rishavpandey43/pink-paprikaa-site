@@ -1,7 +1,8 @@
-import type { ComponentProps } from "react";
+import type { BasePropsWithColor } from "../../lib/common-props";
 
 import { Logo } from "../../atoms/logo/logo";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const logoLockup = componentVariants({
   slots: { root: "grid", logo: "" },
@@ -21,9 +22,9 @@ const logoLockup = componentVariants({
   },
 });
 
-export interface LogoLockupProps extends ComponentProps<"div"> {
-  /** `white` on pink, ink or photography; `pink` on light artwork; `badge` on its own plate. */
-  tone?: "pink" | "white" | "badge" | undefined;
+export interface LogoLockupProps extends BasePropsWithColor<"div"> {
+  /** `inverse` on pink, ink or photography; `brand` on light artwork; `badge` on its own plate. = "inverse" */
+  color?: "brand" | "inverse" | "badge" | undefined;
   /** Lockup width: 200 / 240 / 280 / 360px. Never below 200 with the tagline. */
   size?: "sm" | "md" | "lg" | "xl" | undefined;
   /** `false` drops to the wordmark — only where the tagline cannot read. */
@@ -38,20 +39,21 @@ export interface LogoLockupProps extends ComponentProps<"div"> {
  * artwork, so it scales with the mark and can never drift out of sync.
  */
 export function LogoLockup({
-  tone = "white",
+  color = "inverse",
   size = "md",
   hasTagline = true,
   align = "start",
   isDecorative = false,
+  sx,
   className,
   ...props
 }: LogoLockupProps) {
   const styles = logoLockup({ size, align });
   return (
-    <div className={styles.root({ className })} {...props}>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
       <Logo
         variant={hasTagline ? "lockup" : "wordmark"}
-        color={tone === "pink" ? "brand" : tone === "white" ? "inverse" : "badge"}
+        color={color}
         isDecorative={isDecorative}
         className={styles.logo()}
       />

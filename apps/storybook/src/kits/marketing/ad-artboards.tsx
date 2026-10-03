@@ -50,7 +50,7 @@ export function OfferStory({ hasSafeArea = false }: StoryArtboardProps) {
           code="PAPRIKAA50"
           terms="One use per guest. Dine-in and pickup."
         />
-        <LogoLockup tone="white" size="lg" align="center" className="self-center" />
+        <LogoLockup color="inverse" size="lg" align="center" className="self-center" />
       </div>
     </PostFrame>
   );
@@ -76,7 +76,7 @@ export function DishStory({ hasSafeArea = false }: StoryArtboardProps) {
             Charred paneer, burnt garlic rice, pickled slaw.
           </SocialHeadline>
           <PriceTag amount={420} size="canvas" color="inverse" />
-          <LogoLockup tone="white" size="md" className="mt-3" />
+          <LogoLockup color="inverse" size="md" className="mt-3" />
         </div>
       </div>
     </PostFrame>
@@ -95,7 +95,7 @@ export function LinkBanner() {
           <SocialHeadline size="h2" as="h2">
             One kitchen. One grinder.
           </SocialHeadline>
-          <LogoLockup tone="pink" size="md" />
+          <LogoLockup color="brand" size="md" />
         </div>
         <div className="h-full">
           <ImageSlot

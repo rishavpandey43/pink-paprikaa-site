@@ -41,7 +41,7 @@ function OfferBoard() {
           Tonight Only
         </SocialHeadline>
         <SocialHeadline size="hero">Chai first, decisions later.</SocialHeadline>
-        <LogoLockup tone="white" size="lg" />
+        <LogoLockup color="inverse" size="lg" />
         <OfferSeal value="50%" label="Off" size="lg" tone="light" corner="top-right" bleed="none" />
       </div>
     </>
@@ -58,7 +58,7 @@ function StatementBoard() {
           Since 2025
         </SocialHeadline>
         <SocialHeadline size="hero">Desi at heart. Urban by nature.</SocialHeadline>
-        <LogoLockup tone="white" size="md" />
+        <LogoLockup color="inverse" size="md" />
       </div>
     </>
   );

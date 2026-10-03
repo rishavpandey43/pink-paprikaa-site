@@ -31,7 +31,7 @@ export function OfferPost() {
           Masala Fries, half price.
         </SocialHeadline>
         <div className="flex items-end justify-between gap-10">
-          <LogoLockup tone="white" size="lg" />
+          <LogoLockup color="inverse" size="lg" />
           <SocialHeadline size="caption" measure="tight" align="end" as="p">
             {`Dine-in and pickup. At our ${OUTLET.name} café.`}
           </SocialHeadline>
@@ -65,7 +65,7 @@ export function DishLaunchPost() {
           </div>
           <div className="flex items-end justify-between">
             <PriceTag amount={220} size="canvas" />
-            <LogoLockup tone="pink" size="sm" />
+            <LogoLockup color="brand" size="sm" />
           </div>
         </div>
       </div>
@@ -93,7 +93,7 @@ export function StatementPost() {
             <SocialHeadline size="body" measure="wide" as="p">
               {brand.vegStatement}
             </SocialHeadline>
-            <LogoLockup tone="white" size="md" />
+            <LogoLockup color="inverse" size="md" />
           </div>
         </div>
       </div>
