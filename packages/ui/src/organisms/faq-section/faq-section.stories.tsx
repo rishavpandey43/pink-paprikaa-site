@@ -67,7 +67,7 @@ function HelpCard() {
             <Typography as="span" weight="bold" className="font-display">
               Still have a question?
             </Typography>
-            <StatusDot tone="open" label="A real person replies, 8am – 11:30pm" />
+            <StatusDot status="open" label="A real person replies, 8am – 11:30pm" />
           </div>
         </div>
         <div className="flex flex-col gap-2">

@@ -1,11 +1,12 @@
-import type { ComponentProps } from "react";
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { SymbolMark } from "../../lib/symbol-mark";
 
-export interface StatusDotProps extends ComponentProps<"span"> {
-  tone?: "open" | "busy" | "closed" | "live" | "danger" | undefined;
-  /** Visible state text. Without it the dot is announced by its tone ("Open"). */
+export interface StatusDotProps extends BaseProps<"span"> {
+  status?: "open" | "busy" | "closed" | "live" | "danger" | undefined;
+  /** Visible state text. Without it the dot is announced by its status ("Open"). */
   label?: string | undefined;
   /** The expanding pulse — live orders only. Hidden under reduced motion. */
   isPulsing?: boolean | undefined;
@@ -14,7 +15,7 @@ export interface StatusDotProps extends ComponentProps<"span"> {
 }
 
 /** A bare dot's accessible name: state is never conveyed by colour alone (spec §5.5). */
-const TONE_NAME = {
+const STATUS_NAME = {
   open: "Open",
   busy: "Busy",
   closed: "Closed",
@@ -23,7 +24,7 @@ const TONE_NAME = {
 } as const;
 
 /*
- * The dot sets the tone as `currentColor`; the diamond and the pulse paint `bg-current`, the mark
+ * The dot sets the status as `currentColor`; the diamond and the pulse paint `bg-current`, the mark
  * inside is white. The pulse carries no rotate class: `pp-dot-pulse` rotates it in its keyframes.
  */
 const statusDot = componentVariants({
@@ -37,7 +38,7 @@ const statusDot = componentVariants({
     label: "font-body text-status-dot-label text-text-body",
   },
   variants: {
-    tone: {
+    status: {
       open: { dot: "text-status-success" },
       busy: { dot: "text-status-warning" },
       closed: { dot: "text-ink-400" },
@@ -46,23 +47,24 @@ const statusDot = componentVariants({
     },
     size: { sm: { dot: "size-status-dot-sm" }, md: { dot: "size-status-dot-md" } },
   },
-  defaultVariants: { tone: "open", size: "sm" },
+  defaultVariants: { status: "open", size: "sm" },
 });
 
 /** Outlet open/closed and live-order state: a brand diamond with the mark inside it. */
 export function StatusDot({
-  tone = "open",
+  status = "open",
   label,
   isPulsing = false,
   size,
+  sx,
   className,
   ...props
 }: StatusDotProps) {
-  const slots = statusDot({ tone, size });
+  const slots = statusDot({ status, size });
   const hasLabel = label !== undefined && label.trim() !== "";
-  const bareName = hasLabel ? undefined : { role: "img", "aria-label": TONE_NAME[tone] };
+  const bareName = hasLabel ? undefined : { role: "img", "aria-label": STATUS_NAME[status] };
   return (
-    <span className={slots.root({ className })} {...bareName} {...props}>
+    <span className={slots.root({ className: withSx(sx, className) })} {...bareName} {...props}>
       <span aria-hidden className={slots.dot()}>
         {isPulsing ? <span className={slots.pulse()} /> : null}
         <span className={slots.diamond()}>

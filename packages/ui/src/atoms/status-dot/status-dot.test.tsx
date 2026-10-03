@@ -22,20 +22,20 @@ describe("StatusDot", () => {
     ["danger", "Attention"],
   ] as const)(
     "announces a bare %s dot as %s — never colour alone (Review Focus 2)",
-    (tone, name) => {
-      render(<StatusDot tone={tone} />);
+    (status, name) => {
+      render(<StatusDot status={status} />);
       expect(screen.getByRole("img", { name })).toBeInTheDocument();
     }
   );
 
-  it("treats a blank label as no label, so the dot is still named by its tone", () => {
-    const { container } = render(<StatusDot tone="busy" label="   " />);
+  it("treats a blank label as no label, so the dot is still named by its status", () => {
+    const { container } = render(<StatusDot status="busy" label="   " />);
     expect(screen.getByRole("img", { name: "Busy" })).toBeInTheDocument();
     expect(container.firstElementChild?.children).toHaveLength(1);
   });
 
   it("lets a consumer name a bare dot", () => {
-    render(<StatusDot tone="open" aria-label="Sector 57 is open" />);
+    render(<StatusDot status="open" aria-label="Sector 57 is open" />);
     expect(screen.getByRole("img", { name: "Sector 57 is open" })).toBeInTheDocument();
   });
 
@@ -45,8 +45,8 @@ describe("StatusDot", () => {
     ["closed", "text-ink-400"],
     ["live", "text-pink-500"],
     ["danger", "text-status-danger"],
-  ] as const)("colours the %s diamond with %s", (tone, colour) => {
-    const { container } = render(<StatusDot tone={tone} />);
+  ] as const)("colours the %s diamond with %s", (status, colour) => {
+    const { container } = render(<StatusDot status={status} />);
     expect(container.firstElementChild?.firstElementChild).toHaveClass(colour);
   });
 
@@ -76,10 +76,10 @@ describe("StatusDot", () => {
   });
 
   it("pulses only when isPulsing — unrotated (the keyframes rotate it) and hidden under reduced motion", () => {
-    const { container, rerender } = render(<StatusDot tone="live" label="On the tandoor" />);
+    const { container, rerender } = render(<StatusDot status="live" label="On the tandoor" />);
     const dot = () => container.firstElementChild?.firstElementChild;
     expect(dot()?.children).toHaveLength(1);
-    rerender(<StatusDot tone="live" label="On the tandoor" isPulsing />);
+    rerender(<StatusDot status="live" label="On the tandoor" isPulsing />);
     expect(dot()?.children).toHaveLength(2);
     const pulse = dot()?.firstElementChild;
     expect(pulse).toHaveClass("animate-dot-pulse", "motion-reduce:hidden", "bg-current");
@@ -91,8 +91,15 @@ describe("StatusDot", () => {
     expect(screen.getByText("Opens 9am").parentElement).toHaveClass("ml-2", "gap-2");
   });
 
+  it("sx lands on the root and beats its own gap", () => {
+    render(<StatusDot label="Opens 9am" sx={{ gap: 4, mt: 4 }} />);
+    const root = screen.getByText("Opens 9am").parentElement;
+    expect(root).toHaveClass("gap-4", "mt-4");
+    expect(root).not.toHaveClass("gap-2");
+  });
+
   it("lets a consumer className replace the gap", () => {
-    render(<StatusDot tone="closed" label="Opens 9am" className="gap-4" />);
+    render(<StatusDot status="closed" label="Opens 9am" className="gap-4" />);
     const root = screen.getByText("Opens 9am").parentElement;
     expect(root).toHaveClass("gap-4");
     expect(root).not.toHaveClass("gap-2");
@@ -101,9 +108,9 @@ describe("StatusDot", () => {
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
-        <StatusDot tone="open" label="Open till 11:30pm" />
-        <StatusDot tone="live" label="On the tandoor" isPulsing />
-        <StatusDot tone="closed" size="md" />
+        <StatusDot status="open" label="Open till 11:30pm" />
+        <StatusDot status="live" label="On the tandoor" isPulsing />
+        <StatusDot status="closed" size="md" />
       </>
     );
     await expectNoA11yViolations(container);

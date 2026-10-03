@@ -164,7 +164,7 @@ export const MarkLegibility: Story = {
     <div className="flex flex-col gap-6">
       <SpecimenRow label='StatusDot — size="sm" · "md"'>
         {(["sm", "md"] as const).map((size) => (
-          <StatusDot key={size} tone="live" size={size} label={`Live · ${size}`} />
+          <StatusDot key={size} status="live" size={size} label={`Live · ${size}`} />
         ))}
       </SpecimenRow>
       <SpecimenRow label='SpiceLevel — size="sm" · "md" · "lg"'>
@@ -249,10 +249,10 @@ export const DiamondMotif: Story = {
         <Rating value={4.5} />
       </SpecimenRow>
       <SpecimenRow label="Dot — StatusDot">
-        <StatusDot tone="open" label="Open now" />
-        <StatusDot tone="busy" label="Kitchen is busy" />
-        <StatusDot tone="closed" label="Closed" />
-        <StatusDot tone="live" label="Live" isPulsing />
+        <StatusDot status="open" label="Open now" />
+        <StatusDot status="busy" label="Kitchen is busy" />
+        <StatusDot status="closed" label="Closed" />
+        <StatusDot status="live" label="Live" isPulsing />
       </SpecimenRow>
       <SpecimenRow label="Loader — Spinner">
         <Spinner size="lg" />

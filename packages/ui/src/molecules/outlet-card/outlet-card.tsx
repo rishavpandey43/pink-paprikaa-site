@@ -113,7 +113,7 @@ export function OutletCard({
                 )
               )}
             </div>
-            <StatusDot tone={status} label={statusLabel ?? STATUS_WORD[status]} />
+            <StatusDot status={status} label={statusLabel ?? STATUS_WORD[status]} />
           </div>
           {address ? (
             <address className={styles.detail()}>
