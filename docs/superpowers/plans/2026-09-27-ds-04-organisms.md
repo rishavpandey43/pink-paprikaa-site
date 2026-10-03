@@ -7612,6 +7612,12 @@ describe("ReviewCarousel", () => {
     expect(screen.getByText("Verified Google reviews")).toBeInTheDocument();
   });
 
+  it("renders no eyebrow wrapper for an empty eyebrow", () => {
+    render(<ReviewCarousel eyebrow="" heading={HEADING} reviews={GOOGLE_REVIEWS} />);
+    const titles = screen.getByRole("heading", { name: HEADING }).parentElement;
+    expect(titles?.children).toHaveLength(1);
+  });
+
   it("makes the track a keyboard-focusable region named by the heading", () => {
     render(<ReviewCarousel heading={HEADING} reviews={GOOGLE_REVIEWS} />);
     const track = screen.getByRole("region", { name: HEADING });
@@ -7874,6 +7880,7 @@ import { Link } from "../../atoms/link/link";
 import { Text } from "../../atoms/text/text";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
 import { ReviewCard, type ReviewCardProps } from "../../molecules/review-card/review-card";
 import { ReviewCarouselTrack } from "./review-carousel-track";
 
@@ -7922,7 +7929,7 @@ export function ReviewCarousel({
   const slots = reviewCarousel();
   const titles = (
     <div className={slots.titles()}>
-      {eyebrow ? (
+      {isShown(eyebrow) ? (
         <Text variant="overline" tone="brand" className={slots.eyebrow()}>
           {eyebrow}
         </Text>
@@ -7971,7 +7978,7 @@ export function ReviewCarousel({
 - [ ] **Step 7: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- review-carousel 2>&1 | tail -8`
-Expected: PASS (10 tests).
+Expected: PASS (11 tests).
 
 - [ ] **Step 8: Stories (handoff `GoogleReviews`)**
 
@@ -7988,6 +7995,7 @@ import { Card } from "../../atoms/card/card";
 import { Icon } from "../../atoms/icon/icon";
 import { Logo } from "../../atoms/logo/logo";
 import { Text } from "../../atoms/text/text";
+import { ringClippers } from "../../lib/story-ring";
 import {
   BRAND,
   GOOGLE_REVIEWS,
@@ -8059,6 +8067,25 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * The track scrolls, so it clips: tab through every stop — previous, next, the track, each card's
+ * source link (the track scrolls it into view), the footer link — and keep each focus ring whole.
+ */
+const proveRingsWhole: NonNullable<Story["play"]> = async ({ canvasElement, userEvent }) => {
+  const stops = 3 + HANDOFF_REVIEWS.filter((review) => review.source).length + 1;
+  const seen = new Set<Element>();
+  for (let step = 0; step < stops; step += 1) {
+    await userEvent.tab();
+    const active = document.activeElement;
+    if (!(active instanceof HTMLElement) || seen.has(active)) break;
+    seen.add(active);
+    await expect(canvasElement).toContainElement(active);
+    // Focus scrolls a card into view, gliding under motion-safe: measure where it comes to rest.
+    await waitFor(() => expect(ringClippers(active)).toEqual([]));
+  }
+  await expect(seen.size).toBe(stops);
+};
+
 export const Playground: Story = {};
 
 /** Handoff Home — four verified reviews. */
@@ -8090,9 +8117,9 @@ export const Paging: Story = {
   },
 };
 
-export const Mobile: Story = { globals: VIEWPORT_360 };
+export const Mobile: Story = { globals: VIEWPORT_360, play: proveRingsWhole };
 export const Tablet: Story = { globals: VIEWPORT_768 };
-export const Desktop: Story = { globals: VIEWPORT_1280 };
+export const Desktop: Story = { globals: VIEWPORT_1280, play: proveRingsWhole };
 ```
 
 - [ ] **Step 9: Export**
