@@ -1,9 +1,12 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { Card } from "../../atoms/card/card";
 import { Logo } from "../../atoms/logo/logo";
 import { ProgressBar } from "../../atoms/progress-bar/progress-bar";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const loyaltyCard = componentVariants({
   slots: {
@@ -14,12 +17,14 @@ const loyaltyCard = componentVariants({
   },
 });
 
-export interface LoyaltyCardProps extends ComponentProps<"div"> {
+export interface LoyaltyCardProps extends BaseProps<"div"> {
   visits: number;
   goal: number;
   /** What the guest earns, lowercase: "chai", "a kulfi". */
   reward: string;
-  variant?: "feature" | "brand" | undefined;
+  variant?: "feature" | undefined;
+  /** `brand` floods the card pink (the ground it paints, not a variant). */
+  surface?: "brand" | undefined;
   /** Replaces the generated sentence. */
   headline?: ReactNode | undefined;
 }
@@ -48,22 +53,24 @@ export function LoyaltyCard({
   goal,
   reward,
   variant = "feature",
+  surface,
   headline,
+  sx,
   className,
   ...props
 }: LoyaltyCardProps) {
   assertCount(goal, 1, "goal");
   assertCount(visits, 0, "visits");
   const stamped = Math.min(visits, goal);
-  const isBrand = variant === "brand";
+  const isBrand = surface === "brand";
   const styles = loyaltyCard();
 
   return (
     <Card
-      variant="feature"
-      surface={isBrand ? "brand" : undefined}
+      variant={variant}
+      surface={surface}
       padding="sm"
-      className={styles.root({ className })}
+      className={styles.root({ className: withSx(sx, className) })}
       {...props}
     >
       <Logo

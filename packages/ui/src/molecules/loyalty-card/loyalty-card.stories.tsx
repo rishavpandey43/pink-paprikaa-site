@@ -38,8 +38,8 @@ export const OneLeft: Story = { args: { visits: 5 } };
 /** Card row "complete". */
 export const Complete: Story = { args: { visits: 6 } };
 
-/** Card row `variant="brand"`. */
-export const Brand: Story = { args: { variant: "brand", visits: 2, reward: "a kulfi" } };
+/** Card row `surface="brand"`. */
+export const Brand: Story = { args: { surface: "brand", visits: 2, reward: "a kulfi" } };
 
 /** Nothing earned yet: every stamp empty, and the sentence still reads plainly. */
 export const Empty: Story = { args: { visits: 0 } };

@@ -76,9 +76,9 @@ describe("LoyaltyCard", () => {
     expect(container.firstElementChild).not.toHaveClass("rounded-xl");
   });
 
-  it("floods pink for the brand variant", () => {
+  it("floods pink for the brand surface", () => {
     const { container } = render(
-      <LoyaltyCard visits={2} goal={6} reward="a kulfi" variant="brand" />
+      <LoyaltyCard visits={2} goal={6} reward="a kulfi" surface="brand" />
     );
     expect(container.firstElementChild).toHaveAttribute("data-surface", "brand");
   });
@@ -96,9 +96,17 @@ describe("LoyaltyCard", () => {
       <>
         <LoyaltyCard visits={3} goal={6} reward="chai" />
         <LoyaltyCard visits={6} goal={6} reward="chai" />
-        <LoyaltyCard visits={2} goal={6} reward="a kulfi" variant="brand" />
+        <LoyaltyCard visits={2} goal={6} reward="a kulfi" surface="brand" />
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, beating a default class and keeping className", () => {
+    const { container } = render(
+      <LoyaltyCard visits={2} goal={6} reward="chai" sx={{ gap: 2, mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("gap-2", "mt-4", "italic");
+    expect(container.firstElementChild).not.toHaveClass("gap-3.5");
   });
 });
