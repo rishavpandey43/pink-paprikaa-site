@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, within } from "storybook/test";
 
 import { brand } from "@pink-paprikaa-web/content";
-import { Card, SpiceLevel } from "@pink-paprikaa-web/ui";
+import { Alert, Card, SpiceLevel } from "@pink-paprikaa-web/ui";
 
 import { rgbOf, token, utilitiesOf } from "../../docs-kit/catalogue";
 import { spyOnClipboard } from "../../docs-kit/clipboard";
@@ -236,8 +236,26 @@ export const SurfaceOverrides: Story = {
   ),
 };
 
-// Deferred (fold list item 3): StatusAlerts, the four Alert tones — Plan 3a T7.
 export const StatusSwatches: Story = { render: () => <Swatches selection={{ names: STATUS }} /> };
+
+export const StatusAlerts: Story = {
+  render: () => (
+    <div className="grid gap-3">
+      <Alert tone="info" title="Pickup only">
+        Delivery starts in 2027.
+      </Alert>
+      <Alert tone="success" title="Order confirmed">
+        Kitchen has it. Counter 2.
+      </Alert>
+      <Alert tone="warning" title="Kitchen is busy">
+        Pickup is running 25 minutes today.
+      </Alert>
+      <Alert tone="danger" title="That card didn't go through">
+        Try another card or pay by UPI.
+      </Alert>
+    </div>
+  ),
+};
 
 export const Contrast: Story = {
   render: () => <ContrastMatrix />,
