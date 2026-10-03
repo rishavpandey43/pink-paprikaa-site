@@ -76,10 +76,13 @@ describe("FaqSection", () => {
   });
 
   it("lets several answers stay open with isMultiple", () => {
-    const { container } = render(<FaqSection title="FAQ" items={ITEMS} isMultiple />);
+    const { container } = render(
+      <FaqSection title="FAQ" items={ITEMS} isMultiple defaultOpen={["veg", "pause"]} />
+    );
     for (const answer of container.querySelectorAll("details")) {
       expect(answer).not.toHaveAttribute("name");
     }
+    expect(container.querySelectorAll("details[open]")).toHaveLength(2);
   });
 
   it("puts the aside beside the heading in the column that sticks at lg", () => {

@@ -20,7 +20,10 @@ export interface FaqSectionProps extends Omit<ComponentProps<"section">, "title"
   lede?: ReactNode;
   /** One or two short sentences per answer. The first opens by default. */
   items: AccordionItem[];
-  /** The `value`s of the answers open on arrival (default: the first; `[]` for none). */
+  /**
+   * The `value`s of the answers open on arrival (default: the first; `[]` for none). Name more
+   * than one only with `isMultiple`: a single-open group keeps one answer open.
+   */
   defaultOpen?: string[] | undefined;
   /** Allow several answers open at once. */
   isMultiple?: boolean | undefined;
