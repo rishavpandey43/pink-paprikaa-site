@@ -258,6 +258,21 @@ Defined once in the root `package.json` so local and CI invocations cannot drift
 
 ## 8. Design system
 
+> **Amended 2026-09-27** by the [design system rewrite spec](2026-09-27-design-system-rewrite-design.md),
+> implemented on `feat/design-system`. Where this section and that spec disagree, the spec wins:
+>
+> - Outputs are `theme.css`, `surfaces.css` (the `data-surface` remaps) and `tokens.json`; no
+>   `tokens.ts` is produced (no JavaScript consumer — spec §3.3).
+> - Tiers are primitive → semantic → component, plus **surface** overrides; the contrast policy
+>   (`contrast-pairs.json`) is part of `design-tokens:test`.
+> - Atomic layers are `atoms → molecules → organisms → layouts` (not `templates`), with `src/lib/`
+>   internals; atoms import only Icon.
+> - Native elements first; Radix only for Dialog/Sheet, Tabs, Tooltip, Toast, ToggleGroup and `Slot`.
+> - Storybook is its own app (`apps/storybook`), local + static build only — no Netlify site in this
+>   phase (D16).
+> - The system is 90 components (30 atoms, 38 molecules, 15 organisms including CartPanel, 7 layouts),
+>   33 foundation cards across the Brand … Marketing groups, and three reference kits.
+
 ### Token pipeline
 
 Tokens are authored **once**, in W3C DTCG format, in `packages/design-tokens/tokens/`. Style Dictionary builds them into every consumable form:
@@ -456,7 +471,7 @@ GitHub Actions. Netlify does **not** build — artifacts are built in CI so the 
 | Phase             | Contents                                                                                                                                                                                | Depends on       |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | **0 — this spec** | Workspace, Nx, TS, lint, hooks, commits, CI/CD, image pipeline, token pipeline, Storybook shell, one reference component _(deferred to Phase 1 — see progress table)_, empty wired apps | —                |
-| 1                 | Design tokens populated + full component library                                                                                                                                        | Designs supplied |
+| 1                 | Design tokens populated + full component library — **step 1 done** (see Phase 1 progress); step 2 is the web app                                                                        | Designs supplied |
 | 2                 | Content schemas + marketing pages                                                                                                                                                       | Phase 1          |
 | 3                 | Image migration + performance pass                                                                                                                                                      | Phase 2          |
 | 4                 | SEO — JSON-LD, sitemaps, analytics                                                                                                                                                      | Phase 2          |
@@ -470,6 +485,9 @@ Each phase gets its own spec and implementation plan. Nothing in Phase 0 assumes
 Phase 0 is complete, pending merge of `feat/phase-0-foundation` into `main`. This table is the
 authoritative record — verify it against the working tree before planning the next phase, and
 update it as items land.
+
+_Amended 2026-09-27:_ the branch and remote facts in this subsection are historical. Current branch
+and remote state lives in `CLAUDE.md` → Current state.
 
 | Item                                                         | Status      | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | ------------------------------------------------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -506,6 +524,20 @@ no real content yet to check.
 `sync:check`, `affected`, `e2e`, `lighthouse`, `guard:founder` — were verified locally instead.
 
 **Establishing ground truth.** The working tree, not this table, is authoritative if they disagree. `git log` carries the reasoning behind each completed item; `pnpm nx format:check && pnpm nx sync:check` confirms the current state is green before anything is added.
+
+### Phase 1 progress
+
+Phase 1 runs in two steps (design system spec, header). Step 1 is complete on
+`feat/design-system`, pending the owner's merge decision.
+
+| Item                                                                                                                                                                                                       | Status  | Notes                                                     |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | --------------------------------------------------------- |
+| Tokens — primitive, semantic, component, surface; contrast policy gate                                                                                                                                     | ✅ done | spec §5–§6; `design-tokens:test`                          |
+| Library core — `styles.css` consumer contract, `componentVariants`, lint gates, class order                                                                                                                | ✅ done | spec §6.5, §8.3, §11.2                                    |
+| Brand facts (`packages/content`) and formatters (`packages/utils`)                                                                                                                                         | ✅ done | spec §7.3–§7.4                                            |
+| 90 components in `packages/ui` — 30 atoms, 38 molecules, 15 organisms (14 + CartPanel), 7 layouts                                                                                                          | ✅ done | each with test (behaviour + axe) and card-parity stories  |
+| Storybook — 13 groups, 33 foundation cards as docs pages, Contrast / Voice & content / Iconography / Utility classes / Section reveal pages, Website / App / Marketing kits, React Hook Form + Zod pattern | ✅ done | `apps/storybook`; local + static build (D16)              |
+| Step 2 — the web app (the handoff's nine routes, rates, calculators, SEO, `next/font`, Netlify)                                                                                                            | ⏳ next | its own spec; carried items in the design system spec §16 |
 
 ---
 

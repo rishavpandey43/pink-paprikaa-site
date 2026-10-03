@@ -45,8 +45,11 @@ packages/ui/src/<layer>/<kebab-name>/
   atom imports only `../icon/*`, `../../lib/*`, `../../../vitest.setup`, its own folder and
   packages. A story never composes another atom: it uses plain elements with token classes.
 - **`src/lib/`** holds library internals. It is not a layer. Today it has the variant builder
-  (`component-variants.ts`), the brand artwork (`brand-artwork.ts`, `brand-artwork.css`) and the
-  reveal observer (`reveal-observer.tsx`).
+  (`component-variants.ts`), brand artwork (`brand-artwork.ts`, `brand-artwork.css`),
+  `reveal-observer.tsx`, `heading.ts`, `link-as.ts`, `field-status.ts`, `space.ts`, `is-shown`,
+  `struck-price`, `symbol-mark`, `control-states`, `notification`, `field-message`,
+  `field-control`, `choice-control`, `use-controllable-state`, `use-focus-return`, `assign-ref`,
+  `stretched-link`, plus story-only `story-*` helpers.
 - File names are kebab-case, with one primary export per file. Compound parts (`Table*`) may share
   a file. `src/index.ts` is the package's only barrel (§12).
 

@@ -6,96 +6,163 @@ PR (trust the code, fix the doc).
 
 ## 1. Component (the base form)
 
-This is the real `Icon` atom (`packages/ui/src/atoms/icon/icon.tsx`), condensed. The `STROKE_WIDTH`
-map and the `IconComponent` type are omitted. Plan 5 replaces this excerpt with the real Button once
-Button exists, because Button shows `asChild` and slots.
+The reference shape is the real Button, `packages/ui/src/atoms/button/button.tsx`, copied here
+verbatim when the design system was completed (2026-09-27). If that file changes shape, this
+excerpt changes in the same PR.
 
 ```tsx
-import type { ComponentProps } from "react";
+import type { ComponentProps, ElementType } from "react";
 
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { LoaderCircle } from "lucide-react";
+import { Slot } from "radix-ui";
 
-const icon = componentVariants({
-  base: "inline-flex shrink-0 items-center justify-center leading-none",
-  variants: {
-    size: {
-      xs: "size-icon-xs",
-      sm: "size-icon-sm",
-      md: "size-icon-md",
-      lg: "size-icon-lg",
-      xl: "size-icon-xl",
-    },
-  },
-  defaultVariants: { size: "md" },
-});
+import { componentVariants } from "../../lib/component-variants";
+import { controlStates } from "../../lib/control-states";
+import { Icon, type IconComponent } from "../icon/icon";
 
-export interface IconProps
-  extends Omit<ComponentProps<"span">, "children">, VariantProps<typeof icon> {
-  icon: IconComponent;
-  /** Accessible name. Omit for a decorative icon (then it is hidden from assistive tech). */
-  label?: string;
+export interface ButtonProps extends ComponentProps<"button"> {
+  /** primary = flooded pink · secondary = pink outline · ghost = text only · inverse = ink. */
+  variant?: "primary" | "secondary" | "ghost" | "inverse" | undefined;
+  size?: "sm" | "md" | "lg" | undefined;
+  /** Glyph before the label — names the action. */
+  icon?: IconComponent | undefined;
+  /** Glyph after the label — onward motion (arrow-right, arrow-up-right, chevron-down). */
+  iconAfter?: IconComponent | undefined;
+  isFullWidth?: boolean | undefined;
+  /** Swaps the leading glyph for a spinner, sets `aria-busy` and blocks presses. */
+  isLoading?: boolean | undefined;
+  /** Render the single child (`<a href>`, `next/link`) with Button styling. */
+  asChild?: boolean | undefined;
 }
 
-/** A Lucide-style glyph in the system's sizes, painted with `currentColor`. */
-export function Icon({ icon: Glyph, size = "md", label, className, ...props }: IconProps) {
+/**
+ * The Button's classes. Exported so a Radix trigger can look like a Button:
+ * `buttonVariants({ variant: "secondary" }).root()`.
+ *
+ * `primary`, `secondary` and the hover tint paint with surface-aware tokens (`surface/*.json`),
+ * so on a pink field primary turns white and secondary a white outline with no prop; ghost and
+ * secondary text use the semantic link colour, which flips too. `inverse` is solid ink everywhere.
+ */
+export const buttonVariants = componentVariants({
+  slots: {
+    root: [
+      controlStates(),
+      "inline-flex max-w-full shrink-0 items-center justify-center rounded-pill font-display whitespace-nowrap active:press-scale",
+    ],
+    label: "min-w-0 truncate",
+    loader: "animate-rotate",
+  },
+  variants: {
+    variant: {
+      primary: {
+        root: "bg-button-primary-bg text-button-primary-fg shadow-button-primary hover:bg-button-primary-bg-hover active:bg-button-primary-bg-active",
+      },
+      secondary: {
+        root: "border-2 border-button-secondary-border bg-button-secondary-bg text-text-link hover:bg-button-hover-tint",
+      },
+      ghost: { root: "bg-transparent text-text-link hover:bg-button-hover-tint" },
+      inverse: { root: "bg-ink-900 text-ink-000 shadow-2" },
+    },
+    size: {
+      sm: { root: "h-button-h-sm min-w-button-h-sm gap-1.5 px-3.5 text-button-sm" },
+      md: { root: "h-button-h-md min-w-button-h-md gap-2 px-5 text-button-md" },
+      lg: { root: "h-button-h-lg min-w-button-h-lg gap-2 px-7 text-button-lg" },
+    },
+    isFullWidth: { true: { root: "flex w-full" } },
+  },
+  defaultVariants: { variant: "primary", size: "md", isFullWidth: false },
+});
+
+/** Glyph 16px at sm, 20px at md and lg; the loader 20px, 24px at lg (design system Button.jsx). */
+const GLYPH_SIZE = { sm: "sm", md: "md", lg: "md" } as const;
+const LOADER_SIZE = { sm: "md", md: "md", lg: "lg" } as const;
+
+/** The brand's action button — pill, Poppins 700, Title Case label. */
+export function Button({
+  variant,
+  size = "md",
+  icon,
+  iconAfter,
+  isFullWidth = false,
+  isLoading = false,
+  asChild = false,
+  disabled = false,
+  type = "button",
+  className,
+  children,
+  ...props
+}: ButtonProps) {
+  const slots = buttonVariants({ variant, size, isFullWidth });
+  const Component: ElementType = asChild ? Slot.Root : "button";
+  // A slotted <a> must not get `type` or `disabled`; it says so with aria-disabled instead.
+  const state = asChild
+    ? { "aria-disabled": disabled || isLoading || undefined }
+    : { type, disabled: disabled || isLoading };
+  const leading = isLoading ? LoaderCircle : icon;
   return (
-    <span
-      className={icon({ size, className })}
-      role={label === undefined ? undefined : "img"}
-      aria-label={label}
-      aria-hidden={label === undefined ? true : undefined}
+    <Component
+      className={slots.root({ className })}
+      aria-busy={isLoading || undefined}
+      {...state}
       {...props}
     >
-      <Glyph size="100%" strokeWidth={STROKE_WIDTH[size]} aria-hidden focusable="false" />
-    </span>
+      {leading ? (
+        <Icon
+          icon={leading}
+          size={isLoading ? LOADER_SIZE[size] : GLYPH_SIZE[size]}
+          className={isLoading ? slots.loader() : undefined}
+        />
+      ) : null}
+      <Slot.Slottable child={children}>
+        {(label) => <span className={slots.label()}>{label}</span>}
+      </Slot.Slottable>
+      {iconAfter ? <Icon icon={iconAfter} size={GLYPH_SIZE[size]} /> : null}
+    </Component>
   );
 }
 ```
 
-Encoded rules. All are CONVENTION unless marked. The full contract is
-[`packages/ui/AUTHORING.md`](../../packages/ui/AUTHORING.md).
+Encoded rules — all CONVENTION unless marked:
 
-- **`componentVariants()` owns every class decision.** No conditional string concatenation in JSX.
-  **Never import the bare `tv`** from `tailwind-variants` (LAW-in-practice). The bare instance merges
-  against Tailwind's stock scales and silently deletes token classes: `text-h1` is read as a colour
-  and disappears next to `text-text-muted`. `packages/ui/src/lib/component-variants.ts` is the
-  configured instance. Its spec asserts every scale list against the token build. Multi-part
-  components use `componentVariants()` **slots**.
-- **Only token-backed named utilities** (LAW). Four rules enforce this:
-  `tailwindcss/no-arbitrary-value` bans `h-[13px]`, `tailwindcss/no-custom-classname` bans a class
-  the stylesheet does not define, `pink-paprikaa/no-arbitrary-shorthand` bans the `(--x)`
-  shorthand (`h-(--button-h-sm)`) and `[prop:value]`, and `pink-paprikaa/no-raw-hex` bans any hex
-  literal. A value the system lacks becomes a component token, placed in its Tailwind namespace
-  (`spacing.icon-md` → `size-icon-md`). Motion and stacking use the stylesheet's named utilities
-  (`duration-fast`, `z-header`).
-- **Surfaces come from `data-surface`, never from an `on` prop.** A component that paints a field
-  sets `data-surface` itself. Text colour follows the surface.
-- Extend the native element's props, spread them last, and merge `className` through the variant
-  function (`icon({ size, className })`).
-- **Optional props are `?: T | undefined`** (ruling R13), because `exactOptionalPropertyTypes` is on
-  and compositions forward values that may be `undefined`. `Icon` predates the ruling. New code
-  follows it.
-- **`asChild` uses Radix Slot** (`import { Slot } from "radix-ui"`, rendered as `<Slot.Root>`), on
-  the components spec §9 marks "Slot". Classes go on the component, never on the slotted child:
-  Slot joins class names without tailwind-merge.
-- **Lists of links take `linkAs`** (default `"a"`), so an app can pass `next/link`. The system never
-  imports a router.
-- **Field wiring is a render prop**: `children: (control) => ReactNode` receives the id, the
-  `aria-describedby`, `aria-invalid` and `required`. It is RSC-safe and needs no context.
-- **Native elements first**: `<select>`, `<input type="range|date|checkbox|radio">`,
-  `<details name>`. Use Radix only where the platform has no accessible primitive (Dialog, Tabs,
-  Tooltip, Toast, ToggleGroup).
-- **Server-first**: `"use client"` goes only in a file that owns state, effects or browser APIs, as
-  a small client leaf beside a static component (§3).
-- `ref` is a plain prop (React 19), so there is **no `forwardRef`** (R-03: the reference codebase's
-  `forwardRef` wrappers are obsolete boilerplate on this React version).
-- **Named exports and function declarations. No default exports** (R-02), except Next.js framework
-  contracts (`page.tsx`, `layout.tsx`, config files).
-- No boolean render forks. When `{isX ? <A/> : <B/>}` spans whole render paths, that is two
-  components or a variant.
+- `componentVariants()` owns every class decision; no conditional string concatenation in JSX.
+  **Never import `tv` from `tailwind-variants` directly** (LAW-in-practice): the bare instance
+  merges against stock Tailwind scales and silently deletes token classes — `text-h1` is read as a
+  colour and disappears next to `text-text-muted`. `packages/ui/src/lib/component-variants.ts` is
+  the configured instance, and its spec asserts the scale lists against the generated tokens.
+- **Only token classes exist** (LAW: `tailwindcss/no-arbitrary-value`, `tailwindcss/no-custom-classname`,
+  `pink-paprikaa/no-raw-hex`, `pink-paprikaa/no-arbitrary-shorthand`). `packages/design-tokens`
+  clears the stock scales it replaces, so `rounded-lg` is the system's 16px, and `shadow-md`,
+  `bg-red-500` or `max-w-prose` compile to nothing or to the wrong thing. A value the scales lack
+  becomes a token first — component tokens live in `packages/design-tokens/tokens/component/<name>.json`
+  (`packages/ui/AUTHORING.md`).
+- Extend native element props; spread last; `className` merges through `componentVariants()`.
+  Every optional custom prop accepts `undefined` (`name?: T | undefined`), so callers can pass an
+  optional field straight through under `exactOptionalPropertyTypes`.
+- `ref` is a plain prop (React 19) — **no `forwardRef`** (R-03).
+- **Named exports, function declarations. No default exports** (R-02) — except framework
+  contracts (`page.tsx`, `layout.tsx`, config files, CSF `export default meta`).
+- **Surfaces are CSS, not props.** A component that paints a field sets `data-surface`
+  (`brand | ink | soft | light`); everything inside re-reads the semantic tokens. Never an
+  `on="brand"` prop (spec D5).
+- **`asChild` for links and custom elements.** Button, IconButton, Link, Card, LinkCard, ListRow and
+  TabBar items take `asChild` (Radix `Slot.Root`), so the app passes `next/link`, a `wa.me` link or `tel:`
+  without the system knowing about routers (D8). Components that render **lists** of links take
+  `linkAs` (default `"a"`).
+- **`Field` wires a control by render prop:** `<Field label hint status message>{(control) => <Input {...control} />}</Field>`
+  — `control` is `{ id, "aria-describedby", "aria-invalid", required }`; no context, so Field stays
+  server-safe. With react-hook-form, native-backed controls take `{...register("name")}` and
+  value-based controls take `<Controller>` (Storybook → Molecules → Field → React Hook Form + Zod).
+- **Native first, then Radix.** `<select>`, `<input type="range|date|checkbox|radio">` and
+  `<details name>` before any library; Radix only for Dialog/Sheet, Tabs, Tooltip, Toast,
+  ToggleGroup and `Slot` (D7). Hand-rolled behaviour is a review reject.
+- **Server-first.** `"use client"` only in the smallest file that owns state, effects or browser
+  APIs (D6); hover, press and focus are CSS.
+- No boolean render forks — `{isX ? <A/> : <B/>}` spanning whole render paths means two components
+  or a variant.
+- Multi-part components use `componentVariants()` **slots** (the reason tailwind-variants was chosen
+  over CVA).
 - **Tests that read files** join paths with `join(import.meta.dirname, …)`, never
-  `new URL(…, import.meta.url)` (ruling R15). Vite rewrites the `URL` form into an asset URL under
-  jsdom.
+  `new URL(…, import.meta.url)` (ruling R15).
 
 ## 2. Component file set
 

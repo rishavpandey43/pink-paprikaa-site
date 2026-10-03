@@ -1,52 +1,31 @@
-# Storybook
+# Storybook — the Pink Paprikaa Design System tab
 
-This app is the design system's "Design System tab" (spec D13): foundations, every component in
-every variant, and the reference kits. Component stories live beside their components in
-`packages/ui/src`. Foundations, kits and docs pages live here, in `src/`. The component authoring
-rules are in `packages/ui/AUTHORING.md`.
+`apps/storybook` is the design system's workbench and its documentation: the thirteen groups of the
+design-system folder's "Design System tab", in the same order. Component stories live beside their
+components in `packages/ui/src`; everything else lives here. Local and static build only — public
+hosting waits for the Phase 6 cutover (spec D16).
 
-Every Storybook CLI command must run from **this directory** (or be given `--config-dir`). There is
-no `.storybook` at the workspace root, so `npx storybook <cmd>` from the repo root fails with
+Every Storybook CLI command must run from **this directory** (or be given `--config-dir`); there is
+no `.storybook` at the workspace root, so `npx storybook <cmd>` from the root fails with
 `SB_CORE-SERVER_0006 MainFileMissingError`. The Nx targets below already set `cwd`.
 
 ## Commands
 
-| What                                    | Command                                                     |
-| --------------------------------------- | ----------------------------------------------------------- |
-| Dev server (port 6006)                  | `pnpm nx run storybook:serve`                               |
-| Static build (`storybook-static/`)      | `pnpm nx run storybook:build`                               |
-| Serve the static build                  | `pnpm nx run storybook:serve-static`                        |
-| **Story tests** (every story, once)     | `pnpm nx run storybook:test`                                |
-| Story tests, watch mode                 | `pnpm nx run storybook:test -- --watch`                     |
-| One story file                          | `pnpm nx run storybook:test -- icon.stories`                |
-| Visual tests (Chromatic), needs a token | `CHROMATIC_PROJECT_TOKEN=… pnpm nx run storybook:chromatic` |
+| What                                     | Command                                                                        |
+| ---------------------------------------- | ------------------------------------------------------------------------------ |
+| Dev server (port 6006)                   | `pnpm nx run @pink-paprikaa-web/storybook:serve`                               |
+| Static build (`storybook-static/`)       | `pnpm nx run @pink-paprikaa-web/storybook:build`                               |
+| Serve the static build                   | `pnpm nx run @pink-paprikaa-web/storybook:serve-static`                        |
+| Story tests (every story, once)          | `pnpm nx run @pink-paprikaa-web/storybook:test`                                |
+| Story tests, watch mode                  | `pnpm nx run @pink-paprikaa-web/storybook:test -- --watch`                     |
+| One story file                           | `pnpm nx run @pink-paprikaa-web/storybook:test -- forms.stories`               |
+| Visual tests (Chromatic) — needs a token | `CHROMATIC_PROJECT_TOKEN=… pnpm nx run @pink-paprikaa-web/storybook:chromatic` |
 
 `build` and `serve-static` are aliases (`nx:noop` + `dependsOn`) of the inferred `build-storybook`
 and `static-storybook`, so every app answers to the same `serve` / `build` / `serve-static` / `lint`
 targets.
 
-## Sidebar: Introduction, then the design system's 13 groups
-
-`preview.tsx` sets `options.storySort` to the design system's own tab order:
-
-| #   | Group     | Holds                                                  | Lives in             |
-| --- | --------- | ------------------------------------------------------ | -------------------- |
-| 1   | Brand     | Logo, pattern, company details, voice, iconography     | `apps/storybook/src` |
-| 2   | Colors    | Ramps, semantic, surfaces, status, contrast matrix     | `apps/storybook/src` |
-| 3   | Type      | Display, headings, body, overline and mono, Devanagari | `apps/storybook/src` |
-| 4   | Spacing   | Scale, layout rhythm                                   | `apps/storybook/src` |
-| 5   | Layout    | Breakpoints, AutoGrid, radii, borders, elevation       | `apps/storybook/src` |
-| 6   | Motion    | Motion, states, form states, section reveal            | `apps/storybook/src` |
-| 7   | Marketing | Canvas formats, canvas type, marketing kit artboards   | `apps/storybook/src` |
-| 8   | Atoms     | One story file per component                           | `packages/ui/src`    |
-| 9   | Molecules | One story file per component                           | `packages/ui/src`    |
-| 10  | Organisms | One story file per component                           | `packages/ui/src`    |
-| 11  | Layouts   | One story file per component                           | `packages/ui/src`    |
-| 12  | Website   | The website reference kit                              | `apps/storybook/src` |
-| 13  | App       | The app kit screens at 390×844                         | `apps/storybook/src` |
-
-Groups fill in plan by plan (spec §10.1). Today the sidebar holds `Introduction`, `Atoms/Icon` and
-`Atoms/Logo`.
+Story tests run in headless Chromium; install it once with `pnpm exec playwright install chromium`.
 
 ## How it consumes the design system
 
@@ -56,34 +35,73 @@ for its own `src/` and for the library's `*.stories.tsx`, which the library excl
 scan so a shipping app never pays for demo-only classes. `.storybook/fonts.ts` self-hosts Poppins,
 DM Sans and Space Mono through `@fontsource/*` (D11).
 
-## Accessibility: the contrast policy
-
-WCAG 2.2 AA everywhere, with **one declared exception**: white text on the brand pink fill, held to
-the AA-large floor (3:1). That pairing measures 4.04:1, and the brand fill is not negotiable (spec
-§5, D3).
-
-- **Contrast is gated at the token level.** `packages/design-tokens/contrast-pairs.json` lists every
-  text/background pair the components paint. `pnpm nx test design-tokens` (`policy.spec.ts`)
-  measures each one on its surface. The minimum is 4.5, and 3 is allowed only for pairs tagged
-  `exception: "brand-fill"`. A component that paints a new pair adds it there.
-- **axe's `color-contrast` rule is off in stories.** axe cannot scope an exception to a single
-  pair: it would either fail every brand button or have to be switched off for the whole palette.
-  The token gate replaces it. The library's jsdom suite switches it off too
-  (`packages/ui/vitest.setup.ts`), since jsdom resolves no stylesheet.
-- **Every other axe rule fails the story.** `preview.tsx` sets `parameters.a11y.test = "error"`, so a
-  violation fails `storybook:test` rather than sitting in a panel.
-
 ## Story tests (`@storybook/addon-vitest`)
 
-`vitest.config.mts` turns every story into a Vitest test. It renders the story, runs the story's
-`play` function if it has one, and then runs axe against the rendered DOM. The tests run in
-**headless Chromium via Playwright**, not jsdom, because focus visibility and computed roles and
-names need real layout and a resolved stylesheet. The library's own jsdom suite
-(`pnpm nx test ui`) is separate. The two complement each other and neither config touches the other.
+`vitest.config.mts` has **two** projects: `storybook` (browser) and `docs-kit` (node). The
+`storybook` project turns every story into a Vitest test: it renders the story, runs its `play`
+function if it has one, then runs axe against the rendered DOM. Those tests run in **headless
+Chromium via Playwright**, not jsdom, because focus visibility and computed roles and names need
+real layout and a resolved stylesheet. The `docs-kit` project is node-side specs over
+`src/**/*.spec.ts`. The library's own jsdom suite (`pnpm nx test ui`) is separate; none of the
+three configs touch the others. The `test` target's cache inputs include `^default`, so a change to
+any `packages/ui` component or story re-runs it. Watch mode also starts a Storybook dev server (if
+none is on port 6006), so failure output can deep-link to the failing story.
 
-The `test` target's cache inputs include `^default`, so a change to any `packages/ui` component or
-story re-runs it. Watch mode also starts a Storybook dev server (if none is on port 6006), so failure
-output can deep-link to the failing story.
+## Groups and where they live
+
+Counted from `.storybook/preview.tsx` `options.storySort.order`: Introduction, then the thirteen
+design-system groups.
+
+| Group                                                         | Source                                                                                                       |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Introduction                                                  | `src/docs/introduction.mdx`                                                                                  |
+| Brand · Colors · Type · Spacing · Layout · Motion · Marketing | `src/foundations/<group>/*.mdx`, with the group's specimens in `src/foundations/<group>/<group>.stories.tsx` |
+| Atoms · Molecules · Organisms · Layouts                       | `packages/ui/src/<layer>/<name>/<name>.stories.tsx`                                                          |
+| Molecules → Field → React Hook Form + Zod                     | `src/patterns/forms.stories.tsx`                                                                             |
+| Website · App · Marketing → Kit                               | `src/kits/{website,app,marketing}/`                                                                          |
+
+## Foundation pages
+
+- **Values are read, never typed.** Every token value reaches a page through
+  `src/docs-kit/catalogue.ts`, which reads `@pink-paprikaa-web/design-tokens/tokens.json`.
+  `token()` and `tokensWithPrefix()` throw on a missing name, so a renamed token fails
+  `storybook:test` on the specimen that asked for it.
+- **Every live visual is a specimen story.** MDX holds prose and
+  `<Canvas of={Specimens.X} meta={Specimens} sourceState="none" />`; the story sits in the group's
+  hidden CSF file (`tags: ["!dev", "!autodocs"]` — out of the sidebar, still rendered and tested).
+  Keep `className` out of MDX: ESLint cannot see it there.
+- **The docs-kit is docs-only** — `Swatch`, `Swatches`, `TokenTable`, `TypeSpecimen`,
+  `ContrastMatrix`, `SpacingScale`, `RadiusScale`, `ShadowLadder`, `MotionDemo`, `SpecimenRow`,
+  `SpecimenTile`. `packages/ui` never imports it. Its contract tests are
+  `src/docs-kit/docs-kit.stories.tsx` plus the `docs-kit` Vitest project.
+- Inline `style` here may reference only a token's custom property (`var(--…)` from the catalogue)
+  or a value computed from `tokens.json` — never a literal.
+- Every design-system guideline card maps to a page, named in a `{/* source: guidelines/<card>.card.html */}`
+  comment. Check from the workspace root:
+
+  ```bash
+  diff <(ls "zip-files/Pink Paprikaa Design System/guidelines" | sed 's/\.card\.html$//' | sort) \
+       <(grep -rhoE 'guidelines/[a-z0-9-]+\.card\.html' apps/storybook/src/foundations | sed -E 's#guidelines/##; s#\.card\.html##' | sort -u)
+  ```
+
+## Reference kits
+
+- Composed only from `@pink-paprikaa-web/ui` public exports.
+- Facts — year, address, hours, legal lines, contact, outlet — come from `@pink-paprikaa-web/content`;
+  the only reviews are the four verified Google reviews, as the guests wrote them
+  (`src/kits/fixtures.ts`). No invented testimonial, no rating the business has not been given,
+  nothing non-veg — not even egg.
+- Every kit page carries the "Reference kit — not production copy" notice and a 360px story whose
+  test fails on any sideways scroll.
+
+## Accessibility policy (spec §5)
+
+`preview.tsx` sets `parameters.a11y.test = "error"`: an axe violation fails the story test. Every
+rule runs except `color-contrast` — axe cannot scope an exception to the brand's single declared
+pair (white on the brand pink, held at the AA-large 3:1 floor). Contrast is owned by the token
+policy instead: `packages/design-tokens/contrast-pairs.json`, measured on every
+`design-tokens:test` run by the same evaluator that renders **Colors → Contrast**. Storybook itself
+disables `region` (stories are fragments, not pages).
 
 ## The founder guard covers this build
 
@@ -97,12 +115,11 @@ otherwise leak the builder's home directory into the build, and `.storybook/main
 
 Never narrow the guard to make a build pass.
 
-## Visual tests (`@chromatic-com/storybook`)
+## Visual tests (Chromatic)
 
-The addon is registered and appears in the sidebar. The `chromatic` target builds Storybook and
-hands the static output to the Chromatic CLI. Everything up to the network call is wired. What is
-**not** wired, because it cannot be created from here, is the project token. Public hosting is out
-of scope this phase (D16), and no Chromatic project exists yet (spec §3.3).
+The addon is registered and appears in the Storybook sidebar; the `chromatic` target builds
+Storybook and hands the static output to the Chromatic CLI. Everything up to the network call is
+wired. What is **not** wired, because it cannot be created from here, is the project token.
 
 To take the first baseline:
 
@@ -115,11 +132,17 @@ To take the first baseline:
    CHROMATIC_PROJECT_TOKEN=<token>
    ```
 
-   …or export `CHROMATIC_PROJECT_TOKEN` in the shell, or add it as a CI secret.
+   …or export `CHROMATIC_PROJECT_TOKEN` in the shell / add it as a CI secret.
 
-4. Run the first baseline from the workspace root: `pnpm nx run storybook:chromatic`. The first
-   build accepts every snapshot as the baseline, and later runs diff against it.
+4. Run the first baseline from the workspace root:
 
-The in-Storybook **Visual Tests** panel uses the same token. It writes a `chromatic.config.json`
-here containing the `projectId` (not the token), and that file is safe to commit. Nothing in this
-repo fabricates a token or a project id.
+   ```bash
+   pnpm nx run @pink-paprikaa-web/storybook:chromatic
+   ```
+
+   The first build accepts every snapshot as the baseline; later runs diff against it.
+
+The in-Storybook **Visual Tests** panel uses the same token — open Storybook, click the panel, and
+paste the token when it asks. It writes a `chromatic.config.json` here containing the `projectId`
+(not the token); that file is safe to commit once it exists. Nothing in this repo fabricates a
+token or a project id.

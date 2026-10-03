@@ -1,53 +1,47 @@
 # @pink-paprikaa-web/ui
 
-The Pink Paprikaa design system: token-driven React 19 components (atoms → molecules → organisms →
-layouts), server-first, styled only with the token classes that `@pink-paprikaa-web/design-tokens`
-emits into Tailwind v4.
+The Pink Paprikaa design system: 90 React 19 components — 30 atoms, 38 molecules, 15 organisms
+(including CartPanel), 7 layouts — token-driven and server-first. How to author one:
+[`AUTHORING.md`](AUTHORING.md) (binding).
 
-**Writing a component?** Start with [`AUTHORING.md`](AUTHORING.md). It is the binding contract:
-sources, file set, canonical shape, tokens, surfaces, tests, stories and gates.
+## Consume it
 
-## Consuming it
-
-The package ships TypeScript source: `exports` point at `src/index.ts` and `src/styles.css`, and
-nothing is prebuilt. A consumer needs two things.
-
-1. **Two CSS imports**, in its Tailwind entry, in this order:
+1. Depend on it: `pnpm add @pink-paprikaa-web/ui --workspace --filter <app>`.
+2. Import one stylesheet, after Tailwind — nothing else. The library scans its own sources, so the
+   app adds no `@source` for it:
 
    ```css
    @import "tailwindcss";
    @import "@pink-paprikaa-web/ui/styles.css";
    ```
 
-   `styles.css` brings the tokens (`theme.css`), the surface remaps (`surfaces.css`), the base
-   layer, the named utilities, the animations and the brand symbol mask. It scans its own sources,
-   so a consumer never adds an `@source` for the library. `apps/storybook/.storybook/styles.css`
-   is the working example.
+3. Next.js: add `transpilePackages: ["@pink-paprikaa-web/ui"]` (the package ships TypeScript source).
+4. Load the fonts in the app — Poppins 400–800 (+ 600 italic, with the Devanagari subset), DM Sans
+   400/500/700 (+ 400 italic), Space Mono 400/700. The font tokens read `var(--font-poppins,
+"Poppins")` and friends, so `next/font` variables and Fontsource both work.
+5. Import components by name from the one barrel: `import { Button, Field, Input } from "@pink-paprikaa-web/ui";`
 
-2. **In a Next.js app**, add `transpilePackages: ["@pink-paprikaa-web/ui"]` to `next.config`, so
-   Next compiles the package's TypeScript. No app consumes the library yet; the web app adds it in
-   step 2 of the rewrite.
+## The contract
 
-Then import by name from the one barrel:
+- **Content arrives as props.** The system has no copy, prices or brand facts of its own —
+  `@pink-paprikaa-web/content` holds those, and the app binds them.
+- **Surfaces:** a flooded field sets `data-surface="brand" | "ink" | "soft" | "light"`; text, links,
+  borders, focus and skins follow. Components that paint a field set it themselves.
+- **Navigation:** `asChild` on Button, IconButton, Link, Card, LinkCard, ListRow and TabBar items;
+  `linkAs` on components that render lists of links. Pass `next/link`.
+- **Forms:** native-backed controls take `{...register("name")}`; value-based controls take
+  `<Controller>`; `Field` renders the message. See Storybook → Molecules → Field → React Hook Form + Zod.
+- **Client boundary:** only components that own state or effects are `"use client"`; everything else
+  renders on the server and ships no JavaScript.
 
-```tsx
-import { Icon, Logo } from "@pink-paprikaa-web/ui";
-```
+## Develop
 
-## Commands
+| What                         | Command                                                                                   |
+| ---------------------------- | ----------------------------------------------------------------------------------------- |
+| Tests (jsdom + axe)          | `pnpm nx test @pink-paprikaa-web/ui`                                                      |
+| Lint (token classes, layers) | `pnpm nx lint @pink-paprikaa-web/ui`                                                      |
+| Stories                      | beside each component here; Storybook is `apps/storybook` — `pnpm nx run storybook:serve` |
+| Regenerate the logo artwork  | `pnpm nx run @pink-paprikaa-web/ui:brand-artwork`                                         |
 
-```bash
-pnpm nx test ui                  # Vitest + Testing Library + axe (jsdom)
-pnpm nx lint ui                  # token-only classes, atomic layering, naming
-pnpm nx typecheck ui
-pnpm nx run ui:brand-artwork     # regenerate src/lib/brand-artwork.{ts,css} from src/assets/brand
-pnpm nx run storybook:serve      # the stories, on localhost:6006
-pnpm nx test storybook           # every story as a test in Chromium
-```
-
-Stories live here, next to their components. Storybook itself is its own app, `apps/storybook`,
-whose `stories` globs reach into this package.
-
-`tailwind.css` at this package's root is not bundled by anything. It exists so that ESLint's
-`tailwindcss.cssConfigPath` and Prettier's `tailwindStylesheet` have a real stylesheet to read the
-theme from.
+`tailwind.css` at this package's root is not bundled by anything; it exists so ESLint's and
+Prettier's Tailwind integrations have a stylesheet to resolve.
