@@ -51,6 +51,23 @@ describe("HeroBanner", () => {
     expect(inner?.firstElementChild?.children).toHaveLength(1);
   });
 
+  it("renders the wrapper for a 0 badges, overline, body, actions or media — a number is content", () => {
+    const { container } = render(
+      <HeroBanner
+        badges={0}
+        overline={0}
+        title={TITLE}
+        body={0}
+        actions={0}
+        media={0}
+        pattern="none"
+      />
+    );
+    const inner = container.querySelector("section > div");
+    expect(inner?.children).toHaveLength(2);
+    expect(inner?.firstElementChild?.children).toHaveLength(5);
+  });
+
   it("lists the meta facts with a decorative diamond between each pair", () => {
     render(<HeroBanner title={TITLE} meta={META} />);
     const list = screen.getByRole("list");

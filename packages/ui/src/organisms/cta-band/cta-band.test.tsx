@@ -41,6 +41,15 @@ describe("CtaBand", () => {
     expect(inner?.firstElementChild?.children).toHaveLength(1);
   });
 
+  it("renders the wrapper for a 0 overline, body or action — a number is content", () => {
+    const { container } = render(
+      <CtaBand title={COPY.title} overline={0} body={0} action={0} pattern="none" />
+    );
+    const inner = container.querySelector("section > div");
+    expect(inner?.children).toHaveLength(2);
+    expect(inner?.firstElementChild?.children).toHaveLength(3);
+  });
+
   it("keeps the action clickable", async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();

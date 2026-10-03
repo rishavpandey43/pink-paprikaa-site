@@ -35,6 +35,11 @@ describe("StatBand", () => {
     expect(screen.getByText("3 km").parentElement?.children).toHaveLength(2);
   });
 
+  it("renders the sub-line wrapper for a 0 sub — a number is content", () => {
+    render(<StatBand stats={[{ value: "3 km", label: "free delivery radius", sub: 0 }]} />);
+    expect(screen.getByText("3 km").parentElement?.children).toHaveLength(3);
+  });
+
   it("draws one glyph per stat that asks for one", () => {
     render(
       <StatBand
