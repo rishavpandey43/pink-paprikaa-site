@@ -98,6 +98,13 @@ describe("Avatar", () => {
     expect(container.firstElementChild).toBeEmptyDOMElement();
   });
 
+  it("sx lands on the avatar and beats its own overflow", () => {
+    render(<Avatar name="Aditi Rao" sx={{ overflow: "visible", ms: 2 }} />);
+    const avatar = screen.getByRole("img", { name: "Aditi Rao" });
+    expect(avatar).toHaveClass("overflow-visible", "ms-2");
+    expect(avatar).not.toHaveClass("overflow-hidden");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>

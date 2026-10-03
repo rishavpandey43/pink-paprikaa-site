@@ -1,9 +1,10 @@
-import type { ComponentProps } from "react";
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { Icon, type IconComponent } from "../icon/icon";
 
-export interface AvatarProps extends ComponentProps<"span"> {
+export interface AvatarProps extends BaseProps<"span"> {
   /** The person's name — the initials, the title and the accessible name. */
   name?: string | undefined;
   /** Photo URL; fills the circle. */
@@ -55,6 +56,7 @@ export function Avatar({
   size = "md",
   icon,
   hasRing,
+  sx,
   className,
   ...props
 }: AvatarProps) {
@@ -67,7 +69,7 @@ export function Avatar({
       aria-label={hasName ? title : undefined}
       aria-hidden={hasName ? undefined : true}
       title={hasName ? title : undefined}
-      className={slots.root({ className })}
+      className={slots.root({ className: withSx(sx, className) })}
       {...props}
     >
       {icon ? <Icon icon={icon} size={size} className={slots.icon()} /> : initialsOf(title)}
