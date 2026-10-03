@@ -253,6 +253,8 @@ const SPACING = [
   "site-footer-top",
   "site-footer-gap",
   "site-footer-dock-clearance",
+  "action-dock-bottom",
+  "action-dock-float",
 ];
 const BORDER_WIDTH = ["default", "strong"];
 const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];

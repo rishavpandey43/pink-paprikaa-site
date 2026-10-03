@@ -159,6 +159,11 @@ export {
   ToastProvider,
   type ToastProviderProps,
 } from "./molecules/toast/toast";
+export {
+  ActionDock,
+  type ActionDockProps,
+  type DockAction,
+} from "./organisms/action-dock/action-dock";
 export { CtaBand, type CtaBandProps } from "./organisms/cta-band/cta-band";
 export { FaqSection, type FaqSectionProps } from "./organisms/faq-section/faq-section";
 export { HeroBanner, type HeroBannerProps } from "./organisms/hero-banner/hero-banner";
