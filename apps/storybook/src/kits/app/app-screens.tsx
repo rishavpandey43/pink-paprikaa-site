@@ -112,7 +112,7 @@ export function HomeScreen({ onOpenItem, onSeeMenu }: HomeScreenProps) {
       </Cluster>
 
       <div className="px-5 pt-6 pb-7">
-        <Card variant="ink" padding="none" className="overflow-hidden">
+        <Card surface="ink" padding="none" className="overflow-hidden">
           <PatternField tone="ink" tile={56}>
             <div className="flex flex-col gap-2.5 p-5">
               <Badge color="brand" variant="solid" className="self-start">

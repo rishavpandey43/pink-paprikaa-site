@@ -1,12 +1,17 @@
-import type { ComponentProps, ElementType } from "react";
+import type { ElementType } from "react";
 
 import { Slot } from "radix-ui";
 
-import { componentVariants } from "../../lib/component-variants";
+import type { BaseProps, SurfaceProp } from "../../lib/common-props";
 
-export interface CardProps extends ComponentProps<"div"> {
-  /** default white · feature light pink · brand flooded pink · ink · quiet sunken grey. */
-  variant?: "default" | "feature" | "brand" | "ink" | "quiet" | undefined;
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
+
+export interface CardProps extends BaseProps<"div"> {
+  /** default white · feature light pink · quiet sunken grey. A `surface` replaces it. */
+  variant?: "default" | "feature" | "quiet" | undefined;
+  /** A flooded ground (brand pink or ink): sets `data-surface`, so the content remaps. */
+  surface?: Extract<SurfaceProp, "brand" | "ink"> | undefined;
   /** none (flush media) · sm 16 · md 20 · lg 28. */
   padding?: "none" | "sm" | "md" | "lg" | undefined;
   /** The −2px hover lift to shadow-3. */
@@ -43,20 +48,24 @@ const card = componentVariants({
   defaultVariants: { variant: "default", padding: "md", isInteractive: false },
 });
 
-/** Content container in the brand's five surface skins. Never gets a coloured left border. */
+/** Content container in the brand's five skins (three variants, two flooded surfaces). Never gets a coloured left border. */
 export function Card({
   variant = "default",
+  surface,
   padding,
   isInteractive,
   asChild = false,
+  sx,
   className,
   ...props
 }: CardProps) {
   const Component: ElementType = asChild ? Slot.Root : "div";
+  // A flooded surface is a whole skin of its own: it replaces the variant, not stacks on it.
+  const skin = surface ?? variant;
   return (
     <Component
-      data-surface={SURFACE[variant]}
-      className={card({ variant, padding, isInteractive, className })}
+      data-surface={SURFACE[skin]}
+      className={card({ variant: skin, padding, isInteractive, className: withSx(sx, className) })}
       {...props}
     />
   );

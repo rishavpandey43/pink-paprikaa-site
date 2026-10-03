@@ -59,7 +59,13 @@ export function LoyaltyCard({
   const styles = loyaltyCard();
 
   return (
-    <Card variant={variant} padding="sm" className={styles.root({ className })} {...props}>
+    <Card
+      variant="feature"
+      surface={isBrand ? "brand" : undefined}
+      padding="sm"
+      className={styles.root({ className })}
+      {...props}
+    >
       <Logo
         variant="symbol"
         tone={isBrand ? "white" : "pink"}

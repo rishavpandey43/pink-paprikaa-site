@@ -20,25 +20,35 @@ describe("Card", () => {
   });
 
   it.each([
-    ["default", "light", "bg-surface-card", "rounded-lg"],
-    ["feature", "soft", "bg-surface-brand-soft", "rounded-xl"],
-    ["brand", "brand", "bg-surface-brand", "rounded-xl"],
-    ["ink", "ink", "bg-surface-inverse", "rounded-xl"],
-    ["quiet", "light", "bg-surface-sunken", "rounded-lg"],
-  ] as const)(
-    "the %s card sets data-surface=%s, a %s field and %s",
-    (variant, surface, fill, radius) => {
-      render(<Card variant={variant}>Card</Card>);
-      const card = screen.getByText("Card");
-      expect(card).toHaveAttribute("data-surface", surface);
-      expect(card).toHaveClass(fill, radius);
-    }
-  );
+    [{ variant: "default" }, "light", "bg-surface-card", "rounded-lg"],
+    [{ variant: "feature" }, "soft", "bg-surface-brand-soft", "rounded-xl"],
+    [{ surface: "brand" }, "brand", "bg-surface-brand", "rounded-xl"],
+    [{ surface: "ink" }, "ink", "bg-surface-inverse", "rounded-xl"],
+    [{ variant: "quiet" }, "light", "bg-surface-sunken", "rounded-lg"],
+  ] as const)("%o sets data-surface=%s, a %s field and %s", (props, dataSurface, fill, radius) => {
+    render(<Card {...props}>Card</Card>);
+    const card = screen.getByText("Card");
+    expect(card).toHaveAttribute("data-surface", dataSurface);
+    expect(card).toHaveClass(fill, radius);
+  });
+
+  it("a flooded surface drops the default card's border and shadow", () => {
+    render(<Card surface="brand">Brand</Card>);
+    const card = screen.getByText("Brand");
+    expect(card).not.toHaveClass("border", "border-border-subtle", "shadow-1");
+  });
+
+  it("sx lands on the card and beats its own padding", () => {
+    render(<Card sx={{ p: 8, mt: 4 }}>Card</Card>);
+    const card = screen.getByText("Card");
+    expect(card).toHaveClass("p-8", "mt-4");
+    expect(card).not.toHaveClass("p-5");
+  });
 
   it("gives only the brand card the brand glow and only the default card a border", () => {
     render(
       <>
-        <Card variant="brand">Brand</Card>
+        <Card surface="brand">Brand</Card>
         <Card variant="feature">Feature</Card>
       </>
     );
@@ -139,7 +149,7 @@ describe("Card", () => {
           <h3>Sector 57</h3>
           <p>8am – 11:30pm</p>
         </Card>
-        <Card asChild isInteractive variant="brand">
+        <Card asChild isInteractive surface="brand">
           <a href="/menu">Menu</a>
         </Card>
       </>

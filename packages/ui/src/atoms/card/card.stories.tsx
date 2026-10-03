@@ -26,7 +26,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The surface every block of content sits on. `default` white + 1px subtle border + shadow-1; `feature` light pink, 24px radius, no shadow; `brand` flooded pink; `ink` dark, footer-style; `quiet` sunken grey. Each sets `data-surface`, so content inside follows its field — a white card inside a pink section is a light island, with no colour props. Use `padding="none"` when the card starts with an image; `isInteractive` adds the −2px hover lift; `asChild` makes the whole card a link. No card ever has a coloured left border.',
+          'The surface every block of content sits on. `default` white + 1px subtle border + shadow-1; `feature` light pink, 24px radius, no shadow; `quiet` sunken grey; `surface="brand"` floods it pink and `surface="ink"` makes it dark, footer-style. Each skin sets `data-surface`, so content inside follows its field — a white card inside a pink section is a light island, with no colour props. Use `padding="none"` when the card starts with an image; `isInteractive` adds the −2px hover lift; `asChild` makes the whole card a link. No card ever has a coloured left border.',
       },
     },
   },
@@ -66,13 +66,13 @@ export const FeatureQuiet: Story = {
 };
 
 export const BrandInk: Story = {
-  name: 'variant="brand" · "ink"',
+  name: 'surface="brand" · "ink"',
   render: () => (
     <div className="flex flex-wrap items-start gap-3">
-      <Card variant="brand" className="w-50">
+      <Card surface="brand" className="w-50">
         <Inner title="brand" detail="flooded pink" />
       </Card>
-      <Card variant="ink" className="w-50">
+      <Card surface="ink" className="w-50">
         <Inner title="ink" detail="footer surfaces" />
       </Card>
     </div>

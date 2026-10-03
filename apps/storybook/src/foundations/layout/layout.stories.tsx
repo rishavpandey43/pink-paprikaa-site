@@ -203,13 +203,13 @@ export const CardAnatomy: Story = {
         <span className="font-display text-h4 text-text-heading">isInteractive</span>
         <span className="font-mono text-mono text-text-muted">hover: lift-y → shadow-3</span>
       </Card>
-      <Card variant="brand" className="flex flex-col gap-2">
+      <Card surface="brand" className="flex flex-col gap-2">
         <span className="font-display text-h4 text-text-heading">brand</span>
         <span className="font-mono text-mono text-text-muted">
           surface-brand · sets data-surface
         </span>
       </Card>
-      <Card variant="ink" className="flex flex-col gap-2">
+      <Card surface="ink" className="flex flex-col gap-2">
         <span className="font-display text-h4 text-text-heading">ink</span>
         <span className="font-mono text-mono text-text-muted">
           surface-inverse · sets data-surface
