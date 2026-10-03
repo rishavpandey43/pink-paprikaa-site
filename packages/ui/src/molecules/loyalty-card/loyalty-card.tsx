@@ -81,7 +81,7 @@ export function LoyaltyCard({
           // "Visits", not "3 of 6 visits" (R97): the bar's value text already says "3 of 6".
           label="Visits"
           isLabelHidden
-          tone={isBrand ? "inverse" : "brand"}
+          color={isBrand ? "inverse" : "brand"}
           size="sm"
         />
       </div>

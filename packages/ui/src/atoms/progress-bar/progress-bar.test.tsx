@@ -76,6 +76,12 @@ describe("ProgressBar", () => {
     expect(container.firstElementChild).not.toHaveClass("gap-2");
   });
 
+  it("sx lands on the root and beats its own gap", () => {
+    const { container } = render(<ProgressBar label="Upload" value={50} sx={{ gap: 6, mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("gap-6", "mt-4");
+    expect(container.firstElementChild).not.toHaveClass("gap-2");
+  });
+
   it("can hide its label visually and keep the name", () => {
     render(<ProgressBar label="Upload" value={45} isLabelHidden />);
     expect(screen.getByText("Upload")).toHaveClass("sr-only");
@@ -84,10 +90,10 @@ describe("ProgressBar", () => {
 
   it.each([
     ["brand", "bg-pink-200", "bg-pink-500"],
-    ["mint", "bg-pink-200", "bg-mint"],
+    ["success", "bg-pink-200", "bg-mint"],
     ["inverse", "bg-white-alpha-28", "bg-ink-000"],
-  ] as const)("paints tone %s: %s track, %s fill", (tone, track, fill) => {
-    render(<ProgressBar label="Visits" segments={2} value={1} tone={tone} />);
+  ] as const)("paints color %s: %s track, %s fill", (color, track, fill) => {
+    render(<ProgressBar label="Visits" segments={2} value={1} color={color} />);
     const [earned] = screen.getByRole("progressbar").children;
     expect(earned).toHaveClass(track);
     expect(earned?.firstElementChild).toHaveClass(fill);
@@ -106,7 +112,7 @@ describe("ProgressBar", () => {
       <>
         <ProgressBar label="3 more visits and chai's on us" segments={6} value={3} />
         <ProgressBar label="Uploading your photo" value={70} />
-        <ProgressBar label="Kitchen prep" value={45} tone="mint" isLabelHidden />
+        <ProgressBar label="Kitchen prep" value={45} color="success" isLabelHidden />
       </>
     );
     await expectNoA11yViolations(container);

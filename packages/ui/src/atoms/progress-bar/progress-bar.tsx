@@ -1,10 +1,13 @@
-import { type ComponentProps, useId } from "react";
+import { useId } from "react";
+
+import type { BasePropsWithColor } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 /**
  * A continuous bar is one track segment holding a fill; a stamp bar is N segments, the earned
- * ones holding a full fill. One shape, one set of tone colours, both modes.
+ * ones holding a full fill. One shape, one set of colours, both modes.
  */
 const progressBar = componentVariants({
   slots: {
@@ -17,9 +20,9 @@ const progressBar = componentVariants({
       "block size-full rounded-pill transition-opacity duration-base ease-out starting:opacity-0",
   },
   variants: {
-    tone: {
+    color: {
       brand: { segment: "bg-pink-200", bar: "bg-pink-500", stamp: "bg-pink-500" },
-      mint: { segment: "bg-pink-200", bar: "bg-mint", stamp: "bg-mint" },
+      success: { segment: "bg-pink-200", bar: "bg-mint", stamp: "bg-mint" },
       inverse: { segment: "bg-white-alpha-28", bar: "bg-ink-000", stamp: "bg-ink-000" },
     },
     size: {
@@ -28,10 +31,10 @@ const progressBar = componentVariants({
     },
     isLabelHidden: { true: { label: "sr-only" } },
   },
-  defaultVariants: { tone: "brand", size: "md", isLabelHidden: false },
+  defaultVariants: { color: "brand", size: "md", isLabelHidden: false },
 });
 
-export interface ProgressBarProps extends ComponentProps<"div"> {
+export interface ProgressBarProps extends BasePropsWithColor<"div"> {
   /** Progress so far — or, with `segments`, the number of stamps earned. */
   value: number;
   /** = 100. Ignored with `segments`. */
@@ -41,7 +44,7 @@ export interface ProgressBarProps extends ComponentProps<"div"> {
   /** The progressbar's accessible name; visible unless `isLabelHidden`. */
   label: string;
   /** `inverse` on pink or ink panels. = "brand" */
-  tone?: "brand" | "mint" | "inverse" | undefined;
+  color?: "brand" | "success" | "inverse" | undefined;
   /** sm 6px (inside a LoyaltyCard) · md 8px. = "md" */
   size?: "sm" | "md" | undefined;
   /** Hides the label visually; it stays the accessible name. */
@@ -54,9 +57,10 @@ export function ProgressBar({
   max = 100,
   segments,
   label,
-  tone,
+  color,
   size,
   isLabelHidden,
+  sx,
   className,
   ...props
 }: ProgressBarProps) {
@@ -72,10 +76,10 @@ export function ProgressBar({
     );
   }
   const current = Math.min(Math.max(value, 0), total);
-  const styles = progressBar({ tone, size, isLabelHidden });
+  const styles = progressBar({ color, size, isLabelHidden });
 
   return (
-    <div className={styles.root({ className })} {...props}>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
       <span id={labelId} className={styles.label()}>
         {label}
       </span>

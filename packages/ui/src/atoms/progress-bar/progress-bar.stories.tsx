@@ -17,7 +17,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Loyalty stamps and order progress. Segmented is the loyalty pattern (`segments` + `value` = stamps earned); continuous is for checkout steps and uploads. `pink-200` track, `pink-500` fill; `tone="inverse"` on pink or ink panels, `tone="mint"` for a finished-feeling task. `label` always names the bar; `isLabelHidden` keeps it off screen.',
+          'Loyalty stamps and order progress. Segmented is the loyalty pattern (`segments` + `value` = stamps earned); continuous is for checkout steps and uploads. `pink-200` track, `pink-500` fill; `color="inverse"` on pink or ink panels, `color="success"` for a finished-feeling task. `label` always names the bar; `isLabelHidden` keeps it off screen.',
       },
     },
   },
@@ -35,9 +35,9 @@ export const Continuous: Story = {
   args: { label: "Checkout", value: 70, isLabelHidden: true },
 };
 
-export const ToneMint: Story = {
-  name: "tone",
-  args: { label: "Upload", value: 45, tone: "mint", isLabelHidden: true },
+export const ColorSuccess: Story = {
+  name: "color",
+  args: { label: "Upload", value: 45, color: "success", isLabelHidden: true },
 };
 
 export const Inverse: Story = {
@@ -47,8 +47,8 @@ export const Inverse: Story = {
       data-surface="brand"
       className="grid w-full max-w-text-measure-prose gap-4 rounded-lg bg-surface-brand p-4"
     >
-      <ProgressBar label="4 of 6 visits" segments={6} value={4} tone="inverse" isLabelHidden />
-      <ProgressBar label="Uploading your photo" value={70} tone="inverse" />
+      <ProgressBar label="4 of 6 visits" segments={6} value={4} color="inverse" isLabelHidden />
+      <ProgressBar label="Uploading your photo" value={70} color="inverse" />
     </div>
   ),
 };
@@ -73,7 +73,7 @@ export const Sizes: Story = {
   ),
 };
 
-/** The label is `text-text-muted`, which follows `data-surface`. The pink panel takes `tone="inverse"`. */
+/** The label is `text-text-muted`, which follows `data-surface`. The pink panel takes `color="inverse"`. */
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   render: () => (
@@ -84,10 +84,14 @@ export const OnSurfacesStory: Story = {
             label="3 more visits and chai's on us"
             segments={6}
             value={3}
-            tone={ground === "brand" ? "inverse" : undefined}
+            color={ground === "brand" ? "inverse" : undefined}
           />
         </div>
       )}
     </OnSurfaces>
   ),
+};
+
+export const Sx: Story = {
+  args: { label: "Upload", value: 45, sx: { mt: 4, gap: 4 } },
 };
