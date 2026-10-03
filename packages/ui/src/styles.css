@@ -17,20 +17,17 @@
 @source "./";
 @source not "./**/*.{spec,test,stories}.{ts,tsx}";
 
-/* sx (lib/sx.ts): responsive classes are assembled at runtime, so declare every one. Keep these
-   five lines identical to SX_SAFELIST; sx.spec.ts compares them. */
-@source inline(
-  "{sm:,md:,lg:,xl:,}m{,t,b,s,e,x,y}-{0,0.5,1,1.5,2,3,4,5,6,7,8,9,10,11,12,14,16,18,20,24,32,auto}"
-);
-@source inline(
-  "{sm:,md:,lg:,xl:,}p{,t,b,s,e,x,y}-{0,0.5,1,1.5,2,3,4,5,6,7,8,9,10,11,12,14,16,18,20,24,32}"
-);
-@source inline(
-  "{sm:,md:,lg:,xl:,}gap{,-x,-y}-{0,0.5,1,1.5,2,3,4,5,6,7,8,9,10,11,12,14,16,18,20,24,32}"
-);
-@source inline(
-  "{sm:,md:,lg:,xl:,}{hidden,block,inline,inline-block,flex,inline-flex,grid,contents}"
-);
+/* sx (lib/sx.ts): responsive classes are assembled at runtime, so declare every one. These five
+   single-line @source inline entries must match SX_SAFELIST verbatim; sx.spec.ts compares them. */
+/* prettier-ignore */
+@source inline("{sm:,md:,lg:,xl:,}m{,t,b,s,e,x,y}-{0,0.5,1,1.5,2,3,4,5,6,7,8,9,10,11,12,14,16,18,20,24,32,auto}");
+/* prettier-ignore */
+@source inline("{sm:,md:,lg:,xl:,}p{,t,b,s,e,x,y}-{0,0.5,1,1.5,2,3,4,5,6,7,8,9,10,11,12,14,16,18,20,24,32}");
+/* prettier-ignore */
+@source inline("{sm:,md:,lg:,xl:,}gap{,-x,-y}-{0,0.5,1,1.5,2,3,4,5,6,7,8,9,10,11,12,14,16,18,20,24,32}");
+/* prettier-ignore */
+@source inline("{sm:,md:,lg:,xl:,}{hidden,block,inline,inline-block,flex,inline-flex,grid,contents}");
+/* prettier-ignore */
 @source inline("{sm:,md:,lg:,xl:,}{text-start,text-center,text-end,w-full,w-auto,w-fit}");
 
 @theme {
