@@ -5,6 +5,9 @@
       "$value": "clamp(40px, 5vw, 64px)",
       "$description": "StatBand vertical rhythm (design system StatBand)."
     },
-    "stat-band-gap": { "$value": "clamp(24px, 3vw, 40px)" }
+    "stat-band-gap": {
+      "$value": "clamp(24px, 3vw, 40px)",
+      "$description": "Gap between the stats on the band's grid (design system StatBand)."
+    }
   }
 }
