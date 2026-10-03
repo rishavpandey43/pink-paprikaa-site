@@ -5241,11 +5241,11 @@ const tabBar = componentVariants({
     list: "flex h-full",
     item: "flex min-w-0 flex-1",
     control:
-      "text-tab-bar-label flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 font-display text-text-subtle no-underline transition-colors duration-fast ease-out hover:text-text-heading active:press-scale",
+      "flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 font-display text-tab-bar-label text-text-subtle no-underline transition-colors duration-fast ease-out hover:text-text-heading active:press-scale",
     glyph: "relative inline-flex",
     label: "max-w-full truncate",
     count:
-      "h-tab-bar-count min-w-tab-bar-count text-tab-bar-count absolute -top-1 -right-2 grid place-items-center rounded-pill bg-surface-brand px-1 font-display text-text-on-brand",
+      "absolute -top-1 -right-2 grid h-tab-bar-count min-w-tab-bar-count place-items-center rounded-pill bg-surface-brand px-1 font-display text-tab-bar-count text-text-on-brand",
   },
   variants: {
     isActive: { true: { control: "font-bold text-text-brand hover:text-text-brand" } },
