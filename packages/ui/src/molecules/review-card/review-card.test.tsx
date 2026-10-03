@@ -39,8 +39,8 @@ describe("ReviewCard", () => {
     expect(container.firstElementChild).not.toHaveClass("rounded-lg");
   });
 
-  it("uses the light-pink feature treatment for the brand variant", () => {
-    const { container } = render(<ReviewCard {...REVIEW} variant="brand" />);
+  it("uses the light-pink feature treatment for the brand surface", () => {
+    const { container } = render(<ReviewCard {...REVIEW} surface="brand" />);
     expect(container.firstElementChild).toHaveAttribute("data-surface", "soft");
   });
 
@@ -80,9 +80,17 @@ describe("ReviewCard", () => {
           isVerified
           source={{ label: "View on Google", href: "https://maps.app.goo.gl/32n6SYDUMejsa3NeA" }}
         />
-        <ReviewCard {...REVIEW} rating={4} variant="brand" mark="symbol" />
+        <ReviewCard {...REVIEW} rating={4} surface="brand" mark="symbol" />
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, beating a default class and keeping className", () => {
+    const { container } = render(
+      <ReviewCard {...REVIEW} sx={{ gap: 2, mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("gap-2", "mt-4", "italic");
+    expect(container.firstElementChild).not.toHaveClass("gap-3.5");
   });
 });

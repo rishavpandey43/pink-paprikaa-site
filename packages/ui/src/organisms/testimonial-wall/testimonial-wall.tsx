@@ -48,7 +48,7 @@ export function TestimonialWall({
             <li key={index} className={slots.item()}>
               <ReviewCard
                 {...review}
-                variant={variant}
+                surface={variant === "brand" ? "brand" : undefined}
                 className={slots.card({ class: review.className })}
               />
             </li>

@@ -53,7 +53,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Guest quotes on the website and in social proof bands. The score renders as brand diamonds carrying the mark; `mark="symbol"` drops the diamond for the bare mark. Never invent reviews — these must be real guest copy (the fixtures are the four verified Google reviews). `variant="brand"` is the light-pink treatment in a testimonial wall. The handoff\'s Google cards add `isVerified`, `source` and `hasAvatar={false}`.',
+          'Guest quotes on the website and in social proof bands. The score renders as brand diamonds carrying the mark; `mark="symbol"` drops the diamond for the bare mark. Never invent reviews — these must be real guest copy (the fixtures are the four verified Google reviews). `surface="brand"` is the light-pink treatment in a testimonial wall. The handoff\'s Google cards add `isVerified`, `source` and `hasAvatar={false}`.',
       },
     },
   },
@@ -74,10 +74,10 @@ export const Default: Story = {
   ),
 };
 
-/** Card row `variant="brand"`. */
+/** Card row `surface="brand"`. */
 export const Brand: Story = {
   args: {
-    variant: "brand",
+    surface: "brand",
     name: abhishek.name,
     meta: abhishek.meta,
     quote: abhishek.quote,

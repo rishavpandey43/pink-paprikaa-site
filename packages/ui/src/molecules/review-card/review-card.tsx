@@ -1,6 +1,6 @@
-import type { ComponentProps } from "react";
-
 import { BadgeCheck } from "lucide-react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { Avatar } from "../../atoms/avatar/avatar";
 import { Badge } from "../../atoms/badge/badge";
@@ -8,6 +8,7 @@ import { Card } from "../../atoms/card/card";
 import { Link } from "../../atoms/link/link";
 import { Rating } from "../../atoms/rating/rating";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const reviewCard = componentVariants({
   slots: {
@@ -22,15 +23,15 @@ const reviewCard = componentVariants({
     source: "shrink-0",
   },
   variants: {
-    variant: {
-      default: { quoteText: "text-text-body", meta: "text-text-subtle" },
+    surface: {
+      none: { quoteText: "text-text-body", meta: "text-text-subtle" },
       // Feature card (soft surface): heading → pink-800, brand → pink-700.
       brand: { quoteText: "text-text-heading", meta: "text-text-brand" },
     },
   },
 });
 
-export interface ReviewCardProps extends ComponentProps<"figure"> {
+export interface ReviewCardProps extends BaseProps<"figure"> {
   name: string;
   /** Outlet and date, or the source: "Restaurant · Google review". */
   meta?: string | undefined;
@@ -39,7 +40,8 @@ export interface ReviewCardProps extends ComponentProps<"figure"> {
   rating?: number | undefined;
   /** Avatar image URL; without it the Avatar shows initials. */
   avatar?: string | undefined;
-  variant?: "default" | "brand" | undefined;
+  /** `brand` is the light-pink feature card; omit for the plain card. */
+  surface?: "brand" | undefined;
   /** Score glyph: brand diamonds carrying the mark, or the bare mark. */
   mark?: "diamond" | "symbol" | undefined;
   isVerified?: boolean | undefined;
@@ -57,24 +59,25 @@ export function ReviewCard({
   quote,
   rating,
   avatar,
-  variant = "default",
+  surface,
   mark = "diamond",
   isVerified = false,
   verifiedLabel = "Verified on Google",
   source,
   hasAvatar = true,
+  sx,
   className,
   ...props
 }: ReviewCardProps) {
-  const styles = reviewCard({ variant });
+  const styles = reviewCard({ surface: surface ?? "none" });
   const hasHeader = rating !== undefined || isVerified;
 
   return (
     <Card
       asChild
-      variant={variant === "brand" ? "feature" : "default"}
+      variant={surface === "brand" ? "feature" : "default"}
       padding="md"
-      className={styles.root({ className })}
+      className={styles.root({ className: withSx(sx, className) })}
     >
       <figure {...props}>
         {hasHeader ? (
