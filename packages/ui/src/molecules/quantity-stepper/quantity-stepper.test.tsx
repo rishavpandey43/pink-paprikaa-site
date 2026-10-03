@@ -286,4 +286,27 @@ describe("QuantityStepper", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("forwards data-* and aria-* to its group root, and takes sx there; id and ref stay on the number field", () => {
+    const ref = createRef<HTMLInputElement>();
+    render(
+      <QuantityStepper
+        ref={ref}
+        label="Guests"
+        id="guests"
+        data-section="party"
+        aria-roledescription="stepper"
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    const group = screen.getByRole("group", { name: "Guests" });
+    expect(group).toHaveAttribute("data-section", "party");
+    expect(group).toHaveAttribute("aria-roledescription", "stepper");
+    expect(group).toHaveClass("mt-4", "italic");
+    expect(group).not.toHaveAttribute("id");
+    const field = screen.getByRole("spinbutton", { name: "Guests" });
+    expect(field).toHaveAttribute("id", "guests");
+    expect(ref.current).toBe(field);
+  });
 });

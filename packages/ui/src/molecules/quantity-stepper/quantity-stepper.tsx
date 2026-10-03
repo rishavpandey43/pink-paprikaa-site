@@ -5,8 +5,11 @@ import type { KeyboardEvent, Ref } from "react";
 import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
+
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
 
 const quantityStepper = componentVariants({
@@ -26,7 +29,19 @@ const quantityStepper = componentVariants({
   defaultVariants: { size: "md" },
 });
 
-export interface QuantityStepperProps {
+/** The group takes the div's native props; the number field keeps `id`, `ref`, `name`, `required`, `disabled`, `onBlur` and the aria it is described by. */
+export interface QuantityStepperProps extends Omit<
+  BaseProps<"div">,
+  | "ref"
+  | "id"
+  | "onBlur"
+  | "defaultValue"
+  | "children"
+  | "aria-describedby"
+  | "aria-invalid"
+  | "aria-label"
+  | "role"
+> {
   /** Accessible name of the stepper and its number field, e.g. "Guests". */
   label: string;
   value?: number | undefined;
@@ -48,7 +63,6 @@ export interface QuantityStepperProps {
   incrementLabel?: string | undefined;
   name?: string | undefined;
   disabled?: boolean | undefined;
-  className?: string | undefined;
   /** Field's control id — the wrapping `<label htmlFor>` points here. */
   id?: string | undefined;
   "aria-describedby"?: string | undefined;
@@ -91,12 +105,14 @@ export function QuantityStepper({
   incrementLabel,
   name,
   disabled = false,
+  sx,
   className,
   id,
   "aria-describedby": describedBy,
   "aria-invalid": isInvalid,
   required,
   ref,
+  ...props
 }: QuantityStepperProps) {
   const bounds: Bounds = { min, max, step };
   const [quantity, setQuantity] = useControllableState({
@@ -172,10 +188,11 @@ export function QuantityStepper({
 
   return (
     <div
+      data-surface="light"
+      {...props}
       role="group"
       aria-label={label}
-      data-surface="light"
-      className={styles.root({ className })}
+      className={styles.root({ className: withSx(sx, className) })}
     >
       <button
         type="button"
