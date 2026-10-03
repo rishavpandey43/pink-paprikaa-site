@@ -72,6 +72,13 @@ describe("Divider", () => {
     expect(rule).not.toHaveClass("bg-border-subtle");
   });
 
+  it("sx lands on the divider and beats its own width", () => {
+    render(<Divider sx={{ w: "auto", my: 4 }} />);
+    const rule = screen.getByRole("separator");
+    expect(rule).toHaveClass("w-auto", "my-4");
+    expect(rule).not.toHaveClass("w-full");
+  });
+
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>

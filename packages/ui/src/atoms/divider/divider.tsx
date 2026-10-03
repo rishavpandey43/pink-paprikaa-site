@@ -1,9 +1,10 @@
-import type { ComponentProps } from "react";
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { SymbolMark } from "../../lib/symbol-mark";
 
-export interface DividerProps extends ComponentProps<"div"> {
+export interface DividerProps extends BaseProps<"div"> {
   /** line = hairline · diamond = the brand's section break. */
   variant?: "line" | "diamond" | undefined;
   /** Centred uppercase label; also the separator's accessible name. */
@@ -46,6 +47,7 @@ export function Divider({
   variant = "line",
   label,
   orientation = "horizontal",
+  sx,
   className,
   ...props
 }: DividerProps) {
@@ -59,7 +61,7 @@ export function Divider({
       role="separator"
       aria-orientation={orientation === "vertical" ? "vertical" : undefined}
       aria-label={name}
-      className={slots.root({ className })}
+      className={slots.root({ className: withSx(sx, className) })}
       {...props}
     >
       {hasOrnament ? (
