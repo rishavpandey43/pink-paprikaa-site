@@ -44,6 +44,18 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Tailwind 4's preflight resets buttons to `cursor: default`; every enabled control gets the hand
+     back here, once, instead of a `cursor-pointer` in each component. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]),
+  [role="option"]:not([aria-disabled="true"]),
+  [role="menuitem"]:not([aria-disabled="true"]),
+  summary,
+  select:not(:disabled) {
+    cursor: pointer;
+  }
+
   h1,
   h2,
   h3,

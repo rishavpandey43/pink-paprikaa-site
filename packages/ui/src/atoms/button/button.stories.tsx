@@ -33,7 +33,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
+export const Playground: Story = {
+  // Tailwind 4's preflight gives buttons `cursor: default`; the base layer restores the hand.
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole("button");
+    await expect(getComputedStyle(button).cursor).toBe("pointer");
+  },
+};
 
 export const Variants: Story = {
   name: "variant",
@@ -191,6 +197,11 @@ export const Disabled: Story = {
       </Button>
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    for (const button of within(canvasElement).getAllByRole("button")) {
+      await expect(getComputedStyle(button).cursor).toBe("not-allowed");
+    }
+  },
 };
 
 export const FullWidth: Story = {
