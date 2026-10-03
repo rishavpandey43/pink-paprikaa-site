@@ -6,7 +6,7 @@ import { IconButton } from "../../atoms/icon-button/icon-button";
 import { InstagramGlyph, LinkedinGlyph, YoutubeGlyph } from "../../atoms/icon/brand-glyphs";
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
@@ -178,9 +178,9 @@ export function SiteFooter({
               aria-label={Column === "nav" ? column.heading : undefined}
               className={slots.column()}
             >
-              <Text as={heading} variant="overline" tone="brand">
+              <Typography as={heading} variant="overline" color="brand">
                 {column.heading}
-              </Text>
+              </Typography>
               <ul role={Column === "nav" ? undefined : "list"} className={slots.items()}>
                 {column.items.map((item, index) => {
                   const icon = item.icon ? (

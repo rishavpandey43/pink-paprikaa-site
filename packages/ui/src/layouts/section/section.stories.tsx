@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { expect, within } from "storybook/test";
 
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { Stack } from "../stack/stack";
 import { Section, type SectionTone } from "./section";
 
@@ -39,9 +39,9 @@ const meta = {
     space: "default",
     isBare: false,
     children: (
-      <Text variant="h4" as="div">
+      <Typography variant="h4" as="div">
         One page band
-      </Text>
+      </Typography>
     ),
   },
   parameters: {
@@ -67,9 +67,9 @@ export const Tones: Story = {
     <div>
       {TONES.map(({ tone, label }) => (
         <Section key={tone} tone={tone} space="tight">
-          <Text variant="h4" as="div">
+          <Typography variant="h4" as="div">
             {label}
-          </Text>
+          </Typography>
         </Section>
       ))}
     </div>
@@ -88,9 +88,9 @@ export const Rhythm: Story = {
     <div>
       {RHYTHM.map(({ space, tone, label }) => (
         <Section key={space} space={space} tone={tone}>
-          <Text variant="body" as="div">
+          <Typography variant="body" as="div">
             {label}
-          </Text>
+          </Typography>
         </Section>
       ))}
     </div>
@@ -103,9 +103,9 @@ export const Patterns: Story = {
     <div>
       {PATTERNS.map(({ tone, pattern, label }) => (
         <Section key={tone} tone={tone} pattern={pattern}>
-          <Text variant="h4" as="div">
+          <Typography variant="h4" as="div">
             {label}
-          </Text>
+          </Typography>
         </Section>
       ))}
     </div>
@@ -118,16 +118,16 @@ export const Widths: Story = {
   render: () => (
     <div>
       <Section size="prose" space="tight">
-        <Text as="div">{'size="prose" · 64ch measure'}</Text>
+        <Typography as="div">{'size="prose" · 64ch measure'}</Typography>
       </Section>
       <Section size="wide" space="tight" tone="alt">
-        <Text as="div">{'size="wide" · 1440px'}</Text>
+        <Typography as="div">{'size="wide" · 1440px'}</Typography>
       </Section>
       <Section isBare space="tight">
         <div className="border-y border-dashed border-border-default px-6 py-4">
-          <Text as="div" variant="caption" tone="muted">
+          <Typography as="div" variant="caption" color="muted">
             isBare · no Container, the child runs the full width
-          </Text>
+          </Typography>
         </div>
       </Section>
     </div>
@@ -141,18 +141,18 @@ export const InContext: Story = {
     <div>
       <Section tone="brand" pattern="default">
         <Stack space={3}>
-          <Text variant="overline" as="p">
+          <Typography variant="overline" as="p">
             Sector 57, Gurgaon
-          </Text>
-          <Text variant="h1" as="h2">
+          </Typography>
+          <Typography variant="h1" as="h2">
             Chai first, decisions later.
-          </Text>
+          </Typography>
         </Stack>
       </Section>
       <Section size="prose">
-        <Text>
+        <Typography>
           Pink Paprikaa runs a 100% vegetarian kitchen: North Indian, Chinese, momos and chaat.
-        </Text>
+        </Typography>
       </Section>
     </div>
   ),
@@ -167,13 +167,13 @@ export const NestedSurfaces: Story = {
   render: () => (
     <div>
       <Section tone="page" space="tight" data-testid="page">
-        <Text data-testid="page-text">A top-level page band</Text>
+        <Typography data-testid="page-text">A top-level page band</Typography>
       </Section>
       <Section tone="ink" space="tight">
         <Stack space={6}>
-          <Text data-testid="ink-text">An ink band</Text>
+          <Typography data-testid="ink-text">An ink band</Typography>
           <Section tone="page" space="tight" data-testid="island">
-            <Text data-testid="island-text">A light island inside it</Text>
+            <Typography data-testid="island-text">A light island inside it</Typography>
           </Section>
         </Stack>
       </Section>

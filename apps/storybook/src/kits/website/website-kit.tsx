@@ -31,9 +31,9 @@ import {
   Stat,
   StatBand,
   TestimonialWall,
-  Text,
   Toast,
   ToastProvider,
+  Typography,
 } from "@pink-paprikaa-web/ui";
 
 import {
@@ -184,15 +184,15 @@ export function WebsiteKit() {
                   overline="Our Story"
                   title="A café that tastes like where it's from"
                 />
-                <Text variant="body-lg">
+                <Typography variant="body-lg">
                   We started in one Gurgaon market with a chai counter and a grinder. The idea was
                   simple: a café that runs on Indian flavour instead of borrowing someone
                   else&apos;s.
-                </Text>
-                <Text variant="body-lg">
+                </Typography>
+                <Typography variant="body-lg">
                   Every masala is roasted in-house each morning. Every dish is built to be shared,
                   argued over, and ordered again.
-                </Text>
+                </Typography>
                 <Cluster space={4}>
                   <Card variant="feature" className="min-w-0 flex-1">
                     <Stat
@@ -203,7 +203,7 @@ export function WebsiteKit() {
                   </Card>
                   <Card variant="feature" className="flex min-w-0 flex-1 flex-col gap-1.5">
                     <SpiceLevel level={4} hasLabel />
-                    <Text variant="body-sm">the heat scale we cook to</Text>
+                    <Typography variant="body-sm">the heat scale we cook to</Typography>
                   </Card>
                 </Cluster>
                 <Button variant="secondary" iconAfter={ArrowRight} className="self-start" asChild>
@@ -282,11 +282,11 @@ export function WebsiteKit() {
           brand={
             <Stack space={3}>
               <Logo tone="white" className="w-50" />
-              <Text variant="body-sm">{`${brand.statement} ${brand.hours.display}.`}</Text>
+              <Typography variant="body-sm">{`${brand.statement} ${brand.hours.display}.`}</Typography>
               <Badge tone="soft" className="self-start">
                 {brand.vegStatement}
               </Badge>
-              <Text variant="caption">{LINES.fssai}</Text>
+              <Typography variant="caption">{LINES.fssai}</Typography>
             </Stack>
           }
           columns={FOOTER_COLUMNS}
@@ -360,7 +360,7 @@ export function WebsiteKit() {
           }
         >
           {isBooked ? (
-            <Text>{`We'll text you the confirmation. See you at ${OUTLET.name}.`}</Text>
+            <Typography>{`We'll text you the confirmation. See you at ${OUTLET.name}.`}</Typography>
           ) : (
             <Stack space={4}>
               <Field label="Outlet">

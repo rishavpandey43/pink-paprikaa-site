@@ -25,47 +25,102 @@ describe("Link", () => {
   });
 
   it.each([
-    ["default", "text-text-link", "decoration-link-underline"],
-    ["subtle", "text-text-muted", "decoration-transparent"],
-    ["inverse", "text-ink-000", "decoration-white-alpha-40"],
-    ["quiet", "text-link-quiet", "decoration-transparent"],
-  ] as const)("paints the %s variant with %s and a %s underline", (variant, colour, underline) => {
+    [{}, ["text-text-link", "underline", "decoration-link-underline", "text-link-md", "font-body"]],
+    [{ variant: "link-sm" }, ["text-link-sm"]],
+    [{ variant: "link-lg" }, ["text-link-lg"]],
+    [
+      { color: "muted", underline: "hover" },
+      ["underline", "text-text-muted", "decoration-transparent", "hover:decoration-border-default"],
+    ],
+    [{ color: "inverse" }, ["text-ink-000", "decoration-white-alpha-40"]],
+    [
+      { color: "quiet", underline: "hover" },
+      ["text-link-quiet", "decoration-transparent", "hover:text-text-link"],
+    ],
+    [{ underline: "none" }, ["no-underline"]],
+  ] as const)("%o renders the old classes", (props, classes) => {
     render(
-      <Link href="/outlets" variant={variant}>
-        Outlets
-      </Link>
-    );
-    expect(screen.getByRole("link")).toHaveClass("underline", colour, underline);
-  });
-
-  it.each([
-    ["default", "hover:text-text-link-hover", "hover:decoration-current"],
-    ["subtle", "hover:text-text-heading", "hover:decoration-border-default"],
-    ["inverse", "text-ink-000", "hover:decoration-white-alpha-90"],
-    ["quiet", "hover:text-text-link", "decoration-transparent"],
-  ] as const)(
-    "gives the %s variant its hover colour and underline classes, or the resting one hover keeps (%s, %s)",
-    (variant, hoverColour, hoverLine) => {
-      render(
-        <Link href="/outlets" variant={variant}>
-          Outlets
-        </Link>
-      );
-      expect(screen.getByRole("link")).toHaveClass(hoverColour, hoverLine);
-    }
-  );
-
-  it.each([
-    ["sm", "text-link-sm"],
-    ["md", "text-link-md"],
-    ["lg", "text-link-lg"],
-  ] as const)("sets size %s with %s on DM Sans", (size, sizeClass) => {
-    render(
-      <Link href="/menu" size={size}>
+      <Link href="/menu" {...props}>
         Menu
       </Link>
     );
-    expect(screen.getByRole("link")).toHaveClass("font-body", sizeClass);
+    expect(screen.getByRole("link", { name: "Menu" })).toHaveClass(...classes);
+  });
+
+  it.each([
+    ["link", ["hover:text-text-link-hover", "hover:decoration-current"]],
+    ["muted", ["hover:text-text-heading", "hover:decoration-border-default"]],
+    ["inverse", ["hover:decoration-white-alpha-90"]],
+    ["quiet", ["hover:text-text-link"]],
+  ] as const)("gives the %s colour its hover classes", (color, classes) => {
+    render(
+      <Link href="/menu" color={color} underline={color === "link" ? "always" : "hover"}>
+        Menu
+      </Link>
+    );
+    expect(screen.getByRole("link")).toHaveClass(...classes);
+  });
+
+  it("gives an inverse link its resting underline", () => {
+    render(
+      <Link href="/menu" color="inverse">
+        Menu
+      </Link>
+    );
+    expect(screen.getByRole("link")).toHaveClass("underline", "hover:decoration-white-alpha-90");
+  });
+
+  it("paints any other Typography colour with its own text colour and a current underline", () => {
+    render(
+      <Link href="/menu" color="brand">
+        Menu
+      </Link>
+    );
+    expect(screen.getByRole("link")).toHaveClass("text-text-brand", "decoration-current");
+  });
+
+  it("inherits Typography props", () => {
+    render(
+      <Link href="/menu" weight="bold" align="center" sx={{ mt: 2 }} variant="inherit">
+        Menu
+      </Link>
+    );
+    const a = screen.getByRole("link", { name: "Menu" });
+    expect(a).toHaveClass("font-bold", "text-center", "mt-2");
+    expect(a.className).not.toMatch(/text-link-(sm|md|lg)/);
+    expect(a.className).not.toMatch(/(^|\s)text-body(\s|$)/);
+  });
+
+  it("lets sx replace a Link default and className replace sx", () => {
+    render(
+      <Link href="/menu" sx={{ display: "block" }} className="gap-3">
+        Menu
+      </Link>
+    );
+    const a = screen.getByRole("link");
+    expect(a).toHaveClass("block", "gap-3");
+    expect(a).not.toHaveClass("inline-flex");
+    expect(a).not.toHaveClass("gap-1.5");
+  });
+
+  it("renders through Typography: m-0 and the DM Sans link step on an anchor", () => {
+    render(<Link href="/menu">Menu</Link>);
+    const a = screen.getByRole("link");
+    expect(a.tagName).toBe("A");
+    expect(a).toHaveClass("m-0", "font-body");
+  });
+
+  it("applies the same classes through asChild", () => {
+    render(
+      <Link asChild color="muted" underline="hover" variant="link-lg">
+        <RouterLink href="/outlets">Outlets</RouterLink>
+      </Link>
+    );
+    expect(screen.getByRole("link")).toHaveClass(
+      "text-text-muted",
+      "text-link-lg",
+      "decoration-transparent"
+    );
   });
 
   it("puts decorative glyphs before and after the label", () => {

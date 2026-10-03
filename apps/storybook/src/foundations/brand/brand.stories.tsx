@@ -17,7 +17,7 @@ import {
   Spinner,
   StatusDot,
   StepTracker,
-  Text,
+  Typography,
   YoutubeGlyph,
 } from "@pink-paprikaa-web/ui";
 
@@ -190,12 +190,12 @@ export const PatternFields: Story = {
   render: () => (
     <div className="flex flex-col gap-4">
       <PatternField tone="brand" radius="lg" className="flex flex-col gap-1.5 px-7 py-6">
-        <Text variant="overline" tone="muted" as="span">
+        <Typography variant="overline" color="muted" as="span">
           Loyalty
-        </Text>
-        <Text variant="h3" weight="black" as="span">
+        </Typography>
+        <Typography variant="h3" weight="black" as="span">
           3 more visits and chai&apos;s on us.
-        </Text>
+        </Typography>
       </PatternField>
       <div className="grid gap-4 md:grid-cols-4">
         <PatternField tone="ink" radius="lg" className="h-24 p-4">

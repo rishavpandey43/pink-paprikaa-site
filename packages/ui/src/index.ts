@@ -35,8 +35,17 @@ export { Spinner, type SpinnerProps } from "./atoms/spinner/spinner";
 export { StatusDot, type StatusDotProps } from "./atoms/status-dot/status-dot";
 export { Switch, type SwitchProps } from "./atoms/switch/switch";
 export { Tag, type TagProps, tagVariants } from "./atoms/tag/tag";
-export { Text, type TextProps, type TextTone, type TextVariant } from "./atoms/text/text";
 export { Tooltip, type TooltipProps } from "./atoms/tooltip/tooltip";
+export {
+  Typography,
+  type TypographyColor,
+  type TypographyProps,
+  type TypographyVariant,
+} from "./atoms/typography/typography";
+/** @deprecated use Typography (2026-10-04) */
+export { Typography as Text } from "./atoms/typography/typography";
+/** @deprecated use TypographyProps (2026-10-04) */
+export type { TypographyProps as TextProps } from "./atoms/typography/typography";
 export { AppShell, type AppShellProps } from "./layouts/app-shell/app-shell";
 export { AutoGrid, type AutoGridMin, type AutoGridProps } from "./layouts/auto-grid/auto-grid";
 export { Box, type BoxProps } from "./layouts/box/box";

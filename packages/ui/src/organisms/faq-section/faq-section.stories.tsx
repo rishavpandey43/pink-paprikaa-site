@@ -9,7 +9,7 @@ import { Button } from "../../atoms/button/button";
 import { Card } from "../../atoms/card/card";
 import { Logo } from "../../atoms/logo/logo";
 import { StatusDot } from "../../atoms/status-dot/status-dot";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { BRAND, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
 import { FaqSection } from "./faq-section";
 
@@ -64,16 +64,16 @@ function HelpCard() {
         <div className="flex items-center gap-3">
           <Logo variant="symbol" tone="badge" isDecorative className="w-11" />
           <div className="flex min-w-0 flex-col gap-0.5">
-            <Text as="span" weight="bold" className="font-display">
+            <Typography as="span" weight="bold" className="font-display">
               Still have a question?
-            </Text>
+            </Typography>
             <StatusDot tone="open" label="A real person replies, 8am – 11:30pm" />
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <Text as="span" variant="overline" tone="muted">
+          <Typography as="span" variant="overline" color="muted">
             Tap to ask on WhatsApp
-          </Text>
+          </Typography>
           <div className="flex flex-wrap gap-2">
             {QUICK_QUESTIONS.map((question) => (
               <Button key={question} asChild variant="secondary" size="sm" icon={MessageCircle}>

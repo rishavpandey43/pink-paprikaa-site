@@ -5,7 +5,7 @@ import { formatRupees } from "@pink-paprikaa-web/utils";
 import { Card } from "../../atoms/card/card";
 import { Divider } from "../../atoms/divider/divider";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { StepTracker, type TrackerStep } from "../../molecules/step-tracker/step-tracker";
@@ -97,21 +97,21 @@ export function OrderTracker({
           {badge}
           {step === undefined ? null : (
             <>
-              <Text as={headingTag(headingLevel)} variant="h2" className={slots.title()}>
+              <Typography as={headingTag(headingLevel)} variant="h2" className={slots.title()}>
                 {step.label}
-              </Text>
+              </Typography>
               {step.note ? (
-                <Text as="div" tone="muted">
+                <Typography as="div" color="muted">
                   {step.note}
-                </Text>
+                </Typography>
               ) : null}
             </>
           )}
         </div>
-        <Text as="div" variant="mono" tone="muted" className={slots.code()}>
+        <Typography as="div" variant="mono" color="muted" className={slots.code()}>
           {codeLabel} #{code}
           {outlet ? ` · ${outlet}` : null}
-        </Text>
+        </Typography>
       </PatternField>
       <div className={slots.body()}>
         {step === undefined ? null : (
@@ -123,13 +123,13 @@ export function OrderTracker({
         {hasReceipt ? (
           <Card variant="quiet" padding="sm">
             <div className={slots.receipt()}>
-              <Text as="span" variant="body-sm" tone="muted">
+              <Typography as="span" variant="body-sm" color="muted">
                 {payment === undefined ? null : `${paymentLabel} · ${payment}`}
-              </Text>
+              </Typography>
               {total === undefined ? null : (
-                <Text as="span" variant="body-sm" weight="bold" className={slots.total()}>
+                <Typography as="span" variant="body-sm" weight="bold" className={slots.total()}>
                   {formatRupees(total)}
-                </Text>
+                </Typography>
               )}
             </div>
           </Card>

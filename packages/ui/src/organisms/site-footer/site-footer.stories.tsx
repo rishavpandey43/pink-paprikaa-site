@@ -6,7 +6,7 @@ import { expect } from "storybook/test";
 import { Badge } from "../../atoms/badge/badge";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
 import { Logo } from "../../atoms/logo/logo";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { ringClippers } from "../../lib/story-ring";
 import { BRAND, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
 import { type FooterColumn, type FooterSocialLink, SiteFooter } from "./site-footer";
@@ -87,19 +87,19 @@ const meta = {
     brand: (
       <>
         <Logo tone="white" className="w-65" />
-        <Text variant="body-sm" tone="muted">
+        <Typography variant="body-sm" color="muted">
           Chai at 8am, chilli paneer at midnight. One kitchen in Sector 57, Gurgaon.
-        </Text>
+        </Typography>
         <div className="flex flex-col gap-1">
-          <Text as="span" variant="body-sm">
+          <Typography as="span" variant="body-sm">
             {BRAND.website}
-          </Text>
-          <Text as="span" variant="body-sm">
+          </Typography>
+          <Typography as="span" variant="body-sm">
             {BRAND.phoneDisplay}
-          </Text>
-          <Text as="span" variant="body-sm">
+          </Typography>
+          <Typography as="span" variant="body-sm">
             {BRAND.email}
-          </Text>
+          </Typography>
         </div>
       </>
     ),
@@ -157,9 +157,9 @@ export const HandoffInk: Story = {
           <DietMark size="sm" />
           100% Pure Veg Kitchen
         </Badge>
-        <Text as="span" variant="mono" tone="muted">
+        <Typography as="span" variant="mono" color="muted">
           {BRAND.fssai}
-        </Text>
+        </Typography>
       </>
     ),
     social: [],

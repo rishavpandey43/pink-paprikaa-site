@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from "react";
 
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
@@ -78,17 +78,17 @@ export function CtaBand({
       <div className={slots.inner()}>
         <div className={slots.copy()}>
           {isShown(overline) ? (
-            <Text variant="overline" tone="brand">
+            <Typography variant="overline" color="brand">
               {overline}
-            </Text>
+            </Typography>
           ) : null}
-          <Text as={headingTag(headingLevel)} variant="h2" isFluid isBalanced>
+          <Typography as={headingTag(headingLevel)} variant="h2" isFluid isBalanced>
             {title}
-          </Text>
+          </Typography>
           {isShown(body) ? (
-            <Text variant="body-lg" tone="muted">
+            <Typography variant="body-lg" color="muted">
               {body}
-            </Text>
+            </Typography>
           ) : null}
         </div>
         {isShown(action) ? <div className={slots.action()}>{action}</div> : null}

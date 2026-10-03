@@ -7,7 +7,7 @@ import { Button } from "../../atoms/button/button";
 import { Card } from "../../atoms/card/card";
 import { Icon } from "../../atoms/icon/icon";
 import { Logo } from "../../atoms/logo/logo";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { ringClippers } from "../../lib/story-ring";
 import {
   BRAND,
@@ -30,12 +30,12 @@ const EMPTY = (
       <div className="flex min-w-0 flex-1 items-center gap-3.5">
         <Logo variant="symbol" tone="badge" isDecorative className="w-12" />
         <div className="flex min-w-0 flex-col gap-1">
-          <Text as="span" weight="bold" className="font-display">
+          <Typography as="span" weight="bold" className="font-display">
             Read what our guests say on Google
-          </Text>
-          <Text as="span" variant="body-sm" tone="muted">
+          </Typography>
+          <Typography as="span" variant="body-sm" color="muted">
             Every review there is from a real Pink Paprikaa guest.
-          </Text>
+          </Typography>
         </div>
       </div>
       <Button asChild iconAfter={ArrowUpRight}>

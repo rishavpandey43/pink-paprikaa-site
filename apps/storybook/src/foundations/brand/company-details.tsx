@@ -1,7 +1,7 @@
 import { type ReactNode, useId } from "react";
 
 import { brand, toBrandLines } from "@pink-paprikaa-web/content";
-import { Badge, Card, type KeyValueItem, KeyValueList, Text } from "@pink-paprikaa-web/ui";
+import { Badge, Card, type KeyValueItem, KeyValueList, Typography } from "@pink-paprikaa-web/ui";
 
 import { BUILD_YEAR } from "../../kits/fixtures";
 
@@ -117,9 +117,9 @@ export function CompanyDetails() {
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {boxes.map((box) => (
           <Card key={box.heading} padding="sm" className="flex min-w-0 flex-col gap-3">
-            <Text variant="overline" tone="brand" as="h2">
+            <Typography variant="overline" color="brand" as="h2">
               {box.heading}
-            </Text>
+            </Typography>
             {/* wrap-break-word inherits to the values: an email or URL never widens the card. */}
             <KeyValueList
               items={monoKeys(box.items)}
@@ -131,9 +131,9 @@ export function CompanyDetails() {
         ))}
       </div>
       <Card variant="quiet" padding="sm" className="flex flex-col gap-3">
-        <Text variant="overline" tone="brand" as="h2">
+        <Typography variant="overline" color="brand" as="h2">
           Derived lines — toBrandLines(brand, year)
-        </Text>
+        </Typography>
         <KeyValueList
           density="compact"
           keyWidth="md"
@@ -149,9 +149,9 @@ export function CompanyDetails() {
         />
       </Card>
       <div className="flex flex-col gap-2">
-        <Text variant="h4" as="h2" id={pendingId}>
+        <Typography variant="h4" as="h2" id={pendingId}>
           {pending.length} facts pending from the owner
-        </Text>
+        </Typography>
         <ul aria-labelledby={pendingId} className="flex flex-col gap-1">
           {pending.map((path) => (
             <li key={path} className="font-mono text-mono text-text-muted">

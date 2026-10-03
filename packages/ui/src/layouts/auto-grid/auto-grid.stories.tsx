@@ -4,16 +4,16 @@ import type { ReactNode } from "react";
 import { expect, within } from "storybook/test";
 
 import { Card } from "../../atoms/card/card";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { GAP_CLASS } from "../../lib/space";
 import { AutoGrid, type AutoGridMin } from "./auto-grid";
 
 function DemoCard({ children }: { children: ReactNode }) {
   return (
     <Card padding="sm">
-      <Text variant="caption" as="div" tone="muted">
+      <Typography variant="caption" as="div" color="muted">
         {children}
-      </Text>
+      </Typography>
     </Card>
   );
 }
@@ -89,9 +89,9 @@ export const Mins: Story = {
     <div className="grid gap-8">
       {MINS.map(({ min, px }) => (
         <div key={min} className="grid gap-3">
-          <Text variant="overline" as="div" tone="muted">
+          <Typography variant="overline" as="div" color="muted">
             {`min="${min}" · ${px}`}
-          </Text>
+          </Typography>
           <AutoGrid min={min}>{cards(6)}</AutoGrid>
         </div>
       ))}

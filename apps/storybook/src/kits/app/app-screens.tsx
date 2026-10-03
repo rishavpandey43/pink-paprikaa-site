@@ -20,7 +20,7 @@ import {
   SearchField,
   SpiceLevel,
   Switch,
-  Text,
+  Typography,
 } from "@pink-paprikaa-web/ui";
 
 import { MENU_CATEGORIES, MENU_ITEMS, OUTLET } from "../fixtures";
@@ -45,16 +45,16 @@ export function HomeScreen({ onOpenItem, onSeeMenu }: HomeScreenProps) {
             <Logo variant="wordmark" tone="white" className="w-35" />
             <IconButton icon={Bell} label="Notifications" variant="ghost" />
           </div>
-          <Text variant="h2" as="p">
+          <Typography variant="h2" as="p">
             Chai first,
             <br />
             decisions later.
-          </Text>
+          </Typography>
           <span className="flex items-center gap-2">
             <Icon icon={MapPin} size="sm" />
-            <Text variant="body-sm" tone="muted" as="span">
+            <Typography variant="body-sm" color="muted" as="span">
               {`${OUTLET.name} · pickup`}
-            </Text>
+            </Typography>
           </span>
           <SearchField label="Search the menu" placeholder="Search chai, paneer, kulfi…" />
         </div>
@@ -76,9 +76,9 @@ export function HomeScreen({ onOpenItem, onSeeMenu }: HomeScreenProps) {
       </div>
 
       <div className="flex items-baseline justify-between px-5 pt-5.5">
-        <Text variant="h4" as="h2">
+        <Typography variant="h4" as="h2">
           Most ordered
-        </Text>
+        </Typography>
         <Button variant="ghost" size="sm" onClick={onSeeMenu}>
           See all
         </Button>
@@ -118,14 +118,14 @@ export function HomeScreen({ onOpenItem, onSeeMenu }: HomeScreenProps) {
               <Badge tone="brand" className="self-start">
                 Tonight Only
               </Badge>
-              <Text variant="h4" weight="black" as="p">
+              <Typography variant="h4" weight="black" as="p">
                 Extra Hot Fries, half price
-              </Text>
+              </Typography>
               <span className="flex items-center gap-2.5">
                 <SpiceLevel level={4} />
-                <Text variant="caption" tone="muted" as="span">
+                <Typography variant="caption" color="muted" as="span">
                   {brand.hours.weekday}
-                </Text>
+                </Typography>
               </span>
               <Button size="sm" className="mt-1.5 self-start" onClick={onSeeMenu}>
                 Add to Order
@@ -145,12 +145,12 @@ export function AccountScreen() {
       <div className="flex items-center gap-3.5 pt-2 pb-5">
         <Avatar name="Guest" size="lg" hasRing />
         <div className="flex flex-col">
-          <Text variant="h4" as="p">
+          <Typography variant="h4" as="p">
             Guest
-          </Text>
-          <Text variant="body-sm" tone="muted" as="span">
+          </Typography>
+          <Typography variant="body-sm" color="muted" as="span">
             Sign in with your mobile number
-          </Text>
+          </Typography>
         </div>
       </div>
       <LoyaltyCard visits={3} goal={6} reward="chai" />

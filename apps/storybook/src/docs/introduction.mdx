@@ -20,13 +20,13 @@ accent per screen. Everything else is restraint.
 
 ## How it fits together
 
-| Layer                              | What lives there                                                               |
-| ---------------------------------- | ------------------------------------------------------------------------------ |
-| `@pink-paprikaa-web/design-tokens` | Every value, authored as DTCG JSON and compiled by Style Dictionary            |
-| `@pink-paprikaa-web/ui` — atoms    | Indivisible primitives: `Button` `Text` `Icon` `Input` `SpiceLevel` `DietMark` |
-| — molecules                        | Small compositions: `Field` `MenuItemCard` `Tabs` `Alert`                      |
-| — organisms                        | Page-level regions: `SiteHeader` `HeroBanner` `MenuList` `CtaBand`             |
-| — layouts                          | Spacing, width and frame only: `Container` `Section` `AutoGrid` `PostFrame`    |
+| Layer                              | What lives there                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------------ |
+| `@pink-paprikaa-web/design-tokens` | Every value, authored as DTCG JSON and compiled by Style Dictionary                  |
+| `@pink-paprikaa-web/ui` — atoms    | Indivisible primitives: `Button` `Typography` `Icon` `Input` `SpiceLevel` `DietMark` |
+| — molecules                        | Small compositions: `Field` `MenuItemCard` `Tabs` `Alert`                            |
+| — organisms                        | Page-level regions: `SiteHeader` `HeroBanner` `MenuList` `CtaBand`                   |
+| — layouts                          | Spacing, width and frame only: `Container` `Section` `AutoGrid` `PostFrame`          |
 
 A layer composes only the layers below it: a molecule may use atoms, an atom may never reach a
 molecule, and an atom imports nothing but `Icon`. The rule is lint-enforced (`atomic-layering`),
@@ -99,7 +99,7 @@ with `a11y.test = "error"` — a violation fails the suite; it does not sit in a
 - **Never colour alone.** A status colour always arrives with a message and a glyph. `SpiceLevel`
   and `DietMark` carry text alternatives — heat and diet are load-bearing information.
 - **Heading order.** A component's look and its document level are separate decisions: every titled
-  component takes `headingLevel` (and `Text` takes `as`); the page owns its outline.
+  component takes `headingLevel` (and `Typography` takes `as`); the page owns its outline.
 - **Contrast follows the surface.** Put content that sits on pink or ink inside a `data-surface`
   field and the text tokens remap; never hand-pick a light text colour. Muted and subtle text are
   for secondary content only.

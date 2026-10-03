@@ -14,7 +14,7 @@ import { Card } from "../../atoms/card/card";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
 import { Icon } from "../../atoms/icon/icon";
 import { PriceTag } from "../../atoms/price-tag/price-tag";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
@@ -158,9 +158,9 @@ export function CartPanel({
           {isShown(meta) ? (
             <span className={slots.meta()}>
               <Icon icon={MapPin} size="sm" />
-              <Text variant="body-sm" tone="muted" as="span">
+              <Typography variant="body-sm" color="muted" as="span">
                 {meta}
-              </Text>
+              </Typography>
             </span>
           ) : null}
         </header>

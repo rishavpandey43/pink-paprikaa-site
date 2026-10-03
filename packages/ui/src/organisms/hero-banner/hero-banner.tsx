@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from "react";
 
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
@@ -119,17 +119,17 @@ export function HeroBanner({
         <div className={slots.copy()}>
           {isShown(badges) ? <div className={slots.badges()}>{badges}</div> : null}
           {isShown(overline) ? (
-            <Text variant="overline" tone="brand">
+            <Typography variant="overline" color="brand">
               {overline}
-            </Text>
+            </Typography>
           ) : null}
-          <Text as={headingTag(headingLevel)} variant={titleSize} isFluid isBalanced>
+          <Typography as={headingTag(headingLevel)} variant={titleSize} isFluid isBalanced>
             {title}
-          </Text>
+          </Typography>
           {isShown(body) ? (
-            <Text as="div" variant="body-lg" tone="muted" measure="narrow">
+            <Typography as="div" variant="body-lg" color="muted" measure="narrow">
               {body}
-            </Text>
+            </Typography>
           ) : null}
           {isShown(actions) ? <div className={slots.actions()}>{actions}</div> : null}
           {facts.length > 0 ? (
@@ -137,9 +137,9 @@ export function HeroBanner({
               {facts.map((fact, index) => (
                 <li key={index} className={slots.metaItem()}>
                   {index > 0 ? <SymbolMark className={slots.metaMark()} /> : null}
-                  <Text as="span" variant="body-sm" tone="muted">
+                  <Typography as="span" variant="body-sm" color="muted">
                     {fact}
-                  </Text>
+                  </Typography>
                 </li>
               ))}
             </ul>

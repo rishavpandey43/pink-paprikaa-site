@@ -5,8 +5,9 @@ const layerOrder = ["atoms", "molecules", "organisms", "layouts"];
  * organisms → layouts. In every tier a file may not import a layer above it (spec §7 rule 2) nor
  * the package barrel, by any spelling (`..`, `../..`, `../../`, `../../index`, `../../index.ts`,
  * `../../../src/index`, or the package's own name `@pink-paprikaa-web/ui`, ruling R41).
- * An atom also imports no other atom but Icon, directly (`../text/text`) or by the roundabout
- * path (`../../atoms/text/text`). Everything else passes: `../../lib/*`, `../../assets/*`,
+ * An atom also imports no other atom but Icon and Typography (Link renders through Typography,
+ * ruling 2026-10-04), directly (`../badge/badge`) or by the roundabout path
+ * (`../../atoms/badge/badge`). Everything else passes: `../../lib/*`, `../../assets/*`,
  * `../../styles.css`, `../../../vitest.setup`, packages. `src/lib/` is not a tier, but the barrel
  * and self-package bans cover it too (R41): library internals are imported by the atoms, so a lib
  * file reaching the barrel would be a cycle — as would a lib file reaching a molecule, organism,
@@ -60,16 +61,16 @@ const atomicLayering = [
             {
               // Design system tier rule: "an atom imports nothing but Icon". A regex, not a
               // gitignore `group`: `../*` also matches `../..`, which flagged `../../lib/*` (probed).
-              // Matches `../<sibling>` unless the sibling is `icon`; `../../lib` starts `../.` so passes.
-              regex: "^\\.\\./(?!icon(?:/|$))[^./]",
+              // Matches `../<sibling>` unless the sibling is `icon` or `typography`; `../../lib` starts `../.` so passes.
+              regex: "^\\.\\./(?!(?:icon|typography)(?:/|$))[^./]",
               message:
-                "Atomic layering: an atom may import only the Icon atom (plus ../../lib and packages).",
+                "Atomic layering: an atom may import only the Icon and Typography atoms (plus ../../lib and packages).",
             },
             {
-              // The same rule by the roundabout path: `../../atoms/text/text`.
-              regex: "^(?:\\.\\./)+atoms/(?!icon(?:/|$))",
+              // The same rule by the roundabout path: `../../atoms/badge/badge`.
+              regex: "^(?:\\.\\./)+atoms/(?!(?:icon|typography)(?:/|$))",
               message:
-                "Atomic layering: an atom may import only the Icon atom (plus ../../lib and packages).",
+                "Atomic layering: an atom may import only the Icon and Typography atoms (plus ../../lib and packages).",
             },
           ],
         },

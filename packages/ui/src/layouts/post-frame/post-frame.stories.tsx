@@ -6,7 +6,7 @@ import { Button } from "../../atoms/button/button";
 import { Logo } from "../../atoms/logo/logo";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { SocialHeadline } from "../../atoms/social-headline/social-headline";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { LogoLockup } from "../../molecules/logo-lockup/logo-lockup";
 import { OfferSeal } from "../../molecules/offer-seal/offer-seal";
 import { Stack } from "../stack/stack";
@@ -25,9 +25,9 @@ const FORMATS: PostFormat[] = [
 
 function Caption({ children }: { children: string }) {
   return (
-    <Text variant="mono" as="div" tone="subtle" className="pt-2">
+    <Typography variant="mono" as="div" color="subtle" className="pt-2">
       {children}
-    </Text>
+    </Typography>
   );
 }
 
@@ -221,9 +221,9 @@ export const Leaderboard: Story = {
       <PostFrame format="leaderboard" scale={0.46} tone="brand" padding="none">
         <div className="flex h-full items-center gap-4 px-4">
           <Logo tone="white" className="w-21" />
-          <Text variant="h4" as="span" weight="black" className="min-w-0 flex-1 truncate">
+          <Typography variant="h4" as="span" weight="black" className="min-w-0 flex-1 truncate">
             50% off your first order
-          </Text>
+          </Typography>
           <Button size="sm">Order Now</Button>
         </div>
       </PostFrame>
@@ -239,9 +239,9 @@ export const Mpu: Story = {
       <PostFrame format="mpu" scale={0.6} tone="ink" padding="none">
         <div className="flex h-full flex-col justify-between p-4">
           <Logo tone="white" className="w-19" />
-          <Text variant="h3" as="span" weight="black">
+          <Typography variant="h3" as="span" weight="black">
             Chai first, decisions later.
-          </Text>
+          </Typography>
           <Button size="sm" isFullWidth>
             Order Now
           </Button>

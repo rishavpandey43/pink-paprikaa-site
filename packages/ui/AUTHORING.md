@@ -38,8 +38,9 @@ packages/ui/src/<layer>/<kebab-name>/
   `tools/eslint-config/atomic-layering.js`) bans every file in a layer (component, test or story)
   from importing a layer above it, and from importing the package barrel by any spelling (`..`,
   `../..`, `../../`, `../../index`, `../../index.ts`): import the component's own file instead.
-- **Atoms.** The lint (LAW) also bans an atom file from importing any atom but Icon, directly
-  (`../text/text`) or by the roundabout path (`../../atoms/text/text`). Anything else passes, so
+- **Atoms.** The lint (LAW) also bans an atom file from importing any atom but Icon and Typography (Link
+  renders through Typography), directly (`../badge/badge`) or by the roundabout path
+  (`../../atoms/badge/badge`). Anything else passes, so
   `../../lib/*`, `../../assets/*`, `../../styles.css` and `../../../vitest.setup` all lint clean
   (`tools/eslint-config/atomic-layering.test.mjs` pins each case). The CONVENTION is narrower: an
   atom imports only `../icon/*`, `../../lib/*`, `../../../vitest.setup`, its own folder and

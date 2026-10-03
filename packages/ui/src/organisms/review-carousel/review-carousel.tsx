@@ -1,7 +1,7 @@
 import { type ComponentProps, type ReactNode, useId } from "react";
 
 import { Link } from "../../atoms/link/link";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
@@ -54,13 +54,19 @@ export function ReviewCarousel({
   const titles = (
     <div className={slots.titles()}>
       {isShown(eyebrow) ? (
-        <Text variant="overline" tone="brand" className={slots.eyebrow()}>
+        <Typography variant="overline" color="brand" className={slots.eyebrow()}>
           {eyebrow}
-        </Text>
+        </Typography>
       ) : null}
-      <Text as={headingTag(headingLevel)} id={headingId} variant="display-2" isFluid isBalanced>
+      <Typography
+        as={headingTag(headingLevel)}
+        id={headingId}
+        variant="display-2"
+        isFluid
+        isBalanced
+      >
         {heading}
-      </Text>
+      </Typography>
     </div>
   );
   return (

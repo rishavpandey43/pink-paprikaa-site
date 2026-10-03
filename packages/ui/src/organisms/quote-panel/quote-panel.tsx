@@ -1,7 +1,7 @@
 import { type ComponentProps, type ReactNode, useId } from "react";
 
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
@@ -107,14 +107,14 @@ export function QuotePanel({
       ) : null}
       <div className={slots.body()}>
         <div className={slots.header()}>
-          <Text
+          <Typography
             as={headingTag(headingLevel)}
             id={titleId}
             variant="overline"
-            tone={TITLE_TONE[tone]}
+            color={TITLE_TONE[tone]}
           >
             {title}
-          </Text>
+          </Typography>
           {badge}
         </div>
         <div className={slots.price()}>

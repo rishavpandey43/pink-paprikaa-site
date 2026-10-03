@@ -16,7 +16,7 @@ import { Button } from "../../atoms/button/button";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
 import { Icon } from "../../atoms/icon/icon";
 import { ImageSlot } from "../../atoms/image-slot/image-slot";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { OfferSeal } from "../../molecules/offer-seal/offer-seal";
 import { BRAND, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
 import { HeroBanner } from "./hero-banner";
@@ -271,15 +271,15 @@ export const WithPhotograph: Story = {
           className="shadow-4"
         />
         <div aria-hidden className="absolute inset-0 rounded-xl scrim-bottom" />
-        <Text
+        <Typography
           as="p"
           variant="body"
           weight="bold"
-          tone="inverse"
+          color="inverse"
           className="absolute inset-x-6 bottom-6"
         >
           From our restaurant kitchen, MKM Market, Sector 57
-        </Text>
+        </Typography>
       </div>
     ),
   },

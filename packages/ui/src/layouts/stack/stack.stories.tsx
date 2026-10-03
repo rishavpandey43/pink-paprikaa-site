@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 import { expect, within } from "storybook/test";
 
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { GAP_CLASS } from "../../lib/space";
 import { Stack } from "./stack";
 
@@ -124,16 +124,16 @@ export const DividedOnSurfaces: Story = {
     <div className="grid gap-4">
       <div data-surface="brand" className="rounded-lg bg-surface-brand p-6">
         <Stack space={3} isDivided>
-          <Text>Paprikaa Chilli Paneer</Text>
-          <Text>Masala Cold Brew</Text>
-          <Text>Small Plates</Text>
+          <Typography>Paprikaa Chilli Paneer</Typography>
+          <Typography>Masala Cold Brew</Typography>
+          <Typography>Small Plates</Typography>
         </Stack>
       </div>
       <div data-surface="ink" className="rounded-lg bg-surface-inverse p-6">
         <Stack space={3} isDivided>
-          <Text>Paprikaa Chilli Paneer</Text>
-          <Text>Masala Cold Brew</Text>
-          <Text>Small Plates</Text>
+          <Typography>Paprikaa Chilli Paneer</Typography>
+          <Typography>Masala Cold Brew</Typography>
+          <Typography>Small Plates</Typography>
         </Stack>
       </div>
     </div>

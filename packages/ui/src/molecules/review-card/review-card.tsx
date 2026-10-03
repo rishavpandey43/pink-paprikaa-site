@@ -97,7 +97,7 @@ export function ReviewCard({
             {meta ? <span className={styles.meta()}>{meta}</span> : null}
           </span>
           {source ? (
-            <Link href={source.href} size="sm" isExternal className={styles.source()}>
+            <Link href={source.href} variant="link-sm" isExternal className={styles.source()}>
               {source.label}
             </Link>
           ) : null}

@@ -13,12 +13,12 @@ wordmark's bowls.
 
 <Canvas of={Specimens.HeadingSteps} meta={Specimens} sourceState="none" />
 
-Set every piece of text through the `Text` atom (`variant`): each step owns its size, line-height,
+Set every piece of text through the `Typography` atom (`variant`): each step owns its size, line-height,
 tracking and weight together — one decision, never mixed by hand.
 
 The visual step and the document outline are separate decisions: every titled component takes
 `headingLevel`, so a card title can look like an h4 and still be the page's third-level heading.
-Headlines stay at six words or fewer; `Text` balances every display and heading step
+Headlines stay at six words or fewer; `Typography` balances every display and heading step
 (`text-wrap: balance`) by default.
 
 Each specimen lists the classes that set it, ready to copy. A `text-*` class carries its step's

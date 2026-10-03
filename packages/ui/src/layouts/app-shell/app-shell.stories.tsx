@@ -7,7 +7,7 @@ import { Button } from "../../atoms/button/button";
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { Logo } from "../../atoms/logo/logo";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { FilterBar } from "../../molecules/filter-bar/filter-bar";
 import { LoyaltyCard } from "../../molecules/loyalty-card/loyalty-card";
 import { MenuItemRow } from "../../molecules/menu-item-row/menu-item-row";
@@ -41,9 +41,9 @@ function tabBar(current: string, label?: string) {
 function MenuScreen() {
   return (
     <Stack space={4} className="px-5 pt-2 pb-5">
-      <Text as="h1" variant="h3">
+      <Typography as="h1" variant="h3">
         Menu
-      </Text>
+      </Typography>
       <FilterBar label="Menu category" options={CATEGORIES} />
       <LoyaltyCard visits={6} goal={10} reward="chai" />
       <div>
@@ -84,12 +84,12 @@ function DemoHomeScreen() {
     <PatternField tone="brand" className="px-5 pt-1 pb-6">
       <Stack space={4}>
         <Logo tone="white" className="w-24" />
-        <Text as="h1" variant="h2">
+        <Typography as="h1" variant="h2">
           Chai first, decisions later.
-        </Text>
-        <Text variant="body-sm" tone="muted">
+        </Typography>
+        <Typography variant="body-sm" color="muted">
           Sector 57 · pickup
-        </Text>
+        </Typography>
       </Stack>
     </PatternField>
   );

@@ -53,15 +53,19 @@ test("a layer never imports one above it, and may import any below", () => {
   assert.equal(errors("atoms", "../../molecules/field/field"), 1);
   assert.equal(errors("molecules", "../../organisms/site-header/site-header"), 1);
   assert.equal(errors("organisms", "../../layouts/stack/stack"), 1);
-  assert.equal(errors("molecules", "../../atoms/text/text"), 0);
+  assert.equal(errors("molecules", "../../atoms/typography/typography"), 0);
   assert.equal(errors("layouts", "../../organisms/site-header/site-header"), 0);
 });
 
 test("an atom imports no other atom but Icon", () => {
-  assert.equal(errors("atoms", "../text/text"), 1);
-  assert.equal(errors("atoms", "../../atoms/text/text"), 1);
+  assert.equal(errors("atoms", "../badge/badge"), 1);
+  assert.equal(errors("atoms", "../../atoms/badge/badge"), 1);
   assert.equal(errors("atoms", "../icon/icon"), 0);
   assert.equal(errors("atoms", "../../atoms/icon/icon"), 0);
+  // Typography is the one other atom an atom may use: Link renders through it (ruling 2026-10-04).
+  assert.equal(errors("atoms", "../typography/typography"), 0);
+  assert.equal(errors("atoms", "../../atoms/typography/typography"), 0);
+  assert.equal(errors("atoms", "../typographyx/typography"), 1);
 });
 
 /** How many errors `import "<source>"` raises in a library file (`src/lib/`, not a tier). */
@@ -102,8 +106,8 @@ test("a lib file imports no tier above the atoms, and no atom but Icon", () => {
     "../molecules/field/field",
     "../organisms/site-header/site-header",
     "../layouts/stack/stack",
-    "../atoms/text/text",
-    "../../src/atoms/text/text",
+    "../atoms/badge/badge",
+    "../../src/atoms/badge/badge",
   ]) {
     assert.equal(libErrors(source), 1, `lib importing "${source}"`);
   }

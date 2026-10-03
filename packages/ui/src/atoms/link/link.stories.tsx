@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ComponentProps } from "react";
 
 import { ArrowRight, MapPin } from "lucide-react";
+import { expect, within } from "storybook/test";
 
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Link } from "./link";
@@ -17,13 +18,19 @@ function DemoRouterLink({ children, ...props }: ComponentProps<"a">) {
 const meta = {
   title: "Atoms/Link",
   component: Link,
-  args: { href: "/menu", children: "See the full menu", variant: "default", size: "md" },
+  args: {
+    href: "/menu",
+    children: "See the full menu",
+    variant: "link-md",
+    color: "link",
+    underline: "always",
+  },
   argTypes: { icon: { control: false }, iconAfter: { control: false } },
   parameters: {
     docs: {
       description: {
         component:
-          "Text links. Never leave an `<a>` unstyled — browser blue is not in the palette. `quiet` is the header/footer nav treatment (no underline). `isExternal` adds the arrow and the safe `rel`, and opens a new tab. `default`, `subtle` and `quiet` follow the surface; `inverse` is the explicit white link for pink and ink fields. `asChild` renders your router link (e.g. `next/link`) with the same styling. In running prose a bare `<a>` already carries the link style from the base layer.",
+          "Text links, rendered through `Typography`: `variant` is its `link-sm`/`link-md`/`link-lg` step (or `inherit` to take the size of the surrounding text), and `weight`, `align`, `noWrap` and `sx` work as they do there. Never leave an `<a>` unstyled — browser blue is not in the palette. `color` is `link` (pink), `muted`, `inverse` (the explicit white link for pink and ink fields) or `quiet` (the header/footer nav treatment); `underline` is `always`, `hover` or `none`. `isExternal` adds the arrow and the safe `rel`, and opens a new tab. `link`, `muted` and `quiet` follow the surface. `asChild` renders your router link (e.g. `next/link`) with the same styling. In running prose a bare `<a>` already carries the link style from the base layer.",
       },
     },
   },
@@ -35,7 +42,7 @@ type Story = StoryObj<typeof meta>;
 export const Playground: Story = {};
 
 export const Default: Story = {
-  name: 'variant="default"',
+  name: 'color="link"',
   render: () => (
     <div className="flex flex-wrap items-center gap-4">
       <Link href="/menu">See the full menu</Link>
@@ -49,32 +56,30 @@ export const Default: Story = {
   ),
 };
 
-export const SubtleQuiet: Story = {
-  name: 'variant="subtle" · "quiet"',
-  render: () => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Link href="/legal" variant="subtle">
-        Privacy
-      </Link>
-      <Link href="/outlets" variant="quiet">
-        Outlets
-      </Link>
-    </div>
-  ),
-};
-
-export const Inverse: Story = {
-  name: 'variant="inverse"',
+export const Colors: Story = {
+  name: 'color="muted" · "quiet" · "inverse"',
   render: () => (
     <div className="grid gap-3">
+      <div className="flex flex-wrap items-center gap-4">
+        <Link href="/menu">link</Link>
+        <Link href="/legal" color="muted" underline="hover">
+          muted
+        </Link>
+        <Link href="/outlets" color="quiet" underline="hover">
+          quiet
+        </Link>
+        <Link href="/about" color="brand">
+          brand
+        </Link>
+      </div>
       <div
         data-surface="brand"
         className="flex flex-wrap items-center gap-4 rounded-lg bg-surface-brand p-3.5"
       >
-        <Link href="/legal" variant="inverse">
+        <Link href="/legal" color="inverse">
           FSSAI licence
         </Link>
-        <Link href="https://www.zomato.com" isExternal variant="inverse">
+        <Link href="https://www.zomato.com" isExternal color="inverse">
           Zomato listing
         </Link>
       </div>
@@ -82,10 +87,10 @@ export const Inverse: Story = {
         data-surface="ink"
         className="flex flex-wrap items-center gap-4 rounded-lg bg-surface-inverse p-3.5"
       >
-        <Link href="/legal" variant="inverse">
+        <Link href="/legal" color="inverse">
           FSSAI licence
         </Link>
-        <Link href="https://www.zomato.com" isExternal variant="inverse">
+        <Link href="https://www.zomato.com" isExternal color="inverse">
           Zomato listing
         </Link>
       </div>
@@ -93,21 +98,58 @@ export const Inverse: Story = {
   ),
 };
 
-export const Sizes: Story = {
-  name: "size",
+export const Underline: Story = {
+  name: 'underline="always" · "hover" · "none"',
   render: () => (
     <div className="flex flex-wrap items-center gap-4">
-      <Link href="/menu" size="sm">
+      <Link href="/menu" underline="always">
+        always
+      </Link>
+      <Link href="/menu" underline="hover">
+        hover
+      </Link>
+      <Link href="/menu" underline="none">
+        none
+      </Link>
+    </div>
+  ),
+};
+
+export const Variants: Story = {
+  name: 'variant="link-sm" · "link-md" · "link-lg"',
+  render: () => (
+    <div className="flex flex-wrap items-center gap-4">
+      <Link href="/menu" variant="link-sm">
         Small
       </Link>
-      <Link href="/menu" size="md">
+      <Link href="/menu" variant="link-md">
         Medium
       </Link>
-      <Link href="/menu" size="lg">
+      <Link href="/menu" variant="link-lg">
         Large
       </Link>
     </div>
   ),
+};
+
+/** `variant="inherit"` takes the size of the surrounding text: in a `body-sm` paragraph it is body-sm. */
+export const InheritsParagraph: Story = {
+  name: 'variant="inherit" (inside a body-sm paragraph)',
+  render: () => (
+    <p className="m-0 font-body text-body-sm text-text-body" data-testid="para">
+      Every thali is cooked fresh. Read the{" "}
+      <Link href="/legal" variant="inherit" data-testid="inline-link">
+        allergen guide
+      </Link>{" "}
+      before you order.
+    </p>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const paragraph = getComputedStyle(canvas.getByTestId("para"));
+    const link = getComputedStyle(canvas.getByTestId("inline-link"));
+    await expect(link.fontSize).toBe(paragraph.fontSize);
+  },
 };
 
 export const External: Story = {
@@ -129,16 +171,16 @@ export const InFooterNav: Story = {
   name: "in context: footer nav",
   render: () => (
     <nav aria-label="Footer" className="flex flex-col items-start gap-3">
-      <Link href="/menu" variant="quiet">
+      <Link href="/menu" color="quiet" underline="hover">
         Menu
       </Link>
-      <Link href="/outlets" variant="quiet">
+      <Link href="/outlets" color="quiet" underline="hover">
         Outlets
       </Link>
-      <Link href="/catering" variant="quiet">
+      <Link href="/catering" color="quiet" underline="hover">
         Party Orders
       </Link>
-      <Link href="/contact" variant="quiet">
+      <Link href="/contact" color="quiet" underline="hover">
         Contact
       </Link>
     </nav>
@@ -150,10 +192,10 @@ export const OnSurfacesStory: Story = {
   render: () => (
     <OnSurfaces>
       <Link href="/menu">Default</Link>
-      <Link href="/legal" variant="subtle">
+      <Link href="/legal" color="muted" underline="hover">
         Subtle
       </Link>
-      <Link href="/outlets" variant="quiet">
+      <Link href="/outlets" color="quiet" underline="hover">
         Quiet
       </Link>
     </OnSurfaces>

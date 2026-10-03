@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { expect, within } from "storybook/test";
 
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
 import { GAP_CLASS } from "../../lib/space";
 import { VIEWPORT_360 } from "../../organisms/story-fixtures";
 import { Box } from "./box";
@@ -16,7 +16,7 @@ const meta = {
     padding: 6,
     surface: "soft",
     radius: "lg",
-    children: <Text>Pure veg, since day one — no egg, ever.</Text>,
+    children: <Typography>Pure veg, since day one — no egg, ever.</Typography>,
   },
   argTypes: {
     padding: { control: "select", options: STEPS },
@@ -52,7 +52,7 @@ export const Surfaces: Story = {
           radius="lg"
           hasBorder={surface === "light"}
         >
-          <Text>{`surface="${surface}" — Paneer Tikka, Dal Makhani, Masala Chaas`}</Text>
+          <Typography>{`surface="${surface}" — Paneer Tikka, Dal Makhani, Masala Chaas`}</Typography>
         </Box>
       ))}
     </div>
@@ -74,7 +74,7 @@ export const PaddingScale: Story = {
     <div className="grid gap-3">
       {([2, 4, 6, 8, 12] as const).map((padding) => (
         <Box key={padding} padding={padding} surface="soft" radius="md">
-          <Text>{`padding={${String(padding)}} · ${String(padding * 4)}px`}</Text>
+          <Typography>{`padding={${String(padding)}} · ${String(padding * 4)}px`}</Typography>
         </Box>
       ))}
     </div>
@@ -86,7 +86,7 @@ export const AsElement: Story = {
   render: () => (
     <div className="grid gap-3">
       <Box as="section" aria-label="Today's special" padding={6} hasBorder radius="lg" shadow={1}>
-        <Text>Shahi Paneer with butter naan.</Text>
+        <Typography>Shahi Paneer with butter naan.</Typography>
       </Box>
       <Box as="ul" role="list" padding={4} surface="soft" radius="md">
         <Box as="li">Jain thali</Box>
