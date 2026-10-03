@@ -283,6 +283,8 @@ If there are no deltas, skip the commit and say so in the report.
 | Stories Default · Split · Centred · Tones · Narrow                     | ALREADY | Playground · InkSplit · BrandCentred · InkSplit/BrandCentred/SoftSplit · Mobile |
 | Story HeadingOnly                                                      | ADD     | `HeadingOnly`                                                                   |
 | Story WithoutAction                                                    | ADD     | `WithoutAction`                                                                 |
+| _(not in dev)_ an empty slot renders no wrapper; a `0` slot does       | ADD     | fold item 18 (`isShown`); tests "renders no wrapper…", "…for a 0 overline…"     |
+| _(not in dev)_ a caller's ground shows through the diamond             | ADD     | fold item 21 (`bg-transparent` layer); the merge test                           |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -453,6 +455,24 @@ describe("CtaBand", () => {
     expect(container.textContent).toBe(COPY.title);
   });
 
+  it("renders no wrapper for an empty overline, body or action", () => {
+    const { container } = render(
+      <CtaBand title={COPY.title} overline="" body="" action="" pattern="none" />
+    );
+    const inner = container.querySelector("section > div");
+    expect(inner?.children).toHaveLength(1);
+    expect(inner?.firstElementChild?.children).toHaveLength(1);
+  });
+
+  it("renders the wrapper for a 0 overline, body or action — a number is content", () => {
+    const { container } = render(
+      <CtaBand title={COPY.title} overline={0} body={0} action={0} pattern="none" />
+    );
+    const inner = container.querySelector("section > div");
+    expect(inner?.children).toHaveLength(2);
+    expect(inner?.firstElementChild?.children).toHaveLength(3);
+  });
+
   it("keeps the action clickable", async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
@@ -512,10 +532,12 @@ describe("CtaBand", () => {
     );
   });
 
-  it("merges a caller className over its own", () => {
+  it("merges a caller className over its own, and the diamond layer lets that ground show", () => {
     const { container } = render(<CtaBand title={COPY.title} className="bg-surface-page-alt" />);
     expect(container.firstElementChild).toHaveClass("bg-surface-page-alt");
     expect(container.firstElementChild).not.toHaveClass("bg-surface-inverse");
+    expect(patternLayer(container)).toHaveClass("bg-transparent");
+    expect(patternLayer(container)).not.toHaveClass("bg-surface-inverse");
   });
 
   it("has no accessibility violations", async () => {
@@ -543,11 +565,13 @@ import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Text } from "../../atoms/text/text";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
 
 const ctaBand = componentVariants({
   slots: {
     root: "relative",
-    pattern: "absolute inset-0",
+    // A decorative layer only: the band's own ground (or a caller's) shows through it.
+    pattern: "absolute inset-0 bg-transparent",
     inner: "relative container-page flex flex-wrap gap-8 py-cta-band-y",
     copy: "flex min-w-0 flex-col gap-2.5",
     action: "flex shrink-0 flex-wrap items-center gap-2.5",
@@ -614,7 +638,7 @@ export function CtaBand({
       )}
       <div className={slots.inner()}>
         <div className={slots.copy()}>
-          {overline ? (
+          {isShown(overline) ? (
             <Text variant="overline" tone="brand">
               {overline}
             </Text>
@@ -622,13 +646,13 @@ export function CtaBand({
           <Text as={headingTag(headingLevel)} variant="h2" isFluid isBalanced>
             {title}
           </Text>
-          {body ? (
+          {isShown(body) ? (
             <Text variant="body-lg" tone="muted">
               {body}
             </Text>
           ) : null}
         </div>
-        {action ? <div className={slots.action()}>{action}</div> : null}
+        {isShown(action) ? <div className={slots.action()}>{action}</div> : null}
       </div>
     </section>
   );
@@ -638,7 +662,7 @@ export function CtaBand({
 - [ ] **Step 6: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- cta-band 2>&1 | tail -8`
-Expected: PASS (12 tests).
+Expected: PASS (14 tests).
 
 - [ ] **Step 7: Stories (card parity with `components/organisms/CtaBand.card.html` + handoff bands)**
 
@@ -839,6 +863,9 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 | Story WithIcons                                   | ADD     | `WithIcons`                                                              |
 | Story WithSubLines                                | ADD     | `WithSubLines`                                                           |
 | "4.6 average guest rating", "7 sections" copy     | DROP    | prompt "only real, verifiable numbers" + spec §10.1 (Step 6 note)        |
+| _(not in dev)_ empty `sub` no wrapper; `0` does   | ADD     | fold item 18 (Stat's `isShown`); tests "…for an empty sub", "…for a 0…"  |
+| _(not in dev)_ explicit list semantics            | ADD     | fold item 19 (`role="list"`); the grid test                              |
+| _(not in dev)_ caller ground through the diamond  | ADD     | fold item 21 (`bg-transparent` layer); the merge test                    |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -897,6 +924,9 @@ const STATS: StatBandItem[] = [
   { value: "100%", label: "pure vegetarian kitchen", sub: "No egg, no meat, ever" },
 ];
 
+const patternLayer = (container: HTMLElement) =>
+  container.querySelector('section > [aria-hidden="true"]');
+
 describe("StatBand", () => {
   it("lists every stat with its value, label and sub-line", () => {
     render(<StatBand stats={STATS} />);
@@ -912,6 +942,16 @@ describe("StatBand", () => {
     const items = within(screen.getByRole("list")).getAllByRole("listitem");
     expect(items[0]?.textContent).toBe("30dishes on the Classic plan");
     expect(items[2]).toHaveTextContent("No egg, no meat, ever");
+  });
+
+  it("renders no sub-line wrapper for an empty sub", () => {
+    render(<StatBand stats={[{ value: "3 km", label: "free delivery radius", sub: "" }]} />);
+    expect(screen.getByText("3 km").parentElement?.children).toHaveLength(2);
+  });
+
+  it("renders the sub-line wrapper for a 0 sub — a number is content", () => {
+    render(<StatBand stats={[{ value: "3 km", label: "free delivery radius", sub: 0 }]} />);
+    expect(screen.getByText("3 km").parentElement?.children).toHaveLength(3);
   });
 
   it("draws one glyph per stat that asks for one", () => {
@@ -945,20 +985,25 @@ describe("StatBand", () => {
     expect(screen.getByText("3 km").parentElement).toHaveClass("text-center");
   });
 
-  it("merges a caller className over its own", () => {
+  it("merges a caller className over its own, and the diamond layer lets that ground show", () => {
     const { container } = render(<StatBand stats={STATS} className="bg-surface-page" />);
     expect(container.firstElementChild).toHaveClass("bg-surface-page");
     expect(container.firstElementChild).not.toHaveClass("bg-surface-brand-soft");
+    expect(patternLayer(container)).toHaveClass("bg-transparent");
+    expect(patternLayer(container)).not.toHaveClass("bg-surface-brand-soft");
   });
 
   it("always carries the tiled diamond", () => {
     const { container } = render(<StatBand stats={STATS} />);
-    expect(container.querySelector('section > [aria-hidden="true"]')).toBeInTheDocument();
+    expect(patternLayer(container)).toBeInTheDocument();
   });
 
-  it("lays the stats on the auto-fitting stat grid", () => {
+  it("lays the stats on the auto-fitting stat grid, an explicit list", () => {
     render(<StatBand stats={STATS} />);
-    expect(screen.getByRole("list")).toHaveClass("autogrid-min-sm", "container-page");
+    const list = screen.getByRole("list");
+    expect(list).toHaveClass("autogrid-min-sm", "container-page");
+    // Safari drops list semantics under `list-style: none` unless the role is explicit.
+    expect(list).toHaveAttribute("role", "list");
   });
 
   it("has no accessibility violations", async () => {
@@ -996,7 +1041,8 @@ export interface StatBandItem {
 const statBand = componentVariants({
   slots: {
     root: "relative",
-    pattern: "absolute inset-0",
+    // A decorative layer only: the band's own ground (or a caller's) shows through it.
+    pattern: "absolute inset-0 bg-transparent",
     grid: "relative container-page grid autogrid-min-sm gap-stat-band-gap py-stat-band-y",
   },
   variants: {
@@ -1030,7 +1076,7 @@ export function StatBand({ stats, tone = "soft", className, ...props }: StatBand
   return (
     <section data-surface={tone} className={slots.root({ className })} {...props}>
       <PatternField aria-hidden tone={tone} tile={80} className={slots.pattern()} />
-      <ul className={slots.grid()}>
+      <ul role="list" className={slots.grid()}>
         {stats.map((stat, index) => (
           <li key={index}>
             <Stat {...stat} tone={STAT_TONE[tone]} align="center" />
@@ -1045,7 +1091,7 @@ export function StatBand({ stats, tone = "soft", className, ...props }: StatBand
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- stat-band 2>&1 | tail -8`
-Expected: PASS (12 tests). The number-colour and centring assertions read Stat's own classes (Plan 3a: `text-text-brand` / `text-text-on-inverse` on the value, `text-center` on the root); if Task 0 found them renamed, use the built names.
+Expected: PASS (14 tests). The number-colour and centring assertions read Stat's own classes (Plan 3a: `text-text-brand` / `text-text-on-inverse` on the value, `text-center` on the root); if Task 0 found them renamed, use the built names.
 
 - [ ] **Step 6: Stories (card parity with `StatBand.card.html`)**
 
@@ -1194,6 +1240,9 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 | Stories Default · Tones · Centred · Soft · AwaitingPhotography · Smallest      | ALREADY | Playground · BrandSplit/InkSplit · SoftCentred · SoftCentred · Playground (labelled ImageSlot) · Mobile |
 | Story HeadlineOnly                                                             | ADD     | `HeadlineOnly`                                                                                          |
 | Story WithPhotograph                                                           | ADD     | `WithPhotograph`                                                                                        |
+| _(not in dev)_ an empty slot renders no wrapper; a `0` slot does               | ADD     | fold item 18 (`isShown`); tests "renders no wrapper…", "renders the wrapper for a 0…"                   |
+| _(not in dev)_ explicit list semantics on the meta row                         | ADD     | fold item 19 (`role="list"`); the meta test                                                             |
+| _(not in dev)_ a caller's ground shows through the diamond                     | ADD     | fold item 21 (`bg-transparent` layer); the merge test                                                   |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -1287,9 +1336,37 @@ describe("HeroBanner", () => {
     );
   });
 
+  it("renders no wrapper for an empty badges, overline, body, actions or media slot", () => {
+    const { container } = render(
+      <HeroBanner badges="" overline="" title={TITLE} body="" actions="" media="" pattern="none" />
+    );
+    const inner = container.querySelector("section > div");
+    expect(inner?.children).toHaveLength(1);
+    expect(inner?.firstElementChild?.children).toHaveLength(1);
+  });
+
+  it("renders the wrapper for a 0 badges, overline, body, actions or media — a number is content", () => {
+    const { container } = render(
+      <HeroBanner
+        badges={0}
+        overline={0}
+        title={TITLE}
+        body={0}
+        actions={0}
+        media={0}
+        pattern="none"
+      />
+    );
+    const inner = container.querySelector("section > div");
+    expect(inner?.children).toHaveLength(2);
+    expect(inner?.firstElementChild?.children).toHaveLength(5);
+  });
+
   it("lists the meta facts with a decorative diamond between each pair", () => {
     render(<HeroBanner title={TITLE} meta={META} />);
     const list = screen.getByRole("list");
+    // Safari drops list semantics under `list-style: none` unless the role is explicit.
+    expect(list).toHaveAttribute("role", "list");
     const facts = within(list)
       .getAllByRole("listitem")
       .map((item) => item.textContent);
@@ -1345,10 +1422,12 @@ describe("HeroBanner", () => {
     expect(container.querySelector("section > div")).toHaveClass("text-center");
   });
 
-  it("merges a caller className over its own", () => {
+  it("merges a caller className over its own, and the diamond layer lets that ground show", () => {
     const { container } = render(<HeroBanner title={TITLE} className="bg-surface-page" />);
     expect(container.firstElementChild).toHaveClass("bg-surface-page");
     expect(container.firstElementChild).not.toHaveClass("bg-surface-brand");
+    expect(patternLayer(container)).toHaveClass("bg-transparent");
+    expect(patternLayer(container)).not.toHaveClass("bg-surface-brand");
   });
 
   it("has no accessibility violations", async () => {
@@ -1382,12 +1461,14 @@ import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Text } from "../../atoms/text/text";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
 import { SymbolMark } from "../../lib/symbol-mark";
 
 const heroBanner = componentVariants({
   slots: {
     root: "relative",
-    pattern: "absolute inset-0",
+    // A decorative layer only: the hero's own ground (or a caller's) shows through it.
+    pattern: "absolute inset-0 bg-transparent",
     inner: "relative container-page grid items-center gap-hero-banner-gap py-hero-banner-y",
     copy: "flex min-w-0 flex-col gap-5",
     badges: "flex flex-wrap gap-2",
@@ -1492,8 +1573,8 @@ export function HeroBanner({
       )}
       <div className={slots.inner()}>
         <div className={slots.copy()}>
-          {badges ? <div className={slots.badges()}>{badges}</div> : null}
-          {overline ? (
+          {isShown(badges) ? <div className={slots.badges()}>{badges}</div> : null}
+          {isShown(overline) ? (
             <Text variant="overline" tone="brand">
               {overline}
             </Text>
@@ -1501,14 +1582,14 @@ export function HeroBanner({
           <Text as={headingTag(headingLevel)} variant={titleSize} isFluid isBalanced>
             {title}
           </Text>
-          {body ? (
+          {isShown(body) ? (
             <Text as="div" variant="body-lg" tone="muted" measure="narrow">
               {body}
             </Text>
           ) : null}
-          {actions ? <div className={slots.actions()}>{actions}</div> : null}
+          {isShown(actions) ? <div className={slots.actions()}>{actions}</div> : null}
           {meta.length > 0 ? (
-            <ul className={slots.meta()}>
+            <ul role="list" className={slots.meta()}>
               {meta.map((fact, index) => (
                 <li key={index} className={slots.metaItem()}>
                   {index > 0 ? <SymbolMark className={slots.metaMark()} /> : null}
@@ -1520,7 +1601,7 @@ export function HeroBanner({
             </ul>
           ) : null}
         </div>
-        {media ? <div className={slots.media()}>{media}</div> : null}
+        {isShown(media) ? <div className={slots.media()}>{media}</div> : null}
       </div>
     </section>
   );
@@ -1530,7 +1611,7 @@ export function HeroBanner({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- hero-banner 2>&1 | tail -8`
-Expected: PASS (15 tests).
+Expected: PASS (17 tests).
 
 - [ ] **Step 6: Stories (card parity with `HeroBanner.card.html` + the handoff heroes)**
 
@@ -1815,7 +1896,7 @@ export const WithPhotograph: Story = {
           variant="body"
           weight="bold"
           tone="inverse"
-          className="absolute right-6 bottom-6 left-6"
+          className="absolute inset-x-6 bottom-6"
         >
           From our restaurant kitchen, MKM Market, Sector 57
         </Text>
