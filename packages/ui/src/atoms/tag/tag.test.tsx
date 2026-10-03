@@ -114,12 +114,28 @@ describe("Tag", () => {
   });
 
   it.each([
-    ["default", "bg-ink-000", "border-ink-300", "text-ink-700"],
+    ["neutral", "bg-ink-000", "border-ink-300", "text-ink-700"],
     ["success", "bg-status-success-soft", "border-status-success", "text-mint-strong"],
     ["brand", "bg-ink-000", "border-pink-200", "text-pink-700"],
-  ] as const)("paints the %s tone with %s, %s and %s", (tone, fill, border, text) => {
-    render(<Tag tone={tone}>Sector 57</Tag>);
+  ] as const)("paints the %s color with %s, %s and %s", (color, fill, border, text) => {
+    render(<Tag color={color}>Sector 57</Tag>);
     expect(screen.getByText("Sector 57").parentElement).toHaveClass(fill, border, text);
+  });
+
+  it("sx lands on the tag and beats its own padding", () => {
+    render(<Tag sx={{ px: 8, mt: 2 }}>Sweets</Tag>);
+    const chip = screen.getByText("Sweets").parentElement;
+    expect(chip).toHaveClass("px-8", "mt-2");
+    expect(chip).not.toHaveClass("px-4");
+  });
+
+  it("sx lands on a pressable tag too", () => {
+    render(
+      <Tag onClick={noop} sx={{ px: 8 }}>
+        Sweets
+      </Tag>
+    );
+    expect(screen.getByRole("button", { name: "Sweets" })).toHaveClass("px-8");
   });
 
   it("is a fixed 38px pill in DM Sans that never wraps — a long label truncates (Review Focus 1)", () => {
@@ -176,7 +192,7 @@ describe("Tag", () => {
           Hot
         </Tag>
         <Tag onClick={noop}>All</Tag>
-        <Tag tone="success">Sector 57</Tag>
+        <Tag color="success">Sector 57</Tag>
         <Tag disabled>Breakfast</Tag>
       </>
     );

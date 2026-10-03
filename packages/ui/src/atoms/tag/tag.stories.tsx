@@ -41,7 +41,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Tappable filter pill — menu categories, dietary filters, outlet cities. Sentence/Title Case (not caps — that's `Badge`). Selected = flooded pink; unselected = white with a 1px border. With `onClick` it is a toggle button (`aria-pressed`); without, a static chip. Static `tone` success and brand are the delivery-zone chips. Tags are a fixed 38px and never wrap; a label longer than its row ellipsises.",
+          "Tappable filter pill — menu categories, dietary filters, outlet cities. Sentence/Title Case (not caps — that's `Badge`). Selected = flooded pink; unselected = white with a 1px border. With `onClick` it is a toggle button (`aria-pressed`); without, a static chip. Static `color` success and brand are the delivery-zone chips. Tags are a fixed 38px and never wrap; a label longer than its row ellipsises.",
       },
     },
   },
@@ -107,14 +107,15 @@ export const CategoryFilterRail: Story = {
   ),
 };
 
-export const Tones: Story = {
-  name: "tone",
+export const Colors: Story = {
+  name: "color",
   render: () => (
     <div className="flex flex-wrap items-center gap-2">
-      <Tag tone="success">Sector 57</Tag>
-      <Tag tone="success">Sector 56</Tag>
-      <Tag tone="brand">Sector 58</Tag>
-      <Tag tone="brand">Sector 62</Tag>
+      <Tag color="neutral">Sector 55</Tag>
+      <Tag color="success">Sector 57</Tag>
+      <Tag color="success">Sector 56</Tag>
+      <Tag color="brand">Sector 58</Tag>
+      <Tag color="brand">Sector 62</Tag>
     </div>
   ),
 };
