@@ -3995,6 +3995,36 @@ describe("SiteFooter", () => {
     expect(container.textContent).not.toMatch(/FSSAI|GSTIN|©|\+91|pinkpaprikaa\.com/);
   });
 
+  it("renders no brand block and no legal bar for empty brand and legal slots", () => {
+    render(<SiteFooter columns={COLUMNS} brand="" legal="" />);
+    const footer = screen.getByRole("contentinfo");
+    // The grid holds only the three columns; the footer holds only the grid.
+    expect(footer.children).toHaveLength(1);
+    expect(footer.firstElementChild?.children).toHaveLength(COLUMNS.length);
+  });
+
+  it("gives every list outside a nav explicit list semantics", () => {
+    render(
+      <SiteFooter
+        columns={COLUMNS}
+        social={[
+          { network: "instagram", href: "https://instagram.com/pinkpaprikaa", label: "Instagram" },
+        ]}
+        policies={[{ label: "Privacy Policy", href: "#privacy" }]}
+      />
+    );
+    const listOf = (element: HTMLElement) => element.closest("ul");
+    expect(
+      listOf(screen.getByRole("link", { name: "Instagram (Opens in a new tab)" }))
+    ).toHaveAttribute("role", "list");
+    expect(listOf(screen.getByRole("link", { name: "Privacy Policy" }))).toHaveAttribute(
+      "role",
+      "list"
+    );
+    expect(listOf(screen.getByText("8am – 11:30pm, every day"))).toHaveAttribute("role", "list");
+    expect(listOf(screen.getByRole("link", { name: "Homely Meals" }))).not.toHaveAttribute("role");
+  });
+
   it("names each social link and opens it in a new tab", () => {
     render(
       <SiteFooter
@@ -4119,13 +4149,14 @@ import type { ComponentProps, ReactNode } from "react";
 
 import type { LinkAs } from "../../lib/link-as";
 
+import { IconButton } from "../../atoms/icon-button/icon-button";
 import { InstagramGlyph, LinkedinGlyph, YoutubeGlyph } from "../../atoms/icon/brand-glyphs";
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
-import { IconButton } from "../../atoms/icon-button/icon-button";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Text } from "../../atoms/text/text";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
 
 export interface FooterItem {
   label: ReactNode;
@@ -4238,8 +4269,8 @@ export function SiteFooter({
   const slots = siteFooter({ tone, hasDockClearance });
   const density = pattern ?? DEFAULT_PATTERN[tone];
   const heading = headingTag(headingLevel);
-  const hasBrandBlock = brand !== undefined || social.length > 0;
-  const hasLegalBar = legal !== undefined || policies.length > 0;
+  const hasBrandBlock = isShown(brand) || social.length > 0;
+  const hasLegalBar = isShown(legal) || policies.length > 0;
   return (
     <footer data-surface={tone} className={slots.root({ className })} {...props}>
       {density === "none" ? null : (
@@ -4256,7 +4287,8 @@ export function SiteFooter({
           <div className={slots.brand()}>
             {brand}
             {social.length > 0 ? (
-              <ul className={slots.social()}>
+              // Safari/VoiceOver drops list semantics from a list-style:none list outside a nav.
+              <ul role="list" className={slots.social()}>
                 {social.map((link) => (
                   <li key={link.network}>
                     <IconButton
@@ -4289,7 +4321,7 @@ export function SiteFooter({
               <Text as={heading} variant="overline" tone="brand">
                 {column.heading}
               </Text>
-              <ul className={slots.items()}>
+              <ul role={Column === "nav" ? undefined : "list"} className={slots.items()}>
                 {column.items.map((item, index) => {
                   const icon = item.icon ? (
                     <Icon icon={item.icon} size="sm" className={slots.itemIcon()} />
@@ -4318,9 +4350,9 @@ export function SiteFooter({
       {hasLegalBar ? (
         <div className={slots.legal()}>
           <div className={slots.legalBar()}>
-            {legal === undefined ? null : <div className={slots.legalText()}>{legal}</div>}
+            {isShown(legal) ? <div className={slots.legalText()}>{legal}</div> : null}
             {policies.length > 0 ? (
-              <ul className={slots.policies()}>
+              <ul role="list" className={slots.policies()}>
                 {policies.map((policy) => (
                   <li key={policy.href}>
                     <LinkComponent href={policy.href} className={slots.policyLink()}>
@@ -4341,7 +4373,7 @@ export function SiteFooter({
 - [ ] **Step 5: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- site-footer 2>&1 | tail -8`
-Expected: PASS (12 tests).
+Expected: PASS (14 tests).
 
 - [ ] **Step 6: Stories (card parity with `SiteFooter.card.html` + handoff `PPFooter`)**
 
@@ -4351,11 +4383,13 @@ Expected: PASS (12 tests).
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { CreditCard, Mail, MessageCircle, Phone } from "lucide-react";
+import { expect } from "storybook/test";
 
 import { Badge } from "../../atoms/badge/badge";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
 import { Logo } from "../../atoms/logo/logo";
 import { Text } from "../../atoms/text/text";
+import { ringClippers } from "../../lib/story-ring";
 import { BRAND, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
 import { type FooterColumn, type FooterSocialLink, SiteFooter } from "./site-footer";
 
@@ -4478,10 +4512,20 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** Tab through every link in DOM order: each takes focus with a visible ring nothing clips. */
+const proveRingsWhole: Story["play"] = async ({ canvas, userEvent }) => {
+  for (const link of canvas.getAllByRole("link")) {
+    await userEvent.tab();
+    await expect(link).toHaveFocus();
+    await expect(link.matches(":focus-visible")).toBe(true);
+    await expect(ringClippers(link)).toEqual([]);
+  }
+};
+
 export const Playground: Story = {};
 
 /** Card row: the full design-system footer (brand tone). */
-export const DesignSystemPink: Story = {};
+export const DesignSystemPink: Story = { play: proveRingsWhole };
 
 /** Handoff PPFooter — ink, faint diamond, contact rows with icons, dock clearance. */
 export const HandoffInk: Story = {
@@ -4515,6 +4559,7 @@ export const HandoffInk: Story = {
     ],
     hasDockClearance: true,
   },
+  play: proveRingsWhole,
 };
 
 /** Only columns given — nothing else appears (no default facts). */
