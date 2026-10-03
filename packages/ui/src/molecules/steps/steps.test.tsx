@@ -61,4 +61,11 @@ describe("Steps", () => {
     const { container } = render(<Steps items={HOW_IT_WORKS} variant={variant} />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <Steps items={[{ title: "Order" }]} sx={{ m: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("m-4", "italic");
+  });
 });

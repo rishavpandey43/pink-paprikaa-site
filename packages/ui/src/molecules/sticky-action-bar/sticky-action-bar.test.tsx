@@ -51,4 +51,16 @@ describe("StickyActionBar", () => {
     const { container } = render(<StickyActionBar {...BAR} />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <StickyActionBar
+        amount="₹240"
+        action={<button type="button">Pay</button>}
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });

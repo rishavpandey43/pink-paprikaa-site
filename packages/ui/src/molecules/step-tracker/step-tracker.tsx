@@ -1,9 +1,10 @@
-import type { ComponentProps } from "react";
-
 import { Check } from "lucide-react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { SymbolMark } from "../../lib/symbol-mark";
 
 type StepState = "complete" | "current" | "upcoming";
@@ -69,7 +70,7 @@ export interface TrackerStep {
   note?: string | undefined;
 }
 
-export interface StepTrackerProps extends ComponentProps<"ol"> {
+export interface StepTrackerProps extends BaseProps<"ol"> {
   steps: TrackerStep[];
   /** Index of the current step; earlier steps are complete. */
   current: number;
@@ -85,6 +86,7 @@ export function StepTracker({
   steps,
   current,
   orientation = "vertical",
+  sx,
   className,
   ...props
 }: StepTrackerProps) {
@@ -94,7 +96,7 @@ export function StepTracker({
   return (
     // Safari/VoiceOver drops list semantics from a list-style:none list; the explicit role
     // restores them.
-    <ol role="list" className={styles.root({ className })} {...props}>
+    <ol role="list" className={styles.root({ className: withSx(sx, className) })} {...props}>
       {steps.map((step, index) => {
         const state = stateOf(index, current);
         return (

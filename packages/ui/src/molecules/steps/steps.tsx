@@ -1,17 +1,20 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { createElement } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 export interface StepsItem {
   title: ReactNode;
   description?: ReactNode | undefined;
 }
 
-export interface StepsProps extends ComponentProps<"ol"> {
+export interface StepsProps extends BaseProps<"ol"> {
   items: StepsItem[];
   /** `circle`: a pink disc per step, stacked. `rule`: a brand top rule and "01", in a grid. */
   variant?: "circle" | "rule" | undefined;
@@ -57,6 +60,7 @@ export function Steps({
   items,
   variant = "circle",
   headingLevel = 3,
+  sx,
   className,
   ...props
 }: StepsProps) {
@@ -65,7 +69,7 @@ export function Steps({
   return (
     // Safari/VoiceOver drops list semantics from a list-style:none list; the explicit role
     // restores them.
-    <ol role="list" className={styles.root({ className })} {...props}>
+    <ol role="list" className={styles.root({ className: withSx(sx, className) })} {...props}>
       {items.map((item, index) => (
         <li key={index} className={styles.item()}>
           <span className={styles.marker()}>{STEP_NUMBER[variant](index + 1)}</span>

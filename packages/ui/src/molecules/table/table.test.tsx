@@ -106,4 +106,17 @@ describe("Table", () => {
     const { container } = render(<PriceList />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <Table caption="Plans" sx={{ mt: 4 }} className="italic">
+        <tbody>
+          <tr>
+            <td>x</td>
+          </tr>
+        </tbody>
+      </Table>
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });

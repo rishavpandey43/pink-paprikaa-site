@@ -1,6 +1,9 @@
 import { type ComponentProps, type ReactNode, useId } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
+
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const table = componentVariants({
   slots: {
@@ -43,7 +46,7 @@ const tableCell = componentVariants({
   variants: { isHighlighted: { true: "font-semibold text-text-heading", false: "" } },
 });
 
-export interface TableProps extends ComponentProps<"table"> {
+export interface TableProps extends BaseProps<"table"> {
   /** Names the table (and its scroll region). Visually hidden unless `isCaptionVisible`. */
   caption: ReactNode;
   isCaptionVisible?: boolean | undefined;
@@ -77,6 +80,7 @@ export function Table({
   caption,
   isCaptionVisible = false,
   minWidth = "none",
+  sx,
   className,
   children,
   ...props
@@ -91,7 +95,7 @@ export function Table({
       role={isScrollable ? "region" : undefined}
       aria-labelledby={isScrollable ? captionId : undefined}
       tabIndex={isScrollable ? 0 : undefined}
-      className={styles.frame({ className })}
+      className={styles.frame({ className: withSx(sx, className) })}
     >
       <table className={styles.table()} {...props}>
         <caption id={captionId} className={styles.caption()}>

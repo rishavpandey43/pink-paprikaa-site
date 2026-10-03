@@ -1,7 +1,10 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 const stickyActionBar = componentVariants({
   slots: {
@@ -16,7 +19,7 @@ const stickyActionBar = componentVariants({
   },
 });
 
-export interface StickyActionBarProps extends ComponentProps<"div"> {
+export interface StickyActionBarProps extends BaseProps<"div"> {
   /** The running total, formatted. */
   amount: ReactNode;
   /** One line under it; truncates rather than wrapping. */
@@ -33,12 +36,17 @@ export function StickyActionBar({
   caption,
   action,
   hideFrom = "lg",
+  sx,
   className,
   ...props
 }: StickyActionBarProps) {
   const styles = stickyActionBar({ hideFrom });
   return (
-    <div data-surface="ink" className={styles.root({ className })} {...props}>
+    <div
+      data-surface="ink"
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       <div className={styles.summary()}>
         <span className={styles.amount()}>{amount}</span>
         {isShown(caption) ? <span className={styles.caption()}>{caption}</span> : null}

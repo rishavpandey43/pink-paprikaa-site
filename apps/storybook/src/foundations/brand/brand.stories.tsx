@@ -52,7 +52,7 @@ export const Lockup: Story = {
         <Logo className="w-44" />
       </SpecimenTile>
       <SpecimenTile
-        caption='tone="white" · on ink'
+        caption='color="inverse" · on ink'
         surface="ink"
         className="h-30 items-center justify-center bg-surface-inverse p-6"
       >
@@ -78,7 +78,7 @@ export const Wordmark: Story = {
         <Logo variant="wordmark" className="w-44" />
       </SpecimenTile>
       <SpecimenTile
-        caption='tone="white" · on ink'
+        caption='color="inverse" · on ink'
         surface="ink"
         className="h-30 items-center justify-center bg-surface-inverse p-6"
       >
@@ -114,7 +114,7 @@ export const ClearSpace: Story = {
         <LogoLockup color="brand" size="md" />
       </SpecimenTile>
       <SpecimenTile
-        caption='tone="white" · on ink'
+        caption='color="inverse" · on ink'
         surface="ink"
         className="items-center justify-center bg-surface-inverse"
       >
@@ -141,7 +141,7 @@ export const SymbolMark: Story = {
         <Logo variant="symbol" color="inverse" className="w-16" />
       </SpecimenTile>
       <SpecimenTile
-        caption='tone="white" · on ink'
+        caption='color="inverse" · on ink'
         surface="ink"
         className="size-30 items-center justify-center bg-surface-inverse"
       >
