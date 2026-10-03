@@ -3,6 +3,7 @@
 import { ToggleGroup } from "radix-ui";
 import { type FocusEvent, type ReactNode, type Ref, useId, useState } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { FieldStatus } from "../../lib/field-status";
 
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
@@ -10,6 +11,7 @@ import { tagVariants } from "../../atoms/tag/tag";
 import { joinIds } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import { withSx } from "../../lib/sx";
 
 export interface ChipOption {
   value: string;
@@ -20,13 +22,18 @@ export interface ChipOption {
 
 type ChipGroupVariant = "chips" | "segmented";
 
-interface ChipGroupBaseProps {
+/** The wrapper takes the div's native props; `ref`, `onBlur` and `defaultValue` mean something else here, and `aria-invalid` is the group's own `status`. */
+type ChipGroupRootProps = Omit<
+  BaseProps<"div">,
+  "ref" | "onBlur" | "defaultValue" | "children" | "aria-invalid"
+>;
+
+interface ChipGroupBaseProps extends ChipGroupRootProps {
   /** Accessible name of the group — the visible step heading usually says the same. */
   label: string;
   options: ChipOption[];
   /** `chips`: wrapping Tag pills. `segmented`: a pill track switching one value (no panels). */
   variant?: ChipGroupVariant | undefined;
-  className?: string | undefined;
   /** Renders hidden inputs, so the choice submits with a plain form. */
   name?: string | undefined;
   disabled?: boolean | undefined;
@@ -162,6 +169,7 @@ function SingleChipGroup({
   label,
   options,
   variant = "chips",
+  sx,
   className,
   name,
   disabled = false,
@@ -173,6 +181,8 @@ function SingleChipGroup({
   value,
   defaultValue,
   onValueChange,
+  type: _type,
+  ...props
 }: SingleChipGroupProps) {
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue ?? "");
   const messageId = useId();
@@ -190,7 +200,9 @@ function SingleChipGroup({
 
   return (
     <div
-      className={styles.root({ className })}
+      {...props}
+      aria-invalid={undefined}
+      className={styles.root({ className: withSx(sx, className) })}
       onBlur={onBlur === undefined ? undefined : blurLeavingGroup(onBlur)}
     >
       <ToggleGroup.Root
@@ -216,6 +228,7 @@ function MultipleChipGroup({
   label,
   options,
   variant = "chips",
+  sx,
   className,
   name,
   disabled = false,
@@ -229,6 +242,8 @@ function MultipleChipGroup({
   onValueChange,
   maxSelected,
   getLimitMessage = defaultLimitMessage,
+  type: _type,
+  ...props
 }: MultipleChipGroupProps) {
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue ?? []);
   const statusId = useId();
@@ -255,7 +270,9 @@ function MultipleChipGroup({
 
   return (
     <div
-      className={styles.root({ className })}
+      {...props}
+      aria-invalid={undefined}
+      className={styles.root({ className: withSx(sx, className) })}
       onBlur={onBlur === undefined ? undefined : blurLeavingGroup(onBlur)}
     >
       {maxSelected === undefined ? null : (

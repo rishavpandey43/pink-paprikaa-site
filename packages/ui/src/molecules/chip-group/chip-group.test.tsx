@@ -363,4 +363,40 @@ describe("ChipGroup", () => {
     const { container } = render(element);
     await expectNoA11yViolations(container);
   });
+
+  it("forwards id, data-* and aria-* to its wrapper, and takes sx there; ref stays on the group", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(
+      <ChipGroup
+        ref={ref}
+        type="single"
+        label="Which meals"
+        options={MEALS}
+        id="meals"
+        data-section="plan"
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    const wrapper = document.getElementById("meals");
+    expect(wrapper).toHaveAttribute("data-section", "plan");
+    expect(wrapper).toHaveClass("mt-4", "italic");
+    expect(wrapper).toContainElement(screen.getByRole("radiogroup", { name: "Which meals" }));
+    expect(ref.current).toBe(screen.getByRole("radiogroup", { name: "Which meals" }));
+  });
+
+  it("takes the same native props and sx when multiple", () => {
+    render(
+      <ChipGroup
+        type="multiple"
+        label="Starters"
+        options={STARTERS}
+        id="starters"
+        data-section="plan"
+        sx={{ mb: 2 }}
+      />
+    );
+    expect(document.getElementById("starters")).toHaveClass("mb-2");
+    expect(document.getElementById("starters")).toHaveAttribute("data-section", "plan");
+  });
 });
