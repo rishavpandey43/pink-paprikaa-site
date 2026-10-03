@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
+import { createRef } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
+import { SURFACE_BG, SURFACE_DATA } from "../../lib/common-props";
 import { Box } from "./box";
 
 describe("Box", () => {
@@ -35,57 +37,52 @@ describe("Box", () => {
     expect(screen.getByRole("list")).toContainElement(screen.getByRole("listitem"));
   });
 
-  it.each([
-    [{ padding: 4 }, "p-4"],
-    [{ padding: 0.5 }, "p-0.5"],
-    [{ paddingX: 6 }, "px-6"],
-    [{ paddingY: 12 }, "py-12"],
-  ] as const)("%o sets %s", (props, cls) => {
-    render(<Box {...props} data-testid="box" />);
-    expect(screen.getByTestId("box")).toHaveClass(cls);
+  it("renders the chosen element with sx on it", () => {
+    render(
+      <Box as="section" aria-label="Offers" sx={{ p: 6, radius: "lg", border: true }}>
+        x
+      </Box>
+    );
+    const box = screen.getByRole("region", { name: "Offers" });
+    expect(box).toHaveClass("p-6", "rounded-lg", "border-default", "border-border-default");
   });
 
-  it("keeps a side padding beside the all-round one", () => {
-    render(<Box padding={4} paddingX={8} data-testid="box" />);
-    expect(screen.getByTestId("box")).toHaveClass("p-4", "px-8");
+  it.each(["page", "alt", "sunken", "soft", "brand", "ink"] as const)(
+    "surface %s sets the ground and data-surface",
+    (surface) => {
+      render(
+        <Box data-testid="b" surface={surface}>
+          x
+        </Box>
+      );
+      const b = screen.getByTestId("b");
+      expect(b).toHaveClass(SURFACE_BG[surface]);
+      expect(b).toHaveAttribute("data-surface", SURFACE_DATA[surface]);
+    }
+  );
+
+  it("sets no data-surface without a surface", () => {
+    render(<Box data-testid="b">x</Box>);
+    expect(screen.getByTestId("b")).not.toHaveAttribute("data-surface");
   });
 
-  it.each([
-    ["light", "bg-surface-page"],
-    ["soft", "bg-surface-brand-soft"],
-    ["brand", "bg-surface-brand"],
-    ["ink", "bg-surface-inverse"],
-  ] as const)("surface=%s sets data-surface and %s", (surface, cls) => {
-    render(<Box surface={surface} data-testid="box" />);
-    const box = screen.getByTestId("box");
-    expect(box).toHaveAttribute("data-surface", surface);
-    expect(box).toHaveClass(cls);
+  it("forwards native props and ref", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(
+      <Box ref={ref} id="hero" data-x="1">
+        x
+      </Box>
+    );
+    expect(ref.current).toHaveAttribute("id", "hero");
+    expect(ref.current).toHaveAttribute("data-x", "1");
   });
 
-  it.each([
-    ["none", "rounded-none"],
-    ["sm", "rounded-sm"],
-    ["md", "rounded-md"],
-    ["lg", "rounded-lg"],
-    ["xl", "rounded-xl"],
-    ["pill", "rounded-pill"],
-  ] as const)("radius=%s sets %s", (radius, cls) => {
-    render(<Box radius={radius} data-testid="box" />);
-    expect(screen.getByTestId("box")).toHaveClass(cls);
-  });
-
-  it("draws the default border", () => {
-    render(<Box hasBorder data-testid="box" />);
-    expect(screen.getByTestId("box")).toHaveClass("border-default", "border-border-default");
-  });
-
-  it.each([1, 2, 3, 4] as const)("shadow=%s sets shadow-%s", (shadow) => {
-    render(<Box shadow={shadow} data-testid="box" />);
-    expect(screen.getByTestId("box")).toHaveClass(`shadow-${String(shadow)}`);
-  });
-
-  it("lets a consumer className replace a prop's class", () => {
-    render(<Box padding={4} className="p-2" data-testid="box" />);
+  it("lets a consumer className replace an sx class", () => {
+    render(
+      <Box sx={{ p: 4 }} className="p-2" data-testid="box">
+        x
+      </Box>
+    );
     const box = screen.getByTestId("box");
     expect(box).toHaveClass("p-2");
     expect(box).not.toHaveClass("p-4");
@@ -94,8 +91,8 @@ describe("Box", () => {
   it("has no accessibility violations on every surface", async () => {
     const { container } = render(
       <>
-        {(["light", "soft", "brand", "ink"] as const).map((surface) => (
-          <Box key={surface} as="section" aria-label={surface} surface={surface} padding={6}>
+        {(["page", "alt", "sunken", "soft", "brand", "ink"] as const).map((surface) => (
+          <Box key={surface} as="section" aria-label={surface} surface={surface} sx={{ p: 6 }}>
             <p>Pure veg, since day one.</p>
           </Box>
         ))}

@@ -3,33 +3,28 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, within } from "storybook/test";
 
 import { Typography } from "../../atoms/typography/typography";
-import { GAP_CLASS } from "../../lib/space";
 import { VIEWPORT_360 } from "../../organisms/story-fixtures";
 import { Box } from "./box";
 
-const STEPS = Object.keys(GAP_CLASS).map(Number);
+const SURFACES = ["page", "alt", "sunken", "soft", "brand", "ink"] as const;
 
 const meta = {
   title: "Layouts/Box",
   component: Box,
   args: {
-    padding: 6,
     surface: "soft",
-    radius: "lg",
+    sx: { p: 6, radius: "lg", border: true },
     children: <Typography>Pure veg, since day one — no egg, ever.</Typography>,
   },
   argTypes: {
-    padding: { control: "select", options: STEPS },
-    paddingX: { control: "select", options: STEPS },
-    paddingY: { control: "select", options: STEPS },
-    shadow: { control: "select", options: [undefined, 1, 2, 3, 4] },
+    surface: { control: "select", options: [undefined, ...SURFACES] },
   },
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "A wrapper with token-only props: `padding`/`paddingX`/`paddingY` steps (N × 4px), a `surface` (sets `data-surface` and its ground — Section's mapping), a `radius`, a `hasBorder` hairline and a `shadow` step. Not a style escape hatch: no `sx`, no arbitrary values. Spacing between children belongs to Stack, Cluster or Grid.",
+          "A polymorphic wrapper: `as`, `surface` and `sx`. MUI's Box, token-only. `surface` sets `data-surface` and its ground, so text inside follows it; everything else (padding, radius, border, shadow, display) is a token-typed `sx` key, responsive with `{ base, sm, md, lg, xl }`. Spacing between children belongs to Stack, Cluster or Grid.",
       },
     },
   },
@@ -40,19 +35,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
-/** All four surfaces: each sets `data-surface`, so the text inside follows it. */
+/** All six surfaces: each sets `data-surface`, so the text inside follows it. */
 export const Surfaces: Story = {
   render: () => (
     <div className="grid gap-3">
-      {(["light", "soft", "brand", "ink"] as const).map((surface) => (
-        <Box
-          key={surface}
-          surface={surface}
-          padding={6}
-          radius="lg"
-          hasBorder={surface === "light"}
-        >
-          <Typography>{`surface="${surface}" — Paneer Tikka, Dal Makhani, Masala Chaas`}</Typography>
+      {SURFACES.map((surface) => (
+        <Box key={surface} surface={surface} sx={{ p: 6, radius: "lg" }}>
+          <Typography variant="h4" as="h3">{`surface="${surface}"`}</Typography>
+          <Typography>Paneer Tikka, Dal Makhani, Masala Chaas.</Typography>
         </Box>
       ))}
     </div>
@@ -61,6 +51,8 @@ export const Surfaces: Story = {
     const boxes = canvasElement.querySelectorAll("[data-surface]");
     await expect([...boxes].map((box) => box.getAttribute("data-surface"))).toEqual([
       "light",
+      "light",
+      "light",
       "soft",
       "brand",
       "ink",
@@ -68,27 +60,14 @@ export const Surfaces: Story = {
   },
 };
 
-/** The padding scale: the step IS the multiple of 4px. */
-export const PaddingScale: Story = {
-  render: () => (
-    <div className="grid gap-3">
-      {([2, 4, 6, 8, 12] as const).map((padding) => (
-        <Box key={padding} padding={padding} surface="soft" radius="md">
-          <Typography>{`padding={${String(padding)}} · ${String(padding * 4)}px`}</Typography>
-        </Box>
-      ))}
-    </div>
-  ),
-};
-
 /** `as` changes the element, never the look: a landmark section and a real list. */
 export const AsElement: Story = {
   render: () => (
     <div className="grid gap-3">
-      <Box as="section" aria-label="Today's special" padding={6} hasBorder radius="lg" shadow={1}>
+      <Box as="section" aria-label="Today's special" sx={{ p: 6, border: true, radius: "lg" }}>
         <Typography>Shahi Paneer with butter naan.</Typography>
       </Box>
-      <Box as="ul" role="list" padding={4} surface="soft" radius="md">
+      <Box as="ul" role="list" surface="soft" sx={{ p: 4, radius: "md" }}>
         <Box as="li">Jain thali</Box>
         <Box as="li">No onion-garlic dal</Box>
       </Box>
@@ -101,13 +80,15 @@ export const AsElement: Story = {
   },
 };
 
-/** The floor: padding never pushes the box past a 360px viewport. */
-export const Mobile360: Story = {
+/** Responsive `sx`: 16px padding and a block layout below md, 32px and a row from md up. */
+export const Responsive: Story = {
   globals: VIEWPORT_360,
-  args: { padding: 8 },
+  args: { sx: { p: { base: 4, md: 8 }, display: { base: "block", md: "flex" } } },
   render: (args) => <Box {...args} data-testid="box" />,
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByTestId("box");
+    await expect(getComputedStyle(box).padding).toBe("16px");
+    await expect(getComputedStyle(box).display).toBe("block");
     await expect(box.scrollWidth).toBeLessThanOrEqual(box.clientWidth);
   },
 };
