@@ -1,6 +1,7 @@
-import type { ComponentProps } from "react";
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 /** The design system's line widths (100 / 92 / 68 / 84%) on Tailwind's fraction steps, cycling. */
 const LINE_WIDTHS = ["w-full", "w-11/12", "w-2/3", "w-5/6"] as const;
@@ -21,7 +22,7 @@ const skeleton = componentVariants({
   defaultVariants: { variant: "block" },
 });
 
-export interface SkeletonProps extends ComponentProps<"div"> {
+export interface SkeletonProps extends BaseProps<"div"> {
   /** = "block" */
   variant?: "text" | "block" | "circle" | undefined;
   /** Number of text lines (variant `text`). = 3 */
@@ -29,10 +30,14 @@ export interface SkeletonProps extends ComponentProps<"div"> {
 }
 
 /** Loading placeholder, sized with `className` (`h-18 rounded-lg`, `size-8`). */
-export function Skeleton({ variant = "block", lines = 3, className, ...props }: SkeletonProps) {
+export function Skeleton({ variant = "block", lines = 3, sx, className, ...props }: SkeletonProps) {
   const styles = skeleton({ variant });
   return (
-    <div aria-hidden="true" className={styles.root({ className })} {...props}>
+    <div
+      aria-hidden="true"
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
       {variant === "text"
         ? Array.from({ length: lines }, (_, index) => (
             <div

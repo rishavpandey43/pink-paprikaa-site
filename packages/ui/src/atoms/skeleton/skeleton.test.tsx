@@ -58,6 +58,12 @@ describe("Skeleton", () => {
     expect(container.firstElementChild).not.toHaveClass("gap-2");
   });
 
+  it("sx lands on the skeleton and beats its own height and radius", () => {
+    const { container } = render(<Skeleton sx={{ h: "full", radius: "lg", mb: 2 }} />);
+    expect(container.firstElementChild).toHaveClass("h-full", "rounded-lg", "mb-2");
+    expect(container.firstElementChild).not.toHaveClass("h-4", "rounded-sm");
+  });
+
   it("has no accessibility violations as block, lines and circle in a named loading region", async () => {
     const { container } = render(
       <div role="status" aria-label="Loading the menu" aria-busy="true">
