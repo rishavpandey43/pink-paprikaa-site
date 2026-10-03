@@ -221,6 +221,22 @@ describe("SiteHeader", () => {
     expect(screen.queryByRole("button", { name: "Menu" })).not.toBeInTheDocument();
   });
 
+  it("opens a drawer of actions alone, with no empty nav landmark, when drawerLinks is empty", async () => {
+    const user = userEvent.setup();
+    render(
+      <SiteHeader
+        homeHref="#home"
+        links={LINKS}
+        drawerLinks={[]}
+        drawerActions={<a href="#order">Order online</a>}
+      />
+    );
+    await user.click(screen.getByRole("button", { name: "Menu" }));
+    const drawer = screen.getByRole("dialog", { name: "Menu" });
+    expect(within(drawer).queryByRole("navigation")).not.toBeInTheDocument();
+    expect(within(drawer).getByRole("link", { name: "Order online" })).toBeInTheDocument();
+  });
+
   it("falls back to the default lockup inside the home link when the logo slot is blank", () => {
     render(<SiteHeader homeHref="#home" links={LINKS} logo="" />);
     expect(screen.getByRole("img", { name: /Pink Paprikaa/ }).closest("a")).toHaveAttribute(

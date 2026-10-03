@@ -169,22 +169,24 @@ export function SiteHeader({
               triggerClassName={slots.menuButton({ hasHiddenLinks })}
               portalContainer={portalContainer}
             >
-              <nav aria-label={navLabel}>
-                <ul className={slots.drawerList()}>
-                  {drawerLinks.map((link) => (
-                    <li key={link.href}>
-                      <LinkComponent
-                        href={link.href}
-                        aria-current={link.isActive === true ? "page" : undefined}
-                        className={slots.drawerLink({ isActive: link.isActive === true })}
-                      >
-                        {link.label}
-                        <Icon icon={ChevronRight} size="sm" className={slots.drawerChevron()} />
-                      </LinkComponent>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
+              {drawerLinks.length > 0 ? (
+                <nav aria-label={navLabel}>
+                  <ul className={slots.drawerList()}>
+                    {drawerLinks.map((link) => (
+                      <li key={link.href}>
+                        <LinkComponent
+                          href={link.href}
+                          aria-current={link.isActive === true ? "page" : undefined}
+                          className={slots.drawerLink({ isActive: link.isActive === true })}
+                        >
+                          {link.label}
+                          <Icon icon={ChevronRight} size="sm" className={slots.drawerChevron()} />
+                        </LinkComponent>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              ) : null}
               {isShown(drawerActions) ? (
                 <div className={slots.drawerActions()}>{drawerActions}</div>
               ) : null}
