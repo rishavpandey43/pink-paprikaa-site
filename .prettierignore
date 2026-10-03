@@ -17,3 +17,6 @@ zip-files/
 
 # Verbatim SDD archives (records, not authored docs)
 docs/superpowers/records/
+
+# Plan docs are frozen once executing; the built code is the truth
+docs/superpowers/plans/
