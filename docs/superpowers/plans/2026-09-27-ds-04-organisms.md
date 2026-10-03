@@ -3221,9 +3221,16 @@ function containingBlock(node: HTMLElement) {
     }
     if (
       isSet(style.transform) ||
+      isSet(style.translate) ||
+      isSet(style.rotate) ||
+      isSet(style.scale) ||
       isSet(style.filter) ||
+      isSet(style.getPropertyValue("backdrop-filter")) ||
       isSet(style.perspective) ||
-      /layout|paint|strict|content/.test(style.contain)
+      /transform|translate|rotate|scale|perspective|filter|contain/.test(style.willChange) ||
+      /layout|paint|strict|content/.test(style.contain) ||
+      (isSet(style.containerType) && style.containerType !== "normal") ||
+      style.contentVisibility === "auto"
     ) {
       return ancestor;
     }
@@ -3238,7 +3245,8 @@ function isSet(value: string) {
 /** How far the outer shadows of a computed `box-shadow` reach past the box; NaN when none do. */
 function shadowReach(boxShadow: string) {
   let reach = Number.NaN;
-  for (const shadow of boxShadow.replaceAll(/rgba?\([^)]*\)/g, "").split(",")) {
+  // A colour function's channels (`oklch(0.75 0.12 350)`) are not lengths.
+  for (const shadow of boxShadow.replaceAll(/\w+\([^)]*\)/g, "").split(",")) {
     if (shadow.includes("inset")) continue;
     const lengths = shadow
       .trim()
@@ -3330,11 +3338,58 @@ describe("ringClippers", () => {
     expect(ringClippers(positioned.control)).toEqual([positioned.frame]);
   });
 
+  it.each([
+    ["will-change", "transform"],
+    ["will-change", "filter"],
+    ["container-type", "inline-size"],
+    ["content-visibility", "auto"],
+    ["translate", "4px 0px"],
+    ["rotate", "1deg"],
+    ["scale", "2"],
+  ])("stops a fixed control at a frame with %s: %s, which contains it", (property, value) => {
+    const contained = framed({ ...OUTLINE, position: "fixed" }, 2);
+    contained.frame.style.setProperty(property, value);
+    expect(ringClippers(contained.control)).toEqual([contained.frame]);
+  });
+
+  it("stops a fixed control at a frame with a backdrop-filter, which contains it", () => {
+    const contained = framed({ ...OUTLINE, position: "fixed" }, 2);
+    const realStyle = globalThis.getComputedStyle.bind(globalThis);
+    vi.spyOn(globalThis, "getComputedStyle").mockImplementation((element) => {
+      const style = realStyle(element);
+      if (element === contained.frame) {
+        // jsdom drops `backdrop-filter`; Chromium reports it.
+        const read = style.getPropertyValue.bind(style);
+        style.getPropertyValue = (name) => (name === "backdrop-filter" ? "blur(4px)" : read(name));
+      }
+      return style;
+    });
+    expect(ringClippers(contained.control)).toEqual([contained.frame]);
+  });
+
+  it.each([
+    ["will-change", "opacity"],
+    ["container-type", "normal"],
+    ["content-visibility", "visible"],
+  ])("lets a fixed control escape a frame with %s: %s", (property, value) => {
+    const escaped = framed({ ...OUTLINE, position: "fixed" }, 2);
+    escaped.frame.style.setProperty(property, value);
+    expect(ringClippers(escaped.control)).toEqual([]);
+  });
+
   it("measures a box-shadow ring (a field's) by its spread when there is no outline", () => {
     const tight = framed({ boxShadow: "0 0 0 3px red" }, 1);
     expect(ringClippers(tight.control)).toEqual([tight.frame]);
     expect(
       ringClippers(framed({ boxShadow: "rgb(255, 185, 206) 0px 0px 0px 3px" }, 4).control)
+    ).toEqual([]);
+  });
+
+  it("reads no lengths from a colour function's channels (Chromium keeps oklch() computed)", () => {
+    const tight = framed({ boxShadow: "oklch(0.75 0.12 350) 0px 0px 0px 3px" }, 1);
+    expect(ringClippers(tight.control)).toEqual([tight.frame]);
+    expect(
+      ringClippers(framed({ boxShadow: "color(srgb 9 0.7 0.8) 0px 0px 0px 3px" }, 4).control)
     ).toEqual([]);
   });
 });
@@ -6022,7 +6077,12 @@ export interface DialogProps
   extends
     Pick<DialogPrimitive.DialogProps, "open" | "defaultOpen" | "onOpenChange">,
     Pick<VariantProps<typeof dialog>, "variant" | "size"> {
-  /** The element that opens the dialog, e.g. a Button. */
+  /**
+   * The element that opens the dialog, e.g. a Button; focus returns to it on close. Without one,
+   * focus returns to the element focused when the dialog opened — reliable for keyboard opens, but
+   * Safari and Firefox on macOS do not focus a button on click, so a dialog opened by pointer
+   * returns focus to `<body>`. Pass a trigger where focus return must survive a pointer open.
+   */
   trigger?: ReactElement | undefined;
   title: ReactNode;
   description?: ReactNode;
@@ -6046,7 +6106,7 @@ export interface DialogProps
  * A decision that must be made now: a centred modal (24px radius, `--shadow-4`, 56% ink scrim),
  * or a bottom sheet with a grab handle — the app default. Radix Dialog: focus is trapped, Escape
  * and the scrim close it, focus returns to the trigger (or, without one, to what had focus when it
- * opened), the page behind cannot scroll.
+ * opened — see `trigger` for pointer opens), the page behind cannot scroll.
  */
 export function Dialog({
   trigger,
@@ -6193,7 +6253,7 @@ const meta = {
       story: { inline: false, height: "480px" },
       description: {
         component:
-          'A decision that must be made now. `variant="modal"` is centred (24px radius, shadow-4, 56% ink scrim); `variant="sheet"` is the app\'s bottom sheet with a grab handle and top corners only. Focus is trapped, Escape and the scrim close it, focus returns to the trigger (or, without one, to what had focus when it opened), the page cannot scroll. `portalContainer` renders it inside a positioned frame (AppShell\'s overlay slot) instead of the page body.',
+          'A decision that must be made now. `variant="modal"` is centred (24px radius, shadow-4, 56% ink scrim); `variant="sheet"` is the app\'s bottom sheet with a grab handle and top corners only. Focus is trapped, Escape and the scrim close it, focus returns to the trigger (or, without one, to what had focus when it opened — Safari and Firefox on macOS do not focus a clicked button, so pass a `trigger` where a pointer open must get focus back), the page cannot scroll. `portalContainer` renders it inside a positioned frame (AppShell\'s overlay slot) instead of the page body.',
       },
     },
   },
