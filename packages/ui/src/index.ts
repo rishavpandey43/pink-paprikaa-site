@@ -39,6 +39,7 @@ export { Text, type TextProps, type TextTone, type TextVariant } from "./atoms/t
 export { Tooltip, type TooltipProps } from "./atoms/tooltip/tooltip";
 export { AppShell, type AppShellProps } from "./layouts/app-shell/app-shell";
 export { AutoGrid, type AutoGridMin, type AutoGridProps } from "./layouts/auto-grid/auto-grid";
+export { Box, type BoxProps } from "./layouts/box/box";
 export { Cluster, type ClusterProps } from "./layouts/cluster/cluster";
 export { Container, type ContainerProps, type ContainerSize } from "./layouts/container/container";
 export { POST_FORMATS, type PostFormat } from "./layouts/post-frame/post-formats";
