@@ -1,6 +1,7 @@
-import type { ComponentProps } from "react";
+import type { BasePropsWithColor } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const offerSeal = componentVariants({
   slots: {
@@ -17,10 +18,10 @@ const offerSeal = componentVariants({
       lg: { root: "text-offer-seal-lg" },
       xl: { root: "text-offer-seal-xl" },
     },
-    tone: {
-      light: { root: "bg-ink-000 text-pink-600" },
+    color: {
+      neutral: { root: "bg-ink-000 text-pink-600" },
       brand: { root: "bg-pink-500 text-ink-000" },
-      turmeric: { root: "bg-turmeric text-ink-900" },
+      accent: { root: "bg-turmeric text-ink-900" },
     },
     // In flow, a margin reserves the rotated tips' overhang (~0.15 × side; rotate-45 is not
     // layout), so neighbours and a 360px page never meet a tip. A bleeding seal overhangs on purpose.
@@ -78,7 +79,7 @@ const offerSeal = componentVariants({
   ],
 });
 
-export interface OfferSealProps extends ComponentProps<"div"> {
+export interface OfferSealProps extends BasePropsWithColor<"div"> {
   /** The number — "50%", "₹99" (format with formatRupees), "1+1". */
   value: string;
   /** Short word under it, e.g. "Off" (rendered uppercase). */
@@ -90,7 +91,8 @@ export interface OfferSealProps extends ComponentProps<"div"> {
    * also reserves 0.15 × side on every edge for its tips, so on a 360px page use `sm` or `md`.
    */
   size?: "sm" | "md" | "lg" | "xl" | undefined;
-  tone?: "light" | "brand" | "turmeric" | undefined;
+  /** `neutral` is the white seal, `accent` the turmeric one. */
+  color?: "neutral" | "brand" | "accent" | undefined;
   /** Where the seal hangs off its container when it bleeds. */
   corner?: "top-right" | "top-left" | "bottom-right" | "bottom-left" | undefined;
   /** How far past the corner: 1/12 or 1/6 of the side. The container needs `relative`. */
@@ -103,15 +105,16 @@ export function OfferSeal({
   label,
   note,
   size = "lg",
-  tone = "light",
+  color = "neutral",
   corner = "top-right",
   bleed = "none",
+  sx,
   className,
   ...props
 }: OfferSealProps) {
-  const styles = offerSeal({ size, tone, corner, bleed });
+  const styles = offerSeal({ size, color, corner, bleed });
   return (
-    <div className={styles.root({ className })} {...props}>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
       <div className={styles.content()}>
         <span className={styles.value()}>{value}</span>
         {label ? <span className={styles.label()}>{label}</span> : null}

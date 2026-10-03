@@ -42,7 +42,14 @@ function OfferBoard() {
         </SocialHeadline>
         <SocialHeadline variant="hero">Chai first, decisions later.</SocialHeadline>
         <LogoLockup color="inverse" size="lg" />
-        <OfferSeal value="50%" label="Off" size="lg" tone="light" corner="top-right" bleed="none" />
+        <OfferSeal
+          value="50%"
+          label="Off"
+          size="lg"
+          color="neutral"
+          corner="top-right"
+          bleed="none"
+        />
       </div>
     </>
   );

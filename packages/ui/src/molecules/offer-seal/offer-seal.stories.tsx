@@ -28,13 +28,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
-/** Card row "tone". */
-export const Tones: Story = {
+/** Card row "color". */
+export const Colors: Story = {
   render: (args) => (
     <div className="flex flex-wrap items-center gap-7.5 py-4.5">
-      <OfferSeal {...args} tone="light" />
-      <OfferSeal {...args} tone="brand" />
-      <OfferSeal {...args} tone="turmeric" />
+      <OfferSeal {...args} color="neutral" />
+      <OfferSeal {...args} color="brand" />
+      <OfferSeal {...args} color="accent" />
     </div>
   ),
 };
@@ -53,7 +53,7 @@ export const Values: Story = {
 
 /** The handoff hero seal (Home): 156px, brand, launch price. */
 export const HandoffHero: Story = {
-  args: { size: "md", tone: "brand", value: formatRupees(130), label: "Launch" },
+  args: { size: "md", color: "brand", value: formatRupees(130), label: "Launch" },
 };
 
 export const Sizes: Story = {
@@ -71,7 +71,7 @@ export const Sizes: Story = {
  * 0.15 × side around itself) and the page never scrolls sideways.
  */
 export const Floor360: Story = {
-  args: { size: "md", tone: "brand", value: formatRupees(130), label: "Launch" },
+  args: { size: "md", color: "brand", value: formatRupees(130), label: "Launch" },
   globals: { viewport: { value: "floor360", isRotated: false } },
   render: (args) => (
     <div data-testid="frame" className="flex">

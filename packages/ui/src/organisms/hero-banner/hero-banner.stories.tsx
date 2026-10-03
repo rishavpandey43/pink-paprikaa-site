@@ -157,7 +157,7 @@ export const HandoffHome: Story = {
           value="₹130"
           label="Launch"
           size="md"
-          tone="brand"
+          color="brand"
           corner="top-right"
           bleed="none"
         />

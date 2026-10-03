@@ -43,11 +43,11 @@ describe("OfferSeal", () => {
   });
 
   it.each([
-    ["light", "bg-ink-000", "text-pink-600"],
+    ["neutral", "bg-ink-000", "text-pink-600"],
     ["brand", "bg-pink-500", "text-ink-000"],
-    ["turmeric", "bg-turmeric", "text-ink-900"],
-  ] as const)("paints the %s tone", (tone, background, text) => {
-    const { container } = render(<OfferSeal value="50%" tone={tone} />);
+    ["accent", "bg-turmeric", "text-ink-900"],
+  ] as const)("paints the %s color", (color, background, text) => {
+    const { container } = render(<OfferSeal value="50%" color={color} />);
     expect(container.firstElementChild).toHaveClass(background, text);
     // One flat fill — never a gradient, never a starburst.
     expect(container.firstElementChild?.getAttribute("class")).not.toMatch(/gradient/);
@@ -98,11 +98,19 @@ describe("OfferSeal", () => {
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
-        <OfferSeal value="₹130" label="Launch" tone="brand" size="md" />
-        <OfferSeal value="50%" label="Off" note="till 11:30pm" tone="light" size="lg" />
-        <OfferSeal value="1+1" label="Free" tone="turmeric" size="sm" />
+        <OfferSeal value="₹130" label="Launch" color="brand" size="md" />
+        <OfferSeal value="50%" label="Off" note="till 11:30pm" color="neutral" size="lg" />
+        <OfferSeal value="1+1" label="Free" color="accent" size="sm" />
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, beating a default class and keeping className", () => {
+    const { container } = render(
+      <OfferSeal value="50%" sx={{ shadow: 1, mt: 2 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("shadow-1", "mt-2", "italic");
+    expect(container.firstElementChild).not.toHaveClass("shadow-3");
   });
 });
