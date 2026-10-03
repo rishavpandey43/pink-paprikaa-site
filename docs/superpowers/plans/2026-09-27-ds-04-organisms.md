@@ -4676,11 +4676,10 @@ Append to `SPACING`:
 `packages/ui/src/organisms/action-dock/action-dock.test.tsx`:
 
 ```tsx
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
-
 import { render, screen } from "@testing-library/react";
 import { MessageCircle, Phone } from "lucide-react";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { SiteFooter } from "../site-footer/site-footer";
@@ -4848,6 +4847,7 @@ Each story renders in its own iframe (the dock is `position: fixed`; inline docs
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { MessageCircle, Phone } from "lucide-react";
+import { expect } from "storybook/test";
 
 import { SiteFooter } from "../site-footer/site-footer";
 import { BRAND, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
@@ -4903,15 +4903,27 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** Scrolled to the very bottom, the dock sits below the footer's last legal link. */
+const proveFooterClear: Story["play"] = async ({ canvas, canvasElement }) => {
+  const page = canvasElement.ownerDocument;
+  page.defaultView?.scrollTo({ top: page.documentElement.scrollHeight, behavior: "instant" });
+  const dock = canvas.getByRole("link", { name: "WhatsApp us" }).closest('[data-surface="light"]');
+  const lastLink = canvas.getByRole("link", { name: "Refund & Cancellation" });
+  await expect(dock).not.toBeNull();
+  await expect(lastLink.getBoundingClientRect().bottom).toBeLessThanOrEqual(
+    dock?.getBoundingClientRect().top ?? 0
+  );
+};
+
 export const Playground: Story = {};
 
 /** Handoff mobile bar. */
-export const Mobile: Story = { globals: VIEWPORT_360 };
+export const Mobile: Story = { globals: VIEWPORT_360, play: proveFooterClear };
 
-export const Tablet: Story = { globals: VIEWPORT_768 };
+export const Tablet: Story = { globals: VIEWPORT_768, play: proveFooterClear };
 
 /** Handoff desktop floating pill. */
-export const Desktop: Story = { globals: VIEWPORT_1280 };
+export const Desktop: Story = { globals: VIEWPORT_1280, play: proveFooterClear };
 
 export const PrimaryOnly: Story = { args: { secondary: undefined }, globals: VIEWPORT_360 };
 ```
