@@ -3664,11 +3664,12 @@ describe("SiteFooter", () => {
         ]}
       />
     );
-    const instagram = screen.getByRole("link", { name: "Instagram" });
+    // The aria-label overrides the anchor's content, so the label itself announces the new tab (R111).
+    const instagram = screen.getByRole("link", { name: "Instagram (Opens in a new tab)" });
     expect(instagram).toHaveAttribute("href", "https://instagram.com/pinkpaprikaa");
     expect(instagram).toHaveAttribute("target", "_blank");
     expect(instagram).toHaveAttribute("rel", "noopener noreferrer");
-    expect(screen.getByRole("link", { name: "YouTube" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "YouTube (Opens in a new tab)" })).toBeInTheDocument();
   });
 
   it("renders the brand block, legal lines and policy links it is given", () => {
@@ -3795,7 +3796,7 @@ export interface FooterColumn {
 export interface FooterSocialLink {
   network: "instagram" | "youtube" | "linkedin";
   href: string;
-  /** Accessible name, e.g. "Pink Paprikaa on Instagram". */
+  /** Accessible name, e.g. "Pink Paprikaa on Instagram"; the footer appends " (Opens in a new tab)". */
   label: string;
 }
 
@@ -3914,12 +3915,12 @@ export function SiteFooter({
                     <IconButton
                       asChild
                       icon={SOCIAL_GLYPH[link.network]}
-                      label={link.label}
+                      label={`${link.label} (Opens in a new tab)`}
                       variant="secondary"
                     >
                       <a
                         href={link.href}
-                        aria-label={link.label}
+                        aria-label={`${link.label} (Opens in a new tab)`}
                         target="_blank"
                         rel="noopener noreferrer"
                       />
@@ -7104,6 +7105,7 @@ const EMPTY = (
       <Button asChild iconAfter={ArrowUpRight}>
         <a href={BRAND.directionsHref} target="_blank" rel="noopener noreferrer">
           Open Google reviews
+          <span className="sr-only"> Opens in a new tab</span>
         </a>
       </Button>
     </div>
