@@ -1,18 +1,29 @@
 /**
  * Stories only — never exported from the barrel. The `overflow` ancestors of `element` whose
- * padding box cuts its focus outline (an outline is clipped like any other paint, so a ring drawn
- * outside a flush child of an `overflow-hidden` box all but vanishes). A `play` that focuses a
- * control inside a clipping frame asserts this is `[]`. Throws when `element` draws no outline (not
- * focused, or a box-shadow ring): there is nothing to measure, and an empty list would pass.
+ * padding box cuts its focus ring (a ring is clipped like any other paint, so one drawn outside a
+ * flush child of an `overflow-hidden` box all but vanishes). A `play` that focuses a control inside
+ * a clipping frame asserts this is `[]`. The ring is the element's outline or, without one, its
+ * outer box-shadow (a field's `shadow-focus-ring`, drawn on the field box, not the `<input>`).
+ * Throws when `element` draws neither (not focused, or the wrong element): there is nothing to
+ * measure, and an empty list would pass.
  */
 export function ringClippers(element: HTMLElement) {
+  // A ring that transitions in (`transition-control` on a field box) is measured where it settles.
+  if ("getAnimations" in element) {
+    for (const animation of element.getAnimations()) {
+      if (animation instanceof CSSTransition) animation.finish();
+    }
+  }
   const style = getComputedStyle(element);
   const width = Number.parseFloat(style.outlineWidth);
-  // Negative for an inset ring (`-outline-offset-4`): its outer edge sits inside the box.
-  const reach = width + Number.parseFloat(style.outlineOffset);
-  if (style.outlineStyle === "none" || !(width > 0) || !Number.isFinite(reach)) {
+  const hasOutline = style.outlineStyle !== "none" && width > 0;
+  // Negative for an inset outline (`-outline-offset-4`): its outer edge sits inside the box.
+  const reach = hasOutline
+    ? width + Number.parseFloat(style.outlineOffset)
+    : shadowReach(style.boxShadow);
+  if (!Number.isFinite(reach) || (!hasOutline && !(reach > 0))) {
     throw new Error(
-      `ringClippers: <${element.tagName.toLowerCase()}> draws no focus outline (outline-style "${style.outlineStyle}", width "${style.outlineWidth}")`
+      `ringClippers: <${element.tagName.toLowerCase()}> draws no focus ring (outline-style "${style.outlineStyle}", width "${style.outlineWidth}", box-shadow "${style.boxShadow}")`
     );
   }
   // Scroll extents are whole pixels, so a child scrolled fully into view can sit a fraction past.
@@ -35,4 +46,22 @@ export function ringClippers(element: HTMLElement) {
     }
   }
   return clippers;
+}
+
+/** How far the outer shadows of a computed `box-shadow` reach past the box; NaN when none do. */
+function shadowReach(boxShadow: string) {
+  let reach = Number.NaN;
+  for (const shadow of boxShadow.replaceAll(/rgba?\([^)]*\)/g, "").split(",")) {
+    if (shadow.includes("inset")) continue;
+    const lengths = shadow
+      .trim()
+      .split(/\s+/)
+      .filter((token) => /^-?[\d.]+(px)?$/.test(token))
+      .map((token) => Number.parseFloat(token));
+    if (lengths.length < 2) continue;
+    const [x = 0, y = 0, blur = 0, spread = 0] = lengths;
+    const shadowEdge = Math.max(Math.abs(x), Math.abs(y)) + blur + spread;
+    reach = Number.isNaN(reach) ? shadowEdge : Math.max(reach, shadowEdge);
+  }
+  return reach;
 }
