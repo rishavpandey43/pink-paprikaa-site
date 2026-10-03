@@ -99,7 +99,7 @@ Organism-tier rules (this plan):
 Five ways an organism fails in the real world. Each is pinned by a test in its owning task; a reviewer checks the test exists and would fail without the behaviour.
 
 1. **The header's menu drawer is a real dialog.** Focus is trapped inside it, Escape closes it, focus returns to the menu button, the page behind cannot scroll while it is open, and following any link in it closes it (so the next page is not covered). — Task 12, test "the drawer traps focus, locks the page, closes on Escape and on any link, and returns focus".
-2. **A header with many long links between 1024 and 1279px shortens, never clips or wraps.** Only the first three links stay inline below `xl`; the rest are hidden with `display:none` (not overflowed), every link is `white-space: nowrap`, and whenever a link is hidden the menu button is shown so every link stays reachable in the drawer. — Task 12, test "keeps three links inline below xl, never wrapping, and moves the rest into the drawer".
+2. **A header with many long links between 1024 and 1439px shortens, never clips or wraps.** Only the first three links stay inline below `2xl`; the rest are hidden with `display:none` (not overflowed), every link is `white-space: nowrap`, and whenever a link is hidden the menu button is shown so every link stays reachable in the drawer. The page never scrolls sideways and the menu button and last action end inside the viewport, on the site's six widest real destinations (ruling R116: they overflow a 1280px page with all six inline, so all links wait for `2xl`). — Task 12, test "keeps three links inline below 2xl, never wrapping, and moves the rest into the drawer" and the `SixLinksAt1024/1279/1280/1440/1536` story plays.
 3. **ReviewCarousel works without a mouse, without motion and with one review.** The track is a focusable region named by the heading; previous/next are `aria-disabled` at the ends (focus stays put); `scrollBy` never forces smooth scrolling (smoothness is `motion-safe:` CSS); nothing auto-advances; a single review renders no controls. — Task 13, tests "…focusable region…", "…disables previous at the start and next at the end…", "…reduced motion…", "…never auto-advances…", "…one review…".
 4. **ActionDock never covers the last content or the footer's links, and clears the iOS home indicator.** The mobile bar's bottom padding and the desktop pill's offset include `env(safe-area-inset-bottom)`; `SiteFooter hasDockClearance` pads the legal bar clear of it by more than the dock's height. — Task 9, tests "pads for the iOS home indicator…" and "never covers the footer's last links…" (Task 8 owns the footer's clearance class).
 5. **SiteFooter renders exactly what it is given.** No licence number, GSTIN, ©, phone, email or social link appears unless passed — the August port shipped a fake FSSAI number as a default. — Task 8, test "renders exactly what it is given — no licence, tax, contact or social defaults".
@@ -113,7 +113,7 @@ Recorded against `2026-09-27-ds-00-contracts.md` §7. Additive props keep every 
 | SiteHeader                   | `+ compactActions?: ReactNode` (shown below `lg`); `actions` show from `lg`                                                                                                                                                                                                                                                                                                         | Handoff `PPHeader`: below 1024px the two text buttons give way to a WhatsApp icon button beside the menu toggle.                                                                                                                 |
 | SiteHeader                   | `+ drawerLinks?: NavLink[]` (= `links`)                                                                                                                                                                                                                                                                                                                                             | The handoff drawer lists eight destinations; the inline nav four.                                                                                                                                                                |
 | SiteHeader                   | `+ navLabel = "Main"`, `+ skipLinkLabel = "Skip to content"`, `+ closeMenuLabel = "Close menu"`                                                                                                                                                                                                                                                                                     | Accessible chrome labels, overridable — the same pattern as the contract's `menuLabel`.                                                                                                                                          |
-| SiteHeader                   | Responsive rule fixed as: inline nav from `lg`, first three links between `lg` and `xl`, all at `xl`; drawer trigger whenever a link is hidden                                                                                                                                                                                                                                      | Spec §9.3 says "xl → lg → md, drawer below md", but the handoff's compact header (lockup + Pure Veg chip + two buttons) does not fit a nav at 768px; the handoff itself switches to the drawer at 1024px.                        |
+| SiteHeader                   | Responsive rule fixed as: inline nav from `lg`, first three links between `lg` and `2xl`, all at `2xl` (ruling R116 — the site's six widest real links overflow 1280px); drawer trigger whenever a link is hidden                                                                                                                                                                   | Spec §9.3 says "xl → lg → md, drawer below md", but the handoff's compact header (lockup + Pure Veg chip + two buttons) does not fit a nav at 768px; the handoff itself switches to the drawer at 1024px.                        |
 | SiteFooter                   | `+ pattern?: "none" \| "default" \| "faint"` (default by tone: brand → none, ink → faint)                                                                                                                                                                                                                                                                                           | The design system's pink footer is flat; the handoff's ink footer carries the 4% diamond (C7). Same vocabulary as Section.                                                                                                       |
 | SiteFooter                   | `+ hasDockClearance?: boolean`                                                                                                                                                                                                                                                                                                                                                      | Review Focus 4: the legal bar must clear the ActionDock (handoff pads 110px).                                                                                                                                                    |
 | SiteFooter                   | `+ headingLevel = 2` (column headings); exports `FooterItem`, `FooterColumn`, `FooterSocialLink`, `FooterPolicy`                                                                                                                                                                                                                                                                    | Spec §5.5: heading levels configurable; named types for the app.                                                                                                                                                                 |
@@ -6481,30 +6481,32 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 
 **Dev parity:**
 
-| Dev item                                                                 | Ruling  | Where / clause                                                                                               |
-| ------------------------------------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------ |
-| The `banner` landmark with the lockup                                    | ALREADY | tests "is the banner landmark…", "links the logo home…"                                                      |
-| Rail links in a named `nav`                                              | ALREADY | test "links the logo home and lists the nav links…"                                                          |
-| A custom `navLabel` keeps two mastheads on one page distinct             | ADD     | test "names its navigation from navLabel…"                                                                   |
-| Fixed 72px height                                                        | DROP    | C1 — 88 default / 64 compact (tested)                                                                        |
-| `onOrder` / `onBook` / `onSearch` / `onCart` and the built-in buttons    | DROP    | spec §8.1 — slots, not callbacks (`actions`, `compactActions`, `drawerActions`)                              |
-| Cart count in the button's name, printed on the glyph, hidden at 0       | ALREADY | IconButton `count` (Plan 2a) in the actions slot (`ScrolledWithCart`)                                        |
-| Glass and hairline once scrolled                                         | ALREADY | test "turns the bar to glass…" (`data-scrolled:bg-surface-glass`, `data-scrolled:border-border-subtle`)      |
-| `isScrolled` as a prop                                                   | DROP    | spec §9.3 + Controller amendment — glass on scroll is a client leaf; its server snapshot keeps SSR identical |
-| The sheet opens, lists every link, closes from its close button          | ADD     | test "opens the drawer from the keyboard, hides the bar's own links behind it…"                              |
-| The rail behind the open sheet leaves the accessibility tree             | ADD     | same test (one "Catering" link, not two)                                                                     |
-| Following a sheet link closes it                                         | ALREADY | test "the drawer traps focus…"                                                                               |
-| Opens from the keyboard                                                  | ADD     | same new test (`Enter` on the menu button)                                                                   |
-| Merges a caller `className`                                              | ADD     | test "merges a caller className over its own"                                                                |
-| axe                                                                      | ALREADY | test "has no accessibility violations, closed or with the drawer open"                                       |
-| Sheet description "Every page on the Pink Paprikaa site."                | DROP    | D9                                                                                                           |
-| Search moves into the sheet below md; "Book a Table" gives way first     | DROP    | spec §8.1 — the app places its actions through the three action slots                                        |
-| Default links                                                            | DROP    | D9                                                                                                           |
-| Stories Default · Scrolled · WithCart · ShortRail · Smallest · InContext | ALREADY | Rest · ScrolledWithCart · ScrolledWithCart · HandoffCompact · Mobile · the decorator's `<main>`              |
-| Story CartCounts (0 / 1 / 12, each masthead self-named)                  | ADD     | `CartCounts`                                                                                                 |
-| (plan missed) an empty slot renders no wrapper; an empty drawer no menu  | ADD     | test "renders no wrapper for an empty badge or action slot…" (fold 18, `isShown`)                            |
-| (plan missed) the drawer's focus rings inside its scrolling sheet        | ADD     | story `DrawerOpen` + ring play (fold 20)                                                                     |
-| (plan missed) the 1024px nav really hides links 4+ and never overflows   | ADD     | `LongLinksAtLg` play (computed `display`, `scrollWidth`)                                                     |
+| Dev item                                                                         | Ruling  | Where / clause                                                                                                                                                                           |
+| -------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The `banner` landmark with the lockup                                            | ALREADY | tests "is the banner landmark…", "links the logo home…"                                                                                                                                  |
+| Rail links in a named `nav`                                                      | ALREADY | test "links the logo home and lists the nav links…"                                                                                                                                      |
+| A custom `navLabel` keeps two mastheads on one page distinct                     | ADD     | test "names its navigation from navLabel…"                                                                                                                                               |
+| Fixed 72px height                                                                | DROP    | C1 — 88 default / 64 compact (tested)                                                                                                                                                    |
+| `onOrder` / `onBook` / `onSearch` / `onCart` and the built-in buttons            | DROP    | spec §8.1 — slots, not callbacks (`actions`, `compactActions`, `drawerActions`)                                                                                                          |
+| Cart count in the button's name, printed on the glyph, hidden at 0               | ALREADY | IconButton `count` (Plan 2a) in the actions slot (`ScrolledWithCart`)                                                                                                                    |
+| Glass and hairline once scrolled                                                 | ALREADY | test "turns the bar to glass…" (`data-scrolled:bg-surface-glass`, `data-scrolled:border-border-subtle`)                                                                                  |
+| `isScrolled` as a prop                                                           | DROP    | spec §9.3 + Controller amendment — glass on scroll is a client leaf; its server snapshot keeps SSR identical                                                                             |
+| The sheet opens, lists every link, closes from its close button                  | ADD     | test "opens the drawer from the keyboard, hides the bar's own links behind it…"                                                                                                          |
+| The rail behind the open sheet leaves the accessibility tree                     | ADD     | same test (one "Catering" link, not two)                                                                                                                                                 |
+| Following a sheet link closes it                                                 | ALREADY | test "the drawer traps focus…"                                                                                                                                                           |
+| Opens from the keyboard                                                          | ADD     | same new test (`Enter` on the menu button)                                                                                                                                               |
+| Merges a caller `className`                                                      | ADD     | test "merges a caller className over its own"                                                                                                                                            |
+| axe                                                                              | ALREADY | test "has no accessibility violations, closed or with the drawer open"                                                                                                                   |
+| Sheet description "Every page on the Pink Paprikaa site."                        | DROP    | D9                                                                                                                                                                                       |
+| Search moves into the sheet below md; "Book a Table" gives way first             | DROP    | spec §8.1 — the app places its actions through the three action slots                                                                                                                    |
+| Default links                                                                    | DROP    | D9                                                                                                                                                                                       |
+| Stories Default · Scrolled · WithCart · ShortRail · Smallest · InContext         | ALREADY | Rest · ScrolledWithCart · ScrolledWithCart · HandoffCompact · Mobile · the decorator's `<main>`                                                                                          |
+| Story CartCounts (0 / 1 / 12, each masthead self-named)                          | ADD     | `CartCounts`                                                                                                                                                                             |
+| (plan missed) an empty slot renders no wrapper; an empty drawer no menu          | ADD     | test "renders no wrapper for an empty badge or action slot…" (fold 18, `isShown`)                                                                                                        |
+| (plan missed) the drawer's focus rings inside its scrolling sheet                | ADD     | story `DrawerOpen` + ring play (fold 20)                                                                                                                                                 |
+| (plan missed) the nav really hides links 4+ and the page never overflows         | ADD     | `SixLinksAt1024/1279/1280/1440/1536` plays (computed `display`, the document's `scrollWidth`, the menu button's and last action's right edge) on the site's six widest real destinations |
+| (plan missed) a blank `logo` falls back to the default lockup; `0`/`false` slots | ADD     | test "falls back to the default lockup…"; the empty-slot test's `false` and `0` cases                                                                                                    |
+| (plan missed) a drawer of actions alone has no empty nav landmark                | ADD     | test "opens a drawer of actions alone…"                                                                                                                                                  |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -6520,7 +6522,7 @@ Implementer: copy this table into your report, extended with anything the plan m
 - Consumes: `Icon`, `IconButton`, `Logo`, Radix `Dialog` (see Task 11 for the verified behaviour), `LinkAs`, `componentVariants`; tokens `--spacing-header` (88), `--spacing-header-compact` (64), `--color-surface-glass`, `--blur-glass`, `--z-header`, `--z-overlay`; stories: `AnnouncementBar`, `Badge`, `Button`, `DietMark`.
 - Produces: `SiteHeader`, `SiteHeaderProps`, `NavLink`. The two leaves are internal (not exported).
 
-The responsive rule, all CSS at token breakpoints (readme §3.10 — no `window.innerWidth`): the inline nav shows from `lg`; between `lg` and `xl` only the first three links stay (the rest are `display: none`, never clipped); at `xl` every link shows. The menu button shows wherever a link is hidden — below `lg` always, and below `xl` too when there are more than three links — so every destination stays reachable. `actions` show from `lg`, `compactActions` below it.
+The responsive rule, all CSS at token breakpoints (readme §3.10 — no `window.innerWidth`): the inline nav shows from `lg`; between `lg` and `2xl` only the first three links stay (the rest are `display: none`, never clipped); at `2xl` every link shows. The menu button shows wherever a link is hidden — below `lg` always, and below `2xl` too when there are more than three links — so every destination stays reachable. `actions` show from `lg`, `compactActions` below it. (Ruling R116: the site's six widest real destinations run 23px past a 1280px page with all six inline, so "all links" waits for `2xl`, 1440px; the `links` JSDoc records the label budget the `SixLinksAt*` plays prove.)
 
 - [ ] **Step 1: Component tokens and the glass contrast pair**
 
@@ -6601,13 +6603,14 @@ const LINKS: NavLink[] = [
   { label: "Menu", href: "#menu" },
 ];
 
-const LONG_LINKS: NavLink[] = [
-  { label: "Homely Meals subscriptions", href: "#homely-meals" },
-  { label: "Catering and bulk orders", href: "#catering" },
-  { label: "The restaurant menu", href: "#menu" },
-  { label: "Office and PG lunch", href: "#office-lunch" },
-  { label: "About our kitchen", href: "#about" },
-  { label: "Contact and directions", href: "#contact" },
+/** The site's six widest real destinations (the stories' stress case). */
+const WIDEST_LINKS: NavLink[] = [
+  { label: "Homely Meals", href: "#homely-meals" },
+  { label: "This week’s menu", href: "#this-week" },
+  { label: "Catering", href: "#catering" },
+  { label: "Office & PG Lunch", href: "#office-lunch" },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const DRAWER_LINKS: NavLink[] = [
@@ -6663,22 +6666,22 @@ describe("SiteHeader", () => {
     expect(screen.queryByRole("navigation", { name: "Main" })).not.toBeInTheDocument();
   });
 
-  it("keeps three links inline below xl, never wrapping, and moves the rest into the drawer", async () => {
+  it("keeps three links inline below 2xl, never wrapping, and moves the rest into the drawer", async () => {
     const user = userEvent.setup();
-    render(<SiteHeader homeHref="#home" links={LONG_LINKS} />);
+    render(<SiteHeader homeHref="#home" links={WIDEST_LINKS} />);
     const nav = screen.getByRole("navigation", { name: "Main" });
     const items = within(nav).getAllByRole("listitem");
     for (const item of items.slice(0, 3)) expect(item).not.toHaveClass("hidden");
-    for (const item of items.slice(3)) expect(item).toHaveClass("hidden", "xl:block");
+    for (const item of items.slice(3)) expect(item).toHaveClass("hidden", "2xl:block");
     for (const link of within(nav).getAllByRole("link")) {
       expect(link).toHaveClass("whitespace-nowrap");
     }
     expect(within(nav).getByRole("list")).toHaveClass("flex-nowrap");
     const menuButton = screen.getByRole("button", { name: "Menu" });
-    expect(menuButton).toHaveClass("xl:hidden");
+    expect(menuButton).toHaveClass("2xl:hidden");
     await user.click(menuButton);
     const drawer = screen.getByRole("dialog", { name: "Menu" });
-    for (const { label } of LONG_LINKS) {
+    for (const { label } of WIDEST_LINKS) {
       expect(within(drawer).getByRole("link", { name: label })).toBeInTheDocument();
     }
   });
@@ -6789,8 +6792,48 @@ describe("SiteHeader", () => {
     const drawerNav = within(screen.getByRole("dialog")).getByRole("navigation");
     expect(drawerNav.parentElement?.children).toHaveLength(1);
     await user.keyboard("{Escape}");
+    rerender(
+      <SiteHeader
+        homeHref="#home"
+        links={LINKS}
+        badge={false}
+        actions={false}
+        compactActions={false}
+      />
+    );
+    expect(glassBar()?.firstElementChild?.children).toHaveLength(4);
+    // React prints 0, so a 0 slot keeps its wrapper (a truthiness gate would drop it).
+    rerender(
+      <SiteHeader homeHref="#home" links={LINKS} badge={0} actions={0} compactActions={0} />
+    );
+    expect(glassBar()?.firstElementChild?.children).toHaveLength(7);
+    expect(screen.getAllByText("0")).toHaveLength(3);
     rerender(<SiteHeader homeHref="#home" links={LINKS} drawerLinks={[]} drawerActions="" />);
     expect(screen.queryByRole("button", { name: "Menu" })).not.toBeInTheDocument();
+  });
+
+  it("opens a drawer of actions alone, with no empty nav landmark, when drawerLinks is empty", async () => {
+    const user = userEvent.setup();
+    render(
+      <SiteHeader
+        homeHref="#home"
+        links={LINKS}
+        drawerLinks={[]}
+        drawerActions={<a href="#order">Order online</a>}
+      />
+    );
+    await user.click(screen.getByRole("button", { name: "Menu" }));
+    const drawer = screen.getByRole("dialog", { name: "Menu" });
+    expect(within(drawer).queryByRole("navigation")).not.toBeInTheDocument();
+    expect(within(drawer).getByRole("link", { name: "Order online" })).toBeInTheDocument();
+  });
+
+  it("falls back to the default lockup inside the home link when the logo slot is blank", () => {
+    render(<SiteHeader homeHref="#home" links={LINKS} logo="" />);
+    expect(screen.getByRole("img", { name: /Pink Paprikaa/ }).closest("a")).toHaveAttribute(
+      "href",
+      "#home"
+    );
   });
 
   it("shows actions from lg and compact actions below it", () => {
@@ -7005,8 +7048,8 @@ export interface NavLink {
   isActive?: boolean | undefined;
 }
 
-/** Between lg and xl the inline nav keeps its first three links; the rest wait for xl (readme §3.10). */
-const INLINE_LINKS_BELOW_XL = 3;
+/** Between lg and 2xl the inline nav keeps its first three links; the rest wait for 2xl (readme §3.10). */
+const INLINE_LINKS_BELOW_2XL = 3;
 
 const siteHeader = componentVariants({
   slots: {
@@ -7041,8 +7084,8 @@ const siteHeader = componentVariants({
     isActive: {
       true: { navLink: "border-border-brand text-text-brand", drawerLink: "text-text-brand" },
     },
-    isHiddenBelowXl: { true: { navItem: "hidden xl:block" } },
-    hasHiddenLinks: { true: { menuButton: "xl:hidden" }, false: { menuButton: "lg:hidden" } },
+    isHiddenBelow2xl: { true: { navItem: "hidden 2xl:block" } },
+    hasHiddenLinks: { true: { menuButton: "2xl:hidden" }, false: { menuButton: "lg:hidden" } },
   },
   defaultVariants: { size: "default" },
 });
@@ -7050,7 +7093,12 @@ const siteHeader = componentVariants({
 export interface SiteHeaderProps
   extends ComponentProps<"header">, Pick<VariantProps<typeof siteHeader>, "size"> {
   homeHref: string;
-  /** Inline nav links. Three show between lg and xl, all from xl (the rest are in the drawer). */
+  /**
+   * Inline nav links. Three show between lg and 2xl, all from 2xl (the rest are in the drawer).
+   * The budget the `SixLinksAt*` stories prove beside the handoff's badge and two actions: the
+   * first three labels 36 characters together, all six 65, none longer than 17 ("Office & PG
+   * Lunch"). Longer names belong in `drawerLinks`.
+   */
   links: NavLink[];
   /** The drawer's links; defaults to `links` (the handoff drawer lists more destinations). */
   drawerLinks?: NavLink[] | undefined;
@@ -7104,7 +7152,7 @@ export function SiteHeader({
   ...props
 }: SiteHeaderProps) {
   const slots = siteHeader({ size });
-  const hasHiddenLinks = links.length > INLINE_LINKS_BELOW_XL;
+  const hasHiddenLinks = links.length > INLINE_LINKS_BELOW_2XL;
   const hasDrawer = drawerLinks.length > 0 || isShown(drawerActions);
   return (
     <header className={slots.root({ className })} {...props}>
@@ -7124,7 +7172,9 @@ export function SiteHeader({
                 {links.map((link, index) => (
                   <li
                     key={link.href}
-                    className={slots.navItem({ isHiddenBelowXl: index >= INLINE_LINKS_BELOW_XL })}
+                    className={slots.navItem({
+                      isHiddenBelow2xl: index >= INLINE_LINKS_BELOW_2XL,
+                    })}
                   >
                     <LinkComponent
                       href={link.href}
@@ -7150,22 +7200,24 @@ export function SiteHeader({
               triggerClassName={slots.menuButton({ hasHiddenLinks })}
               portalContainer={portalContainer}
             >
-              <nav aria-label={navLabel}>
-                <ul className={slots.drawerList()}>
-                  {drawerLinks.map((link) => (
-                    <li key={link.href}>
-                      <LinkComponent
-                        href={link.href}
-                        aria-current={link.isActive === true ? "page" : undefined}
-                        className={slots.drawerLink({ isActive: link.isActive === true })}
-                      >
-                        {link.label}
-                        <Icon icon={ChevronRight} size="sm" className={slots.drawerChevron()} />
-                      </LinkComponent>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
+              {drawerLinks.length > 0 ? (
+                <nav aria-label={navLabel}>
+                  <ul className={slots.drawerList()}>
+                    {drawerLinks.map((link) => (
+                      <li key={link.href}>
+                        <LinkComponent
+                          href={link.href}
+                          aria-current={link.isActive === true ? "page" : undefined}
+                          className={slots.drawerLink({ isActive: link.isActive === true })}
+                        >
+                          {link.label}
+                          <Icon icon={ChevronRight} size="sm" className={slots.drawerChevron()} />
+                        </LinkComponent>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              ) : null}
               {isShown(drawerActions) ? (
                 <div className={slots.drawerActions()}>{drawerActions}</div>
               ) : null}
@@ -7181,7 +7233,7 @@ export function SiteHeader({
 - [ ] **Step 7: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- site-header 2>&1 | tail -8`
-Expected: PASS (16 tests). If the focus-trap loop fails on a Radix focus guard (`data-radix-focus-guard`), check the guard is outside the dialog and that FocusScope moved focus back — never loosen the assertion.
+Expected: PASS (18 tests). If the focus-trap loop fails on a Radix focus guard (`data-radix-focus-guard`), check the guard is outside the dialog and that FocusScope moved focus back — never loosen the assertion.
 
 - [ ] **Step 8: Stories (card parity with `SiteHeader.card.html` + handoff `PPHeader`)**
 
@@ -7231,13 +7283,17 @@ const HANDOFF_DRAWER_LINKS: NavLink[] = [
   { label: "Contact", href: "#contact" },
 ];
 
-const LONG_LINKS: NavLink[] = [
-  { label: "Homely Meals subscriptions", href: "#homely-meals" },
-  { label: "Catering and bulk orders", href: "#catering" },
-  { label: "The restaurant menu", href: "#menu" },
-  { label: "Office and PG lunch", href: "#office-lunch" },
-  { label: "About our kitchen", href: "#about" },
-  { label: "Contact and directions", href: "#contact" },
+/**
+ * The stress case: the six longest labels the site's real destinations carry (the handoff drawer's
+ * pages, Home and the four-letter Menu aside), in its order — the widest inline nav it can ask for.
+ */
+const WIDEST_LINKS: NavLink[] = [
+  { label: "Homely Meals", href: "#homely-meals" },
+  { label: "This week’s menu", href: "#this-week" },
+  { label: "Catering", href: "#catering" },
+  { label: "Office & PG Lunch", href: "#office-lunch" },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const handoffButtons = (size: "sm" | "md", isFullWidth: boolean) => (
@@ -7308,7 +7364,7 @@ const meta = {
       story: { inline: false, height: "420px" },
       description: {
         component:
-          'The website masthead — sticky, solid at rest and glass once scrolled past 24px. `size="default"` is the design system\'s 88px bar; `size="compact"` the handoff\'s 64px row under the launch AnnouncementBar. The nav never wraps or clips: from lg it shows inline, between lg and xl only its first three links, and the menu drawer (a focus-trapped sheet) carries every destination whenever the bar cannot. Never add a third CTA.',
+          'The website masthead — sticky, solid at rest and glass once scrolled past 24px. `size="default"` is the design system\'s 88px bar; `size="compact"` the handoff\'s 64px row under the launch AnnouncementBar. The nav never wraps or clips: from lg it shows inline, between lg and 2xl only its first three links, and the menu drawer (a focus-trapped sheet) carries every destination whenever the bar cannot. Never add a third CTA.',
       },
     },
   },
@@ -7380,25 +7436,83 @@ export const CartCounts: Story = {
 /** Handoff PPHeader — launch bar, Pure Veg chip, four links, two actions. */
 export const HandoffCompact: Story = {};
 
-/** Six long links at 1024px: three inline, the menu button carries the rest. */
-export const LongLinksAtLg: Story = {
-  args: { links: LONG_LINKS, drawerLinks: LONG_LINKS },
-  globals: VIEWPORT_1024,
-  play: async ({ canvas }) => {
+/** The widths either side of the nav's steps that no system breakpoint names. */
+const NAV_EDGE_VIEWPORTS = {
+  viewport: {
+    options: {
+      navEdge1279: {
+        name: "1279 — one below xl",
+        styles: { width: "1279px", height: "900px" },
+        type: "desktop",
+      },
+      navEdge1536: { name: "1536", styles: { width: "1536px", height: "900px" }, type: "desktop" },
+    },
+  },
+};
+
+/**
+ * Review Focus 2 on the real page: the first `inline` links show and the rest are `display:
+ * none`, the document never scrolls sideways, and the menu button (whenever a link is hidden) and
+ * the last action end inside the viewport.
+ */
+const fitsWith =
+  (inline: number): NonNullable<Story["play"]> =>
+  async ({ canvas }) => {
     const nav = canvas.getByRole("navigation", { name: "Main" });
     await expect(nav).toBeVisible();
     const items = [...nav.querySelectorAll("li")];
-    await expect(items.map((item) => getComputedStyle(item).display)).toEqual([
-      "list-item",
-      "list-item",
-      "list-item",
-      "none",
-      "none",
-      "none",
-    ]);
-    await expect(nav.scrollWidth).toBeLessThanOrEqual(nav.clientWidth);
-    await expect(canvas.getByRole("button", { name: "Menu" })).toBeVisible();
-  },
+    await expect(items.map((item) => getComputedStyle(item).display !== "none")).toEqual(
+      items.map((_, index) => index < inline)
+    );
+    const page = document.documentElement;
+    await expect(page.scrollWidth).toBeLessThanOrEqual(page.clientWidth);
+    const menuButton = canvas.queryByRole("button", { name: "Menu" });
+    if (inline < items.length) await expect(menuButton).toBeVisible();
+    const lastAction = canvas.getByRole("link", { name: "WhatsApp us" });
+    for (const control of [menuButton, lastAction]) {
+      if (control !== null) {
+        await expect(control.getBoundingClientRect().right).toBeLessThanOrEqual(innerWidth);
+      }
+    }
+  };
+
+const SIX_LINKS = { links: WIDEST_LINKS, drawerLinks: WIDEST_LINKS };
+
+/** Six links at 1024px: three inline, the menu button carries the rest. */
+export const SixLinksAt1024: Story = {
+  args: SIX_LINKS,
+  globals: VIEWPORT_1024,
+  play: fitsWith(3),
+};
+
+/** Six links one pixel below xl: three inline. */
+export const SixLinksAt1279: Story = {
+  args: SIX_LINKS,
+  parameters: NAV_EDGE_VIEWPORTS,
+  globals: { viewport: { value: "navEdge1279", isRotated: false } },
+  play: fitsWith(3),
+};
+
+/** Six links at xl: still three inline — all six run 23px past a 1280px page. */
+export const SixLinksAt1280: Story = {
+  args: SIX_LINKS,
+  globals: VIEWPORT_1280,
+  play: fitsWith(3),
+};
+
+/** Six links at 2xl, the narrowest page that shows them all. */
+export const SixLinksAt1440: Story = {
+  args: SIX_LINKS,
+  globals: { viewport: { value: "xxl", isRotated: false } },
+  play: fitsWith(6),
+};
+
+/** Six links at 1536px: all inline. */
+export const SixLinksAt1536: Story = {
+  args: SIX_LINKS,
+  parameters: NAV_EDGE_VIEWPORTS,
+  globals: { viewport: { value: "navEdge1536", isRotated: false } },
+  play: fitsWith(6),
 };
 
 /**
