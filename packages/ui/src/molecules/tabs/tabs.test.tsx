@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Soup } from "lucide-react";
+import { createRef } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { Icon } from "../../atoms/icon/icon";
@@ -166,5 +167,34 @@ describe("Tabs", () => {
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("forwards id, data-*, aria-* and ref to its root, and takes sx", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(
+      <Tabs
+        ref={ref}
+        label="Menu sections"
+        items={MENU}
+        id="menu-tabs"
+        data-section="mains"
+        aria-describedby="hint"
+        sx={{ mt: 4 }}
+      />
+    );
+    expect(ref.current).toHaveAttribute("id", "menu-tabs");
+    expect(ref.current).toHaveAttribute("data-section", "mains");
+    expect(ref.current).toHaveAttribute("aria-describedby", "hint");
+    expect(ref.current).toHaveClass("mt-4");
+    expect(ref.current).toContainElement(screen.getByRole("tablist"));
+  });
+
+  it("lets sx beat a default class and keeps className", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(
+      <Tabs ref={ref} label="Menu sections" items={MENU} sx={{ gap: 2 }} className="italic" />
+    );
+    expect(ref.current).toHaveClass("gap-2", "italic");
+    expect(ref.current).not.toHaveClass("gap-6");
   });
 });

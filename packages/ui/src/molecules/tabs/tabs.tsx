@@ -4,7 +4,10 @@ import type { ReactNode } from "react";
 
 import { Tabs as RadixTabs } from "radix-ui";
 
+import type { BaseProps } from "../../lib/common-props";
+
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
 
 const tabs = componentVariants({
@@ -52,7 +55,7 @@ export interface TabItem {
   isDisabled?: boolean | undefined;
 }
 
-export interface TabsProps {
+export interface TabsProps extends Omit<BaseProps<"div">, "defaultValue" | "dir"> {
   /** Accessible name of the tab list, e.g. "Menu sections". */
   label: string;
   items: TabItem[];
@@ -64,7 +67,8 @@ export interface TabsProps {
   variant?: "underline" | "segmented" | undefined;
   /** Share the row equally between the tabs, e.g. across a card. */
   isFullWidth?: boolean | undefined;
-  className?: string | undefined;
+  /** Reading direction (Radix's narrower `dir`). */
+  dir?: "ltr" | "rtl" | undefined;
 }
 
 /**
@@ -80,7 +84,9 @@ export function Tabs({
   onValueChange,
   variant,
   isFullWidth = false,
+  sx,
   className,
+  ...props
 }: TabsProps) {
   const [selected, setSelected] = useControllableState({
     value,
@@ -92,9 +98,10 @@ export function Tabs({
 
   return (
     <RadixTabs.Root
+      {...props}
       value={selected}
       onValueChange={setSelected}
-      className={styles.root({ className })}
+      className={styles.root({ className: withSx(sx, className) })}
     >
       <RadixTabs.List
         aria-label={label}
