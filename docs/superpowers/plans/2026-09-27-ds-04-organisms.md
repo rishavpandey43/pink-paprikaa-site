@@ -6442,6 +6442,9 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 | Default links                                                            | DROP    | D9                                                                                                           |
 | Stories Default · Scrolled · WithCart · ShortRail · Smallest · InContext | ALREADY | Rest · ScrolledWithCart · ScrolledWithCart · HandoffCompact · Mobile · the decorator's `<main>`              |
 | Story CartCounts (0 / 1 / 12, each masthead self-named)                  | ADD     | `CartCounts`                                                                                                 |
+| (plan missed) an empty slot renders no wrapper; an empty drawer no menu  | ADD     | test "renders no wrapper for an empty badge or action slot…" (fold 18, `isShown`)                            |
+| (plan missed) the drawer's focus rings inside its scrolling sheet        | ADD     | story `DrawerOpen` + ring play (fold 20)                                                                     |
+| (plan missed) the 1024px nav really hides links 4+ and never overflows   | ADD     | `LongLinksAtLg` play (computed `display`, `scrollWidth`)                                                     |
 
 Implementer: copy this table into your report, extended with anything the plan missed.
 
@@ -6708,6 +6711,28 @@ describe("SiteHeader", () => {
     expect(bar).toContainElement(screen.getByText("Pure Veg"));
   });
 
+  it("renders no wrapper for an empty badge or action slot, and no drawer with nothing in it", async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <SiteHeader
+        homeHref="#home"
+        links={LINKS}
+        badge=""
+        actions=""
+        compactActions=""
+        drawerActions=""
+      />
+    );
+    // The lockup link, the nav, the spacer and the menu button — nothing else.
+    expect(glassBar()?.firstElementChild?.children).toHaveLength(4);
+    await user.click(screen.getByRole("button", { name: "Menu" }));
+    const drawerNav = within(screen.getByRole("dialog")).getByRole("navigation");
+    expect(drawerNav.parentElement?.children).toHaveLength(1);
+    await user.keyboard("{Escape}");
+    rerender(<SiteHeader homeHref="#home" links={LINKS} drawerLinks={[]} drawerActions="" />);
+    expect(screen.queryByRole("button", { name: "Menu" })).not.toBeInTheDocument();
+  });
+
   it("shows actions from lg and compact actions below it", () => {
     render(
       <SiteHeader
@@ -6910,6 +6935,7 @@ import type { LinkAs } from "../../lib/link-as";
 import { Icon } from "../../atoms/icon/icon";
 import { Logo } from "../../atoms/logo/logo";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
 import { SiteHeaderBar } from "./site-header-bar";
 import { SiteHeaderDrawer } from "./site-header-drawer";
 
@@ -7019,7 +7045,7 @@ export function SiteHeader({
 }: SiteHeaderProps) {
   const slots = siteHeader({ size });
   const hasHiddenLinks = links.length > INLINE_LINKS_BELOW_XL;
-  const hasDrawer = drawerLinks.length > 0 || drawerActions !== undefined;
+  const hasDrawer = drawerLinks.length > 0 || isShown(drawerActions);
   return (
     <header className={slots.root({ className })} {...props}>
       <a href={skipLinkHref} className={slots.skipLink()}>
@@ -7029,9 +7055,9 @@ export function SiteHeader({
       <SiteHeaderBar className={slots.bar()}>
         <div className={slots.row()}>
           <LinkComponent href={homeHref} className={slots.home()}>
-            {logo ?? <Logo className={slots.logo()} />}
+            {isShown(logo) ? logo : <Logo className={slots.logo()} />}
           </LinkComponent>
-          {badge ? <div className={slots.badge()}>{badge}</div> : null}
+          {isShown(badge) ? <div className={slots.badge()}>{badge}</div> : null}
           {links.length > 0 ? (
             <nav aria-label={navLabel} className={slots.nav()}>
               <ul className={slots.navList()}>
@@ -7053,8 +7079,10 @@ export function SiteHeader({
             </nav>
           ) : null}
           <div className={slots.spacer()} />
-          {actions ? <div className={slots.actions()}>{actions}</div> : null}
-          {compactActions ? <div className={slots.compactActions()}>{compactActions}</div> : null}
+          {isShown(actions) ? <div className={slots.actions()}>{actions}</div> : null}
+          {isShown(compactActions) ? (
+            <div className={slots.compactActions()}>{compactActions}</div>
+          ) : null}
           {hasDrawer ? (
             <SiteHeaderDrawer
               menuLabel={menuLabel}
@@ -7078,7 +7106,9 @@ export function SiteHeader({
                   ))}
                 </ul>
               </nav>
-              {drawerActions ? <div className={slots.drawerActions()}>{drawerActions}</div> : null}
+              {isShown(drawerActions) ? (
+                <div className={slots.drawerActions()}>{drawerActions}</div>
+              ) : null}
             </SiteHeaderDrawer>
           ) : null}
         </div>
@@ -7091,7 +7121,7 @@ export function SiteHeader({
 - [ ] **Step 7: Run it to verify it passes**
 
 Run: `pnpm nx test @pink-paprikaa-web/ui --skip-nx-cache -- site-header 2>&1 | tail -8`
-Expected: PASS (15 tests). If the focus-trap loop fails on a Radix focus guard (`data-radix-focus-guard`), check the guard is outside the dialog and that FocusScope moved focus back — never loosen the assertion.
+Expected: PASS (16 tests). If the focus-trap loop fails on a Radix focus guard (`data-radix-focus-guard`), check the guard is outside the dialog and that FocusScope moved focus back — never loosen the assertion.
 
 - [ ] **Step 8: Stories (card parity with `SiteHeader.card.html` + handoff `PPHeader`)**
 
@@ -7107,6 +7137,7 @@ import { Badge } from "../../atoms/badge/badge";
 import { Button } from "../../atoms/button/button";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
 import { IconButton } from "../../atoms/icon-button/icon-button";
+import { ringClippers } from "../../lib/story-ring";
 import { AnnouncementBar } from "../../molecules/announcement-bar/announcement-bar";
 import { BRAND, VIEWPORT_1024, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
 import { type NavLink, SiteHeader } from "./site-header";
@@ -7293,19 +7324,83 @@ export const HandoffCompact: Story = {};
 export const LongLinksAtLg: Story = {
   args: { links: LONG_LINKS, drawerLinks: LONG_LINKS },
   globals: VIEWPORT_1024,
+  play: async ({ canvas }) => {
+    const nav = canvas.getByRole("navigation", { name: "Main" });
+    await expect(nav).toBeVisible();
+    const items = [...nav.querySelectorAll("li")];
+    await expect(items.map((item) => getComputedStyle(item).display)).toEqual([
+      "list-item",
+      "list-item",
+      "list-item",
+      "none",
+      "none",
+      "none",
+    ]);
+    await expect(nav.scrollWidth).toBeLessThanOrEqual(nav.clientWidth);
+    await expect(canvas.getByRole("button", { name: "Menu" })).toBeVisible();
+  },
 };
+
+/**
+ * Radix hides the page behind the open drawer while trapping focus; `aria-hidden-focus` misreads
+ * it. A story's `rules` replace the preview's list, so `color-contrast` (owned by the token
+ * contrast policy) is switched off again here.
+ */
+const OPEN_DRAWER_A11Y = {
+  a11y: {
+    config: {
+      rules: [
+        { id: "color-contrast", enabled: false },
+        { id: "aria-hidden-focus", enabled: false },
+      ],
+    },
+  },
+};
+
+/** The drawer slides in (`animate-sheet-in`): wait for it to land before measuring. */
+async function openDrawer(menuButton: HTMLElement, click: (element: HTMLElement) => Promise<void>) {
+  await click(menuButton);
+  const drawer = await screen.findByRole("dialog", { name: "Menu" });
+  await Promise.all(drawer.getAnimations().map((animation) => animation.finished));
+  return drawer;
+}
 
 /** The drawer by keyboard: open, Escape, focus back on the menu button. */
 export const DrawerKeyboard: Story = {
   globals: VIEWPORT_360,
   play: async ({ canvas, userEvent }) => {
     const menuButton = canvas.getByRole("button", { name: "Menu" });
-    await userEvent.click(menuButton);
-    const drawer = await screen.findByRole("dialog", { name: "Menu" });
+    const drawer = await openDrawer(menuButton, (element) => userEvent.click(element));
     await expect(drawer).toBeVisible();
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     await expect(menuButton).toHaveFocus();
+  },
+};
+
+/**
+ * The open drawer at 360px. It scrolls (`overflow-y-auto`), so its padding must hold every focus
+ * ring whole: tab round the trapped focus — close button, eight links, two actions — and prove
+ * nothing cuts any of them.
+ */
+export const DrawerOpen: Story = {
+  globals: VIEWPORT_360,
+  parameters: OPEN_DRAWER_A11Y,
+  play: async ({ canvas, userEvent }) => {
+    const drawer = await openDrawer(canvas.getByRole("button", { name: "Menu" }), (element) =>
+      userEvent.click(element)
+    );
+    const stops = HANDOFF_DRAWER_LINKS.length + 3;
+    const seen = new Set<Element>();
+    for (let step = 0; step <= stops; step += 1) {
+      await userEvent.tab();
+      const active = document.activeElement;
+      if (!(active instanceof HTMLElement) || seen.has(active)) break;
+      seen.add(active);
+      await expect(drawer).toContainElement(active);
+      await expect(ringClippers(active)).toEqual([]);
+    }
+    await expect(seen.size).toBe(stops);
   },
 };
 
@@ -7341,7 +7436,9 @@ the token breakpoints instead of wrapping or clipping. Two client leaves
 keep the rest server-rendered: the bar turns to glass past 24px via
 useSyncExternalStore, and the menu drawer is a Radix sheet that traps
 focus, locks the page, closes on Escape or any link and returns focus.
-Adds the glass-bar text pairs to the contrast policy.
+Adds the glass-bar text pairs to the contrast policy. Empty slots render
+no wrapper, and story plays prove the drawer's focus rings are never
+clipped and the 1024px nav hides its extra links.
 
 Co-Authored-By: Claude <model> <noreply@anthropic.com>"
 ```
