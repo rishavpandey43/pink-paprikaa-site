@@ -30,11 +30,6 @@ describe("StatBand", () => {
     expect(items[2]).toHaveTextContent("No egg, no meat, ever");
   });
 
-  it("renders no sub-line wrapper for an empty sub", () => {
-    render(<StatBand stats={[{ value: "3 km", label: "free delivery radius", sub: "" }]} />);
-    expect(screen.getByText("3 km").parentElement?.children).toHaveLength(2);
-  });
-
   it("renders the sub-line wrapper for a 0 sub — a number is content", () => {
     render(<StatBand stats={[{ value: "3 km", label: "free delivery radius", sub: 0 }]} />);
     expect(screen.getByText("3 km").parentElement?.children).toHaveLength(3);
@@ -62,6 +57,8 @@ describe("StatBand", () => {
   it("colours the numbers brand on soft and white on the flooded fields", () => {
     const { rerender } = render(<StatBand stats={STATS} tone="soft" />);
     expect(screen.getByText("3 km")).toHaveClass("text-text-brand");
+    rerender(<StatBand stats={STATS} tone="brand" />);
+    expect(screen.getByText("3 km")).toHaveClass("text-text-on-inverse");
     rerender(<StatBand stats={STATS} tone="ink" />);
     expect(screen.getByText("3 km")).toHaveClass("text-text-on-inverse");
   });

@@ -104,13 +104,38 @@ describe("HeroBanner", () => {
     expect(container.firstElementChild).toHaveAttribute("data-surface", surface);
   });
 
-  it("carries the diamond on the flooded tones and not on the alt tint unless asked", () => {
-    const { container, rerender } = render(<HeroBanner title={TITLE} tone="brand" />);
-    expect(patternLayer(container)).toBeInTheDocument();
-    rerender(<HeroBanner title={TITLE} tone="alt" />);
+  it.each(["brand", "ink", "soft"] as const)(
+    "carries the diamond on the %s field by default",
+    (tone) => {
+      const { container } = render(<HeroBanner title={TITLE} tone={tone} />);
+      expect(patternLayer(container)).toBeInTheDocument();
+    }
+  );
+
+  it("carries no diamond on the alt tint unless asked, nor on a flooded field with pattern=none", () => {
+    const { container, rerender } = render(<HeroBanner title={TITLE} tone="alt" />);
     expect(patternLayer(container)).not.toBeInTheDocument();
     rerender(<HeroBanner title={TITLE} tone="alt" pattern="faint" />);
     expect(patternLayer(container)).toBeInTheDocument();
+    rerender(<HeroBanner title={TITLE} tone="brand" pattern="none" />);
+    expect(patternLayer(container)).not.toBeInTheDocument();
+  });
+
+  it("hands the faint density to the diamond", () => {
+    const { container, rerender } = render(<HeroBanner title={TITLE} tone="ink" pattern="faint" />);
+    const tint = () => patternLayer(container)?.firstElementChild;
+    expect(tint()).toHaveClass("pattern-opacity-faint");
+    rerender(<HeroBanner title={TITLE} tone="ink" />);
+    expect(tint()).toHaveClass("pattern-opacity-default");
+  });
+
+  it("sets the split media beside the copy from lg and stacks it below; center has one column", () => {
+    const { container, rerender } = render(<HeroBanner title={TITLE} pattern="none" />);
+    const inner = () => container.querySelector("section > div");
+    expect(inner()).toHaveClass("grid", "lg:grid-cols-2");
+    expect(inner()?.className).not.toMatch(/(^|\s)grid-cols-/);
+    rerender(<HeroBanner title={TITLE} layout="center" pattern="none" />);
+    expect(inner()).not.toHaveClass("lg:grid-cols-2");
   });
 
   it("uses the display-2 ramp for a long headline", () => {
