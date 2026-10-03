@@ -1,6 +1,9 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 export interface KeyValueItem {
   key: ReactNode;
@@ -9,7 +12,7 @@ export interface KeyValueItem {
   isEmphasised?: boolean | undefined;
 }
 
-export interface KeyValueListProps extends ComponentProps<"dl"> {
+export interface KeyValueListProps extends BaseProps<"dl"> {
   items: KeyValueItem[];
   density?: "compact" | "default" | undefined;
   /** A fixed key column (88 / 120px). Without it, key and value sit at either end of the row. */
@@ -52,6 +55,7 @@ export function KeyValueList({
   keyWidth,
   hasDividers = true,
   emphasis = "value",
+  sx,
   className,
   ...props
 }: KeyValueListProps) {
@@ -64,7 +68,7 @@ export function KeyValueList({
   });
 
   return (
-    <dl className={styles.root({ className })} {...props}>
+    <dl className={styles.root({ className: withSx(sx, className) })} {...props}>
       {items.map((item, index) => (
         <div key={index} className={styles.row()}>
           <dt className={styles.key()}>{item.key}</dt>

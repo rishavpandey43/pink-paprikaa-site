@@ -1,12 +1,15 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { Utensils } from "lucide-react";
 import { createElement } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 import { SymbolMark } from "../../lib/symbol-mark";
 
 const emptyState = componentVariants({
@@ -32,7 +35,7 @@ const emptyState = componentVariants({
   defaultVariants: { size: "md" },
 });
 
-export interface EmptyStateProps extends Omit<ComponentProps<"div">, "title"> {
+export interface EmptyStateProps extends Omit<BaseProps<"div">, "title"> {
   /** Short and plain: "Nothing here yet." */
   title: ReactNode;
   /** One line that says what to do next. */
@@ -56,13 +59,14 @@ export function EmptyState({
   action,
   size = "md",
   headingLevel = 3,
+  sx,
   className,
   ...props
 }: EmptyStateProps) {
   const styles = emptyState({ size });
 
   return (
-    <div className={styles.root({ className })} {...props}>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
       {variant === "symbol" ? (
         <SymbolMark className={styles.symbol()} />
       ) : (

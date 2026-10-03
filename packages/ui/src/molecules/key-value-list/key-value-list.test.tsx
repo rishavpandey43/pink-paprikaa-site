@@ -75,4 +75,11 @@ describe("KeyValueList", () => {
     const { container } = render(<KeyValueList items={BOX} keyWidth="sm" density="compact" />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <KeyValueList items={[{ key: "Open", value: "11am" }]} sx={{ m: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("m-4", "italic");
+  });
 });

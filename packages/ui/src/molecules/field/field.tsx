@@ -1,11 +1,13 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { useId } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { FieldStatus } from "../../lib/field-status";
 
 import { componentVariants } from "../../lib/component-variants";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import { withSx } from "../../lib/sx";
 
 const field = componentVariants({
   slots: {
@@ -41,7 +43,7 @@ export interface FieldControlProps {
   required?: true | undefined;
 }
 
-export interface FieldProps extends Omit<ComponentProps<"div">, "children" | "id"> {
+export interface FieldProps extends Omit<BaseProps<"div">, "children" | "id"> {
   label: ReactNode;
   /** Helper text under the control. Replaced by `message` while a status is set. */
   hint?: ReactNode;
@@ -76,6 +78,7 @@ export function Field({
   isOptional = false,
   orientation = "stack",
   id,
+  sx,
   className,
   children,
   ...props
@@ -92,7 +95,7 @@ export function Field({
   if (isRequired) control.required = true;
 
   return (
-    <div className={styles.root({ className })} {...props}>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
       <label htmlFor={controlId} className={styles.label()}>
         <span>{label}</span>
         {isRequired ? (

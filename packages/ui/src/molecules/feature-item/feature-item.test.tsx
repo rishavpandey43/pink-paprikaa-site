@@ -44,4 +44,11 @@ describe("FeatureItem", () => {
     const { container } = render(<FeatureItem {...WHY} />);
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <FeatureItem icon={Store} title="Why us" sx={{ mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });

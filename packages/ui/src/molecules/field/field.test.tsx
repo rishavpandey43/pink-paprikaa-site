@@ -207,4 +207,13 @@ describe("Field", () => {
     );
     await expectNoA11yViolations(container);
   });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <Field label="Mobile number" sx={{ mt: 4 }} className="italic">
+        {renderInput}
+      </Field>
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
 });

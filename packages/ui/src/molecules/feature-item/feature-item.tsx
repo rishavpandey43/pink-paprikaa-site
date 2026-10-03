@@ -1,11 +1,14 @@
-import { type ComponentProps, createElement, type ReactNode } from "react";
+import { createElement, type ReactNode } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
-export interface FeatureItemProps extends Omit<ComponentProps<"div">, "title"> {
+export interface FeatureItemProps extends Omit<BaseProps<"div">, "title"> {
   icon: IconComponent;
   title: ReactNode;
   description?: ReactNode | undefined;
@@ -37,13 +40,14 @@ export function FeatureItem({
   description,
   size = "md",
   headingLevel = 3,
+  sx,
   className,
   ...props
 }: FeatureItemProps) {
   const styles = featureItem({ size });
 
   return (
-    <div className={styles.root({ className })} {...props}>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
       <span className={styles.tile()}>
         <Icon icon={icon} size="md" />
       </span>
