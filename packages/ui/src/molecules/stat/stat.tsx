@@ -1,8 +1,11 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
+
+import type { BasePropsWithColor } from "../../lib/common-props";
 
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 const stat = componentVariants({
   slots: {
@@ -13,8 +16,8 @@ const stat = componentVariants({
     sub: "text-stat-sub text-text-subtle",
   },
   variants: {
-    tone: {
-      ink: { icon: "text-stat-icon", value: "text-text-heading" },
+    color: {
+      neutral: { icon: "text-stat-icon", value: "text-text-heading" },
       brand: { icon: "text-stat-icon", value: "text-text-brand" },
       inverse: { icon: "text-white-alpha-70", value: "text-text-on-inverse" },
     },
@@ -23,17 +26,17 @@ const stat = componentVariants({
       center: { root: "justify-items-center text-center" },
     },
   },
-  defaultVariants: { tone: "ink", align: "start" },
+  defaultVariants: { color: "neutral", align: "start" },
 });
 
-export interface StatProps extends ComponentProps<"div"> {
+export interface StatProps extends BasePropsWithColor<"div"> {
   value: ReactNode;
   /** One short line, sentence case, no full stop. */
   label: ReactNode;
   sub?: ReactNode;
   icon?: IconComponent | undefined;
-  /** Colours the number: heading ink, brand pink, or white on a dark band. */
-  tone?: "ink" | "brand" | "inverse" | undefined;
+  /** Colours the number: neutral heading ink, brand pink, or white on a dark band. */
+  color?: "neutral" | "brand" | "inverse" | undefined;
   align?: "start" | "center" | undefined;
 }
 
@@ -43,15 +46,16 @@ export function Stat({
   label,
   sub,
   icon,
-  tone = "ink",
+  color = "neutral",
   align = "start",
+  sx,
   className,
   ...props
 }: StatProps) {
-  const styles = stat({ tone, align });
+  const styles = stat({ color, align });
 
   return (
-    <div className={styles.root({ className })} {...props}>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
       {icon === undefined ? null : <Icon icon={icon} size="lg" className={styles.icon()} />}
       <span className={styles.value()}>{value}</span>
       <span className={styles.label()}>{label}</span>

@@ -33,7 +33,7 @@ const statBand = componentVariants({
 type StatBandTone = NonNullable<VariantProps<typeof statBand>["tone"]>;
 
 /** Numbers read in brand pink on the soft field and white on the flooded ones (design system). */
-const STAT_TONE: Readonly<Record<StatBandTone, "brand" | "inverse">> = {
+const STAT_COLOR: Readonly<Record<StatBandTone, "brand" | "inverse">> = {
   soft: "brand",
   brand: "inverse",
   ink: "inverse",
@@ -54,7 +54,7 @@ export function StatBand({ stats, tone = "soft", className, ...props }: StatBand
       <ul role="list" className={slots.grid()}>
         {stats.map((stat, index) => (
           <li key={index}>
-            <Stat {...stat} tone={STAT_TONE[tone]} align="center" />
+            <Stat {...stat} color={STAT_COLOR[tone]} align="center" />
           </li>
         ))}
       </ul>

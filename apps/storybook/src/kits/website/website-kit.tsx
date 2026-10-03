@@ -198,7 +198,7 @@ export function WebsiteKit() {
                     <Stat
                       value={String(brand.outlets.length)}
                       label={`kitchen, ${OUTLET.name} ${OUTLET.city}`}
-                      tone="brand"
+                      color="brand"
                     />
                   </Card>
                   <Card variant="feature" className="flex min-w-0 flex-1 flex-col gap-1.5">

@@ -15,7 +15,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "A single big fact — outlet counts, spices ground, years open. The number is fluid-clamped Poppins 800, so it never overflows a narrow column; `tone` colours it (ink, brand, or white `inverse` on a dark band) while the label and sub follow the surface. Use at most 3–4 in a row and never invent numbers.",
+          "A single big fact — outlet counts, spices ground, years open. The number is fluid-clamped Poppins 800, so it never overflows a narrow column; `color` colours it (neutral ink, brand, or white `inverse` on a dark band) while the label and sub follow the surface. Use at most 3–4 in a row and never invent numbers.",
       },
     },
   },
@@ -38,12 +38,12 @@ export const Default: Story = {
 
 /** Card row "icon + brand". */
 export const IconBrand: Story = {
-  args: { value: "4.6", label: "average guest rating", icon: Heart, tone: "brand" },
+  args: { value: "4.6", label: "average guest rating", icon: Heart, color: "brand" },
 };
 
 /** Card row "inverse + center", on an ink field. */
 export const InverseCentre: Story = {
-  args: { value: "2025", label: "the year we started", tone: "inverse", align: "center" },
+  args: { value: "2025", label: "the year we started", color: "inverse", align: "center" },
   render: (args) => (
     <div data-surface="ink" className="rounded-lg bg-surface-inverse p-6">
       <Stat {...args} />
@@ -79,19 +79,19 @@ export const Narrow: Story = {
   ],
 };
 
-/** The ink and brand tones on every field: the glyph turns white on pink (R89). */
+/** The neutral and brand colors on every field: the glyph turns white on pink (R89). */
 export const OnSurfacesStory: Story = {
   name: "OnSurfaces",
   args: { value: "4.6", label: "average guest rating", icon: Heart },
   render: (args) => (
     <OnSurfaces>
-      <Stat {...args} tone="ink" />
-      <Stat {...args} tone="brand" />
+      <Stat {...args} color="neutral" />
+      <Stat {...args} color="brand" />
     </OnSurfaces>
   ),
   play: async ({ canvasElement }) => {
     const glyphs = [...canvasElement.querySelectorAll("svg.lucide-heart")];
-    // Two tones on each of the 5 grounds.
+    // Two colors on each of the 5 grounds.
     await expect(glyphs).toHaveLength(10);
     for (const glyph of glyphs) {
       await expect(getComputedStyle(glyph).color).not.toBe(groundOf(glyph));
