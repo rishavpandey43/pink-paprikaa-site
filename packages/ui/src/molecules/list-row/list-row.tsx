@@ -1,11 +1,14 @@
-import type { ComponentProps, ElementType, ReactNode } from "react";
+import type { ElementType, ReactNode } from "react";
 
 import { ChevronRight } from "lucide-react";
 import { Slot } from "radix-ui";
 
+import type { BaseProps } from "../../lib/common-props";
+
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 const listRow = componentVariants({
   slots: {
@@ -36,7 +39,7 @@ const listRow = componentVariants({
  * `ref`, `className` and the other `div` props land on the outer wrapper (the one that draws the
  * divider), not on the row — with `asChild`, reach the link or button through the child's own ref.
  */
-export interface ListRowProps extends Omit<ComponentProps<"div">, "title"> {
+export interface ListRowProps extends Omit<BaseProps<"div">, "title"> {
   title: ReactNode;
   description?: ReactNode;
   /** Replaces the glyph, e.g. an Avatar. */
@@ -69,6 +72,7 @@ export function ListRow({
   hasDivider = true,
   isDanger = false,
   asChild = false,
+  sx,
   className,
   children,
   ...props
@@ -79,7 +83,7 @@ export function ListRow({
     icon === undefined ? null : <Icon icon={icon} size="lg" className={styles.icon()} />;
 
   return (
-    <div className={styles.root({ className })} {...props}>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
       <Row className={styles.row()}>
         <Slot.Slottable child={children}>
           {(content) => (

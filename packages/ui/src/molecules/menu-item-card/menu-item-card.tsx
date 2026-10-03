@@ -1,5 +1,6 @@
-import { type ComponentProps, createElement, type ReactNode } from "react";
+import { createElement, type ReactNode } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
 import type { LinkAs } from "../../lib/link-as";
 import type { MenuItemImage } from "../menu-item-row/menu-item-row";
 
@@ -13,6 +14,7 @@ import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
 import { STRETCHED_LINK } from "../../lib/stretched-link";
+import { withSx } from "../../lib/sx";
 
 const menuItemCard = componentVariants({
   slots: {
@@ -33,7 +35,7 @@ const menuItemCard = componentVariants({
   },
 });
 
-export interface MenuItemCardProps extends ComponentProps<"article"> {
+export interface MenuItemCardProps extends BaseProps<"article"> {
   name: string;
   description?: string | undefined;
   price: number;
@@ -73,6 +75,7 @@ export function MenuItemCard({
   href,
   linkAs: LinkComponent = "a",
   headingLevel = 3,
+  sx,
   className,
   ...props
 }: MenuItemCardProps) {
@@ -83,7 +86,7 @@ export function MenuItemCard({
       asChild
       padding="none"
       isInteractive={href !== undefined}
-      className={styles.root({ className })}
+      className={styles.root({ className: withSx(sx, className) })}
     >
       <article {...props}>
         <div className={styles.media()}>

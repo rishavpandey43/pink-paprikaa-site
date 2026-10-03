@@ -1,4 +1,6 @@
-import { type ComponentProps, createElement, type ReactNode } from "react";
+import { createElement, type ReactNode } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { Badge } from "../../atoms/badge/badge";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
@@ -8,6 +10,7 @@ import { SpiceLevel } from "../../atoms/spice-level/spice-level";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 /** A dish photograph from the image pipeline. Omit it and a labelled placeholder shows instead. */
 export interface MenuItemImage {
@@ -35,7 +38,7 @@ const menuItemRow = componentVariants({
   },
 });
 
-export interface MenuItemRowProps extends ComponentProps<"article"> {
+export interface MenuItemRowProps extends BaseProps<"article"> {
   name: string;
   /** Devanagari dish name, set beside the Latin one (`कुल्फी`). */
   nameDevanagari?: string | undefined;
@@ -75,13 +78,14 @@ export function MenuItemRow({
   action,
   hasDivider = true,
   headingLevel = 3,
+  sx,
   className,
   ...props
 }: MenuItemRowProps) {
   const styles = menuItemRow({ hasDivider });
 
   return (
-    <article className={styles.root({ className })} {...props}>
+    <article className={styles.root({ className: withSx(sx, className) })} {...props}>
       <div className={styles.body()}>
         <div className={styles.header()}>
           <DietMark size="sm" />
