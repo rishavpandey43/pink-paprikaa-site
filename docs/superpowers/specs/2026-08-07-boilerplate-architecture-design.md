@@ -278,12 +278,15 @@ Defined once in the root `package.json` so local and CI invocations cannot drift
 Tokens are authored **once**, in W3C DTCG format, in `packages/design-tokens/tokens/`. Style Dictionary builds them into every consumable form:
 
 ```
-tokens/*.json  →  Style Dictionary  →  dist/theme.css   (Tailwind v4 @theme block)
-                                    →  dist/tokens.ts   (typed constants)
-                                    →  dist/tokens.json (Storybook catalogue)
+tokens/*.json  →  Style Dictionary  →  dist/theme.css    (Tailwind v4 @theme block)
+                                    →  dist/surfaces.css (data-surface remaps)
+                                    →  dist/tokens.json  (Storybook catalogue)
+                                    ~~→  dist/tokens.ts   (typed constants)~~
 ```
 
-Nothing hand-writes a Tailwind theme. Apps and Storybook import the generated `theme.css`; any JavaScript that needs a token value imports from `tokens.ts`. One source, three outputs, no drift.
+<sup>The `tokens.ts` line is struck: no JavaScript consumer is produced (amendment above; spec §3.3).</sup>
+
+Nothing hand-writes a Tailwind theme. Apps and Storybook import the generated `theme.css`. ~~Any JavaScript that needs a token value imports from `tokens.ts`. One source, three outputs, no drift.~~ One source, CSS + JSON outputs, no drift.
 
 ### Three token tiers
 
@@ -302,17 +305,20 @@ packages/ui/src/
   atoms/       Button  Text  Icon  Badge  Input  Spinner  Divider
   molecules/   Card  FormField  NavItem  PriceTag
   organisms/   Header  Footer  MenuSection  Gallery  ContactBlock
-  templates/   PageShell  ArticleLayout  MenuLayout
-  .storybook/
+  layouts/     PageShell  ArticleLayout  MenuLayout
+  ~~templates/~~
+  ~~.storybook/~~
 ```
 
-**Pages are not in the design system.** Templates accept content as props; apps own the routes that bind real data to them. This keeps the DS free of content and routing concerns, and the boundary is lint-enforced (§5, §7).
+<sup>Layers are `layouts`, not `templates`; Storybook is `apps/storybook`, not inside `packages/ui` (amendment above).</sup>
+
+**Pages are not in the design system.** ~~Templates~~ Layouts accept content as props; apps own the routes that bind real data to them. This keeps the DS free of content and routing concerns, and the boundary is lint-enforced (§5, §7).
 
 ### Component authoring
 
 - **tailwind-variants** for variant APIs — chosen over CVA specifically for **slots**, which multi-part organisms (a `Card` with root / header / body / footer) genuinely need, plus built-in `tailwind-merge` so consumer overrides resolve correctly instead of producing duplicate conflicting classes.
 - **Radix UI** for interactive behaviour — dialog/lightbox, drawer, tabs, accordion, navigation menu. Focus trapping, ARIA wiring and keyboard handling are where accessibility bugs actually live; this is not the place to hand-roll.
-- **Storybook 10** lives inside `packages/ui`, builds static, deploys as its own Netlify site. `@storybook/addon-a11y` runs axe in the panel during development.
+- ~~**Storybook 10** lives inside `packages/ui`, builds static, deploys as its own Netlify site.~~ Storybook is its own app (`apps/storybook`), local + static build only — no Netlify site in this phase (D16; amendment above). `@storybook/addon-a11y` runs axe in the panel during development.
 
 Phase 0 ships the pipeline, the Storybook shell, and exactly one reference component (`Button`) proving the token → variant → story → test path end to end. Real components arrive in Phase 1 once designs are supplied.
 
