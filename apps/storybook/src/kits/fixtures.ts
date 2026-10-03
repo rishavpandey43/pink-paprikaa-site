@@ -201,7 +201,7 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
     items: [
       { label: "Outlets", href: "#outlets" },
       { label: "Book a Table", href: "#book" },
-      { label: "Directions", href: DIRECTIONS_URL },
+      { label: "Directions", href: "#outlets" },
     ],
   },
   {

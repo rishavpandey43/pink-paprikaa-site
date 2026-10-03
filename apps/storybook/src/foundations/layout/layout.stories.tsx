@@ -57,12 +57,12 @@ function Cell({ label }: { label: string }) {
 
 export const Breakpoints: Story = {
   render: () => (
-    <ol aria-label="Breakpoints" className="flex items-end gap-2.5">
+    <ol role="list" aria-label="Breakpoints" className="flex items-end gap-2.5">
       {tokensWithPrefix("breakpoint-").map((entry, index) => (
         <li
           key={entry.name}
           className="flex min-w-0 flex-col gap-1"
-          style={{ flexGrow: index + 2 }}
+          style={{ width: `calc(var(${token("spacing").cssVar}) * ${String(12 + index * 6)})` }}
         >
           <span
             aria-hidden

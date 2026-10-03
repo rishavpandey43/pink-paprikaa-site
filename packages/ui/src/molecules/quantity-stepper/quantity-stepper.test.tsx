@@ -230,6 +230,25 @@ describe("QuantityStepper", () => {
     expect(input).toHaveValue("2000");
   });
 
+  it("takes Field control a11y on the spin button", () => {
+    render(
+      <QuantityStepper
+        label="Guests"
+        id="enquiry-guests"
+        aria-describedby="enquiry-guests-message"
+        aria-invalid
+        required
+        defaultValue={10}
+        min={1}
+      />
+    );
+    const input = screen.getByRole("spinbutton", { name: "Guests" });
+    expect(input).toHaveAttribute("id", "enquiry-guests");
+    expect(input).toHaveAttribute("aria-describedby", "enquiry-guests-message");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toBeRequired();
+  });
+
   it("gives react-hook-form's Controller a name, onBlur and a focusable ref", async () => {
     const user = userEvent.setup();
     const ref = createRef<HTMLInputElement>();

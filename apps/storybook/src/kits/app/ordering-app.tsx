@@ -196,7 +196,7 @@ export function OrderingApp({
         }
         overlay={
           <ToastProvider duration={2400} label="Notifications" isContained>
-            {item === null ? null : (
+            {item === null || frame === null ? null : (
               <ItemSheet
                 item={item}
                 portalContainer={frame}

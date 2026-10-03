@@ -49,6 +49,11 @@ export interface QuantityStepperProps {
   name?: string | undefined;
   disabled?: boolean | undefined;
   className?: string | undefined;
+  /** Field's control id — the wrapping `<label htmlFor>` points here. */
+  id?: string | undefined;
+  "aria-describedby"?: string | undefined;
+  "aria-invalid"?: true | undefined;
+  required?: true | undefined;
   /** The number field — react-hook-form's Controller focuses it on error. */
   ref?: Ref<HTMLInputElement> | undefined;
 }
@@ -87,6 +92,10 @@ export function QuantityStepper({
   name,
   disabled = false,
   className,
+  id,
+  "aria-describedby": describedBy,
+  "aria-invalid": isInvalid,
+  required,
   ref,
 }: QuantityStepperProps) {
   const bounds: Bounds = { min, max, step };
@@ -187,11 +196,15 @@ export function QuantityStepper({
         pattern="[0-9]*"
         autoComplete="off"
         role="spinbutton"
+        id={id}
         aria-label={label}
+        aria-describedby={describedBy}
+        aria-invalid={isInvalid}
         aria-valuenow={quantity}
         aria-valuemin={min}
         aria-valuemax={max}
         name={name}
+        required={required}
         size={Math.max(2, String(max ?? quantity).length)}
         value={draft ?? String(quantity)}
         disabled={disabled}

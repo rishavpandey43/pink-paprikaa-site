@@ -119,6 +119,10 @@ export const enquirySchema = z.object({
 export type EnquiryInput = z.input<typeof enquirySchema>;
 export type EnquiryValues = z.output<typeof enquirySchema>;
 
+/**
+ * Default guests is 10 so an empty submit fails the schema min of 15; KeyboardOnly then +1 five
+ * times. Stepper min stays 1 so those presses can land on 15.
+ */
 export const ENQUIRY_DEFAULTS: EnquiryInput = {
   name: "",
   phone: "",
@@ -250,12 +254,13 @@ export function EnquiryForm({ onSubmit }: EnquiryFormProps) {
             status={statusOf(errors.guests)}
             message={errors.guests?.message}
           >
-            {() => (
+            {(guestsField) => (
               <Controller
                 control={control}
                 name="guests"
                 render={({ field }) => (
                   <QuantityStepper
+                    {...guestsField}
                     label="Guests"
                     name={field.name}
                     value={field.value}

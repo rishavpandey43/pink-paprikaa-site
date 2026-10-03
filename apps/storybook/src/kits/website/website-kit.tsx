@@ -96,7 +96,7 @@ export function WebsiteKit() {
 
   return (
     <ToastProvider duration={2600} label="Notifications">
-      <div className="max-w-full min-w-0">
+      <div id="top" className="max-w-full min-w-0">
         <KitNotice source="ui_kits/website" />
         <SiteHeader
           homeHref="#top"

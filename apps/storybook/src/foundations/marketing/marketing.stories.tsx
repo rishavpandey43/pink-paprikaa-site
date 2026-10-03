@@ -31,7 +31,7 @@ const CANVAS_STEPS = [
 
 export const CanvasFormats: Story = {
   render: () => (
-    <ul aria-label="Canvas formats" className="flex flex-wrap items-end gap-3.5">
+    <ul role="list" aria-label="Canvas formats" className="flex flex-wrap items-end gap-3.5">
       {Object.entries(POST_FORMATS).map(([format, { width, height, label }]) => (
         <li key={format} className="flex flex-col gap-1">
           <span
