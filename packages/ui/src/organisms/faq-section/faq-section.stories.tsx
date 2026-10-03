@@ -138,9 +138,22 @@ export const HandoffWithAside: Story = {
 export const Multiple: Story = { args: { isMultiple: true } };
 
 /** A page that links to one answer opens that one instead of the first. */
-export const SecondOpen: Story = { args: { defaultOpen: ["pause"] } };
+export const SecondOpen: Story = {
+  args: { defaultOpen: ["pause"] },
+  play: async ({ canvas, canvasElement }) => {
+    await expect(canvasElement.querySelectorAll("details[open]")).toHaveLength(1);
+    await expect(canvas.getByText("Can I pause or skip a day?").closest("details")).toHaveAttribute(
+      "open"
+    );
+  },
+};
 
-export const AllClosed: Story = { args: { defaultOpen: [] } };
+export const AllClosed: Story = {
+  args: { defaultOpen: [] },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelectorAll("details[open]")).toHaveLength(0);
+  },
+};
 
 /** No lede: the heading sits alone in its column and the answers carry the section. */
 export const WithoutLede: Story = { args: { lede: undefined } };
