@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { MessageCircle, Phone } from "lucide-react";
+import { expect } from "storybook/test";
 
 import type { AccordionItem } from "../../molecules/accordion/accordion";
 
@@ -147,6 +148,10 @@ export const WithoutLede: Story = { args: { lede: undefined } };
 /** Under a page section that already owns the h2, the FAQ steps down a level. */
 export const HeadingLevel3: Story = {
   args: { headingLevel: 3, overline: "Homely Meals", title: "Plans and delivery" },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("heading", { level: 3 })).toHaveTextContent("Plans and delivery");
+    await expect(canvas.getAllByRole("heading", { level: 4 })).toHaveLength(FAQ.length);
+  },
 };
 
 export const Mobile: Story = { ...HandoffWithAside, globals: VIEWPORT_360 };

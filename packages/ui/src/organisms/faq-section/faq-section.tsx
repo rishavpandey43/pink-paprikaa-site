@@ -26,8 +26,18 @@ export interface FaqSectionProps extends Omit<ComponentProps<"section">, "title"
   isMultiple?: boolean | undefined;
   /** Beside the heading, sticky at lg and up — e.g. the handoff's "Still have a question?" card. */
   aside?: ReactNode;
+  /** The title's level; each question is a heading one level below it (h6 at most). */
   headingLevel?: HeadingLevel | undefined;
 }
+
+const QUESTION_LEVEL: Readonly<Record<HeadingLevel, HeadingLevel>> = {
+  1: 2,
+  2: 3,
+  3: 4,
+  4: 5,
+  5: 6,
+  6: 6,
+};
 
 /** Two-column FAQ — heading (and aside) left, native accordion right, stacking below lg. */
 export function FaqSection({
@@ -55,7 +65,12 @@ export function FaqSection({
           />
           {aside}
         </div>
-        <Accordion items={items} defaultOpen={defaultOpen} isMultiple={isMultiple} />
+        <Accordion
+          items={items}
+          defaultOpen={defaultOpen}
+          isMultiple={isMultiple}
+          headingLevel={QUESTION_LEVEL[headingLevel]}
+        />
       </div>
     </section>
   );

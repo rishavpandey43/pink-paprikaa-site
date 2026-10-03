@@ -34,6 +34,23 @@ describe("FaqSection", () => {
     expect(screen.getByText("The things people ask us most.")).toBeInTheDocument();
   });
 
+  it("makes each question a heading one level below the title", () => {
+    render(<FaqSection title="FAQ" items={ITEMS} />);
+    const questions = screen.getAllByRole("heading", { level: 3 });
+    expect(questions.map((question) => question.textContent)).toEqual(
+      ITEMS.map((item) => item.question)
+    );
+    for (const question of questions) expect(question.closest("summary")).not.toBeNull();
+  });
+
+  it("takes its heading level from headingLevel and steps the questions down with it, to h6 at most", () => {
+    const { rerender } = render(<FaqSection title="FAQ" items={ITEMS} headingLevel={3} />);
+    expect(screen.getByRole("heading", { level: 3, name: "FAQ" })).toBeInTheDocument();
+    expect(screen.getAllByRole("heading", { level: 4 })).toHaveLength(ITEMS.length);
+    rerender(<FaqSection title="FAQ" items={ITEMS} headingLevel={6} />);
+    expect(screen.getAllByRole("heading", { level: 6 })).toHaveLength(ITEMS.length + 1);
+  });
+
   it("opens the first answer by default and keeps one open at a time", () => {
     const { container } = render(<FaqSection title="FAQ" items={ITEMS} />);
     const answers = [...container.querySelectorAll("details")];

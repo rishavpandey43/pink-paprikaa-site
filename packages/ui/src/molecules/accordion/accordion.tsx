@@ -1,10 +1,11 @@
 import type { ComponentProps, ReactNode } from "react";
 
 import { ChevronDown } from "lucide-react";
-import { useId } from "react";
+import { createElement, useId } from "react";
 
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
+import { type HeadingLevel, headingTag } from "../../lib/heading";
 
 const accordion = componentVariants({
   slots: {
@@ -38,6 +39,11 @@ export interface AccordionProps extends ComponentProps<"div"> {
   defaultOpen?: string[] | undefined;
   /** The single-open group's name (default: generated). Two accordions never share one. */
   name?: string | undefined;
+  /**
+   * Make each question a heading at this level, inside its `<summary>` (an FAQ under a section
+   * title). Omit it and the questions stay plain summary text.
+   */
+  headingLevel?: HeadingLevel | undefined;
 }
 
 /**
@@ -49,6 +55,7 @@ export function Accordion({
   isMultiple = false,
   defaultOpen,
   name,
+  headingLevel,
   className,
   ...props
 }: AccordionProps) {
@@ -67,7 +74,13 @@ export function Accordion({
           className={styles.item()}
         >
           <summary className={styles.summary()}>
-            <span className={styles.question()}>{item.question}</span>
+            {/* createElement, not `const Heading = headingTag(…)` (R83): the React Compiler lint reads
+                a capitalised call result as a component created during render. */}
+            {createElement(
+              headingLevel === undefined ? "span" : headingTag(headingLevel),
+              { className: styles.question() },
+              item.question
+            )}
             <Icon icon={ChevronDown} size="md" className={styles.chevron()} />
           </summary>
           <div className={styles.answer()}>{item.answer}</div>

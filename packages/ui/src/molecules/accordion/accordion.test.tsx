@@ -92,6 +92,21 @@ describe("Accordion", () => {
     expect(detailsOf(container).map((d) => d.open)).toEqual([true, true, false]);
   });
 
+  it("keeps the questions plain summary text unless a headingLevel is given", () => {
+    render(<Accordion items={FAQ} />);
+    expect(screen.queryAllByRole("heading")).toHaveLength(0);
+  });
+
+  it("wraps each question in a heading at headingLevel, inside its summary", async () => {
+    const { container } = render(<Accordion items={FAQ} headingLevel={3} />);
+    const headings = screen.getAllByRole("heading", { level: 3 });
+    expect(headings.map((heading) => heading.textContent)).toEqual(
+      FAQ.map((item) => item.question)
+    );
+    for (const heading of headings) expect(heading.closest("summary")).not.toBeNull();
+    await expectNoA11yViolations(container);
+  });
+
   it("draws a decorative chevron that turns when its item opens", () => {
     const { container } = render(<Accordion items={FAQ} />);
     const chevron = container.querySelector("summary svg.lucide-chevron-down")?.parentElement;

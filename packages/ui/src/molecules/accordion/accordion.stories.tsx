@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { expect } from "storybook/test";
+import { expect, within } from "storybook/test";
 
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Accordion, type AccordionItem } from "./accordion";
@@ -64,6 +64,20 @@ export const Playground: Story = {
 /** Card row "multiple" — `isMultiple`, both open. */
 export const Multiple: Story = {
   args: { items: FAQ.slice(0, 2), isMultiple: true, defaultOpen: ["veg", "delivery"] },
+};
+
+/** `headingLevel={3}` — each question is an h3 inside its summary (an FAQ under a section title). */
+export const AsHeadings: Story = {
+  args: { headingLevel: 3 },
+  play: async ({ canvasElement }) => {
+    const summaries = [...canvasElement.querySelectorAll("summary")];
+    await expect(summaries).toHaveLength(FAQ.length);
+    for (const summary of summaries) {
+      await expect(within(summary).getByRole("heading", { level: 3 })).toHaveTextContent(
+        summary.textContent
+      );
+    }
+  },
 };
 
 export const Surfaces: Story = {
