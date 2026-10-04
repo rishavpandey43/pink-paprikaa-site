@@ -332,12 +332,15 @@ For each component, every gap line becomes a failing test or `States` story row 
   - the FAQ egg line rewritten to "no egg in anything";
   - "18 spices" removed;
   - the booking dialog per Task 7.
-- **Motion docs under reduced motion (owner report 2026-10-05).** Measured in Chromium: `Motion/Specimens` Easings animates normally (0.14s ease-out, mid-slide at 60ms) but jumps instantly under `prefers-reduced-motion: reduce`, because the global rule (`packages/ui/src/styles.css:145-154`) forces 0.01ms. Docs specimens are user-triggered demos whose motion *is* the content, so:
-  - `apps/storybook/src/docs-kit/motion-demo.tsx` and the Animations specimen get `data-motion-demo`;
-  - add a base-layer exemption `@media (prefers-reduced-motion: reduce) { [data-motion-demo], [data-motion-demo] * { transition-duration: revert-layer !important; animation-duration: revert-layer !important; } }` (if `revert-layer` doesn't restore the inline/utility value in Chromium, set the durations from the demo's own CSS variables instead);
-  - a `ReducedMotionNotice` docs-kit component (`matchMedia("(prefers-reduced-motion: reduce)")`) renders, only when reduced motion is on, "Your system has Reduce motion on: components skip these animations; the demos below still play." on the Motion, States and Section reveal pages.
-
-  Plays (Storybook test runner launched normally) assert the demo still has a non-zero `transitionDuration`. A unit test of `ReducedMotionNotice` mocks `matchMedia` for both states. Real components must still be 0.01ms under reduce: assert one Button's `transitionDuration` stays tiny when `matchMedia` reports reduce (play with `page.emulateMedia` isn't available, so test the CSS rule's presence and selector scope via `document.styleSheets`).
+- **Motion "Duration & easing" specimen must match `guidelines/motion.card.html` (owner report 2026-10-05; the audit marked this card "mapped" without diffing the specimen).**
+  - **Today:** `apps/storybook/src/docs-kit/motion-demo.tsx` is a click-to-play button that runs the real token duration once (140ms over ~268px reads as a jump; measured in Chromium, it does animate).
+  - **The card:** four rows, each a 300×10px `ink-200` pill track (`overflow:hidden`) with a 34px `pink-500` pill knob that **loops by itself** on `@keyframes sl { 0%,8% { translateX(0) } 50%,58% { translateX(calc(300px - 34px)) } 100% { translateX(0) } }` at `2.4s infinite`. Each row has its own timing function: `--ease-out`, `--ease-in-out`, `--ease-entrance`, `--ease-pop`. Beside each track sit a mono 11px `text-heading` token name and an 11px `text-subtle` note: `140–220ms`, `220ms`, `340ms`, `220ms · add-to-cart only`. Rows sit in a 12px-gap grid, max-width 300px + label; the track and label have a 14px gap.
+  - **Build it:** a `MotionEasingSpecimen` docs-kit component (tokens only). Add `@keyframes pp-ease-demo` and `--animate-ease-demo` to the docs-kit stylesheet or `styles.css`, with the track width as a CSS variable, not an arbitrary value; register any new utility. It's the first specimen on the Motion page, under the card's title and subtitle ("Hover 140ms, state 220ms, sheets 340ms. --ease-pop only for add-to-cart.").
+  - **Keep or remove:** keep the token tables and copy chips below it as reference. Remove the Play-button rows (they aren't in the design).
+  - **Reduced motion:** honour it like the design's own `tokens/base.css:39` (no exemption), and keep the existing mdx note telling readers how to check the OS setting.
+  - **Play:** `getComputedStyle(knob).animationName === "pp-ease-demo"`, `animationIterationCount === "infinite"`, `animationTimingFunction` equals each row's token, and the knob's x-position at two points in time differs (it moves).
+  - **Visual check:** compare with the card in the Task 12 tool.
+  - **Same for the other motion-family cards:** `states.card.html` and `form-states.card.html` specimens are already in this task. Diff each specimen against its card, not just page existence.
 - [ ] Each change gets a play or a content-spec assertion. Commits per page/kit.
 
 ### Task 12: Final parity sweep, gate, records, review and one fix wave
