@@ -63,6 +63,24 @@
     "focus": {
       "$value": "{color.pink.500}",
       "$description": "Focus outline colour; white on dark surfaces."
+    },
+    "state": {
+      "hover": { "$value": "{color.pink.50}" },
+      "press": { "$value": "{color.pink.100}" },
+      "hover-neutral": { "$value": "{color.ink.100}" },
+      "press-neutral": { "$value": "{color.ink.200}" },
+      "press-danger": { "$value": "{color.danger-press}" },
+      "hover-on-color": { "$value": "{color.white-alpha.16}" },
+      "press-on-color": { "$value": "{color.white-alpha.28}" },
+      "hover-tint": { "$value": "{color.ink-alpha.06}" },
+      "press-tint": { "$value": "{color.ink-alpha.12}" },
+      "disabled-fill": { "$value": "{color.ink.100}" },
+      "disabled-ink": { "$value": "{color.ink.400}" }
+    },
+    "scrollbar": {
+      "thumb": { "$value": "{color.pink.200}" },
+      "thumb-hover": { "$value": "{color.pink.300}" },
+      "track": { "$value": "transparent" }
     }
   }
 }

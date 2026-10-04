@@ -19,6 +19,26 @@
   },
   "motion": {
     "press-scale": { "$type": "number", "$value": 0.97 },
+    "press-scale-icon": {
+      "$type": "number",
+      "$value": 0.92,
+      "$description": "Icon buttons, stepper buttons, checkbox/radio marks, tab-bar pill, calendar days."
+    },
+    "press-scale-page": {
+      "$type": "number",
+      "$value": 0.94,
+      "$description": "Page buttons."
+    },
+    "press-scale-card": {
+      "$type": "number",
+      "$value": 0.99,
+      "$description": "Cards."
+    },
+    "press-scale-stepper": {
+      "$type": "number",
+      "$value": 0.92,
+      "$description": "Same ladder step as icon (INTERACTIONS.md); named so steppers can opt in without an arbitrary scale."
+    },
     "lift-y": { "$type": "dimension", "$value": "-2px" },
     "reveal-distance": { "$type": "dimension", "$value": "12px" }
   }

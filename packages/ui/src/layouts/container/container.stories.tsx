@@ -29,14 +29,14 @@ const meta = {
   args: {
     size: "content",
     isBleed: false,
-    children: <Box>max-width 1200 · gutter clamp(16px, 4vw, 40px)</Box>,
+    children: <Box>max-width 1200 · gutter clamp(20px, 4vw, 40px)</Box>,
   },
   parameters: {
     layout: "fullscreen",
     docs: {
       description: {
         component:
-          'The only correct way to constrain page width. `content` caps at 1200px with the fluid gutter clamp(16px, 4vw, 40px) — the handoff value (spec C8). Use `size="prose"` for long-form copy so the measure stays readable; `narrow` (960) and `article` (760) come from the handoff; `full` removes the cap. `isBleed` drops the gutters for a child that must run edge to edge.',
+          'The only correct way to constrain page width. `content` caps at 1200px with the fluid gutter clamp(20px, 4vw, 40px). Use `size="prose"` for long-form copy so the measure stays readable; `narrow` (960) and `article` (760) come from the handoff; `full` removes the cap. `isBleed` drops the gutters for a child that must run edge to edge.',
       },
     },
   },
@@ -67,15 +67,15 @@ export const Gutter: Story = {
   render: () => (
     <div className="bg-surface-page-alt py-6">
       <Container>
-        <Box>gutter clamp(16px, 4vw, 40px) either side</Box>
+        <Box>gutter clamp(20px, 4vw, 40px) either side</Box>
       </Container>
     </div>
   ),
 };
 
-/** Review Focus 4: at the 360px floor the gutter is exactly 16px and nothing scrolls sideways. */
+/** Review Focus 4: at the 360px floor the gutter is exactly 20px and nothing scrolls sideways. */
 export const AtTheFloor: Story = {
-  name: "360px — 16px gutter",
+  name: "360px — 20px gutter",
   globals: { viewport: { value: "floor360", isRotated: false } },
   render: () => (
     <Container data-testid="frame">
@@ -84,8 +84,8 @@ export const AtTheFloor: Story = {
   ),
   play: async ({ canvasElement }) => {
     const style = getComputedStyle(within(canvasElement).getByTestId("frame"));
-    await expect(style.paddingLeft).toBe("16px");
-    await expect(style.paddingRight).toBe("16px");
+    await expect(style.paddingLeft).toBe("20px");
+    await expect(style.paddingRight).toBe("20px");
     await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(window.innerWidth);
   },
 };

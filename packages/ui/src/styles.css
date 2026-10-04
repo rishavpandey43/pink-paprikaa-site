@@ -40,6 +40,7 @@
   --animate-drawer-in-start: pp-drawer-in-start var(--duration-base) var(--ease-entrance);
   --animate-drawer-in-end: pp-drawer-in-end var(--duration-base) var(--ease-entrance);
   --animate-toast-pop: pp-toast-pop var(--duration-slow) var(--ease-pop);
+  --animate-pop-in: pp-pop-in var(--duration-fast) var(--ease-out);
 }
 
 @layer base {
@@ -254,6 +255,22 @@
 
 @utility press-scale {
   scale: var(--motion-press-scale);
+}
+
+@utility press-scale-icon {
+  scale: var(--motion-press-scale-icon);
+}
+
+@utility press-scale-page {
+  scale: var(--motion-press-scale-page);
+}
+
+@utility press-scale-card {
+  scale: var(--motion-press-scale-card);
+}
+
+@utility press-scale-stepper {
+  scale: var(--motion-press-scale-stepper);
 }
 
 @utility lift {
@@ -503,5 +520,17 @@
   50% {
     transform: scale(1.1);
     opacity: 1;
+  }
+}
+
+/* Menus, popovers, selects — open with a short fade + lift (DS/tokens/base.css). */
+@keyframes pp-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }

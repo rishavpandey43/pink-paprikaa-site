@@ -39,6 +39,12 @@
       },
       "surface": { "card": { "$value": "{color.ink.000}" } },
       "focus": { "$value": "{color.pink.500}" },
+      "state": {
+        "hover": { "$value": "{color.pink.50}" },
+        "press": { "$value": "{color.pink.100}" },
+        "hover-neutral": { "$value": "{color.ink.100}" },
+        "press-neutral": { "$value": "{color.ink.200}" }
+      },
       "button": {
         "primary": {
           "bg": { "$value": "{color.surface.brand}" },

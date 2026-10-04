@@ -32,7 +32,7 @@ export interface ContainerProps extends ComponentProps<"div"> {
 
 /**
  * The only correct way to constrain page width: a centred width cap with the fluid gutter
- * clamp(16px, 4vw, 40px) — the handoff value (spec C8), so 360px screens keep 16px each side.
+ * clamp(20px, 4vw, 40px) — the design system's layout rhythm, so 360px screens keep 20px each side.
  */
 export function Container({
   as = "div",

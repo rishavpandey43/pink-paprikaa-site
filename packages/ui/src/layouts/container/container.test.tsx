@@ -86,9 +86,9 @@ describe("Container", () => {
   });
 
   // Review Focus 4, pure half — the rendered half is the AtTheFloor story.
-  it("resolves the gutter to 16px at the 360px floor and 40px on desktop", () => {
+  it("resolves the gutter to 20px at the 360px floor and 40px on desktop", () => {
     const gutter = tokenValue("spacing-gutter");
-    expect(clampAt(gutter, 360)).toBe(16);
+    expect(clampAt(gutter, 360)).toBe(20);
     expect(clampAt(gutter, 1280)).toBe(40);
   });
 

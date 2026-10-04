@@ -10,9 +10,18 @@
       "feature-item-icon": { "$value": "{color.pink.300}" },
       "text": {
         "heading": { "$value": "{color.ink.000}" },
-        "body": { "$value": "{color.ink.000}" },
-        "muted": { "$value": "{color.white-alpha.92}" },
-        "subtle": { "$value": "{color.white-alpha.85}" },
+        "body": {
+          "$value": "{color.ink.000}",
+          "$description": "R137: the design system's white at .9 measures below AA on this ground; kept at the AA value (contrast-pairs.json)."
+        },
+        "muted": {
+          "$value": "{color.white-alpha.92}",
+          "$description": "R137: the design system's white at .76 measures below AA on this ground; kept at the AA value (contrast-pairs.json)."
+        },
+        "subtle": {
+          "$value": "{color.white-alpha.85}",
+          "$description": "R137: the design system's white at .62 measures below AA on this ground; kept at the AA value (contrast-pairs.json)."
+        },
         "brand": { "$value": "{color.pink.300}" },
         "link": { "$value": "{color.ink.000}" },
         "link-hover": { "$value": "{color.ink.000}" },
@@ -34,6 +43,12 @@
       },
       "surface": { "card": { "$value": "{color.white-alpha.06}" } },
       "focus": { "$value": "{color.ink.000}" },
+      "state": {
+        "hover": { "$value": "{color.white-alpha.16}" },
+        "press": { "$value": "{color.white-alpha.28}" },
+        "hover-neutral": { "$value": "{color.white-alpha.16}" },
+        "press-neutral": { "$value": "{color.white-alpha.28}" }
+      },
       "button": {
         "secondary": {
           "bg": { "$value": "transparent" },

@@ -15,6 +15,12 @@
       "border": {
         "subtle": { "$value": "{color.pink.200}" },
         "default": { "$value": "{color.pink.300}" }
+      },
+      "state": {
+        "hover": { "$value": "{color.pink.50}" },
+        "press": { "$value": "{color.pink.100}" },
+        "hover-neutral": { "$value": "{color.ink.100}" },
+        "press-neutral": { "$value": "{color.ink.200}" }
       }
     }
   }

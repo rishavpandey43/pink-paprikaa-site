@@ -14,9 +14,13 @@ const theme = read("../dist/theme.css");
 const surfaces = read("../dist/surfaces.css");
 const catalogue = JSON.parse(read("../dist/tokens.json")) as CatalogueEntry[];
 const primitiveColors = JSON.parse(read("../tokens/primitive/color.json")) as {
-  color: { pink: Record<string, { $value: string }> };
+  color: {
+    pink: Record<string, { $value: string }>;
+    "danger-press"?: { $value: string };
+  };
 };
 const brandPink = primitiveColors.color.pink["500"]?.$value ?? "";
+const dangerPress = primitiveColors.color["danger-press"]?.$value ?? "";
 
 describe("theme.css", () => {
   it.each([
@@ -145,6 +149,44 @@ describe("tokens.json", () => {
       (e) => e.tier === "primitive" && typeof e.value === "string" && e.value.toLowerCase() === hex
     );
     expect(holders.map((e) => e.name)).toEqual(["color-pink-500"]);
+  });
+});
+
+describe("handoff state, scrollbar, press-scale and rhythm tokens", () => {
+  // Values and aliases match DS/tokens/colors.css:116-136, INTERACTIONS.md:12 and spacing.css:28-31.
+  // Emitted names keep our spacing-* / motion-* / color-* prefixes (README map).
+  it.each([
+    ["--color-state-hover", "var(--color-pink-50)"],
+    ["--color-state-press", "var(--color-pink-100)"],
+    ["--color-state-hover-neutral", "var(--color-ink-100)"],
+    ["--color-state-press-neutral", "var(--color-ink-200)"],
+    ["--color-state-press-danger", "var(--color-danger-press)"],
+    ["--color-state-hover-on-color", "var(--color-white-alpha-16)"],
+    ["--color-state-press-on-color", "var(--color-white-alpha-28)"],
+    ["--color-state-hover-tint", "var(--color-ink-alpha-06)"],
+    ["--color-state-press-tint", "var(--color-ink-alpha-12)"],
+    ["--color-state-disabled-fill", "var(--color-ink-100)"],
+    ["--color-state-disabled-ink", "var(--color-ink-400)"],
+    ["--color-scrollbar-thumb", "var(--color-pink-200)"],
+    ["--color-scrollbar-thumb-hover", "var(--color-pink-300)"],
+    ["--color-scrollbar-track", "transparent"],
+    ["--spacing-scrollbar", "8px"],
+    ["--motion-press-scale-icon", "0.92"],
+    ["--motion-press-scale-page", "0.94"],
+    ["--motion-press-scale-card", "0.99"],
+    ["--motion-press-scale-stepper", "0.92"],
+    ["--spacing-gutter-mobile", "20px"],
+    ["--spacing-section-mobile", "56px"],
+    ["--spacing-gutter", "clamp(20px, 4vw, 40px)"],
+    ["--spacing-section", "clamp(56px, 7vw, 96px)"],
+  ])("%s = %s", (name, value) => {
+    expect(theme).toContain(`${name}: ${value};`);
+  });
+
+  it("emits the danger-press and ink-alpha primitives the state layer aliases", () => {
+    expect(theme).toContain(`--color-danger-press: ${dangerPress};`);
+    expect(theme).toContain("--color-ink-alpha-06: rgba(26, 18, 22, 0.06);");
+    expect(theme).toContain("--color-ink-alpha-12: rgba(26, 18, 22, 0.12);");
   });
 });
 

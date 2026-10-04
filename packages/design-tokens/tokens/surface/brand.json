@@ -16,10 +16,22 @@
       "tabs-indicator": { "$value": "{color.ink.000}" },
       "text": {
         "heading": { "$value": "{color.ink.000}" },
-        "body": { "$value": "{color.ink.000}" },
-        "muted": { "$value": "{color.white-alpha.92}" },
-        "subtle": { "$value": "{color.white-alpha.85}" },
-        "brand": { "$value": "{color.ink.000}" },
+        "body": {
+          "$value": "{color.ink.000}",
+          "$description": "R137: the design system's white at .9 measures below AA on this ground; kept at the AA value (contrast-pairs.json)."
+        },
+        "muted": {
+          "$value": "{color.white-alpha.92}",
+          "$description": "R137: the design system's white at .76 measures below AA on this ground; kept at the AA value (contrast-pairs.json)."
+        },
+        "subtle": {
+          "$value": "{color.white-alpha.85}",
+          "$description": "R137: the design system's white at .62 measures below AA on this ground; kept at the AA value (contrast-pairs.json)."
+        },
+        "brand": {
+          "$value": "{color.ink.000}",
+          "$description": "R137: the design system's pink-100 measures below AA on this ground; kept at the AA value (contrast-pairs.json)."
+        },
         "link": { "$value": "{color.ink.000}" },
         "link-hover": { "$value": "{color.ink.000}" },
         "success": { "$value": "{color.mint-soft}" },
@@ -40,6 +52,18 @@
       },
       "surface": { "card": { "$value": "{color.white-alpha.10}" } },
       "focus": { "$value": "{color.ink.000}" },
+      "state": {
+        "hover": { "$value": "{color.white-alpha.16}" },
+        "press": {
+          "$value": "{color.white-alpha.25}",
+          "$description": "R137: the design system's white at .28 leaves white text at 2.93:1 on the brand pink; .25 is the nearest step that holds 3:1 (contrast-pairs.json)."
+        },
+        "hover-neutral": { "$value": "{color.white-alpha.16}" },
+        "press-neutral": {
+          "$value": "{color.white-alpha.25}",
+          "$description": "R137: as press."
+        }
+      },
       "button": {
         "primary": {
           "bg": { "$value": "{color.ink.000}" },

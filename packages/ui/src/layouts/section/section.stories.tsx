@@ -20,7 +20,7 @@ const SURFACES: { surface: SurfaceProp; label: string }[] = [
 const RHYTHM = [
   { space: "none", surface: "page", label: 'space="none" · 0' },
   { space: "tight", surface: "alt", label: 'space="tight" · clamp(36px, 4vw, 56px)' },
-  { space: "default", surface: "page", label: 'space="default" · clamp(48px, 8vw, 96px)' },
+  { space: "default", surface: "page", label: 'space="default" · clamp(56px, 7vw, 96px)' },
   { space: "loose", surface: "alt", label: 'space="loose" · clamp(72px, 9vw, 128px)' },
 ] as const;
 

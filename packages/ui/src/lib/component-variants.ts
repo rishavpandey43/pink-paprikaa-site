@@ -144,6 +144,7 @@ const SPACING = [
   "section-mobile",
   "section-desktop",
   "grid-gap",
+  "scrollbar",
   "header",
   "header-compact",
   "tabbar",
@@ -301,6 +302,15 @@ const ANIMATE = [
   "drawer-in-start",
   "drawer-in-end",
   "toast-pop",
+  "pop-in",
+];
+/** Named press-scale utilities (`styles.css`); last one wins when merged. */
+const PRESS_SCALE = [
+  "press-scale",
+  "press-scale-icon",
+  "press-scale-page",
+  "press-scale-card",
+  "press-scale-stepper",
 ];
 
 export const twMergeConfig: TWMergeConfig = {
@@ -326,6 +336,7 @@ export const twMergeConfig: TWMergeConfig = {
       ),
       z: [{ z: Z }],
       duration: [{ duration: DURATION }],
+      "press-scale": PRESS_SCALE,
       scrim: ["scrim-bottom", "scrim-top"],
       autogrid: ["autogrid", "autogrid-wide"],
       "autogrid-min": [{ "autogrid-min": AUTOGRID_MIN }],

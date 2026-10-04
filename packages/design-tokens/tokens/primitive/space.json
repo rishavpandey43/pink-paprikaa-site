@@ -5,13 +5,18 @@
       "$value": "4px",
       "$description": "Tailwind's spacing multiplier (emitted as --spacing): p-6 = 24px, the design system's --space-6."
     },
-    "gutter": { "$value": "clamp(16px, 4vw, 40px)", "$description": "Handoff value (spec C8)." },
-    "gutter-mobile": { "$value": "16px" },
+    "gutter": { "$value": "clamp(20px, 4vw, 40px)" },
+    "gutter-mobile": { "$value": "20px" },
     "gutter-desktop": { "$value": "40px" },
-    "section": { "$value": "clamp(48px, 8vw, 96px)", "$description": "Handoff value (spec C8)." },
-    "section-mobile": { "$value": "48px" },
+    "section": { "$value": "clamp(56px, 7vw, 96px)" },
+    "section-mobile": { "$value": "56px" },
     "section-desktop": { "$value": "96px" },
     "grid-gap": { "$value": "clamp(16px, 2vw, 24px)" },
+    "scrollbar": {
+      "$value": "8px",
+      "$description": "Thin scrollbar thumb size (DS --scrollbar-size).",
+      "$extensions": { "pink-paprikaa": { "utility": [] } }
+    },
     "header": { "$value": "88px", "$extensions": { "pink-paprikaa": { "utility": ["h"] } } },
     "header-compact": {
       "$value": "64px",

@@ -27,7 +27,7 @@ export interface SectionProps extends ComponentProps<"section"> {
   pattern?: "none" | "default" | "faint" | undefined;
   /** Container size passed through; ignored when `isBare`. */
   size?: ContainerSize | undefined;
-  /** Vertical rhythm: none · tight clamp(36,4vw,56) · default clamp(48,8vw,96) · loose clamp(72,9vw,128). */
+  /** Vertical rhythm: none · tight clamp(36,4vw,56) · default clamp(56,7vw,96) · loose clamp(72,9vw,128). */
   space?: "none" | "tight" | "default" | "loose" | undefined;
   /** Skip the Container — the child handles its own width. */
   isBare?: boolean | undefined;

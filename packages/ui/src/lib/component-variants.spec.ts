@@ -121,6 +121,7 @@ describe("componentVariants", () => {
     ["border-default", "border-strong"],
     ["z-header", "z-overlay"],
     ["duration-slow", "duration-fast"],
+    ["press-scale", "press-scale-icon"],
     ["scrim-bottom", "scrim-top"],
     ["autogrid", "autogrid-wide"],
     ["autogrid-min-md", "autogrid-min-lg"],
@@ -130,5 +131,11 @@ describe("componentVariants", () => {
     ["pattern-opacity-default", "pattern-opacity-faint"],
   ])("lets a consumer className replace %s with %s", (base, className) => {
     expect(componentVariants({ base })({ className })).toBe(className);
+  });
+
+  it("keeps bg-state-press when it follows bg-surface-card", () => {
+    expect(componentVariants({ base: "bg-surface-card" })({ className: "bg-state-press" })).toBe(
+      "bg-state-press"
+    );
   });
 });

@@ -49,6 +49,10 @@
     },
     "danger": { "$value": "#CF2222" },
     "danger-soft": { "$value": "#FCE9E9" },
+    "danger-press": {
+      "$value": "#F8D4D4",
+      "$description": "Press fill for danger TextButton and similar (DS --state-press-danger)."
+    },
     "danger-strong": {
       "$value": "#B81E1E",
       "$description": "Danger text on the pink-100 soft ground, where danger measures 4.24:1."
@@ -75,6 +79,8 @@
       "92": { "$value": "rgba(255, 255, 255, 0.92)" }
     },
     "ink-alpha": {
+      "06": { "$value": "rgba(26, 18, 22, 0.06)" },
+      "12": { "$value": "rgba(26, 18, 22, 0.12)" },
       "56": { "$value": "rgba(26, 18, 22, 0.56)" }
     }
   }
