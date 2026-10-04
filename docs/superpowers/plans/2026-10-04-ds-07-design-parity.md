@@ -332,6 +332,12 @@ For each component, every gap line becomes a failing test or `States` story row 
   - the FAQ egg line rewritten to "no egg in anything";
   - "18 spices" removed;
   - the booking dialog per Task 7.
+- **Motion docs under reduced motion (owner report 2026-10-05).** Measured in Chromium: `Motion/Specimens` Easings animates normally (0.14s ease-out, mid-slide at 60ms) but jumps instantly under `prefers-reduced-motion: reduce`, because the global rule (`packages/ui/src/styles.css:145-154`) forces 0.01ms. Docs specimens are user-triggered demos whose motion *is* the content, so:
+  - `apps/storybook/src/docs-kit/motion-demo.tsx` and the Animations specimen get `data-motion-demo`;
+  - add a base-layer exemption `@media (prefers-reduced-motion: reduce) { [data-motion-demo], [data-motion-demo] * { transition-duration: revert-layer !important; animation-duration: revert-layer !important; } }` (if `revert-layer` doesn't restore the inline/utility value in Chromium, set the durations from the demo's own CSS variables instead);
+  - a `ReducedMotionNotice` docs-kit component (`matchMedia("(prefers-reduced-motion: reduce)")`) renders, only when reduced motion is on, "Your system has Reduce motion on: components skip these animations; the demos below still play." on the Motion, States and Section reveal pages.
+
+  Plays (Storybook test runner launched normally) assert the demo still has a non-zero `transitionDuration`. A unit test of `ReducedMotionNotice` mocks `matchMedia` for both states. Real components must still be 0.01ms under reduce: assert one Button's `transitionDuration` stays tiny when `matchMedia` reports reduce (play with `page.emulateMedia` isn't available, so test the CSS rule's presence and selector scope via `document.styleSheets`).
 - [ ] Each change gets a play or a content-spec assertion. Commits per page/kit.
 
 ### Task 12: Final parity sweep, gate, records, review and one fix wave
