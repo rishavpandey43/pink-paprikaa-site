@@ -86,7 +86,11 @@ const DERIVED = [
   },
   {
     name: "color-surface-card",
-    paints: [["bg-surface-card", "backgroundColor"]],
+    // R65: plus the Popover arrow's SVG fill (`fill-surface-card`), so it matches the panel.
+    paints: [
+      ["bg-surface-card", "backgroundColor"],
+      ["fill-surface-card", "fill"],
+    ],
     expected: () => rgbOf("color-surface-card"),
   },
   {
