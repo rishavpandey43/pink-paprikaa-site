@@ -1,0 +1,15 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "popover-pad": {
+      "$value": "16px",
+      "$description": "Popover panel padding.",
+      "$extensions": { "pink-paprikaa": { "utility": ["p"] } }
+    },
+    "popover-max-w": {
+      "$value": "320px",
+      "$description": "Popover panel maximum width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    }
+  }
+}
