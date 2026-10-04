@@ -14,7 +14,9 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "vite.config.mts",
-    "vitest.config.mts"
+    "vitest.config.mts",
+    "visual/**/*.ts",
+    "visual/**/*.mts"
   ],
   "exclude": ["out-tsc", "storybook-static", "eslint.config.mjs"]
 }

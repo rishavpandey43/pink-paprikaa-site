@@ -21,6 +21,7 @@ alwaysApply: true
 
 ## Always
 - Brand: "Pink Paprikaa" (two a's). Pure veg — no egg, meat or fish in any fixture or copy. No founder identity anywhere (`pnpm guard:founder`).
-- Tests first (RED), then code. Query by role/label; end suites with `expectNoA11yViolations`. Stories per design card row, Playground, OnSurfaces, 360px, plays.
-- Before each commit: the component's tests + plays + visual snapshots pass. After each batch: the full gate in the plan. Conventional Commits, lower-case subject, one commit per component.
+- Tests first (RED) for behaviour: interactions, API, a11y and new components. Pure visual changes (tokens/classes) are proven by the component's own screenshot diff. Query by role/label; end suites with `expectNoA11yViolations`. Stories per design card row, Playground, OnSurfaces, 360px, plays.
+- Lean execution (plan's "LEAN EXECUTION" section): work inline, one agent; per component run only its own tests, stories and screenshots; the full gate, full visual run, count guard and coverage update happen once per PR.
+- Commits: max 3 per PR, only at the checkpoints in the plan's "PR and commit layout" (4 stacked branches `ds-parity/1…4`). Steps stage; review fixes are amended into the checkpoint commit. Before a checkpoint, the tests, plays and visual snapshots must pass; after each batch, the full gate. Conventional Commits, lower-case subject.
 - Interrupted or unsure? `git status` + last ledger line; finish partial work, never delete it. Decide ambiguities as `Ruling: <decision> — <why> — <cost if wrong>` in the ledger and continue; stop only for destructive git, push/merge, or a plan so broken every path is a guess.

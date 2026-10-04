@@ -85,3 +85,6 @@ design_handoff_pink_paprikaa_ds/
 
 # Subagent-driven-development workspaces (ledgers, briefs, reports) — local scratch
 .superpowers/
+
+# Playwright visual suite scratch (failure diffs); the baselines in __screenshots__ ARE committed
+apps/storybook/visual/test-results

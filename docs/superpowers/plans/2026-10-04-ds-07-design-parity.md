@@ -35,8 +35,34 @@ The audits use these abbreviations: `D/` = handoff `components/molecules/`, `DA/
 - **Design prop → our prop:** map with the shared vocabulary. A design `on="brand|dark|tint"` becomes the surrounding `data-surface` (read by surface-aware tokens) or a `variant` (`IconButton variant="tint"`). A design `tone` becomes `surface`/`color`/`status`. Record every mapping in the component's JSDoc.
 - **Hard rules beat the design:** "Pink Paprikaa" with two a's · pure veg, no egg (owner 2026-10-04) · no founder identity · WCAG AA 4.5:1 text contrast · 16px minimum text in form controls (iOS zoom) · no raw hex · never `eslint-disable` a LAW rule · never `--no-verify` · never destructive git · never push.
 - **pnpm only:** `pnpm add` (no hand-written versions). The only new dependency allowed is `storybook-addon-pseudo-states` (dev, Task 3).
-- **Commits:** Conventional Commits, lower-case subject, one per component (or per task where stated), ending with your agent's Co-Authored-By trailer. Run Prettier again after `eslint --fix`.
+- **Commits:** only at the checkpoints in "PR and commit layout" (max 3 per PR), Conventional Commits, lower-case subject, ending with your agent's Co-Authored-By trailer. Run Prettier again after `eslint --fix`.
 - **Visual check per component:** after the tests pass, compare the story against the handoff card in Chromium at 360px and 1280px (Task 12 has the tool). Any visible difference is a gap.
+
+## LEAN EXECUTION (owner, 2026-10-05): overrides any heavier instruction below
+
+The process was costing more than the design work, so these rules win wherever a task says otherwise:
+1. **Inline, one agent.** Cursor works through the plan itself (superpowers:executing-plans style). No sub-agent per task and no reviewer per task. Sub-agents only if Cursor needs parallel independent folders, and never two agents on the same files.
+2. **Test-first only where behaviour lives.** Write a failing test first for `[interaction]`, `[api]` and `[a11y]` gaps and for new components. **`[visual]` gaps (token/class/size/colour/spacing) need no new unit test:** the visual snapshot diff is their proof. Write the change, look at the component's own screenshot diff, and accept it if it matches the card.
+3. **Per component:** fix all its audit lines → `pnpm nx test ui -- <name>` → `pnpm nx run storybook:test -- <name>.stories` → `pnpm nx run storybook:visual -- --grep <its story-id prefix>` (update only its own baselines) → stage. **No per-component card comparison.** That happens once in Task 12.
+4. **Per PR, once at the end (before the checkpoint commits):** the full gate + `storybook:build` + the full `storybook:visual` (no updates) + `count-guard` + coverage-map row updates (planned → have) + one self-review of the PR diff against the audit lines it closes. The "batch gate after Tasks …" list is replaced by these four per-PR gates.
+5. **Coverage map:** update rows **once per PR**, not per task.
+6. **Ledger:** one line per task done + `Ruling:` lines. No per-task report files.
+7. **Target:** about 4–6 hours of Cursor time for Tasks 1–12. If a task runs past 45 minutes, write a ledger line saying why and keep going.
+
+8. **PR budget (global, CI-enforced):** each PR ≤3 commits, **≤20 changed source files** (tests, mocks and generated files don't count) and **≤250 changed lines per file**. The 4-PR table below is the *order*; when a PR would exceed the budget, cut it into consecutive smaller stacked PRs (`ds-parity/2a-…`, `2b-…`) at component-group boundaries, each with its own ≤3 checkpoint commits. Split any file that would exceed 250 changed lines into a helper in `lib/` or a sibling file. Record each cut in one ledger line. No extra planning documents.
+
+## PR and commit layout (owner, 2026-10-05: max 3 commits per PR) — binding
+
+Four stacked branches, each a PR into the previous one, the first off `feat/design-system`. Cursor creates the branches locally and **never pushes or merges**; the owner opens the PRs. Inside each branch, task steps **stage** (`git add`) and commit **only at the checkpoints below**, at most 3 per PR. Review fixes are amended or squashed into the matching checkpoint commit (before push), never added as new commits. These checkpoints are owner-approved, so Cursor doesn't stop to ask at them. The ledger records each checkpoint SHA.
+
+| PR / branch | Tasks | Checkpoint commits (≤3) |
+| --- | --- | --- |
+| 1 `ds-parity/1-foundations` (off `feat/design-system`) | T0, T0b, T1, T2, T3 | ① `chore: add visual snapshots and a count guard` (T0b, incl. the coverage map from T0) · ② `feat(tokens): add the handoff's state layer, scrollbar, press scales and pop-in` (T1) · ③ `feat(ui): add global interactions, the native-ui policy and forced-state stories` (T2 + T3) |
+| 2 `ds-parity/2-atoms` (off PR 1) | T4, T5, T6, T7 | ① `fix(ui): match the atoms to the design handoff` (T4 + T5, incl. TextButton) · ② `refactor(ui): make menu and popover atoms with the design's rows, sheet and motion` (T6) · ③ `feat(ui): make select our own list and drop native date inputs` (T7) |
+| 3 `ds-parity/3-molecules-organisms` (off PR 2) | T8, T9, T10 | ① `feat(ui): add action menu and match combobox and date picker to the design` (T8) · ② `fix(ui): match the molecules to the design handoff` (T9) · ③ `fix(ui): match the organisms and layouts to the design handoff` (T10) |
+| 4 `ds-parity/4-storybook` (off PR 3) | T11, T11b, T12 | ① `docs(storybook): match the foundations pages, brand facts, kits and motion to the design` (T11) · ② `feat(storybook): match the sidebar to the design tree with templates and explore` (T11b) · ③ `fix(ui): settle the parity sweep and final review` (T12 sweep fixes + review fixes + archived records) |
+
+Wherever a task below says "Commit …", read it as **"stage; the work goes into this task's checkpoint commit in the table above"**. Visual baselines updated by a task are staged with that task's checkpoint.
 
 ## Owner and planner rulings (binding: do not re-decide)
 
@@ -72,7 +98,7 @@ The audits use these abbreviations: `D/` = handoff `components/molecules/`, `DA/
 - Task by task, in order. Each task ends green and committed.
 - **Ledger:** `.superpowers/sdd/2026-10-04-ds-07-design-parity/progress.md`. One line per finished task (`Task N: done <sha>..<sha> (ui X, sb Y)`), plus `Ruling:` lines for anything you decide.
 - **Interrupted?** `git status` + the last ledger line. Finish partial work and never delete it.
-- **For each component in a task:** read its audit section → turn every gap line into a failing test or story (see "Gap → test" below) → implement → run its tests + plays → compare with the card (Task 12 tool) → commit.
+- **For each component in a task:** read its audit section → turn every gap line into a failing test or story (see "Gap → test" below) → implement → run its tests + plays + visual → compare with the card (Task 12 tool) → **stage** (commit only at the task's checkpoint).
 - **Batch gate** after Tasks 2, 5, 8, 10, 11b and 12: `pnpm nx run-many -t typecheck lint test build && pnpm nx format:check && pnpm nx sync:check && pnpm nx run storybook:test && pnpm guard:founder && pnpm nx run storybook:build && pnpm nx run storybook:visual && node tools/scripts/count-guard.mjs` (visual runs with no snapshot updates; see Task 0b).
 - **Review** after each batch gate: check the batch diff against the audit lines it claims to close. Every closed line needs a test or story. Collect leftovers in `minors.md`.
 

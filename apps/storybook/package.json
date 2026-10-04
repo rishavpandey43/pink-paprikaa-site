@@ -2,6 +2,9 @@
   "name": "@pink-paprikaa-web/storybook",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "visual": "playwright test --config visual/playwright.config.mts"
+  },
   "nx": {
     "projectType": "application",
     "tags": [
@@ -13,6 +16,7 @@
         "inputs": [
           "default",
           "^default",
+          "!{projectRoot}/visual/**",
           {
             "externalDependencies": [
               "storybook"
@@ -64,6 +68,12 @@
           "cwd": "apps/storybook",
           "command": "node ../../scripts/check-founder-names.mjs storybook-static && chromatic --storybook-build-dir storybook-static --storybook-base-dir apps/storybook"
         }
+      },
+      "visual": {
+        "cache": false,
+        "dependsOn": [
+          "build-storybook"
+        ]
       }
     }
   },

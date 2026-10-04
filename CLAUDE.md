@@ -57,6 +57,10 @@ repo's layout (`src/data/`, `src/_redirects`) — the architecture spec's `packa
 `apps/web/public/_redirects` win. And the two number their phases differently; `docs/README.md`
 reconciles them.
 
+## Working style (owner, binding)
+
+**No unnecessary planning or process: never waste tokens or time, never compromise quality.** Plan only what the next PR needs, as short requirements (not code); execute inline; run scoped checks per change and the full gate once per PR; one review per PR. Detail: `docs/engineering/07-ai-workflows.md` §2 "Lean by default". If a process step costs more than the defect it prevents, skip it.
+
 ## Hard rules
 
 1. **`Pink Paprikaa` — two `a`s.** Misspelling it is a content bug, not a typo.

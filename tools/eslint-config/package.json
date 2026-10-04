@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test *.test.mjs rules/*.test.mjs"
+    "test": "node --test *.test.mjs rules/*.test.mjs ../scripts/*.test.mjs"
   },
   "exports": {
     "./base": "./base.js",
@@ -16,6 +16,14 @@
     "tags": [
       "type:tool",
       "scope:shared"
-    ]
+    ],
+    "targets": {
+      "test": {
+        "inputs": [
+          "default",
+          "{workspaceRoot}/tools/scripts/**/*"
+        ]
+      }
+    }
   }
 }

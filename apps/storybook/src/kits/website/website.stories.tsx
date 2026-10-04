@@ -28,19 +28,24 @@ export const Homepage: Story = {
   play: async ({ canvas, userEvent }) => {
     await expect(canvas.getByText(KIT_NOTICE)).toBeVisible();
 
+    const toastMessage = `${FEATURED_DISH.name} added to your order.`;
     await userEvent.click(canvas.getByRole("button", { name: `Add ${FEATURED_DISH.name}` }));
-    await expect(
-      await screen.findByText(`${FEATURED_DISH.name} added to your order.`)
-    ).toBeInTheDocument();
+    await expect(await screen.findByText(toastMessage)).toBeInTheDocument();
 
     await userEvent.click(
       within(canvas.getByRole("banner")).getByRole("link", { name: "Book a Table" })
     );
     const booking = await screen.findByRole("dialog", { name: "Book a table" });
     await userEvent.click(within(booking).getByRole("button", { name: "Hold My Table" }));
-    await expect(
-      await screen.findByRole("dialog", { name: "Table held for 10 minutes" })
-    ).toBeVisible();
+    const held = await screen.findByRole("dialog", { name: "Table held for 10 minutes" });
+    await Promise.all(held.getAnimations().map((animation) => animation.finished));
+    await expect(held).toBeVisible();
+
+    // The kit's toast closes itself after 2600 ms; end after it has, so the final frame (and its
+    // visual snapshot) never depends on how long the steps above took.
+    await waitFor(() => expect(screen.queryByText(toastMessage)).not.toBeInTheDocument(), {
+      timeout: 5000,
+    });
   },
 };
 
