@@ -1313,6 +1313,8 @@ Write the stubs out. Run → FAIL.
 
 ---
 
+> **SUPERSEDED (2026-10-04):** Tasks 15b, 15c, 16 and 17 below are replaced by `docs/superpowers/plans/2026-10-04-ds-07-design-parity.md` (Claude Design handoff 6b1e28a). Stop after Task 15 here and continue there.
+
 ### Task 15b: Select becomes our own dropdown (no OS list)
 
 **Why:** spec 2026-09-27 D7 chose the platform `<select>`, and its deferral row said to revisit "when a searchable/multi select is designed". Combobox (Task 15) meets that condition. The owner wants every popup to be ours: today the closed box is styled, but the open list is the OS's (an iOS wheel, an Android sheet, a grey desktop list). Spec 2026-10-04 §6 records this.
