@@ -52,6 +52,8 @@ The audits use these abbreviations: `D/` = handoff `components/molecules/`, `DA/
 | R139 | Press feedback: a `lib/use-press.ts` hook sets `data-pressed` on pointerdown and on keydown Space/Enter (removed on up/leave/blur), as `IX:6-12` specifies. Components style `data-pressed:` alongside `active:`. | — |
 | R140 | Content (owner 2026-10-04): FAQ says **no egg in anything**; drop "18 spices"; the Google rating everywhere comes from `packages/content` (one value). Brand facts follow the handoff's `brand.js`/`BRAND.md` (Instagram `@thepinkpaprikaa`; no YouTube/LinkedIn; ordering links; Google reviews URL; maps URL; `googleRating`/`est` derived lines). | — |
 | R141 | ImageSlot `fill` (colourway) → `variant: "soft" \| "strong" \| "neutral"`; `isFill` keeps its full-height meaning. IconButton design `on="tint"` → `variant="tint"`. TestimonialWall `variant="brand"` (card surface) → `cardSurface`. | Renames, no consumers yet |
+| R143 | The text atom stays **Typography** (owner 2026-10-05); the design's "Text" page is `Atoms/Typography`; `Text` stays an alias. | One name differs from the design tree |
+| R144 | Extras with no design card are filed inside the matching design group, after the design's pages (owner 2026-10-05). | — |
 | R142 | DietMark stays veg-only. Card stays `asChild` around a real link (never `div role=button`). Field keeps owning messages for Input/Checkbox. Popover keeps Radix `open/onOpenChange` (design `onClose` maps to `onOpenChange(false)`). Combobox stays a popover on phones (`D/Combobox.prompt.md`). | — |
 
 ## Review Focus
@@ -68,7 +70,7 @@ The audits use these abbreviations: `D/` = handoff `components/molecules/`, `DA/
 - **Ledger:** `.superpowers/sdd/2026-10-04-ds-07-design-parity/progress.md`. One line per finished task (`Task N: done <sha>..<sha> (ui X, sb Y)`), plus `Ruling:` lines for anything you decide.
 - **Interrupted?** `git status` + the last ledger line. Finish partial work and never delete it.
 - **For each component in a task:** read its audit section → turn every gap line into a failing test or story (see "Gap → test" below) → implement → run its tests + plays → compare with the card (Task 12 tool) → commit.
-- **Batch gate** after Tasks 2, 5, 8, 10 and 12: `pnpm nx run-many -t typecheck lint test build && pnpm nx format:check && pnpm nx sync:check && pnpm nx run storybook:test && pnpm guard:founder`
+- **Batch gate** after Tasks 2, 5, 8, 10, 11b and 12: `pnpm nx run-many -t typecheck lint test build && pnpm nx format:check && pnpm nx sync:check && pnpm nx run storybook:test && pnpm guard:founder`
 - **Review** after each batch gate: check the batch diff against the audit lines it claims to close. Every closed line needs a test or story. Collect leftovers in `minors.md`.
 
 ### Gap → test (how every audit line becomes RED first)
@@ -343,6 +345,43 @@ For each component, every gap line becomes a failing test or `States` story row 
   - **Same for the other motion-family cards:** `states.card.html` and `form-states.card.html` specimens are already in this task. Diff each specimen against its card, not just page existence.
 - [ ] Each change gets a play or a content-spec assertion. Commits per page/kit.
 
+### Task 11b: Storybook sidebar identical to the Claude Design tree, plus Templates and Explore
+
+**Why:** the audits compared each page's *content*. The sidebar (group names, page names, grouping) and the three Templates were never compared. The design tree (every `@dsCard group=… name=…` in the handoff, verified 1:1 present in the zip) is the target. Owner rulings 2026-10-05: **R143** the text atom stays **Typography** (deliberate difference; the page is `Atoms/Typography` with a JSDoc and an mdx note "the design's `Text`"; `Text` stays an alias). **R144** extras with no design card are filed **inside the matching design group**.
+
+**Files:** story `title`s and `<Meta title>` across `apps/storybook/src/**` and `packages/ui/src/**/*.stories.tsx`; `apps/storybook/.storybook/preview.ts(x)` (`parameters.options.storySort.order`); new Templates and Explore pages; `apps/storybook/src/foundations/**` (moves only).
+
+**Target tree, in this exact order** (`storySort.order`; our extras in *italics*, appended at the end of their group):
+
+| Group | Pages (exact names) |
+| --- | --- |
+| Readme | Readme (the current Introduction page, renamed), *Docs kit*, *Docs prose*, *Canvas geometry*, *System (sx)* |
+| Templates | Marketing website, Ordering app screen, Social post |
+| App | Ordering app |
+| Atoms | Avatar, Badge, Button, Card, Checkbox, DietMark, Divider, Icon, IconButton, ImageSlot, Input, Link, Menu, PatternField, Popover, PriceTag, ProgressBar, Radio, Rating, Select, Skeleton, SocialHeadline, SpiceLevel, Spinner, StatusDot, Switch, Tag, **Typography** (R143, at the design's "Text" position), TextButton, Tooltip, *Countdown*, *Fab*, *Slider*, *ToggleButton* |
+| Brand | Logo, Company details, Logo lockup, Pattern, Symbol, Wordmark (the design's order), *Iconography*, *Voice & content*. Move `Atoms/Logo` here as "Logo" if it's the brand card; split today's Brand/Logo specimens into Logo lockup / Symbol / Wordmark per `guidelines/*.card.html` |
+| Colors | Spice accents, Spice heat scale, Warm ink neutrals, Brand pink, Semantic surfaces & text, Status colors, Text on surfaces, *Contrast*. Renames: Accents→Spice accents, Heat→Spice heat scale, Ink→Warm ink neutrals, Primary→Brand pink, Semantic→Semantic surfaces & text, Status→Status colors, Surfaces→Text on surfaces (check each against its card; split or merge to match) |
+| Explore | Diamond + symbol, Mark legibility (new group; move these specimens from wherever they live today, e.g. Brand/Specimens, and diff each against its card) |
+| Layout | Auto grid, Breakpoints, Card anatomy, Form states (moved from Motion), *Utility classes* |
+| Layouts | AppShell, AutoGrid, Cluster, Container, PostFrame, Section, Stack, *Box*, *Grid* |
+| Marketing | Canvas formats, Canvas type, Social & ads (Kit/Ads + Kit/Feed merge into one "Social & ads" page per its card) |
+| Molecules | the design's 30 in its order: Accordion, ActionMenu, Alert, Breadcrumb, Combobox, CouponTicket, DatePicker, EmptyState, Field, FilterBar, ListRow, LogoLockup, LoyaltyCard, MenuItemCard, MenuItemRow, OfferSeal, OtpInput, OutletCard, Pagination, PriceSummary, QuantityStepper, ReviewCard, SearchField, SectionHeader, SlotPicker, Snackbar, Stat, StepTracker, Tabs, Toast, then *AnnouncementBar, CheckCard, ChipGroup, ChoiceCardGroup, FeatureItem, KeyValueList, LinkCard, PricingCard, SpeedDial, Steps, StickyActionBar, Table, ToggleButtonGroup, Field/React Hook Form + Zod* |
+| Motion | Duration & easing (the Task 11 specimen), Interaction states (today's States), *Section reveal* |
+| Organisms | CartPanel, CtaBand, Dialog, FaqSection, HeroBanner, MenuList, OrderTracker, SiteFooter, SiteHeader, StatBand, TabBar, TestimonialWall, *ActionDock, QuotePanel, ReviewCarousel* |
+| Spacing | Borders & focus (from Layout/Borders), Shadows (from Layout/Elevation), Corner radii (from Layout/Radii), Layout rhythm, Spacing scale (from Scale) |
+| Type | Fluid type (renamed from Fluid), Body, Devanagari, Display, Headings, Overline & mono |
+| Website | Homepage |
+
+"Specimens" story files that exist only to feed mdx pages keep `tags: ["!dev"]` or move under their page, so the sidebar shows only the tree above.
+
+- [ ] **Step 1: Failing check first.** Create `apps/storybook/src/docs-kit/sidebar.spec.ts`. It builds the storybook index (`pnpm nx run storybook:build` output `storybook-static/index.json`; or read `index.json` from a fresh build in the test's `beforeAll` via the existing build target) and asserts that the visible groups and page names, in order, equal the table above (encode the table as a constant `DESIGN_TREE` in the spec, with our extras flagged). Run → FAIL (lists the differences).
+- [ ] **Step 2: Templates.** For each of `templates/website/Website.dc.html`, `templates/app/OrderingApp.dc.html` and `templates/social-post/SocialPost.dc.html` (+ their `.thumbnail`), build a Storybook page `Templates/<name>` composing **only library exports** (and `packages/content` facts through the Storybook app, never `packages/ui`). It must match the template's sections, order, copy (subject to R140) and states. Reuse the existing kits where the template equals a kit section, and don't duplicate. Plays assert section order and the key interactions the template shows. Compare with the template in the Task 12 tool (add the three templates to its list).
+- [ ] **Step 3: Explore.** Build the `Diamond + symbol` and `Mark legibility` pages to match their cards (diff the specimens, not just the existence).
+- [ ] **Step 4: Retitle and move** everything per the table. `git mv` files where the folder should follow the group (`apps/storybook/src/foundations/<group>/`). Update every mdx `<Meta of>`/`<Canvas of>` import and every play that refers to a story id. Run `pnpm nx run storybook:test` → PASS, and `sidebar.spec.ts` → PASS.
+- [ ] **Step 5: Commits** `feat(storybook): add the design templates and explore pages`, `refactor(storybook): match the sidebar to the claude design tree`.
+
+---
+
 ### Task 12: Final parity sweep, gate, records, review and one fix wave
 
 - [ ] **Step 1: Visual parity tool.** Write `apps/storybook/scripts/parity.mjs` (dev script, not shipped). It uses Playwright from the workspace and, for each handoff `components/**/<Name>.card.html` and the matching story IDs, screenshots both at 360px and 1280px into `.superpowers/sdd/2026-10-04-ds-07-design-parity/parity/<Name>-{design,story}-{360,1280}.png`, plus a side-by-side montage. The plan-3a/3b parity tools in `docs/superpowers/records/sdd/2026-09-27-ds-03a-molecules-system/` (`q.mjs`, `shoot.mjs`, montage) are the reference.
@@ -356,7 +395,7 @@ For each component, every gap line becomes a failing test or `States` story row 
 ## Self-review (planner)
 
 - **Coverage:**
-  - audit-foundations §Tokens → T1; §Global interactions → T2 (+ T7 for native select/date); §Foundations pages, §Kits and §Brand facts → T11; §Rules → T2 lint + T12 grep.
+  - audit-foundations §Tokens → T1; §Global interactions → T2 (+ T7 for native select/date); §Foundations pages, §Kits and §Brand facts → T11; the sidebar tree, Templates and Explore → T11b; §Rules → T2 lint + T12 grep.
   - audit-atoms: Cross-cutting → T1/T2; Button/IconButton/TextButton/Link/Tag/Card → T4; Checkbox/Radio/Switch/Input/DietMark/ImageSlot/Avatar → T5 (Avatar's `title` in T2); Menu/Popover → T6; Select → T7.
   - audit-molecules: X1/X2/X5/X6 → T2; X3/X4 → T6; X7 → T4 before T9; X8 → T3; X9 → R136; ActionMenu/Combobox/DatePicker → T8; the rest → T9.
   - audit-organisms → T10, and its Cross-cutting tokens → T1.
