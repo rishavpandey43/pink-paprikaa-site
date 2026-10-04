@@ -1,0 +1,428 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+
+import {
+  Download,
+  Flag,
+  LogOut,
+  MapPin,
+  MoreVertical,
+  Phone,
+  Printer,
+  Share2,
+  User,
+} from "lucide-react";
+import { useState } from "react";
+import { expect, fn, screen, waitFor } from "storybook/test";
+
+import { Avatar } from "../../atoms/avatar/avatar";
+import { Button } from "../../atoms/button/button";
+import { IconButton } from "../../atoms/icon-button/icon-button";
+import { OnSurfaces } from "../../lib/story-surfaces";
+import {
+  Menu,
+  MenuCheckboxItem,
+  MenuContent,
+  MenuDivider,
+  MenuItem,
+  MenuLabel,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuTrigger,
+  SubMenu,
+  SubMenuContent,
+  SubMenuTrigger,
+} from "./menu";
+
+const meta = {
+  title: "Molecules/Menu",
+  component: Menu,
+  parameters: {
+    // Radix hides the page behind an open modal menu while focus is inside it; `aria-hidden-focus`
+    // misreads that. A story's `rules` replace the preview's list, so `color-contrast` (owned by the
+    // token contrast policy) is switched off again here.
+    a11y: {
+      config: {
+        rules: [
+          { id: "color-contrast", enabled: false },
+          { id: "aria-hidden-focus", enabled: false },
+        ],
+      },
+    },
+    docs: {
+      story: { inline: false, height: "360px" },
+      description: {
+        component:
+          "MUI's Menu and MenuItem, on Radix DropdownMenu. The trigger is a part (`MenuTrigger`) — the 3-dot `IconButton` or a `Button` — which wires `aria-haspopup` / `aria-expanded`, returns focus on close and gives roving focus, typeahead and Home/End for free. Items close the menu after a select, as MUI does. `isDense` is MUI's `dense` (36px rows over 44px), `isSelected` its `selected`, `hasDivider` its `divider`, `maxHeight` its long menu, and `asChild` its `component={Link}`.",
+      },
+    },
+  },
+} satisfies Meta<typeof Menu>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+const VEG_DISHES = Array.from({ length: 20 }, (_, index) => `Veg dish ${String(index + 1)}`);
+
+/** Pointer: open, choose Share, focus returns to the 3-dot button. */
+export const ThreeDotMenu: Story = {
+  args: { children: null },
+  render: () => (
+    <Menu>
+      <MenuTrigger asChild>
+        <IconButton icon={MoreVertical} label="More options" />
+      </MenuTrigger>
+      <MenuContent aria-label="Outlet actions" align="start">
+        <MenuItem icon={Share2}>Share outlet</MenuItem>
+        <MenuItem icon={Phone}>Call Sector 57</MenuItem>
+        <MenuItem icon={MapPin} disabled>
+          Directions (opening soon)
+        </MenuItem>
+        <MenuDivider />
+        <MenuItem icon={Flag} color="danger">
+          Report a problem
+        </MenuItem>
+      </MenuContent>
+    </Menu>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    const trigger = canvas.getByRole("button", { name: "More options" });
+    await userEvent.click(trigger);
+    await expect(await screen.findByRole("menu", { name: "Outlet actions" })).toBeVisible();
+    await userEvent.click(screen.getByRole("menuitem", { name: "Share outlet" }));
+    await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument());
+    await expect(trigger).toHaveFocus();
+  },
+};
+
+export const BasicMenu: Story = {
+  args: { children: null },
+  render: () => (
+    <Menu>
+      <MenuTrigger asChild>
+        <Button variant="secondary">Account</Button>
+      </MenuTrigger>
+      <MenuContent aria-label="Account" align="start">
+        <MenuItem>My orders</MenuItem>
+        <MenuItem>Saved addresses</MenuItem>
+        <MenuItem>Sign out</MenuItem>
+      </MenuContent>
+    </Menu>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Account" }));
+    await expect(await screen.findAllByRole("menuitem")).toHaveLength(3);
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument());
+    await expect(canvas.getByRole("button", { name: "Account" })).toHaveFocus();
+  },
+};
+
+export const IconMenu: Story = {
+  args: { children: null },
+  render: () => (
+    <Menu>
+      <MenuTrigger asChild>
+        <Button variant="secondary">Menu card</Button>
+      </MenuTrigger>
+      <MenuContent aria-label="Menu card" align="start">
+        <MenuItem icon={Download} shortcut="⌘S">
+          Download PDF
+        </MenuItem>
+        <MenuItem icon={Printer} shortcut="⌘P" description="A4, black and white">
+          Print
+        </MenuItem>
+        <MenuItem icon={Share2}>Share</MenuItem>
+      </MenuContent>
+    </Menu>
+  ),
+};
+
+export const DenseMenu: Story = {
+  args: { children: null },
+  render: () => (
+    <Menu>
+      <MenuTrigger asChild>
+        <Button variant="secondary">Dense</Button>
+      </MenuTrigger>
+      <MenuContent aria-label="Dense" align="start" isDense>
+        <MenuItem>My orders</MenuItem>
+        <MenuItem>Saved addresses</MenuItem>
+        <MenuItem>Sign out</MenuItem>
+      </MenuContent>
+    </Menu>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Dense" }));
+    const rows = await screen.findAllByRole("menuitem");
+    for (const row of rows) await expect(row.getBoundingClientRect().height).toBeLessThan(44);
+  },
+};
+
+export const SelectedMenu: Story = {
+  args: { children: null },
+  render: () => (
+    <Menu>
+      <MenuTrigger asChild>
+        <Button variant="secondary">Sort by</Button>
+      </MenuTrigger>
+      <MenuContent aria-label="Sort by" align="start">
+        <MenuItem isSelected>Popular</MenuItem>
+        <MenuItem>Price: low to high</MenuItem>
+        <MenuItem hasDivider>Newest</MenuItem>
+        <MenuItem>Rating</MenuItem>
+      </MenuContent>
+    </Menu>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Sort by" }));
+    await expect(await screen.findByRole("menuitem", { name: "Popular" })).toHaveAttribute(
+      "data-selected"
+    );
+  },
+};
+
+/** MUI's anchorOrigin / transformOrigin: top-end and bottom-start. */
+export const PositionedMenu: Story = {
+  args: { children: null },
+  render: () => (
+    <div className="flex gap-6 pt-40">
+      {(
+        [
+          ["top", "end"],
+          ["bottom", "start"],
+        ] as const
+      ).map(([side, align]) => (
+        <Menu key={`${side}-${align}`}>
+          <MenuTrigger asChild>
+            <Button variant="secondary">{`${side}-${align}`}</Button>
+          </MenuTrigger>
+          <MenuContent aria-label={`${side}-${align}`} side={side} align={align}>
+            <MenuItem>Profile</MenuItem>
+            <MenuItem>My account</MenuItem>
+            <MenuItem>Logout</MenuItem>
+          </MenuContent>
+        </Menu>
+      ))}
+    </div>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "top-end" }));
+    await expect(await screen.findByRole("menu", { name: "top-end" })).toHaveAttribute(
+      "data-side",
+      "top"
+    );
+  },
+};
+
+/** MUI's long menu: 20 dishes scroll inside the panel. */
+export const LongMenu: Story = {
+  args: { children: null },
+  parameters: {
+    // The scroll region is reached with the arrow keys (roving focus scrolls the focused row into
+    // view), not Tab, so axe's "scrollable region must be focusable" heuristic does not apply.
+    a11y: {
+      config: {
+        rules: [
+          { id: "color-contrast", enabled: false },
+          { id: "aria-hidden-focus", enabled: false },
+          { id: "scrollable-region-focusable", enabled: false },
+        ],
+      },
+    },
+  },
+  render: () => (
+    <Menu>
+      <MenuTrigger asChild>
+        <IconButton icon={MoreVertical} label="Dishes" />
+      </MenuTrigger>
+      <MenuContent aria-label="Dishes" align="start" maxHeight="sm">
+        {VEG_DISHES.map((dish) => (
+          <MenuItem key={dish}>{dish}</MenuItem>
+        ))}
+      </MenuContent>
+    </Menu>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Dishes" }));
+    const menu = await screen.findByRole("menu", { name: "Dishes" });
+    await expect(menu.scrollHeight).toBeGreaterThan(menu.clientHeight);
+  },
+};
+
+export const AccountMenu: Story = {
+  args: { children: null },
+  render: () => (
+    <Menu>
+      <MenuTrigger asChild>
+        <button type="button" aria-label="Account" className="inline-flex rounded-pill">
+          <Avatar name="Asha Rao" />
+        </button>
+      </MenuTrigger>
+      <MenuContent aria-label="Account" align="start">
+        <MenuLabel>Signed in as Asha Rao</MenuLabel>
+        <MenuItem icon={User}>Profile</MenuItem>
+        <MenuItem icon={MapPin}>Saved addresses</MenuItem>
+        <MenuDivider />
+        <MenuItem icon={LogOut} color="danger">
+          Sign out
+        </MenuItem>
+      </MenuContent>
+    </Menu>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Account" }));
+    await expect(await screen.findByRole("menuitem", { name: "Sign out" })).toHaveClass(
+      "text-text-danger"
+    );
+  },
+};
+
+function RadioMenuDemo() {
+  const [sort, setSort] = useState("popular");
+  return (
+    <Menu>
+      <MenuTrigger asChild>
+        <Button variant="secondary">{`Sort: ${sort}`}</Button>
+      </MenuTrigger>
+      <MenuContent aria-label="Sort" align="start">
+        <MenuLabel>Sort</MenuLabel>
+        <MenuRadioGroup value={sort} onValueChange={setSort}>
+          <MenuRadioItem value="popular">Popular</MenuRadioItem>
+          <MenuRadioItem value="price">Price low to high</MenuRadioItem>
+          <MenuRadioItem value="newest">Newest</MenuRadioItem>
+        </MenuRadioGroup>
+      </MenuContent>
+    </Menu>
+  );
+}
+
+export const RadioMenu: Story = {
+  args: { children: null },
+  render: () => <RadioMenuDemo />,
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Sort: popular" }));
+    await userEvent.click(await screen.findByRole("menuitemradio", { name: "Newest" }));
+    await expect(canvas.getByRole("button", { name: "Sort: newest" })).toBeVisible();
+  },
+};
+
+function CheckboxMenuDemo({ onChange }: { onChange: (diets: string[]) => void }) {
+  const [diets, setDiets] = useState<string[]>(["Jain"]);
+  const toggle = (diet: string) => (checked: boolean) => {
+    const next = checked ? [...diets, diet] : diets.filter((d) => d !== diet);
+    setDiets(next);
+    onChange(next);
+  };
+  return (
+    <Menu>
+      <MenuTrigger asChild>
+        <Button variant="secondary">Diet</Button>
+      </MenuTrigger>
+      <MenuContent aria-label="Diet" align="start">
+        {["Jain", "No onion-garlic", "Gluten-free"].map((diet) => (
+          <MenuCheckboxItem
+            key={diet}
+            checked={diets.includes(diet)}
+            onCheckedChange={toggle(diet)}
+            onSelect={(event) => {
+              event.preventDefault();
+            }}
+          >
+            {diet}
+          </MenuCheckboxItem>
+        ))}
+      </MenuContent>
+    </Menu>
+  );
+}
+
+/** The menu stays open while ticking several (`onSelect` prevents the close). */
+export const CheckboxMenu: Story = {
+  args: { children: null },
+  render: () => <CheckboxMenuDemo onChange={fn()} />,
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Diet" }));
+    await userEvent.click(await screen.findByRole("menuitemcheckbox", { name: "Gluten-free" }));
+    await expect(screen.getByRole("menuitemcheckbox", { name: "Gluten-free" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
+    await expect(screen.getByRole("menu")).toBeVisible();
+  },
+};
+
+export const NestedMenu: Story = {
+  args: { children: null },
+  render: () => (
+    <Menu>
+      <MenuTrigger asChild>
+        <Button variant="secondary">Outlet</Button>
+      </MenuTrigger>
+      <MenuContent aria-label="Outlet" align="start">
+        <MenuItem>Opening hours</MenuItem>
+        <SubMenu>
+          <SubMenuTrigger icon={MapPin}>Switch outlet</SubMenuTrigger>
+          <SubMenuContent aria-label="Outlets">
+            <MenuItem>Sector 57</MenuItem>
+            <MenuItem>MKM Market</MenuItem>
+          </SubMenuContent>
+        </SubMenu>
+      </MenuContent>
+    </Menu>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    canvas.getByRole("button", { name: "Outlet" }).focus();
+    await userEvent.keyboard("{Enter}{ArrowDown}{ArrowRight}");
+    await expect(await screen.findByRole("menu", { name: "Outlets" })).toBeVisible();
+    await userEvent.keyboard("{ArrowLeft}");
+    await waitFor(() => expect(screen.queryByRole("menu", { name: "Outlets" })).toBeNull());
+  },
+};
+
+export const OnSurfaces_: Story = {
+  name: "OnSurfaces",
+  args: { children: null },
+  parameters: { docs: { story: { inline: false, height: "520px" } } },
+  render: () => (
+    <OnSurfaces>
+      <Menu>
+        <MenuTrigger asChild>
+          <IconButton icon={MoreVertical} label="More options" />
+        </MenuTrigger>
+        <MenuContent aria-label="Actions" align="start">
+          <MenuItem icon={Share2}>Share</MenuItem>
+          <MenuItem icon={Flag} color="danger">
+            Report
+          </MenuItem>
+        </MenuContent>
+      </Menu>
+    </OnSurfaces>
+  ),
+};
+
+/** The 3-dot menu at the right edge of a phone stays inside the viewport. */
+export const Mobile360: Story = {
+  args: { children: null },
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  render: () => (
+    <div className="flex justify-end">
+      <Menu>
+        <MenuTrigger asChild>
+          <IconButton icon={MoreVertical} label="More options" />
+        </MenuTrigger>
+        <MenuContent aria-label="Outlet actions" align="end">
+          <MenuItem icon={Share2} shortcut="Share">
+            Share outlet
+          </MenuItem>
+          <MenuItem icon={Phone}>Call Sector 57</MenuItem>
+        </MenuContent>
+      </Menu>
+    </div>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "More options" }));
+    const rect = (await screen.findByRole("menu")).getBoundingClientRect();
+    await expect(rect.left).toBeGreaterThanOrEqual(0);
+    await expect(rect.right).toBeLessThanOrEqual(window.innerWidth);
+  },
+};

@@ -270,6 +270,9 @@ const SPACING = [
   "dialog-drawer-lg",
   "popover-pad",
   "popover-max-w",
+  "menu-max-sm",
+  "menu-max-md",
+  "menu-max-lg",
   "site-header-logo",
   "site-header-logo-compact",
 ];
