@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { expect, screen, within } from "storybook/test";
+import { expect, screen, waitFor, within } from "storybook/test";
 
 import { expectNoHorizontalOverflow } from "../expect-no-overflow";
 import { FEATURED_DISH } from "../fixtures";
@@ -55,9 +55,14 @@ export const Homepage360: Story = {
 
     await userEvent.click(menuButton);
     const drawer = await screen.findByRole("dialog", { name: "Menu" });
+    await Promise.all(drawer.getAnimations().map((animation) => animation.finished));
     await userEvent.click(within(drawer).getByRole("link", { name: "Book a Table" }));
 
-    await expect(await screen.findByRole("dialog", { name: "Book a table" })).toBeVisible();
-    await expect(screen.queryByRole("dialog", { name: "Menu" })).not.toBeInTheDocument();
+    const booking = await screen.findByRole("dialog", { name: "Book a table" });
+    await Promise.all(booking.getAnimations().map((animation) => animation.finished));
+    await expect(booking).toBeVisible();
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog", { name: "Menu" })).not.toBeInTheDocument()
+    );
   },
 };

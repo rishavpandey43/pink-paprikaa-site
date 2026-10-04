@@ -4,12 +4,12 @@
     "fab-md": {
       "$value": "48px",
       "$description": "Fab md: the circle's diameter, or the extended pill's height and minimum width.",
-      "$extensions": { "pink-paprikaa": { "utility": ["size", "h", "min-w"] } }
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w", "size"] } }
     },
     "fab-lg": {
       "$value": "56px",
       "$description": "Fab lg: the circle's diameter, or the extended pill's height and minimum width.",
-      "$extensions": { "pink-paprikaa": { "utility": ["size", "h", "min-w"] } }
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w", "size"] } }
     }
   }
 }

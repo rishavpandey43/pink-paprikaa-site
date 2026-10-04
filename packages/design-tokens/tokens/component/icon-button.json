@@ -4,7 +4,7 @@
     "icon-button-sm": {
       "$value": "32px",
       "$description": "Drawn size; a ::before keeps the 44px hit area.",
-      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "size"] } }
     },
     "icon-button-md": {
       "$value": "40px",
