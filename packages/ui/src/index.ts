@@ -174,6 +174,11 @@ export {
   type SlotPickerProps,
 } from "./molecules/slot-picker/slot-picker";
 export { Snackbar, type SnackbarProps } from "./molecules/snackbar/snackbar";
+export {
+  SpeedDial,
+  type SpeedDialAction,
+  type SpeedDialProps,
+} from "./molecules/speed-dial/speed-dial";
 export { Stat, type StatProps } from "./molecules/stat/stat";
 export {
   StepTracker,
