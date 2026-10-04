@@ -31,22 +31,38 @@ const dialog = componentVariants({
     variant: {
       modal: { overlay: "items-center justify-center p-6", content: "rounded-xl" },
       sheet: { overlay: "items-end", content: "rounded-t-xl" },
+      // Full height on one edge. `start-0` / `end-0` are logical, so the edge flips in RTL.
+      drawer: { content: "h-full rounded-none" },
     },
     size: { sm: {}, md: {}, lg: {} },
+    side: { start: {}, end: {} },
   },
   compoundVariants: [
+    {
+      variant: "drawer",
+      side: "start",
+      class: { overlay: "justify-start", content: "start-0 animate-drawer-in-start" },
+    },
+    {
+      variant: "drawer",
+      side: "end",
+      class: { overlay: "justify-end", content: "end-0 animate-drawer-in-end" },
+    },
+    { variant: "drawer", size: "sm", class: { content: "max-w-dialog-drawer-sm" } },
+    { variant: "drawer", size: "md", class: { content: "max-w-dialog-drawer-md" } },
+    { variant: "drawer", size: "lg", class: { content: "max-w-dialog-drawer-lg" } },
     { variant: "modal", size: "sm", class: { content: "max-w-dialog-sm" } },
     { variant: "modal", size: "md", class: { content: "max-w-dialog-md" } },
     { variant: "modal", size: "lg", class: { content: "max-w-dialog-lg" } },
   ],
-  defaultVariants: { variant: "modal", size: "md" },
+  defaultVariants: { variant: "modal", size: "md", side: "end" },
 });
 
 export interface DialogProps
   extends
     Omit<BaseProps<"div">, "title" | "children">,
     Pick<DialogPrimitive.DialogProps, "open" | "defaultOpen" | "onOpenChange">,
-    Pick<VariantProps<typeof dialog>, "variant" | "size"> {
+    Pick<VariantProps<typeof dialog>, "variant" | "size" | "side"> {
   /**
    * The element that opens the dialog, e.g. a Button; focus returns to it on close. Without one,
    * focus returns to the element focused when the dialog opened — reliable for keyboard opens, but
@@ -87,6 +103,7 @@ export function Dialog({
   footer,
   variant = "modal",
   size = "md",
+  side = "end",
   closeLabel = "Close",
   hasCloseButton = true,
   portalContainer = null,
@@ -97,7 +114,7 @@ export function Dialog({
   className,
   ...props
 }: DialogProps) {
-  const slots = dialog({ variant, size });
+  const slots = dialog({ variant, size, side });
   // Radix refocuses only its own trigger on close; without one, focus would drop to <body>.
   const returnFocusRef = useRef<HTMLElement | null>(null);
   return (
@@ -152,4 +169,15 @@ export function Dialog({
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>
   );
+}
+
+export type DrawerProps = Omit<DialogProps, "variant">;
+
+/**
+ * A full-height panel on one edge — filters, the cart, a menu on mobile. Dialog's behaviour
+ * (focus trap, Escape, scrim, focus return) with `side` ("end" by default, "start" for RTL-aware
+ * left-hand drawers) and `size` as its max width (320 / 400 / 480px; full width below that).
+ */
+export function Drawer(props: DrawerProps) {
+  return <Dialog variant="drawer" {...props} />;
 }

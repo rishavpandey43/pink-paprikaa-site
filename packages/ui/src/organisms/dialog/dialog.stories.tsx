@@ -5,12 +5,13 @@ import { useState } from "react";
 import { expect, screen, waitFor, within } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
+import { Checkbox } from "../../atoms/checkbox/checkbox";
 import { Input } from "../../atoms/input/input";
 import { Select } from "../../atoms/select/select";
 import { ringClippers } from "../../lib/story-ring";
 import { Field } from "../../molecules/field/field";
 import { VIEWPORT_360 } from "../story-fixtures";
-import { Dialog, type DialogProps } from "./dialog";
+import { Dialog, type DialogProps, Drawer } from "./dialog";
 
 /**
  * Radix hides the page behind an open dialog while trapping focus; `aria-hidden-focus` misreads
@@ -251,4 +252,137 @@ export const Mobile: Story = {
   globals: VIEWPORT_360,
   parameters: OPEN_DIALOG_A11Y,
   play: proveRingsWhole(5),
+};
+
+const DRAWER_A11Y = OPEN_DIALOG_A11Y;
+
+const FILTER_OPTIONS = ["Jain", "No onion-garlic", "Gluten-free", "Under 30 minutes"];
+
+const FILTER_BODY = (
+  <div className="grid gap-3">
+    {FILTER_OPTIONS.map((option) => (
+      <Checkbox key={option} label={option} />
+    ))}
+  </div>
+);
+
+const FILTER_FOOTER = (
+  <>
+    <Button variant="ghost" size="sm">
+      Reset
+    </Button>
+    <Button size="sm">Apply</Button>
+  </>
+);
+
+/** Open, Escape closes, focus returns to the trigger that opened it. */
+const drawerKeyboardPlay: NonNullable<Story["play"]> = async ({ canvas, userEvent }) => {
+  const trigger = canvas.getByRole("button", { name: "Filters" });
+  await userEvent.click(trigger);
+  await settle(await screen.findByRole("dialog", { name: "Filters" }));
+  await userEvent.keyboard("{Escape}");
+  await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  await expect(trigger).toHaveFocus();
+};
+
+const drawerMeta = {
+  args: {
+    trigger: <Button>Filters</Button>,
+    title: "Filters",
+    children: FILTER_BODY,
+    footer: FILTER_FOOTER,
+  },
+  parameters: DRAWER_A11Y,
+} satisfies Partial<Story>;
+
+/** Full-height panel on the end edge: the default. */
+export const DrawerEnd: Story = {
+  ...drawerMeta,
+  render: (args) => <Drawer {...args} />,
+  play: drawerKeyboardPlay,
+};
+
+/** Start edge (left in LTR, right in RTL). */
+export const DrawerStart: Story = {
+  ...drawerMeta,
+  args: { ...drawerMeta.args, side: "start" },
+  render: (args) => <Drawer {...args} />,
+  play: drawerKeyboardPlay,
+};
+
+/** 320 / 400 / 480px max width; full width below that. */
+export const DrawerSizes: Story = {
+  ...drawerMeta,
+  render: (args) => (
+    <div className="flex gap-3">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <Drawer
+          key={size}
+          {...args}
+          size={size}
+          trigger={<Button variant="secondary">{`Drawer ${size}`}</Button>}
+        />
+      ))}
+    </div>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    const widths = { sm: 320, md: 400, lg: 480 } as const;
+    for (const [size, width] of Object.entries(widths)) {
+      await userEvent.click(canvas.getByRole("button", { name: `Drawer ${size}` }));
+      const dialog = await settle(await screen.findByRole("dialog", { name: "Filters" }));
+      await expect(dialog.getBoundingClientRect().width).toBeLessThanOrEqual(width);
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    }
+  },
+};
+
+/** Menu filters: veg categories as checkboxes, Reset and Apply in the footer. */
+export const DrawerWithFooter: Story = {
+  ...drawerMeta,
+  args: { ...drawerMeta.args, defaultOpen: true, description: "Narrow the menu to what you eat." },
+  render: (args) => <Drawer {...args} />,
+  play: async () => {
+    const dialog = await settle(await screen.findByRole("dialog", { name: "Filters" }));
+    await expect(within(dialog).getByRole("button", { name: "Apply" })).toBeVisible();
+    await expect(within(dialog).getAllByRole("checkbox")).toHaveLength(FILTER_OPTIONS.length);
+  },
+};
+
+/** The body scrolls; the header and the footer stay fixed. */
+export const DrawerLongContent: Story = {
+  ...drawerMeta,
+  args: {
+    ...drawerMeta.args,
+    defaultOpen: true,
+    children: (
+      <div className="grid gap-3">
+        {Array.from({ length: 40 }, (_, index) => (
+          <Checkbox key={index} label={`Veg dish ${String(index + 1)}`} />
+        ))}
+      </div>
+    ),
+  },
+  render: (args) => <Drawer {...args} />,
+  play: async () => {
+    const dialog = await settle(await screen.findByRole("dialog", { name: "Filters" }));
+    const body = dialog.querySelector<HTMLElement>(".overflow-y-auto");
+    if (body === null) throw new Error("no body");
+    await expect(body.scrollHeight).toBeGreaterThan(body.clientHeight);
+    await expect(within(dialog).getByRole("button", { name: "Apply" })).toBeVisible();
+    await expect(within(dialog).getByRole("heading", { name: "Filters" })).toBeVisible();
+  },
+};
+
+/** The smallest supported viewport: the drawer fills the width. */
+export const Drawer360: Story = {
+  ...drawerMeta,
+  args: { ...drawerMeta.args, defaultOpen: true },
+  globals: VIEWPORT_360,
+  render: (args) => <Drawer {...args} />,
+  play: async () => {
+    const dialog = await settle(await screen.findByRole("dialog", { name: "Filters" }));
+    await expect(dialog.getBoundingClientRect().width).toBeLessThanOrEqual(window.innerWidth);
+    await expect(dialog.getBoundingClientRect().left).toBeGreaterThanOrEqual(0);
+  },
 };

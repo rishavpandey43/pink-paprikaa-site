@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { createRef, useState } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
-import { Dialog } from "./dialog";
+import { Dialog, Drawer } from "./dialog";
 
 const TRIGGER = <button type="button">Book a table</button>;
 
@@ -260,5 +260,93 @@ describe("Dialog", () => {
     );
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+});
+
+function DrawerHarness() {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        Filters
+      </button>
+      <Drawer open={isOpen} onOpenChange={setIsOpen} title="Filters">
+        Jain only
+      </Drawer>
+    </>
+  );
+}
+
+describe("Drawer", () => {
+  it.each(["start", "end"] as const)(
+    "on the %s side is a full-height dialog on that edge",
+    (side) => {
+      render(
+        <Drawer open title="Filters" side={side}>
+          Jain only
+        </Drawer>
+      );
+      const dialog = screen.getByRole("dialog", { name: "Filters" });
+      expect(dialog).toHaveClass("h-full", side === "start" ? "start-0" : "end-0");
+      expect(dialog).toHaveClass(`animate-drawer-in-${side}`);
+      expect(dialog).not.toHaveClass("rounded-xl", "rounded-t-xl");
+    }
+  );
+
+  it("defaults to the end side", () => {
+    render(
+      <Drawer open title="Filters">
+        Jain only
+      </Drawer>
+    );
+    expect(screen.getByRole("dialog")).toHaveClass("end-0");
+  });
+
+  it("closes on Escape and returns focus to its trigger", async () => {
+    const user = userEvent.setup();
+    render(<DrawerHarness />);
+    await user.click(screen.getByRole("button", { name: "Filters" }));
+    expect(screen.getByRole("dialog", { name: "Filters" })).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByRole("button", { name: "Filters" })).toHaveFocus();
+  });
+
+  it.each([
+    ["sm", "max-w-dialog-drawer-sm"],
+    ["md", "max-w-dialog-drawer-md"],
+    ["lg", "max-w-dialog-drawer-lg"],
+  ] as const)("size %s", (size, widthClass) => {
+    render(
+      <Drawer open title="Cart" size={size}>
+        x
+      </Drawer>
+    );
+    expect(screen.getByRole("dialog")).toHaveClass(widthClass, "w-full");
+  });
+
+  it("is a drawer by default width md, with no grab handle", () => {
+    render(
+      <Drawer open title="Cart">
+        x
+      </Drawer>
+    );
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveClass("max-w-dialog-drawer-md");
+    expect(dialog.querySelector('[aria-hidden="true"] .rounded-pill')).toBeNull();
+  });
+
+  it("has no accessibility violations while open", async () => {
+    render(
+      <Drawer open title="Filters" description="Narrow the menu.">
+        Jain only
+      </Drawer>
+    );
+    await expectNoA11yViolations(screen.getByRole("dialog"));
   });
 });

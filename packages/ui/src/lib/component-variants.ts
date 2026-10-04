@@ -265,6 +265,9 @@ const SPACING = [
   "dialog-sm",
   "dialog-md",
   "dialog-lg",
+  "dialog-drawer-sm",
+  "dialog-drawer-md",
+  "dialog-drawer-lg",
   "site-header-logo",
   "site-header-logo-compact",
 ];
@@ -285,6 +288,8 @@ const ANIMATE = [
   "dot-pulse",
   "rotate",
   "sheet-in",
+  "drawer-in-start",
+  "drawer-in-end",
   "toast-pop",
 ];
 
