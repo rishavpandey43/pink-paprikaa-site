@@ -276,6 +276,8 @@ const SPACING = [
   "toggle-button-h-sm",
   "toggle-button-h-md",
   "toggle-button-h-lg",
+  "fab-md",
+  "fab-lg",
   "site-header-logo",
   "site-header-logo-compact",
 ];
