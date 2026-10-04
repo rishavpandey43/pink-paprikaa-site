@@ -106,6 +106,7 @@ export {
   type ChoiceGridMin,
   type ChoiceOption,
 } from "./molecules/choice-card-group/choice-card-group";
+export { Combobox, type ComboboxOption, type ComboboxProps } from "./molecules/combobox/combobox";
 export { CouponTicket, type CouponTicketProps } from "./molecules/coupon-ticket/coupon-ticket";
 export { EmptyState, type EmptyStateProps } from "./molecules/empty-state/empty-state";
 export { FeatureItem, type FeatureItemProps } from "./molecules/feature-item/feature-item";
