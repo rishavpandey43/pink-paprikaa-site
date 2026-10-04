@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
+import { Field } from "../field/field";
 import { Combobox, type ComboboxOption } from "./combobox";
 
 const DISHES: ComboboxOption[] = [
@@ -123,6 +124,17 @@ describe("Combobox", () => {
     expect(input).toHaveAttribute("aria-activedescendant", options[10]?.id);
     await user.keyboard("{Home}");
     expect(input).toHaveAttribute("aria-activedescendant", options[0]?.id);
+  });
+
+  it("ArrowUp with the list open and nothing active lands on the last match", async () => {
+    const user = userEvent.setup();
+    render(<Combobox aria-label="Search dishes" options={DISHES} />);
+    const input = screen.getByRole("combobox");
+    await user.type(input, "pan");
+    expect(input).not.toHaveAttribute("aria-activedescendant");
+    await user.keyboard("{ArrowUp}");
+    expect(input).toHaveAttribute("aria-activedescendant", nthOption(1).id);
+    expect(nthOption(1)).toHaveTextContent("Paneer Butter Masala");
   });
 
   it("Tab commits the active option", async () => {
@@ -326,6 +338,16 @@ describe("Combobox", () => {
     await user.type(screen.getByRole("combobox"), "zzz");
     await expectNoA11yViolations(container);
     rerender(<Combobox aria-label="Search dishes" options={[]} isLoading />);
+    await expectNoA11yViolations(container);
+  });
+
+  it("names the open listbox from the Field label and is accessible", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Field label="Dish">{({ id }) => <Combobox id={id} options={DISHES} />}</Field>
+    );
+    await user.click(screen.getByRole("combobox", { name: "Dish" }));
+    expect(screen.getByRole("listbox", { name: "Dish" })).toBeInTheDocument();
     await expectNoA11yViolations(container);
   });
 });

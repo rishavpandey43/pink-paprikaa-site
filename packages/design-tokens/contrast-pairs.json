@@ -421,6 +421,13 @@
       "min": 4.5
     },
     {
+      "id": "calendar-selected-day",
+      "surface": null,
+      "pairs": [["color-ink-000", "color-pink-500"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
       "id": "offer-seal-brand",
       "surface": null,
       "pairs": [["color-ink-000", "color-pink-500"]],

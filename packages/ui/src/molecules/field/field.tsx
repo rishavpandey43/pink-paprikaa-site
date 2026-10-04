@@ -96,7 +96,7 @@ export function Field({
 
   return (
     <div className={styles.root({ className: withSx(sx, className) })} {...props}>
-      <label htmlFor={controlId} className={styles.label()}>
+      <label id={`${controlId}-label`} htmlFor={controlId} className={styles.label()}>
         <span>{label}</span>
         {isRequired ? (
           <span aria-hidden="true" className={styles.required()}>

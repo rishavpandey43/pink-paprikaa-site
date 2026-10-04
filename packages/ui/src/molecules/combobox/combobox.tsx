@@ -109,8 +109,10 @@ function labelOf(options: readonly ComboboxOption[], value: string | null): stri
 /** The index of the next enabled option from `from` going `step`, wrapping; -1 when none. */
 function stepIndex(items: readonly ComboboxOption[], from: number, step: 1 | -1): number {
   if (items.length === 0) return -1;
+  // Nothing active (-1): stepping down starts before the first option, stepping up past the last.
+  const origin = from === -1 && step === -1 ? items.length : from;
   for (let taken = 1; taken <= items.length; taken += 1) {
-    const index = (((from + step * taken) % items.length) + items.length) % items.length;
+    const index = (((origin + step * taken) % items.length) + items.length) % items.length;
     if (items[index]?.disabled !== true) return index;
   }
   return -1;
@@ -173,6 +175,9 @@ export function Combobox({
   // Narrowing applies only to text the person typed: a committed label shows the whole list.
   const [isFiltering, setIsFiltering] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  // The id of the <label> pointing at the input (inside a Field), so the open listbox is named
+  // by it: `aria-label` is cleared there. Read when the list opens, once the label is in the DOM.
+  const [labelId, setLabelId] = useState<string | undefined>(undefined);
 
   // A controlled value that changes from outside rewrites the (uncontrolled) text to its label.
   const [seenValue, setSeenValue] = useState(value);
@@ -199,6 +204,8 @@ export function Combobox({
   }
 
   function open(index: number): void {
+    const id = inputRef.current?.labels?.[0]?.id;
+    setLabelId(id === "" ? undefined : id);
     setIsOpen(true);
     setActiveIndex(index);
   }
@@ -383,6 +390,7 @@ export function Combobox({
             id={listId}
             role="listbox"
             aria-label={ariaLabel}
+            aria-labelledby={ariaLabel === undefined ? labelId : undefined}
             hidden={visible.length === 0}
             className={slots.list()}
           >
