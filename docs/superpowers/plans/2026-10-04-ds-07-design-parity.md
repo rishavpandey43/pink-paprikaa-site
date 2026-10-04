@@ -26,6 +26,7 @@ The audits use these abbreviations: `D/` = handoff `components/molecules/`, `DA/
   - Every card row of every handoff component exists as a story with the same states.
   - Every value (colour, size, radius, spacing, type, shadow, motion) is the handoff's token.
   - Every interaction in `.jsx` and `IX` behaves the same: keyboard, hover (pointer only), press (Space **and Enter**), focus ring offsets, open/close, motion, and the ≤640px sheets.
+- **Nothing designed is removed (owner, 2026-10-05).** Every component, prop, variant, state, interaction, card row, page, specimen, template and kit in the handoff must exist in our build. It may be renamed to our API, its internals may move into `lib/`, and we may add extras, but we never subtract. The only owner-approved differences are R136 (16px field text), R137 (AA colours), R142 (Card as a real link, same look and click; DietMark veg-only) and R140 (no egg, no "18 spices"). Anything else missing is a defect.
 - **Code is ours, never copied:** the handoff `.jsx` is a behaviour reference. Every rule from `packages/ui/AUTHORING.md`, `docs/superpowers/slim/RULES.md` and spec 2026-10-04 applies:
   - `componentVariants`, tokens only, `sx` on the root, `BaseProps`;
   - `surface`/`color`/`status`/`size` names, Typography inheritance;
@@ -46,15 +47,15 @@ The audits use these abbreviations: `D/` = handoff `components/molecules/`, `DA/
 | R133 | DatePicker `value`/`min`/`max` are ISO `yyyy-mm-dd` strings, as in the design (`DatePicker.d.ts`). `toIsoDate`/`formatDate` stay the converters. | A breaking prop type before any consumer exists |
 | R134 | ActionMenu takes the design's data API (`items: ActionMenuItem[]`), built on Menu internally. Menu keeps its compound children API. | — |
 | R135 | Pagination supports the design's client paging (`onPageChange(page)`) **and** our static links (`getHref(page)`): exactly one is required. | — |
-| R136 | Form-control text stays **16px** at every size (iOS zooms below 16px). The handoff's 15/14px is an accepted deviation, recorded in Field JSDoc. | Larger field text |
-| R137 | Keep our AA-passing colours where the design's fail 4.5:1: `text-subtle` ink-600, `text-brand` pink-600, brand/ink body whites, soft `text-brand` pink-700, TabBar ink-600/pink-600. Add `$description` notes citing contrast-pairs.json. | — |
+| R136 | (owner-confirmed 2026-10-05) Form-control text stays **16px** at every size (iOS zooms below 16px). The handoff's 15/14px is an accepted deviation, recorded in Field JSDoc. | Larger field text |
+| R137 | (owner-confirmed 2026-10-05) Keep our AA-passing colours where the design's fail 4.5:1: `text-subtle` ink-600, `text-brand` pink-600, brand/ink body whites, soft `text-brand` pink-700, TabBar ink-600/pink-600. Add `$description` notes citing contrast-pairs.json. | — |
 | R138 | Forced states for docs (rest/hover/press/focus/disabled rows) come from `storybook-addon-pseudo-states`, never from docs-only public props. | One dev dependency |
 | R139 | Press feedback: a `lib/use-press.ts` hook sets `data-pressed` on pointerdown and on keydown Space/Enter (removed on up/leave/blur), as `IX:6-12` specifies. Components style `data-pressed:` alongside `active:`. | — |
 | R140 | Content (owner 2026-10-04): FAQ says **no egg in anything**; drop "18 spices"; the Google rating everywhere comes from `packages/content` (one value). Brand facts follow the handoff's `brand.js`/`BRAND.md` (Instagram `@thepinkpaprikaa`; no YouTube/LinkedIn; ordering links; Google reviews URL; maps URL; `googleRating`/`est` derived lines). | — |
 | R141 | ImageSlot `fill` (colourway) → `variant: "soft" \| "strong" \| "neutral"`; `isFill` keeps its full-height meaning. IconButton design `on="tint"` → `variant="tint"`. TestimonialWall `variant="brand"` (card surface) → `cardSurface`. | Renames, no consumers yet |
 | R143 | The text atom stays **Typography** (owner 2026-10-05); the design's "Text" page is `Atoms/Typography`; `Text` stays an alias. | One name differs from the design tree |
 | R144 | Extras with no design card are filed inside the matching design group, after the design's pages (owner 2026-10-05). | — |
-| R142 | DietMark stays veg-only. Card stays `asChild` around a real link (never `div role=button`). Field keeps owning messages for Input/Checkbox. Popover keeps Radix `open/onOpenChange` (design `onClose` maps to `onOpenChange(false)`). Combobox stays a popover on phones (`D/Combobox.prompt.md`). | — |
+| R142 | (owner-confirmed 2026-10-05) DietMark stays veg-only. Card stays `asChild` around a real link (never `div role=button`): same look, hover, press and click as the design. Field keeps owning messages for Input/Checkbox. Popover keeps Radix `open/onOpenChange` (design `onClose` maps to `onOpenChange(false)`). Combobox stays a popover on phones (`D/Combobox.prompt.md`). | — |
 
 ## Review Focus
 
@@ -90,6 +91,12 @@ The audits use these abbreviations: `D/` = handoff `components/molecules/`, `DA/
 
 - [ ] **Step 1:** `git status --short && git log --oneline -3`. Expected: the tree is clean at or after `6b1e28a`/`af118fa`. Record HEAD in the ledger.
 - [ ] **Step 2:** Run the batch gate once and record the counts (`ui`, `sb`, `tokens`) as the baseline.
+- [ ] **Step 2b: Design coverage map (the "nothing removed" check).** Create `docs/superpowers/specs/2026-10-04-design-parity/coverage.md` with one table per handoff component and page:
+  - **Rows:** every prop in its `.d.ts` (name, type, values), every card row in its `.card.html`, and every behaviour in its `.jsx` + `IX` section.
+  - **Columns:** `design item | our equivalent (file:symbol or story) | status (have / planned in Task N / approved difference R13x)`.
+  - **Also:** one table for `guidelines/*`, one for `templates/*`, one for `ui_kits/*`, and one for `handoff/*.md` rules.
+
+  Generate the skeleton with a small script (`apps/storybook/scripts/design-coverage.mjs`) that parses the `.d.ts` interfaces and `@dsCard` names, then fill in the equivalents by hand. Every later task updates its rows to `have`. Task 12 Step 5 fails the review if any row is not `have` or an approved R-number.
 - [ ] **Step 3:** Read the four audit files' **Summary** and **Cross-cutting** sections and `IX` in full (73 lines). Don't read the per-component sections until the task that needs them.
 
 ### Task 1: Tokens: state layer, scrollbar, press scales, spacing, pop-in
@@ -388,7 +395,7 @@ For each component, every gap line becomes a failing test or `States` story row 
 - [ ] **Step 2:** Run it over every component, inspect every montage, and list each visible difference in `minors.md` as `Component — difference — fix`. Fix them all (they count as parity gaps, not minors).
 - [ ] **Step 3: Grep gate:** `grep -rnE '<select\b|type="(date|time|datetime-local|month|week|color|file)"|\srequired[\s>=]|\stitle="' packages/ui/src apps/storybook/src --include=*.tsx | grep -vE "lib/hidden-native-select|<title>|test\.|stories\."` → no output. `pnpm guard:founder` → 0. `grep -rniE "\begg\b|18 spices" apps/storybook/src packages/ui/src packages/content` → only the "no egg" sentence.
 - [ ] **Step 4:** Full batch gate → green. Archive records (`rsync … .superpowers/sdd/ docs/superpowers/records/sdd/`; if lint-staged chokes on `.tsx` copies in records, remove those copies from `docs/` only). Commit.
-- [ ] **Step 5: Whole-branch review** of `af118fa..HEAD` against the four audits (every line closed or ruled), the rulings table and Review Focus. Fix Critical/Important plus the remaining minors in ONE pass. Re-run the gate. Ledger: `Final: done (ui X, sb Y, tokens Z)` + all `Ruling:` lines. Do not push.
+- [ ] **Step 5: Whole-branch review** of `af118fa..HEAD` against `coverage.md` (every row `have` or an approved R-number; any other row is a Critical finding) and the four audits (every line closed or ruled), the rulings table and Review Focus. Fix Critical/Important plus the remaining minors in ONE pass. Re-run the gate. Ledger: `Final: done (ui X, sb Y, tokens Z)` + all `Ruling:` lines. Do not push.
 
 ---
 
