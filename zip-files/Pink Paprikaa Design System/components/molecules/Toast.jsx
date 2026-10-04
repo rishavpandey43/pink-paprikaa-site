@@ -1,15 +1,16 @@
 import React from "react";
 import { Icon } from "../atoms/Icon.jsx";
+import { TextButton } from "../atoms/TextButton.jsx";
 
 const TONES = {
-  brand: { bg: "var(--pink-500)", fg: "var(--ink-000)", icon: "check" },
-  ink: { bg: "var(--ink-900)", fg: "var(--ink-000)", icon: "info" },
-  success: { bg: "var(--status-success)", fg: "var(--ink-000)", icon: "check" },
-  danger: { bg: "var(--status-danger)", fg: "var(--ink-000)", icon: "triangle-alert" },
+  brand: { bg: "var(--pink-500)", fg: "var(--ink-000)", icon: "check", on: "brand" },
+  ink: { bg: "var(--ink-900)", fg: "var(--ink-000)", icon: "info", on: "dark" },
+  success: { bg: "var(--status-success)", fg: "var(--ink-000)", icon: "check", on: "brand" },
+  danger: { bg: "var(--status-danger)", fg: "var(--ink-000)", icon: "triangle-alert", on: "brand" },
 };
 
 /** Transient confirmation. Uses --ease-pop for add-to-cart moments. */
-export function Toast({ children, tone = "ink", icon, action, onAction, pop, style, ...rest }) {
+export function Toast({ children, tone = "ink", icon, action, onAction, actionDisabled, actionState, pop, style, ...rest }) {
   const t = TONES[tone] || TONES.ink;
   return (
     <div
@@ -27,7 +28,7 @@ export function Toast({ children, tone = "ink", icon, action, onAction, pop, sty
       <Icon name={icon || t.icon} size="md" />
       <span>{children}</span>
       {action ? (
-        <button type="button" onClick={onAction} style={{ border: "none", background: "transparent", color: "inherit", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 13, letterSpacing: ".04em", textTransform: "uppercase", cursor: "pointer", padding: "0 2px" }}>{action}</button>
+        <TextButton on={t.on} caps size="sm" onClick={onAction} disabled={actionDisabled} state={actionState} style={{ marginRight: -8 }}>{action}</TextButton>
       ) : null}
     </div>
   );

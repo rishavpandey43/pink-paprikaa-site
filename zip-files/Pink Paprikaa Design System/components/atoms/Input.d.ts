@@ -24,7 +24,8 @@ export interface InputProps {
   multiline?: boolean;
   rows?: number;
   size?: "sm" | "md" | "lg";
-  type?: string;
+  /** Text-like types only. "number" becomes a text field with a decimal keypad; date/time/color/file/range are refused — use DatePicker / SlotPicker. */
+  type?: "text" | "email" | "tel" | "password" | "url" | "search" | "number";
   value?: string;
   placeholder?: string;
   disabled?: boolean;

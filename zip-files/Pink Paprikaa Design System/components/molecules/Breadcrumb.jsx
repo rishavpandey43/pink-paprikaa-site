@@ -1,5 +1,6 @@
 import React from "react";
 import { Icon } from "../atoms/Icon.jsx";
+import { Link } from "../atoms/Link.jsx";
 
 /** Website-only path trail. */
 export function Breadcrumb({ items = [], style, ...rest }) {
@@ -12,7 +13,7 @@ export function Breadcrumb({ items = [], style, ...rest }) {
             {last ? (
               <span aria-current="page" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: 13.5, color: "var(--text-heading)" }}>{it.label}</span>
             ) : (
-              <a href={it.href || "#"} style={{ fontFamily: "var(--font-body)", fontSize: 13.5, color: "var(--text-muted)", textDecoration: "none" }}>{it.label}</a>
+              <Link href={it.href || "#"} variant="subtle" size="sm">{it.label}</Link>
             )}
             {!last ? <Icon name="chevron-right" size={14} style={{ color: "var(--ink-400)" }} /> : null}
           </React.Fragment>

@@ -1,6 +1,7 @@
 import React from "react";
 import { Logo } from "../atoms/Logo.jsx";
 import { Icon } from "../atoms/Icon.jsx";
+import { usePress, mergeHandlers } from "../atoms/TextButton.jsx";
 
 /** Perforated voucher for stories, DMs and print handouts.
     The code stub is a copy button unless copyable={false}. */
@@ -29,6 +30,7 @@ export function CouponTicket({
   };
 
   const StubTag = copyable ? "button" : "div";
+  const p = usePress(!copyable);
   return (
     <div
       style={{
@@ -51,11 +53,15 @@ export function CouponTicket({
         type={copyable ? "button" : undefined}
         onClick={copyable ? copy : undefined}
         aria-label={copyable ? "Copy code " + code : undefined}
+        {...(copyable ? p.bind : {})}
         style={{
           flex: "0 0 auto", width: width * 0.3, display: "grid", placeItems: "center",
           padding: 20, border: "none", color: "inherit", font: "inherit",
-          background: brand ? "rgba(255,255,255,.08)" : "var(--pink-50)",
+          background: brand
+            ? (p.press ? "var(--state-press-on-color)" : p.hover ? "var(--state-hover-on-color)" : "rgba(255,255,255,.08)")
+            : (p.press ? "var(--pink-200)" : p.hover ? "var(--pink-100)" : "var(--pink-50)"),
           cursor: copyable ? "pointer" : "default",
+          outline: p.focus ? "2px solid " + (brand ? "var(--ink-000)" : "var(--pink-500)") : "none", outlineOffset: -6,
           transition: "background var(--dur-fast) var(--ease-out)",
         }}
       >

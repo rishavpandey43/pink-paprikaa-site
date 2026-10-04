@@ -1,11 +1,13 @@
 import React from "react";
 import { Icon } from "../atoms/Icon.jsx";
+import { TextButton } from "../atoms/TextButton.jsx";
+import { IconButton } from "../atoms/IconButton.jsx";
 
 const TONES = {
-  ink: { bg: "var(--ink-900)", fg: "var(--ink-000)", action: "var(--pink-300)", icon: "info" },
-  brand: { bg: "var(--pink-500)", fg: "var(--ink-000)", action: "var(--ink-000)", icon: "check" },
-  success: { bg: "var(--status-success)", fg: "var(--ink-000)", action: "var(--ink-000)", icon: "check" },
-  danger: { bg: "var(--status-danger)", fg: "var(--ink-000)", action: "var(--ink-000)", icon: "triangle-alert" },
+  ink: { bg: "var(--ink-900)", fg: "var(--ink-000)", on: "dark", icon: "info" },
+  brand: { bg: "var(--pink-500)", fg: "var(--ink-000)", on: "brand", icon: "check" },
+  success: { bg: "var(--status-success)", fg: "var(--ink-000)", on: "brand", icon: "check" },
+  danger: { bg: "var(--status-danger)", fg: "var(--ink-000)", on: "brand", icon: "triangle-alert" },
 };
 
 /** Anchored confirmation bar with an optional text action (copy, undo). */
@@ -48,16 +50,10 @@ export function Snackbar({
           {children}
         </span>
         {action ? (
-          <button type="button" onClick={onAction}
-            style={{ flex: "0 0 auto", border: "none", background: "transparent", color: t.action, cursor: "pointer", padding: "4px 6px", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 12.5, letterSpacing: ".06em", textTransform: "uppercase" }}>
-            {action}
-          </button>
+          <TextButton on={t.on} caps size="sm" onClick={onAction}>{action}</TextButton>
         ) : null}
         {onClose ? (
-          <button type="button" aria-label="Dismiss" onClick={onClose}
-            style={{ flex: "0 0 auto", border: "none", background: "transparent", color: "inherit", opacity: 0.7, cursor: "pointer", display: "grid", placeItems: "center", padding: 2 }}>
-            <Icon name="x" size="sm" />
-          </button>
+          <IconButton icon="x" label="Dismiss" size="xs" on="brand" onClick={onClose} style={{ marginRight: -4 }} />
         ) : null}
       </div>
     </div>

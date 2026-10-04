@@ -1,21 +1,24 @@
 import React from "react";
 import { Text } from "../atoms/Text.jsx";
 import { Icon } from "../atoms/Icon.jsx";
+import { usePress, mergeHandlers } from "../atoms/TextButton.jsx";
 
 /** Generic settings / account / details row. Hairline separated, not carded. */
 export function ListRow({ title, description, leading, trailing, value, icon, onClick, chevron, divider = true, danger, style, ...rest }) {
-  const [hover, setHover] = React.useState(false);
   const interactive = !!onClick;
+  const p = usePress(!interactive);
+  const hover = p.hover, press = p.press;
   return (
     <div
       onClick={onClick}
-      onPointerEnter={() => setHover(true)} onPointerLeave={() => setHover(false)}
+      {...(interactive ? mergeHandlers(p.bind, { onKeyDown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(e); } } }) : {})}
       role={interactive ? "button" : undefined} tabIndex={interactive ? 0 : undefined}
       style={{
         display: "flex", alignItems: "center", gap: 14,
         padding: "14px 12px", margin: "0 -12px", minHeight: "var(--hit-min)",
         borderBottom: divider ? "1px solid var(--border-subtle)" : "none",
-        background: interactive && hover ? "var(--pink-50)" : "transparent",
+        background: interactive && press ? "var(--state-press)" : interactive && hover ? "var(--state-hover)" : "transparent",
+        outline: interactive && p.focus ? "2px solid var(--pink-500)" : "none", outlineOffset: -2,
         borderRadius: "var(--radius-sm)",
         cursor: interactive ? "pointer" : undefined,
         transition: "background var(--dur-fast) var(--ease-out)",

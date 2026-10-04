@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"PinkPaprikaaDesignSystem_23ef63","components":[{"name":"Avatar","sourcePath":"components/atoms/Avatar.jsx"},{"name":"Badge","sourcePath":"components/atoms/Badge.jsx"},{"name":"Button","sourcePath":"components/atoms/Button.jsx"},{"name":"Card","sourcePath":"components/atoms/Card.jsx"},{"name":"Checkbox","sourcePath":"components/atoms/Checkbox.jsx"},{"name":"DietMark","sourcePath":"components/atoms/DietMark.jsx"},{"name":"Divider","sourcePath":"components/atoms/Divider.jsx"},{"name":"Icon","sourcePath":"components/atoms/Icon.jsx"},{"name":"IconButton","sourcePath":"components/atoms/IconButton.jsx"},{"name":"ImageSlot","sourcePath":"components/atoms/ImageSlot.jsx"},{"name":"Input","sourcePath":"components/atoms/Input.jsx"},{"name":"Link","sourcePath":"components/atoms/Link.jsx"},{"name":"Logo","sourcePath":"components/atoms/Logo.jsx"},{"name":"PatternField","sourcePath":"components/atoms/PatternField.jsx"},{"name":"PriceTag","sourcePath":"components/atoms/PriceTag.jsx"},{"name":"ProgressBar","sourcePath":"components/atoms/ProgressBar.jsx"},{"name":"Radio","sourcePath":"components/atoms/Radio.jsx"},{"name":"Rating","sourcePath":"components/atoms/Rating.jsx"},{"name":"Select","sourcePath":"components/atoms/Select.jsx"},{"name":"Skeleton","sourcePath":"components/atoms/Skeleton.jsx"},{"name":"SocialHeadline","sourcePath":"components/atoms/SocialHeadline.jsx"},{"name":"SpiceLevel","sourcePath":"components/atoms/SpiceLevel.jsx"},{"name":"Spinner","sourcePath":"components/atoms/Spinner.jsx"},{"name":"StatusDot","sourcePath":"components/atoms/StatusDot.jsx"},{"name":"Switch","sourcePath":"components/atoms/Switch.jsx"},{"name":"Tag","sourcePath":"components/atoms/Tag.jsx"},{"name":"Text","sourcePath":"components/atoms/Text.jsx"},{"name":"Tooltip","sourcePath":"components/atoms/Tooltip.jsx"},{"name":"AppShell","sourcePath":"components/layouts/AppShell.jsx"},{"name":"AutoGrid","sourcePath":"components/layouts/AutoGrid.jsx"},{"name":"Cluster","sourcePath":"components/layouts/Cluster.jsx"},{"name":"Container","sourcePath":"components/layouts/Container.jsx"},{"name":"PostFrame","sourcePath":"components/layouts/PostFrame.jsx"},{"name":"POST_FORMATS","sourcePath":"components/layouts/PostFrame.jsx"},{"name":"Section","sourcePath":"components/layouts/Section.jsx"},{"name":"Stack","sourcePath":"components/layouts/Stack.jsx"},{"name":"Accordion","sourcePath":"components/molecules/Accordion.jsx"},{"name":"Alert","sourcePath":"components/molecules/Alert.jsx"},{"name":"Breadcrumb","sourcePath":"components/molecules/Breadcrumb.jsx"},{"name":"CouponTicket","sourcePath":"components/molecules/CouponTicket.jsx"},{"name":"EmptyState","sourcePath":"components/molecules/EmptyState.jsx"},{"name":"Field","sourcePath":"components/molecules/Field.jsx"},{"name":"FilterBar","sourcePath":"components/molecules/FilterBar.jsx"},{"name":"ListRow","sourcePath":"components/molecules/ListRow.jsx"},{"name":"LogoLockup","sourcePath":"components/molecules/LogoLockup.jsx"},{"name":"LoyaltyCard","sourcePath":"components/molecules/LoyaltyCard.jsx"},{"name":"MenuItemCard","sourcePath":"components/molecules/MenuItemCard.jsx"},{"name":"MenuItemRow","sourcePath":"components/molecules/MenuItemRow.jsx"},{"name":"OfferSeal","sourcePath":"components/molecules/OfferSeal.jsx"},{"name":"OtpInput","sourcePath":"components/molecules/OtpInput.jsx"},{"name":"OutletCard","sourcePath":"components/molecules/OutletCard.jsx"},{"name":"Pagination","sourcePath":"components/molecules/Pagination.jsx"},{"name":"PriceSummary","sourcePath":"components/molecules/PriceSummary.jsx"},{"name":"QuantityStepper","sourcePath":"components/molecules/QuantityStepper.jsx"},{"name":"ReviewCard","sourcePath":"components/molecules/ReviewCard.jsx"},{"name":"SearchField","sourcePath":"components/molecules/SearchField.jsx"},{"name":"SectionHeader","sourcePath":"components/molecules/SectionHeader.jsx"},{"name":"SlotPicker","sourcePath":"components/molecules/SlotPicker.jsx"},{"name":"Snackbar","sourcePath":"components/molecules/Snackbar.jsx"},{"name":"Stat","sourcePath":"components/molecules/Stat.jsx"},{"name":"StepTracker","sourcePath":"components/molecules/StepTracker.jsx"},{"name":"Tabs","sourcePath":"components/molecules/Tabs.jsx"},{"name":"Toast","sourcePath":"components/molecules/Toast.jsx"},{"name":"CartPanel","sourcePath":"components/organisms/CartPanel.jsx"},{"name":"CtaBand","sourcePath":"components/organisms/CtaBand.jsx"},{"name":"Dialog","sourcePath":"components/organisms/Dialog.jsx"},{"name":"FaqSection","sourcePath":"components/organisms/FaqSection.jsx"},{"name":"HeroBanner","sourcePath":"components/organisms/HeroBanner.jsx"},{"name":"MenuList","sourcePath":"components/organisms/MenuList.jsx"},{"name":"OrderTracker","sourcePath":"components/organisms/OrderTracker.jsx"},{"name":"SiteFooter","sourcePath":"components/organisms/SiteFooter.jsx"},{"name":"SiteHeader","sourcePath":"components/organisms/SiteHeader.jsx"},{"name":"StatBand","sourcePath":"components/organisms/StatBand.jsx"},{"name":"TabBar","sourcePath":"components/organisms/TabBar.jsx"},{"name":"TestimonialWall","sourcePath":"components/organisms/TestimonialWall.jsx"},{"name":"PP_BRAND","sourcePath":"tokens/brand.module.js"}],"sourceHashes":{"brand.js":"5ed46fc9e269","components/atoms/Avatar.jsx":"515a5158a1af","components/atoms/Badge.jsx":"c1b2239863ba","components/atoms/Button.jsx":"6f7ac0046c7d","components/atoms/Card.jsx":"252444482236","components/atoms/Checkbox.jsx":"6d09e02d2338","components/atoms/DietMark.jsx":"377ab66db430","components/atoms/Divider.jsx":"22eb058d39ed","components/atoms/Icon.jsx":"ba31d484f3d1","components/atoms/IconButton.jsx":"d064e4e2ffd2","components/atoms/ImageSlot.jsx":"338c5a7c4b3b","components/atoms/Input.jsx":"b3579a414e83","components/atoms/Link.jsx":"87d8a6dc2c15","components/atoms/Logo.jsx":"00940b5ba140","components/atoms/PatternField.jsx":"072ab2e98bf3","components/atoms/PriceTag.jsx":"d458f825f3b2","components/atoms/ProgressBar.jsx":"65acae3a8262","components/atoms/Radio.jsx":"a02e82ba2c88","components/atoms/Rating.jsx":"5e630742fe75","components/atoms/Select.jsx":"35629a14f392","components/atoms/Skeleton.jsx":"f0390b10ef45","components/atoms/SocialHeadline.jsx":"5a37291acafc","components/atoms/SpiceLevel.jsx":"a42f06f3878d","components/atoms/Spinner.jsx":"628482287817","components/atoms/StatusDot.jsx":"6a0a3bae75fa","components/atoms/Switch.jsx":"31b58dd19176","components/atoms/Tag.jsx":"c9f816289983","components/atoms/Text.jsx":"3e4c4e73f5b5","components/atoms/Tooltip.jsx":"d600f09d1047","components/layouts/AppShell.jsx":"d0c7639de069","components/layouts/AutoGrid.jsx":"f39fb30361f7","components/layouts/Cluster.jsx":"69f02cc59b27","components/layouts/Container.jsx":"de6ef339a9be","components/layouts/PostFrame.jsx":"cbfb642a57df","components/layouts/Section.jsx":"e9c88b8fbdd3","components/layouts/Stack.jsx":"1770ce65c147","components/molecules/Accordion.jsx":"4433be76afd6","components/molecules/Alert.jsx":"a7fd7e93d4ba","components/molecules/Breadcrumb.jsx":"758d7bb00f2b","components/molecules/CouponTicket.jsx":"4374f8035440","components/molecules/EmptyState.jsx":"afbd9f117bc4","components/molecules/Field.jsx":"116c72ff7e3b","components/molecules/FilterBar.jsx":"fc6bd1614d2c","components/molecules/ListRow.jsx":"aa68aecd26b2","components/molecules/LogoLockup.jsx":"6ade98779094","components/molecules/LoyaltyCard.jsx":"75eb8f706a47","components/molecules/MenuItemCard.jsx":"5077495021fe","components/molecules/MenuItemRow.jsx":"3a24d226adff","components/molecules/OfferSeal.jsx":"12d3fd9a895d","components/molecules/OtpInput.jsx":"c8b38d1394ef","components/molecules/OutletCard.jsx":"6fcdf1c82e28","components/molecules/Pagination.jsx":"d5b9146256f3","components/molecules/PriceSummary.jsx":"58eddaeb34db","components/molecules/QuantityStepper.jsx":"2154443b03a1","components/molecules/ReviewCard.jsx":"466e794dab92","components/molecules/SearchField.jsx":"4dacec61e4fc","components/molecules/SectionHeader.jsx":"d4f060446fd0","components/molecules/SlotPicker.jsx":"2da357e6cb98","components/molecules/Snackbar.jsx":"c75edbd4342f","components/molecules/Stat.jsx":"623540ee7ecd","components/molecules/StepTracker.jsx":"764c0b323fed","components/molecules/Tabs.jsx":"ff5ca95c0281","components/molecules/Toast.jsx":"ca3f309efe5c","components/organisms/CartPanel.jsx":"f5aea895056d","components/organisms/CtaBand.jsx":"a72aff3b737c","components/organisms/Dialog.jsx":"65c67d22ecc6","components/organisms/FaqSection.jsx":"0a8f56a5a524","components/organisms/HeroBanner.jsx":"e55be4cfdcad","components/organisms/MenuList.jsx":"21f61bb53a2c","components/organisms/OrderTracker.jsx":"c1e5a6887aac","components/organisms/SiteFooter.jsx":"5beeba5df2b0","components/organisms/SiteHeader.jsx":"6468be74e1c3","components/organisms/StatBand.jsx":"4922871f6add","components/organisms/TabBar.jsx":"540152b9ed79","components/organisms/TestimonialWall.jsx":"fc30ea9872d6","tokens/brand.module.js":"6c5a53e8810f","ui_kits/app/ItemSheet.jsx":"02eba81b9bfb","ui_kits/app/Screens.jsx":"87466846b4eb","ui_kits/marketing/AdArtboards.jsx":"c903315b775d","ui_kits/marketing/FeedArtboards.jsx":"44c385c73366","ui_kits/website/Sections.jsx":"3a016ef7e185"},"inlinedExternals":[],"unexposedExports":[]} */
+/* @ds-bundle: {"format":4,"namespace":"PinkPaprikaaDesignSystem_23ef63","components":[{"name":"Avatar","sourcePath":"components/atoms/Avatar.jsx"},{"name":"Badge","sourcePath":"components/atoms/Badge.jsx"},{"name":"Button","sourcePath":"components/atoms/Button.jsx"},{"name":"Card","sourcePath":"components/atoms/Card.jsx"},{"name":"Checkbox","sourcePath":"components/atoms/Checkbox.jsx"},{"name":"DietMark","sourcePath":"components/atoms/DietMark.jsx"},{"name":"Divider","sourcePath":"components/atoms/Divider.jsx"},{"name":"Icon","sourcePath":"components/atoms/Icon.jsx"},{"name":"IconButton","sourcePath":"components/atoms/IconButton.jsx"},{"name":"ImageSlot","sourcePath":"components/atoms/ImageSlot.jsx"},{"name":"Input","sourcePath":"components/atoms/Input.jsx"},{"name":"Link","sourcePath":"components/atoms/Link.jsx"},{"name":"Logo","sourcePath":"components/atoms/Logo.jsx"},{"name":"Menu","sourcePath":"components/atoms/Menu.jsx"},{"name":"PatternField","sourcePath":"components/atoms/PatternField.jsx"},{"name":"Popover","sourcePath":"components/atoms/Popover.jsx"},{"name":"PriceTag","sourcePath":"components/atoms/PriceTag.jsx"},{"name":"ProgressBar","sourcePath":"components/atoms/ProgressBar.jsx"},{"name":"Radio","sourcePath":"components/atoms/Radio.jsx"},{"name":"Rating","sourcePath":"components/atoms/Rating.jsx"},{"name":"Select","sourcePath":"components/atoms/Select.jsx"},{"name":"Skeleton","sourcePath":"components/atoms/Skeleton.jsx"},{"name":"SocialHeadline","sourcePath":"components/atoms/SocialHeadline.jsx"},{"name":"SpiceLevel","sourcePath":"components/atoms/SpiceLevel.jsx"},{"name":"Spinner","sourcePath":"components/atoms/Spinner.jsx"},{"name":"StatusDot","sourcePath":"components/atoms/StatusDot.jsx"},{"name":"Switch","sourcePath":"components/atoms/Switch.jsx"},{"name":"Tag","sourcePath":"components/atoms/Tag.jsx"},{"name":"Text","sourcePath":"components/atoms/Text.jsx"},{"name":"TextButton","sourcePath":"components/atoms/TextButton.jsx"},{"name":"Tooltip","sourcePath":"components/atoms/Tooltip.jsx"},{"name":"AppShell","sourcePath":"components/layouts/AppShell.jsx"},{"name":"AutoGrid","sourcePath":"components/layouts/AutoGrid.jsx"},{"name":"Cluster","sourcePath":"components/layouts/Cluster.jsx"},{"name":"Container","sourcePath":"components/layouts/Container.jsx"},{"name":"PostFrame","sourcePath":"components/layouts/PostFrame.jsx"},{"name":"POST_FORMATS","sourcePath":"components/layouts/PostFrame.jsx"},{"name":"Section","sourcePath":"components/layouts/Section.jsx"},{"name":"Stack","sourcePath":"components/layouts/Stack.jsx"},{"name":"Accordion","sourcePath":"components/molecules/Accordion.jsx"},{"name":"ActionMenu","sourcePath":"components/molecules/ActionMenu.jsx"},{"name":"Alert","sourcePath":"components/molecules/Alert.jsx"},{"name":"Breadcrumb","sourcePath":"components/molecules/Breadcrumb.jsx"},{"name":"Combobox","sourcePath":"components/molecules/Combobox.jsx"},{"name":"CouponTicket","sourcePath":"components/molecules/CouponTicket.jsx"},{"name":"DatePicker","sourcePath":"components/molecules/DatePicker.jsx"},{"name":"EmptyState","sourcePath":"components/molecules/EmptyState.jsx"},{"name":"Field","sourcePath":"components/molecules/Field.jsx"},{"name":"FilterBar","sourcePath":"components/molecules/FilterBar.jsx"},{"name":"ListRow","sourcePath":"components/molecules/ListRow.jsx"},{"name":"LogoLockup","sourcePath":"components/molecules/LogoLockup.jsx"},{"name":"LoyaltyCard","sourcePath":"components/molecules/LoyaltyCard.jsx"},{"name":"MenuItemCard","sourcePath":"components/molecules/MenuItemCard.jsx"},{"name":"MenuItemRow","sourcePath":"components/molecules/MenuItemRow.jsx"},{"name":"OfferSeal","sourcePath":"components/molecules/OfferSeal.jsx"},{"name":"OtpInput","sourcePath":"components/molecules/OtpInput.jsx"},{"name":"OutletCard","sourcePath":"components/molecules/OutletCard.jsx"},{"name":"Pagination","sourcePath":"components/molecules/Pagination.jsx"},{"name":"PageButton","sourcePath":"components/molecules/Pagination.jsx"},{"name":"PriceSummary","sourcePath":"components/molecules/PriceSummary.jsx"},{"name":"QuantityStepper","sourcePath":"components/molecules/QuantityStepper.jsx"},{"name":"ReviewCard","sourcePath":"components/molecules/ReviewCard.jsx"},{"name":"SearchField","sourcePath":"components/molecules/SearchField.jsx"},{"name":"SectionHeader","sourcePath":"components/molecules/SectionHeader.jsx"},{"name":"SlotPicker","sourcePath":"components/molecules/SlotPicker.jsx"},{"name":"Snackbar","sourcePath":"components/molecules/Snackbar.jsx"},{"name":"Stat","sourcePath":"components/molecules/Stat.jsx"},{"name":"StepTracker","sourcePath":"components/molecules/StepTracker.jsx"},{"name":"Tabs","sourcePath":"components/molecules/Tabs.jsx"},{"name":"Toast","sourcePath":"components/molecules/Toast.jsx"},{"name":"CartPanel","sourcePath":"components/organisms/CartPanel.jsx"},{"name":"CtaBand","sourcePath":"components/organisms/CtaBand.jsx"},{"name":"Dialog","sourcePath":"components/organisms/Dialog.jsx"},{"name":"FaqSection","sourcePath":"components/organisms/FaqSection.jsx"},{"name":"HeroBanner","sourcePath":"components/organisms/HeroBanner.jsx"},{"name":"MenuList","sourcePath":"components/organisms/MenuList.jsx"},{"name":"OrderTracker","sourcePath":"components/organisms/OrderTracker.jsx"},{"name":"SiteFooter","sourcePath":"components/organisms/SiteFooter.jsx"},{"name":"SiteHeader","sourcePath":"components/organisms/SiteHeader.jsx"},{"name":"StatBand","sourcePath":"components/organisms/StatBand.jsx"},{"name":"TabBar","sourcePath":"components/organisms/TabBar.jsx"},{"name":"TestimonialWall","sourcePath":"components/organisms/TestimonialWall.jsx"},{"name":"PP_BRAND","sourcePath":"tokens/brand.module.js"}],"sourceHashes":{"brand.js":"f578cff3a7b2","components/atoms/Avatar.jsx":"15b0a4594c11","components/atoms/Badge.jsx":"c1b2239863ba","components/atoms/Button.jsx":"e3da1ecd4810","components/atoms/Card.jsx":"ad8c55cf7a8f","components/atoms/Checkbox.jsx":"36c68d7d9d8a","components/atoms/DietMark.jsx":"377ab66db430","components/atoms/Divider.jsx":"22eb058d39ed","components/atoms/Icon.jsx":"ba31d484f3d1","components/atoms/IconButton.jsx":"e52c403d842e","components/atoms/ImageSlot.jsx":"338c5a7c4b3b","components/atoms/Input.jsx":"ce9d81551208","components/atoms/Link.jsx":"f6c178b4115a","components/atoms/Logo.jsx":"00940b5ba140","components/atoms/Menu.jsx":"06f7cf2c1fe2","components/atoms/PatternField.jsx":"072ab2e98bf3","components/atoms/Popover.jsx":"796ab9a0ccf2","components/atoms/PriceTag.jsx":"d458f825f3b2","components/atoms/ProgressBar.jsx":"65acae3a8262","components/atoms/Radio.jsx":"406930408c00","components/atoms/Rating.jsx":"5e630742fe75","components/atoms/Select.jsx":"313a1df5b92b","components/atoms/Skeleton.jsx":"f0390b10ef45","components/atoms/SocialHeadline.jsx":"5a37291acafc","components/atoms/SpiceLevel.jsx":"a42f06f3878d","components/atoms/Spinner.jsx":"628482287817","components/atoms/StatusDot.jsx":"6a0a3bae75fa","components/atoms/Switch.jsx":"ff90a9dfaac6","components/atoms/Tag.jsx":"b9371337193d","components/atoms/Text.jsx":"3e4c4e73f5b5","components/atoms/TextButton.jsx":"7ef37dbf0759","components/atoms/Tooltip.jsx":"d600f09d1047","components/layouts/AppShell.jsx":"d0c7639de069","components/layouts/AutoGrid.jsx":"f39fb30361f7","components/layouts/Cluster.jsx":"69f02cc59b27","components/layouts/Container.jsx":"de6ef339a9be","components/layouts/PostFrame.jsx":"cbfb642a57df","components/layouts/Section.jsx":"e9c88b8fbdd3","components/layouts/Stack.jsx":"1770ce65c147","components/molecules/Accordion.jsx":"5e79d6189a98","components/molecules/ActionMenu.jsx":"72a2f16bf116","components/molecules/Alert.jsx":"fb18824c422d","components/molecules/Breadcrumb.jsx":"543d20ced63a","components/molecules/Combobox.jsx":"808234dba24b","components/molecules/CouponTicket.jsx":"07441a478b8f","components/molecules/DatePicker.jsx":"a8bacb54ef44","components/molecules/EmptyState.jsx":"afbd9f117bc4","components/molecules/Field.jsx":"116c72ff7e3b","components/molecules/FilterBar.jsx":"fc6bd1614d2c","components/molecules/ListRow.jsx":"abb12243d333","components/molecules/LogoLockup.jsx":"6ade98779094","components/molecules/LoyaltyCard.jsx":"75eb8f706a47","components/molecules/MenuItemCard.jsx":"5077495021fe","components/molecules/MenuItemRow.jsx":"3a24d226adff","components/molecules/OfferSeal.jsx":"12d3fd9a895d","components/molecules/OtpInput.jsx":"468c1035af5e","components/molecules/OutletCard.jsx":"6fcdf1c82e28","components/molecules/Pagination.jsx":"eb64f34d4a21","components/molecules/PriceSummary.jsx":"58eddaeb34db","components/molecules/QuantityStepper.jsx":"0c9b6bb0ae21","components/molecules/ReviewCard.jsx":"466e794dab92","components/molecules/SearchField.jsx":"7fe334c9dbea","components/molecules/SectionHeader.jsx":"d4f060446fd0","components/molecules/SlotPicker.jsx":"fd14259f801e","components/molecules/Snackbar.jsx":"654133a62b7d","components/molecules/Stat.jsx":"623540ee7ecd","components/molecules/StepTracker.jsx":"764c0b323fed","components/molecules/Tabs.jsx":"d28b4bd54f90","components/molecules/Toast.jsx":"9b9c7b7aab2f","components/organisms/CartPanel.jsx":"f5aea895056d","components/organisms/CtaBand.jsx":"a72aff3b737c","components/organisms/Dialog.jsx":"65c67d22ecc6","components/organisms/FaqSection.jsx":"0a8f56a5a524","components/organisms/HeroBanner.jsx":"e55be4cfdcad","components/organisms/MenuList.jsx":"21f61bb53a2c","components/organisms/OrderTracker.jsx":"c1e5a6887aac","components/organisms/SiteFooter.jsx":"5c8813eb45dc","components/organisms/SiteHeader.jsx":"fc5b8a3ae02b","components/organisms/StatBand.jsx":"4922871f6add","components/organisms/TabBar.jsx":"67f142af1faa","components/organisms/TestimonialWall.jsx":"fc30ea9872d6","tokens/brand.module.js":"9a8b87c1daf1","ui_kits/app/ItemSheet.jsx":"02eba81b9bfb","ui_kits/app/Screens.jsx":"87466846b4eb","ui_kits/marketing/AdArtboards.jsx":"c903315b775d","ui_kits/marketing/FeedArtboards.jsx":"44c385c73366","ui_kits/website/Sections.jsx":"3a016ef7e185"},"inlinedExternals":[],"unexposedExports":[{"name":"formatDate","sourcePath":"components/molecules/DatePicker.jsx"},{"name":"mergeHandlers","sourcePath":"components/atoms/TextButton.jsx"},{"name":"normalizeItems","sourcePath":"components/atoms/Menu.jsx"},{"name":"usePress","sourcePath":"components/atoms/TextButton.jsx"}]} */
 
 (() => {
 
@@ -25,7 +25,8 @@ const PP_BRAND = {
   tagline: "India's First Desi Urban Café",
   statement: "Desi at heart. Urban by nature.",
   vegStatement: "100% vegetarian kitchen.",
-  est: 2019,
+  est: 2025,
+  about: "Opened in 2025.",
   legal: {
     entity: "Paprikaa Culinary Ventures Private Limited",
     cin: "U56101HR2025PTC133469",
@@ -47,19 +48,31 @@ const PP_BRAND = {
   },
   social: {
     instagram: {
-      handle: "@pinkpaprikaa",
-      url: "https://instagram.com/pinkpaprikaa",
+      handle: "@thepinkpaprikaa",
+      url: "https://www.instagram.com/thepinkpaprikaa/",
       icon: "instagram"
+    }
+  },
+  ordering: {
+    website: {
+      label: "Order Online",
+      url: "https://order.pinkpaprikaa.com/"
     },
-    youtube: {
-      handle: "Pink Paprikaa",
-      url: "https://youtube.com/@pinkpaprikaa",
-      icon: "youtube"
+    swiggy: {
+      label: "Swiggy",
+      url: "https://www.swiggy.com/menu/1234520?source=sharing"
     },
-    linkedin: {
-      handle: "Pink Paprikaa",
-      url: "https://linkedin.com/company/pinkpaprikaa",
-      icon: "linkedin"
+    zomato: {
+      label: "Zomato",
+      url: "https://zomato.onelink.me/xqzv/scvd80ce"
+    }
+  },
+  reviews: {
+    google: {
+      rating: 4.3,
+      count: 98,
+      label: "Google reviews",
+      url: "https://maps.app.goo.gl/y8xr1QtSW1kfQKwD7?g_st=ic"
     }
   },
   hours: {
@@ -74,7 +87,7 @@ const PP_BRAND = {
     address: "Booth No. 67P, HSVP Market, Sector 57, Gurgaon 122003",
     hours: "TODO",
     phone: "+919090704001",
-    maps: "TODO"
+    maps: "https://maps.app.goo.gl/y8xr1QtSW1kfQKwD7?g_st=ic"
   }],
   billing: {
     gstRate: 0.05,
@@ -105,83 +118,15 @@ PP_BRAND.lines = {
   outletsCount: "One kitchen in Sector 57, Gurgaon",
   cities: Array.from(new Set(PP_BRAND.outlets.map(o => o.city))).join(" · "),
   footerPolicies: [...PP_BRAND.policies, "FSSAI Lic. " + PP_BRAND.legal.fssai],
-  contactShort: PP_BRAND.contact.website + " · " + PP_BRAND.contact.phoneDisplay
+  contactShort: PP_BRAND.contact.website + " · " + PP_BRAND.contact.phoneDisplay,
+  googleRating: PP_BRAND.reviews.google.rating + " · " + PP_BRAND.reviews.google.count + " Google reviews",
+  est: "Est. " + PP_BRAND.est
 };
 if (typeof window !== "undefined") window.PP_BRAND = PP_BRAND;
 if (typeof module !== "undefined" && module.exports) module.exports = {
   PP_BRAND
 };
 })(); } catch (e) { __ds_ns.__errors.push({ path: "brand.js", error: String((e && e.message) || e) }); }
-
-// components/atoms/Card.jsx
-try { (() => {
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-const SKINS = {
-  default: {
-    background: "var(--surface-card)",
-    border: "1px solid var(--border-subtle)",
-    radius: "var(--radius-lg)",
-    shadow: "var(--shadow-1)"
-  },
-  feature: {
-    background: "var(--pink-100)",
-    border: "none",
-    radius: "var(--radius-xl)",
-    shadow: "none"
-  },
-  brand: {
-    background: "var(--pink-500)",
-    border: "none",
-    radius: "var(--radius-xl)",
-    shadow: "var(--shadow-brand)"
-  },
-  ink: {
-    background: "var(--ink-900)",
-    border: "none",
-    radius: "var(--radius-xl)",
-    shadow: "none"
-  },
-  quiet: {
-    background: "var(--surface-sunken)",
-    border: "none",
-    radius: "var(--radius-lg)",
-    shadow: "none"
-  }
-};
-
-/** Content container. Never gets a coloured left border. */
-function Card({
-  children,
-  variant = "default",
-  padding = 20,
-  interactive,
-  onClick,
-  style,
-  ...rest
-}) {
-  const [hover, setHover] = React.useState(false);
-  const s = SKINS[variant] || SKINS.default;
-  return /*#__PURE__*/React.createElement("div", _extends({
-    "data-surface": variant === "brand" ? "brand" : variant === "ink" ? "ink" : variant === "feature" ? "soft" : undefined,
-    onClick: onClick,
-    onPointerEnter: () => setHover(true),
-    onPointerLeave: () => setHover(false),
-    style: {
-      background: s.background,
-      border: s.border,
-      borderRadius: s.radius,
-      boxShadow: interactive && hover ? "var(--shadow-3)" : s.shadow,
-      transform: interactive && hover ? "translateY(var(--lift-y))" : "none",
-      transition: "box-shadow var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out)",
-      padding,
-      overflow: "hidden",
-      cursor: interactive ? "pointer" : undefined,
-      ...style
-    }
-  }, rest), children);
-}
-Object.assign(__ds_scope, { Card });
-})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Card.jsx", error: String((e && e.message) || e) }); }
 
 // components/atoms/DietMark.jsx
 try { (() => {
@@ -381,56 +326,6 @@ function Icon({
 Object.assign(__ds_scope, { Icon });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Icon.jsx", error: String((e && e.message) || e) }); }
 
-// components/atoms/Avatar.jsx
-try { (() => {
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-const S = {
-  xs: 24,
-  sm: 32,
-  md: 40,
-  lg: 56,
-  xl: 80
-};
-
-/** Circular guest/staff avatar. Falls back to initials on --pink-100. */
-function Avatar({
-  name = "",
-  src,
-  size = "md",
-  icon,
-  ring,
-  style,
-  ...rest
-}) {
-  const px = typeof size === "number" ? size : S[size] || S.md;
-  const initials = name.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
-  return /*#__PURE__*/React.createElement("span", _extends({
-    title: name || undefined,
-    style: {
-      width: px,
-      height: px,
-      flex: "0 0 auto",
-      borderRadius: "var(--radius-pill)",
-      display: "grid",
-      placeItems: "center",
-      overflow: "hidden",
-      background: src ? `center/cover no-repeat url(${src})` : "var(--pink-100)",
-      color: "var(--pink-700)",
-      fontFamily: "var(--font-display)",
-      fontWeight: 700,
-      fontSize: Math.max(10, Math.round(px * 0.38)),
-      letterSpacing: "-.01em",
-      boxShadow: ring ? "0 0 0 2px var(--ink-000), 0 0 0 4px var(--pink-500)" : "none",
-      ...style
-    }
-  }, rest), src ? null : icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: icon,
-    size: Math.round(px * 0.5)
-  }) : initials || null);
-}
-Object.assign(__ds_scope, { Avatar });
-})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Avatar.jsx", error: String((e && e.message) || e) }); }
-
 // components/atoms/Badge.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
@@ -500,321 +395,6 @@ function Badge({
 Object.assign(__ds_scope, { Badge });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Badge.jsx", error: String((e && e.message) || e) }); }
 
-// components/atoms/Button.jsx
-try { (() => {
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-const PAD = {
-  sm: "0 14px",
-  md: "0 20px",
-  lg: "0 28px"
-};
-const H = {
-  sm: 36,
-  md: 44,
-  lg: 54
-};
-const FS = {
-  sm: 13,
-  md: 15,
-  lg: 17
-};
-function skin(variant, on) {
-  if (on === "brand") {
-    return variant === "primary" ? {
-      background: "var(--ink-000)",
-      color: "var(--pink-600)",
-      border: "none",
-      shadow: "var(--shadow-2)"
-    } : {
-      background: "transparent",
-      color: "var(--ink-000)",
-      border: "2px solid rgba(255,255,255,.7)",
-      shadow: "none"
-    };
-  }
-  switch (variant) {
-    case "secondary":
-      return {
-        background: "var(--ink-000)",
-        color: "var(--pink-600)",
-        border: "2px solid var(--pink-500)",
-        shadow: "none"
-      };
-    case "ghost":
-      return {
-        background: "transparent",
-        color: "var(--pink-600)",
-        border: "none",
-        shadow: "none"
-      };
-    case "inverse":
-      return {
-        background: "var(--ink-900)",
-        color: "var(--ink-000)",
-        border: "none",
-        shadow: "var(--shadow-2)"
-      };
-    default:
-      return {
-        background: "var(--pink-500)",
-        color: "var(--text-on-brand)",
-        border: "none",
-        shadow: "var(--shadow-brand)"
-      };
-  }
-}
-
-/** Primary action. Pill, Poppins 700, Title Case label. */
-function Button({
-  children,
-  variant = "primary",
-  size = "md",
-  on = "light",
-  icon,
-  iconAfter,
-  fullWidth,
-  disabled,
-  loading,
-  style,
-  onClick,
-  type = "button",
-  ...rest
-}) {
-  const s = skin(variant, on);
-  const [press, setPress] = React.useState(false);
-  const [hover, setHover] = React.useState(false);
-  const off = disabled || loading;
-  return /*#__PURE__*/React.createElement("button", _extends({
-    type: type,
-    disabled: off,
-    onClick: onClick,
-    onPointerDown: () => setPress(true),
-    onPointerUp: () => setPress(false),
-    onPointerLeave: () => {
-      setPress(false);
-      setHover(false);
-    },
-    onPointerEnter: () => setHover(true),
-    style: {
-      display: fullWidth ? "flex" : "inline-flex",
-      width: fullWidth ? "100%" : undefined,
-      alignItems: "center",
-      justifyContent: "center",
-      gap: size === "sm" ? 6 : 8,
-      height: H[size],
-      minWidth: H[size],
-      padding: PAD[size],
-      fontFamily: "var(--font-display)",
-      fontWeight: 700,
-      fontSize: FS[size],
-      letterSpacing: "-.005em",
-      lineHeight: 1,
-      whiteSpace: "nowrap",
-      flex: fullWidth ? undefined : "0 0 auto",
-      borderRadius: "var(--radius-pill)",
-      cursor: off ? "not-allowed" : "pointer",
-      transition: "background var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)",
-      transform: press && !off ? "scale(var(--press-scale))" : "none",
-      background: off ? "var(--ink-200)" : hover && variant === "primary" && on === "light" ? "var(--brand-hover)" : hover && variant === "ghost" ? "var(--pink-50)" : s.background,
-      color: off ? "var(--ink-400)" : s.color,
-      border: off ? "none" : s.border,
-      boxShadow: off ? "none" : s.shadow,
-      ...style
-    }
-  }, rest), loading ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: "loader-circle",
-    size: size === "lg" ? "lg" : "md",
-    style: {
-      animation: "pp-rotate 1s linear infinite"
-    }
-  }) : icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: icon,
-    size: size === "sm" ? "sm" : "md"
-  }) : null, children, iconAfter ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: iconAfter,
-    size: size === "sm" ? "sm" : "md"
-  }) : null);
-}
-Object.assign(__ds_scope, { Button });
-})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Button.jsx", error: String((e && e.message) || e) }); }
-
-// components/atoms/Checkbox.jsx
-try { (() => {
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-/** Add-on / consent checkbox. 6px radius, pink when checked. */
-function Checkbox({
-  label,
-  description,
-  checked,
-  onChange,
-  disabled,
-  error,
-  price,
-  style,
-  ...rest
-}) {
-  const line = error ? "var(--status-danger)" : "var(--border-default)";
-  return /*#__PURE__*/React.createElement("label", {
-    style: {
-      display: "flex",
-      gap: 12,
-      alignItems: "flex-start",
-      cursor: disabled ? "not-allowed" : "pointer",
-      opacity: disabled ? 0.5 : 1,
-      ...style
-    }
-  }, /*#__PURE__*/React.createElement("input", _extends({
-    type: "checkbox",
-    checked: !!checked,
-    onChange: onChange,
-    disabled: disabled,
-    style: {
-      position: "absolute",
-      opacity: 0,
-      width: 1,
-      height: 1
-    }
-  }, rest)), /*#__PURE__*/React.createElement("span", {
-    "aria-hidden": "true",
-    style: {
-      width: 22,
-      height: 22,
-      flex: "0 0 auto",
-      marginTop: 1,
-      borderRadius: "var(--radius-sm)",
-      border: checked ? "2px solid var(--pink-500)" : "2px solid " + line,
-      background: checked ? "var(--pink-500)" : "var(--ink-000)",
-      display: "grid",
-      placeItems: "center",
-      color: "var(--ink-000)",
-      transition: "background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out)"
-    }
-  }, checked ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: "check",
-    size: 14
-  }) : null), /*#__PURE__*/React.createElement("span", {
-    style: {
-      display: "grid",
-      gap: 2,
-      flex: 1
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      gap: 12
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: "var(--font-body)",
-      fontWeight: 500,
-      fontSize: 15,
-      color: "var(--text-body)"
-    }
-  }, label), price != null ? /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: "var(--font-display)",
-      fontWeight: 700,
-      fontSize: 14,
-      color: "var(--text-heading)"
-    }
-  }, "+\u20B9", price) : null), description ? /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 13,
-      color: "var(--text-muted)"
-    }
-  }, description) : null), error && typeof error === "string" ? /*#__PURE__*/React.createElement("span", {
-    style: {
-      gridColumn: "2",
-      fontSize: 12.5,
-      color: "var(--status-danger)"
-    }
-  }, error) : null);
-}
-Object.assign(__ds_scope, { Checkbox });
-})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Checkbox.jsx", error: String((e && e.message) || e) }); }
-
-// components/atoms/IconButton.jsx
-try { (() => {
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-const H = {
-  sm: 32,
-  md: 40,
-  lg: 48
-};
-
-/** Square-footprint circular button carrying a single Lucide glyph. */
-function IconButton({
-  icon,
-  label,
-  variant = "ghost",
-  size = "md",
-  on = "light",
-  disabled,
-  style,
-  onClick,
-  ...rest
-}) {
-  const [press, setPress] = React.useState(false);
-  const [hover, setHover] = React.useState(false);
-  const skins = {
-    primary: {
-      background: "var(--pink-500)",
-      color: "var(--ink-000)",
-      border: "none"
-    },
-    secondary: {
-      background: "var(--ink-000)",
-      color: "var(--pink-600)",
-      border: "1px solid var(--border-default)"
-    },
-    ghost: {
-      background: hover ? on === "brand" ? "rgba(255,255,255,.16)" : "var(--pink-50)" : "transparent",
-      color: on === "brand" ? "var(--ink-000)" : "var(--ink-700)",
-      border: "none"
-    },
-    glass: {
-      background: "var(--surface-glass)",
-      color: "var(--ink-900)",
-      border: "none",
-      backdropFilter: "var(--blur-glass)"
-    }
-  };
-  const s = skins[variant] || skins.ghost;
-  return /*#__PURE__*/React.createElement("button", _extends({
-    type: "button",
-    "aria-label": label,
-    disabled: disabled,
-    onClick: onClick,
-    onPointerDown: () => setPress(true),
-    onPointerUp: () => setPress(false),
-    onPointerEnter: () => setHover(true),
-    onPointerLeave: () => {
-      setHover(false);
-      setPress(false);
-    },
-    style: {
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      width: H[size],
-      height: H[size],
-      borderRadius: "var(--radius-pill)",
-      cursor: disabled ? "not-allowed" : "pointer",
-      transition: "background var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)",
-      transform: press && !disabled ? "scale(var(--press-scale))" : "none",
-      opacity: disabled ? 0.45 : 1,
-      ...s,
-      ...style
-    }
-  }, rest), /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: icon,
-    size: size === "sm" ? "sm" : size === "lg" ? "lg" : "md"
-  }));
-}
-Object.assign(__ds_scope, { IconButton });
-})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/IconButton.jsx", error: String((e && e.message) || e) }); }
-
 // components/atoms/ImageSlot.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
@@ -879,75 +459,6 @@ function ImageSlot({
 }
 Object.assign(__ds_scope, { ImageSlot });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/ImageSlot.jsx", error: String((e && e.message) || e) }); }
-
-// components/atoms/Link.jsx
-try { (() => {
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-/** Inline or standalone link. Underline is the brand's link signal. */
-function Link({
-  children,
-  href = "#",
-  variant = "default",
-  size = "md",
-  icon,
-  iconAfter,
-  external,
-  onClick,
-  style,
-  ...rest
-}) {
-  const [hover, setHover] = React.useState(false);
-  const tones = {
-    default: {
-      c: hover ? "var(--text-link-hover)" : "var(--text-link)",
-      ul: hover ? "currentColor" : "var(--pink-200)"
-    },
-    subtle: {
-      c: hover ? "var(--text-heading)" : "var(--text-muted)",
-      ul: hover ? "var(--ink-300)" : "transparent"
-    },
-    inverse: {
-      c: "var(--ink-000)",
-      ul: hover ? "rgba(255,255,255,.9)" : "rgba(255,255,255,.4)"
-    },
-    quiet: {
-      c: hover ? "var(--pink-600)" : "var(--ink-700)",
-      ul: "transparent"
-    }
-  };
-  const t = tones[variant] || tones.default;
-  return /*#__PURE__*/React.createElement("a", _extends({
-    href: href,
-    onClick: onClick,
-    target: external ? "_blank" : undefined,
-    rel: external ? "noreferrer noopener" : undefined,
-    onPointerEnter: () => setHover(true),
-    onPointerLeave: () => setHover(false),
-    style: {
-      display: "inline-flex",
-      alignItems: "center",
-      gap: 6,
-      fontFamily: "var(--font-body)",
-      fontWeight: 500,
-      fontSize: size === "sm" ? 13.5 : size === "lg" ? 17 : 15,
-      color: t.c,
-      textDecoration: "underline",
-      textDecorationColor: t.ul,
-      textDecorationThickness: 1.5,
-      textUnderlineOffset: 3,
-      transition: "color var(--dur-fast) var(--ease-out), text-decoration-color var(--dur-fast) var(--ease-out)",
-      ...style
-    }
-  }, rest), icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: icon,
-    size: "sm"
-  }) : null, children, iconAfter || external ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: iconAfter || "arrow-up-right",
-    size: "sm"
-  }) : null);
-}
-Object.assign(__ds_scope, { Link });
-})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Link.jsx", error: String((e && e.message) || e) }); }
 
 // components/atoms/Logo.jsx
 try { (() => {
@@ -1039,6 +550,193 @@ function PatternField({
 }
 Object.assign(__ds_scope, { PatternField });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/PatternField.jsx", error: String((e && e.message) || e) }); }
+
+// components/atoms/Popover.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+function useMedia(q) {
+  const get = () => typeof window !== "undefined" && window.matchMedia ? window.matchMedia(q).matches : false;
+  const [m, setM] = React.useState(get);
+  React.useEffect(() => {
+    if (!window.matchMedia) return;
+    const mq = window.matchMedia(q);
+    const f = () => setM(mq.matches);
+    mq.addEventListener ? mq.addEventListener("change", f) : mq.addListener(f);
+    return () => mq.removeEventListener ? mq.removeEventListener("change", f) : mq.removeListener(f);
+  }, [q]);
+  return m;
+}
+
+/** Floating surface every custom picker opens into. Anchors to its parent element,
+    flips above when there is no room below, closes on outside press and Esc,
+    and becomes a bottom sheet on phones. Never the browser's own popup. */
+function Popover({
+  open,
+  onClose,
+  children,
+  title,
+  placement = "bottom-start",
+  sheet = "auto",
+  inline,
+  width,
+  minWidth,
+  maxHeight = 320,
+  offset = 6,
+  bodyRef,
+  bodyProps,
+  padding = 6,
+  style
+}) {
+  const rootRef = React.useRef(null);
+  const panelRef = React.useRef(null);
+  const mobile = useMedia("(max-width: 640px)");
+  const asSheet = sheet === true || sheet === "auto" && mobile;
+  const [pos, setPos] = React.useState(null);
+  React.useLayoutEffect(() => {
+    if (!open || inline || asSheet) return;
+    const place = () => {
+      const anchor = rootRef.current && rootRef.current.parentElement;
+      if (!anchor) return;
+      const r = anchor.getBoundingClientRect();
+      const ph = panelRef.current ? panelRef.current.offsetHeight : maxHeight;
+      const below = window.innerHeight - r.bottom,
+        above = r.top;
+      const up = placement.indexOf("top") === 0 ? above >= ph + offset || above > below : below < ph + offset + 8 && above > below;
+      const end = /end$/.test(placement);
+      setPos({
+        top: up ? undefined : r.bottom + offset,
+        bottom: up ? window.innerHeight - r.top + offset : undefined,
+        left: end ? undefined : Math.max(8, Math.min(r.left, window.innerWidth - 8 - (panelRef.current ? panelRef.current.offsetWidth : 0))),
+        right: end ? Math.max(8, window.innerWidth - r.right) : undefined,
+        minWidth: minWidth != null ? minWidth : r.width,
+        up
+      });
+    };
+    place();
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
+    return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [open, inline, asSheet, placement, minWidth, maxHeight, offset]);
+  React.useEffect(() => {
+    if (!open || inline) return;
+    const down = e => {
+      if (panelRef.current && panelRef.current.contains(e.target)) return;
+      const anchor = rootRef.current && rootRef.current.parentElement;
+      if (!asSheet && anchor && anchor.contains(e.target)) return;
+      onClose && onClose("outside");
+    };
+    const key = e => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        onClose && onClose("escape");
+      }
+    };
+    document.addEventListener("pointerdown", down);
+    document.addEventListener("keydown", key);
+    return () => {
+      document.removeEventListener("pointerdown", down);
+      document.removeEventListener("keydown", key);
+    };
+  }, [open, inline, asSheet, onClose]);
+  if (!open && !inline) return null;
+  const body = /*#__PURE__*/React.createElement("div", _extends({
+    ref: bodyRef
+  }, bodyProps, {
+    style: {
+      maxHeight: asSheet ? "min(70vh, 520px)" : maxHeight,
+      overflowY: "auto",
+      overscrollBehavior: "contain",
+      padding: asSheet ? "4px 12px 16px" : padding,
+      outline: "none",
+      ...(bodyProps && bodyProps.style)
+    }
+  }), children);
+  if (asSheet) {
+    const panel = /*#__PURE__*/React.createElement("div", {
+      ref: panelRef,
+      style: {
+        width: "100%",
+        background: "var(--surface-card)",
+        borderRadius: "var(--radius-xl) var(--radius-xl) 0 0",
+        boxShadow: "var(--shadow-4)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+        animation: inline ? "none" : "pp-sheet-in var(--dur-base) var(--ease-entrance)",
+        ...style
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "grid",
+        placeItems: "center",
+        paddingTop: 10
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        width: 40,
+        height: 4,
+        borderRadius: 99,
+        background: "var(--ink-300)"
+      }
+    })), title ? /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: "14px 24px 6px",
+        fontFamily: "var(--font-display)",
+        fontWeight: 700,
+        fontSize: 18,
+        letterSpacing: "-.01em",
+        color: "var(--text-heading)"
+      }
+    }, title) : null, body);
+    if (inline) return /*#__PURE__*/React.createElement("div", {
+      ref: rootRef
+    }, panel);
+    return /*#__PURE__*/React.createElement("div", {
+      ref: rootRef,
+      style: {
+        position: "fixed",
+        inset: 0,
+        zIndex: 80,
+        background: "var(--surface-overlay)",
+        display: "flex",
+        alignItems: "flex-end"
+      }
+    }, panel);
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    ref: el => {
+      rootRef.current = el;
+      panelRef.current = el;
+    },
+    style: {
+      ...(inline ? {
+        position: "relative"
+      } : {
+        position: "fixed",
+        zIndex: 80,
+        top: pos && pos.top,
+        bottom: pos && pos.bottom,
+        left: pos && pos.left,
+        right: pos && pos.right,
+        visibility: pos ? "visible" : "hidden",
+        animation: "pp-pop-in var(--dur-fast) var(--ease-out)",
+        transformOrigin: pos && pos.up ? "bottom" : "top"
+      }),
+      width,
+      maxWidth: "calc(100vw - 16px)",
+      minWidth: inline ? minWidth : pos ? pos.minWidth : minWidth,
+      background: "var(--surface-card)",
+      border: "1px solid var(--border-subtle)",
+      borderRadius: "var(--radius-md)",
+      boxShadow: "var(--shadow-3)",
+      overflow: "hidden",
+      ...style
+    }
+  }, body);
+}
+Object.assign(__ds_scope, { Popover });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Popover.jsx", error: String((e && e.message) || e) }); }
 
 // components/atoms/PriceTag.jsx
 try { (() => {
@@ -1160,93 +858,6 @@ function ProgressBar({
 }
 Object.assign(__ds_scope, { ProgressBar });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/ProgressBar.jsx", error: String((e && e.message) || e) }); }
-
-// components/atoms/Radio.jsx
-try { (() => {
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-/** Single-choice control. Used for size, spice and payment method. */
-function Radio({
-  label,
-  description,
-  checked,
-  onChange,
-  name,
-  value,
-  disabled,
-  error,
-  price,
-  style,
-  ...rest
-}) {
-  return /*#__PURE__*/React.createElement("label", {
-    style: {
-      display: "flex",
-      gap: 12,
-      alignItems: "flex-start",
-      cursor: disabled ? "not-allowed" : "pointer",
-      opacity: disabled ? 0.5 : 1,
-      ...style
-    }
-  }, /*#__PURE__*/React.createElement("input", _extends({
-    type: "radio",
-    name: name,
-    value: value,
-    checked: !!checked,
-    onChange: onChange,
-    disabled: disabled,
-    style: {
-      position: "absolute",
-      opacity: 0,
-      width: 1,
-      height: 1
-    }
-  }, rest)), /*#__PURE__*/React.createElement("span", {
-    "aria-hidden": "true",
-    style: {
-      width: 22,
-      height: 22,
-      flex: "0 0 auto",
-      marginTop: 1,
-      borderRadius: "var(--radius-pill)",
-      border: checked ? "6px solid var(--pink-500)" : "2px solid " + (error ? "var(--status-danger)" : "var(--border-default)"),
-      background: "var(--ink-000)",
-      transition: "border var(--dur-fast) var(--ease-out)"
-    }
-  }), /*#__PURE__*/React.createElement("span", {
-    style: {
-      display: "grid",
-      gap: 2,
-      flex: 1
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      gap: 12
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: "var(--font-body)",
-      fontWeight: 500,
-      fontSize: 15,
-      color: "var(--text-body)"
-    }
-  }, label), price != null ? /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: "var(--font-display)",
-      fontWeight: 700,
-      fontSize: 14,
-      color: "var(--text-heading)"
-    }
-  }, "\u20B9", price) : null), description ? /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 13,
-      color: "var(--text-muted)"
-    }
-  }, description) : null));
-}
-Object.assign(__ds_scope, { Radio });
-})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Radio.jsx", error: String((e && e.message) || e) }); }
 
 // components/atoms/Rating.jsx
 try { (() => {
@@ -1398,183 +1009,6 @@ function Rating({
 }
 Object.assign(__ds_scope, { Rating });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Rating.jsx", error: String((e && e.message) || e) }); }
-
-// components/atoms/Select.jsx
-try { (() => {
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-const STATUS = {
-  default: {
-    border: "var(--border-default)",
-    ring: "var(--focus-ring)",
-    accent: "var(--pink-500)",
-    icon: null,
-    text: "var(--text-subtle)"
-  },
-  error: {
-    border: "var(--status-danger)",
-    ring: "0 0 0 3px var(--status-danger-soft)",
-    accent: "var(--status-danger)",
-    icon: "circle-alert",
-    text: "var(--status-danger)"
-  },
-  success: {
-    border: "var(--status-success)",
-    ring: "0 0 0 3px var(--status-success-soft)",
-    accent: "var(--status-success)",
-    icon: "circle-check",
-    text: "#186c51"
-  },
-  warning: {
-    border: "var(--status-warning)",
-    ring: "0 0 0 3px var(--status-warning-soft)",
-    accent: "var(--status-warning)",
-    icon: "triangle-alert",
-    text: "#8a5c00"
-  }
-};
-const resolve = p => p.error ? "error" : p.success ? "success" : p.warning ? "warning" : p.status || "default";
-const messageOf = p => typeof p.error === "string" ? p.error : typeof p.success === "string" ? p.success : typeof p.warning === "string" ? p.warning : p.hint;
-
-/** Native select in brand clothing. Matches Input metrics and states exactly. */
-function Select({
-  label,
-  hint,
-  error,
-  success,
-  warning,
-  status,
-  options = [],
-  value,
-  onChange,
-  id,
-  placeholder,
-  disabled,
-  readOnly,
-  required,
-  optional,
-  size = "md",
-  icon,
-  style,
-  ...rest
-}) {
-  const [focus, setFocus] = React.useState(false);
-  const uid = id || React.useId();
-  const key = resolve({
-    error,
-    success,
-    warning,
-    status
-  });
-  const s = STATUS[key];
-  const message = messageOf({
-    error,
-    success,
-    warning,
-    hint
-  });
-  const active = key !== "default" || focus;
-  const h = size === "sm" ? 40 : size === "lg" ? 56 : 48;
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gap: 6,
-      minWidth: 0,
-      ...style
-    }
-  }, label ? /*#__PURE__*/React.createElement("label", {
-    htmlFor: uid,
-    style: {
-      display: "flex",
-      alignItems: "baseline",
-      gap: 6,
-      fontFamily: "var(--font-body)",
-      fontWeight: 500,
-      fontSize: 14,
-      color: disabled ? "var(--text-subtle)" : "var(--text-body)"
-    }
-  }, label, required ? /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: "var(--pink-500)"
-    }
-  }, "*") : null, optional ? /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 12.5,
-      color: "var(--text-subtle)"
-    }
-  }, "optional") : null) : null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: "relative",
-      minWidth: 0
-    }
-  }, icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: icon,
-    size: "md",
-    style: {
-      position: "absolute",
-      left: 14,
-      top: (h - 20) / 2,
-      color: disabled ? "var(--ink-400)" : active ? s.accent : "var(--ink-500)",
-      pointerEvents: "none"
-    }
-  }) : null, /*#__PURE__*/React.createElement("select", _extends({
-    id: uid,
-    value: value,
-    onChange: onChange,
-    disabled: disabled || readOnly,
-    required: required,
-    "aria-invalid": key === "error" || undefined,
-    onFocus: () => setFocus(true),
-    onBlur: () => setFocus(false),
-    style: {
-      width: "100%",
-      height: h,
-      paddingRight: 42,
-      paddingLeft: icon ? 42 : 14,
-      appearance: "none",
-      WebkitAppearance: "none",
-      background: disabled ? "var(--ink-100)" : readOnly ? "var(--surface-sunken)" : "var(--ink-000)",
-      border: (active ? 2 : 1) + "px solid " + (disabled ? "var(--border-subtle)" : active ? s.border : "var(--border-default)"),
-      borderRadius: "var(--radius-md)",
-      fontFamily: "var(--font-body)",
-      fontSize: size === "sm" ? 14 : 15,
-      color: disabled ? "var(--ink-400)" : "var(--text-body)",
-      boxShadow: focus && !disabled ? s.ring : "none",
-      outline: "none",
-      cursor: disabled || readOnly ? "not-allowed" : "pointer",
-      transition: "border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)"
-    }
-  }, rest), placeholder ? /*#__PURE__*/React.createElement("option", {
-    value: "",
-    disabled: true
-  }, placeholder) : null, options.map(o => {
-    const opt = typeof o === "string" ? {
-      value: o,
-      label: o
-    } : o;
-    return /*#__PURE__*/React.createElement("option", {
-      key: opt.value,
-      value: opt.value,
-      disabled: opt.disabled
-    }, opt.label);
-  })), /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: s.icon || "chevron-down",
-    size: "md",
-    style: {
-      position: "absolute",
-      right: 14,
-      top: (h - 20) / 2,
-      color: s.icon ? s.accent : disabled ? "var(--ink-400)" : "var(--ink-500)",
-      pointerEvents: "none"
-    }
-  })), message ? /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 12.5,
-      color: key === "default" ? "var(--text-subtle)" : s.text
-    }
-  }, message) : null);
-}
-Object.assign(__ds_scope, { Select });
-})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Select.jsx", error: String((e && e.message) || e) }); }
 
 // components/atoms/Skeleton.jsx
 try { (() => {
@@ -1845,7 +1279,20 @@ const STATUS = {
 const resolve = p => p.error ? "error" : p.success ? "success" : p.warning ? "warning" : p.status || "default";
 const messageOf = p => typeof p.error === "string" ? p.error : typeof p.success === "string" ? p.success : typeof p.warning === "string" ? p.warning : p.hint;
 
-/** Text field. Carries the system's full status set. */
+// Types that open a browser-native picker or spinner. We route them to our own components.
+const NATIVE = {
+  date: "DatePicker",
+  "datetime-local": "DatePicker",
+  month: "DatePicker",
+  week: "DatePicker",
+  time: "SlotPicker",
+  color: null,
+  file: null,
+  range: null
+};
+const warned = {};
+
+/** Text field. Carries the system's full status set. Never renders a browser picker. */
 function Input({
   label,
   hint,
@@ -1873,6 +1320,7 @@ function Input({
   ...rest
 }) {
   const [focus, setFocus] = React.useState(false);
+  const [hov, setHov] = React.useState(false);
   const uid = id || React.useId();
   const key = resolve({
     error,
@@ -1890,6 +1338,18 @@ function Input({
   const active = key !== "default" || focus;
   const Tag = multiline ? "textarea" : "input";
   const h = size === "sm" ? 40 : size === "lg" ? 56 : 48;
+  let safeType = type,
+    inputMode;
+  if (type === "number") {
+    safeType = "text";
+    inputMode = "decimal";
+  } else if (Object.prototype.hasOwnProperty.call(NATIVE, type)) {
+    safeType = "text";
+    if (!warned[type]) {
+      warned[type] = 1;
+      console.warn('Input type="' + type + '" opens a browser picker. ' + (NATIVE[type] ? "Use " + NATIVE[type] + " instead." : "Not supported in this system."));
+    }
+  }
   return /*#__PURE__*/React.createElement("div", {
     style: {
       display: "grid",
@@ -1918,13 +1378,15 @@ function Input({
       color: "var(--text-subtle)"
     }
   }, "optional") : null) : null, /*#__PURE__*/React.createElement("div", {
+    onPointerEnter: () => setHov(true),
+    onPointerLeave: () => setHov(false),
     style: {
       display: "flex",
       alignItems: multiline ? "flex-start" : "center",
       gap: 10,
       minWidth: 0,
       background: disabled ? "var(--ink-100)" : readOnly ? "var(--surface-sunken)" : "var(--ink-000)",
-      border: (active ? 2 : 1) + "px solid " + (disabled ? "var(--border-subtle)" : active ? s.border : "var(--border-default)"),
+      border: (active ? 2 : 1) + "px solid " + (disabled ? "var(--border-subtle)" : active ? s.border : hov && !readOnly ? "var(--border-strong)" : "var(--border-default)"),
       borderRadius: "var(--radius-md)",
       padding: multiline ? "12px 14px" : "0 14px",
       height: multiline ? undefined : h,
@@ -1940,14 +1402,15 @@ function Input({
     }
   }) : null, /*#__PURE__*/React.createElement(Tag, _extends({
     id: uid,
-    type: multiline ? undefined : type,
+    type: multiline ? undefined : safeType,
+    inputMode: multiline ? undefined : inputMode,
     rows: multiline ? rows : undefined,
     value: value,
     onChange: onChange,
     placeholder: placeholder,
     disabled: disabled,
     readOnly: readOnly,
-    required: required,
+    "aria-required": required || undefined,
     "aria-invalid": key === "error" || undefined,
     "aria-describedby": message ? uid + "-msg" : undefined,
     onFocus: () => setFocus(true),
@@ -2083,136 +1546,481 @@ function StatusDot({
 Object.assign(__ds_scope, { StatusDot });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/StatusDot.jsx", error: String((e && e.message) || e) }); }
 
-// components/atoms/Switch.jsx
+// components/atoms/Menu.jsx
+try { (() => {
+const normalizeItems = items => items.map(o => typeof o === "string" ? {
+  value: o,
+  label: o
+} : o);
+const selectable = it => it && !it.divider && !it.group && !it.disabled;
+
+/** The option list behind Select, Combobox and ActionMenu. Brand diamond marks the
+    chosen row; arrows, Home/End, Enter and type-to-jump all work. */
+function Menu({
+  items = [],
+  value,
+  onSelect,
+  open = true,
+  onClose,
+  autoFocus = true,
+  activeIndex: activeProp,
+  onActiveChange,
+  role = "menu",
+  id,
+  base = "/assets",
+  emptyText = "Nothing here yet.",
+  title,
+  sheet = "auto",
+  placement,
+  inline,
+  width,
+  minWidth,
+  maxHeight,
+  style
+}) {
+  const list = normalizeItems(items);
+  const autoId = React.useId();
+  const uid = id || autoId;
+  const bodyRef = React.useRef(null);
+  const typed = React.useRef({
+    s: "",
+    t: 0
+  });
+  const isSel = it => Array.isArray(value) ? value.indexOf(it.value) > -1 : value !== undefined && value === it.value;
+  const firstIdx = () => {
+    const s = list.findIndex(it => selectable(it) && isSel(it));
+    return s > -1 ? s : list.findIndex(selectable);
+  };
+  const [activeIn, setActiveIn] = React.useState(-1);
+  const [pressed, setPressed] = React.useState(-1);
+  const active = activeProp !== undefined ? activeProp : activeIn;
+  const setActive = i => {
+    setActiveIn(i);
+    onActiveChange && onActiveChange(i);
+  };
+  React.useEffect(() => {
+    if (!open) return;
+    if (activeProp === undefined) setActiveIn(firstIdx());
+    if (autoFocus && !inline) requestAnimationFrame(() => bodyRef.current && bodyRef.current.focus({
+      preventScroll: true
+    }));
+  }, [open]);
+  React.useEffect(() => {
+    const b = bodyRef.current;
+    const el = b && active > -1 ? b.querySelector('[data-idx="' + active + '"]') : null;
+    if (!el) return;
+    if (el.offsetTop < b.scrollTop) b.scrollTop = el.offsetTop - 6;else if (el.offsetTop + el.offsetHeight > b.scrollTop + b.clientHeight) b.scrollTop = el.offsetTop + el.offsetHeight - b.clientHeight + 6;
+  }, [active, open]);
+  const step = (from, dir) => {
+    for (let n = 1; n <= list.length; n++) {
+      const i = (from + dir * n + list.length * 2) % list.length;
+      if (selectable(list[i])) return i;
+    }
+    return from;
+  };
+  const onKeyDown = e => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActive(step(active, 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActive(step(active < 0 ? 0 : active, -1));
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      setActive(step(-1, 1));
+    } else if (e.key === "End") {
+      e.preventDefault();
+      setActive(step(list.length, -1));
+    } else if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (selectable(list[active])) onSelect && onSelect(list[active]);
+    } else if (e.key === "Tab") {
+      onClose && onClose("tab");
+    } else if (e.key.length === 1 && /\S/.test(e.key)) {
+      const now = Date.now();
+      typed.current.s = (now - typed.current.t > 600 ? "" : typed.current.s) + e.key.toLowerCase();
+      typed.current.t = now;
+      const hit = list.findIndex(it => selectable(it) && String(it.text || it.label).toLowerCase().indexOf(typed.current.s) === 0);
+      if (hit > -1) setActive(hit);
+    }
+  };
+  const optRole = role === "listbox" ? "option" : "menuitem";
+  const big = sheet === true;
+  return /*#__PURE__*/React.createElement(__ds_scope.Popover, {
+    open: open,
+    onClose: onClose,
+    title: title,
+    sheet: sheet,
+    placement: placement,
+    inline: inline,
+    width: width,
+    minWidth: minWidth,
+    maxHeight: maxHeight,
+    style: style,
+    bodyRef: bodyRef,
+    bodyProps: {
+      id: uid,
+      role,
+      tabIndex: autoFocus ? -1 : undefined,
+      onKeyDown: autoFocus ? onKeyDown : undefined,
+      "aria-activedescendant": active > -1 ? uid + "-o" + active : undefined,
+      "aria-label": title
+    }
+  }, list.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "14px 12px",
+      fontSize: 14,
+      color: "var(--text-subtle)"
+    }
+  }, emptyText) : list.map((it, i) => {
+    if (it.divider) return /*#__PURE__*/React.createElement("div", {
+      key: "d" + i,
+      role: "separator",
+      style: {
+        height: 1,
+        background: "var(--border-subtle)",
+        margin: "6px 4px"
+      }
+    });
+    if (it.group) return /*#__PURE__*/React.createElement("div", {
+      key: "g" + i,
+      role: "presentation",
+      style: {
+        padding: "10px 12px 4px",
+        fontFamily: "var(--font-mono)",
+        fontSize: 10.5,
+        letterSpacing: ".08em",
+        textTransform: "uppercase",
+        color: "var(--text-subtle)"
+      }
+    }, it.group);
+    const sel = isSel(it),
+      act = i === active && !it.disabled;
+    const tone = it.disabled ? "var(--ink-400)" : it.danger ? "var(--status-danger)" : sel ? "var(--pink-700)" : "var(--text-body)";
+    return /*#__PURE__*/React.createElement("div", {
+      key: it.value + "-" + i,
+      id: uid + "-o" + i,
+      "data-idx": i,
+      role: optRole,
+      "aria-selected": role === "listbox" ? sel : undefined,
+      "aria-disabled": it.disabled || undefined,
+      onPointerMove: () => !it.disabled && i !== active && setActive(i),
+      onMouseDown: e => e.preventDefault(),
+      onPointerDown: () => !it.disabled && setPressed(i),
+      onPointerUp: () => setPressed(-1),
+      onPointerLeave: () => setPressed(-1),
+      onClick: () => !it.disabled && onSelect && onSelect(it),
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        minHeight: big ? 52 : 44,
+        padding: "8px 12px",
+        borderRadius: "var(--radius-sm)",
+        cursor: it.disabled ? "not-allowed" : "pointer",
+        background: pressed === i && !it.disabled ? it.danger ? "var(--state-press-danger)" : "var(--state-press)" : act ? it.danger ? "var(--status-danger-soft)" : "var(--state-hover)" : "transparent",
+        color: tone,
+        fontFamily: "var(--font-body)",
+        fontSize: 15,
+        fontWeight: sel ? 600 : 400,
+        transition: "background var(--dur-instant) var(--ease-out)",
+        userSelect: "none"
+      }
+    }, it.icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+      name: it.icon,
+      size: "md",
+      style: {
+        flex: "0 0 auto",
+        color: it.disabled ? "var(--ink-300)" : it.danger ? "var(--status-danger)" : act || sel ? "var(--pink-500)" : "var(--ink-500)"
+      }
+    }) : null, /*#__PURE__*/React.createElement("span", {
+      style: {
+        display: "grid",
+        gap: 1,
+        flex: 1,
+        minWidth: 0
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap"
+      }
+    }, it.label), it.description ? /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 13,
+        fontWeight: 400,
+        color: it.disabled ? "var(--ink-400)" : "var(--text-muted)"
+      }
+    }, it.description) : null), it.meta ? /*#__PURE__*/React.createElement("span", {
+      style: {
+        flex: "0 0 auto",
+        fontFamily: "var(--font-mono)",
+        fontSize: 12,
+        color: it.disabled ? "var(--ink-400)" : "var(--text-subtle)"
+      }
+    }, it.meta) : null, role === "listbox" ? /*#__PURE__*/React.createElement("span", {
+      style: {
+        width: 14,
+        flex: "0 0 auto",
+        display: "grid",
+        placeItems: "center"
+      }
+    }, sel ? /*#__PURE__*/React.createElement(__ds_scope.StatusDot, {
+      tone: "live",
+      size: 14,
+      base: base
+    }) : null) : null);
+  }));
+}
+Object.assign(__ds_scope, { normalizeItems, Menu });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Menu.jsx", error: String((e && e.message) || e) }); }
+
+// components/atoms/Select.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-/** Instant-effect toggle. Never used to submit a form. */
-function Switch({
+const STATUS = {
+  default: {
+    border: "var(--border-default)",
+    ring: "var(--focus-ring)",
+    accent: "var(--pink-500)",
+    icon: null,
+    text: "var(--text-subtle)"
+  },
+  error: {
+    border: "var(--status-danger)",
+    ring: "0 0 0 3px var(--status-danger-soft)",
+    accent: "var(--status-danger)",
+    icon: "circle-alert",
+    text: "var(--status-danger)"
+  },
+  success: {
+    border: "var(--status-success)",
+    ring: "0 0 0 3px var(--status-success-soft)",
+    accent: "var(--status-success)",
+    icon: "circle-check",
+    text: "#186c51"
+  },
+  warning: {
+    border: "var(--status-warning)",
+    ring: "0 0 0 3px var(--status-warning-soft)",
+    accent: "var(--status-warning)",
+    icon: "triangle-alert",
+    text: "#8a5c00"
+  }
+};
+const resolve = p => p.error ? "error" : p.success ? "success" : p.warning ? "warning" : p.status || "default";
+const messageOf = p => typeof p.error === "string" ? p.error : typeof p.success === "string" ? p.success : typeof p.warning === "string" ? p.warning : p.hint;
+
+/** Brand dropdown. Our own trigger and list panel — never the browser's popup.
+    Matches Input metrics and states exactly; becomes a bottom sheet on phones. */
+function Select({
   label,
-  description,
-  checked,
+  hint,
+  error,
+  success,
+  warning,
+  status,
+  options = [],
+  value,
+  defaultValue,
   onChange,
+  onValueChange,
+  id,
+  name,
+  placeholder,
   disabled,
+  readOnly,
+  required,
+  optional,
+  size = "md",
+  icon,
+  base = "/assets",
+  sheet = "auto",
+  defaultOpen = false,
   style,
   ...rest
 }) {
-  return /*#__PURE__*/React.createElement("label", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 14,
-      cursor: disabled ? "not-allowed" : "pointer",
-      opacity: disabled ? 0.5 : 1,
-      ...style
-    }
-  }, /*#__PURE__*/React.createElement("span", {
+  const opts = __ds_scope.normalizeItems(options);
+  const first = opts.find(o => !o.disabled && !o.divider && !o.group);
+  const [inner, setInner] = React.useState(defaultValue !== undefined ? defaultValue : placeholder ? "" : first ? first.value : "");
+  const v = value !== undefined ? value : inner;
+  const [open, setOpen] = React.useState(defaultOpen);
+  const [focus, setFocus] = React.useState(false);
+  const [hov, setHov] = React.useState(false);
+  const btnRef = React.useRef(null);
+  const autoId = React.useId();
+  const uid = id || autoId;
+  const key = resolve({
+    error,
+    success,
+    warning,
+    status
+  });
+  const s = STATUS[key];
+  const message = messageOf({
+    error,
+    success,
+    warning,
+    hint
+  });
+  const active = key !== "default" || focus || open;
+  const h = size === "sm" ? 40 : size === "lg" ? 56 : 48;
+  const cur = opts.find(o => o.value === v);
+  const locked = disabled || readOnly;
+  const close = React.useCallback(why => {
+    setOpen(false);
+    if (why === "escape" && btnRef.current) btnRef.current.focus();
+  }, []);
+  const choose = o => {
+    if (value === undefined) setInner(o.value);
+    if (onChange) onChange({
+      target: {
+        value: o.value,
+        name
+      },
+      currentTarget: {
+        value: o.value,
+        name
+      },
+      value: o.value
+    });
+    if (onValueChange) onValueChange(o.value);
+    setOpen(false);
+    btnRef.current && btnRef.current.focus();
+  };
+  return /*#__PURE__*/React.createElement("div", {
     style: {
       display: "grid",
-      gap: 2,
-      flex: 1
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: "var(--font-body)",
-      fontWeight: 500,
-      fontSize: 15,
-      color: "var(--text-body)"
-    }
-  }, label), description ? /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 13,
-      color: "var(--text-muted)"
-    }
-  }, description) : null), /*#__PURE__*/React.createElement("input", _extends({
-    type: "checkbox",
-    role: "switch",
-    checked: !!checked,
-    onChange: onChange,
-    disabled: disabled,
-    style: {
-      position: "absolute",
-      opacity: 0,
-      width: 1,
-      height: 1
-    }
-  }, rest)), /*#__PURE__*/React.createElement("span", {
-    "aria-hidden": "true",
-    style: {
-      width: 46,
-      height: 28,
-      flex: "0 0 auto",
-      borderRadius: "var(--radius-pill)",
-      background: checked ? "var(--pink-500)" : "var(--ink-300)",
-      position: "relative",
-      transition: "background var(--dur-base) var(--ease-out)"
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      position: "absolute",
-      top: 3,
-      left: checked ? 21 : 3,
-      width: 22,
-      height: 22,
-      borderRadius: "var(--radius-pill)",
-      background: "var(--ink-000)",
-      boxShadow: "var(--shadow-1)",
-      transition: "left var(--dur-base) var(--ease-out)"
-    }
-  })));
-}
-Object.assign(__ds_scope, { Switch });
-})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Switch.jsx", error: String((e && e.message) || e) }); }
-
-// components/atoms/Tag.jsx
-try { (() => {
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-/** Selectable filter pill used across menu category rails. */
-function Tag({
-  children,
-  selected,
-  icon,
-  onClick,
-  disabled,
-  style,
-  ...rest
-}) {
-  const [hover, setHover] = React.useState(false);
-  const interactive = !!onClick;
-  return /*#__PURE__*/React.createElement("button", _extends({
-    type: "button",
-    disabled: disabled,
-    onClick: onClick,
-    "aria-pressed": interactive ? !!selected : undefined,
-    onPointerEnter: () => setHover(true),
-    onPointerLeave: () => setHover(false),
-    style: {
-      display: "inline-flex",
-      alignItems: "center",
       gap: 6,
-      height: 38,
-      padding: "0 16px",
+      minWidth: 0,
+      ...style
+    }
+  }, label ? /*#__PURE__*/React.createElement("label", {
+    htmlFor: uid,
+    style: {
+      display: "flex",
+      alignItems: "baseline",
+      gap: 6,
       fontFamily: "var(--font-body)",
       fontWeight: 500,
       fontSize: 14,
-      lineHeight: 1,
-      borderRadius: "var(--radius-pill)",
-      flex: "0 0 auto",
-      border: selected ? "1px solid var(--pink-500)" : "1px solid var(--border-default)",
-      background: selected ? "var(--pink-500)" : hover && interactive ? "var(--pink-50)" : "var(--ink-000)",
-      color: selected ? "var(--ink-000)" : "var(--ink-700)",
-      cursor: disabled ? "not-allowed" : interactive ? "pointer" : "default",
-      opacity: disabled ? 0.5 : 1,
-      whiteSpace: "nowrap",
-      transition: "background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out)",
-      ...style
+      color: disabled ? "var(--text-subtle)" : "var(--text-body)"
+    }
+  }, label, required ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "var(--pink-500)"
+    }
+  }, "*") : null, optional ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12.5,
+      color: "var(--text-subtle)"
+    }
+  }, "optional") : null) : null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "relative",
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("button", _extends({
+    ref: btnRef,
+    id: uid,
+    type: "button",
+    role: "combobox",
+    disabled: disabled,
+    "aria-haspopup": "listbox",
+    "aria-expanded": open,
+    "aria-controls": uid + "-list",
+    "aria-invalid": key === "error" || undefined,
+    "aria-required": required || undefined,
+    "aria-readonly": readOnly || undefined,
+    "aria-describedby": message ? uid + "-msg" : undefined,
+    onClick: () => !locked && setOpen(o => !o),
+    onKeyDown: e => {
+      if (!locked && !open && ["ArrowDown", "ArrowUp", "Enter", " "].indexOf(e.key) > -1) {
+        e.preventDefault();
+        setOpen(true);
+      }
+    },
+    onFocus: () => setFocus(true),
+    onBlur: () => setFocus(false),
+    onPointerEnter: () => setHov(true),
+    onPointerLeave: () => setHov(false),
+    style: {
+      width: "100%",
+      height: h,
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      padding: "0 14px",
+      textAlign: "left",
+      background: disabled ? "var(--ink-100)" : readOnly ? "var(--surface-sunken)" : "var(--ink-000)",
+      border: (active ? 2 : 1) + "px solid " + (disabled ? "var(--border-subtle)" : active ? s.border : hov && !locked ? "var(--border-strong)" : "var(--border-default)"),
+      borderRadius: "var(--radius-md)",
+      fontFamily: "var(--font-body)",
+      fontSize: size === "sm" ? 14 : 15,
+      color: disabled ? "var(--ink-400)" : "var(--text-body)",
+      boxShadow: (focus || open) && !disabled ? s.ring : "none",
+      outline: "none",
+      cursor: locked ? "not-allowed" : "pointer",
+      transition: "border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)"
     }
   }, rest), icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
     name: icon,
-    size: "sm"
-  }) : null, children);
+    size: "md",
+    style: {
+      flex: "0 0 auto",
+      color: disabled ? "var(--ink-400)" : active ? s.accent : "var(--ink-500)"
+    }
+  }) : null, /*#__PURE__*/React.createElement("span", {
+    style: {
+      flex: 1,
+      minWidth: 0,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      color: cur ? undefined : "var(--text-subtle)"
+    }
+  }, cur ? cur.label : placeholder || "\u00a0"), readOnly && !s.icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: "lock",
+    size: "sm",
+    style: {
+      flex: "0 0 auto",
+      color: "var(--ink-400)"
+    }
+  }) : /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: s.icon || "chevron-down",
+    size: "md",
+    style: {
+      flex: "0 0 auto",
+      color: s.icon ? s.accent : disabled ? "var(--ink-400)" : open ? "var(--pink-500)" : "var(--ink-500)",
+      transform: open && !s.icon ? "rotate(180deg)" : "none",
+      transition: "transform var(--dur-fast) var(--ease-out)"
+    }
+  })), name ? /*#__PURE__*/React.createElement("input", {
+    type: "hidden",
+    name: name,
+    value: v
+  }) : null, /*#__PURE__*/React.createElement(__ds_scope.Menu, {
+    open: open,
+    onClose: close,
+    items: opts,
+    value: v,
+    onSelect: choose,
+    role: "listbox",
+    id: uid + "-list",
+    base: base,
+    sheet: sheet,
+    title: label || placeholder
+  })), message ? /*#__PURE__*/React.createElement("span", {
+    id: uid + "-msg",
+    style: {
+      fontSize: 12.5,
+      color: key === "default" ? "var(--text-subtle)" : s.text
+    }
+  }, message) : null);
 }
-Object.assign(__ds_scope, { Tag });
-})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Tag.jsx", error: String((e && e.message) || e) }); }
+Object.assign(__ds_scope, { Select });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Select.jsx", error: String((e && e.message) || e) }); }
 
 // components/atoms/Text.jsx
 try { (() => {
@@ -2371,6 +2179,1098 @@ function Text({
 Object.assign(__ds_scope, { Text });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Text.jsx", error: String((e && e.message) || e) }); }
 
+// components/atoms/TextButton.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+/** Shared interaction state for every pressable thing in the system:
+    hover (pointer only), press (pointer or Space/Enter), and keyboard focus-visible. */
+function usePress(disabled) {
+  const [hover, setHover] = React.useState(false);
+  const [press, setPress] = React.useState(false);
+  const [focus, setFocus] = React.useState(false);
+  React.useEffect(() => {
+    if (disabled) {
+      setHover(false);
+      setPress(false);
+    }
+  }, [disabled]);
+  const bind = {
+    onPointerEnter: e => {
+      if (!disabled && e.pointerType !== "touch") setHover(true);
+    },
+    onPointerLeave: () => {
+      setHover(false);
+      setPress(false);
+    },
+    onPointerDown: () => {
+      if (!disabled) setPress(true);
+    },
+    onPointerUp: () => setPress(false),
+    onPointerCancel: () => setPress(false),
+    onFocus: e => {
+      if (e.target !== e.currentTarget) return;
+      let v = true;
+      try {
+        v = e.target.matches(":focus-visible");
+      } catch (x) {}
+      setFocus(v);
+    },
+    onBlur: () => {
+      setFocus(false);
+      setPress(false);
+    },
+    onKeyDown: e => {
+      if (!disabled && (e.key === " " || e.key === "Enter")) setPress(true);
+    },
+    onKeyUp: () => setPress(false)
+  };
+  return {
+    hover: hover && !disabled,
+    press: press && !disabled,
+    focus,
+    bind
+  };
+}
+
+/** Merge consumer handlers with usePress handlers so neither is lost. */
+function mergeHandlers(bind, rest) {
+  const out = {
+    ...rest
+  };
+  Object.keys(bind).forEach(k => {
+    const mine = bind[k],
+      theirs = rest[k];
+    out[k] = theirs ? e => {
+      mine(e);
+      theirs(e);
+    } : mine;
+  });
+  return out;
+}
+const INK = {
+  light: {
+    brand: {
+      c: "var(--pink-600)",
+      ch: "var(--pink-700)",
+      h: "var(--state-hover)",
+      p: "var(--state-press)"
+    },
+    neutral: {
+      c: "var(--ink-700)",
+      ch: "var(--ink-900)",
+      h: "var(--state-hover-neutral)",
+      p: "var(--state-press-neutral)"
+    },
+    danger: {
+      c: "var(--status-danger)",
+      ch: "var(--status-danger)",
+      h: "var(--status-danger-soft)",
+      p: "var(--state-press-danger)"
+    },
+    off: "var(--ink-400)",
+    ring: "var(--pink-500)"
+  },
+  dark: {
+    brand: {
+      c: "var(--pink-300)",
+      ch: "var(--pink-200)",
+      h: "var(--state-hover-on-color)",
+      p: "var(--state-press-on-color)"
+    },
+    neutral: {
+      c: "var(--ink-000)",
+      ch: "var(--ink-000)",
+      h: "var(--state-hover-on-color)",
+      p: "var(--state-press-on-color)"
+    },
+    danger: {
+      c: "#ff9a9a",
+      ch: "#ffbdbd",
+      h: "var(--state-hover-on-color)",
+      p: "var(--state-press-on-color)"
+    },
+    off: "rgba(255,255,255,.4)",
+    ring: "var(--ink-000)"
+  },
+  brand: {
+    brand: {
+      c: "var(--ink-000)",
+      ch: "var(--ink-000)",
+      h: "var(--state-hover-on-color)",
+      p: "var(--state-press-on-color)"
+    },
+    neutral: {
+      c: "var(--ink-000)",
+      ch: "var(--ink-000)",
+      h: "var(--state-hover-on-color)",
+      p: "var(--state-press-on-color)"
+    },
+    danger: {
+      c: "var(--ink-000)",
+      ch: "var(--ink-000)",
+      h: "var(--state-hover-on-color)",
+      p: "var(--state-press-on-color)"
+    },
+    off: "rgba(255,255,255,.5)",
+    ring: "var(--ink-000)"
+  }
+};
+
+/** Text-only action: toast and snackbar CTAs, "Undo", "Edit", "View all", inline card actions.
+    Looks like a word at rest; on hover it gets a tinted pill, on press it darkens and
+    shrinks, on keyboard focus it gets a ring, and disabled is dimmed and inert. */
+function TextButton({
+  children,
+  tone = "brand",
+  on = "light",
+  size = "md",
+  caps,
+  icon,
+  iconAfter,
+  disabled,
+  loading,
+  state,
+  type = "button",
+  onClick,
+  style,
+  ...rest
+}) {
+  const off = disabled || loading;
+  const p = usePress(off);
+  const hover = state ? state === "hover" : p.hover;
+  const press = state ? state === "press" : p.press;
+  const focus = state ? state === "focus" : p.focus;
+  const set = INK[on] || INK.light;
+  const t = set[tone] || set.brand;
+  const h = size === "sm" ? 30 : 36;
+  return /*#__PURE__*/React.createElement("button", _extends({
+    type: type,
+    disabled: off,
+    onClick: onClick,
+    "aria-busy": loading || undefined
+  }, mergeHandlers(p.bind, rest), {
+    style: {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6,
+      flex: "0 0 auto",
+      height: h,
+      padding: size === "sm" ? "0 10px" : "0 12px",
+      border: "none",
+      borderRadius: "var(--radius-pill)",
+      background: off ? "transparent" : press ? t.p : hover ? t.h : "transparent",
+      color: off ? set.off : hover || press ? t.ch : t.c,
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      lineHeight: 1,
+      whiteSpace: "nowrap",
+      fontSize: caps ? size === "sm" ? 12 : 12.5 : size === "sm" ? 13.5 : 15,
+      letterSpacing: caps ? ".06em" : "-.005em",
+      textTransform: caps ? "uppercase" : "none",
+      textDecoration: hover && !caps ? "underline" : "none",
+      textUnderlineOffset: 3,
+      textDecorationThickness: 1.5,
+      cursor: off ? "not-allowed" : "pointer",
+      transform: press ? "scale(var(--press-scale))" : "none",
+      outline: focus && !off ? "2px solid " + set.ring : "none",
+      outlineOffset: 2,
+      transition: "background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)",
+      ...style
+    }
+  }), loading ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: "loader-circle",
+    size: "sm",
+    style: {
+      animation: "pp-rotate 1s linear infinite"
+    }
+  }) : icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: icon,
+    size: "sm"
+  }) : null, children, iconAfter ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: iconAfter,
+    size: "sm"
+  }) : null);
+}
+Object.assign(__ds_scope, { usePress, mergeHandlers, TextButton });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/TextButton.jsx", error: String((e && e.message) || e) }); }
+
+// components/atoms/Button.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+const PAD = {
+  sm: "0 14px",
+  md: "0 20px",
+  lg: "0 28px"
+};
+const H = {
+  sm: 36,
+  md: 44,
+  lg: 54
+};
+const FS = {
+  sm: 13,
+  md: 15,
+  lg: 17
+};
+
+// rest / hover / press for every variant × surface. Hover darkens one step, press two.
+function skin(variant, on) {
+  if (on === "brand") {
+    return variant === "primary" ? {
+      bg: "var(--ink-000)",
+      bgH: "var(--pink-50)",
+      bgP: "var(--pink-100)",
+      c: "var(--pink-600)",
+      cH: "var(--pink-700)",
+      bd: "none",
+      bdH: "none",
+      sh: "var(--shadow-2)",
+      ring: "var(--ink-000)",
+      offBg: "rgba(255,255,255,.3)",
+      offC: "rgba(255,255,255,.7)",
+      offBd: "none"
+    } : {
+      bg: "transparent",
+      bgH: "var(--state-hover-on-color)",
+      bgP: "var(--state-press-on-color)",
+      c: "var(--ink-000)",
+      cH: "var(--ink-000)",
+      bd: "2px solid rgba(255,255,255,.7)",
+      bdH: "2px solid var(--ink-000)",
+      sh: "none",
+      ring: "var(--ink-000)",
+      offBg: "transparent",
+      offC: "rgba(255,255,255,.5)",
+      offBd: "2px solid rgba(255,255,255,.3)"
+    };
+  }
+  switch (variant) {
+    case "secondary":
+      return {
+        bg: "var(--ink-000)",
+        bgH: "var(--state-hover)",
+        bgP: "var(--state-press)",
+        c: "var(--pink-600)",
+        cH: "var(--pink-700)",
+        bd: "2px solid var(--pink-500)",
+        bdH: "2px solid var(--pink-600)",
+        sh: "none",
+        ring: "var(--pink-500)",
+        offBg: "var(--ink-000)",
+        offC: "var(--ink-400)",
+        offBd: "2px solid var(--ink-200)"
+      };
+    case "ghost":
+      return {
+        bg: "transparent",
+        bgH: "var(--state-hover)",
+        bgP: "var(--state-press)",
+        c: "var(--pink-600)",
+        cH: "var(--pink-700)",
+        bd: "none",
+        bdH: "none",
+        sh: "none",
+        ring: "var(--pink-500)",
+        offBg: "transparent",
+        offC: "var(--ink-400)",
+        offBd: "none"
+      };
+    case "inverse":
+      return {
+        bg: "var(--ink-900)",
+        bgH: "var(--ink-800)",
+        bgP: "var(--ink-700)",
+        c: "var(--ink-000)",
+        cH: "var(--ink-000)",
+        bd: "none",
+        bdH: "none",
+        sh: "var(--shadow-2)",
+        ring: "var(--ink-900)",
+        offBg: "var(--ink-200)",
+        offC: "var(--ink-400)",
+        offBd: "none"
+      };
+    default:
+      return {
+        bg: "var(--pink-500)",
+        bgH: "var(--brand-hover)",
+        bgP: "var(--brand-active)",
+        c: "var(--text-on-brand)",
+        cH: "var(--text-on-brand)",
+        bd: "none",
+        bdH: "none",
+        sh: "var(--shadow-brand)",
+        ring: "var(--pink-500)",
+        offBg: "var(--ink-200)",
+        offC: "var(--ink-400)",
+        offBd: "none"
+      };
+  }
+}
+
+/** Primary action. Pill, Poppins 700, Title Case label.
+    Every variant has rest, hover, press, focus-visible, loading and disabled. */
+function Button({
+  children,
+  variant = "primary",
+  size = "md",
+  on = "light",
+  icon,
+  iconAfter,
+  fullWidth,
+  disabled,
+  loading,
+  state,
+  style,
+  onClick,
+  type = "button",
+  ...rest
+}) {
+  const s = skin(variant, on);
+  const off = disabled || loading;
+  const p = __ds_scope.usePress(off);
+  const hover = state ? state === "hover" : p.hover;
+  const press = state ? state === "press" : p.press;
+  const focus = state ? state === "focus" : p.focus;
+  return /*#__PURE__*/React.createElement("button", _extends({
+    type: type,
+    disabled: off,
+    onClick: onClick,
+    "aria-busy": loading || undefined
+  }, __ds_scope.mergeHandlers(p.bind, rest), {
+    style: {
+      display: fullWidth ? "flex" : "inline-flex",
+      width: fullWidth ? "100%" : undefined,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: size === "sm" ? 6 : 8,
+      height: H[size],
+      minWidth: H[size],
+      padding: PAD[size],
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      fontSize: FS[size],
+      letterSpacing: "-.005em",
+      lineHeight: 1,
+      whiteSpace: "nowrap",
+      flex: fullWidth ? undefined : "0 0 auto",
+      borderRadius: "var(--radius-pill)",
+      cursor: disabled ? "not-allowed" : loading ? "progress" : "pointer",
+      transition: "background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)",
+      transform: press && !off ? "scale(var(--press-scale))" : "none",
+      background: off ? s.offBg : press ? s.bgP : hover ? s.bgH : s.bg,
+      color: off ? s.offC : hover || press ? s.cH : s.c,
+      border: off ? s.offBd : hover || press ? s.bdH : s.bd,
+      boxShadow: off || press ? "none" : s.sh,
+      outline: focus && !off ? "2px solid " + s.ring : "none",
+      outlineOffset: 2,
+      ...style
+    }
+  }), loading ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: "loader-circle",
+    size: size === "lg" ? "lg" : "md",
+    style: {
+      animation: "pp-rotate 1s linear infinite"
+    }
+  }) : icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: icon,
+    size: size === "sm" ? "sm" : "md"
+  }) : null, children, iconAfter ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: iconAfter,
+    size: size === "sm" ? "sm" : "md"
+  }) : null);
+}
+Object.assign(__ds_scope, { Button });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Button.jsx", error: String((e && e.message) || e) }); }
+
+// components/atoms/Card.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+const SKINS = {
+  default: {
+    background: "var(--surface-card)",
+    border: "1px solid var(--border-subtle)",
+    radius: "var(--radius-lg)",
+    shadow: "var(--shadow-1)"
+  },
+  feature: {
+    background: "var(--pink-100)",
+    border: "none",
+    radius: "var(--radius-xl)",
+    shadow: "none"
+  },
+  brand: {
+    background: "var(--pink-500)",
+    border: "none",
+    radius: "var(--radius-xl)",
+    shadow: "var(--shadow-brand)"
+  },
+  ink: {
+    background: "var(--ink-900)",
+    border: "none",
+    radius: "var(--radius-xl)",
+    shadow: "none"
+  },
+  quiet: {
+    background: "var(--surface-sunken)",
+    border: "none",
+    radius: "var(--radius-lg)",
+    shadow: "none"
+  }
+};
+
+/** Content container. Never gets a coloured left border. */
+function Card({
+  children,
+  variant = "default",
+  padding = 20,
+  interactive,
+  onClick,
+  style,
+  ...rest
+}) {
+  const p = __ds_scope.usePress(!interactive);
+  const hover = p.hover,
+    press = p.press;
+  const clickable = interactive && !!onClick;
+  const s = SKINS[variant] || SKINS.default;
+  return /*#__PURE__*/React.createElement("div", _extends({
+    "data-surface": variant === "brand" ? "brand" : variant === "ink" ? "ink" : variant === "feature" ? "soft" : undefined,
+    onClick: onClick
+  }, interactive ? __ds_scope.mergeHandlers(p.bind, clickable ? {
+    onKeyDown: e => {
+      if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        onClick(e);
+      }
+    }
+  } : {}) : {}, {
+    role: clickable ? "button" : undefined,
+    tabIndex: clickable ? 0 : undefined,
+    style: {
+      background: s.background,
+      border: s.border,
+      borderRadius: s.radius,
+      boxShadow: interactive && press ? "var(--shadow-1)" : interactive && hover ? "var(--shadow-3)" : s.shadow,
+      transform: interactive && press ? "scale(.99)" : interactive && hover ? "translateY(var(--lift-y))" : "none",
+      outline: interactive && p.focus ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: 2,
+      transition: "box-shadow var(--dur-base) var(--ease-out), transform " + (press ? "var(--dur-instant)" : "var(--dur-base)") + " var(--ease-out)",
+      padding,
+      overflow: "hidden",
+      cursor: interactive ? "pointer" : undefined,
+      ...style
+    }
+  }, rest), children);
+}
+Object.assign(__ds_scope, { Card });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Card.jsx", error: String((e && e.message) || e) }); }
+
+// components/atoms/Checkbox.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+/** Add-on / consent checkbox. 6px radius, pink when checked. */
+function Checkbox({
+  label,
+  description,
+  checked,
+  onChange,
+  disabled,
+  error,
+  price,
+  style,
+  ...rest
+}) {
+  const p = __ds_scope.usePress(disabled);
+  const line = error ? "var(--status-danger)" : p.hover ? "var(--pink-400)" : "var(--border-default)";
+  const fill = checked ? p.press ? "var(--brand-active)" : p.hover ? "var(--brand-hover)" : "var(--pink-500)" : p.press ? "var(--state-press)" : p.hover ? "var(--state-hover)" : "var(--ink-000)";
+  return /*#__PURE__*/React.createElement("label", {
+    onPointerEnter: p.bind.onPointerEnter,
+    onPointerLeave: p.bind.onPointerLeave,
+    onPointerDown: p.bind.onPointerDown,
+    onPointerUp: p.bind.onPointerUp,
+    style: {
+      display: "flex",
+      gap: 12,
+      alignItems: "flex-start",
+      cursor: disabled ? "not-allowed" : "pointer",
+      opacity: disabled ? 0.5 : 1,
+      position: "relative",
+      background: disabled ? "transparent" : p.press ? "var(--state-press)" : p.hover ? "var(--state-hover)" : "transparent",
+      padding: "10px 12px",
+      margin: "0 -12px",
+      borderRadius: "var(--radius-md)",
+      transition: "background var(--dur-fast) var(--ease-out)",
+      ...style
+    }
+  }, /*#__PURE__*/React.createElement("input", _extends({
+    type: "checkbox",
+    checked: !!checked,
+    onChange: onChange,
+    disabled: disabled,
+    onFocus: p.bind.onFocus,
+    onBlur: p.bind.onBlur,
+    onKeyDown: p.bind.onKeyDown,
+    onKeyUp: p.bind.onKeyUp,
+    style: {
+      position: "absolute",
+      opacity: 0,
+      width: 1,
+      height: 1
+    }
+  }, rest)), /*#__PURE__*/React.createElement("span", {
+    "aria-hidden": "true",
+    style: {
+      width: 22,
+      height: 22,
+      flex: "0 0 auto",
+      marginTop: 1,
+      borderRadius: "var(--radius-sm)",
+      border: "2px solid " + (checked ? fill : line),
+      background: fill,
+      transform: p.press ? "scale(.92)" : "none",
+      boxShadow: p.focus ? "var(--focus-ring)" : "none",
+      outline: p.focus ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: 2,
+      display: "grid",
+      placeItems: "center",
+      color: "var(--ink-000)",
+      transition: "background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)"
+    }
+  }, checked ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: "check",
+    size: 14
+  }) : null), /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: "grid",
+      gap: 2,
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      gap: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: "var(--font-body)",
+      fontWeight: 500,
+      fontSize: 15,
+      color: "var(--text-body)"
+    }
+  }, label), price != null ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      fontSize: 14,
+      color: "var(--text-heading)"
+    }
+  }, "+\u20B9", price) : null), description ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: "var(--text-muted)"
+    }
+  }, description) : null), error && typeof error === "string" ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      gridColumn: "2",
+      fontSize: 12.5,
+      color: "var(--status-danger)"
+    }
+  }, error) : null);
+}
+Object.assign(__ds_scope, { Checkbox });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Checkbox.jsx", error: String((e && e.message) || e) }); }
+
+// components/atoms/IconButton.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+const H = {
+  xs: 28,
+  sm: 32,
+  md: 40,
+  lg: 48
+};
+function skin(variant, on) {
+  if (on === "brand") {
+    if (variant === "primary") return {
+      bg: "var(--ink-000)",
+      bgH: "var(--pink-50)",
+      bgP: "var(--pink-100)",
+      c: "var(--pink-600)",
+      bd: "none",
+      ring: "var(--ink-000)"
+    };
+    if (variant === "secondary") return {
+      bg: "transparent",
+      bgH: "var(--state-hover-on-color)",
+      bgP: "var(--state-press-on-color)",
+      c: "var(--ink-000)",
+      bd: "1px solid rgba(255,255,255,.6)",
+      ring: "var(--ink-000)"
+    };
+    return {
+      bg: "transparent",
+      bgH: "var(--state-hover-on-color)",
+      bgP: "var(--state-press-on-color)",
+      c: "var(--ink-000)",
+      bd: "none",
+      ring: "var(--ink-000)"
+    };
+  }
+  if (on === "tint") return {
+    bg: "transparent",
+    bgH: "var(--state-hover-tint)",
+    bgP: "var(--state-press-tint)",
+    c: "currentColor",
+    bd: "none",
+    ring: "currentColor"
+  };
+  switch (variant) {
+    case "primary":
+      return {
+        bg: "var(--pink-500)",
+        bgH: "var(--brand-hover)",
+        bgP: "var(--brand-active)",
+        c: "var(--ink-000)",
+        bd: "none",
+        ring: "var(--pink-500)"
+      };
+    case "secondary":
+      return {
+        bg: "var(--ink-000)",
+        bgH: "var(--state-hover)",
+        bgP: "var(--state-press)",
+        c: "var(--pink-600)",
+        bd: "1px solid var(--border-default)",
+        bdH: "1px solid var(--pink-300)",
+        ring: "var(--pink-500)"
+      };
+    case "glass":
+      return {
+        bg: "var(--surface-glass)",
+        bgH: "var(--ink-000)",
+        bgP: "var(--pink-50)",
+        c: "var(--ink-900)",
+        bd: "none",
+        ring: "var(--ink-000)",
+        blur: true
+      };
+    default:
+      return {
+        bg: "transparent",
+        bgH: "var(--state-hover)",
+        bgP: "var(--state-press)",
+        c: "var(--ink-700)",
+        cH: "var(--pink-600)",
+        bd: "none",
+        ring: "var(--pink-500)"
+      };
+  }
+}
+
+/** Square-footprint circular button carrying a single Lucide glyph.
+    Rest, hover, press, focus-visible and disabled on every variant and surface.
+    on="tint" inherits the parent's text colour (for dismiss buttons inside coloured blocks). */
+function IconButton({
+  icon,
+  label,
+  variant = "ghost",
+  size = "md",
+  on = "light",
+  disabled,
+  state,
+  style,
+  onClick,
+  ...rest
+}) {
+  const s = skin(variant, on);
+  const p = __ds_scope.usePress(disabled);
+  const hover = state ? state === "hover" : p.hover;
+  const press = state ? state === "press" : p.press;
+  const focus = state ? state === "focus" : p.focus;
+  const px = H[size] || H.md;
+  const onColour = on === "brand";
+  return /*#__PURE__*/React.createElement("button", _extends({
+    type: "button",
+    "aria-label": label,
+    title: undefined,
+    disabled: disabled,
+    onClick: onClick
+  }, __ds_scope.mergeHandlers(p.bind, rest), {
+    style: {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flex: "0 0 auto",
+      width: px,
+      height: px,
+      borderRadius: "var(--radius-pill)",
+      padding: 0,
+      cursor: disabled ? "not-allowed" : "pointer",
+      transition: "background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)",
+      transform: press ? "scale(.92)" : "none",
+      background: disabled ? variant === "primary" && !onColour ? "var(--ink-200)" : "transparent" : press ? s.bgP : hover ? s.bgH : s.bg,
+      color: disabled ? onColour ? "rgba(255,255,255,.45)" : "var(--ink-400)" : hover && s.cH ? s.cH : s.c,
+      border: disabled && s.bd !== "none" ? onColour ? "1px solid rgba(255,255,255,.3)" : "1px solid var(--ink-200)" : hover && s.bdH ? s.bdH : s.bd,
+      backdropFilter: s.blur ? "var(--blur-glass)" : undefined,
+      outline: focus && !disabled ? "2px solid " + s.ring : "none",
+      outlineOffset: 2,
+      ...style
+    }
+  }), /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: icon,
+    size: size === "xs" || size === "sm" ? "sm" : size === "lg" ? "lg" : "md"
+  }));
+}
+Object.assign(__ds_scope, { IconButton });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/IconButton.jsx", error: String((e && e.message) || e) }); }
+
+// components/atoms/Link.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+/** Inline or standalone link. Underline is the brand's link signal. */
+function Link({
+  children,
+  href = "#",
+  variant = "default",
+  size = "md",
+  icon,
+  iconAfter,
+  external,
+  disabled,
+  state,
+  onClick,
+  style,
+  ...rest
+}) {
+  const p = __ds_scope.usePress(disabled);
+  const hover = state ? state === "hover" : p.hover;
+  const press = state ? state === "press" : p.press;
+  const focus = state ? state === "focus" : p.focus;
+  const tones = {
+    default: {
+      c: press ? "var(--brand-active)" : hover ? "var(--text-link-hover)" : "var(--text-link)",
+      ul: hover || press ? "currentColor" : "var(--pink-200)",
+      ring: "var(--pink-500)"
+    },
+    subtle: {
+      c: press ? "var(--pink-700)" : hover ? "var(--text-heading)" : "var(--text-muted)",
+      ul: hover || press ? "var(--ink-300)" : "transparent",
+      ring: "var(--pink-500)"
+    },
+    inverse: {
+      c: "var(--ink-000)",
+      ul: press ? "var(--ink-000)" : hover ? "rgba(255,255,255,.9)" : "rgba(255,255,255,.4)",
+      ring: "var(--ink-000)",
+      bg: press ? "var(--state-hover-on-color)" : undefined
+    },
+    quiet: {
+      c: press ? "var(--pink-700)" : hover ? "var(--pink-600)" : "var(--ink-700)",
+      ul: hover || press ? "var(--pink-200)" : "transparent",
+      ring: "var(--pink-500)"
+    }
+  };
+  const t = tones[variant] || tones.default;
+  return /*#__PURE__*/React.createElement("a", _extends({
+    href: disabled ? undefined : href,
+    onClick: disabled ? e => e.preventDefault() : onClick,
+    "aria-disabled": disabled || undefined,
+    tabIndex: disabled ? -1 : undefined,
+    target: external ? "_blank" : undefined,
+    rel: external ? "noreferrer noopener" : undefined
+  }, __ds_scope.mergeHandlers(p.bind, rest), {
+    style: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 6,
+      fontFamily: "var(--font-body)",
+      fontWeight: 500,
+      fontSize: size === "sm" ? 13.5 : size === "lg" ? 17 : 15,
+      color: disabled ? "var(--ink-400)" : t.c,
+      textDecoration: disabled ? "none" : "underline",
+      textDecorationColor: t.ul,
+      cursor: disabled ? "not-allowed" : "pointer",
+      background: t.bg,
+      borderRadius: 4,
+      outline: focus && !disabled ? "2px solid " + t.ring : "none",
+      outlineOffset: 3,
+      textDecorationThickness: 1.5,
+      textUnderlineOffset: 3,
+      transition: "color var(--dur-fast) var(--ease-out), text-decoration-color var(--dur-fast) var(--ease-out)",
+      ...style
+    }
+  }), icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: icon,
+    size: "sm"
+  }) : null, children, iconAfter || external ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: iconAfter || "arrow-up-right",
+    size: "sm"
+  }) : null);
+}
+Object.assign(__ds_scope, { Link });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Link.jsx", error: String((e && e.message) || e) }); }
+
+// components/atoms/Radio.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+/** Single-choice control. Used for size, spice and payment method. */
+function Radio({
+  label,
+  description,
+  checked,
+  onChange,
+  name,
+  value,
+  disabled,
+  error,
+  price,
+  style,
+  ...rest
+}) {
+  const p = __ds_scope.usePress(disabled);
+  const ring = checked ? p.press ? "var(--brand-active)" : p.hover ? "var(--brand-hover)" : "var(--pink-500)" : error ? "var(--status-danger)" : p.hover || p.press ? "var(--pink-400)" : "var(--border-default)";
+  return /*#__PURE__*/React.createElement("label", {
+    onPointerEnter: p.bind.onPointerEnter,
+    onPointerLeave: p.bind.onPointerLeave,
+    onPointerDown: p.bind.onPointerDown,
+    onPointerUp: p.bind.onPointerUp,
+    style: {
+      display: "flex",
+      gap: 12,
+      alignItems: "flex-start",
+      cursor: disabled ? "not-allowed" : "pointer",
+      opacity: disabled ? 0.5 : 1,
+      position: "relative",
+      background: disabled ? "transparent" : p.press ? "var(--state-press)" : p.hover ? "var(--state-hover)" : "transparent",
+      padding: "10px 12px",
+      margin: "0 -12px",
+      borderRadius: "var(--radius-md)",
+      transition: "background var(--dur-fast) var(--ease-out)",
+      ...style
+    }
+  }, /*#__PURE__*/React.createElement("input", _extends({
+    type: "radio",
+    name: name,
+    value: value,
+    checked: !!checked,
+    onChange: onChange,
+    disabled: disabled,
+    onFocus: p.bind.onFocus,
+    onBlur: p.bind.onBlur,
+    onKeyDown: p.bind.onKeyDown,
+    onKeyUp: p.bind.onKeyUp,
+    style: {
+      position: "absolute",
+      opacity: 0,
+      width: 1,
+      height: 1
+    }
+  }, rest)), /*#__PURE__*/React.createElement("span", {
+    "aria-hidden": "true",
+    style: {
+      width: 22,
+      height: 22,
+      flex: "0 0 auto",
+      marginTop: 1,
+      borderRadius: "var(--radius-pill)",
+      border: (checked ? "6px" : "2px") + " solid " + ring,
+      background: !checked && (p.hover || p.press) ? p.press ? "var(--state-press)" : "var(--state-hover)" : "var(--ink-000)",
+      transform: p.press ? "scale(.92)" : "none",
+      outline: p.focus ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: 2,
+      transition: "border var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)"
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: "grid",
+      gap: 2,
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      gap: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: "var(--font-body)",
+      fontWeight: 500,
+      fontSize: 15,
+      color: "var(--text-body)"
+    }
+  }, label), price != null ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      fontSize: 14,
+      color: "var(--text-heading)"
+    }
+  }, "\u20B9", price) : null), description ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: "var(--text-muted)"
+    }
+  }, description) : null));
+}
+Object.assign(__ds_scope, { Radio });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Radio.jsx", error: String((e && e.message) || e) }); }
+
+// components/atoms/Switch.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+/** Instant-effect toggle. Never used to submit a form. */
+function Switch({
+  label,
+  description,
+  checked,
+  onChange,
+  disabled,
+  style,
+  ...rest
+}) {
+  const p = __ds_scope.usePress(disabled);
+  return /*#__PURE__*/React.createElement("label", {
+    onPointerEnter: p.bind.onPointerEnter,
+    onPointerLeave: p.bind.onPointerLeave,
+    onPointerDown: p.bind.onPointerDown,
+    onPointerUp: p.bind.onPointerUp,
+    style: {
+      position: "relative",
+      background: disabled ? "transparent" : p.press ? "var(--state-press)" : p.hover ? "var(--state-hover)" : "transparent",
+      padding: "10px 12px",
+      margin: "0 -12px",
+      borderRadius: "var(--radius-md)",
+      transition: "background var(--dur-fast) var(--ease-out)",
+      display: "flex",
+      alignItems: "center",
+      gap: 14,
+      cursor: disabled ? "not-allowed" : "pointer",
+      opacity: disabled ? 0.5 : 1,
+      ...style
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: "grid",
+      gap: 2,
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: "var(--font-body)",
+      fontWeight: 500,
+      fontSize: 15,
+      color: "var(--text-body)"
+    }
+  }, label), description ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: "var(--text-muted)"
+    }
+  }, description) : null), /*#__PURE__*/React.createElement("input", _extends({
+    type: "checkbox",
+    role: "switch",
+    checked: !!checked,
+    onChange: onChange,
+    disabled: disabled,
+    onFocus: p.bind.onFocus,
+    onBlur: p.bind.onBlur,
+    onKeyDown: p.bind.onKeyDown,
+    onKeyUp: p.bind.onKeyUp,
+    style: {
+      position: "absolute",
+      opacity: 0,
+      width: 1,
+      height: 1
+    }
+  }, rest)), /*#__PURE__*/React.createElement("span", {
+    "aria-hidden": "true",
+    style: {
+      width: 46,
+      height: 28,
+      flex: "0 0 auto",
+      borderRadius: "var(--radius-pill)",
+      background: checked ? p.press ? "var(--brand-active)" : p.hover ? "var(--brand-hover)" : "var(--pink-500)" : p.press ? "var(--ink-500)" : p.hover ? "var(--ink-400)" : "var(--ink-300)",
+      outline: p.focus ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: 2,
+      position: "relative",
+      transition: "background var(--dur-base) var(--ease-out)"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      position: "absolute",
+      top: 3,
+      left: checked ? p.press ? 17 : 21 : 3,
+      width: p.press ? 26 : 22,
+      height: 22,
+      borderRadius: "var(--radius-pill)",
+      background: "var(--ink-000)",
+      boxShadow: "var(--shadow-1)",
+      transition: "left var(--dur-base) var(--ease-out), width var(--dur-fast) var(--ease-out)"
+    }
+  })));
+}
+Object.assign(__ds_scope, { Switch });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Switch.jsx", error: String((e && e.message) || e) }); }
+
+// components/atoms/Tag.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+/** Selectable filter pill used across menu category rails. */
+function Tag({
+  children,
+  selected,
+  icon,
+  onClick,
+  disabled,
+  state,
+  style,
+  ...rest
+}) {
+  const interactive = !!onClick;
+  const p = __ds_scope.usePress(disabled || !interactive);
+  const hover = state ? state === "hover" : p.hover;
+  const press = state ? state === "press" : p.press;
+  const focus = state ? state === "focus" : p.focus;
+  return /*#__PURE__*/React.createElement("button", _extends({
+    type: "button",
+    disabled: disabled,
+    onClick: onClick,
+    "aria-pressed": interactive ? !!selected : undefined
+  }, __ds_scope.mergeHandlers(p.bind, rest), {
+    style: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 6,
+      height: 38,
+      padding: "0 16px",
+      fontFamily: "var(--font-body)",
+      fontWeight: 500,
+      fontSize: 14,
+      lineHeight: 1,
+      borderRadius: "var(--radius-pill)",
+      flex: "0 0 auto",
+      border: "1px solid " + (disabled ? "var(--ink-200)" : selected ? press ? "var(--brand-active)" : hover ? "var(--brand-hover)" : "var(--pink-500)" : hover || press ? "var(--pink-300)" : "var(--border-default)"),
+      background: disabled ? "var(--state-disabled-fill)" : selected ? press ? "var(--brand-active)" : hover ? "var(--brand-hover)" : "var(--pink-500)" : press ? "var(--state-press)" : hover ? "var(--state-hover)" : "var(--ink-000)",
+      color: disabled ? "var(--ink-400)" : selected ? "var(--ink-000)" : hover || press ? "var(--pink-700)" : "var(--ink-700)",
+      cursor: disabled ? "not-allowed" : interactive ? "pointer" : "default",
+      transform: press ? "scale(var(--press-scale))" : "none",
+      outline: focus ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: 2,
+      whiteSpace: "nowrap",
+      transition: "background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)",
+      ...style
+    }
+  }), icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: icon,
+    size: "sm"
+  }) : null, children);
+}
+Object.assign(__ds_scope, { Tag });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Tag.jsx", error: String((e && e.message) || e) }); }
+
 // components/atoms/Tooltip.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
@@ -2438,6 +3338,61 @@ function Tooltip({
 }
 Object.assign(__ds_scope, { Tooltip });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Tooltip.jsx", error: String((e && e.message) || e) }); }
+
+// components/atoms/Avatar.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+const S = {
+  xs: 24,
+  sm: 32,
+  md: 40,
+  lg: 56,
+  xl: 80
+};
+
+/** Circular guest/staff avatar. Falls back to initials on --pink-100. */
+function Avatar({
+  name = "",
+  src,
+  size = "md",
+  icon,
+  ring,
+  tooltip,
+  style,
+  ...rest
+}) {
+  const px = typeof size === "number" ? size : S[size] || S.md;
+  const initials = name.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+  const face = /*#__PURE__*/React.createElement("span", _extends({
+    role: name ? "img" : undefined,
+    "aria-label": name || undefined,
+    style: {
+      width: px,
+      height: px,
+      flex: "0 0 auto",
+      borderRadius: "var(--radius-pill)",
+      display: "grid",
+      placeItems: "center",
+      overflow: "hidden",
+      background: src ? `center/cover no-repeat url(${src})` : "var(--pink-100)",
+      color: "var(--pink-700)",
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      fontSize: Math.max(10, Math.round(px * 0.38)),
+      letterSpacing: "-.01em",
+      boxShadow: ring ? "0 0 0 2px var(--ink-000), 0 0 0 4px var(--pink-500)" : "none",
+      ...style
+    }
+  }, rest), src ? null : icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: icon,
+    size: Math.round(px * 0.5)
+  }) : initials || null);
+  return tooltip && name ? /*#__PURE__*/React.createElement(__ds_scope.Tooltip, {
+    label: name
+  }, face) : face;
+}
+Object.assign(__ds_scope, { Avatar });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/atoms/Avatar.jsx", error: String((e && e.message) || e) }); }
 
 // components/layouts/AppShell.jsx
 try { (() => {
@@ -2820,6 +3775,55 @@ Object.assign(__ds_scope, { Stack });
 // components/molecules/Accordion.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+function AccordionHead({
+  on,
+  q,
+  onClick
+}) {
+  const p = __ds_scope.usePress(false);
+  return /*#__PURE__*/React.createElement("button", _extends({
+    type: "button",
+    onClick: onClick,
+    "aria-expanded": on
+  }, p.bind, {
+    style: {
+      width: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 16,
+      padding: "18px 12px",
+      margin: "0 -12px",
+      boxSizing: "content-box",
+      border: "none",
+      borderRadius: "var(--radius-sm)",
+      background: p.press ? "var(--state-press)" : p.hover ? "var(--state-hover)" : "transparent",
+      cursor: "pointer",
+      textAlign: "left",
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      fontSize: 16.5,
+      letterSpacing: "-.005em",
+      color: on || p.hover || p.press ? "var(--pink-600)" : "var(--text-heading)",
+      outline: p.focus ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: -2,
+      transition: "background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out)"
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      minWidth: 0
+    }
+  }, q), /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: "chevron-down",
+    size: "md",
+    style: {
+      flex: "0 0 auto",
+      transform: on ? "rotate(180deg)" : "none",
+      transition: "transform var(--dur-base) var(--ease-out)"
+    }
+  }));
+}
+
 /** FAQ / allergen disclosure list. One open at a time by default. */
 function Accordion({
   items = [],
@@ -2842,40 +3846,11 @@ function Accordion({
       style: {
         borderBottom: "1px solid var(--border-subtle)"
       }
-    }, /*#__PURE__*/React.createElement("button", {
-      type: "button",
-      onClick: () => toggle(it.q),
-      "aria-expanded": on,
-      style: {
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 16,
-        padding: "18px 0",
-        border: "none",
-        background: "transparent",
-        cursor: "pointer",
-        textAlign: "left",
-        fontFamily: "var(--font-display)",
-        fontWeight: 700,
-        fontSize: 16.5,
-        letterSpacing: "-.005em",
-        color: on ? "var(--pink-600)" : "var(--text-heading)"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        minWidth: 0
-      }
-    }, it.q), /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-      name: "chevron-down",
-      size: "md",
-      style: {
-        flex: "0 0 auto",
-        transform: on ? "rotate(180deg)" : "none",
-        transition: "transform var(--dur-base) var(--ease-out)"
-      }
-    })), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement(AccordionHead, {
+      on: on,
+      q: it.q,
+      onClick: () => toggle(it.q)
+    }), /*#__PURE__*/React.createElement("div", {
       style: {
         display: "grid",
         gridTemplateRows: on ? "1fr" : "0fr",
@@ -2899,6 +3874,69 @@ function Accordion({
 }
 Object.assign(__ds_scope, { Accordion });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/molecules/Accordion.jsx", error: String((e && e.message) || e) }); }
+
+// components/molecules/ActionMenu.jsx
+try { (() => {
+/** The "more" menu: an icon button that opens our Menu panel of actions.
+    Use for row and card overflow (edit, share, remove). */
+function ActionMenu({
+  items = [],
+  onSelect,
+  label = "More actions",
+  icon = "ellipsis-vertical",
+  variant = "ghost",
+  size = "sm",
+  on,
+  placement = "bottom-end",
+  sheet = "auto",
+  title,
+  defaultOpen = false,
+  minWidth = 200,
+  style
+}) {
+  const [open, setOpen] = React.useState(defaultOpen);
+  const wrap = React.useRef(null);
+  const refocus = () => {
+    const b = wrap.current && wrap.current.querySelector("button");
+    b && b.focus();
+  };
+  const close = React.useCallback(why => {
+    setOpen(false);
+    if (why === "escape") refocus();
+  }, []);
+  return /*#__PURE__*/React.createElement("span", {
+    ref: wrap,
+    style: {
+      position: "relative",
+      display: "inline-flex",
+      ...style
+    }
+  }, /*#__PURE__*/React.createElement(__ds_scope.IconButton, {
+    icon: icon,
+    label: label,
+    variant: variant,
+    size: size,
+    on: on,
+    "aria-haspopup": "menu",
+    "aria-expanded": open,
+    onClick: () => setOpen(o => !o)
+  }), /*#__PURE__*/React.createElement(__ds_scope.Menu, {
+    open: open,
+    onClose: close,
+    items: items,
+    placement: placement,
+    sheet: sheet,
+    title: title || label,
+    minWidth: minWidth,
+    onSelect: it => {
+      setOpen(false);
+      refocus();
+      onSelect && onSelect(it.value, it);
+    }
+  }));
+}
+Object.assign(__ds_scope, { ActionMenu });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/molecules/ActionMenu.jsx", error: String((e && e.message) || e) }); }
 
 // components/molecules/Alert.jsx
 try { (() => {
@@ -2990,23 +4028,16 @@ function Alert({
     style: {
       marginTop: 10
     }
-  }, action) : null), onDismiss ? /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    "aria-label": "Dismiss",
+  }, action) : null), onDismiss ? /*#__PURE__*/React.createElement(__ds_scope.IconButton, {
+    icon: "x",
+    label: "Dismiss",
+    size: "xs",
+    on: "tint",
     onClick: onDismiss,
     style: {
-      border: "none",
-      background: "transparent",
-      color: "inherit",
-      cursor: "pointer",
-      padding: 2,
-      display: "grid",
-      placeItems: "center"
+      margin: "-4px -6px -4px 0"
     }
-  }, /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: "x",
-    size: "sm"
-  })) : null);
+  }) : null);
 }
 Object.assign(__ds_scope, { Alert });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/molecules/Alert.jsx", error: String((e && e.message) || e) }); }
@@ -3041,14 +4072,10 @@ function Breadcrumb({
         fontSize: 13.5,
         color: "var(--text-heading)"
       }
-    }, it.label) : /*#__PURE__*/React.createElement("a", {
+    }, it.label) : /*#__PURE__*/React.createElement(__ds_scope.Link, {
       href: it.href || "#",
-      style: {
-        fontFamily: "var(--font-body)",
-        fontSize: 13.5,
-        color: "var(--text-muted)",
-        textDecoration: "none"
-      }
+      variant: "subtle",
+      size: "sm"
     }, it.label), !last ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
       name: "chevron-right",
       size: 14,
@@ -3060,6 +4087,302 @@ function Breadcrumb({
 }
 Object.assign(__ds_scope, { Breadcrumb });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/molecules/Breadcrumb.jsx", error: String((e && e.message) || e) }); }
+
+// components/molecules/Combobox.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+const STATUS = {
+  default: {
+    border: "var(--border-default)",
+    ring: "var(--focus-ring)",
+    accent: "var(--pink-500)",
+    icon: null,
+    text: "var(--text-subtle)"
+  },
+  error: {
+    border: "var(--status-danger)",
+    ring: "0 0 0 3px var(--status-danger-soft)",
+    accent: "var(--status-danger)",
+    icon: "circle-alert",
+    text: "var(--status-danger)"
+  },
+  success: {
+    border: "var(--status-success)",
+    ring: "0 0 0 3px var(--status-success-soft)",
+    accent: "var(--status-success)",
+    icon: "circle-check",
+    text: "#186c51"
+  },
+  warning: {
+    border: "var(--status-warning)",
+    ring: "0 0 0 3px var(--status-warning-soft)",
+    accent: "var(--status-warning)",
+    icon: "triangle-alert",
+    text: "#8a5c00"
+  }
+};
+const resolve = p => p.error ? "error" : p.success ? "success" : p.warning ? "warning" : p.status || "default";
+const messageOf = p => typeof p.error === "string" ? p.error : typeof p.success === "string" ? p.success : typeof p.warning === "string" ? p.warning : p.hint;
+const textOf = o => String(o.text != null ? o.text : o.label);
+function highlight(label, q) {
+  if (!q || typeof label !== "string") return label;
+  const i = label.toLowerCase().indexOf(q.toLowerCase());
+  if (i < 0) return label;
+  return /*#__PURE__*/React.createElement(React.Fragment, null, label.slice(0, i), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "var(--pink-700)",
+      fontWeight: 700
+    }
+  }, label.slice(i, i + q.length)), label.slice(i + q.length));
+}
+
+/** Type-to-filter dropdown for long lists — dishes, localities, corporate accounts.
+    Same field shell as Input and Select; the list is our Menu panel. */
+function Combobox({
+  label,
+  hint,
+  error,
+  success,
+  warning,
+  status,
+  options = [],
+  value,
+  onChange,
+  placeholder = "Start typing...",
+  icon = "search",
+  emptyText = "No matches. Try a shorter word.",
+  size = "md",
+  disabled,
+  required,
+  optional,
+  base = "/assets",
+  filter,
+  defaultQuery,
+  defaultOpen = false,
+  id,
+  name,
+  style,
+  ...rest
+}) {
+  const opts = __ds_scope.normalizeItems(options);
+  const cur = opts.find(o => o.value === value);
+  const [q, setQ] = React.useState(defaultQuery != null ? defaultQuery : null);
+  const [open, setOpen] = React.useState(defaultOpen);
+  const [focus, setFocus] = React.useState(false);
+  const [hov, setHov] = React.useState(false);
+  const [active, setActive] = React.useState(-1);
+  const inputRef = React.useRef(null);
+  const autoId = React.useId();
+  const uid = id || autoId;
+  const key = resolve({
+    error,
+    success,
+    warning,
+    status
+  });
+  const s = STATUS[key];
+  const message = messageOf({
+    error,
+    success,
+    warning,
+    hint
+  });
+  const h = size === "sm" ? 40 : size === "lg" ? 56 : 48;
+  const lit = key !== "default" || focus;
+  const query = q || "";
+  const matches = query ? opts.filter(o => o.divider || o.group ? false : filter ? filter(o, query) : textOf(o).toLowerCase().indexOf(query.toLowerCase()) > -1) : opts;
+  const shown = matches.map(o => ({
+    ...o,
+    text: textOf(o),
+    label: highlight(o.label, query)
+  }));
+  const can = i => shown[i] && !shown[i].disabled && !shown[i].divider && !shown[i].group;
+  const firstOk = () => shown.findIndex((_, i) => can(i));
+  React.useEffect(() => {
+    if (open) setActive(firstOk());
+  }, [open, query]);
+  const choose = o => {
+    onChange && onChange(o.value, o);
+    setQ(null);
+    setOpen(false);
+  };
+  const move = dir => {
+    if (!open) {
+      setOpen(true);
+      return;
+    }
+    for (let n = 1; n <= shown.length; n++) {
+      const i = (active + dir * n + shown.length * 2) % shown.length;
+      if (can(i)) {
+        setActive(i);
+        return;
+      }
+    }
+  };
+  const onKeyDown = e => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      move(1);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      move(-1);
+    } else if (e.key === "Enter" && open && can(active)) {
+      e.preventDefault();
+      choose(shown[active]);
+    } else if (e.key === "Escape") {
+      if (open) setOpen(false);else setQ(null);
+    } else if (e.key === "Tab") setOpen(false);
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gap: 6,
+      minWidth: 0,
+      ...style
+    }
+  }, label ? /*#__PURE__*/React.createElement("label", {
+    htmlFor: uid,
+    style: {
+      display: "flex",
+      alignItems: "baseline",
+      gap: 6,
+      fontFamily: "var(--font-body)",
+      fontWeight: 500,
+      fontSize: 14,
+      color: disabled ? "var(--text-subtle)" : "var(--text-body)"
+    }
+  }, label, required ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "var(--pink-500)"
+    }
+  }, "*") : null, optional ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12.5,
+      color: "var(--text-subtle)"
+    }
+  }, "optional") : null) : null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "relative",
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      minWidth: 0,
+      height: h,
+      padding: "0 14px",
+      background: disabled ? "var(--ink-100)" : "var(--ink-000)",
+      border: (lit ? 2 : 1) + "px solid " + (disabled ? "var(--border-subtle)" : lit ? s.border : hov ? "var(--border-strong)" : "var(--border-default)"),
+      borderRadius: "var(--radius-md)",
+      boxShadow: focus && !disabled ? s.ring : "none",
+      cursor: disabled ? "not-allowed" : "text",
+      transition: "border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)"
+    },
+    onClick: () => inputRef.current && inputRef.current.focus(),
+    onPointerEnter: () => setHov(true),
+    onPointerLeave: () => setHov(false)
+  }, icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: icon,
+    size: "md",
+    style: {
+      flex: "0 0 auto",
+      color: disabled ? "var(--ink-400)" : lit ? s.accent : "var(--ink-500)"
+    }
+  }) : null, /*#__PURE__*/React.createElement("input", _extends({
+    ref: inputRef,
+    id: uid,
+    type: "text",
+    role: "combobox",
+    autoComplete: "off",
+    spellCheck: false,
+    "aria-expanded": open,
+    "aria-controls": uid + "-list",
+    "aria-autocomplete": "list",
+    "aria-activedescendant": open && active > -1 ? uid + "-list-o" + active : undefined,
+    "aria-invalid": key === "error" || undefined,
+    "aria-required": required || undefined,
+    "aria-describedby": message ? uid + "-msg" : undefined,
+    value: q != null ? q : cur ? textOf(cur) : "",
+    placeholder: placeholder,
+    disabled: disabled,
+    onChange: e => {
+      setQ(e.target.value);
+      setOpen(true);
+    },
+    onFocus: () => setFocus(true),
+    onBlur: () => {
+      setFocus(false);
+      setOpen(false);
+      setQ(null);
+    },
+    onKeyDown: onKeyDown,
+    style: {
+      flex: 1,
+      minWidth: 0,
+      border: "none",
+      outline: "none",
+      background: "transparent",
+      padding: 0,
+      fontFamily: "var(--font-body)",
+      fontSize: size === "sm" ? 14 : 15,
+      color: disabled ? "var(--ink-400)" : "var(--text-body)",
+      cursor: disabled ? "not-allowed" : undefined
+    }
+  }, rest)), query && !disabled ? /*#__PURE__*/React.createElement(__ds_scope.IconButton, {
+    icon: "x",
+    label: "Clear",
+    size: "xs",
+    tabIndex: -1,
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => {
+      setQ("");
+      inputRef.current && inputRef.current.focus();
+    },
+    style: {
+      marginRight: -6
+    }
+  }) : s.icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: s.icon,
+    size: "md",
+    style: {
+      flex: "0 0 auto",
+      color: s.accent
+    }
+  }) : /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: "chevron-down",
+    size: "md",
+    style: {
+      flex: "0 0 auto",
+      color: open ? "var(--pink-500)" : "var(--ink-500)",
+      transform: open ? "rotate(180deg)" : "none",
+      transition: "transform var(--dur-fast) var(--ease-out)"
+    }
+  }), name ? /*#__PURE__*/React.createElement("input", {
+    type: "hidden",
+    name: name,
+    value: value || ""
+  }) : null, /*#__PURE__*/React.createElement(__ds_scope.Menu, {
+    open: open && !disabled,
+    onClose: () => setOpen(false),
+    items: shown,
+    value: value,
+    onSelect: choose,
+    role: "listbox",
+    id: uid + "-list",
+    autoFocus: false,
+    activeIndex: active,
+    onActiveChange: setActive,
+    base: base,
+    sheet: false,
+    emptyText: emptyText
+  })), message ? /*#__PURE__*/React.createElement("span", {
+    id: uid + "-msg",
+    style: {
+      fontSize: 12.5,
+      color: key === "default" ? "var(--text-subtle)" : s.text
+    }
+  }, message) : null);
+}
+Object.assign(__ds_scope, { Combobox });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/molecules/Combobox.jsx", error: String((e && e.message) || e) }); }
 
 // components/molecules/CouponTicket.jsx
 try { (() => {
@@ -3103,6 +4426,7 @@ function CouponTicket({
     }
   };
   const StubTag = copyable ? "button" : "div";
+  const p = __ds_scope.usePress(!copyable);
   return /*#__PURE__*/React.createElement("div", _extends({
     style: {
       width,
@@ -3153,10 +4477,11 @@ function CouponTicket({
       borderLeft: "2px dashed " + (brand ? "rgba(255,255,255,.45)" : "var(--border-default)"),
       margin: "18px 0"
     }
-  }), /*#__PURE__*/React.createElement(StubTag, {
+  }), /*#__PURE__*/React.createElement(StubTag, _extends({
     type: copyable ? "button" : undefined,
     onClick: copyable ? copy : undefined,
-    "aria-label": copyable ? "Copy code " + code : undefined,
+    "aria-label": copyable ? "Copy code " + code : undefined
+  }, copyable ? p.bind : {}, {
     style: {
       flex: "0 0 auto",
       width: width * 0.3,
@@ -3166,11 +4491,13 @@ function CouponTicket({
       border: "none",
       color: "inherit",
       font: "inherit",
-      background: brand ? "rgba(255,255,255,.08)" : "var(--pink-50)",
+      background: brand ? p.press ? "var(--state-press-on-color)" : p.hover ? "var(--state-hover-on-color)" : "rgba(255,255,255,.08)" : p.press ? "var(--pink-200)" : p.hover ? "var(--pink-100)" : "var(--pink-50)",
       cursor: copyable ? "pointer" : "default",
+      outline: p.focus ? "2px solid " + (brand ? "var(--ink-000)" : "var(--pink-500)") : "none",
+      outlineOffset: -6,
       transition: "background var(--dur-fast) var(--ease-out)"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: "center",
       display: "grid",
@@ -3234,6 +4561,506 @@ function CouponTicket({
 }
 Object.assign(__ds_scope, { CouponTicket });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/molecules/CouponTicket.jsx", error: String((e && e.message) || e) }); }
+
+// components/molecules/DatePicker.jsx
+try { (() => {
+const STATUS = {
+  default: {
+    border: "var(--border-default)",
+    ring: "var(--focus-ring)",
+    accent: "var(--pink-500)",
+    icon: null,
+    text: "var(--text-subtle)"
+  },
+  error: {
+    border: "var(--status-danger)",
+    ring: "0 0 0 3px var(--status-danger-soft)",
+    accent: "var(--status-danger)",
+    icon: "circle-alert",
+    text: "var(--status-danger)"
+  },
+  success: {
+    border: "var(--status-success)",
+    ring: "0 0 0 3px var(--status-success-soft)",
+    accent: "var(--status-success)",
+    icon: "circle-check",
+    text: "#186c51"
+  },
+  warning: {
+    border: "var(--status-warning)",
+    ring: "0 0 0 3px var(--status-warning-soft)",
+    accent: "var(--status-warning)",
+    icon: "triangle-alert",
+    text: "#8a5c00"
+  }
+};
+const resolve = p => p.error ? "error" : p.success ? "success" : p.warning ? "warning" : p.status || "default";
+const messageOf = p => typeof p.error === "string" ? p.error : typeof p.success === "string" ? p.success : typeof p.warning === "string" ? p.warning : p.hint;
+const pad = n => n < 10 ? "0" + n : "" + n;
+const toISO = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+const fromISO = s => {
+  if (!s) return null;
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const addMonths = (d, n) => {
+  const t = new Date(d.getFullYear(), d.getMonth() + n, 1);
+  const last = new Date(t.getFullYear(), t.getMonth() + 1, 0).getDate();
+  return new Date(t.getFullYear(), t.getMonth(), Math.min(d.getDate(), last));
+};
+const WD = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const formatDate = iso => {
+  const d = fromISO(iso);
+  return d ? d.toLocaleDateString("en-IN", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  }) : "";
+};
+function Calendar({
+  value,
+  onPick,
+  min,
+  max,
+  isDateDisabled,
+  weekStart = 1,
+  roomy,
+  autoFocusDay
+}) {
+  const today = toISO(new Date());
+  const sel = fromISO(value);
+  const [focusD, setFocusD] = React.useState(() => sel || fromISO(min && today < min ? min : today));
+  const gridRef = React.useRef(null);
+  const off = iso => min && iso < min || max && iso > max || isDateDisabled && isDateDisabled(iso);
+  const y = focusD.getFullYear(),
+    m = focusD.getMonth();
+  const lead = (new Date(y, m, 1).getDay() - weekStart + 7) % 7;
+  const days = new Date(y, m + 1, 0).getDate();
+  const cells = [];
+  for (let i = 0; i < lead; i++) cells.push(null);
+  for (let d = 1; d <= days; d++) cells.push(new Date(y, m, d));
+  const firstISO = toISO(new Date(y, m, 1)),
+    lastISO = toISO(new Date(y, m, days));
+  const prevOk = !min || toISO(new Date(y, m, 0)) >= min;
+  const nextOk = !max || toISO(new Date(y, m + 1, 1)) <= max;
+  const focusKey = toISO(focusD);
+  const moved = React.useRef(false);
+  React.useEffect(() => {
+    if (!moved.current && !autoFocusDay) return;
+    const b = gridRef.current && gridRef.current.querySelector('[data-iso="' + focusKey + '"]');
+    b && b.focus({
+      preventScroll: true
+    });
+  }, [focusKey]);
+  const go = d => {
+    moved.current = true;
+    setFocusD(d);
+  };
+  const onKeyDown = e => {
+    const map = {
+      ArrowLeft: -1,
+      ArrowRight: 1,
+      ArrowUp: -7,
+      ArrowDown: 7
+    };
+    if (map[e.key]) {
+      e.preventDefault();
+      go(addDays(focusD, map[e.key]));
+    } else if (e.key === "PageUp") {
+      e.preventDefault();
+      go(addMonths(focusD, -1));
+    } else if (e.key === "PageDown") {
+      e.preventDefault();
+      go(addMonths(focusD, 1));
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      go(addDays(focusD, -((focusD.getDay() - weekStart + 7) % 7)));
+    } else if (e.key === "End") {
+      e.preventDefault();
+      go(addDays(focusD, 6 - (focusD.getDay() - weekStart + 7) % 7));
+    }
+  };
+  const cell = roomy ? 44 : 40;
+  const wd = WD.slice(weekStart).concat(WD.slice(0, weekStart));
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gap: 8,
+      padding: roomy ? "4px 4px 8px" : 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(__ds_scope.IconButton, {
+    icon: "chevron-left",
+    label: "Previous month",
+    size: "sm",
+    disabled: !prevOk,
+    onClick: () => setFocusD(addMonths(focusD, -1))
+  }), /*#__PURE__*/React.createElement("span", {
+    "aria-live": "polite",
+    style: {
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      fontSize: 16,
+      letterSpacing: "-.01em",
+      color: "var(--text-heading)"
+    }
+  }, focusD.toLocaleDateString("en-IN", {
+    month: "long",
+    year: "numeric"
+  })), /*#__PURE__*/React.createElement(__ds_scope.IconButton, {
+    icon: "chevron-right",
+    label: "Next month",
+    size: "sm",
+    disabled: !nextOk,
+    onClick: () => setFocusD(addMonths(focusD, 1))
+  })), /*#__PURE__*/React.createElement("div", {
+    role: "grid",
+    ref: gridRef,
+    onKeyDown: onKeyDown,
+    style: {
+      display: "grid",
+      gridTemplateColumns: "repeat(7, " + (roomy ? "minmax(0,1fr)" : cell + "px") + ")",
+      gap: 2,
+      justifyContent: "center"
+    }
+  }, wd.map(w => /*#__PURE__*/React.createElement("span", {
+    key: w,
+    role: "columnheader",
+    style: {
+      height: 28,
+      display: "grid",
+      placeItems: "center",
+      fontFamily: "var(--font-mono)",
+      fontSize: 10.5,
+      letterSpacing: ".06em",
+      textTransform: "uppercase",
+      color: "var(--text-subtle)"
+    }
+  }, w)), cells.map((d, i) => {
+    if (!d) return /*#__PURE__*/React.createElement("span", {
+      key: "b" + i
+    });
+    const iso = toISO(d),
+      isSel = iso === value,
+      isToday = iso === today,
+      dis = off(iso);
+    const tab = iso === focusKey || (focusKey < firstISO || focusKey > lastISO ? d.getDate() === 1 : false);
+    return /*#__PURE__*/React.createElement("button", {
+      key: iso,
+      type: "button",
+      "data-iso": iso,
+      role: "gridcell",
+      tabIndex: tab ? 0 : -1,
+      disabled: dis,
+      "aria-selected": isSel,
+      "aria-current": isToday ? "date" : undefined,
+      "aria-label": d.toLocaleDateString("en-IN", {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+      }) + (dis ? ", unavailable" : ""),
+      onClick: () => {
+        setFocusD(d);
+        onPick(iso);
+      },
+      onFocus: () => iso !== focusKey && setFocusD(d),
+      style: {
+        position: "relative",
+        height: cell,
+        border: "none",
+        padding: 0,
+        borderRadius: "var(--radius-sm)",
+        transition: "background var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)",
+        background: "transparent",
+        cursor: dis ? "not-allowed" : "pointer",
+        display: "grid",
+        placeItems: "center",
+        fontFamily: "var(--font-body)",
+        fontSize: 14.5,
+        fontVariantNumeric: "tabular-nums",
+        fontWeight: isSel || isToday ? 700 : 400,
+        color: isSel ? "var(--ink-000)" : dis ? "var(--ink-300)" : isToday ? "var(--pink-700)" : "var(--text-body)",
+        textDecoration: dis ? "line-through" : "none",
+        textDecorationColor: "var(--ink-200)"
+      },
+      onPointerEnter: e => {
+        if (!isSel && !dis) e.currentTarget.style.background = "var(--pink-50)";
+      },
+      onPointerLeave: e => {
+        e.currentTarget.style.background = "transparent";
+        e.currentTarget.style.transform = "none";
+      },
+      onPointerDown: e => {
+        if (!dis) {
+          if (!isSel) e.currentTarget.style.background = "var(--state-press)";
+          e.currentTarget.style.transform = "scale(.92)";
+        }
+      },
+      onPointerUp: e => {
+        e.currentTarget.style.transform = "none";
+      }
+    }, isSel ? /*#__PURE__*/React.createElement("span", {
+      "aria-hidden": "true",
+      style: {
+        position: "absolute",
+        width: cell * 0.7,
+        height: cell * 0.7,
+        borderRadius: 6,
+        background: "var(--pink-500)",
+        transform: "rotate(45deg)",
+        boxShadow: "var(--shadow-brand)"
+      }
+    }) : null, /*#__PURE__*/React.createElement("span", {
+      style: {
+        position: "relative"
+      }
+    }, d.getDate()), isToday && !isSel ? /*#__PURE__*/React.createElement("span", {
+      "aria-hidden": "true",
+      style: {
+        position: "absolute",
+        bottom: 5,
+        width: 5,
+        height: 5,
+        borderRadius: 1,
+        background: "var(--pink-500)",
+        transform: "rotate(45deg)"
+      }
+    }) : null);
+  })));
+}
+
+/** Brand date field. Our calendar in a popover (bottom sheet on phones) — never the
+    browser's date input. Values are ISO strings: "2026-10-10". */
+function DatePicker({
+  label,
+  hint,
+  error,
+  success,
+  warning,
+  status,
+  value,
+  defaultValue,
+  onChange,
+  min,
+  max,
+  isDateDisabled,
+  placeholder = "Pick a date",
+  weekStart = 1,
+  size = "md",
+  disabled,
+  readOnly,
+  required,
+  optional,
+  icon = "calendar",
+  sheet = "auto",
+  inline,
+  defaultOpen = false,
+  format = formatDate,
+  id,
+  name,
+  style
+}) {
+  const [inner, setInner] = React.useState(defaultValue || "");
+  const v = value !== undefined ? value : inner;
+  const [open, setOpen] = React.useState(defaultOpen);
+  const [focus, setFocus] = React.useState(false);
+  const [hov, setHov] = React.useState(false);
+  const btnRef = React.useRef(null);
+  const autoId = React.useId();
+  const uid = id || autoId;
+  const key = resolve({
+    error,
+    success,
+    warning,
+    status
+  });
+  const s = STATUS[key];
+  const message = messageOf({
+    error,
+    success,
+    warning,
+    hint
+  });
+  const h = size === "sm" ? 40 : size === "lg" ? 56 : 48;
+  const lit = key !== "default" || focus || open;
+  const locked = disabled || readOnly;
+  const pick = iso => {
+    if (value === undefined) setInner(iso);
+    onChange && onChange(iso);
+    if (!inline) {
+      setOpen(false);
+      btnRef.current && btnRef.current.focus();
+    }
+  };
+  const close = React.useCallback(why => {
+    setOpen(false);
+    if (why === "escape" && btnRef.current) btnRef.current.focus();
+  }, []);
+  if (inline) {
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: 312,
+        maxWidth: "100%",
+        background: "var(--surface-card)",
+        border: "1px solid var(--border-subtle)",
+        borderRadius: "var(--radius-md)",
+        boxShadow: "var(--shadow-2)",
+        ...style
+      }
+    }, /*#__PURE__*/React.createElement(Calendar, {
+      value: v,
+      onPick: pick,
+      min: min,
+      max: max,
+      isDateDisabled: isDateDisabled,
+      weekStart: weekStart
+    }));
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gap: 6,
+      minWidth: 0,
+      ...style
+    }
+  }, label ? /*#__PURE__*/React.createElement("label", {
+    htmlFor: uid,
+    style: {
+      display: "flex",
+      alignItems: "baseline",
+      gap: 6,
+      fontFamily: "var(--font-body)",
+      fontWeight: 500,
+      fontSize: 14,
+      color: disabled ? "var(--text-subtle)" : "var(--text-body)"
+    }
+  }, label, required ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "var(--pink-500)"
+    }
+  }, "*") : null, optional ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12.5,
+      color: "var(--text-subtle)"
+    }
+  }, "optional") : null) : null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "relative",
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    ref: btnRef,
+    id: uid,
+    type: "button",
+    disabled: disabled,
+    "aria-haspopup": "dialog",
+    "aria-expanded": open,
+    "aria-invalid": key === "error" || undefined,
+    "aria-required": required || undefined,
+    "aria-describedby": message ? uid + "-msg" : undefined,
+    onClick: () => !locked && setOpen(o => !o),
+    onKeyDown: e => {
+      if (!locked && !open && e.key === "ArrowDown") {
+        e.preventDefault();
+        setOpen(true);
+      }
+    },
+    onFocus: () => setFocus(true),
+    onBlur: () => setFocus(false),
+    onPointerEnter: () => setHov(true),
+    onPointerLeave: () => setHov(false),
+    style: {
+      width: "100%",
+      height: h,
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      padding: "0 14px",
+      textAlign: "left",
+      background: disabled ? "var(--ink-100)" : readOnly ? "var(--surface-sunken)" : "var(--ink-000)",
+      border: (lit ? 2 : 1) + "px solid " + (disabled ? "var(--border-subtle)" : lit ? s.border : hov && !readOnly ? "var(--border-strong)" : "var(--border-default)"),
+      borderRadius: "var(--radius-md)",
+      fontFamily: "var(--font-body)",
+      fontSize: size === "sm" ? 14 : 15,
+      color: disabled ? "var(--ink-400)" : "var(--text-body)",
+      boxShadow: (focus || open) && !disabled ? s.ring : "none",
+      outline: "none",
+      cursor: locked ? "not-allowed" : "pointer",
+      transition: "border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)"
+    }
+  }, /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: icon,
+    size: "md",
+    style: {
+      flex: "0 0 auto",
+      color: disabled ? "var(--ink-400)" : lit ? s.accent : "var(--ink-500)"
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      flex: 1,
+      minWidth: 0,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      color: v ? undefined : "var(--text-subtle)"
+    }
+  }, v ? format(v) : placeholder), s.icon ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: s.icon,
+    size: "md",
+    style: {
+      flex: "0 0 auto",
+      color: s.accent
+    }
+  }) : readOnly ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: "lock",
+    size: "sm",
+    style: {
+      flex: "0 0 auto",
+      color: "var(--ink-400)"
+    }
+  }) : null), name ? /*#__PURE__*/React.createElement("input", {
+    type: "hidden",
+    name: name,
+    value: v
+  }) : null, /*#__PURE__*/React.createElement(__ds_scope.Popover, {
+    open: open,
+    onClose: close,
+    sheet: sheet,
+    title: label || placeholder,
+    width: 312,
+    padding: 4,
+    maxHeight: 420,
+    bodyProps: {
+      role: "dialog",
+      "aria-label": label || placeholder
+    }
+  }, /*#__PURE__*/React.createElement(Calendar, {
+    value: v,
+    onPick: pick,
+    min: min,
+    max: max,
+    isDateDisabled: isDateDisabled,
+    weekStart: weekStart,
+    roomy: sheet === true,
+    autoFocusDay: true
+  }))), message ? /*#__PURE__*/React.createElement("span", {
+    id: uid + "-msg",
+    style: {
+      fontSize: 12.5,
+      color: key === "default" ? "var(--text-subtle)" : s.text
+    }
+  }, message) : null);
+}
+Object.assign(__ds_scope, { formatDate, DatePicker });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/molecules/DatePicker.jsx", error: String((e && e.message) || e) }); }
 
 // components/molecules/EmptyState.jsx
 try { (() => {
@@ -3449,12 +5276,20 @@ function ListRow({
   style,
   ...rest
 }) {
-  const [hover, setHover] = React.useState(false);
   const interactive = !!onClick;
+  const p = __ds_scope.usePress(!interactive);
+  const hover = p.hover,
+    press = p.press;
   return /*#__PURE__*/React.createElement("div", _extends({
-    onClick: onClick,
-    onPointerEnter: () => setHover(true),
-    onPointerLeave: () => setHover(false),
+    onClick: onClick
+  }, interactive ? __ds_scope.mergeHandlers(p.bind, {
+    onKeyDown: e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onClick(e);
+      }
+    }
+  }) : {}, {
     role: interactive ? "button" : undefined,
     tabIndex: interactive ? 0 : undefined,
     style: {
@@ -3465,7 +5300,9 @@ function ListRow({
       margin: "0 -12px",
       minHeight: "var(--hit-min)",
       borderBottom: divider ? "1px solid var(--border-subtle)" : "none",
-      background: interactive && hover ? "var(--pink-50)" : "transparent",
+      background: interactive && press ? "var(--state-press)" : interactive && hover ? "var(--state-hover)" : "transparent",
+      outline: interactive && p.focus ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: -2,
       borderRadius: "var(--radius-sm)",
       cursor: interactive ? "pointer" : undefined,
       transition: "background var(--dur-fast) var(--ease-out)",
@@ -3940,6 +5777,8 @@ function OtpInput({
 }) {
   const accent = error ? "var(--status-danger)" : success ? "var(--status-success)" : "var(--pink-500)";
   const refs = React.useRef([]);
+  const [focusI, setFocusI] = React.useState(-1);
+  const [hoverI, setHoverI] = React.useState(-1);
   const set = (i, ch) => {
     const arr = value.padEnd(length, " ").split("");
     arr[i] = ch || " ";
@@ -3972,6 +5811,22 @@ function OtpInput({
       disabled: disabled,
       "aria-label": "Digit " + (i + 1),
       onChange: e => set(i, e.target.value.replace(/\D/g, "")),
+      onFocus: e => {
+        setFocusI(i);
+        e.target.select();
+      },
+      onBlur: () => setFocusI(-1),
+      onPointerEnter: () => setHoverI(i),
+      onPointerLeave: () => setHoverI(-1),
+      onPaste: e => {
+        const d = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, length);
+        if (d) {
+          e.preventDefault();
+          onChange && onChange(d);
+          const n = Math.min(d.length, length - 1);
+          refs.current[n] && refs.current[n].focus();
+        }
+      },
       onKeyDown: e => {
         if (e.key === "Backspace" && !ch && i > 0 && refs.current[i - 1]) refs.current[i - 1].focus();
       },
@@ -3981,11 +5836,14 @@ function OtpInput({
         textAlign: "center",
         fontFamily: "var(--font-mono)",
         fontSize: 20,
-        color: "var(--text-heading)",
-        border: (ch ? 2 : 1) + "px solid " + (error || success ? accent : ch ? "var(--pink-500)" : "var(--border-default)"),
+        border: (ch || focusI === i ? 2 : 1) + "px solid " + (disabled ? "var(--border-subtle)" : error || success ? accent : ch || focusI === i ? "var(--pink-500)" : hoverI === i ? "var(--border-strong)" : "var(--border-default)"),
         borderRadius: "var(--radius-md)",
         outline: "none",
-        background: disabled ? "var(--ink-100)" : "var(--ink-000)"
+        background: disabled ? "var(--ink-100)" : focusI === i ? "var(--pink-50)" : "var(--ink-000)",
+        boxShadow: focusI === i && !disabled ? error ? "0 0 0 3px var(--status-danger-soft)" : "var(--focus-ring)" : "none",
+        color: disabled ? "var(--ink-400)" : "var(--text-heading)",
+        cursor: disabled ? "not-allowed" : "text",
+        transition: "border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out)"
       }
     });
   })), error || success ? /*#__PURE__*/React.createElement("span", {
@@ -4107,7 +5965,51 @@ Object.assign(__ds_scope, { OutletCard });
 // components/molecules/Pagination.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-/** Page control for blog / press listings. */
+function PageButton({
+  children,
+  current,
+  disabled,
+  onClick,
+  label,
+  state,
+  ...rest
+}) {
+  const p = __ds_scope.usePress(disabled || current);
+  const hover = state ? state === "hover" : p.hover;
+  const press = state ? state === "press" : p.press;
+  const focus = state ? state === "focus" : p.focus;
+  return /*#__PURE__*/React.createElement("button", _extends({
+    type: "button",
+    onClick: onClick,
+    "aria-label": label,
+    "aria-current": current ? "page" : undefined,
+    disabled: disabled
+  }, __ds_scope.mergeHandlers(p.bind, rest), {
+    style: {
+      minWidth: 40,
+      height: 40,
+      padding: "0 10px",
+      borderRadius: "var(--radius-pill)",
+      display: "grid",
+      placeItems: "center",
+      border: current ? "1px solid var(--pink-500)" : "1px solid " + (disabled ? "var(--ink-200)" : hover || press ? "var(--pink-300)" : "var(--border-default)"),
+      background: current ? "var(--pink-500)" : disabled ? "var(--state-disabled-fill)" : press ? "var(--state-press)" : hover ? "var(--state-hover)" : "var(--ink-000)",
+      color: current ? "var(--ink-000)" : disabled ? "var(--ink-400)" : hover || press ? "var(--pink-700)" : "var(--ink-700)",
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      fontSize: 14,
+      fontVariantNumeric: "tabular-nums",
+      cursor: disabled ? "not-allowed" : current ? "default" : "pointer",
+      transform: press ? "scale(.94)" : "none",
+      outline: focus && !disabled ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: 2,
+      transition: "background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)"
+    }
+  }), children);
+}
+
+/** Page control for blog / press listings. Every page button has hover, press,
+    focus-visible and current states; prev/next disable at the ends. */
 function Pagination({
   page = 1,
   pages = 1,
@@ -4120,30 +6022,8 @@ function Pagination({
   for (let i = 1; i <= pages; i++) {
     if (i === 1 || i === pages || Math.abs(i - page) <= 1) nums.push(i);else if (nums[nums.length - 1] !== "…") nums.push("…");
   }
-  const btn = (content, active, onClick, key, label) => /*#__PURE__*/React.createElement("button", {
-    key: key,
-    type: "button",
-    onClick: onClick,
-    "aria-label": label,
-    "aria-current": active ? "page" : undefined,
-    disabled: content === "…",
-    style: {
-      minWidth: 40,
-      height: 40,
-      padding: "0 10px",
-      borderRadius: "var(--radius-pill)",
-      border: active ? "none" : "1px solid var(--border-default)",
-      background: active ? "var(--pink-500)" : "var(--ink-000)",
-      color: active ? "var(--ink-000)" : content === "…" ? "var(--ink-400)" : "var(--ink-700)",
-      fontFamily: "var(--font-display)",
-      fontWeight: 700,
-      fontSize: 14,
-      cursor: content === "…" ? "default" : "pointer",
-      display: "grid",
-      placeItems: "center"
-    }
-  }, content);
   return /*#__PURE__*/React.createElement("nav", _extends({
+    "aria-label": "Pagination",
     style: {
       display: "flex",
       gap: 8,
@@ -4151,15 +6031,38 @@ function Pagination({
       alignItems: "center",
       ...style
     }
-  }, rest), btn(/*#__PURE__*/React.createElement(__ds_scope.Icon, {
+  }, rest), /*#__PURE__*/React.createElement(PageButton, {
+    label: "Previous page",
+    disabled: page <= 1,
+    onClick: () => go(page - 1)
+  }, /*#__PURE__*/React.createElement(__ds_scope.Icon, {
     name: "chevron-left",
     size: "sm"
-  }), false, () => go(page - 1), "prev", "Previous page"), nums.map((n, i) => btn(n, n === page, () => go(n), "n" + i, typeof n === "number" ? `Page ${n}` : undefined)), btn(/*#__PURE__*/React.createElement(__ds_scope.Icon, {
+  })), nums.map((n, i) => n === "…" ? /*#__PURE__*/React.createElement("span", {
+    key: "e" + i,
+    "aria-hidden": "true",
+    style: {
+      minWidth: 24,
+      textAlign: "center",
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      color: "var(--ink-400)"
+    }
+  }, "\u2026") : /*#__PURE__*/React.createElement(PageButton, {
+    key: n,
+    current: n === page,
+    label: "Page " + n,
+    onClick: () => go(n)
+  }, n)), /*#__PURE__*/React.createElement(PageButton, {
+    label: "Next page",
+    disabled: page >= pages,
+    onClick: () => go(page + 1)
+  }, /*#__PURE__*/React.createElement(__ds_scope.Icon, {
     name: "chevron-right",
     size: "sm"
-  }), false, () => go(page + 1), "next", "Next page"));
+  })));
 }
-Object.assign(__ds_scope, { Pagination });
+Object.assign(__ds_scope, { Pagination, PageButton });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/molecules/Pagination.jsx", error: String((e && e.message) || e) }); }
 
 // components/molecules/PriceSummary.jsx
@@ -4230,6 +6133,42 @@ Object.assign(__ds_scope, { PriceSummary });
 // components/molecules/QuantityStepper.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+function StepButton({
+  icon,
+  label,
+  disabled,
+  onClick,
+  h,
+  small
+}) {
+  const p = __ds_scope.usePress(disabled);
+  return /*#__PURE__*/React.createElement("button", _extends({
+    type: "button",
+    "aria-label": label,
+    onClick: onClick,
+    disabled: disabled
+  }, p.bind, {
+    style: {
+      width: h,
+      height: h,
+      display: "grid",
+      placeItems: "center",
+      border: "none",
+      borderRadius: "var(--radius-pill)",
+      background: disabled ? "transparent" : p.press ? "var(--pink-200)" : p.hover ? "var(--pink-100)" : "transparent",
+      color: disabled ? "var(--ink-300)" : p.hover || p.press ? "var(--pink-700)" : "var(--pink-600)",
+      cursor: disabled ? "not-allowed" : "pointer",
+      transform: p.press ? "scale(.9)" : "none",
+      outline: p.focus ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: -2,
+      transition: "background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)"
+    }
+  }), /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: icon,
+    size: small ? "sm" : "md"
+  }));
+}
+
 /** −/+ quantity control used in cart rows and item detail. */
 function QuantityStepper({
   value = 1,
@@ -4245,26 +6184,14 @@ function QuantityStepper({
     const n = Math.min(max, Math.max(min, value + d));
     if (n !== value && onChange) onChange(n);
   };
-  const btn = (icon, d, label) => /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    "aria-label": label,
+  const btn = (icon, d, label) => /*#__PURE__*/React.createElement(StepButton, {
+    icon: icon,
+    label: label,
+    h: h,
+    small: size === "sm",
     onClick: () => step(d),
-    disabled: d < 0 ? value <= min : value >= max,
-    style: {
-      width: h,
-      height: h,
-      display: "grid",
-      placeItems: "center",
-      border: "none",
-      background: "transparent",
-      color: (d < 0 ? value <= min : value >= max) ? "var(--ink-400)" : "var(--pink-600)",
-      cursor: (d < 0 ? value <= min : value >= max) ? "not-allowed" : "pointer",
-      borderRadius: "var(--radius-pill)"
-    }
-  }, /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: icon,
-    size: size === "sm" ? "sm" : "md"
-  }));
+    disabled: d < 0 ? value <= min : value >= max
+  });
   return /*#__PURE__*/React.createElement("div", _extends({
     style: {
       display: "inline-flex",
@@ -4376,9 +6303,10 @@ function SearchField({
   ...rest
 }) {
   const [focus, setFocus] = React.useState(false);
+  const [hov, setHov] = React.useState(false);
   const h = size === "sm" ? 40 : 48;
   const active = status !== "default" || focus;
-  const border = disabled ? "var(--border-subtle)" : active ? BORDER[status] || "var(--pink-500)" : "var(--border-default)";
+  const border = disabled ? "var(--border-subtle)" : active ? BORDER[status] || "var(--pink-500)" : hov ? "var(--border-strong)" : "var(--border-default)";
   const accent = status === "default" ? "var(--pink-500)" : BORDER[status];
   return /*#__PURE__*/React.createElement("div", {
     style: {
@@ -4388,6 +6316,8 @@ function SearchField({
       ...style
     }
   }, /*#__PURE__*/React.createElement("div", {
+    onPointerEnter: () => setHov(true),
+    onPointerLeave: () => setHov(false),
     style: {
       display: "flex",
       alignItems: "center",
@@ -4410,7 +6340,11 @@ function SearchField({
       color: disabled ? "var(--ink-400)" : focus ? accent : "var(--ink-500)"
     }
   }), /*#__PURE__*/React.createElement("input", _extends({
-    type: "search",
+    type: "text",
+    inputMode: "search",
+    enterKeyHint: "search",
+    role: "searchbox",
+    autoComplete: "off",
     value: value,
     onChange: onChange,
     placeholder: placeholder,
@@ -4430,24 +6364,15 @@ function SearchField({
     }
   }, rest)), loading ? /*#__PURE__*/React.createElement(__ds_scope.Spinner, {
     size: 18
-  }) : null, !loading && value && onClear ? /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    "aria-label": "Clear search",
+  }) : null, !loading && value && onClear ? /*#__PURE__*/React.createElement(__ds_scope.IconButton, {
+    icon: "x",
+    label: "Clear search",
+    size: "xs",
     onClick: onClear,
     style: {
-      border: "none",
-      background: "transparent",
-      color: "var(--ink-500)",
-      cursor: "pointer",
-      display: "grid",
-      placeItems: "center",
-      padding: 2,
-      flex: "0 0 auto"
+      marginRight: -8
     }
-  }, /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: "x",
-    size: "sm"
-  })) : null), hint ? /*#__PURE__*/React.createElement("span", {
+  }) : null), hint ? /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: 12.5,
       paddingInline: 16,
@@ -4523,6 +6448,52 @@ Object.assign(__ds_scope, { SectionHeader });
 // components/molecules/SlotPicker.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+function Slot({
+  slot,
+  on,
+  off,
+  error,
+  onPick
+}) {
+  const p = __ds_scope.usePress(off);
+  const hot = p.hover || p.press;
+  return /*#__PURE__*/React.createElement("button", _extends({
+    type: "button",
+    disabled: off,
+    onClick: onPick,
+    "aria-pressed": on
+  }, p.bind, {
+    style: {
+      minHeight: "var(--hit-min)",
+      padding: "8px 10px",
+      borderRadius: "var(--radius-md)",
+      border: on ? "2px solid " + (hot ? "var(--brand-hover)" : "var(--pink-500)") : "1px solid " + (off ? "var(--ink-200)" : hot ? "var(--pink-300)" : error ? "var(--status-danger)" : "var(--border-default)"),
+      background: off ? "var(--state-disabled-fill)" : p.press ? "var(--state-press)" : on || p.hover ? "var(--state-hover)" : "var(--ink-000)",
+      color: off ? "var(--ink-400)" : on || hot ? "var(--pink-700)" : "var(--ink-700)",
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      fontSize: 14,
+      cursor: off ? "not-allowed" : "pointer",
+      textDecoration: slot.disabled ? "line-through" : "none",
+      transform: p.press ? "scale(var(--press-scale))" : "none",
+      outline: p.focus ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: 2,
+      transition: "background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)",
+      display: "grid",
+      placeItems: "center",
+      gap: 2,
+      minWidth: 0
+    }
+  }), /*#__PURE__*/React.createElement("span", null, slot.label), slot.note ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: "var(--font-body)",
+      fontWeight: 400,
+      fontSize: 11.5,
+      color: "var(--text-subtle)"
+    }
+  }, slot.note) : null);
+}
+
 /** Pickup / table time slots. Wraps freely; 44px minimum hit height. */
 function SlotPicker({
   slots = [],
@@ -4561,37 +6532,14 @@ function SlotPicker({
     } : s;
     const on = slot.value === value;
     const off = slot.disabled || disabled;
-    return /*#__PURE__*/React.createElement("button", {
+    return /*#__PURE__*/React.createElement(Slot, {
       key: slot.value,
-      type: "button",
-      disabled: off,
-      onClick: () => onChange && onChange(slot.value),
-      "aria-pressed": on,
-      style: {
-        minHeight: "var(--hit-min)",
-        padding: "8px 10px",
-        borderRadius: "var(--radius-md)",
-        border: on ? "2px solid var(--pink-500)" : "1px solid " + (error ? "var(--status-danger)" : "var(--border-default)"),
-        background: on ? "var(--pink-50)" : off ? "var(--ink-100)" : "var(--ink-000)",
-        color: off ? "var(--ink-400)" : on ? "var(--pink-700)" : "var(--ink-700)",
-        fontFamily: "var(--font-display)",
-        fontWeight: 700,
-        fontSize: 14,
-        cursor: off ? "not-allowed" : "pointer",
-        textDecoration: slot.disabled ? "line-through" : "none",
-        display: "grid",
-        placeItems: "center",
-        gap: 2,
-        minWidth: 0
-      }
-    }, /*#__PURE__*/React.createElement("span", null, slot.label), slot.note ? /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: "var(--font-body)",
-        fontWeight: 400,
-        fontSize: 11.5,
-        color: "var(--text-subtle)"
-      }
-    }, slot.note) : null);
+      slot: slot,
+      on: on,
+      off: off,
+      error: error,
+      onPick: () => onChange && onChange(slot.value)
+    });
   })), typeof error === "string" ? /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: 12.5,
@@ -4609,25 +6557,25 @@ const TONES = {
   ink: {
     bg: "var(--ink-900)",
     fg: "var(--ink-000)",
-    action: "var(--pink-300)",
+    on: "dark",
     icon: "info"
   },
   brand: {
     bg: "var(--pink-500)",
     fg: "var(--ink-000)",
-    action: "var(--ink-000)",
+    on: "brand",
     icon: "check"
   },
   success: {
     bg: "var(--status-success)",
     fg: "var(--ink-000)",
-    action: "var(--ink-000)",
+    on: "brand",
     icon: "check"
   },
   danger: {
     bg: "var(--status-danger)",
     fg: "var(--ink-000)",
-    action: "var(--ink-000)",
+    on: "brand",
     icon: "triangle-alert"
   }
 };
@@ -4703,41 +6651,21 @@ function Snackbar({
       lineHeight: 1.4,
       textWrap: "pretty"
     }
-  }, children), action ? /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    onClick: onAction,
-    style: {
-      flex: "0 0 auto",
-      border: "none",
-      background: "transparent",
-      color: t.action,
-      cursor: "pointer",
-      padding: "4px 6px",
-      fontFamily: "var(--font-display)",
-      fontWeight: 700,
-      fontSize: 12.5,
-      letterSpacing: ".06em",
-      textTransform: "uppercase"
-    }
-  }, action) : null, onClose ? /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    "aria-label": "Dismiss",
+  }, children), action ? /*#__PURE__*/React.createElement(__ds_scope.TextButton, {
+    on: t.on,
+    caps: true,
+    size: "sm",
+    onClick: onAction
+  }, action) : null, onClose ? /*#__PURE__*/React.createElement(__ds_scope.IconButton, {
+    icon: "x",
+    label: "Dismiss",
+    size: "xs",
+    on: "brand",
     onClick: onClose,
     style: {
-      flex: "0 0 auto",
-      border: "none",
-      background: "transparent",
-      color: "inherit",
-      opacity: 0.7,
-      cursor: "pointer",
-      display: "grid",
-      placeItems: "center",
-      padding: 2
+      marginRight: -4
     }
-  }, /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-    name: "x",
-    size: "sm"
-  })) : null));
+  }) : null));
 }
 Object.assign(__ds_scope, { Snackbar });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/molecules/Snackbar.jsx", error: String((e && e.message) || e) }); }
@@ -4914,6 +6842,49 @@ Object.assign(__ds_scope, { StepTracker });
 // components/molecules/Tabs.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+function Tab({
+  t,
+  on,
+  onPick
+}) {
+  const p = __ds_scope.usePress(t.disabled);
+  return /*#__PURE__*/React.createElement("button", _extends({
+    role: "tab",
+    "aria-selected": on,
+    type: "button",
+    disabled: t.disabled,
+    onClick: onPick
+  }, p.bind, {
+    style: {
+      border: "none",
+      background: "transparent",
+      cursor: t.disabled ? "not-allowed" : "pointer",
+      padding: "0 0 12px",
+      position: "relative",
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      fontSize: 15,
+      letterSpacing: "-.005em",
+      color: t.disabled ? "var(--ink-300)" : p.press ? "var(--pink-700)" : on || p.hover ? "var(--text-heading)" : "var(--text-subtle)",
+      outline: p.focus ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: 4,
+      borderRadius: 4,
+      transition: "color var(--dur-fast) var(--ease-out)"
+    }
+  }), t.label, /*#__PURE__*/React.createElement("span", {
+    style: {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: -1,
+      height: 3,
+      borderRadius: "3px 3px 0 0",
+      background: on ? p.press ? "var(--brand-active)" : "var(--pink-500)" : p.press ? "var(--pink-300)" : p.hover ? "var(--ink-200)" : "transparent",
+      transition: "background var(--dur-base) var(--ease-out)"
+    }
+  }));
+}
+
 /** Underline tab set for in-page section switching. */
 function Tabs({
   items = [],
@@ -4936,37 +6907,12 @@ function Tabs({
       label: it
     } : it;
     const on = t.value === value;
-    return /*#__PURE__*/React.createElement("button", {
+    return /*#__PURE__*/React.createElement(Tab, {
       key: t.value,
-      role: "tab",
-      "aria-selected": on,
-      type: "button",
-      onClick: () => onChange && onChange(t.value),
-      style: {
-        border: "none",
-        background: "transparent",
-        cursor: "pointer",
-        padding: "0 0 12px",
-        position: "relative",
-        fontFamily: "var(--font-display)",
-        fontWeight: 700,
-        fontSize: 15,
-        letterSpacing: "-.005em",
-        color: on ? "var(--text-heading)" : "var(--text-subtle)",
-        transition: "color var(--dur-fast) var(--ease-out)"
-      }
-    }, t.label, /*#__PURE__*/React.createElement("span", {
-      style: {
-        position: "absolute",
-        left: 0,
-        right: 0,
-        bottom: -1,
-        height: 3,
-        borderRadius: "3px 3px 0 0",
-        background: on ? "var(--pink-500)" : "transparent",
-        transition: "background var(--dur-base) var(--ease-out)"
-      }
-    }));
+      t: t,
+      on: on,
+      onPick: () => onChange && onChange(t.value)
+    });
   }));
 }
 Object.assign(__ds_scope, { Tabs });
@@ -4979,22 +6925,26 @@ const TONES = {
   brand: {
     bg: "var(--pink-500)",
     fg: "var(--ink-000)",
-    icon: "check"
+    icon: "check",
+    on: "brand"
   },
   ink: {
     bg: "var(--ink-900)",
     fg: "var(--ink-000)",
-    icon: "info"
+    icon: "info",
+    on: "dark"
   },
   success: {
     bg: "var(--status-success)",
     fg: "var(--ink-000)",
-    icon: "check"
+    icon: "check",
+    on: "brand"
   },
   danger: {
     bg: "var(--status-danger)",
     fg: "var(--ink-000)",
-    icon: "triangle-alert"
+    icon: "triangle-alert",
+    on: "brand"
   }
 };
 
@@ -5005,6 +6955,8 @@ function Toast({
   icon,
   action,
   onAction,
+  actionDisabled,
+  actionState,
   pop,
   style,
   ...rest
@@ -5030,20 +6982,15 @@ function Toast({
   }, rest), /*#__PURE__*/React.createElement(__ds_scope.Icon, {
     name: icon || t.icon,
     size: "md"
-  }), /*#__PURE__*/React.createElement("span", null, children), action ? /*#__PURE__*/React.createElement("button", {
-    type: "button",
+  }), /*#__PURE__*/React.createElement("span", null, children), action ? /*#__PURE__*/React.createElement(__ds_scope.TextButton, {
+    on: t.on,
+    caps: true,
+    size: "sm",
     onClick: onAction,
+    disabled: actionDisabled,
+    state: actionState,
     style: {
-      border: "none",
-      background: "transparent",
-      color: "inherit",
-      fontFamily: "var(--font-display)",
-      fontWeight: 700,
-      fontSize: 13,
-      letterSpacing: ".04em",
-      textTransform: "uppercase",
-      cursor: "pointer",
-      padding: "0 2px"
+      marginRight: -8
     }
   }, action) : null);
 }
@@ -5761,7 +7708,7 @@ const DEFAULT_COLUMNS = [{
 function SiteFooter({
   columns = DEFAULT_COLUMNS,
   blurb = "Chai at 8am, chilli paneer at midnight. " + (B ? B.lines.outletsCount : "One kitchen in Sector 57, Gurgaon") + ".",
-  social = B ? Object.values(B.social).map(s => s.icon) : ["instagram", "youtube", "linkedin"],
+  social = B ? Object.values(B.social).map(s => s.icon) : ["instagram"],
   legal = B ? B.lines.copyright : "© 2026 Paprikaa Culinary Ventures Private Limited",
   policies = B ? B.lines.footerPolicies : ["Privacy", "Terms", "FSSAI Lic."],
   contact = B ? [B.contact.website, B.contact.phoneDisplay, B.contact.email] : null,
@@ -5911,10 +7858,26 @@ function SiteHeader({
     }
   }, rest), /*#__PURE__*/React.createElement("a", {
     href: "#",
+    "aria-label": "Pink Paprikaa home",
     style: {
       display: "flex",
       alignItems: "center",
-      flex: "0 0 auto"
+      flex: "0 0 auto",
+      borderRadius: "var(--radius-sm)",
+      transition: "opacity var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)"
+    },
+    onPointerEnter: e => {
+      e.currentTarget.style.opacity = ".82";
+    },
+    onPointerLeave: e => {
+      e.currentTarget.style.opacity = "1";
+      e.currentTarget.style.transform = "none";
+    },
+    onPointerDown: e => {
+      e.currentTarget.style.transform = "scale(.97)";
+    },
+    onPointerUp: e => {
+      e.currentTarget.style.transform = "none";
     }
   }, /*#__PURE__*/React.createElement(__ds_scope.Logo, {
     base: base,
@@ -6022,6 +7985,74 @@ Object.assign(__ds_scope, { StatBand });
 // components/organisms/TabBar.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+function TabItem({
+  it,
+  on,
+  onPick
+}) {
+  const p = __ds_scope.usePress(false);
+  return /*#__PURE__*/React.createElement("button", _extends({
+    type: "button",
+    onClick: onPick,
+    "aria-current": on ? "page" : undefined
+  }, p.bind, {
+    style: {
+      flex: 1,
+      border: "none",
+      background: "transparent",
+      cursor: "pointer",
+      display: "grid",
+      justifyItems: "center",
+      alignContent: "center",
+      gap: 4,
+      position: "relative",
+      color: on ? p.press ? "var(--brand-active)" : "var(--pink-500)" : p.press ? "var(--pink-600)" : p.hover ? "var(--ink-800)" : "var(--ink-500)",
+      outline: p.focus ? "2px solid var(--pink-500)" : "none",
+      outlineOffset: -4,
+      borderRadius: "var(--radius-md)",
+      transition: "color var(--dur-fast) var(--ease-out)"
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      position: "relative",
+      display: "inline-grid",
+      placeItems: "center",
+      width: 56,
+      height: 30,
+      borderRadius: "var(--radius-pill)",
+      background: p.press ? "var(--state-press)" : p.hover || on ? "var(--state-hover)" : "transparent",
+      transform: p.press ? "scale(.92)" : "none",
+      transition: "background var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)"
+    }
+  }, /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: it.icon,
+    size: "lg"
+  }), it.count ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      position: "absolute",
+      top: -3,
+      right: 8,
+      minWidth: 16,
+      height: 16,
+      padding: "0 4px",
+      borderRadius: 99,
+      background: "var(--pink-500)",
+      color: "var(--ink-000)",
+      fontFamily: "var(--font-display)",
+      fontWeight: 700,
+      fontSize: 10,
+      display: "grid",
+      placeItems: "center"
+    }
+  }, it.count) : null), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: "var(--font-display)",
+      fontWeight: on ? 700 : 500,
+      fontSize: 11
+    }
+  }, it.label));
+}
+
 /** Fixed 64px bottom navigation for the ordering app. */
 function TabBar({
   items = [],
@@ -6041,56 +8072,12 @@ function TabBar({
     }
   }, rest), items.map(it => {
     const on = it.value === value;
-    return /*#__PURE__*/React.createElement("button", {
+    return /*#__PURE__*/React.createElement(TabItem, {
       key: it.value,
-      type: "button",
-      onClick: () => onChange && onChange(it.value),
-      "aria-current": on ? "page" : undefined,
-      style: {
-        flex: 1,
-        border: "none",
-        background: "transparent",
-        cursor: "pointer",
-        display: "grid",
-        justifyItems: "center",
-        alignContent: "center",
-        gap: 4,
-        color: on ? "var(--pink-500)" : "var(--ink-500)",
-        transition: "color var(--dur-fast) var(--ease-out)",
-        position: "relative"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        position: "relative",
-        display: "inline-flex"
-      }
-    }, /*#__PURE__*/React.createElement(__ds_scope.Icon, {
-      name: it.icon,
-      size: "lg"
-    }), it.count ? /*#__PURE__*/React.createElement("span", {
-      style: {
-        position: "absolute",
-        top: -4,
-        right: -8,
-        minWidth: 16,
-        height: 16,
-        padding: "0 4px",
-        borderRadius: 99,
-        background: "var(--pink-500)",
-        color: "var(--ink-000)",
-        fontFamily: "var(--font-display)",
-        fontWeight: 700,
-        fontSize: 10,
-        display: "grid",
-        placeItems: "center"
-      }
-    }, it.count) : null), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: "var(--font-display)",
-        fontWeight: on ? 700 : 500,
-        fontSize: 11
-      }
-    }, it.label));
+      it: it,
+      on: on,
+      onPick: () => onChange && onChange(it.value)
+    });
   }));
 }
 Object.assign(__ds_scope, { TabBar });
@@ -6153,7 +8140,8 @@ const PP_BRAND = {
   tagline: "India's First Desi Urban Café",
   statement: "Desi at heart. Urban by nature.",
   vegStatement: "100% vegetarian kitchen.",
-  est: 2019,
+  est: 2025,
+  about: "Opened in 2025.",
   legal: {
     entity: "Paprikaa Culinary Ventures Private Limited",
     cin: "U56101HR2025PTC133469",
@@ -6175,19 +8163,31 @@ const PP_BRAND = {
   },
   social: {
     instagram: {
-      handle: "@pinkpaprikaa",
-      url: "https://instagram.com/pinkpaprikaa",
+      handle: "@thepinkpaprikaa",
+      url: "https://www.instagram.com/thepinkpaprikaa/",
       icon: "instagram"
+    }
+  },
+  ordering: {
+    website: {
+      label: "Order Online",
+      url: "https://order.pinkpaprikaa.com/"
     },
-    youtube: {
-      handle: "Pink Paprikaa",
-      url: "https://youtube.com/@pinkpaprikaa",
-      icon: "youtube"
+    swiggy: {
+      label: "Swiggy",
+      url: "https://www.swiggy.com/menu/1234520?source=sharing"
     },
-    linkedin: {
-      handle: "Pink Paprikaa",
-      url: "https://linkedin.com/company/pinkpaprikaa",
-      icon: "linkedin"
+    zomato: {
+      label: "Zomato",
+      url: "https://zomato.onelink.me/xqzv/scvd80ce"
+    }
+  },
+  reviews: {
+    google: {
+      rating: 4.3,
+      count: 98,
+      label: "Google reviews",
+      url: "https://maps.app.goo.gl/y8xr1QtSW1kfQKwD7?g_st=ic"
     }
   },
   hours: {
@@ -6202,7 +8202,7 @@ const PP_BRAND = {
     address: "Booth No. 67P, HSVP Market, Sector 57, Gurgaon 122003",
     hours: "TODO",
     phone: "+919090704001",
-    maps: "TODO"
+    maps: "https://maps.app.goo.gl/y8xr1QtSW1kfQKwD7?g_st=ic"
   }],
   billing: {
     gstRate: 0.05,
@@ -6233,7 +8233,9 @@ PP_BRAND.lines = {
   outletsCount: "One kitchen in Sector 57, Gurgaon",
   cities: Array.from(new Set(PP_BRAND.outlets.map(o => o.city))).join(" · "),
   footerPolicies: [...PP_BRAND.policies, "FSSAI Lic. " + PP_BRAND.legal.fssai],
-  contactShort: PP_BRAND.contact.website + " · " + PP_BRAND.contact.phoneDisplay
+  contactShort: PP_BRAND.contact.website + " · " + PP_BRAND.contact.phoneDisplay,
+  googleRating: PP_BRAND.reviews.google.rating + " · " + PP_BRAND.reviews.google.count + " Google reviews",
+  est: "Est. " + PP_BRAND.est
 };
 Object.assign(__ds_scope, { PP_BRAND, __ds_default_tokens_brand_module_1wu294z: PP_BRAND });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "tokens/brand.module.js", error: String((e && e.message) || e) }); }
@@ -7441,7 +9443,11 @@ __ds_ns.Link = __ds_scope.Link;
 
 __ds_ns.Logo = __ds_scope.Logo;
 
+__ds_ns.Menu = __ds_scope.Menu;
+
 __ds_ns.PatternField = __ds_scope.PatternField;
+
+__ds_ns.Popover = __ds_scope.Popover;
 
 __ds_ns.PriceTag = __ds_scope.PriceTag;
 
@@ -7469,6 +9475,8 @@ __ds_ns.Tag = __ds_scope.Tag;
 
 __ds_ns.Text = __ds_scope.Text;
 
+__ds_ns.TextButton = __ds_scope.TextButton;
+
 __ds_ns.Tooltip = __ds_scope.Tooltip;
 
 __ds_ns.AppShell = __ds_scope.AppShell;
@@ -7489,11 +9497,17 @@ __ds_ns.Stack = __ds_scope.Stack;
 
 __ds_ns.Accordion = __ds_scope.Accordion;
 
+__ds_ns.ActionMenu = __ds_scope.ActionMenu;
+
 __ds_ns.Alert = __ds_scope.Alert;
 
 __ds_ns.Breadcrumb = __ds_scope.Breadcrumb;
 
+__ds_ns.Combobox = __ds_scope.Combobox;
+
 __ds_ns.CouponTicket = __ds_scope.CouponTicket;
+
+__ds_ns.DatePicker = __ds_scope.DatePicker;
 
 __ds_ns.EmptyState = __ds_scope.EmptyState;
 
@@ -7518,6 +9532,8 @@ __ds_ns.OtpInput = __ds_scope.OtpInput;
 __ds_ns.OutletCard = __ds_scope.OutletCard;
 
 __ds_ns.Pagination = __ds_scope.Pagination;
+
+__ds_ns.PageButton = __ds_scope.PageButton;
 
 __ds_ns.PriceSummary = __ds_scope.PriceSummary;
 

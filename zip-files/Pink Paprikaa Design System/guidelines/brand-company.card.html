@@ -1,4 +1,4 @@
-<!-- @dsCard group="Brand" viewport="700x520" name="Company details" subtitle="brand.js — the single source for name, legal, GST, contact, outlets and billing. Every design reads from it." -->
+<!-- @dsCard group="Brand" viewport="700x680" name="Company details" subtitle="brand.js — the single source for name, legal, GST, contact, outlets and billing. Every design reads from it." -->
 <!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
 <script src="../brand.js"></script>
 <style>html,body{margin:0}body{padding:20px 24px;font-family:var(--font-body);background:var(--surface-page)}
@@ -23,6 +23,8 @@ document.getElementById('g').innerHTML=[
  box('Legal',[row('entity',B.legal.entity),row('cin',B.legal.cin),row('gstin',B.legal.gstin),row('fssai',B.legal.fssai),row('pan',B.legal.pan)]),
  box('Contact',[row('web',B.contact.website),row('phone',B.contact.phoneDisplay),row('whatsapp',B.contact.whatsapp),row('email',B.contact.email),row('franchise',B.contact.franchiseEmail)]),
  box('Billing',[row('gst',(B.billing.gstRate*100)+'% (CGST '+(B.billing.gstSplit.cgst*100)+' + SGST '+(B.billing.gstSplit.sgst*100)+')'),row('note',B.billing.taxNote),row('prefix',B.billing.invoicePrefix+'-0000'),row('upi',B.billing.upi),row('ifsc',B.billing.ifsc)]),
+ box('Ordering',Object.values(B.ordering).map(o=>row(o.label.toLowerCase().split(' ')[0],o.url))),
+ box('Reviews',[row('google',B.lines.googleRating),row('link',B.reviews.google.url)]),
  box('Social',Object.values(B.social).map(s=>row(s.icon,s.handle))),
  box('Outlets · '+B.lines.cities,B.outlets.map(o=>row(o.city,o.name+' — '+o.hours))),
 ].join('');

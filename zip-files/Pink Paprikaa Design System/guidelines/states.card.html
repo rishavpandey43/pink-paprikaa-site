@@ -1,3 +1,31 @@
-<!-- @dsCard group="Motion" viewport="700x170" name="Interaction states" subtitle="Rest → hover (darken) → press (0.97 + darken) → disabled (real grey)." -->
-<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css"><style>html,body{margin:0}body{padding:20px 24px;font-family:var(--font-body);background:var(--surface-page)}.k{font-family:var(--font-mono);font-size:10.5px;color:var(--text-muted)}</style></head><body><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="text-align:center"><div style="height:44px;padding:0 22px;background:var(--pink-500);color:#fff;border-radius:var(--radius-pill);display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:15px;transform:none;box-shadow:var(--shadow-brand)">Order Now</div><div class="k" style="margin-top:8px">Rest</div></div><div style="text-align:center"><div style="height:44px;padding:0 22px;background:var(--pink-600);color:#fff;border-radius:var(--radius-pill);display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:15px;transform:none;box-shadow:var(--shadow-brand)">Order Now</div><div class="k" style="margin-top:8px">Hover</div></div><div style="text-align:center"><div style="height:44px;padding:0 22px;background:var(--pink-700);color:#fff;border-radius:var(--radius-pill);display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:15px;transform:scale(.97);box-shadow:none">Order Now</div><div class="k" style="margin-top:8px">Press</div></div><div style="text-align:center"><div style="height:44px;padding:0 22px;background:var(--ink-200);color:var(--ink-400);border-radius:var(--radius-pill);display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:15px;transform:none;box-shadow:none">Order Now</div><div class="k" style="margin-top:8px">Disabled</div></div></div>
-<div class="k" style="margin-top:12px">Never fade a button on hover. Press is 80ms; hover 140ms.</div></body></html>
+<!-- @dsCard group="Motion" viewport="760x1320" name="Interaction states" subtitle="Every pressable element: rest, hover, press, focus-visible, disabled — and the --state-* tokens behind them." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../components/_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../components/_story.js"></script>
+<script src="../brand.js"></script>
+<script src="../_ds_bundle.js"></script>
+<style>.sw{width:44px;height:28px;border-radius:6px;border:1px solid var(--border-subtle);flex:0 0 auto}.tk{display:flex;align-items:center;gap:10px;min-width:0}.tk code{font-family:var(--font-mono);font-size:11px;color:var(--text-heading)}.tk span{font-size:11.5px;color:var(--text-muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 24px;width:100%}</style>
+</head><body><div id="root"></div><script type="text/babel">
+const { Button, IconButton, TextButton, Link, Tag, PageButton } = window.PinkPaprikaaDesignSystem_23ef63;
+const ST = ["rest","hover","press","focus","disabled"];
+const map = (render) => ST.map(s => <div key={s} style={{display:'grid',gap:6,justifyItems:'center'}}>{render(s === 'rest' || s === 'disabled' ? undefined : s, s === 'disabled')}<span className="note" style={{paddingTop:0}}>{s}</span></div>);
+const T = [["--state-hover","pink-50 · hover on light"],["--state-press","pink-100 · press on light"],["--state-hover-neutral","ink-100 · neutral hover"],["--state-press-neutral","ink-200 · neutral press"],["--state-hover-on-color","white 16% · on pink/ink/status"],["--state-press-on-color","white 28% · on pink/ink/status"],["--state-hover-tint","ink 6% · inherits parent colour"],["--state-press-tint","ink 12% · inherits parent colour"],["--state-press-danger","danger press"],["--state-disabled-fill","ink-100 · disabled fill"],["--brand-hover","pink-600 · filled pink hover"],["--brand-active","pink-700 · filled pink press"]];
+function Demo(){return(<Rows>
+<Row label="the rule" note="no exceptions"><div style={{fontSize:14,lineHeight:1.55,color:'var(--text-body)',maxWidth:'58ch'}}>Anything a guest can press has <b>five states</b>. Hover darkens one step (pointer only, never on touch). Press darkens a second step and scales to 0.97 in 80ms; Space/Enter show it too. Focus is keyboard-only: a 2px ring, white on coloured surfaces. Disabled is a real grey, never just opacity. All components read one hook, <code>usePress</code>, and the tokens below.</div></Row>
+<Row label="Button" note="primary">{map((s,d)=><Button size="sm" state={s} disabled={d}>Order Now</Button>)}</Row>
+<Row label="Button" note="secondary">{map((s,d)=><Button size="sm" variant="secondary" state={s} disabled={d}>See Menu</Button>)}</Row>
+<Row label="Button" note="ghost">{map((s,d)=><Button size="sm" variant="ghost" state={s} disabled={d}>Find Us</Button>)}</Row>
+<Row label="TextButton" note="toast / inline actions">{map((s,d)=><TextButton state={s} disabled={d}>Edit</TextButton>)}</Row>
+<Row label="TextButton" note='on="brand" caps' className="pad on-brand">{map((s,d)=><TextButton on="brand" caps size="sm" state={s} disabled={d}>View Cart</TextButton>)}</Row>
+<Row label="IconButton">{map((s,d)=><IconButton icon="heart" label="Save" variant="secondary" state={s} disabled={d}/>)}</Row>
+<Row label="Link">{map((s,d)=><Link state={s} disabled={d}>Outlets</Link>)}</Row>
+<Row label="Tag">{map((s,d)=><Tag onClick={()=>{}} state={s} disabled={d}>Sweets</Tag>)}</Row>
+{PageButton ? <Row label="Pagination">{map((s,d)=><PageButton state={s} disabled={d}>3</PageButton>)}</Row> : null}
+<Row label="tokens" note="tokens/colors.css"><div className="grid">{T.map(([k,n])=><div key={k} className="tk"><div className="sw" style={{background:'var('+k+')'}}></div><div style={{display:'grid',minWidth:0}}><code>{k}</code><span>{n}</span></div></div>)}</div></Row>
+<Row label="timing"><div style={{fontSize:13.5,color:'var(--text-muted)'}}>hover/colour <code>--dur-fast</code> 140ms · press <code>--dur-instant</code> 80ms · <code>--ease-out</code> · never fade a control on hover.</div></Row>
+</Rows>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

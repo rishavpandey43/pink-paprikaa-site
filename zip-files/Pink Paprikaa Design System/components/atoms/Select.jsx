@@ -1,5 +1,6 @@
 import React from "react";
 import { Icon } from "./Icon.jsx";
+import { Menu, normalizeItems } from "./Menu.jsx";
 
 const STATUS = {
   default: { border: "var(--border-default)", ring: "var(--focus-ring)", accent: "var(--pink-500)", icon: null, text: "var(--text-subtle)" },
@@ -10,18 +11,39 @@ const STATUS = {
 const resolve = (p) => (p.error ? "error" : p.success ? "success" : p.warning ? "warning" : p.status || "default");
 const messageOf = (p) => (typeof p.error === "string" ? p.error : typeof p.success === "string" ? p.success : typeof p.warning === "string" ? p.warning : p.hint);
 
-/** Native select in brand clothing. Matches Input metrics and states exactly. */
+/** Brand dropdown. Our own trigger and list panel — never the browser's popup.
+    Matches Input metrics and states exactly; becomes a bottom sheet on phones. */
 export function Select({
-  label, hint, error, success, warning, status, options = [], value, onChange, id,
-  placeholder, disabled, readOnly, required, optional, size = "md", icon, style, ...rest
+  label, hint, error, success, warning, status, options = [], value, defaultValue, onChange, onValueChange,
+  id, name, placeholder, disabled, readOnly, required, optional, size = "md", icon,
+  base = "/assets", sheet = "auto", defaultOpen = false, style, ...rest
 }) {
+  const opts = normalizeItems(options);
+  const first = opts.find((o) => !o.disabled && !o.divider && !o.group);
+  const [inner, setInner] = React.useState(defaultValue !== undefined ? defaultValue : placeholder ? "" : first ? first.value : "");
+  const v = value !== undefined ? value : inner;
+  const [open, setOpen] = React.useState(defaultOpen);
   const [focus, setFocus] = React.useState(false);
-  const uid = id || React.useId();
+  const [hov, setHov] = React.useState(false);
+  const btnRef = React.useRef(null);
+  const autoId = React.useId();
+  const uid = id || autoId;
   const key = resolve({ error, success, warning, status });
   const s = STATUS[key];
   const message = messageOf({ error, success, warning, hint });
-  const active = key !== "default" || focus;
+  const active = key !== "default" || focus || open;
   const h = size === "sm" ? 40 : size === "lg" ? 56 : 48;
+  const cur = opts.find((o) => o.value === v);
+  const locked = disabled || readOnly;
+
+  const close = React.useCallback((why) => { setOpen(false); if (why === "escape" && btnRef.current) btnRef.current.focus(); }, []);
+  const choose = (o) => {
+    if (value === undefined) setInner(o.value);
+    if (onChange) onChange({ target: { value: o.value, name }, currentTarget: { value: o.value, name }, value: o.value });
+    if (onValueChange) onValueChange(o.value);
+    setOpen(false);
+    btnRef.current && btnRef.current.focus();
+  };
 
   return (
     <div style={{ display: "grid", gap: 6, minWidth: 0, ...style }}>
@@ -33,35 +55,43 @@ export function Select({
         </label>
       ) : null}
       <div style={{ position: "relative", minWidth: 0 }}>
-        {icon ? <Icon name={icon} size="md" style={{ position: "absolute", left: 14, top: (h - 20) / 2, color: disabled ? "var(--ink-400)" : active ? s.accent : "var(--ink-500)", pointerEvents: "none" }} /> : null}
-        <select
-          id={uid} value={value} onChange={onChange} disabled={disabled || readOnly} required={required}
-          aria-invalid={key === "error" || undefined}
+        <button
+          ref={btnRef} id={uid} type="button" role="combobox" disabled={disabled}
+          aria-haspopup="listbox" aria-expanded={open} aria-controls={uid + "-list"}
+          aria-invalid={key === "error" || undefined} aria-required={required || undefined} aria-readonly={readOnly || undefined}
+          aria-describedby={message ? uid + "-msg" : undefined}
+          onClick={() => !locked && setOpen((o) => !o)}
+          onKeyDown={(e) => { if (!locked && !open && ["ArrowDown", "ArrowUp", "Enter", " "].indexOf(e.key) > -1) { e.preventDefault(); setOpen(true); } }}
           onFocus={() => setFocus(true)} onBlur={() => setFocus(false)}
+          onPointerEnter={() => setHov(true)} onPointerLeave={() => setHov(false)}
           style={{
-            width: "100%", height: h, paddingRight: 42, paddingLeft: icon ? 42 : 14,
-            appearance: "none", WebkitAppearance: "none",
+            width: "100%", height: h, display: "flex", alignItems: "center", gap: 10, padding: "0 14px", textAlign: "left",
             background: disabled ? "var(--ink-100)" : readOnly ? "var(--surface-sunken)" : "var(--ink-000)",
-            border: (active ? 2 : 1) + "px solid " + (disabled ? "var(--border-subtle)" : active ? s.border : "var(--border-default)"),
-            borderRadius: "var(--radius-md)",
-            fontFamily: "var(--font-body)", fontSize: size === "sm" ? 14 : 15,
+            border: (active ? 2 : 1) + "px solid " + (disabled ? "var(--border-subtle)" : active ? s.border : hov && !locked ? "var(--border-strong)" : "var(--border-default)"),
+            borderRadius: "var(--radius-md)", fontFamily: "var(--font-body)", fontSize: size === "sm" ? 14 : 15,
             color: disabled ? "var(--ink-400)" : "var(--text-body)",
-            boxShadow: focus && !disabled ? s.ring : "none", outline: "none",
-            cursor: disabled || readOnly ? "not-allowed" : "pointer",
+            boxShadow: (focus || open) && !disabled ? s.ring : "none", outline: "none",
+            cursor: locked ? "not-allowed" : "pointer",
             transition: "border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)",
           }}
           {...rest}
         >
-          {placeholder ? <option value="" disabled>{placeholder}</option> : null}
-          {options.map((o) => {
-            const opt = typeof o === "string" ? { value: o, label: o } : o;
-            return <option key={opt.value} value={opt.value} disabled={opt.disabled}>{opt.label}</option>;
-          })}
-        </select>
-        <Icon name={s.icon || "chevron-down"} size="md"
-          style={{ position: "absolute", right: 14, top: (h - 20) / 2, color: s.icon ? s.accent : disabled ? "var(--ink-400)" : "var(--ink-500)", pointerEvents: "none" }} />
+          {icon ? <Icon name={icon} size="md" style={{ flex: "0 0 auto", color: disabled ? "var(--ink-400)" : active ? s.accent : "var(--ink-500)" }} /> : null}
+          <span style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: cur ? undefined : "var(--text-subtle)" }}>
+            {cur ? cur.label : placeholder || "\u00a0"}
+          </span>
+          {readOnly && !s.icon ? <Icon name="lock" size="sm" style={{ flex: "0 0 auto", color: "var(--ink-400)" }} /> : (
+            <Icon name={s.icon || "chevron-down"} size="md" style={{
+              flex: "0 0 auto", color: s.icon ? s.accent : disabled ? "var(--ink-400)" : open ? "var(--pink-500)" : "var(--ink-500)",
+              transform: open && !s.icon ? "rotate(180deg)" : "none", transition: "transform var(--dur-fast) var(--ease-out)",
+            }} />
+          )}
+        </button>
+        {name ? <input type="hidden" name={name} value={v} /> : null}
+        <Menu open={open} onClose={close} items={opts} value={v} onSelect={choose} role="listbox" id={uid + "-list"}
+          base={base} sheet={sheet} title={label || placeholder} />
       </div>
-      {message ? <span style={{ fontSize: 12.5, color: key === "default" ? "var(--text-subtle)" : s.text }}>{message}</span> : null}
+      {message ? <span id={uid + "-msg"} style={{ fontSize: 12.5, color: key === "default" ? "var(--text-subtle)" : s.text }}>{message}</span> : null}
     </div>
   );
 }

@@ -10,6 +10,9 @@ export interface ToastProps {
   onAction?: () => void;
   /** Play the single-overshoot --ease-pop entrance (add-to-cart only). */
   pop?: boolean;
+  actionDisabled?: boolean;
+  /** Force the action's visual state — docs only. */
+  actionState?: "hover" | "press" | "focus";
   style?: CSSProperties;
 }
 export function Toast(props: ToastProps): JSX.Element;
