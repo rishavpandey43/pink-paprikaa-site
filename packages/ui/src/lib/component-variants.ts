@@ -273,6 +273,9 @@ const SPACING = [
   "menu-max-sm",
   "menu-max-md",
   "menu-max-lg",
+  "toggle-button-h-sm",
+  "toggle-button-h-md",
+  "toggle-button-h-lg",
   "site-header-logo",
   "site-header-logo-compact",
 ];

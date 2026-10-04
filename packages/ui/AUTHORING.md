@@ -400,3 +400,7 @@ is a `color`. If it is a domain state, it is a `status`. A new `tone` prop is ne
 - A component whose root is text extends `TypographyProps` and forwards them. `Link` is the model:
   it renders through Typography and keeps only its own colours.
 - Use `variant="inherit"` for a run of text that takes its parent's size.
+
+**ToggleButtonGroup vs ChipGroup.** `ToggleButtonGroup` is a toolbar control (view switcher, text
+alignment, quick filters) with MUI's `exclusive` / `value` semantics; `ChipGroup` is a form value
+control for chips (with `name`, `status` and `message`) — pick it when the choice is submitted.

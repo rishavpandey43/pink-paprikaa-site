@@ -1,0 +1,20 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "toggle-button-h-sm": {
+      "$value": "32px",
+      "$description": "ToggleButton sm height and minimum width (an icon-only button is square).",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
+    },
+    "toggle-button-h-md": {
+      "$value": "40px",
+      "$description": "ToggleButton md height and minimum width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
+    },
+    "toggle-button-h-lg": {
+      "$value": "48px",
+      "$description": "ToggleButton lg height and minimum width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
+    }
+  }
+}
