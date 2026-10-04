@@ -55,6 +55,8 @@ The audits use these abbreviations: `D/` = handoff `components/molecules/`, `DA/
 | R141 | ImageSlot `fill` (colourway) → `variant: "soft" \| "strong" \| "neutral"`; `isFill` keeps its full-height meaning. IconButton design `on="tint"` → `variant="tint"`. TestimonialWall `variant="brand"` (card surface) → `cardSurface`. | Renames, no consumers yet |
 | R143 | The text atom stays **Typography** (owner 2026-10-05); the design's "Text" page is `Atoms/Typography`; `Text` stays an alias. | One name differs from the design tree |
 | R144 | Extras with no design card are filed inside the matching design group, after the design's pages (owner 2026-10-05). | — |
+| R145 | (owner 2026-10-05) Scope is the **Design System only**: `packages/ui`, `packages/design-tokens`, `apps/storybook` (incl. its Website/App/Marketing kits and Templates, which are DS cards). `Pink Paprikaa Website.html` (the bundled site prototype) and the web app are deferred until the DS is complete. Social links: **Instagram only** (owner-confirmed). | — |
+| R146 | (owner 2026-10-05) Guardrails: `.cursor/rules/*.mdc` (always-on hard rules), a **visual-regression snapshot** of every story (Task 0b), and a **count guard** (tests and stories never decrease). Cursor keeps working on `feat/design-system`. | Repo grows by the PNG baselines |
 | R142 | (owner-confirmed 2026-10-05) DietMark stays veg-only. Card stays `asChild` around a real link (never `div role=button`): same look, hover, press and click as the design. Field keeps owning messages for Input/Checkbox. Popover keeps Radix `open/onOpenChange` (design `onClose` maps to `onOpenChange(false)`). Combobox stays a popover on phones (`D/Combobox.prompt.md`). | — |
 
 ## Review Focus
@@ -71,7 +73,7 @@ The audits use these abbreviations: `D/` = handoff `components/molecules/`, `DA/
 - **Ledger:** `.superpowers/sdd/2026-10-04-ds-07-design-parity/progress.md`. One line per finished task (`Task N: done <sha>..<sha> (ui X, sb Y)`), plus `Ruling:` lines for anything you decide.
 - **Interrupted?** `git status` + the last ledger line. Finish partial work and never delete it.
 - **For each component in a task:** read its audit section → turn every gap line into a failing test or story (see "Gap → test" below) → implement → run its tests + plays → compare with the card (Task 12 tool) → commit.
-- **Batch gate** after Tasks 2, 5, 8, 10, 11b and 12: `pnpm nx run-many -t typecheck lint test build && pnpm nx format:check && pnpm nx sync:check && pnpm nx run storybook:test && pnpm guard:founder`
+- **Batch gate** after Tasks 2, 5, 8, 10, 11b and 12: `pnpm nx run-many -t typecheck lint test build && pnpm nx format:check && pnpm nx sync:check && pnpm nx run storybook:test && pnpm guard:founder && pnpm nx run storybook:build && pnpm nx run storybook:visual && node tools/scripts/count-guard.mjs` (visual runs with no snapshot updates; see Task 0b).
 - **Review** after each batch gate: check the batch diff against the audit lines it claims to close. Every closed line needs a test or story. Collect leftovers in `minors.md`.
 
 ### Gap → test (how every audit line becomes RED first)
@@ -98,6 +100,25 @@ The audits use these abbreviations: `D/` = handoff `components/molecules/`, `DA/
 
   Generate the skeleton with a small script (`apps/storybook/scripts/design-coverage.mjs`) that parses the `.d.ts` interfaces and `@dsCard` names, then fill in the equivalents by hand. Every later task updates its rows to `have`. Task 12 Step 5 fails the review if any row is not `have` or an approved R-number.
 - [ ] **Step 3:** Read the four audit files' **Summary** and **Cross-cutting** sections and `IX` in full (73 lines). Don't read the per-component sections until the task that needs them.
+
+### Task 0b: Guardrails: visual snapshots and the count guard (before any code change)
+
+**Why:** this plan touches ~100 components. A change meant for one component must not silently alter another, and no test or story may disappear to make a gate pass.
+
+**Files:**
+- Create: `apps/storybook/visual/visual.spec.ts`, `apps/storybook/visual/playwright.config.ts`, `apps/storybook/visual/Dockerfile` (or a `docker run` script), `apps/storybook/visual/__screenshots__/**` (baselines, committed)
+- Modify: `apps/storybook/package.json` (`pnpm add -D @playwright/test --filter @pink-paprikaa-web/storybook` if it isn't already resolvable; script `"visual": …` exposed as the Nx target `storybook:visual`)
+- Create: `tools/scripts/count-guard.mjs` + `docs/superpowers/specs/2026-10-04-design-parity/baseline-counts.json`
+
+- [ ] **Step 1: Visual snapshot suite.**
+  - `visual.spec.ts` reads `apps/storybook/storybook-static/index.json`, iterates every entry of `type: "story"` (skip the `!test`/`!visual` tags), opens `iframe.html?id=<id>&viewMode=story`, waits for fonts (`document.fonts.ready`) and for animations to settle (`reducedMotion: "reduce"` in the context, so loops and transitions are frozen), and runs `expect(page).toHaveScreenshot("<id>.png", { fullPage: true, maxDiffPixelRatio: 0.001 })`.
+  - Two projects: `mobile` (360×800) and `desktop` (1280×800).
+  - `playwright.config.ts` serves `storybook-static` through its `webServer` option, using a tiny Node `http` static server script (`apps/storybook/visual/serve.mjs`, the same approach as the plan-3 parity tools). No ad-hoc `npx` servers.
+  - Rendering must be deterministic, so the suite runs inside the official Playwright Docker image whose version matches the installed `@playwright/test`: `docker run --rm -v "$PWD":/work -w /work mcr.microsoft.com/playwright:v<same version>-noble pnpm nx run storybook:visual`. Document the command in `apps/storybook/visual/README.md`. If Docker isn't available, ledger a `Ruling:` and run natively, with baselines marked as macOS-generated.
+- [ ] **Step 2: Baseline.** `pnpm nx run storybook:build`, then the suite with `--update-snapshots`. Commit the baselines (`test(storybook): add visual baselines for every story`). Record the PNG count and total size in the ledger.
+- [ ] **Step 3: How later tasks use it.** Each component task runs `storybook:visual -- --grep <component-id-prefix>`. If **its own** screenshots change as the task intends, update **only those** (`--update-snapshots --grep <prefix>`) and look at each diff image before committing. If **any other** story's screenshot changes, that's an unintended side effect: fix the code and never update those baselines. The batch gate runs the full suite with no updates.
+- [ ] **Step 4: Count guard.** `count-guard.mjs` runs the ui and storybook Vitest suites with `--reporter=json` (or reads their JSON output files), counts passed tests, counts stories in `storybook-static/index.json`, and compares them with `baseline-counts.json` (`{ "ui": N, "storybook": N, "tokens": N, "stories": N }`). It exits 1 if any count is lower than the baseline, printing which one; after a green batch it may raise the baseline (`--update`), never lower it. Unit-test it with two fixture JSONs (lower → exit 1; equal or higher → exit 0). Add it to the batch gate: `… && pnpm nx run storybook:build && node tools/scripts/count-guard.mjs`.
+- [ ] **Step 5: Commit** `chore: add visual snapshots and a count guard for the parity pass`.
 
 ### Task 1: Tokens: state layer, scrollbar, press scales, spacing, pop-in
 

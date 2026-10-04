@@ -1,0 +1,26 @@
+---
+description: Pink Paprikaa hard rules — apply to every request in this repo
+alwaysApply: true
+---
+
+# Pink Paprikaa — guardrails (binding, never skip)
+
+## Current work
+- Plan: `docs/superpowers/plans/2026-10-04-ds-07-design-parity.md`. Ledger: `.superpowers/sdd/2026-10-04-ds-07-design-parity/progress.md` — read its last line before doing anything; resume there.
+- Source of truth for design/behaviour: the Claude Design handoff in `zip-files/Pink Paprikaa Design System/` (cards, `.d.ts`, `.jsx`, `handoff/*.md`, tokens, guidelines, templates, ui_kits). Scope: the Design System only (`packages/ui`, `packages/design-tokens`, `apps/storybook`); `Pink Paprikaa Website.html` and the web app are out of scope until the DS is complete. Gap list: `docs/superpowers/specs/2026-10-04-design-parity/`.
+- **Nothing the design defines may be removed.** Rename to our API, move internals to `lib/`, add extras — never subtract. Only approved differences: R136 16px field text · R137 AA colours · R140 no egg, no "18 spices", Instagram only · R142 Card as real link, DietMark veg-only · R143 Typography name.
+
+## Never
+- `git reset --hard`, `git checkout -- <path>`, `git clean`, `git stash drop`, force-push, `git push`, merging, rebasing published history.
+- `--no-verify`; `eslint-disable` of a LAW rule (`no-raw-hex`, `atomic-layering`, module boundaries); editing a gate, budget or threshold to make it pass.
+- Deleting or weakening a test, play, story or screenshot baseline to get green. Test and story counts never go down; removing one needs a `Ruling:` line saying why.
+- Raw hex, arbitrary Tailwind values (`w-[13px]`), `(--x)` shorthand, `max-w-prose`. Tokens only.
+- Native browser UI: `<select>` (outside `packages/ui/src/lib/`), `type="date|time|…"`, `required` on DOM controls, `title=` tooltips, `<form>` without `noValidate`.
+- Hand-written dependency versions (use `pnpm add`). Upgrading TypeScript to 7. npm or yarn.
+- Editing frozen plans `docs/superpowers/plans/2026-09-27-*` or the handoff in `zip-files/`.
+
+## Always
+- Brand: "Pink Paprikaa" (two a's). Pure veg — no egg, meat or fish in any fixture or copy. No founder identity anywhere (`pnpm guard:founder`).
+- Tests first (RED), then code. Query by role/label; end suites with `expectNoA11yViolations`. Stories per design card row, Playground, OnSurfaces, 360px, plays.
+- Before each commit: the component's tests + plays + visual snapshots pass. After each batch: the full gate in the plan. Conventional Commits, lower-case subject, one commit per component.
+- Interrupted or unsure? `git status` + last ledger line; finish partial work, never delete it. Decide ambiguities as `Ruling: <decision> — <why> — <cost if wrong>` in the ledger and continue; stop only for destructive git, push/merge, or a plan so broken every path is a guess.
