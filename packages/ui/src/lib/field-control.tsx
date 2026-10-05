@@ -58,7 +58,11 @@ export const fieldControlVariants = componentVariants({
     hasIcon: { true: "" },
     status: {
       default: {
-        root: "focus-within:border-2 focus-within:border-border-brand focus-within:shadow-focus-ring",
+        root: [
+          "focus-within:border-2 focus-within:border-border-brand focus-within:shadow-focus-ring",
+          // X1: hover strengthens the border when idle (not focused, not disabled, not read-only).
+          "not-focus-within:hover:not-has-[>:is(input,textarea,select):disabled]:border-border-strong",
+        ],
         icon: "group-focus-within/field:text-pink-500",
         glyph: "text-ink-500 group-has-[>:is(input,textarea,select):disabled]/field:text-ink-400",
       },
@@ -82,7 +86,15 @@ export const fieldControlVariants = componentVariants({
   compoundVariants: [
     // A select's text clears a leading icon: 14px inset + 20px icon + 10px gap.
     { control: "select", hasIcon: true, class: { control: "ps-11" } },
-    { status: "default", isReadOnly: true, class: { glyph: "text-ink-400" } },
+    {
+      status: "default",
+      isReadOnly: true,
+      class: {
+        // Read-only fields keep a quiet border — no hover strengthen (X1).
+        root: "not-focus-within:hover:border-border-default",
+        glyph: "text-ink-400",
+      },
+    },
     // A read-only select is disabled natively (a select cannot be read-only), so it undoes the
     // disabled paint: locked but readable — body text on its status border, like a read-only Input.
     {

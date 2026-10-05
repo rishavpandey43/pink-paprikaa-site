@@ -240,7 +240,10 @@ export function EnquiryForm({ onSubmit }: EnquiryFormProps) {
                 <Input
                   {...field}
                   {...register("date")}
-                  type="date"
+                  // Native date is banned (Task 2); DatePicker lands in Task 7.
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="YYYY-MM-DD"
                   status={statusOf(errors.date)}
                 />
               )}
@@ -260,7 +263,10 @@ export function EnquiryForm({ onSubmit }: EnquiryFormProps) {
                 name="guests"
                 render={({ field }) => (
                   <QuantityStepper
-                    {...guestsField}
+                    // QuantityStepper is a group — do not spread aria-required onto it (axe).
+                    id={guestsField.id}
+                    aria-describedby={guestsField["aria-describedby"]}
+                    aria-invalid={guestsField["aria-invalid"]}
                     label="Guests"
                     name={field.name}
                     value={field.value}

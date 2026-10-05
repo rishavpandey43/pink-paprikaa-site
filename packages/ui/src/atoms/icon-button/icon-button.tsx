@@ -29,6 +29,7 @@ const iconButton = componentVariants({
   slots: {
     root: [
       controlStates(),
+      "disabled:bg-ink-200 aria-disabled:bg-ink-200",
       "relative inline-flex shrink-0 items-center justify-center rounded-pill active:press-scale",
     ],
     count:

@@ -37,6 +37,8 @@ export const buttonVariants = componentVariants({
   slots: {
     root: [
       controlStates(),
+      // Disabled fill lives on the recipe until Task 4 paints per-variant disabled (audit-atoms).
+      "disabled:bg-ink-200 aria-disabled:bg-ink-200",
       "inline-flex max-w-full shrink-0 items-center justify-center rounded-pill font-display whitespace-nowrap active:press-scale",
     ],
     label: "min-w-0 truncate",

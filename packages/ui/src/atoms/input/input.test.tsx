@@ -189,4 +189,18 @@ describe("Input", () => {
     const { container } = render(<Input isMultiline aria-label="Note" sx={{ mt: 4 }} />);
     expect(container.firstElementChild).toHaveClass("mt-4");
   });
+
+  it('renders type="number" as text with a decimal inputMode — never a spinner', () => {
+    render(<Input aria-label="Guests" type="number" />);
+    const input = screen.getByRole("textbox", { name: "Guests" });
+    expect(input).toHaveAttribute("type", "text");
+    expect(input).toHaveAttribute("inputmode", "decimal");
+    expect(input).toHaveAttribute("pattern", "[0-9]*[.,]?[0-9]*");
+  });
+
+  it("rejects native date types at compile time", () => {
+    // @ts-expect-error date is not an InputType — use DatePicker
+    const props: import("./input").InputProps = { type: "date", "aria-label": "Day" };
+    void props;
+  });
 });

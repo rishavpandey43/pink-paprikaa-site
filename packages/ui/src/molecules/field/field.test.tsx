@@ -118,7 +118,10 @@ describe("Field", () => {
         {renderInput}
       </Field>
     );
-    expect(screen.getByRole("textbox", { name: "Mobile number" })).toBeRequired();
+    const control = screen.getByRole("textbox", { name: "Mobile number" });
+    expect(control).toBeRequired();
+    expect(control).toHaveAttribute("aria-required", "true");
+    expect(control).not.toHaveAttribute("required");
     expect(screen.getByText("*")).toHaveAttribute("aria-hidden", "true");
     expect(screen.getByText("*")).toHaveClass("text-text-brand");
   });

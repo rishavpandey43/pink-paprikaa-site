@@ -40,7 +40,7 @@ export interface FieldControlProps {
   id: string;
   "aria-describedby"?: string | undefined;
   "aria-invalid"?: true | undefined;
-  required?: true | undefined;
+  "aria-required"?: true | undefined;
 }
 
 export interface FieldProps extends Omit<BaseProps<"div">, "children" | "id"> {
@@ -92,7 +92,8 @@ export function Field({
   const control: FieldControlProps = { id: controlId };
   if (hasFieldMessage({ status, message, hint })) control["aria-describedby"] = messageId;
   if (status === "error") control["aria-invalid"] = true;
-  if (isRequired) control.required = true;
+  // Native `required` pops browser validation bubbles; the handoff uses aria-required only.
+  if (isRequired) control["aria-required"] = true;
 
   return (
     <div className={styles.root({ className: withSx(sx, className) })} {...props}>

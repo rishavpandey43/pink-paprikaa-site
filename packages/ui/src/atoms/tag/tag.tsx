@@ -27,6 +27,7 @@ export const tagVariants = componentVariants({
   slots: {
     root: [
       controlStates(),
+      "disabled:bg-ink-200 aria-disabled:bg-ink-200",
       "inline-flex h-tag-h max-w-full shrink-0 items-center gap-1.5 rounded-pill border px-4 font-body text-tag whitespace-nowrap",
     ],
     label: "min-w-0 truncate",

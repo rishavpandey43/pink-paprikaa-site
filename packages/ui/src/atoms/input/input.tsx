@@ -7,6 +7,9 @@ import type { IconComponent } from "../icon/icon";
 import { FieldControl } from "../../lib/field-control";
 import { withSx } from "../../lib/sx";
 
+/** Allowed single-line types. `number` renders as text + decimal inputMode (no spinner UI). */
+export type InputType = "text" | "email" | "tel" | "url" | "password" | "search" | "number";
+
 interface InputOwnProps extends SxProp {
   size?: "sm" | "md" | "lg" | undefined;
   /** A status raises the border to 2px, tints the icon and shows its glyph. Field shows the message. */
@@ -28,7 +31,10 @@ interface InputOwnProps extends SxProp {
  */
 export type InputProps = InputOwnProps &
   (
-    | ({ isMultiline?: false | undefined } & Omit<ComponentProps<"input">, "size">)
+    | ({
+        isMultiline?: false | undefined;
+        type?: InputType | undefined;
+      } & Omit<ComponentProps<"input">, "size" | "type">)
     | ({ isMultiline: true; rows?: number | undefined } & ComponentProps<"textarea">)
   );
 
@@ -69,11 +75,15 @@ export function Input({
     );
   }
 
-  const { isMultiline = false, ...input } = control;
+  const { isMultiline = false, type = "text", ...input } = control;
+  const numberProps =
+    type === "number"
+      ? { type: "text" as const, inputMode: "decimal" as const, pattern: "[0-9]*[.,]?[0-9]*" }
+      : { type };
   return (
     <FieldControl {...box} isMultiline={isMultiline}>
       {(controlClassName) => (
-        <input type="text" className={controlClassName} {...state} {...input} />
+        <input className={controlClassName} {...state} {...input} {...numberProps} />
       )}
     </FieldControl>
   );

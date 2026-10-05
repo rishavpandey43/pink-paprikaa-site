@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { User } from "lucide-react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
@@ -9,7 +10,7 @@ describe("Avatar", () => {
     render(<Avatar name="Aditi Rao" />);
     const avatar = screen.getByRole("img", { name: "Aditi Rao" });
     expect(avatar).toHaveTextContent("AR");
-    expect(avatar).toHaveAttribute("title", "Aditi Rao");
+    expect(avatar).not.toHaveAttribute("title");
     expect(avatar).toHaveClass(
       "bg-pink-100",
       "text-pink-700",
@@ -19,6 +20,17 @@ describe("Avatar", () => {
       "size-avatar-md",
       "text-avatar-md"
     );
+  });
+
+  it("shows a Tooltip on focus when tooltip is given — never a title bubble", async () => {
+    const user = userEvent.setup();
+    render(<Avatar name="Aditi Rao" tooltip="Host" />);
+    const avatar = screen.getByRole("img", { name: "Aditi Rao" });
+    expect(avatar).not.toHaveAttribute("title");
+    expect(avatar).toHaveAttribute("tabindex", "0");
+    await user.tab();
+    expect(avatar).toHaveFocus();
+    expect(await screen.findByRole("tooltip", { name: "Host" })).toBeVisible();
   });
 
   it.each([

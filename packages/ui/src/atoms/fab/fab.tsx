@@ -34,6 +34,7 @@ const fab = componentVariants({
   slots: {
     root: [
       controlStates(),
+      "disabled:bg-ink-200 aria-disabled:bg-ink-200",
       "inline-flex shrink-0 items-center justify-center rounded-pill shadow-4 active:press-scale",
     ],
     label: "font-display text-button-md whitespace-nowrap",
