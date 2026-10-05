@@ -161,12 +161,12 @@ export {
   SubMenu,
   SubMenuContent,
   SubMenuTrigger,
-} from "./molecules/menu/menu";
+} from "./atoms/menu/menu";
 export { OfferSeal, type OfferSealProps } from "./molecules/offer-seal/offer-seal";
 export { OtpInput, type OtpInputProps } from "./molecules/otp-input/otp-input";
 export { OutletCard, type OutletCardProps } from "./molecules/outlet-card/outlet-card";
 export { Pagination, type PaginationProps } from "./molecules/pagination/pagination";
-export { Popover, type PopoverProps } from "./molecules/popover/popover";
+export { Popover, type PopoverProps } from "./atoms/popover/popover";
 export {
   type PriceLine,
   PriceSummary,
