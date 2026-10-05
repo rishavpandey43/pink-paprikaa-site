@@ -4,8 +4,22 @@ import type { ComponentProps } from "react";
 import { ArrowRight, MapPin } from "lucide-react";
 import { expect, within } from "storybook/test";
 
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Link } from "./link";
+
+const LINK_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
 
 function DemoRouterLink({ children, ...props }: ComponentProps<"a">) {
   return (
@@ -40,6 +54,30 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
+
+export const States: Story = {
+  parameters: { pseudo: storyStatesPseudo(LINK_STATES) },
+  render: () => (
+    <StatesRow
+      states={LINK_STATES}
+      render={(state) => (
+        <Link
+          href="/menu"
+          {...(state === "disabled" ? { isDisabled: true } : storyStateControlProps(state))}
+        >
+          See the full menu
+        </Link>
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover a");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Link States: #cell-hover link missing");
+    }
+    await expect(hover).toHaveClass("hover:text-text-link-hover");
+  },
+};
 
 export const Default: Story = {
   name: 'color="link"',

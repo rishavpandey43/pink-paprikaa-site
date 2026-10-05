@@ -28,6 +28,8 @@ export interface LinkProps
    * the outward arrow, or the caller's `iconAfter` when one is set.
    */
   isExternal?: boolean | undefined;
+  /** Inert: no navigation, `aria-disabled`, not focusable, ink-400, no underline. */
+  isDisabled?: boolean | undefined;
   /** Render the single child (e.g. `next/link`) with Link styling. */
   asChild?: boolean | undefined;
 }
@@ -42,13 +44,17 @@ type OwnColor = "link" | "muted" | "inverse" | "quiet";
  * size, face and margin reset come from Typography.
  */
 const link = componentVariants({
-  base: "inline-flex items-center gap-1.5 transition-colors duration-fast ease-out",
+  base: [
+    "inline-flex items-center gap-1.5 transition-colors duration-fast ease-out",
+    "aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:text-ink-400 aria-disabled:no-underline",
+  ],
   variants: {
     tone: {
-      link: "text-text-link hover:text-text-link-hover",
-      muted: "text-text-muted hover:text-text-heading",
-      inverse: "text-ink-000",
-      quiet: "text-link-quiet hover:text-text-link",
+      link: "text-text-link hover:text-text-link-hover active:text-brand-active",
+      muted: "text-text-muted hover:text-text-heading active:text-pink-700",
+      inverse:
+        "text-ink-000 active:bg-state-hover-on-color active:underline active:decoration-current",
+      quiet: "text-link-quiet hover:text-text-link active:text-pink-700",
       other: "",
     },
     underline: { always: "underline", hover: "underline", none: "no-underline" },
@@ -81,7 +87,11 @@ const link = componentVariants({
       class: "decoration-transparent hover:decoration-white-alpha-90",
     },
     { tone: "quiet", underline: "always", class: "decoration-current" },
-    { tone: "quiet", underline: "hover", class: "decoration-transparent" },
+    {
+      tone: "quiet",
+      underline: "hover",
+      class: "decoration-transparent hover:decoration-link-underline",
+    },
     { tone: "other", underline: "always", class: "decoration-current" },
     { tone: "other", underline: "hover", class: "decoration-transparent hover:decoration-current" },
   ],
@@ -108,9 +118,11 @@ export function Link({
   icon,
   iconAfter,
   isExternal = false,
+  isDisabled = false,
   asChild = false,
   className,
   children,
+  href,
   ...props
 }: LinkProps) {
   const isOwnColor = OWN_COLORS.has(color);
@@ -129,7 +141,7 @@ export function Link({
   // sx sits between the recipe and className here, so it can replace a Link default (`display`).
   const classes = link({
     tone: isOwnColor ? (color as OwnColor) : "other",
-    underline,
+    underline: isDisabled ? "none" : underline,
     className: withSx(sx, className),
   });
   // An external link always announces "Opens in a new tab" (R36, built-in English) on its trailing
@@ -141,7 +153,10 @@ export function Link({
       <Icon icon={after} size="sm" label={isExternal ? "Opens in a new tab" : undefined} />
     ) : null,
   };
-  const external = isExternal ? EXTERNAL : undefined;
+  const external = isExternal && !isDisabled ? EXTERNAL : undefined;
+  const disabledProps = isDisabled
+    ? { "aria-disabled": true as const, tabIndex: -1, href: undefined }
+    : { href };
   if (asChild) {
     // Slottable must be a direct child of the Slot, so the glyphs cannot share a fragment.
     // The router link has no Typography element to render, so it takes the same classes directly.
@@ -151,6 +166,7 @@ export function Link({
         className={typography({ ...typographyProps, className: classes })}
         {...external}
         {...props}
+        {...disabledProps}
       >
         {icons.before}
         <Slot.Slottable child={children}>{(label) => label}</Slot.Slottable>
@@ -163,7 +179,14 @@ export function Link({
     props: ComponentProps<"a"> & TypographyStyleProps & { as: "a" }
   ) => React.JSX.Element;
   return (
-    <Anchor as="a" {...typographyProps} className={classes} {...external} {...props}>
+    <Anchor
+      as="a"
+      {...typographyProps}
+      className={classes}
+      {...external}
+      {...props}
+      {...disabledProps}
+    >
       {icons.before}
       {children}
       {icons.after}

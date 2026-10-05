@@ -68,11 +68,14 @@ describe("Tag", () => {
       </>
     );
     expect(screen.getByRole("button", { name: "All" })).toHaveClass(
-      "hover:bg-pink-50",
+      "hover:bg-state-hover",
+      "hover:border-pink-300",
+      "hover:text-pink-700",
+      "active:bg-state-press",
       "cursor-pointer"
     );
-    expect(screen.getByRole("button", { name: "Hot" })).not.toHaveClass("hover:bg-pink-50");
-    expect(screen.getByText("Static").parentElement).not.toHaveClass("hover:bg-pink-50");
+    expect(screen.getByRole("button", { name: "Hot" })).not.toHaveClass("hover:bg-state-hover");
+    expect(screen.getByText("Static").parentElement).not.toHaveClass("hover:bg-state-hover");
     expect(screen.getByText("Static").parentElement).not.toHaveClass("cursor-pointer");
   });
 
@@ -171,7 +174,7 @@ describe("Tag", () => {
     );
     const tag = screen.getByRole("button", { name: "Breakfast" });
     expect(tag).toBeDisabled();
-    expect(tag).toHaveClass("disabled:bg-ink-200", "disabled:text-ink-400");
+    expect(tag).toHaveClass("disabled:bg-state-disabled-fill", "disabled:border-ink-200");
     expect(tag.className).not.toMatch(/opacity/);
     await user.click(tag);
     expect(onClick).not.toHaveBeenCalled();
@@ -181,7 +184,7 @@ describe("Tag", () => {
     render(<Tag disabled>Breakfast</Tag>);
     const chip = screen.getByText("Breakfast").parentElement;
     expect(chip).toHaveAttribute("aria-disabled", "true");
-    expect(chip).toHaveClass("aria-disabled:bg-ink-200");
+    expect(chip).toHaveClass("aria-disabled:bg-state-disabled-fill");
     expect(chip).not.toHaveAttribute("disabled");
   });
 

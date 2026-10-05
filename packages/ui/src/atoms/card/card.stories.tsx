@@ -2,6 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { expect, within } from "storybook/test";
 
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
 import { Card } from "./card";
 
 function Inner({ title, detail }: { title: string; detail: string }) {
@@ -12,6 +18,13 @@ function Inner({ title, detail }: { title: string; detail: string }) {
     </>
   );
 }
+
+const CARD_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+] as const satisfies readonly StoryForceState[];
 
 const meta = {
   title: "Atoms/Card",
@@ -26,7 +39,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The surface every block of content sits on. `default` white + 1px subtle border + shadow-1; `feature` light pink, 24px radius, no shadow; `quiet` sunken grey; `surface="brand"` floods it pink and `surface="ink"` makes it dark, footer-style. Each skin sets `data-surface`, so content inside follows its field — a white card inside a pink section is a light island, with no colour props. Use `padding="none"` when the card starts with an image; `isInteractive` adds the −2px hover lift; `asChild` makes the whole card a link. No card ever has a coloured left border.',
+          'The surface every block of content sits on. `default` white + 1px subtle border + shadow-1; `feature` light pink, 24px radius, no shadow; `quiet` sunken grey; `surface="brand"` floods it pink and `surface="ink"` makes it dark, footer-style. Each skin sets `data-surface`, so content inside follows its field — a white card inside a pink section is a light island, with no colour props. Use `padding="none"` when the card starts with an image; `isInteractive` adds the −2px hover lift; `asChild` makes the whole card a link (R142 — never `div role=button`). No card ever has a coloured left border.',
       },
     },
   },
@@ -36,6 +49,30 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
+
+/** Interactive card as a real link — rest / hover / press / focus (no disabled; IX: —). */
+export const States: Story = {
+  parameters: { pseudo: storyStatesPseudo(CARD_STATES) },
+  render: () => (
+    <StatesRow
+      states={CARD_STATES}
+      render={(state) => (
+        <Card asChild isInteractive className="w-50" {...storyStateControlProps(state)}>
+          <a href="/outlets/sector-57">
+            <Inner title="Sector 57" detail="8am – 11:30pm" />
+          </a>
+        </Card>
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover a");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Card States: #cell-hover link missing");
+    }
+    await expect(hover).toHaveClass("hover:lift", "active:press-scale-card");
+  },
+};
 
 export const Default: Story = {
   name: 'variant="default" · isInteractive',

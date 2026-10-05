@@ -6,6 +6,7 @@ import type { BaseProps, SurfaceProp } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
+import { usePress } from "../../lib/use-press";
 
 export interface CardProps extends BaseProps<"div"> {
   /** default white · feature light pink · quiet sunken grey. A `surface` replaces it. */
@@ -42,7 +43,11 @@ const card = componentVariants({
     },
     padding: { none: "p-0", sm: "p-4", md: "p-5", lg: "p-7" },
     isInteractive: {
-      true: "cursor-pointer transition duration-base ease-out hover:lift hover:shadow-3",
+      true: [
+        "cursor-pointer transition duration-base ease-out hover:lift hover:shadow-3",
+        "active:translate-y-0 active:press-scale-card active:shadow-1",
+        "data-[pressed]:translate-y-0 data-[pressed]:press-scale-card data-[pressed]:shadow-1",
+      ].join(" "),
     },
   },
   defaultVariants: { variant: "default", padding: "md", isInteractive: false },
@@ -53,7 +58,7 @@ export function Card({
   variant = "default",
   surface,
   padding,
-  isInteractive,
+  isInteractive = false,
   asChild = false,
   sx,
   className,
@@ -62,11 +67,21 @@ export function Card({
   const Component: ElementType = asChild ? Slot.Root : "div";
   // A flooded surface is a whole skin of its own: it replaces the variant, not stacks on it.
   const skin = surface ?? variant;
+  const { pressProps } = usePress({
+    disabled: !isInteractive,
+    onPointerDown: props.onPointerDown,
+    onPointerUp: props.onPointerUp,
+    onPointerLeave: props.onPointerLeave,
+    onKeyDown: props.onKeyDown,
+    onKeyUp: props.onKeyUp,
+    onBlur: props.onBlur,
+  });
   return (
     <Component
       data-surface={SURFACE[skin]}
       className={card({ variant: skin, padding, isInteractive, className: withSx(sx, className) })}
       {...props}
+      {...(isInteractive ? pressProps : {})}
     />
   );
 }

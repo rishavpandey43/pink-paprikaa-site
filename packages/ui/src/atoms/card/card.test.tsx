@@ -78,6 +78,8 @@ describe("Card", () => {
       "transition",
       "duration-base",
       "hover:lift",
+      "active:press-scale-card",
+      "active:shadow-1",
       "hover:shadow-3"
     );
     expect(screen.getByText("Static")).not.toHaveClass("hover:lift");

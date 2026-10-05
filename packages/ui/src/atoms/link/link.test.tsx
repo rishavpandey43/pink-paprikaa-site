@@ -35,7 +35,12 @@ describe("Link", () => {
     [{ color: "inverse" }, ["text-ink-000", "decoration-white-alpha-40"]],
     [
       { color: "quiet", underline: "hover" },
-      ["text-link-quiet", "decoration-transparent", "hover:text-text-link"],
+      [
+        "text-link-quiet",
+        "decoration-transparent",
+        "hover:text-text-link",
+        "hover:decoration-link-underline",
+      ],
     ],
     [{ underline: "none" }, ["no-underline"]],
   ] as const)("%o renders the old classes", (props, classes) => {
@@ -51,7 +56,7 @@ describe("Link", () => {
     ["link", ["hover:text-text-link-hover", "hover:decoration-current"]],
     ["muted", ["hover:text-text-heading", "hover:decoration-border-default"]],
     ["inverse", ["hover:decoration-white-alpha-90"]],
-    ["quiet", ["hover:text-text-link"]],
+    ["quiet", ["hover:text-text-link", "hover:decoration-link-underline"]],
   ] as const)("gives the %s colour its hover classes", (color, classes) => {
     render(
       <Link href="/menu" color={color} underline={color === "link" ? "always" : "hover"}>
@@ -108,6 +113,19 @@ describe("Link", () => {
     const a = screen.getByRole("link");
     expect(a.tagName).toBe("A");
     expect(a).toHaveClass("m-0", "font-body");
+  });
+
+  it("isDisabled drops href, sets aria-disabled and is not in the tab order", () => {
+    render(
+      <Link href="/menu" isDisabled>
+        Menu
+      </Link>
+    );
+    const link = screen.getByText("Menu");
+    expect(link).toHaveAttribute("aria-disabled", "true");
+    expect(link).toHaveAttribute("tabindex", "-1");
+    expect(link).not.toHaveAttribute("href");
+    expect(link).toHaveClass("aria-disabled:text-ink-400", "no-underline");
   });
 
   it("applies the same classes through asChild", () => {

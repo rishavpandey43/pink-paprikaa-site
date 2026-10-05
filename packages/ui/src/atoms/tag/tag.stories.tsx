@@ -4,8 +4,22 @@ import { Clock, Flame, Leaf } from "lucide-react";
 import { useState } from "react";
 import { expect, userEvent, within } from "storybook/test";
 
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Tag } from "./tag";
+
+const TAG_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
 
 const noop = () => undefined;
 
@@ -51,6 +65,27 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
+
+export const States: Story = {
+  parameters: { pseudo: storyStatesPseudo(TAG_STATES) },
+  render: () => (
+    <StatesRow
+      states={TAG_STATES}
+      render={(state) => (
+        <Tag onClick={noop} {...storyStateControlProps(state)}>
+          Small Plates
+        </Tag>
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover button");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Tag States: #cell-hover button missing");
+    }
+    await expect(hover).toHaveClass("hover:bg-state-hover");
+  },
+};
 
 export const Selectable: Story = {
   name: "selectable (onClick + isSelected)",
