@@ -277,12 +277,14 @@ export function WebsiteKit() {
                     hours={outlet.hours ?? brand.hours.display}
                     imageLabel="Outlet interior 16:9"
                     action={
-                      <Button size="sm" variant="ghost" iconAfter={ArrowUpRight} asChild>
-                        <a href={outlet.mapsUrl} target="_blank" rel="noopener noreferrer">
-                          Directions
-                          <span className="sr-only"> Opens in a new tab</span>
-                        </a>
-                      </Button>
+                      outlet.mapsUrl ? (
+                        <Button size="sm" variant="ghost" iconAfter={ArrowUpRight} asChild>
+                          <a href={outlet.mapsUrl} target="_blank" rel="noopener noreferrer">
+                            Directions
+                            <span className="sr-only"> Opens in a new tab</span>
+                          </a>
+                        </Button>
+                      ) : undefined
                     }
                   />
                 ))}

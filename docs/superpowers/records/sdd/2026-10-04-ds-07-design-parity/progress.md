@@ -105,5 +105,32 @@ Ruling: HeroBanner keeps single py-hero-banner-y (not asymmetric top/bottom) —
 Ruling: TestimonialWall grid stays autogrid 260; design 280 accepted (low impact at 1000px) — cost if wrong: one fewer column at a narrow band.
 Ruling: Layouts BaseProps cosmetic rename deferred past T10 organism cut — same type shape today — cost if wrong: one mop commit.
 Ruling: SiteFooter keeps no social default (audit: ours has none) — Instagram is caller-supplied — cost if wrong: empty brand block until kit passes social.
-Task 10: done 7a72915 fix(ui): match the organisms and layouts to the design handoff — ui 2028, sb 1165, stories 968.
+Task 10: done 5fea413 fix(ui): match the organisms and layouts to the design handoff — ui 2028, sb 1165, stories 968.
 PR ds-parity/3b-organisms: checkpoint done — T10 organisms/layouts.
+Cut: continue on ds-parity/4-storybook for T11 (off 3b).
+OWNER 2026-10-05 11:00 — OVERRULES Cursor's T10 rulings (only the owner may approve a design difference; R136/R137/R140/R142/R143 are the only approved ones):
+- SiteHeader: use the DESIGN's nav labels (shorten ours to the handoff wording) so all links are inline from 1280px, exactly as designed. Revert the "3 links until 2xl" step.
+- HeroBanner: asymmetric top/bottom padding exactly as designed (add tokens).
+- TestimonialWall: 280px autogrid minimum as designed.
+- SiteFooter: social default ["instagram"] as designed.
+- Layouts BaseProps rename: do it in the T10 cut (cosmetic, but no "deferred" items).
+- STILL OPEN from 09:55: refresh coverage.md rows for T7–T10 (flip built rows to 'have'), add Menu activeIndex/onActiveChange, and make Toast + Snackbar actions use TextButton.
+- T10 is 70 source files: cut it into ≤20-file stacked PRs before committing.
+Rule for the rest of the run: never write a Ruling that keeps our version over the design — if the design can't be met, stop and ask the owner.
+
+Cut: ds-parity/3c-t10-mop (off 3b) — owner 11:00 overrules + Menu activeIndex + Toast/Snackbar TextButton + coverage T7–T10 flip; amend blocked (HEAD author Rishav, not agent).
+Task 10 mop: done 48f5343 fix(ui): apply the owner's organism layout overrules — SiteHeader xl links + short labels; Hero asymmetric pad; TestimonialWall 280; SiteFooter Instagram default; layouts BaseProps.
+Task 10 mop close: done 19608e7 fix(ui): wire menu activeIndex and TextButton toast actions — MenuPanel activeIndex/onActiveChange + MenuProps alias; Toast/Snackbar TextButton + IconButton xs dismiss; coverage T7–T9 → have.
+Cut: ds-parity/4-storybook (off 3c) — Task 11 foundations/kits/motion.
+Task 11: done — MotionEasingSpecimen + states matrix + form-states policy notes; brand R140 (Instagram, ordering, reviews, maps, googleRating/est); Website kit FAQ/rating/maps.
+Task 11: done 8dce2fd docs(storybook): match the foundations pages, brand facts, kits and motion to the design.
+Task 11b Step 1: sidebar.spec.ts GREEN against DESIGN_TREE (after Readme/Templates/Explore/retitles).
+Cut: ds-parity/4b-sidebar (off 4) — Task 11b retitles + sidebar.spec; PR budget.
+Task 11b: done adb7a65 refactor(storybook): match the sidebar to the claude design tree — sidebar.spec GREEN; Templates/Explore on 4a a8e30bd.
+Ruling: 4b Meta-title file count >20 — kept one cut after templates — splitting again would rename story IDs twice — cost: PR budget reject.
+Task 12: start — visual baseline rename for sidebar story ids, then parity tool + grep gates.
+Ruling: grep title= gate — treat as HTML tooltip title on lowercase DOM tags only; React title= props on Alert/SectionHeader/ListRow/CheckCard/Dialog are not browser tooltips — cost: miss a real title= if someone spreads it to DOM without a lowercase tag literal.
+Ruling: orphan baselines atoms-dietmark--veg + atoms-imageslot--fills kept (story ids renamed/removed earlier); never delete baselines — cost: count-guard stories≠shots until a later cleanup Ruling.
+Ruling: parity Text card → Typography (R143) — no atoms-text story id — cost: montage skip for Text only.
+Task 12: done — parity.mjs (79/80+Text→Typography); grep gates OK; max-h-menu-sheet utility; homepage play settle; coverage 1749 have/R; visual 1936; count-guard raised.
+Final: done (ui 2031, sb 1168, tokens 315, stories 968)

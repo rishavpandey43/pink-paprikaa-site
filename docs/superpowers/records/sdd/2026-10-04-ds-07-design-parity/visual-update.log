@@ -1,0 +1,109 @@
+
+Running 54 tests using 5 workers
+
+(node:36474) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36476) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36478) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36475) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36477) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--in-app-shell (1.5s)
+  ✓   4 [mobile] › visual/visual.spec.ts:41:7 › app-ordering-app--home-360 (1.4s)
+  ✓   6 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--danger-with-retry (1.0s)
+  ✓   2 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--success (2.9s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/app-ordering-app--home.png is re-generated, writing actual.
+  ✓   5 [mobile] › visual/visual.spec.ts:41:7 › app-ordering-app--home (2.3s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/molecules-snackbar--playground.png is re-generated, writing actual.
+  ✓   3 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--playground (2.7s)
+  ✓   7 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--undo-and-dismiss (852ms)
+  ✓   8 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--live-copy (978ms)
+  ✓   9 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--closed-by-parent (1.4s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/molecules-snackbar--top-right.png is re-generated, writing actual.
+  ✓  10 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--top-right (1.4s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/molecules-snackbar--bottom-right.png is re-generated, writing actual.
+  ✓  12 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--bottom-right (1.5s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/molecules-snackbar--brand.png is re-generated, writing actual.
+  ✓  13 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--brand (2.0s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/molecules-snackbar--top-center.png is re-generated, writing actual.
+  ✓  11 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--top-center (3.8s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/molecules-toast--playground.png is re-generated, writing actual.
+  ✓  15 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--playground (3.5s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/molecules-toast--status.png is re-generated, writing actual.
+  ✓  17 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--status (3.1s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/molecules-toast--pop.png is re-generated, writing actual.
+  ✓  18 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--pop (2.2s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/molecules-toast--tones.png is re-generated, writing actual.
+  ✓  16 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--tones (5.6s)
+  ✓  14 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--narrow (6.8s)
+  ✓  19 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--custom-glyph (4.0s)
+  ✓  21 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--contained (4.0s)
+  ✓  20 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--add-to-order (6.6s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/organisms-actiondock--playground.png is re-generated, writing actual.
+  ✓  22 [mobile] › visual/visual.spec.ts:41:7 › organisms-actiondock--playground (5.0s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/organisms-actiondock--mobile.png is re-generated, writing actual.
+  ✓  23 [mobile] › visual/visual.spec.ts:41:7 › organisms-actiondock--mobile (4.8s)
+(node:37059) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/organisms-actiondock--tablet.png is re-generated, writing actual.
+  ✓  24 [mobile] › visual/visual.spec.ts:41:7 › organisms-actiondock--tablet (4.9s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/organisms-actiondock--desktop.png is re-generated, writing actual.
+  ✓  25 [mobile] › visual/visual.spec.ts:41:7 › organisms-actiondock--desktop (4.1s)
+(node:37099) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37116) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/organisms-actiondock--primary-only.png is re-generated, writing actual.
+  ✓  26 [mobile] › visual/visual.spec.ts:41:7 › organisms-actiondock--primary-only (4.6s)
+(node:37178) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/mobile/spacing-specimens--component-sizes.png is re-generated, writing actual.
+  ✓  27 [mobile] › visual/visual.spec.ts:41:7 › spacing-specimens--component-sizes (7.7s)
+(node:37276) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  28 [desktop] › visual/visual.spec.ts:41:7 › app-ordering-app--home (6.8s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/molecules-snackbar--playground.png is re-generated, writing actual.
+  ✓  31 [desktop] › visual/visual.spec.ts:41:7 › molecules-snackbar--playground (3.6s)
+  ✓  30 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--in-app-shell (6.3s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/molecules-snackbar--danger-with-retry.png is re-generated, writing actual.
+  ✓  33 [desktop] › visual/visual.spec.ts:41:7 › molecules-snackbar--danger-with-retry (3.0s)
+  ✓  29 [desktop] › visual/visual.spec.ts:41:7 › app-ordering-app--home-360 (9.9s)
+  ✓  35 [desktop] › visual/visual.spec.ts:41:7 › molecules-snackbar--live-copy (2.8s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/molecules-snackbar--success.png is re-generated, writing actual.
+  ✓  32 [desktop] › visual/visual.spec.ts:41:7 › molecules-snackbar--success (5.3s)
+  ✓  34 [desktop] › visual/visual.spec.ts:41:7 › molecules-snackbar--undo-and-dismiss (4.2s)
+  ✓  36 [desktop] › visual/visual.spec.ts:41:7 › molecules-snackbar--closed-by-parent (2.9s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/molecules-snackbar--top-right.png is re-generated, writing actual.
+  ✓  37 [desktop] › visual/visual.spec.ts:41:7 › molecules-snackbar--top-right (2.6s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/molecules-snackbar--bottom-right.png is re-generated, writing actual.
+  ✓  39 [desktop] › visual/visual.spec.ts:41:7 › molecules-snackbar--bottom-right (2.4s)
+  ✓  41 [desktop] › visual/visual.spec.ts:41:7 › molecules-snackbar--narrow (1.6s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/molecules-snackbar--top-center.png is re-generated, writing actual.
+  ✓  38 [desktop] › visual/visual.spec.ts:41:7 › molecules-snackbar--top-center (3.1s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/molecules-snackbar--brand.png is re-generated, writing actual.
+  ✓  40 [desktop] › visual/visual.spec.ts:41:7 › molecules-snackbar--brand (3.6s)
+  ✓  42 [desktop] › visual/visual.spec.ts:41:7 › molecules-toast--playground (2.1s)
+  ✓  43 [desktop] › visual/visual.spec.ts:41:7 › molecules-toast--tones (2.1s)
+  ✓  46 [desktop] › visual/visual.spec.ts:41:7 › molecules-toast--custom-glyph (1.5s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/molecules-toast--pop.png is re-generated, writing actual.
+  ✓  45 [desktop] › visual/visual.spec.ts:41:7 › molecules-toast--pop (3.5s)
+  ✓  48 [desktop] › visual/visual.spec.ts:41:7 › molecules-toast--contained (3.2s)
+  ✓  47 [desktop] › visual/visual.spec.ts:41:7 › molecules-toast--add-to-order (3.7s)
+  ✓  44 [desktop] › visual/visual.spec.ts:41:7 › molecules-toast--status (5.2s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/organisms-actiondock--mobile.png is re-generated, writing actual.
+  ✓  50 [desktop] › visual/visual.spec.ts:41:7 › organisms-actiondock--mobile (3.0s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/organisms-actiondock--playground.png is re-generated, writing actual.
+  ✓  49 [desktop] › visual/visual.spec.ts:41:7 › organisms-actiondock--playground (5.3s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/organisms-actiondock--tablet.png is re-generated, writing actual.
+  ✓  51 [desktop] › visual/visual.spec.ts:41:7 › organisms-actiondock--tablet (3.2s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/organisms-actiondock--primary-only.png is re-generated, writing actual.
+  ✓  53 [desktop] › visual/visual.spec.ts:41:7 › organisms-actiondock--primary-only (3.7s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/organisms-actiondock--desktop.png is re-generated, writing actual.
+  ✓  52 [desktop] › visual/visual.spec.ts:41:7 › organisms-actiondock--desktop (4.8s)
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/visual/__screenshots__/desktop/spacing-specimens--component-sizes.png is re-generated, writing actual.
+  ✓  54 [desktop] › visual/visual.spec.ts:41:7 › spacing-specimens--component-sizes (9.6s)
+
+  54 passed (50.5s)

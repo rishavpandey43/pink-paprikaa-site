@@ -461,6 +461,11 @@
   z-index: var(--z-overlay);
 }
 
+/* Bottom-sheet panels (Menu / Popover / Select ≤640): design max-h min(70vh, 520px). */
+@utility max-h-menu-sheet {
+  max-height: min(70vh, 520px);
+}
+
 @utility z-toast {
   z-index: var(--z-toast);
 }

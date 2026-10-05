@@ -42,13 +42,19 @@ export const Homepage: Story = {
     );
     await userEvent.click(within(booking).getByRole("button", { name: "Hold My Table" }));
     const held = await screen.findByRole("dialog", { name: "Table held for 10 minutes" });
-    await Promise.all(held.getAnimations().map((animation) => animation.finished));
+    await Promise.all(held.getAnimations({ subtree: true }).map((animation) => animation.finished));
     await expect(held).toBeVisible();
 
     // The kit's toast closes itself after 2600 ms; end after it has, so the final frame (and its
     // visual snapshot) never depends on how long the steps above took.
     await waitFor(() => expect(screen.queryByText(toastMessage)).not.toBeInTheDocument(), {
       timeout: 5000,
+    });
+
+    // Second settle: portals + sheet-in can still be compositing after the toast leaves.
+    await Promise.all(held.getAnimations({ subtree: true }).map((animation) => animation.finished));
+    await new Promise((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(resolve));
     });
   },
 };

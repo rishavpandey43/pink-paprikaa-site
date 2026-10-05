@@ -11,17 +11,17 @@ import * as Specimens from "./motion.stories";
 One status system across every control: default, error, success, warning, disabled, read-only and
 loading.
 
-| State      | Border                                                                         | Message                       | Applies to                                                                                          |
-| ---------- | ------------------------------------------------------------------------------ | ----------------------------- | --------------------------------------------------------------------------------------------------- |
-| `default`  | 1px `border-default`                                                           | hint, subtle                  | all                                                                                                 |
-| `hover`    | 1px `border-strong`                                                            | —                             | Input, Select, Combobox, DatePicker, SearchField, OtpInput; Checkbox/Radio/Switch tint the whole row |
-| `focus`    | 2px pink + ring                                                                | —                             | all                                                                                                 |
-| `error`    | 2px danger                                                                     | says what to do next          | Input, Select, Combobox, DatePicker, SearchField, OtpInput, Checkbox, Radio, SlotPicker, Field      |
-| `success`  | 2px mint                                                                       | confirms the result           | Input, Select, Combobox, DatePicker, SearchField, OtpInput, Field                                   |
-| `warning`  | 2px turmeric                                                                   | flags a caveat                | Input, Select, Combobox, DatePicker, SearchField, Field                                             |
-| `disabled` | ink-100 fill, ink-400 text                                                     | —                             | all — a real fill, never opacity                                                                    |
-| `readOnly` | sunken fill + lock glyph                                                       | —                             | Input, Select, DatePicker                                                                           |
-| `loading`  | unchanged                                                                      | trailing Spinner              | Input, SearchField                                                                                  |
+| State      | Border                     | Message              | Applies to                                                                                           |
+| ---------- | -------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------- |
+| `default`  | 1px `border-default`       | hint, subtle         | all                                                                                                  |
+| `hover`    | 1px `border-strong`        | —                    | Input, Select, Combobox, DatePicker, SearchField, OtpInput; Checkbox/Radio/Switch tint the whole row |
+| `focus`    | 2px pink + ring            | —                    | all                                                                                                  |
+| `error`    | 2px danger                 | says what to do next | Input, Select, Combobox, DatePicker, SearchField, OtpInput, Checkbox, Radio, SlotPicker, Field       |
+| `success`  | 2px mint                   | confirms the result  | Input, Select, Combobox, DatePicker, SearchField, OtpInput, Field                                    |
+| `warning`  | 2px turmeric               | flags a caveat       | Input, Select, Combobox, DatePicker, SearchField, Field                                              |
+| `disabled` | ink-100 fill, ink-400 text | —                    | all — a real fill, never opacity                                                                     |
+| `readOnly` | sunken fill + lock glyph   | —                    | Input, Select, DatePicker                                                                            |
+| `loading`  | unchanged                  | trailing Spinner     | Input, SearchField                                                                                   |
 
 A status raises the border, tints the leading icon, shows the matching glyph and **replaces the
 hint with its message** — never a status colour without a message. The control carries `status`;
