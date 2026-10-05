@@ -91,7 +91,7 @@ describe("ListRow", () => {
     expect(screen.getByRole("button", { name: "Sign out" })).toHaveClass(
       "w-full",
       "text-start",
-      "active:press-scale"
+      "active:bg-surface-brand-soft"
     );
   });
 

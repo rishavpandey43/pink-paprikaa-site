@@ -12,6 +12,8 @@ export interface NotificationAction {
   /** How a screen-reader user can do the same thing, e.g. "View your cart" (Radix `altText`). */
   altText: string;
   onClick: () => void;
+  /** Inert action (design `actionDisabled`). */
+  disabled?: boolean | undefined;
 }
 
 /** What Toast and Snackbar share (contract §5: `SnackbarProps extends Omit<ToastProps, "isPop">`). */

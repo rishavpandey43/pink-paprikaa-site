@@ -15,7 +15,7 @@ const accordion = componentVariants({
     root: "border-t border-border-subtle",
     item: "group/accordion-item details-content-motion border-b border-border-subtle",
     summary:
-      "flex cursor-pointer list-none items-center justify-between gap-4 py-4.5 font-display text-accordion-question text-text-heading transition-colors duration-fast ease-out group-open/accordion-item:text-text-brand hover:text-text-brand",
+      "-mx-3 flex cursor-pointer list-none items-center justify-between gap-4 rounded-sm p-3 font-display text-accordion-question text-text-heading transition-colors duration-fast ease-out group-open/accordion-item:text-text-brand hover:bg-surface-page-alt hover:text-pink-600 focus-visible:-outline-offset-2 active:bg-surface-brand-soft",
     question: "min-w-0",
     chevron: "transition-transform duration-base ease-out group-open/accordion-item:rotate-180",
     answer:
@@ -35,9 +35,8 @@ export interface AccordionProps extends BaseProps<"div"> {
   /** Let several answers stay open at once. */
   isMultiple?: boolean | undefined;
   /**
-   * Items open on load (default: the first). The `<details>` own their open state after that, but
-   * `defaultOpen` is not read only once: changing it re-applies it, so an item added to or removed
-   * from the list opens or closes again, whatever the guest did with it.
+   * Items open on load (default: none — design Accordion.jsx). The `<details>` own their open
+   * state after that, but `defaultOpen` is not read only once: changing it re-applies it.
    */
   defaultOpen?: string[] | undefined;
   /** The single-open group's name (default: generated). Two accordions never share one. */
@@ -65,7 +64,7 @@ export function Accordion({
 }: AccordionProps) {
   const generatedName = useId();
   const groupName = isMultiple ? undefined : (name ?? generatedName);
-  const openValues = new Set(defaultOpen ?? items.slice(0, 1).map((item) => item.value));
+  const openValues = new Set(defaultOpen ?? []);
   const styles = accordion();
 
   return (

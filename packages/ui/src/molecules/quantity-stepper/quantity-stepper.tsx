@@ -16,7 +16,7 @@ const quantityStepper = componentVariants({
   slots: {
     root: "inline-flex items-center rounded-pill border border-border-brand-soft bg-surface-page-alt",
     button:
-      "grid shrink-0 place-items-center rounded-pill text-text-brand transition-control not-disabled:not-aria-disabled:hover:bg-surface-brand-soft not-disabled:not-aria-disabled:active:press-scale disabled:cursor-not-allowed disabled:text-ink-400 aria-disabled:cursor-not-allowed aria-disabled:text-ink-400",
+      "grid shrink-0 place-items-center rounded-pill text-text-brand transition-control not-disabled:not-aria-disabled:hover:bg-surface-brand-soft not-disabled:not-aria-disabled:hover:text-pink-700 focus-visible:-outline-offset-2 not-disabled:not-aria-disabled:active:press-scale-stepper not-disabled:not-aria-disabled:active:bg-pink-200 disabled:cursor-not-allowed disabled:text-ink-300 aria-disabled:cursor-not-allowed aria-disabled:text-ink-300",
     count:
       "min-w-quantity-stepper-count rounded-xs border-0 bg-transparent p-0 text-center font-display font-bold text-text-heading tabular-nums disabled:text-ink-400",
   },
@@ -74,14 +74,14 @@ export interface QuantityStepperProps extends Omit<
 
 interface Bounds {
   min: number;
-  max: number | undefined;
+  max: number;
   step: number;
 }
 
 /** Snap to the nearest step counted from `min`, then keep inside `[min, max]`. */
 function toAllowed(raw: number, { min, max, step }: Bounds): number {
   const snapped = min + Math.round((raw - min) / step) * step;
-  const highest = max === undefined ? snapped : max - ((max - min) % step);
+  const highest = max - ((max - min) % step);
   return Math.max(min, Math.min(snapped, highest));
 }
 
@@ -98,7 +98,7 @@ export function QuantityStepper({
   onValueChange,
   onBlur,
   min = 0,
-  max,
+  max = 20,
   step = 1,
   size = "md",
   decrementLabel,
@@ -129,7 +129,7 @@ export function QuantityStepper({
   // The ends of the range are aria-disabled, not disabled: a press that reaches min or max keeps
   // focus on the button (a disabled button drops it to <body>). `disabled` still disables all.
   const isAtMin = quantity <= min;
-  const isAtMax = max !== undefined && quantity >= max;
+  const isAtMax = quantity >= max;
 
   /** What the field stands for right now: a typed draft that parses, else the value. */
   function settled(): number {
@@ -156,10 +156,8 @@ export function QuantityStepper({
         commit(min);
         break;
       case "End":
-        if (max !== undefined) {
-          event.preventDefault();
-          commit(max);
-        }
+        event.preventDefault();
+        commit(max);
         break;
       case "Enter":
         // First Enter commits the typed value; the next one is free to submit the form.
@@ -222,7 +220,7 @@ export function QuantityStepper({
         aria-valuemax={max}
         name={name}
         aria-required={required}
-        size={Math.max(2, String(max ?? quantity).length)}
+        size={Math.max(2, String(max).length)}
         value={draft ?? String(quantity)}
         disabled={disabled}
         onChange={(event) => {

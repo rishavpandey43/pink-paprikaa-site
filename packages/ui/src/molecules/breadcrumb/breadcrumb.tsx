@@ -4,6 +4,7 @@ import type { BaseProps } from "../../lib/common-props";
 import type { LinkAs } from "../../lib/link-as";
 
 import { Icon } from "../../atoms/icon/icon";
+import { Link } from "../../atoms/link/link";
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 
@@ -12,7 +13,6 @@ const breadcrumb = componentVariants({
     root: "min-w-0",
     list: "m-0 flex list-none flex-wrap items-center gap-2 p-0",
     item: "flex min-w-0 items-center gap-2",
-    link: "text-breadcrumb text-text-muted no-underline transition-colors duration-fast ease-out hover:text-text-heading hover:underline",
     text: "text-breadcrumb text-text-muted",
     current: "text-breadcrumb font-medium text-text-heading",
     chevron: "text-breadcrumb-chevron",
@@ -66,11 +66,16 @@ export function Breadcrumb({
           } else if (item.href === undefined) {
             crumb = <span className={styles.text()}>{item.label}</span>;
           } else {
-            crumb = (
-              <LinkComponent href={item.href} className={styles.link()}>
-                {item.label}
-              </LinkComponent>
-            );
+            crumb =
+              LinkComponent === "a" ? (
+                <Link href={item.href} color="muted" underline="hover" variant="link-sm">
+                  {item.label}
+                </Link>
+              ) : (
+                <Link asChild color="muted" underline="hover" variant="link-sm">
+                  <LinkComponent href={item.href}>{item.label}</LinkComponent>
+                </Link>
+              );
           }
           return (
             <li key={`${String(index)}-${item.label}`} className={styles.item()}>

@@ -44,8 +44,10 @@ describe("Accordion", () => {
     }
   });
 
-  it("opens the first item by default and nothing else", () => {
-    const { container } = render(<Accordion items={FAQ} />);
+  it("opens nothing by default until defaultOpen names an item", () => {
+    const { container, rerender } = render(<Accordion items={FAQ} />);
+    expect(detailsOf(container).map((d) => d.open)).toEqual([false, false, false]);
+    rerender(<Accordion items={FAQ} defaultOpen={["veg"]} />);
     expect(detailsOf(container).map((d) => d.open)).toEqual([true, false, false]);
   });
 

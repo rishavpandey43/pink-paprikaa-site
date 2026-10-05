@@ -28,7 +28,12 @@ const couponTicket = componentVariants({
   },
   variants: {
     surface: {
-      brand: { root: "bg-surface-brand", stub: "bg-surface-card" },
+      brand: {
+        root: "bg-surface-brand",
+        // Closest token to design's 8% white on brand (white-alpha.10).
+        stub: "bg-white-alpha-10",
+        code: "text-text-on-brand",
+      },
       page: { root: "border border-border-default bg-surface-card", stub: "bg-surface-page-alt" },
     },
     size: {
@@ -75,11 +80,27 @@ const couponTicket = componentVariants({
     // stub runs flush to its edges, so the focus ring is drawn inset.
     isCopyable: {
       true: {
-        stub: "cursor-pointer transition-control focus-visible:-outline-offset-4 active:press-scale",
+        stub: "cursor-pointer transition-control hover:bg-state-hover-on-color focus-visible:-outline-offset-6 active:bg-state-press-on-color",
       },
       false: {},
     },
   },
+  compoundVariants: [
+    {
+      surface: "page",
+      isCopyable: true,
+      class: {
+        stub: "hover:bg-pink-100 active:bg-pink-200",
+      },
+    },
+    {
+      surface: "brand",
+      isCopyable: true,
+      class: {
+        stub: "focus-visible:outline-ink-000",
+      },
+    },
+  ],
 });
 
 export interface CouponTicketProps extends Omit<BaseProps<"div">, "onCopy"> {

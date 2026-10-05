@@ -42,6 +42,7 @@ type Story = StoryObj<typeof meta>;
 
 /** Card row "single" — opening one closes the other (the `name` group, in a real browser). */
 export const Playground: Story = {
+  args: { defaultOpen: ["veg"] },
   play: async ({ canvas, canvasElement, userEvent }) => {
     const first = canvas.getByText("Is everything vegetarian?").closest("details");
     const second = canvas.getByText("Do you deliver?").closest("details");

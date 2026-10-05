@@ -8,7 +8,7 @@ import { useId, useRef } from "react";
 import type { SxProp } from "../../lib/common-props";
 import type { FieldStatus } from "../../lib/field-status";
 
-import { Icon } from "../../atoms/icon/icon";
+import { IconButton } from "../../atoms/icon-button/icon-button";
 import { assignRef } from "../../lib/assign-ref";
 import { joinIds } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
@@ -22,10 +22,7 @@ const searchField = componentVariants({
     root: "grid min-w-0 gap-1.5",
     /** The design system's search box is a pill with a 16px inset, not the 10px-radius field. */
     box: "rounded-pill px-4",
-    input: "search-reset",
-    // 24px to see, 40px to hit (`before:-inset-2`, dev parity): the pseudo-element takes the tap.
-    clear:
-      "relative grid size-6 shrink-0 place-items-center rounded-pill text-text-subtle transition-colors duration-fast ease-out before:absolute before:-inset-2 hover:text-text-heading",
+    input: "",
     message: "px-4",
   },
 });
@@ -102,14 +99,17 @@ export function SearchField({
         isReadOnly={readOnly === true}
         trailing={
           canClear ? (
-            <button
-              type="button"
-              aria-label={clearLabel}
+            <IconButton
+              icon={X}
+              label={clearLabel}
+              size="xs"
+              variant="ghost"
+              className="-me-2 shrink-0"
+              onMouseDown={(event) => {
+                event.preventDefault();
+              }}
               onClick={handleClear}
-              className={styles.clear()}
-            >
-              <Icon icon={X} size="sm" />
-            </button>
+            />
           ) : null
         }
         className={styles.box()}
@@ -123,7 +123,11 @@ export function SearchField({
               inputRef.current = node;
               assignRef(ref, node);
             }}
-            type="search"
+            type="text"
+            inputMode="search"
+            enterKeyHint="search"
+            role="searchbox"
+            autoComplete="off"
             value={query}
             onChange={(event) => {
               setQuery(event.currentTarget.value);

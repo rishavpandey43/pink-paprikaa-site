@@ -27,7 +27,7 @@ const otpInput = componentVariants({
     state: {
       empty: {},
       filled: { cell: "border-2" },
-      active: { cell: "border-2 shadow-focus-ring" },
+      active: { cell: "border-2 bg-surface-page-alt shadow-focus-ring" },
     },
     // The box's status borders come from fieldControlVariants; this only gates the compound below.
     status: { default: {}, error: {}, success: {}, warning: {} },
@@ -43,6 +43,24 @@ const otpInput = componentVariants({
       isDisabled: false,
       state: ["filled", "active"],
       class: { cell: "border-border-brand" },
+    },
+    {
+      status: "error",
+      isDisabled: false,
+      state: "active",
+      class: { cell: "shadow-field-ring-danger" },
+    },
+    {
+      status: "success",
+      isDisabled: false,
+      state: "active",
+      class: { cell: "shadow-field-ring-success" },
+    },
+    {
+      status: "warning",
+      isDisabled: false,
+      state: "active",
+      class: { cell: "shadow-field-ring-warning" },
     },
   ],
   defaultVariants: { state: "empty", status: "default", isDisabled: false },

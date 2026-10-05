@@ -47,7 +47,7 @@ describe("SearchField", () => {
     await user.type(screen.getByRole("searchbox"), "kulfi");
     const clear = screen.getByRole("button", { name: "Clear search" });
     // A 24px glyph button with a 40px hit area (dev parity; spec §5.5 floor is 24px).
-    expect(clear).toHaveClass("size-6", "before:-inset-2");
+    expect(clear).toHaveClass("size-icon-button-xs", "before:-inset-2");
   });
 
   it("names the clear button by clearLabel", () => {

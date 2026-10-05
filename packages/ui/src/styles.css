@@ -39,7 +39,7 @@
   --animate-sheet-in: pp-sheet-in var(--duration-base) var(--ease-out);
   --animate-drawer-in-start: pp-drawer-in-start var(--duration-base) var(--ease-entrance);
   --animate-drawer-in-end: pp-drawer-in-end var(--duration-base) var(--ease-entrance);
-  --animate-toast-pop: pp-toast-pop var(--duration-slow) var(--ease-pop);
+  --animate-toast-pop: pp-toast-pop var(--duration-base) var(--ease-pop);
   --animate-pop-in: pp-pop-in var(--duration-fast) var(--ease-out);
 }
 

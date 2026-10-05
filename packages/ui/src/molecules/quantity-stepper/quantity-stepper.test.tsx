@@ -67,7 +67,7 @@ describe("QuantityStepper", () => {
   it("greys a button at the end of the range with a real colour, never opacity", () => {
     render(<QuantityStepper label="Plates" value={1} min={1} onValueChange={vi.fn()} />);
     const minus = screen.getByRole("button", { name: "Remove one" });
-    expect(minus).toHaveClass("aria-disabled:text-ink-400", "disabled:text-ink-400");
+    expect(minus).toHaveClass("aria-disabled:text-ink-300", "disabled:text-ink-300");
     expect(minus.className).not.toMatch(/opacity-/);
   });
 

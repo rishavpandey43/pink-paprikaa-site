@@ -19,16 +19,15 @@ const listRow = componentVariants({
     title: "text-body-sm font-medium text-text-heading",
     description: "line-clamp-2 text-caption text-text-subtle",
     value: "shrink-0 text-body-sm text-text-muted",
-    chevron: "text-text-subtle",
+    chevron: "text-ink-400",
   },
   variants: {
     hasDivider: { true: { root: "border-b border-border-subtle" } },
     isDanger: { true: { icon: "text-text-danger", title: "text-text-danger" } },
     isInteractive: {
       true: {
-        // Hover tint and press feedback (dev parity) on a row rendered into a link or button. The
-        // tint is the one a ghost Button uses: pink-50 on light, white at 16% on ink and brand.
-        row: "cursor-pointer no-underline transition-colors duration-fast ease-out hover:bg-button-hover-tint active:press-scale",
+        // Hover tint; press = state-press bg, no scale (design ListRow / INTERACTIONS).
+        row: "cursor-pointer no-underline transition-colors duration-fast ease-out hover:bg-button-hover-tint focus-visible:-outline-offset-2 active:bg-surface-brand-soft",
       },
     },
   },

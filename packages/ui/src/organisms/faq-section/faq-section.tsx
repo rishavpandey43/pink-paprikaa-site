@@ -73,7 +73,8 @@ export function FaqSection({
         </div>
         <Accordion
           items={items}
-          defaultOpen={defaultOpen}
+          // Organism keeps "first open" when omitted; Accordion molecule defaults to none (design).
+          defaultOpen={defaultOpen ?? (items[0] === undefined ? [] : [items[0].value])}
           isMultiple={isMultiple}
           headingLevel={QUESTION_LEVEL[headingLevel]}
         />

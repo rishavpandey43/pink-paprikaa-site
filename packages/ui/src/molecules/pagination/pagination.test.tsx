@@ -1,9 +1,10 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import type { LinkAsProps } from "../../lib/link-as";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
-import { Pagination } from "./pagination";
+import { PageButton, Pagination } from "./pagination";
 
 const hrefFor = (page: number) => `/press?page=${String(page)}`;
 
@@ -113,5 +114,24 @@ describe("Pagination", () => {
       />
     );
     expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
+
+  it("supports client paging via onPageChange", async () => {
+    const user = userEvent.setup();
+    const onPageChange = vi.fn();
+    render(<Pagination page={2} pages={5} onPageChange={onPageChange} />);
+    await user.click(screen.getByRole("button", { name: "Page 3" }));
+    expect(onPageChange).toHaveBeenCalledWith(3);
+  });
+
+  it("exports PageButton with idle, current and inert states", () => {
+    const { rerender } = render(<PageButton state="idle">2</PageButton>);
+    expect(screen.getByRole("button", { name: "2" })).toHaveClass("hover:border-pink-300");
+    rerender(
+      <PageButton state="current" disabled>
+        2
+      </PageButton>
+    );
+    expect(screen.getByRole("button", { name: "2" })).toHaveClass("bg-surface-brand");
   });
 });

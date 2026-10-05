@@ -96,7 +96,7 @@ describe("Alert", () => {
     rerender(<Alert onDismiss={onDismiss}>We now take UPI at every counter.</Alert>);
     const dismiss = screen.getByRole("button", { name: "Dismiss" });
     // A 24px glyph button with a 40px hit area (dev parity; spec §5.5 floor is 24px).
-    expect(dismiss).toHaveClass("size-6", "before:-inset-2");
+    expect(dismiss).toHaveClass("size-icon-button-xs", "before:-inset-2");
     await user.click(dismiss);
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });

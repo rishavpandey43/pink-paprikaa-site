@@ -16,7 +16,7 @@ const tabs = componentVariants({
     list: "flex min-w-0",
     // `inline-flex gap-2`: a glyph passed in a ReactNode `label` sits beside its text (dev parity).
     trigger:
-      "inline-flex shrink-0 items-center justify-center gap-2 font-display font-bold whitespace-nowrap transition-colors duration-fast ease-out disabled:cursor-not-allowed disabled:text-ink-400",
+      "inline-flex shrink-0 items-center justify-center gap-2 font-display font-bold whitespace-nowrap transition-colors duration-fast ease-out disabled:cursor-not-allowed",
     panel: "min-w-0",
   },
   variants: {
@@ -24,7 +24,7 @@ const tabs = componentVariants({
       underline: {
         list: "flex-wrap gap-x-7 gap-y-3 border-b border-border-subtle",
         trigger:
-          "relative min-h-hit pb-3 text-tabs-label text-text-subtle after:absolute after:inset-x-0 after:-bottom-px after:h-0.75 after:rounded-t-xs after:transition-colors after:duration-base after:ease-out not-disabled:hover:text-text-heading aria-selected:text-text-heading aria-selected:after:bg-tabs-indicator",
+          "relative min-h-hit rounded-xs pb-3 text-tabs-label text-text-subtle after:absolute after:inset-x-0 after:-bottom-px after:h-0.75 after:rounded-t-xs after:transition-colors after:duration-base after:ease-out not-disabled:hover:text-text-heading not-disabled:not-aria-selected:hover:after:bg-ink-200 focus-visible:outline-offset-4 not-disabled:active:text-pink-700 not-disabled:active:after:bg-pink-300 disabled:text-ink-300 aria-selected:text-text-heading aria-selected:after:bg-tabs-indicator aria-selected:active:after:bg-brand-active",
       },
       segmented: {
         list: "flex-wrap gap-1 justify-self-start rounded-pill border border-border-subtle bg-surface-card p-1",
