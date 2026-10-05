@@ -125,12 +125,13 @@ describe("Popover", () => {
       "bg-surface-card",
       "border-default",
       "border-border-subtle",
-      "rounded-lg",
+      "rounded-md",
       "shadow-3",
       "z-overlay",
       "p-popover-pad",
       "max-w-popover-max-w"
     );
+    expect(dialog.querySelector("[class*=animate-pop-in]")).not.toBeNull();
   });
 
   it("draws an arrow only with hasArrow", async () => {
@@ -225,5 +226,61 @@ describe("Popover", () => {
     );
     await openPopover(user);
     await expectNoA11yViolations(document.body);
+  });
+
+  it("sheet=true opens as a bottom sheet with handle and title", async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover trigger={TRIGGER} title="Thali" sheet>
+        Dal, sabzi, 3 rotis.
+      </Popover>
+    );
+    await user.click(screen.getByRole("button", { name: "What's in the thali?" }));
+    expect(screen.getByText("Thali")).toBeVisible();
+    expect(document.querySelector('[class*="animate-sheet-in"]')).not.toBeNull();
+    expect(document.querySelector(".h-1.w-10.rounded-pill")).not.toBeNull();
+    expect(document.querySelector(".max-h-menu-sheet")).not.toBeNull();
+  });
+
+  it("sheet=auto follows matchMedia at 640px", async () => {
+    const user = userEvent.setup();
+    const listeners = new Set<() => void>();
+    let isMatch = true;
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      get matches() {
+        return isMatch;
+      },
+      media: query,
+      addEventListener: (_: string, fn: () => void) => {
+        listeners.add(fn);
+      },
+      removeEventListener: (_: string, fn: () => void) => {
+        listeners.delete(fn);
+      },
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+      onchange: null,
+    }));
+    render(
+      <Popover trigger={TRIGGER} title="Thali" sheet="auto" defaultOpen>
+        Dal.
+      </Popover>
+    );
+    expect(document.querySelector('[class*="animate-sheet-in"]')).not.toBeNull();
+    isMatch = false;
+    for (const fn of listeners) fn();
+    await user.keyboard("{Escape}");
+  });
+
+  it("inline sheet renders the sheet chrome in flow", () => {
+    render(
+      <Popover trigger={TRIGGER} title="How spicy?" sheet inline>
+        Mild
+      </Popover>
+    );
+    expect(screen.getByText("How spicy?")).toBeVisible();
+    expect(document.querySelector(".max-h-menu-sheet")).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "What's in the thali?" })).toBeNull();
   });
 });

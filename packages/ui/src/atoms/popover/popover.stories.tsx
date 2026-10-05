@@ -128,7 +128,7 @@ export const OnSurfaces_: Story = {
 
 /** The smallest supported viewport: the panel stays inside it, even from a trigger at the edge. */
 export const Mobile360: Story = {
-  args: { align: "end", side: "bottom", defaultOpen: true },
+  args: { align: "end", side: "bottom", defaultOpen: true, sheet: false },
   globals: { viewport: { value: "floor360", isRotated: false } },
   decorators: [
     (Story) => (
@@ -142,5 +142,52 @@ export const Mobile360: Story = {
     const rect = dialog.getBoundingClientRect();
     await expect(rect.left).toBeGreaterThanOrEqual(0);
     await expect(rect.right).toBeLessThanOrEqual(window.innerWidth);
+  },
+};
+
+/** Card row: inline sheet. */
+export const Sheet: Story = {
+  args: {
+    inline: true,
+    sheet: true,
+    title: "How spicy?",
+    children: "Mild · Medium · Hot",
+    trigger: <span />,
+  },
+  play: async () => {
+    await expect(screen.getByText("How spicy?")).toBeVisible();
+    await expect(document.querySelector(".max-h-menu-sheet")).not.toBeNull();
+  },
+};
+
+/** Live sheet at 360. */
+export const Sheet360: Story = {
+  args: { sheet: true, defaultOpen: true, title: "Thali" },
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  parameters: {
+    a11y: {
+      config: {
+        rules: [
+          { id: "color-contrast", enabled: false },
+          { id: "scrollable-region-focusable", enabled: false },
+        ],
+      },
+    },
+  },
+  play: async () => {
+    await waitFor(() => expect(screen.getByText("Thali")).toBeVisible());
+    await expect(document.querySelector("[class*=animate-sheet-in]")).not.toBeNull();
+    await expect(document.querySelector(".max-h-menu-sheet")).not.toBeNull();
+  },
+};
+
+/** Floating panel at 641 (not a sheet). */
+export const Floating641: Story = {
+  args: { sheet: false, defaultOpen: true },
+  parameters: { viewport: { width: 641, height: 800 } },
+  play: async () => {
+    await expect(await screen.findByRole("dialog", { name: "Thali" })).toBeVisible();
+    await expect(document.querySelector("[class*=animate-pop-in]")).not.toBeNull();
+    await expect(document.querySelector(".animate-sheet-in")).toBeNull();
   },
 };
