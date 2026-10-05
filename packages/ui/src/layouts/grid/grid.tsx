@@ -1,8 +1,8 @@
-import type { ComponentProps } from "react";
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
 import { GAP_CLASS, type SpaceStep } from "../../lib/space";
-import { type Sx, withSx } from "../../lib/sx";
+import { withSx } from "../../lib/sx";
 
 type Breakpoint = "base" | "sm" | "md" | "lg" | "xl";
 export type GridSpan = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "full";
@@ -177,14 +177,12 @@ const grid = componentVariants({
 // min-w-0: a long word overflows its cell instead of widening the track (readme §3.10).
 const gridItem = componentVariants({ base: "min-w-0" });
 
-export interface GridProps extends ComponentProps<"div"> {
+export interface GridProps extends BaseProps<"div"> {
   /** Column count of the track. Default: 12. */
   columns?: 12 | 6 | 4 | undefined;
   /** Gap step between rows and columns: N × 4px. Default: the grid-gap token (16–24px). */
   gap?: SpaceStep | undefined;
   as?: "div" | "section" | "ul" | "ol" | undefined;
-  /** Token-typed spacing, look and layout overrides (spec §3). */
-  sx?: Sx | undefined;
 }
 
 /** A fixed-column page grid (12 by default). Place children with GridItem; for cards use AutoGrid. */
@@ -196,14 +194,12 @@ export function Grid({ as = "div", columns, gap, sx, className, ...props }: Grid
   );
 }
 
-export interface GridItemProps extends ComponentProps<"div"> {
+export interface GridItemProps extends BaseProps<"div"> {
   /** Columns spanned — a number, `"full"`, or one per breakpoint. Unset base: the full row. */
   span?: GridResponsive<GridSpan> | undefined;
   /** The column the item starts at — a number or one per breakpoint. */
   start?: GridResponsive<GridStart> | undefined;
   as?: "div" | "li" | "article" | "section" | undefined;
-  /** Token-typed spacing, look and layout overrides (spec §3). */
-  sx?: Sx | undefined;
 }
 
 /** One cell of a Grid. Mobile first: without a base `span` it takes the whole row. */

@@ -1,7 +1,7 @@
-import type { ComponentProps } from "react";
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
-import { type Sx, withSx } from "../../lib/sx";
+import { withSx } from "../../lib/sx";
 
 export type ContainerSize = "content" | "wide" | "narrow" | "article" | "prose" | "full";
 
@@ -20,14 +20,12 @@ const container = componentVariants({
   },
 });
 
-export interface ContainerProps extends ComponentProps<"div"> {
+export interface ContainerProps extends BaseProps<"div"> {
   /** content 1200 · wide 1440 · narrow 960 · article 760 · prose 64ch · full (no cap). */
   size?: ContainerSize | undefined;
   /** Drop the gutters, for a child that must run edge to edge. */
   isBleed?: boolean | undefined;
   as?: "div" | "main" | "section" | "article" | "header" | "footer" | "nav" | undefined;
-  /** Token-typed spacing, look and layout overrides (spec §3). */
-  sx?: Sx | undefined;
 }
 
 /**

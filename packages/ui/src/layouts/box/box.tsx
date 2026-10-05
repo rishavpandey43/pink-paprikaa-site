@@ -1,8 +1,6 @@
-import type { ComponentProps } from "react";
-
-import { SURFACE_BG, SURFACE_DATA, type SurfaceProp } from "../../lib/common-props";
+import { type BaseProps, SURFACE_BG, SURFACE_DATA, type SurfaceProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
-import { type Sx, withSx } from "../../lib/sx";
+import { withSx } from "../../lib/sx";
 
 const box = componentVariants({
   variants: {
@@ -25,12 +23,10 @@ type BoxElement =
   | "ol"
   | "li";
 
-export interface BoxProps extends ComponentProps<"div"> {
+export interface BoxProps extends BaseProps<"div"> {
   as?: BoxElement | undefined;
   /** Sets `data-surface` and its ground, so text inside reads on it. */
   surface?: SurfaceProp | undefined;
-  /** Token-typed spacing, look and layout overrides (spec §3). */
-  sx?: Sx | undefined;
 }
 
 /** A polymorphic wrapper: `as`, `surface` and `sx`. MUI's Box, token-only. */

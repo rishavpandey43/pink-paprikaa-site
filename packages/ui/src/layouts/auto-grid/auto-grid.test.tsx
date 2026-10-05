@@ -23,6 +23,7 @@ const MIN_STEPS: [AutoGridMin, string][] = [
   ["xs", "140px"],
   ["sm", "200px"],
   ["card", "240px"],
+  ["280", "280px"],
   ["md", "260px"],
   ["lg", "320px"],
   ["xl", "380px"],

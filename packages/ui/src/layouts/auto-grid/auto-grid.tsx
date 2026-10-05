@@ -1,11 +1,11 @@
-import type { ComponentProps } from "react";
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
 import { GAP_CLASS, type SpaceStep } from "../../lib/space";
-import { type Sx, withSx } from "../../lib/sx";
+import { withSx } from "../../lib/sx";
 
 /** Minimum track before a column drops: xs 140 · sm 200 · card 240 · md 260 · lg 320 · xl 380 · 2xl 420 px. */
-export type AutoGridMin = "xs" | "sm" | "card" | "md" | "lg" | "xl" | "2xl";
+export type AutoGridMin = "xs" | "sm" | "card" | "280" | "md" | "lg" | "xl" | "2xl";
 
 const autoGrid = componentVariants({
   base: "grid gap-grid-gap",
@@ -15,6 +15,7 @@ const autoGrid = componentVariants({
       xs: "autogrid-min-xs",
       sm: "autogrid-min-sm",
       card: "autogrid-min-card",
+      "280": "autogrid-min-280",
       md: "autogrid-min-md",
       lg: "autogrid-min-lg",
       xl: "autogrid-min-xl",
@@ -33,7 +34,7 @@ const autoGrid = componentVariants({
   },
 });
 
-export interface AutoGridProps extends ComponentProps<"div"> {
+export interface AutoGridProps extends BaseProps<"div"> {
   /** Auto-fit track minimum — the width at which a column drops. Handoff values snap to a step. */
   min?: AutoGridMin | undefined;
   /** A fixed column count instead of auto-fit; `min` is then ignored. */
@@ -41,8 +42,6 @@ export interface AutoGridProps extends ComponentProps<"div"> {
   /** Gap step. Default: the fluid grid gap clamp(16px, 2vw, 24px). */
   space?: SpaceStep | undefined;
   as?: "div" | "ul" | "ol" | "section" | undefined;
-  /** Token-typed spacing, look and layout overrides (spec §3). */
-  sx?: Sx | undefined;
 }
 
 /** Every card grid in the system: it drops columns instead of squashing them. */

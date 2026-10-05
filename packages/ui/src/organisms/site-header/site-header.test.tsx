@@ -14,11 +14,11 @@ const LINKS: NavLink[] = [
 
 /** The site's six widest real destinations (the stories' stress case). */
 const WIDEST_LINKS: NavLink[] = [
-  { label: "Homely Meals", href: "#homely-meals" },
-  { label: "This week’s menu", href: "#this-week" },
-  { label: "Catering", href: "#catering" },
-  { label: "Office & PG Lunch", href: "#office-lunch" },
-  { label: "About", href: "#about" },
+  { label: "Menu", href: "#menu" },
+  { label: "Our Story", href: "#about" },
+  { label: "Outlets", href: "#outlets" },
+  { label: "Franchise", href: "#franchise" },
+  { label: "Careers", href: "#careers" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -85,19 +85,19 @@ describe("SiteHeader", () => {
     expect(screen.queryByRole("navigation", { name: "Main" })).not.toBeInTheDocument();
   });
 
-  it("keeps three links inline below 2xl, never wrapping, and moves the rest into the drawer", async () => {
+  it("keeps three links inline below xl, never wrapping, and moves the rest into the drawer", async () => {
     const user = userEvent.setup();
     render(<SiteHeader homeHref="#home" links={WIDEST_LINKS} />);
     const nav = screen.getByRole("navigation", { name: "Main" });
     const items = within(nav).getAllByRole("listitem");
     for (const item of items.slice(0, 3)) expect(item).not.toHaveClass("hidden");
-    for (const item of items.slice(3)) expect(item).toHaveClass("hidden", "2xl:block");
+    for (const item of items.slice(3)) expect(item).toHaveClass("hidden", "xl:block");
     for (const link of within(nav).getAllByRole("link")) {
       expect(link).toHaveClass("whitespace-nowrap");
     }
     expect(within(nav).getByRole("list")).toHaveClass("flex-nowrap");
     const menuButton = screen.getByRole("button", { name: "Menu" });
-    expect(menuButton).toHaveClass("2xl:hidden");
+    expect(menuButton).toHaveClass("xl:hidden");
     await user.click(menuButton);
     const drawer = screen.getByRole("dialog", { name: "Menu" });
     for (const { label } of WIDEST_LINKS) {

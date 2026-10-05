@@ -45,6 +45,15 @@ const SOCIAL_GLYPH: Readonly<Record<FooterSocialLink["network"], IconComponent>>
   linkedin: LinkedinGlyph,
 };
 
+/** Design default — Instagram only (R140). Href is the public handle URL, not a content import. */
+const DEFAULT_SOCIAL: FooterSocialLink[] = [
+  {
+    network: "instagram",
+    href: "https://instagram.com/pinkpaprikaa",
+    label: "Pink Paprikaa on Instagram",
+  },
+];
+
 const siteFooter = componentVariants({
   slots: {
     root: "relative",
@@ -92,7 +101,7 @@ export interface SiteFooterProps
   brand?: ReactNode;
   /** Unique by `heading` (it keys the column). A column with no items is skipped. */
   columns: FooterColumn[];
-  /** Unique by `network` (it keys the link). */
+  /** Unique by `network`. Defaults to Instagram only (R140). Pass `[]` to hide. */
   social?: FooterSocialLink[] | undefined;
   /** Legal lines (©, GSTIN), rendered verbatim. The system holds no company facts. */
   legal?: ReactNode;
@@ -115,7 +124,7 @@ export function SiteFooter({
   surface = "brand",
   brand,
   columns,
-  social = [],
+  social = DEFAULT_SOCIAL,
   legal,
   policies = [],
   linkAs: LinkComponent = "a",

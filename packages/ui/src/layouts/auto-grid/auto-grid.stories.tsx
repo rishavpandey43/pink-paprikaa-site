@@ -29,6 +29,7 @@ const MINS: { min: AutoGridMin; px: string }[] = [
   { min: "xs", px: "140px" },
   { min: "sm", px: "200px" },
   { min: "card", px: "240px" },
+  { min: "280", px: "280px" },
   { min: "md", px: "260px" },
   { min: "lg", px: "320px" },
   { min: "xl", px: "380px" },

@@ -12,7 +12,7 @@ const testimonialWall = componentVariants({
   slots: {
     root: "section-y",
     inner: "container-page flex flex-col gap-8",
-    grid: "autogrid",
+    grid: "autogrid-min-280",
     item: "flex",
     card: "flex-1",
   },

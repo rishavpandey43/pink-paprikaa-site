@@ -16,7 +16,8 @@ const heroBanner = componentVariants({
     root: "relative",
     // A decorative layer only: the hero's own ground (or a caller's) shows through it.
     pattern: "absolute inset-0 bg-transparent",
-    inner: "relative container-page grid items-center gap-hero-banner-gap py-hero-banner-y",
+    inner:
+      "relative container-page grid items-center gap-hero-banner-gap pt-hero-banner-top pb-hero-banner-bottom",
     copy: "flex min-w-0 flex-col gap-5",
     badges: "flex flex-wrap gap-2",
     actions: "mt-3 flex flex-wrap gap-3",

@@ -1,8 +1,10 @@
-import { Children, type ComponentProps, type ElementType, Fragment, isValidElement } from "react";
+import { Children, type ElementType, Fragment, isValidElement } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
 import { GAP_CLASS, type SpaceStep } from "../../lib/space";
-import { type Sx, withSx } from "../../lib/sx";
+import { withSx } from "../../lib/sx";
 
 const stack = componentVariants({
   slots: {
@@ -28,7 +30,7 @@ const stack = componentVariants({
   },
 });
 
-export interface StackProps extends ComponentProps<"div"> {
+export interface StackProps extends BaseProps<"div"> {
   /** Spacing step between rows: N × 4px (`6` is 24px). */
   space?: SpaceStep | undefined;
   /** Inline alignment of every row (grid `justify-items`). Default: stretch. */
@@ -38,8 +40,6 @@ export interface StackProps extends ComponentProps<"div"> {
   /** A hairline rule between rows — menu rows, list items. The rule follows the surface. */
   isDivided?: boolean | undefined;
   as?: "div" | "ul" | "ol" | "section" | "article" | undefined;
-  /** Token-typed spacing, look and layout overrides (spec §3). */
-  sx?: Sx | undefined;
 }
 
 /** Vertical rhythm: gap-based, never margins. Each direct child is one row. */

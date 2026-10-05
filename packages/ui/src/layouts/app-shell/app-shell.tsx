@@ -1,10 +1,12 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { BatteryFull } from "lucide-react";
 
+import type { BaseProps } from "../../lib/common-props";
+
 import { Icon } from "../../atoms/icon/icon";
 import { componentVariants } from "../../lib/component-variants";
-import { type Sx, withSx } from "../../lib/sx";
+import { withSx } from "../../lib/sx";
 
 const appShell = componentVariants({
   slots: {
@@ -33,7 +35,7 @@ const appShell = componentVariants({
 /** The status row's own surface: none for ink (it reads on the frame), brand for light. */
 const STATUS_SURFACE = { ink: undefined, light: "brand" } as const;
 
-export interface AppShellProps extends ComponentProps<"div"> {
+export interface AppShellProps extends BaseProps<"div"> {
   /** Status-bar colour: ink on light screens; `light` (white on brand) when the screen opens on a pink header. */
   statusTone?: "ink" | "light" | undefined;
   /** The status-bar clock. */
@@ -48,8 +50,6 @@ export interface AppShellProps extends ComponentProps<"div"> {
   overlay?: ReactNode | undefined;
   /** phone 390×844 · phone-sm 360×780 (the system's 360px floor). */
   frame?: "phone" | "phone-sm" | undefined;
-  /** Token-typed spacing, look and layout overrides (spec §3). */
-  sx?: Sx | undefined;
 }
 
 /**

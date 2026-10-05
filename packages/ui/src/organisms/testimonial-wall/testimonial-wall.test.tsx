@@ -56,7 +56,7 @@ describe("TestimonialWall", () => {
 
   it("lays the cards on the auto-fitting card grid", () => {
     render(<TestimonialWall title="Reviews" reviews={REVIEWS} />);
-    expect(screen.getByRole("list")).toHaveClass("autogrid");
+    expect(screen.getByRole("list")).toHaveClass("autogrid-min-280");
   });
 
   it("announces each score as an image with its value", () => {

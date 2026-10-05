@@ -1,8 +1,8 @@
-import type { ComponentProps } from "react";
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
 import { GAP_CLASS, type SpaceStep } from "../../lib/space";
-import { type Sx, withSx } from "../../lib/sx";
+import { withSx } from "../../lib/sx";
 
 const cluster = componentVariants({
   base: "flex min-w-0",
@@ -28,7 +28,7 @@ const cluster = componentVariants({
   },
 });
 
-export interface ClusterProps extends ComponentProps<"div"> {
+export interface ClusterProps extends BaseProps<"div"> {
   /** Spacing step between items: N × 4px (`3` is 12px). */
   space?: SpaceStep | undefined;
   align?: "start" | "center" | "end" | "baseline" | undefined;
@@ -44,8 +44,6 @@ export interface ClusterProps extends ComponentProps<"div"> {
    */
   isScrollable?: boolean | undefined;
   as?: "div" | "ul" | "ol" | "nav" | undefined;
-  /** Token-typed spacing, look and layout overrides (spec §3). */
-  sx?: Sx | undefined;
 }
 
 /** Any horizontal run of small things — buttons, tags, badges, meta. Wraps, so a row can never clip. */

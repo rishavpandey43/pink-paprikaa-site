@@ -20,8 +20,8 @@ export interface NavLink {
   isActive?: boolean | undefined;
 }
 
-/** Between lg and 2xl the inline nav keeps its first three links; the rest wait for 2xl. */
-const INLINE_LINKS_BELOW_2XL = 3;
+/** Between lg and xl the inline nav keeps its first three links; from xl every link shows (design ≥1280). */
+const INLINE_LINKS_BELOW_XL = 3;
 
 const siteHeader = componentVariants({
   slots: {
@@ -56,8 +56,8 @@ const siteHeader = componentVariants({
     isActive: {
       true: { navLink: "border-border-brand text-text-brand", drawerLink: "text-text-brand" },
     },
-    isHiddenBelow2xl: { true: { navItem: "hidden 2xl:block" } },
-    hasHiddenLinks: { true: { menuButton: "2xl:hidden" }, false: { menuButton: "lg:hidden" } },
+    isHiddenBelowXl: { true: { navItem: "hidden xl:block" } },
+    hasHiddenLinks: { true: { menuButton: "xl:hidden" }, false: { menuButton: "lg:hidden" } },
   },
   defaultVariants: { size: "default" },
 });
@@ -66,11 +66,9 @@ export interface SiteHeaderProps
   extends BaseProps<"header">, Pick<VariantProps<typeof siteHeader>, "size"> {
   homeHref: string;
   /**
-   * Inline nav links. Three show between lg and 2xl, all from 2xl (the rest are in the drawer).
-   * The budget the `SixLinksAt*` stories prove beside the handoff's badge and two actions: the
-   * first three labels 36 characters together, all six 65, none longer than 17 ("Office & PG
-   * Lunch"). Longer names belong in `drawerLinks`. Five short design-card links still use this
-   * step — revealing them at xl overflows 1280 with the badge and two actions.
+   * Inline nav links. Three show between lg and xl; all from xl (the rest stay in the drawer).
+   * Use the design's short labels (Menu, Our Story, Outlets, Franchise, Careers) so five fit at
+   * 1280 with the badge and two actions.
    */
   links: NavLink[];
   /** Accessible name of the home link. Default "Pink Paprikaa home". */
@@ -132,7 +130,7 @@ export function SiteHeader({
   ...props
 }: SiteHeaderProps) {
   const slots = siteHeader({ size });
-  const hasHiddenLinks = links.length > INLINE_LINKS_BELOW_2XL;
+  const hasHiddenLinks = links.length > INLINE_LINKS_BELOW_XL;
   const hasDrawer = drawerLinks.length > 0 || isShown(drawerActions);
   return (
     <header className={slots.root({ className: withSx(sx, className) })} {...props}>
@@ -153,7 +151,7 @@ export function SiteHeader({
                   <li
                     key={link.href}
                     className={slots.navItem({
-                      isHiddenBelow2xl: index >= INLINE_LINKS_BELOW_2XL,
+                      isHiddenBelowXl: index >= INLINE_LINKS_BELOW_XL,
                     })}
                   >
                     <Link

@@ -1,7 +1,9 @@
-import type { ComponentProps, CSSProperties } from "react";
+import type { CSSProperties } from "react";
+
+import type { BaseProps } from "../../lib/common-props";
 
 import { componentVariants } from "../../lib/component-variants";
-import { type Sx, withSx } from "../../lib/sx";
+import { withSx } from "../../lib/sx";
 import { POST_FORMATS, type PostFormat, scaledSize } from "./post-formats";
 import { PostFrameScaler } from "./post-frame-scaler";
 
@@ -61,7 +63,7 @@ const SURFACE = {
   alt: "light",
 } as const satisfies Record<PostFrameSurface, "brand" | "ink" | "soft" | "light">;
 
-interface PostFrameBaseProps extends ComponentProps<"div"> {
+interface PostFrameBaseProps extends BaseProps<"div"> {
   /** post 1080² · portrait 1080×1350 · story 1080×1920 · landscape 1200×628 · wide 1920×1080 · mpu 300×250 · leaderboard 728×90. */
   format: PostFormat;
   /** The board's field: brand · ink · soft (pink-100) · page (white) · alt (pink-50). Sets data-surface. */
@@ -70,8 +72,6 @@ interface PostFrameBaseProps extends ComponentProps<"div"> {
   padding?: "none" | "default" | "tight" | undefined;
   /** Draw the story chrome guides (story format only): keep the top 250px and bottom 320px clear. */
   hasSafeArea?: boolean | undefined;
-  /** Token-typed spacing, look and layout overrides (spec §3). */
-  sx?: Sx | undefined;
 }
 
 /** Either a fixed display `scale` (e.g. 0.32), or `isFit` to scale to the parent's width — never both. */

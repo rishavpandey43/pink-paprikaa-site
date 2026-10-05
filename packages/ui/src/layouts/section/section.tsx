@@ -1,9 +1,7 @@
-import type { ComponentProps } from "react";
-
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { SURFACE_BG, SURFACE_DATA, type SurfaceProp } from "../../lib/common-props";
+import { type BaseProps, SURFACE_BG, SURFACE_DATA, type SurfaceProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
-import { type Sx, withSx } from "../../lib/sx";
+import { withSx } from "../../lib/sx";
 import { Container, type ContainerSize } from "../container/container";
 
 const section = componentVariants({
@@ -20,7 +18,7 @@ const section = componentVariants({
   },
 });
 
-export interface SectionProps extends ComponentProps<"section"> {
+export interface SectionProps extends BaseProps<"section"> {
   /** page · alt (pink-50) · sunken · soft (pink-100) · brand (flooded pink) · ink. Sets data-surface. */
   surface?: SurfaceProp | undefined;
   /** The diamond tile behind the band. `faint` (4%) is the handoff's ink-section texture. */
@@ -32,8 +30,6 @@ export interface SectionProps extends ComponentProps<"section"> {
   /** Skip the Container — the child handles its own width. */
   isBare?: boolean | undefined;
   as?: "section" | "div" | "header" | "footer" | "aside" | undefined;
-  /** Token-typed spacing, look and layout overrides (spec §3). */
-  sx?: Sx | undefined;
 }
 
 /**

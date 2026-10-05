@@ -52,26 +52,41 @@ describe("SiteFooter", () => {
   });
 
   it("skips a column with no items, heading and all", () => {
-    render(<SiteFooter columns={[...COLUMNS, { heading: "Coming soon", items: [] }]} />);
+    render(
+      <SiteFooter social={[]} columns={[...COLUMNS, { heading: "Coming soon", items: [] }]} />
+    );
     expect(screen.queryByRole("heading", { name: "Coming soon" })).not.toBeInTheDocument();
     expect(screen.getByRole("contentinfo").firstElementChild?.children).toHaveLength(
       COLUMNS.length
     );
   });
 
-  it("renders exactly what it is given — no licence, tax, contact or social defaults", () => {
+  it("defaults to Instagram only and otherwise renders exactly what it is given", () => {
     const { container } = render(
       <SiteFooter
         columns={[{ heading: "Eat with us", items: [{ label: "Homely Meals", href: "#homely" }] }]}
       />
     );
-    expect(container.textContent).toBe("Eat with usHomely Meals");
-    expect(screen.getAllByRole("link")).toHaveLength(1);
+    expect(
+      screen.getByRole("link", { name: "Pink Paprikaa on Instagram (Opens in a new tab)" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Homely Meals" })).toBeInTheDocument();
     expect(container.textContent).not.toMatch(/FSSAI|GSTIN|©|\+91|pinkpaprikaa\.com/);
   });
 
-  it("renders no brand block and no legal bar for empty brand and legal slots", () => {
-    render(<SiteFooter columns={COLUMNS} brand="" legal="" />);
+  it("hides social when the caller passes an empty list", () => {
+    render(
+      <SiteFooter
+        social={[]}
+        columns={[{ heading: "Eat with us", items: [{ label: "Homely Meals", href: "#homely" }] }]}
+      />
+    );
+    expect(screen.queryByRole("link", { name: /Instagram/ })).not.toBeInTheDocument();
+    expect(screen.getAllByRole("link")).toHaveLength(1);
+  });
+
+  it("renders no brand block and no legal bar for empty brand, social and legal slots", () => {
+    render(<SiteFooter columns={COLUMNS} brand="" social={[]} legal="" />);
     const footer = screen.getByRole("contentinfo");
     // The grid holds only the three columns; the footer holds only the grid.
     expect(footer.children).toHaveLength(1);

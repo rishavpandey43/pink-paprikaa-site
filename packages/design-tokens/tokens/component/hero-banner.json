@@ -1,9 +1,13 @@
 {
   "spacing": {
     "$type": "dimension",
-    "hero-banner-y": {
-      "$value": "clamp(28px, 6vw, 80px)",
-      "$description": "Hero vertical rhythm (handoff Home and Catering heroes; tighter than section-y so the fold holds the headline and actions on phones). Single clamp kept vs design's asymmetric top/bottom — fold budget wins."
+    "hero-banner-top": {
+      "$value": "clamp(44px, 6vw, 72px)",
+      "$description": "Hero top padding (design HeroBanner asymmetric rhythm)."
+    },
+    "hero-banner-bottom": {
+      "$value": "clamp(52px, 7vw, 80px)",
+      "$description": "Hero bottom padding (design HeroBanner asymmetric rhythm)."
     },
     "hero-banner-gap": {
       "$value": "clamp(24px, 5vw, 64px)",

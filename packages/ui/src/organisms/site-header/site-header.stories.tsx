@@ -45,12 +45,13 @@ const HANDOFF_DRAWER_LINKS: NavLink[] = [
  * The stress case: the six longest labels the site's real destinations carry (the handoff drawer's
  * pages, Home and the four-letter Menu aside), in its order — the widest inline nav it can ask for.
  */
+/** Design-card labels (short) — five fit inline from xl with badge + two actions. */
 const WIDEST_LINKS: NavLink[] = [
-  { label: "Homely Meals", href: "#homely-meals" },
-  { label: "This week’s menu", href: "#this-week" },
-  { label: "Catering", href: "#catering" },
-  { label: "Office & PG Lunch", href: "#office-lunch" },
-  { label: "About", href: "#about" },
+  { label: "Menu", href: "#menu" },
+  { label: "Our Story", href: "#about" },
+  { label: "Outlets", href: "#outlets" },
+  { label: "Franchise", href: "#franchise" },
+  { label: "Careers", href: "#careers" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -234,7 +235,6 @@ const fitsWith =
     }
   };
 
-/** Drop the Pure Veg badge so the three widest inline labels + two actions still fit at 1024 with gap-6. */
 const SIX_LINKS = { links: WIDEST_LINKS, drawerLinks: WIDEST_LINKS, badge: undefined };
 
 /** Six links at 1024px: three inline, the menu button carries the rest. */
@@ -252,14 +252,14 @@ export const SixLinksAt1279: Story = {
   play: fitsWith(3),
 };
 
-/** Six links at xl: still three inline — five+ of the widest labels overflow a 1280px page. */
+/** Six short links at xl: all inline (design ≥1280). */
 export const SixLinksAt1280: Story = {
   args: SIX_LINKS,
   globals: VIEWPORT_1280,
-  play: fitsWith(3),
+  play: fitsWith(6),
 };
 
-/** Six links at 2xl, the narrowest page that shows them all. */
+/** Six links at 2xl: all inline. */
 export const SixLinksAt1440: Story = {
   args: SIX_LINKS,
   globals: { viewport: { value: "xxl", isRotated: false } },
