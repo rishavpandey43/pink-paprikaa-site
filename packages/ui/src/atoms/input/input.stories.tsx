@@ -4,8 +4,21 @@ import { CreditCard, Phone } from "lucide-react";
 import { expect } from "storybook/test";
 
 import { paint } from "../../lib/story-paint";
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Input } from "./input";
+
+const INPUT_STATES = [
+  "rest",
+  "hover",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
 
 const meta = {
   title: "Atoms/Input",
@@ -22,7 +35,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Single-line or multiline text field — 48px tall (40 sm / 56 lg), 10px radius, 2px status border. States: rest, hover, focus (2px pink + ring), filled, `disabled`, `readOnly` (sunken fill + lock), `isLoading` (the pulsing mark), and `status` error / success / warning — a status raises the border to 2px, tints the leading icon and shows its glyph on the right. The label, hint and status message belong to **Field** (Molecules/Field), where the message replaces the hint; labels are sentence case and error copy says what to do next, never a code. `className` sizes the box; every other prop, `register()` included, lands on the native input.",
+          "Single-line or multiline text field — 48px tall (40 sm / 56 lg), 10px radius, 2px status border. States: rest, hover (border-strong), focus (2px pink + ring), filled, `disabled`, `readOnly` (sunken fill + lock), `isLoading` (the pulsing mark), and `status` error / success / warning — a status raises the border to 2px, tints the leading icon and shows its glyph on the right. The label, hint and status message belong to **Field** (Molecules/Field), where the message replaces the hint; labels are sentence case and error copy says what to do next, never a code. `className` sizes the box; every other prop, `register()` included, lands on the native input.",
       },
     },
   },
@@ -32,6 +45,32 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
+
+/** Forced rest / hover / focus / disabled — hover uses `--border-strong` (Task 2 field recipe). */
+export const States: Story = {
+  parameters: { pseudo: storyStatesPseudo(INPUT_STATES) },
+  render: () => (
+    <div className="grid w-full max-w-text-measure-prose gap-4">
+      <StatesRow
+        states={INPUT_STATES}
+        render={(state) => (
+          <Input
+            aria-label={`Full name (${state})`}
+            placeholder="Your full name"
+            {...storyStateControlProps(state)}
+          />
+        )}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover .group\\/field");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Input States: #cell-hover field box missing");
+    }
+    await expect(hover.className).toMatch(/border-border-strong/);
+  },
+};
 
 export const Rest: Story = { name: "rest" };
 

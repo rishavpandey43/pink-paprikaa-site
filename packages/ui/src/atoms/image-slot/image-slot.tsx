@@ -9,8 +9,8 @@ import { withSx } from "../../lib/sx";
 export interface ImageSlotBase extends Omit<BaseProps<"div">, "children" | "role" | "aria-label"> {
   ratio?: "square" | "4:3" | "3:4" | "4:5" | "16:9" | "16:10" | "wide" | undefined;
   radius?: "none" | "md" | "lg" | "xl" | undefined;
-  /** Placeholder colourway: soft pink-100 · strong pink-200 · ink grey. */
-  fill?: "soft" | "strong" | "ink" | undefined;
+  /** Placeholder colourway (design `tone`): soft pink-100 · strong pink-200 · neutral grey. */
+  variant?: "soft" | "strong" | "neutral" | undefined;
   /** Fill the parent's height instead of using an aspect ratio (full-bleed panels). */
   isFill?: boolean | undefined;
   /** A `<picture>` from the image pipeline; its `<img>` should carry `size-full object-cover`. */
@@ -56,15 +56,15 @@ const imageSlot = componentVariants({
       lg: { root: "rounded-lg" },
       xl: { root: "rounded-xl" },
     },
-    fill: {
+    variant: {
       soft: { root: "bg-pink-100", label: "text-pink-700" },
       strong: { root: "bg-pink-200", label: "text-pink-800" },
-      ink: { root: "bg-ink-200", label: "text-ink-600" },
+      neutral: { root: "bg-ink-200", label: "text-ink-600" },
     },
     // Declared after `ratio`, so `aspect-auto` replaces the ratio in the merge.
     isFill: { true: { root: "aspect-auto h-full" } },
   },
-  defaultVariants: { ratio: "4:3", radius: "md", fill: "soft", isFill: false },
+  defaultVariants: { ratio: "4:3", radius: "md", variant: "soft", isFill: false },
 });
 
 /**
@@ -74,14 +74,14 @@ const imageSlot = componentVariants({
 export function ImageSlot({
   ratio,
   radius,
-  fill,
+  variant,
   isFill,
   sx,
   className,
   children,
   ...props
 }: ImageSlotProps) {
-  const slots = imageSlot({ ratio, radius, fill, isFill });
+  const slots = imageSlot({ ratio, radius, variant, isFill });
   if (props.src !== undefined) {
     const {
       src,

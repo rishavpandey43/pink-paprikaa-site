@@ -203,4 +203,11 @@ describe("Input", () => {
     const props: import("./input").InputProps = { type: "date", "aria-label": "Day" };
     void props;
   });
+
+  it("paints the idle hover border via the shared field-control recipe", () => {
+    const { container } = render(<Input aria-label="Full name" />);
+    expect(container.firstElementChild).toHaveClass(
+      "not-focus-within:hover:not-has-[>:is(input,textarea,select):disabled]:border-border-strong"
+    );
+  });
 });

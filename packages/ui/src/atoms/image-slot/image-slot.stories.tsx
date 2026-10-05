@@ -37,13 +37,13 @@ export const Ratios: Story = {
   ),
 };
 
-export const Fills: Story = {
-  name: "fill",
+export const Variants: Story = {
+  name: 'variant="soft" · "strong" · "neutral"',
   render: () => (
     <div className="flex items-start gap-3">
-      <ImageSlot fill="soft" label="soft" className="w-30" />
-      <ImageSlot fill="strong" label="strong" className="w-30" />
-      <ImageSlot fill="ink" label="ink" className="w-30" />
+      <ImageSlot variant="soft" label="soft" className="w-30" />
+      <ImageSlot variant="strong" label="strong" className="w-30" />
+      <ImageSlot variant="neutral" label="neutral" className="w-30" />
     </div>
   ),
 };
@@ -68,7 +68,7 @@ export const Photo: Story = {
       width={358}
       height={358}
       ratio="square"
-      fill="ink"
+      variant="neutral"
       className="w-40"
     />
   ),

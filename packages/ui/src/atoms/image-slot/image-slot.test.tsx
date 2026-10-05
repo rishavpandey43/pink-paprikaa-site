@@ -45,9 +45,9 @@ describe("ImageSlot", () => {
   it.each([
     ["soft", "bg-pink-100", "text-pink-700"],
     ["strong", "bg-pink-200", "text-pink-800"],
-    ["ink", "bg-ink-200", "text-ink-600"],
-  ] as const)("fill %s paints %s and labels in %s (AA, spec §5.3)", (fill, bg, label) => {
-    render(<ImageSlot label="Kitchen" fill={fill} />);
+    ["neutral", "bg-ink-200", "text-ink-600"],
+  ] as const)("variant %s paints %s and labels in %s (AA, spec §5.3)", (variant, bg, label) => {
+    render(<ImageSlot label="Kitchen" variant={variant} />);
     const slot = screen.getByRole("img");
     expect(slot).toHaveClass(bg);
     expect(slot.firstElementChild).toHaveClass(label);

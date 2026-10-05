@@ -20,8 +20,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
-export const Veg: Story = {
-  name: "veg",
+export const Sizes: Story = {
+  name: "sizes",
   render: () => (
     <div className="flex items-center gap-4">
       <DietMark size="sm" />
