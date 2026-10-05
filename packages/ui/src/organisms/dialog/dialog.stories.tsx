@@ -93,7 +93,10 @@ function proveRingsWhole(stops: number): NonNullable<Story["play"]> {
       if (!(active instanceof HTMLElement) || seen.has(active)) break;
       seen.add(active);
       await expect(dialog).toContainElement(active);
-      const ring = active.matches("input, select, textarea") ? active.parentElement : active;
+      // Select's combobox is a button; the focus ring lives on FieldControl (focus-within).
+      const ring = active.matches("input, select, textarea, button[role='combobox']")
+        ? active.parentElement
+        : active;
       if (ring === null) throw new Error("a field control outside its field box");
       await expect(ringClippers(ring)).toEqual([]);
     }

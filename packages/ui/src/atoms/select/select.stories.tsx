@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { Users } from "lucide-react";
-import { expect } from "storybook/test";
+import { useState } from "react";
+import { expect, screen, userEvent, waitFor, within } from "storybook/test";
 
 import { paint } from "../../lib/story-paint";
 import { OnSurfaces } from "../../lib/story-surfaces";
@@ -18,6 +19,10 @@ const SLOTS = [
   { value: "20:00", label: "8:00pm" },
   { value: "20:30", label: "8:30pm", isDisabled: true },
 ];
+const LONG_LIST = Array.from({ length: 24 }, (_, index) => ({
+  value: `slot-${String(index)}`,
+  label: `${String(11 + Math.floor(index / 2))}:${index % 2 === 0 ? "00" : "30"}`,
+}));
 
 const meta = {
   title: "Atoms/Select",
@@ -34,7 +39,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Dropdown for short, known lists — outlet, table size, pickup slot. Matches Input exactly: the same heights, radius, status colours and glyphs (the status glyph replaces the chevron), `disabled`, and `readOnly` (sunken fill + lock). It is the platform's `<select>`, so phones get their own picker. For more than ~12 options use a searchable list instead. Label and message belong to Field.",
+          "Dropdown for short, known lists — outlet, table size, pickup slot. Matches Input exactly: the same heights, radius, status colours and glyphs (the status glyph replaces the chevron), `disabled`, and `readOnly` (sunken fill + lock). Opens our own listbox (MenuPanel), never the browser popup; ≤640px becomes a bottom sheet. A hidden native `<select>` in lib keeps `{...register()}` and FormData working. For more than ~12 options use Combobox. Label and message belong to Field.",
       },
     },
   },
@@ -66,6 +71,7 @@ export const StatusError: Story = {
     await expect(getComputedStyle(box).borderColor).toBe(
       paint(select, "borderColor", "--color-status-danger")
     );
+    // Placeholder uses text-subtle on the label span; the button inherits the field's body colour.
     await expect(getComputedStyle(select).color).toBe(paint(select, "color", "--color-text-body"));
   },
 };
@@ -228,5 +234,144 @@ export const ContentSizedParent: Story = {
       Number.parseFloat(style.paddingLeft) -
       Number.parseFloat(style.paddingRight);
     await expect(room).toBeGreaterThanOrEqual(textWidth);
+  },
+};
+
+/** Card row: list open with the brand diamond on the chosen row. */
+export const OpenList: Story = {
+  name: "open list",
+  args: {
+    "aria-label": "Pickup time",
+    defaultValue: "20:00",
+    defaultOpen: true,
+    options: SLOTS,
+  },
+  play: async ({ canvas }) => {
+    const listbox = await waitFor(() => screen.getByRole("listbox", { name: "Pickup time" }));
+    await waitFor(() => expect(listbox).toBeVisible());
+    const chosen = within(listbox).getByRole("option", { name: "8:00pm" });
+    await expect(chosen).toHaveAttribute("aria-selected", "true");
+    await expect(chosen.querySelector("[aria-hidden='true']")).not.toBeNull();
+    await expect(canvas.getByRole("combobox")).toHaveAttribute("aria-expanded", "true");
+  },
+};
+
+/** Keyboard: open, type-to-jump, Enter selects, Escape returns focus. */
+export const Keyboard: Story = {
+  name: "keyboard",
+  args: {
+    "aria-label": "Spice",
+    options: [
+      { value: "mild", label: "Mild" },
+      { value: "medium", label: "Medium" },
+      { value: "hot", label: "Hot" },
+    ],
+  },
+  play: async ({ canvas }) => {
+    const trigger = canvas.getByRole("combobox", { name: "Spice" });
+    trigger.focus();
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => expect(screen.getByRole("listbox")).toBeVisible());
+    await userEvent.keyboard("h");
+    await userEvent.keyboard("{Enter}");
+    await expect(trigger).toHaveTextContent("Hot");
+    await expect(trigger).toHaveFocus();
+  },
+};
+
+/** Long list: many options render in the open panel. */
+export const LongList: Story = {
+  name: "long list",
+  args: {
+    "aria-label": "Pickup slot",
+    placeholder: "Choose a slot",
+    defaultOpen: true,
+    options: LONG_LIST,
+  },
+  play: async () => {
+    const listbox = await waitFor(() => screen.getByRole("listbox", { name: "Pickup slot" }));
+    await waitFor(() => expect(listbox).toBeVisible());
+    await expect(within(listbox).getAllByRole("option").length).toBe(24);
+  },
+};
+
+/**
+ * Select inside a dialog-sized frame (plain chrome — atom stories cannot import Dialog/Field).
+ * Ruling: prove portal + open list without pulling organisms into atoms/.
+ */
+export const InDialog: Story = {
+  name: "in dialog",
+  args: { "aria-label": "Outlet", options: OUTLETS },
+  render: () => (
+    <div
+      role="dialog"
+      aria-label="Book a table"
+      className="relative w-full max-w-dialog-sm rounded-xl bg-surface-card p-6 shadow-4"
+    >
+      <Select aria-label="Outlet" options={OUTLETS} placeholder="Pick an outlet" defaultOpen />
+    </div>
+  ),
+  play: async () => {
+    await expect(await screen.findByRole("dialog", { name: "Book a table" })).toBeVisible();
+    await waitFor(() => expect(screen.getByRole("listbox")).toBeVisible());
+  },
+};
+
+/**
+ * Select portalled into a positioned phone frame (stand-in for AppShell overlay — atoms cannot
+ * import layouts/).
+ */
+export const InAppShell: Story = {
+  name: "in app shell",
+  args: { "aria-label": "Outlet", options: OUTLETS },
+  render: function InAppShellSelect() {
+    const [frame, setFrame] = useState<HTMLDivElement | null>(null);
+    return (
+      <div
+        ref={setFrame}
+        className="relative h-app-shell-sm-h w-app-shell-sm-w overflow-hidden rounded-xl border border-border-subtle bg-surface-page"
+      >
+        <div className="p-4">
+          {frame === null ? null : (
+            <Select aria-label="Outlet" options={OUTLETS} defaultOpen portalContainer={frame} />
+          )}
+        </div>
+      </div>
+    );
+  },
+  play: async () => {
+    await waitFor(() => expect(screen.getByRole("listbox", { name: "Outlet" })).toBeVisible());
+  },
+};
+
+/** ≤640 sheet: handle, title, 52px rows. */
+export const Sheet360: Story = {
+  name: "sheet at 360px",
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  args: {
+    "aria-label": "Spice",
+    defaultOpen: true,
+    sheet: true,
+    options: [
+      { value: "mild", label: "Mild" },
+      { value: "medium", label: "Medium" },
+      { value: "hot", label: "Hot" },
+    ],
+  },
+  parameters: {
+    a11y: {
+      config: {
+        rules: [
+          { id: "color-contrast", enabled: false },
+          { id: "aria-hidden-focus", enabled: false },
+          { id: "scrollable-region-focusable", enabled: false },
+        ],
+      },
+    },
+  },
+  play: async () => {
+    await waitFor(() => expect(screen.getByRole("listbox", { name: "Spice" })).toBeVisible());
+    await expect(screen.getByRole("option", { name: "Mild" })).toHaveClass("min-h-13");
+    await expect(document.querySelector('[class*="animate-sheet-in"]')).not.toBeNull();
   },
 };

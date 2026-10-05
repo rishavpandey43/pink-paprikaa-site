@@ -120,8 +120,8 @@ describe("Input", () => {
     const input = screen.getByRole("textbox");
     expect(input).toBeDisabled();
     expect(input.parentElement).toHaveClass(
-      "has-[>:is(input,textarea,select):disabled]:bg-ink-100",
-      "has-[>:is(input,textarea,select):disabled]:text-ink-400"
+      "has-[>:is(input,textarea,select,button[role=combobox]):disabled]:bg-ink-100",
+      "has-[>:is(input,textarea,select,button[role=combobox]):disabled]:text-ink-400"
     );
     expect(input.parentElement?.className).not.toMatch(/opacity-/);
     await user.type(input, "98");
@@ -207,7 +207,7 @@ describe("Input", () => {
   it("paints the idle hover border via the shared field-control recipe", () => {
     const { container } = render(<Input aria-label="Full name" />);
     expect(container.firstElementChild).toHaveClass(
-      "not-focus-within:hover:not-has-[>:is(input,textarea,select):disabled]:border-border-strong"
+      "not-focus-within:hover:not-has-[>:is(input,textarea,select,button[role=combobox]):disabled]:border-border-strong"
     );
   });
 });

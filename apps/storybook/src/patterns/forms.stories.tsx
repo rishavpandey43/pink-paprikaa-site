@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { expect, fn, type UserEventObject, waitFor } from "storybook/test";
+import { expect, fn, screen, type UserEventObject, waitFor } from "storybook/test";
 
 import { ENQUIRY_MESSAGES, EnquiryForm } from "./enquiry-form";
 
@@ -75,12 +75,24 @@ export const KeyboardOnly: Story = {
 
       const occasion = canvas.getByRole("combobox", { name: /^Occasion/ });
       await tabTo(userEvent, occasion);
-      // A native <select> is operated by the browser itself; user-event cannot drive its
-      // keyboard UI, so the value is chosen directly once the control has keyboard focus.
-      await userEvent.selectOptions(occasion, "birthday");
+      await userEvent.keyboard("{Enter}{Enter}");
+      await expect(occasion).toHaveTextContent("Birthday");
 
-      await tabTo(userEvent, canvas.getByLabelText(/^Date/));
-      await userEvent.keyboard("2026-10-24");
+      const date = canvas.getByRole("button", { name: /^Date/ });
+      await tabTo(userEvent, date);
+      // DatePicker opens on pointer (ArrowDown-to-open is Task 8); click after keyboard focus.
+      await userEvent.click(date);
+      await expect(await screen.findByRole("grid")).toBeVisible();
+      const dayButton = document.querySelector<HTMLButtonElement>(
+        'td[data-day]:not([aria-disabled="true"]) button:not(:disabled)'
+      );
+      if (dayButton === null) throw new Error("expected a pickable day in the open calendar");
+      const pickedIso = dayButton.closest("td")?.getAttribute("data-day");
+      if (pickedIso === null || pickedIso === undefined) {
+        throw new Error("day cell missing data-day");
+      }
+      await userEvent.click(dayButton);
+      await expect(date).not.toHaveTextContent("Choose a day");
 
       const increase = canvas.getByRole("button", { name: /^Add one/ });
       await tabTo(userEvent, increase);
@@ -121,7 +133,7 @@ export const KeyboardOnly: Story = {
         phone: "9876543210",
         occasion: "birthday",
         guests: 15,
-        date: "2026-10-24",
+        date: pickedIso,
         meal: "signature",
         spice: "medium",
         service: "delivered",

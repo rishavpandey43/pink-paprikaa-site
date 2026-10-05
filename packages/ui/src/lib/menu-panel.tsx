@@ -115,6 +115,8 @@ export interface MenuPanelProps {
   emptyText?: string | undefined;
   /** 52px rows when the panel is a phone sheet. */
   isSheet?: boolean | undefined;
+  /** Keyboard-active row index (Select / Combobox). */
+  activeIndex?: number | undefined;
   "aria-label"?: string | undefined;
 }
 
@@ -130,6 +132,7 @@ export function MenuPanel({
   id,
   emptyText = "Nothing here yet.",
   isSheet = false,
+  activeIndex = -1,
   "aria-label": ariaLabel,
 }: MenuPanelProps) {
   const autoId = useId();
@@ -162,6 +165,7 @@ export function MenuPanel({
         }
         if (!isMenuItem(entry)) return null;
         const isChosen = isSelectedValue(value, entry.value);
+        const isActive = index === activeIndex && entry.disabled !== true;
         const color = entry.danger === true ? "danger" : "default";
         const row = menuPanelVariants({ isSheet, color, isSelected: isChosen });
         const isDisabled = entry.disabled === true;
@@ -174,6 +178,7 @@ export function MenuPanel({
             {...(role === "listbox" ? { "aria-selected": isChosen } : {})}
             {...(isDisabled ? { "aria-disabled": true } : {})}
             {...(isChosen ? { "data-selected": "" } : {})}
+            {...(isActive ? { "data-highlighted": "" } : {})}
             className={row.item()}
             onClick={() => {
               if (!isDisabled) onSelect?.(entry);

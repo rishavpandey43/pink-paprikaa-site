@@ -4,7 +4,7 @@ describe("fieldControlVariants", () => {
   it("strengthens the idle border on hover for the default status only", () => {
     const idle = fieldControlVariants({ status: "default", control: "input" });
     expect(idle.root()).toMatch(
-      /not-focus-within:hover:not-has-\[>:is\(input,textarea,select\):disabled\]:border-border-strong/
+      /not-focus-within:hover:not-has-\[>:is\(input,textarea,select,button\[role=combobox\]\):disabled\]:border-border-strong/
     );
     expect(idle.icon()).toMatch(/group-focus-within\/field:text-pink-500/);
 

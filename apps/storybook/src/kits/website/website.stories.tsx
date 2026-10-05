@@ -36,6 +36,10 @@ export const Homepage: Story = {
       within(canvas.getByRole("banner")).getByRole("link", { name: "Book a Table" })
     );
     const booking = await screen.findByRole("dialog", { name: "Book a table" });
+    await userEvent.type(
+      within(booking).getByRole("textbox", { name: /^Mobile number/ }),
+      "9876543210"
+    );
     await userEvent.click(within(booking).getByRole("button", { name: "Hold My Table" }));
     const held = await screen.findByRole("dialog", { name: "Table held for 10 minutes" });
     await Promise.all(held.getAnimations().map((animation) => animation.finished));

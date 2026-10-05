@@ -163,7 +163,7 @@ describe("Field", () => {
     // jsdom cannot evaluate `:has()`; the class is the contract, the story shows the effect.
     expect(container.firstElementChild).toHaveClass("group/form-field");
     expect(screen.getByText("Pickup time").closest("label")).toHaveClass(
-      "group-has-[:is(input,textarea,select):disabled]/form-field:text-text-subtle"
+      "group-has-[:is(input,textarea,select,button[role=combobox]):disabled]/form-field:text-text-subtle"
     );
   });
 

@@ -12,20 +12,20 @@ import { SymbolMark } from "./symbol-mark";
  * native control inside it — and SearchField can — so heights, radius, the status border, the focus
  * ring, the disabled and read-only fills and the trailing glyph are shared by construction.
  *
- * Disabled is styled off the native control (`has-[>:is(input,textarea,select):disabled]:`), so a
- * disabled `<fieldset>` greys its fields too. The selector names the control, a direct child of the
- * box: a bare `has-disabled:` also matches a select's disabled placeholder `<option>`, and
- * `has-[>:disabled]:` a disabled trailing button — either would paint the whole field disabled. A
- * new control rendered in the box must be one of those three elements and a direct child. Read-only
- * cannot be styled that way (`:read-only` matches every non-editable element), so it is a variant.
+ * Disabled is styled off the control (`has-[>:is(input,textarea,select,button[role=combobox]):disabled]:`),
+ * so a disabled `<fieldset>` greys its fields too. The selector names the control, a direct child of
+ * the box: a bare `has-disabled:` also matches a select's disabled placeholder `<option>`, and
+ * `has-[>:disabled]:` / a plain `button:disabled` would catch a trailing IconButton — either would
+ * paint the whole field disabled. Select's trigger is `button[role=combobox]`. Read-only cannot be
+ * styled that way (`:read-only` matches every non-editable element), so it is a variant.
  */
 export const fieldControlVariants = componentVariants({
   slots: {
     root: [
       "group/field relative flex w-full min-w-0 items-center gap-2.5 rounded-md border border-border-default bg-surface-card px-3.5 font-body text-text-body transition-control",
-      "has-[>:is(input,textarea,select):disabled]:cursor-not-allowed has-[>:is(input,textarea,select):disabled]:border-border-subtle has-[>:is(input,textarea,select):disabled]:bg-ink-100 has-[>:is(input,textarea,select):disabled]:text-ink-400",
+      "has-[>:is(input,textarea,select,button[role=combobox]):disabled]:cursor-not-allowed has-[>:is(input,textarea,select,button[role=combobox]):disabled]:border-border-subtle has-[>:is(input,textarea,select,button[role=combobox]):disabled]:bg-ink-100 has-[>:is(input,textarea,select,button[role=combobox]):disabled]:text-ink-400",
     ],
-    icon: "text-ink-500 group-has-[>:is(input,textarea,select):disabled]/field:text-ink-400",
+    icon: "text-ink-500 group-has-[>:is(input,textarea,select,button[role=combobox]):disabled]/field:text-ink-400",
     control: "bg-transparent outline-none disabled:cursor-not-allowed",
     glyph: "ms-auto",
     spinner: "ms-auto size-field-spinner shrink-0 text-pink-500 motion-safe:animate-mark-pulse",
@@ -61,10 +61,11 @@ export const fieldControlVariants = componentVariants({
         root: [
           "focus-within:border-2 focus-within:border-border-brand focus-within:shadow-focus-ring",
           // X1: hover strengthens the border when idle (not focused, not disabled, not read-only).
-          "not-focus-within:hover:not-has-[>:is(input,textarea,select):disabled]:border-border-strong",
+          "not-focus-within:hover:not-has-[>:is(input,textarea,select,button[role=combobox]):disabled]:border-border-strong",
         ],
         icon: "group-focus-within/field:text-pink-500",
-        glyph: "text-ink-500 group-has-[>:is(input,textarea,select):disabled]/field:text-ink-400",
+        glyph:
+          "text-ink-500 group-has-[>:is(input,textarea,select,button[role=combobox]):disabled]/field:text-ink-400",
       },
       error: {
         root: "border-2 border-status-danger focus-within:shadow-field-ring-danger",
@@ -101,35 +102,43 @@ export const fieldControlVariants = componentVariants({
       control: "select",
       isReadOnly: true,
       class: {
-        root: "has-[>:is(input,textarea,select):disabled]:cursor-default has-[>:is(input,textarea,select):disabled]:bg-surface-sunken has-[>:is(input,textarea,select):disabled]:text-text-body",
-        icon: "group-has-[>:is(input,textarea,select):disabled]/field:text-ink-500",
+        root: "has-[>:is(input,textarea,select,button[role=combobox]):disabled]:cursor-default has-[>:is(input,textarea,select,button[role=combobox]):disabled]:bg-surface-sunken has-[>:is(input,textarea,select,button[role=combobox]):disabled]:text-text-body",
+        icon: "group-has-[>:is(input,textarea,select,button[role=combobox]):disabled]/field:text-ink-500",
         control: "disabled:cursor-default",
       },
     },
-    // `has-[>:is(input,textarea,select):disabled]:` outranks a plain border class, so each status restores its own border.
+    // `has-[>:is(input,textarea,select,button[role=combobox]):disabled]:` outranks a plain border class, so each status restores its own border.
     {
       control: "select",
       isReadOnly: true,
       status: "default",
-      class: { root: "has-[>:is(input,textarea,select):disabled]:border-border-default" },
+      class: {
+        root: "has-[>:is(input,textarea,select,button[role=combobox]):disabled]:border-border-default",
+      },
     },
     {
       control: "select",
       isReadOnly: true,
       status: "error",
-      class: { root: "has-[>:is(input,textarea,select):disabled]:border-status-danger" },
+      class: {
+        root: "has-[>:is(input,textarea,select,button[role=combobox]):disabled]:border-status-danger",
+      },
     },
     {
       control: "select",
       isReadOnly: true,
       status: "success",
-      class: { root: "has-[>:is(input,textarea,select):disabled]:border-status-success" },
+      class: {
+        root: "has-[>:is(input,textarea,select,button[role=combobox]):disabled]:border-status-success",
+      },
     },
     {
       control: "select",
       isReadOnly: true,
       status: "warning",
-      class: { root: "has-[>:is(input,textarea,select):disabled]:border-status-warning" },
+      class: {
+        root: "has-[>:is(input,textarea,select,button[role=combobox]):disabled]:border-status-warning",
+      },
     },
   ],
   defaultVariants: {
@@ -173,6 +182,8 @@ export interface FieldControlProps {
   isMultiline?: boolean | undefined;
   /** A resting trailing glyph (Select's chevron); a status, the lock or the loading mark replace it. */
   affordance?: IconComponent | undefined;
+  /** When true, rotates the resting affordance 180° (open Select / Combobox). */
+  isExpanded?: boolean | undefined;
   className?: string | undefined;
   /** Renders the native control, given the class the box assigns it. */
   children: (controlClassName: string) => ReactNode;
@@ -193,6 +204,7 @@ export function FieldControl({
   isReadOnly = false,
   isMultiline = false,
   affordance,
+  isExpanded = false,
   className,
   children,
 }: FieldControlProps) {
@@ -205,6 +217,21 @@ export function FieldControl({
     hasIcon: icon !== undefined,
   });
   const glyph = isLoading ? undefined : trailingGlyph(status, isReadOnly, affordance);
+  const glyphClass =
+    glyph !== undefined &&
+    isExpanded &&
+    status === "default" &&
+    !isReadOnly &&
+    affordance !== undefined
+      ? styles.glyph({
+          className: "rotate-180 text-pink-500 transition-transform duration-fast ease-out",
+        })
+      : styles.glyph({
+          className:
+            affordance !== undefined && status === "default" && !isReadOnly
+              ? "transition-transform duration-fast ease-out"
+              : undefined,
+        });
 
   return (
     <div data-surface="light" className={styles.root({ className })}>
@@ -212,7 +239,7 @@ export function FieldControl({
       {children(styles.control())}
       {isLoading ? <SymbolMark className={styles.spinner()} /> : null}
       {glyph === undefined ? null : (
-        <Icon icon={glyph.icon} size={glyph.size} className={styles.glyph()} />
+        <Icon icon={glyph.icon} size={glyph.size} className={glyphClass} />
       )}
       {suffix === undefined ? null : <span className={styles.suffix()}>{suffix}</span>}
       {trailing}

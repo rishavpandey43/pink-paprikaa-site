@@ -17,7 +17,7 @@ const field = componentVariants({
     // `group/field` (the box).
     root: "group/form-field grid min-w-0",
     label:
-      "flex items-baseline gap-1.5 text-body-sm font-medium text-text-body group-has-[:is(input,textarea,select):disabled]/form-field:text-text-subtle",
+      "flex items-baseline gap-1.5 text-body-sm font-medium text-text-body group-has-[:is(input,textarea,select,button[role=combobox]):disabled]/form-field:text-text-subtle",
     required: "text-text-brand",
     optional: "text-caption font-regular text-text-subtle",
     control: "grid min-w-0 gap-1.5",

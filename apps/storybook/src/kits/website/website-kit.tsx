@@ -1,5 +1,5 @@
 import { ArrowRight, ArrowUpRight, Phone, Plus, Search, ShoppingBag } from "lucide-react";
-import { type MouseEvent, useState } from "react";
+import { type MouseEvent, useId, useState } from "react";
 
 import { brand, toBrandLines } from "@pink-paprikaa-web/content";
 import {
@@ -9,6 +9,7 @@ import {
   Card,
   Cluster,
   CtaBand,
+  DatePicker,
   Dialog,
   FaqSection,
   Field,
@@ -36,6 +37,18 @@ import {
   Typography,
 } from "@pink-paprikaa-web/ui";
 
+const BOOKING_PHONE_EMPTY = "Add a mobile number so we can text your confirmation.";
+const BOOKING_PHONE_SHORT = "That number looks short. We need all 10 digits.";
+
+function startOfToday(): Date {
+  const today = new Date();
+  return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+}
+
+function digitsOnly(value: string): string {
+  return value.replace(/\D/g, "");
+}
+
 import {
   BOOKING_SLOTS,
   BUILD_YEAR,
@@ -60,11 +73,15 @@ const OUTLET_OPTIONS = brand.outlets.map((outlet) => ({
 
 /** The design system's marketing homepage (ui_kits/website), composed from the library. */
 export function WebsiteKit() {
+  const bookingFormId = useId();
   const [cartCount, setCartCount] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
   const [isBooking, setIsBooking] = useState(false);
   const [isBooked, setIsBooked] = useState(false);
   const [slot, setSlot] = useState("8:00pm");
+  const [bookingDate, setBookingDate] = useState<Date | null>(null);
+  const [phone, setPhone] = useState("");
+  const [phoneErr, setPhoneErr] = useState<string | null>(null);
 
   function addToOrder(item: MenuListItem) {
     setCartCount((count) => count + 1);
@@ -75,6 +92,23 @@ export function WebsiteKit() {
     event.preventDefault();
     setIsBooked(false);
     setIsBooking(true);
+    setPhone("");
+    setPhoneErr(null);
+    setBookingDate(null);
+  }
+
+  function holdBooking() {
+    const digits = digitsOnly(phone);
+    if (digits.length === 0) {
+      setPhoneErr(BOOKING_PHONE_EMPTY);
+      return;
+    }
+    if (digits.length < 10) {
+      setPhoneErr(BOOKING_PHONE_SHORT);
+      return;
+    }
+    setPhoneErr(null);
+    setIsBooked(true);
   }
 
   function bookButton() {
@@ -342,17 +376,14 @@ export function WebsiteKit() {
               <>
                 <Button
                   variant="ghost"
+                  type="button"
                   onClick={() => {
                     setIsBooking(false);
                   }}
                 >
                   Cancel
                 </Button>
-                <Button
-                  onClick={() => {
-                    setIsBooked(true);
-                  }}
-                >
+                <Button type="submit" form={bookingFormId}>
                   Hold My Table
                 </Button>
               </>
@@ -362,33 +393,64 @@ export function WebsiteKit() {
           {isBooked ? (
             <Typography>{`We'll text you the confirmation. See you at ${OUTLET.name}.`}</Typography>
           ) : (
-            <Stack space={4}>
-              <Field label="Outlet">
-                {(control) => <Select {...control} options={OUTLET_OPTIONS} />}
-              </Field>
-              <Field label="Guests">
-                {(control) => <Select {...control} options={GUEST_OPTIONS} defaultValue="2" />}
-              </Field>
-              <SlotPicker
-                name="time"
-                legend="Time"
-                slots={BOOKING_SLOTS}
-                value={slot}
-                onValueChange={setSlot}
-                columns={4}
-              />
-              <Field label="Mobile number" isRequired>
-                {(control) => (
-                  <Input
-                    {...control}
-                    type="tel"
-                    icon={Phone}
-                    placeholder="98765 43210"
-                    autoComplete="tel"
-                  />
-                )}
-              </Field>
-            </Stack>
+            <form
+              id={bookingFormId}
+              noValidate
+              onSubmit={(event) => {
+                event.preventDefault();
+                holdBooking();
+              }}
+            >
+              <Stack space={4}>
+                <Field label="Outlet">
+                  {(control) => <Select {...control} options={OUTLET_OPTIONS} />}
+                </Field>
+                <Field label="Guests">
+                  {(control) => <Select {...control} options={GUEST_OPTIONS} defaultValue="2" />}
+                </Field>
+                <Field label="Date">
+                  {(control) => (
+                    <DatePicker
+                      {...control}
+                      value={bookingDate}
+                      onValueChange={setBookingDate}
+                      disabledDays={{ before: startOfToday() }}
+                    />
+                  )}
+                </Field>
+                <SlotPicker
+                  name="time"
+                  legend="Time"
+                  slots={BOOKING_SLOTS}
+                  value={slot}
+                  onValueChange={setSlot}
+                  columns={4}
+                />
+                <Field
+                  label="Mobile number"
+                  isRequired
+                  status={phoneErr === null ? "default" : "error"}
+                  message={phoneErr ?? undefined}
+                >
+                  {(control) => (
+                    <Input
+                      {...control}
+                      type="tel"
+                      inputMode="numeric"
+                      icon={Phone}
+                      placeholder="98765 43210"
+                      autoComplete="tel"
+                      value={phone}
+                      status={phoneErr === null ? "default" : "error"}
+                      onChange={(event) => {
+                        setPhone(event.target.value);
+                        if (phoneErr !== null) setPhoneErr(null);
+                      }}
+                    />
+                  )}
+                </Field>
+              </Stack>
+            </form>
           )}
         </Dialog>
       </div>
