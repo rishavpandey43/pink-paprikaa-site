@@ -8,7 +8,8 @@ import { DishStory, Leaderboard, LinkBanner, Mpu, OfferStory } from "./ad-artboa
 import { Artboard } from "./artboard";
 
 const meta = {
-  title: "Marketing/Kit/Ads",
+  title: "Marketing/Social & ads/Ads boards",
+  tags: ["!dev"],
   parameters: {
     layout: "padded",
     docs: {

@@ -8,7 +8,7 @@ import { Artboard } from "./artboard";
 import { CarouselSlide, DishLaunchPost, OfferPost, StatementPost } from "./feed-artboards";
 
 const meta = {
-  title: "Marketing/Kit/Feed",
+  title: "Marketing/Social & ads",
   parameters: {
     layout: "padded",
     docs: {

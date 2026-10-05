@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Logo } from "./logo";
 
 const meta = {
-  title: "Atoms/Logo",
+  title: "Brand/Logo",
   component: Logo,
   args: { variant: "lockup", color: "brand" },
   parameters: {

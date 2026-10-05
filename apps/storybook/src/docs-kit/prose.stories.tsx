@@ -6,7 +6,7 @@ import { ProseTable } from "./prose";
 
 /** Contract tests for the docs prose overrides. Hidden from the sidebar; run by storybook:test. */
 const meta = {
-  title: "Introduction/Docs prose",
+  title: "Readme/Docs prose",
   tags: ["!dev", "!autodocs"],
   parameters: { layout: "padded" },
 } satisfies Meta;

@@ -5,7 +5,7 @@ import { expect, within } from "storybook/test";
 
 import { sxClass } from "./sx";
 
-const meta = { title: "Foundations/Sx/Proof", tags: ["!autodocs"] } satisfies Meta;
+const meta = { title: "Readme/System (sx)", tags: ["!autodocs"] } satisfies Meta;
 export default meta;
 
 /** Proves the safelist ships CSS: these classes are built at runtime, never written in source. */

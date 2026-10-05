@@ -8,7 +8,7 @@ import { expect } from "storybook/test";
  * Hidden from the sidebar; run by storybook:test.
  */
 const meta = {
-  title: "Introduction/Canvas geometry",
+  title: "Readme/Canvas geometry",
   tags: ["!dev", "!autodocs"],
   globals: { viewport: { value: "floor360", isRotated: false } },
   render: () => <div data-testid="fill" className="w-full" />,

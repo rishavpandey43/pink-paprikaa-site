@@ -26,7 +26,7 @@ import { TypeSpecimen } from "./type-specimen";
 
 /** Contract tests for the docs-only helpers. Hidden from the sidebar; run by storybook:test. */
 const meta = {
-  title: "Introduction/Docs kit",
+  title: "Readme/Docs kit",
   tags: ["!dev", "!autodocs"],
   parameters: { layout: "padded" },
 } satisfies Meta;
