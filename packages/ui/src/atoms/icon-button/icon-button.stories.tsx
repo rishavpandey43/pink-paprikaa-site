@@ -2,9 +2,24 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ComponentProps } from "react";
 
 import { ArrowLeft, Heart, Plus, Search, Share2, ShoppingBag } from "lucide-react";
+import { expect } from "storybook/test";
 
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { IconButton } from "./icon-button";
+
+const ICON_BUTTON_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
 
 function DemoRouterLink({ children, ...props }: ComponentProps<"a">) {
   return (
@@ -34,6 +49,25 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
+export const States: Story = {
+  parameters: { pseudo: storyStatesPseudo(ICON_BUTTON_STATES) },
+  render: () => (
+    <StatesRow
+      states={ICON_BUTTON_STATES}
+      render={(state) => (
+        <IconButton icon={Heart} label="Save" variant="ghost" {...storyStateControlProps(state)} />
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover button");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("IconButton States: #cell-hover button missing");
+    }
+    await expect(hover).toHaveClass("hover:bg-state-hover");
+  },
+};
+
 export const Variants: Story = {
   name: "variant",
   render: () => (
@@ -42,6 +76,7 @@ export const Variants: Story = {
       <IconButton icon={Plus} label="Add" variant="primary" />
       <IconButton icon={Search} label="Search" variant="secondary" />
       <IconButton icon={ArrowLeft} label="Back" variant="glass" className="shadow-2" />
+      <IconButton icon={Heart} label="Dismiss" variant="tint" />
     </div>
   ),
 };
@@ -50,6 +85,7 @@ export const Sizes: Story = {
   name: "size",
   render: () => (
     <div className="flex flex-wrap items-center gap-3">
+      <IconButton icon={Plus} label="Add" variant="primary" size="xs" />
       <IconButton icon={Plus} label="Add" variant="primary" size="sm" />
       <IconButton icon={Plus} label="Add" variant="primary" size="md" />
       <IconButton icon={Plus} label="Add" variant="primary" size="lg" />

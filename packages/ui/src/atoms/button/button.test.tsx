@@ -52,16 +52,76 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Secondary" })).toHaveClass(
       "border-2",
       "border-button-secondary-border",
-      "hover:bg-button-hover-tint"
+      "hover:bg-state-hover",
+      "hover:border-pink-600",
+      "hover:text-text-link-hover",
+      "active:bg-state-press",
+      "data-[pressed]:bg-state-press"
     );
-    expect(screen.getByRole("button", { name: "Ghost" })).toHaveClass("hover:bg-button-hover-tint");
+    expect(screen.getByRole("button", { name: "Ghost" })).toHaveClass(
+      "hover:bg-state-hover",
+      "hover:text-text-link-hover",
+      "active:bg-state-press",
+      "data-[pressed]:bg-state-press"
+    );
   });
 
   it("keeps inverse solid ink on every surface (spec C9)", () => {
     render(<Button variant="inverse">Book</Button>);
     const button = screen.getByRole("button");
-    expect(button).toHaveClass("bg-ink-900", "text-ink-000", "shadow-2");
+    expect(button).toHaveClass(
+      "bg-ink-900",
+      "text-ink-000",
+      "shadow-2",
+      "hover:bg-ink-800",
+      "active:bg-ink-700",
+      "data-[pressed]:bg-ink-700"
+    );
     expect(button.className).not.toMatch(/(bg|shadow|border)-button-/);
+  });
+
+  it("paints disabled per variant (secondary keeps a border; ghost stays clear)", () => {
+    render(
+      <>
+        <Button disabled>Primary</Button>
+        <Button variant="secondary" disabled>
+          Secondary
+        </Button>
+        <Button variant="ghost" disabled>
+          Ghost
+        </Button>
+        <Button variant="inverse" disabled>
+          Inverse
+        </Button>
+      </>
+    );
+    expect(screen.getByRole("button", { name: "Primary" })).toHaveClass("disabled:bg-ink-200");
+    expect(screen.getByRole("button", { name: "Secondary" })).toHaveClass(
+      "disabled:bg-ink-000",
+      "disabled:border-ink-200"
+    );
+    expect(screen.getByRole("button", { name: "Secondary" }).className).not.toMatch(
+      /disabled:bg-ink-200/
+    );
+    expect(screen.getByRole("button", { name: "Ghost" }).className).not.toMatch(
+      /disabled:bg-ink-200/
+    );
+    expect(screen.getByRole("button", { name: "Inverse" })).toHaveClass("disabled:bg-ink-200");
+  });
+
+  it("sets data-pressed for pointer and Enter so press paint matches active", async () => {
+    const user = userEvent.setup();
+    render(<Button variant="secondary">Order</Button>);
+    const button = screen.getByRole("button", { name: "Order" });
+    await user.pointer({ keys: "[MouseLeft>]", target: button });
+    expect(button).toHaveAttribute("data-pressed", "");
+    await user.pointer({ keys: "[/MouseLeft]", target: button });
+    expect(button).not.toHaveAttribute("data-pressed");
+    button.focus();
+    await user.keyboard("{Enter>}");
+    expect(button).toHaveAttribute("data-pressed", "");
+    await user.keyboard("{/Enter}");
+    expect(button).not.toHaveAttribute("data-pressed");
   });
 
   it.each([

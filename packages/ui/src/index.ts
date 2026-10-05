@@ -37,6 +37,11 @@ export { StatusDot, type StatusDotProps } from "./atoms/status-dot/status-dot";
 export { Switch, type SwitchProps } from "./atoms/switch/switch";
 export { Tag, type TagProps, tagVariants } from "./atoms/tag/tag";
 export {
+  TextButton,
+  type TextButtonProps,
+  textButtonVariants,
+} from "./atoms/text-button/text-button";
+export {
   ToggleButton,
   type ToggleButtonProps,
   toggleButtonVariants,

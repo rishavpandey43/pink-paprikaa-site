@@ -64,12 +64,45 @@ describe("IconButton", () => {
     expect(screen.getByRole("button")).toHaveClass(fill, detail);
   });
 
-  it("is ghost by default and tints on hover with the shared, surface-aware tint", () => {
+  it("is ghost by default and tints on hover with state-hover + pink glyph", () => {
     render(<IconButton icon={Heart} label="Save" />);
-    expect(screen.getByRole("button")).toHaveClass("bg-transparent", "hover:bg-button-hover-tint");
+    expect(screen.getByRole("button")).toHaveClass(
+      "bg-transparent",
+      "hover:bg-state-hover",
+      "hover:text-pink-600",
+      "active:press-scale-icon"
+    );
+  });
+
+  it("adds tint (inherit parent colour) and xs for Alert dismiss", () => {
+    render(<IconButton icon={Heart} label="Dismiss" variant="tint" size="xs" />);
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass(
+      "text-current",
+      "hover:bg-state-hover-tint",
+      "active:bg-state-press-tint",
+      "size-icon-button-xs",
+      "before:-inset-2"
+    );
+    expect(button.firstElementChild).toHaveClass("size-icon-sm");
+  });
+
+  it("paints secondary hover border and press fill from the state tokens", () => {
+    render(<IconButton icon={Heart} label="More" variant="secondary" />);
+    expect(screen.getByRole("button")).toHaveClass(
+      "hover:border-pink-300",
+      "hover:bg-state-hover",
+      "active:bg-state-press"
+    );
+  });
+
+  it("paints glass hover white and press pink-50", () => {
+    render(<IconButton icon={Heart} label="Close" variant="glass" />);
+    expect(screen.getByRole("button")).toHaveClass("hover:bg-ink-000", "active:bg-pink-50");
   });
 
   it.each([
+    ["xs", "size-icon-button-xs", "size-icon-sm", "before:-inset-2"],
     ["sm", "size-icon-button-sm", "size-icon-sm", "before:-inset-1.5"],
     ["md", "size-icon-button-md", "size-icon-md", "before:-inset-0.5"],
   ] as const)(
@@ -88,6 +121,24 @@ describe("IconButton", () => {
     expect(button).toHaveClass("size-icon-button-lg");
     expect(button.className).not.toMatch(/before:/);
     expect(button.firstElementChild).toHaveClass("size-icon-lg");
+  });
+
+  it("keeps primary disabled fill; secondary/ghost stay clear", () => {
+    render(
+      <>
+        <IconButton icon={Heart} label="Primary" variant="primary" disabled />
+        <IconButton icon={Heart} label="Secondary" variant="secondary" disabled />
+        <IconButton icon={Heart} label="Ghost" variant="ghost" disabled />
+      </>
+    );
+    expect(screen.getByRole("button", { name: "Primary" })).toHaveClass("disabled:bg-ink-200");
+    expect(screen.getByRole("button", { name: "Secondary" })).toHaveClass(
+      "disabled:bg-transparent",
+      "disabled:border-ink-200"
+    );
+    expect(screen.getByRole("button", { name: "Ghost" }).className).not.toMatch(
+      /disabled:bg-ink-200/
+    );
   });
 
   it("fires from the pointer and the keyboard", async () => {

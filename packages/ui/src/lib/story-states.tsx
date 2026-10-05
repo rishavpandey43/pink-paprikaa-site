@@ -30,8 +30,14 @@ export function StatesRow({
 
 /** Pseudo-state selectors for {@link StatesRow} cells — hover and focus-visible only. */
 export function storyStatesPseudo(states: readonly StoryForceState[]) {
-  const hover = states.includes("hover") ? [`#cell-hover`, `#cell-hover *`] : undefined;
-  const focusVisible = states.includes("focus") ? [`#cell-focus`, `#cell-focus *`] : undefined;
+  // Target the control itself: the addon puts `.pseudo-hover` on each matched node (applied in a
+  // post-render timeout) so rewritten Tailwind `hover:` rules apply.
+  const hover = states.includes("hover")
+    ? ["#cell-hover button", "#cell-hover a", "#cell-hover [role='button']"]
+    : undefined;
+  const focusVisible = states.includes("focus")
+    ? ["#cell-focus button", "#cell-focus a", "#cell-focus [role='button']"]
+    : undefined;
   return {
     ...(hover === undefined ? {} : { hover }),
     ...(focusVisible === undefined ? {} : { focusVisible }),

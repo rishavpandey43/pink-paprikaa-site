@@ -1,6 +1,11 @@
 {
   "spacing": {
     "$type": "dimension",
+    "icon-button-xs": {
+      "$value": "28px",
+      "$description": "Alert/Snackbar dismiss; a ::before keeps the 44px hit area.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
     "icon-button-sm": {
       "$value": "32px",
       "$description": "Drawn size; a ::before keeps the 44px hit area.",

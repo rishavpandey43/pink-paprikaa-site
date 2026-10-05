@@ -15,6 +15,16 @@
       "$value": "54px",
       "$description": "Button lg height and minimum width.",
       "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
+    },
+    "text-button-h-sm": {
+      "$value": "30px",
+      "$description": "TextButton sm height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
+    "text-button-h-md": {
+      "$value": "36px",
+      "$description": "TextButton md height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
     }
   },
   "text": {

@@ -8,6 +8,7 @@ import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { controlStates } from "../../lib/control-states";
 import { withSx } from "../../lib/sx";
+import { usePress } from "../../lib/use-press";
 import { Icon, type IconComponent } from "../icon/icon";
 
 export interface ButtonProps extends BaseProps<"button"> {
@@ -37,9 +38,7 @@ export const buttonVariants = componentVariants({
   slots: {
     root: [
       controlStates(),
-      // Disabled fill lives on the recipe until Task 4 paints per-variant disabled (audit-atoms).
-      "disabled:bg-ink-200 aria-disabled:bg-ink-200",
-      "inline-flex max-w-full shrink-0 items-center justify-center rounded-pill font-display whitespace-nowrap active:press-scale",
+      "inline-flex max-w-full shrink-0 items-center justify-center rounded-pill font-display whitespace-nowrap active:press-scale data-[pressed]:press-scale",
     ],
     label: "min-w-0 truncate",
     loader: "animate-rotate",
@@ -47,13 +46,34 @@ export const buttonVariants = componentVariants({
   variants: {
     variant: {
       primary: {
-        root: "bg-button-primary-bg text-button-primary-fg shadow-button-primary hover:bg-button-primary-bg-hover active:bg-button-primary-bg-active",
+        root: [
+          "bg-button-primary-bg text-button-primary-fg shadow-button-primary",
+          "hover:bg-button-primary-bg-hover active:bg-button-primary-bg-active data-[pressed]:bg-button-primary-bg-active",
+          "disabled:bg-ink-200 aria-disabled:bg-ink-200",
+        ].join(" "),
       },
       secondary: {
-        root: "border-2 border-button-secondary-border bg-button-secondary-bg text-text-link hover:bg-button-hover-tint",
+        root: [
+          "border-2 border-button-secondary-border bg-button-secondary-bg text-text-link",
+          "hover:border-pink-600 hover:bg-state-hover hover:text-text-link-hover",
+          "active:bg-state-press data-[pressed]:bg-state-press",
+          "disabled:border-ink-200 disabled:bg-ink-000 aria-disabled:border-ink-200 aria-disabled:bg-ink-000",
+        ].join(" "),
       },
-      ghost: { root: "bg-transparent text-text-link hover:bg-button-hover-tint" },
-      inverse: { root: "bg-ink-900 text-ink-000 shadow-2" },
+      ghost: {
+        root: [
+          "bg-transparent text-text-link",
+          "hover:bg-state-hover hover:text-text-link-hover",
+          "active:bg-state-press data-[pressed]:bg-state-press",
+        ].join(" "),
+      },
+      inverse: {
+        root: [
+          "bg-ink-900 text-ink-000 shadow-2",
+          "hover:bg-ink-800 active:bg-ink-700 data-[pressed]:bg-ink-700",
+          "disabled:bg-ink-200 aria-disabled:bg-ink-200",
+        ].join(" "),
+      },
     },
     size: {
       sm: { root: "h-button-h-sm min-w-button-h-sm gap-1.5 px-3.5 text-button-sm" },
@@ -87,10 +107,18 @@ export function Button({
 }: ButtonProps) {
   const slots = buttonVariants({ variant, size, isFullWidth });
   const Component: ElementType = asChild ? Slot.Root : "button";
+  const isOff = disabled || isLoading;
   // A slotted <a> must not get `type` or `disabled`; it says so with aria-disabled instead.
-  const state = asChild
-    ? { "aria-disabled": disabled || isLoading || undefined }
-    : { type, disabled: disabled || isLoading };
+  const state = asChild ? { "aria-disabled": isOff || undefined } : { type, disabled: isOff };
+  const { pressProps } = usePress({
+    disabled: isOff,
+    onPointerDown: props.onPointerDown,
+    onPointerUp: props.onPointerUp,
+    onPointerLeave: props.onPointerLeave,
+    onKeyDown: props.onKeyDown,
+    onKeyUp: props.onKeyUp,
+    onBlur: props.onBlur,
+  });
   const leading = isLoading ? LoaderCircle : icon;
   return (
     <Component
@@ -98,6 +126,7 @@ export function Button({
       aria-busy={isLoading || undefined}
       {...state}
       {...props}
+      {...pressProps}
     >
       {leading ? (
         <Icon

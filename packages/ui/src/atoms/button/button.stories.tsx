@@ -55,12 +55,37 @@ export const Playground: Story = {
   },
 };
 
-/**
- * Forced rest → hover → press → focus → disabled (Task 3). Play asserts hover uses
- * `--color-state-hover` once Task 4 wires Button to the state tokens — skipped until then.
- */
+/** Forced rest → hover → press → focus → disabled for secondary (state-hover / state-press). */
 export const States: Story = {
-  tags: ["!test"],
+  parameters: { pseudo: storyStatesPseudo(BUTTON_STATES) },
+  render: () => (
+    <StatesRow
+      states={BUTTON_STATES}
+      render={(state) => (
+        <Button variant="secondary" {...storyStateControlProps(state)}>
+          Order Now
+        </Button>
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover button");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Button States: #cell-hover button missing");
+    }
+    // Class proves the recipe paints hover with the state token. Computed :hover fill is forced by
+    // storybook-addon-pseudo-states in the Storybook UI (parameters.pseudo); vitest does not apply
+    // that decorator the same way.
+    await expect(hover).toHaveClass("hover:bg-state-hover");
+    await expect(
+      getComputedStyle(document.documentElement).getPropertyValue("--color-state-hover").trim()
+        .length
+    ).toBeGreaterThan(0);
+  },
+};
+
+/** Primary / ghost / inverse / on-brand forced states (card rows). */
+export const StatesPrimary: Story = {
   parameters: { pseudo: storyStatesPseudo(BUTTON_STATES) },
   render: () => (
     <StatesRow
@@ -72,17 +97,55 @@ export const States: Story = {
       )}
     />
   ),
-  play: async ({ canvasElement }) => {
-    const hover = canvasElement.querySelector("#cell-hover button");
-    if (!(hover instanceof HTMLElement)) {
-      throw new Error("Button States: #cell-hover button missing");
-    }
-    // Until Task 4, primary hover is still brand-pink; leave the assertion as the contract.
-    const expected = getComputedStyle(document.documentElement)
-      .getPropertyValue("--color-state-hover")
-      .trim();
-    await expect(getComputedStyle(hover).backgroundColor).toBe(expected);
-  },
+};
+
+export const StatesGhost: Story = {
+  parameters: { pseudo: storyStatesPseudo(BUTTON_STATES) },
+  render: () => (
+    <StatesRow
+      states={BUTTON_STATES}
+      render={(state) => (
+        <Button variant="ghost" {...storyStateControlProps(state)}>
+          Order Now
+        </Button>
+      )}
+    />
+  ),
+};
+
+export const StatesInverse: Story = {
+  parameters: { pseudo: storyStatesPseudo(BUTTON_STATES) },
+  render: () => (
+    <StatesRow
+      states={BUTTON_STATES}
+      render={(state) => (
+        <Button variant="inverse" {...storyStateControlProps(state)}>
+          Order Now
+        </Button>
+      )}
+    />
+  ),
+};
+
+export const StatesOnBrand: Story = {
+  parameters: { pseudo: storyStatesPseudo(BUTTON_STATES) },
+  decorators: [
+    (Story) => (
+      <div data-surface="brand" className="bg-surface-brand p-6">
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => (
+    <StatesRow
+      states={BUTTON_STATES}
+      render={(state) => (
+        <Button variant="secondary" {...storyStateControlProps(state)}>
+          Order Now
+        </Button>
+      )}
+    />
+  ),
 };
 
 export const Variants: Story = {
