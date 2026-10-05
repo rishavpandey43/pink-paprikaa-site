@@ -31,4 +31,9 @@ describe("toBrandLines", () => {
   it("rejects a year that is not a whole number", () => {
     expect(() => toBrandLines(brand, 2026.5)).toThrow(RangeError);
   });
+
+  it("prints the Google rating and Est. lines from brand facts", () => {
+    expect(lines.googleRating).toBe("4.3 · 98 Google reviews");
+    expect(lines.est).toBe("Est. 2025");
+  });
 });

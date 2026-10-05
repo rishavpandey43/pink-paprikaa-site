@@ -37,9 +37,6 @@ export const ORDER_STEPS: TrackerStep[] = [
   { label: "Ready for pickup", note: "Counter 2, ask for Paprikaa." },
 ];
 
-/** Google Maps directions to the outlet — the handoff's links.directions. */
-export const DIRECTIONS_URL = "https://maps.google.com/?q=Pink+Paprikaa+Sector+57+Gurgaon";
-
 /**
  * The four verified Google reviews, as the guests wrote them — spelling and emoji included. Never
  * edit a review. One elision ("[…]") removes a guest's one-a spelling of the brand name, because
@@ -233,7 +230,7 @@ export const FAQS: AccordionItem[] = [
   {
     value: "veg",
     question: "Is everything vegetarian?",
-    answer: `Yes. ${brand.vegStatement} Nothing non-veg, not even egg.`,
+    answer: "Yes. No egg in anything. The kitchen is 100% vegetarian.",
   },
   { value: "hours", question: "When are you open?", answer: `${brand.hours.display}.` },
   { value: "where", question: "Where are you?", answer: `${OUTLET.address}.` },

@@ -41,6 +41,9 @@
   --animate-drawer-in-end: pp-drawer-in-end var(--duration-base) var(--ease-entrance);
   --animate-toast-pop: pp-toast-pop var(--duration-base) var(--ease-pop);
   --animate-pop-in: pp-pop-in var(--duration-fast) var(--ease-out);
+  --animate-ease-demo: pp-ease-demo 2.4s infinite;
+  --width-ease-demo-track: 18.75rem;
+  --width-ease-demo-knob: 2.125rem;
 }
 
 @layer base {
@@ -372,8 +375,8 @@
 }
 
 /* Menu / Popover / Select phone sheet body (INTERACTIONS: min(70vh, 520px)). */
-@utility max-h-menu-sheet {
-  max-height: min(70vh, 520px);
+@utility animate-ease-demo {
+  animation: var(--animate-ease-demo);
 }
 
 /* Pill controls (Button, IconButton, Tag): colours and shadow ease over --duration-fast; the press
@@ -616,13 +619,16 @@
 }
 
 /* Menus, popovers, selects — open with a short fade + lift (DS/tokens/base.css). */
-@keyframes pp-pop-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px) scale(0.98);
+@keyframes pp-ease-demo {
+  0%,
+  8% {
+    transform: translateX(0);
   }
-  to {
-    opacity: 1;
-    transform: none;
+  50%,
+  58% {
+    transform: translateX(calc(var(--width-ease-demo-track) - var(--width-ease-demo-knob)));
+  }
+  100% {
+    transform: translateX(0);
   }
 }

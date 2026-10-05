@@ -311,6 +311,7 @@ const ANIMATE = [
   "drawer-in-end",
   "toast-pop",
   "pop-in",
+  "ease-demo",
 ];
 /** Named press-scale utilities (`styles.css`); last one wins when merged. */
 const PRESS_SCALE = [

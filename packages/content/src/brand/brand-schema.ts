@@ -10,8 +10,11 @@ const text = z.string().min(1);
 /** A fact the owner has not supplied yet: null until they do (spec C16). */
 const pending = text.nullable();
 
-export const socialNetworkSchema = z.enum(["instagram", "youtube", "linkedin"]);
+/** Brand social is Instagram only (R140). SiteFooter may still accept other glyphs for demos. */
+export const socialNetworkSchema = z.literal("instagram");
 export type SocialNetwork = z.infer<typeof socialNetworkSchema>;
+
+const linkLabel = z.object({ label: text, url: z.httpUrl() });
 
 export const brandSchema = z.object({
   name: z.literal("Pink Paprikaa"),
@@ -20,6 +23,20 @@ export const brandSchema = z.object({
   statement: text,
   vegStatement: text,
   established: z.number().int().min(2025),
+  about: text,
+  ordering: z.object({
+    website: linkLabel,
+    swiggy: linkLabel,
+    zomato: linkLabel,
+  }),
+  reviews: z.object({
+    google: z.object({
+      rating: z.number().min(0).max(5),
+      count: z.number().int().min(0),
+      label: text,
+      url: z.httpUrl(),
+    }),
+  }),
   legal: z.object({
     entity: z.literal("Paprikaa Culinary Ventures Private Limited"),
     cin: z.string().regex(CIN),

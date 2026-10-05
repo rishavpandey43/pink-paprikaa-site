@@ -56,6 +56,7 @@ export function CompanyDetails() {
         { key: "tagline", value: brand.tagline },
         { key: "statement", value: brand.statement },
         { key: "veg", value: brand.vegStatement },
+        { key: "about", value: brand.about },
         { key: "established", value: brand.established },
       ],
     },
@@ -96,6 +97,33 @@ export function CompanyDetails() {
         { key: "account no.", value: fact(billing.accountNumber) },
         { key: "ifsc", value: fact(billing.ifsc) },
         { key: "upi", value: fact(billing.upi) },
+      ],
+    },
+    {
+      heading: "Ordering",
+      items: Object.entries(brand.ordering).map(([key, link]) => ({
+        key,
+        value: (
+          <a href={link.url} className="text-text-link underline-offset-2 hover:underline">
+            {link.label}
+          </a>
+        ),
+      })),
+    },
+    {
+      heading: "Reviews",
+      items: [
+        {
+          key: "google",
+          value: (
+            <a
+              href={brand.reviews.google.url}
+              className="text-text-link underline-offset-2 hover:underline"
+            >
+              {lines.googleRating}
+            </a>
+          ),
+        },
       ],
     },
     {
@@ -144,6 +172,8 @@ export function CompanyDetails() {
             { key: "gstin", value: lines.gstin },
             { key: "cin", value: lines.cin },
             { key: "contactShort", value: lines.contactShort },
+            { key: "googleRating", value: lines.googleRating },
+            { key: "est", value: lines.est },
             { key: "footerPolicies", value: lines.footerPolicies.join(" · ") },
           ])}
         />

@@ -8,18 +8,11 @@ import * as Specimens from "./motion.stories";
 
 # Interaction states
 
-Rest → hover (darken) → press (scale down **and** darken) → disabled (a real grey). Hover and press
-the live buttons.
+Anything a guest can press has five states. Hover darkens one step (pointer only, never on touch).
+Press darkens a second step and scales to 0.97 in 80ms; Space/Enter show it too. Focus is
+keyboard-only: a 2px ring, white on coloured surfaces. Disabled is a real grey, never just opacity.
+All components read one hook, `usePress`, and the `--state-*` tokens.
 
 <Canvas of={Specimens.States} meta={Specimens} sourceState="none" />
-
-- **Hover:** darken pink one step (`--color-brand-hover`); on white surfaces tint toward `pink-50`;
-  on imagery, lift the scrim slightly. **Never fade a button on hover.**
-- **Press:** `press-scale` and `--color-brand-active`, both together, on the instant duration.
-- **Focus:** a 2px pink outline with a 2px offset (fields use the 3px focus ring).
-- **Disabled:** an `ink-200` fill, `ink-400` text, no shadow, `cursor: not-allowed` — a real fill,
-  not reduced opacity.
-- **Loading:** the pink diamond symbol pulsing, or a soft pink skeleton block — never a spinner with
-  a gradient.
 
 <Canvas of={Specimens.StateTokens} meta={Specimens} sourceState="none" />

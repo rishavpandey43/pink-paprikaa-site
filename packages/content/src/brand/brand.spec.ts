@@ -19,6 +19,25 @@ describe("brand", () => {
     expect(JSON.stringify(brand)).not.toMatch(/rishav|pandey|anand/i);
   });
 
+  it("ships Instagram only, with ordering, reviews and maps (R140)", () => {
+    expect(brand.social).toEqual([
+      {
+        network: "instagram",
+        handle: "@thepinkpaprikaa",
+        url: "https://www.instagram.com/thepinkpaprikaa/",
+      },
+    ]);
+    expect(brand.about).toBe("Opened in 2025.");
+    expect(brand.ordering.website.url).toBe("https://order.pinkpaprikaa.com/");
+    expect(brand.reviews.google).toEqual({
+      rating: 4.3,
+      count: 98,
+      label: "Google reviews",
+      url: "https://maps.app.goo.gl/y8xr1QtSW1kfQKwD7?g_st=ic",
+    });
+    expect(brand.outlets[0]?.mapsUrl).toBe("https://maps.app.goo.gl/y8xr1QtSW1kfQKwD7?g_st=ic");
+  });
+
   it("models facts the owner has not supplied as null, never as a TODO string", () => {
     expect(JSON.stringify(brand)).not.toMatch(/TODO/);
     expect(brand.outlets[0]?.hours).toBeNull();

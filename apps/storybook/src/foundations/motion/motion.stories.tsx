@@ -3,12 +3,18 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Phone, Search } from "lucide-react";
 import { expect, waitFor } from "storybook/test";
 
-import { Button, Field, Input, RevealObserver } from "@pink-paprikaa-web/ui";
+import { Combobox, DatePicker, Field, Input, RevealObserver } from "@pink-paprikaa-web/ui";
 
+import { cssValue } from "../../docs-kit/catalogue";
 import { spyOnClipboard } from "../../docs-kit/clipboard";
 import { CopyChips } from "../../docs-kit/copy";
 import { requireElement } from "../../docs-kit/dom";
+import {
+  INTERACTION_STATE_PSEUDO,
+  InteractionStatesSpecimen,
+} from "../../docs-kit/interaction-states-specimen";
 import { MotionDemo } from "../../docs-kit/motion-demo";
+import { MOTION_EASING_ROWS, MotionEasingSpecimen } from "../../docs-kit/motion-easing-specimen";
 import { TokenTable } from "../../docs-kit/token-table";
 import { OUTLET } from "../../kits/fixtures";
 
@@ -40,14 +46,21 @@ const ANIMATIONS = [
 ] as const;
 
 export const Durations: Story = {
-  render: () => (
-    <div className="flex flex-col gap-4">
-      <MotionDemo ease="out" duration="instant" use="press" />
-      <MotionDemo ease="out" duration="fast" use="hovers" />
-      <MotionDemo ease="out" duration="base" use="state changes" />
-      <MotionDemo ease="out" duration="slow" use="sheets, page transitions, section reveal" />
-    </div>
-  ),
+  render: () => <MotionEasingSpecimen />,
+  play: async ({ canvasElement }) => {
+    for (const row of MOTION_EASING_ROWS) {
+      const knob = requireElement(canvasElement, `[data-ease-demo="${row.ease}"]`);
+      const style = getComputedStyle(knob);
+      await expect(style.animationName).toBe("pp-ease-demo");
+      await expect(style.animationIterationCount).toBe("infinite");
+      await expect(style.animationTimingFunction).toBe(cssValue(`ease-${row.ease}`));
+    }
+    const first = requireElement(canvasElement, '[data-ease-demo="out"]');
+    const start = first.getBoundingClientRect().x;
+    await waitFor(async () => {
+      await expect(first.getBoundingClientRect().x).not.toBe(start);
+    });
+  },
 };
 
 export const Easings: Story = {
@@ -109,13 +122,8 @@ export const MotionTokens: Story = {
 };
 
 export const States: Story = {
-  render: () => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Button>Order Now</Button>
-      <Button variant="secondary">See Full Menu</Button>
-      <Button disabled>Order Now</Button>
-    </div>
-  ),
+  parameters: { pseudo: INTERACTION_STATE_PSEUDO },
+  render: () => <InteractionStatesSpecimen />,
 };
 
 export const StateTokens: Story = {
@@ -124,6 +132,8 @@ export const StateTokens: Story = {
       caption="Hover, press and disabled"
       selection={{
         names: [
+          "color-state-hover",
+          "color-state-press",
           "color-brand-hover",
           "color-brand-active",
           "motion-press-scale",
@@ -170,6 +180,21 @@ export const FormStates: Story = {
         {(control) => (
           <Input {...control} type="search" icon={Search} defaultValue="paneer" isLoading />
         )}
+      </Field>
+      <Field label="Dish" hint="Hover the field — the border steps to border-strong.">
+        {(control) => <Input {...control} defaultValue="Chilli Paneer" />}
+      </Field>
+      <Field label="Outlet" status="error" message="Pick an outlet so we can hold the table.">
+        {(control) => (
+          <Combobox
+            {...control}
+            status="error"
+            options={[{ value: "s57", label: `${OUTLET.name}, ${OUTLET.city}` }]}
+          />
+        )}
+      </Field>
+      <Field label="Date" status="error" message="Pick a date from today onwards.">
+        {(control) => <DatePicker {...control} status="error" />}
       </Field>
     </div>
   ),

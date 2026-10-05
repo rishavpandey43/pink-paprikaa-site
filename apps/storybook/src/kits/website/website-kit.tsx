@@ -52,7 +52,6 @@ function digitsOnly(value: string): string {
 import {
   BOOKING_SLOTS,
   BUILD_YEAR,
-  DIRECTIONS_URL,
   FAQS,
   FOOTER_COLUMNS,
   GOOGLE_REVIEWS,
@@ -251,7 +250,11 @@ export function WebsiteKit() {
             stats={[
               { value: String(brand.established), label: `established in ${OUTLET.city}` },
               { value: "100%", label: "vegetarian kitchen" },
-              { value: brand.hours.weekday, label: "every day" },
+              {
+                value: String(brand.reviews.google.rating),
+                label: "Google rating",
+                sub: LINES.googleRating,
+              },
             ]}
           />
 
@@ -275,11 +278,7 @@ export function WebsiteKit() {
                     imageLabel="Outlet interior 16:9"
                     action={
                       <Button size="sm" variant="ghost" iconAfter={ArrowUpRight} asChild>
-                        <a
-                          href={outlet.mapsUrl ?? DIRECTIONS_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
+                        <a href={outlet.mapsUrl} target="_blank" rel="noopener noreferrer">
                           Directions
                           <span className="sr-only"> Opens in a new tab</span>
                         </a>
