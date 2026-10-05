@@ -134,3 +134,22 @@ Ruling: orphan baselines atoms-dietmark--veg + atoms-imageslot--fills kept (stor
 Ruling: parity Text card → Typography (R143) — no atoms-text story id — cost: montage skip for Text only.
 Task 12: done — parity.mjs (79/80+Text→Typography); grep gates OK; max-h-menu-sheet utility; homepage play settle; coverage 1749 have/R; visual 1936; count-guard raised.
 Final: done (ui 2031, sb 1168, tokens 315, stories 968)
+Task 12: done 7f53030 fix(ui): settle the parity sweep and final review
+Task 12: done c0622fd fix(ui): settle the parity sweep and final review (amended prettier form-states).
+OWNER 2026-10-05 (after final gate GREEN + whole-branch review): fix wave on a new stacked branch ds-parity/4c-review-fixes (≤3 commits). Rulings:
+- R147: controls ALSO accept the design's label/hint/error/success/warning/optional props (Input, Select, Combobox, DatePicker, Checkbox, Radio, OtpInput, SlotPicker); when given, the control renders Field around itself. <Field> wrapping keeps working.
+- R148: Menu, Popover and Dialog ALSO accept the design's onClose() (called on close) alongside onOpenChange.
+- R138 approved by owner (forced states via the Storybook addon; no docs-only `state` prop).
+- PR budget: owner waives splitting the 3 over-budget commits (no CI yet).
+Fix list (design wins, no further rulings):
+1. Build the props the coverage map falsely marks `have`: DatePicker inline/defaultOpen/sheet/icon; ActionMenu placement/minWidth; Menu autoFocus/inline/minWidth; Combobox defaultOpen. Mark Input rows 312-313 truthfully (N/A). Re-run a scripted check that every `have` prop row exists in its cited file.
+2. Combobox: click focuses the input only (design Combobox.jsx:85,95), no click-to-open.
+3. SiteHeader: add the design's steps — 3 links from 860px, 4 from 1080px, all from 1280px (SiteHeader.jsx:15); add breakpoint tokens if needed.
+4. Instagram href → https://instagram.com/thepinkpaprikaa/ in site-footer.tsx, organisms/story-fixtures.ts and site-footer.test.tsx (match packages/content brand-data).
+5. Records: move the 34 stray docs/superpowers/records/sdd/task-*.md and their .superpowers/sdd/ root originals into the 2026-10-04-ds-06-mui-gaps folders; commit with the ds-07 progress.md.
+6. Minors: restore the 4 dropped Select tests (long label truncates; read-only placeholder posts nothing; read-only + disabled submits nothing; defaultValue kept over placeholder); delete the stale atoms/select exemption in no-native-ui.js + a RuleTester case; replace switch.tsx transition-[transform,width,height] with a token/utility; tokenise the inline styles in lib/listbox-popover.tsx + popover-shell sheet and the BrandDiamond 14px literals (or record why); export MenuProps; keep menu.tsx/select.tsx under 250 changed lines if a split is cheap, else note it.
+Then: full gate + visual + count-guard, update coverage.md, one ledger line. Never push.
+Cut: ds-parity/4c-review-fixes (off 4b) — owner review-fix wave R147/R148 + coverage-false-haves + minors.
+Ruling: BrandDiamond size keys stay `"12px"|"14px"|…` — they are token map keys (`size-brand-diamond-14`), not raw CSS lengths — cost if wrong: rename keys later if design switches to sm/md.
+Ruling: sheet-pin class is for docs/specimens; live Radix sheets keep position/inset/transform inline (Radix style attr wins) — cost if wrong: one more sheet visual flake.
+Review wave 4c: done — R147 Field chrome on Input/Select/Combobox/DatePicker/Checkbox/Radio/OtpInput/SlotPicker; R148 onClose on Menu/Popover/Dialog; false-have props built; Combobox click-focus-only; SiteHeader nav-3/nav-4/xl; Instagram href; 34 ds-06 records filed; Select tests restored; no-native-ui select exemption dropped; Switch transition-switch-knob; MenuProps export; have-props script green. Gate: ui 2052, sb 1170, tokens 315, stories 970; visual 1940.

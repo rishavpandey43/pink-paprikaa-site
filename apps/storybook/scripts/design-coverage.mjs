@@ -16,7 +16,7 @@
  * script is safe to run again when the handoff changes: new rows come back blank, rows that left
  * the handoff are listed under "Removed from the handoff".
  *
- * Status vocabulary (exactly one of): `have` · `planned in Task <id>` · an approved ruling
+ * Status vocabulary (exactly one of): `have` · `N/A` · `planned in Task <id>` · an approved ruling
  * `R136` `R137` `R140` `R142` `R143` (or any `R1xx` from the plan's rulings table).
  *
  *   node apps/storybook/scripts/design-coverage.mjs           regenerate, keeping filled cells
@@ -45,7 +45,7 @@ import { writeHandoffSections } from "./design-coverage-sections.mjs";
 const outFile = join(repo, "docs/superpowers/specs/2026-10-04-design-parity/coverage.md");
 
 const args = new Set(process.argv.slice(2));
-const STATUS = /^(have|planned in Task \d+b?|R1\d\d)$/;
+const STATUS = /^(have|N\/A|planned in Task \d+b?|R1\d\d)$/;
 const TIERS = ["atoms", "molecules", "organisms", "layouts"];
 const ISSUES = [];
 

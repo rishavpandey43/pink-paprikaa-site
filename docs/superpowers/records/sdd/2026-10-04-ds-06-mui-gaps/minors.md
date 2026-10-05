@@ -1,0 +1,22 @@
+# Minors collected for Task 17
+- Task 1: responsive() emits breakpoint classes in Object.entries order, not sorted base→xl (sx.ts).
+- Task 3: AUTHORING.md:46 still says atoms import only icon+lib; update to mention typography.
+- Task 3: no barrel alias test that publicApi.Text === publicApi.Typography.
+- Task 3: noWrap on Link (inline-flex) may not ellipsize — verify or document.
+- Task 3: document that Link color="inverse" uses text-ink-000 vs Typography's text-text-on-inverse (brief mapping).
+- Task 4: Grid/GridItem extra min-w-0 (not in brief; tested).
+- Task 4: Box Responsive story only asserts base viewport, not md.
+- Task 5: AppShell story export still named Sizes; PostFrame default test copy still says light board.
+- Task 7: Badge status+solid silently paints soft; Card surface silently wins over variant if both passed.
+- Task 8: brand.stories.tsx still has 14 captions saying tone=\"pink/white/light\".
+- Task 8: Section/HeroBanner duplicate light→page mapping for PatternField.
+- Task 9: Radio sx test nested under RadioGroup describe.
+- Task 10: OtpInput may leak Field a11y attrs onto wrapper; document id meaning across wrappers; Dialog JSDoc for caller id/aria replacing Radix; Toast ref callback identity; ChipGroup aria-label on roleless div.
+- Task 11 Important/plan-mandated: ReviewCard surface=brand paints soft feature card not flooded brand — kept for parity; consider soft rename later.
+- Task 11: LoyaltyCard vestigial variant=feature; ReviewCard internal none key; LinkCard local SURFACE_OF.
+- Task 12: HeroBanner stale comment \"Flooded tones\"; QuotePanel surface=page paints card bg.
+- Task 13: recurring kit toast toBeVisible flake (Tasks 10–13).
+- Task 14 Important: drawer animation LTR-only despite RTL-aware comments; start-0/end-0 inert.
+- Task 14: weak DrawerSizes/360 plays; Menu/Popover Mobile360 settle; SubMenuContent dead props; menu.test max-lines.
+- Task 14b: ToggleButtonGroup withClasses skips variant merge for sx/className; focus-visible z under overlap.
+- Task 15: SpeedDial focusout close; pointerdown effect deps; chip click; Combobox Escape in Dialog; visual QA Calendar/SpeedDial by eye.
