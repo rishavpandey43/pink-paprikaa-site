@@ -1,58 +1,33 @@
 "use client";
 
-import type { ComponentProps, ReactElement, ReactNode } from "react";
+import type { ComponentProps, KeyboardEvent, ReactElement, ReactNode } from "react";
 
 import { Check, ChevronRight } from "lucide-react";
 import { DropdownMenu as RadixMenu } from "radix-ui";
-import { Children, cloneElement, createContext, isValidElement, use } from "react";
+import {
+  Children,
+  cloneElement,
+  createContext,
+  isValidElement,
+  use,
+  useCallback,
+  useState,
+} from "react";
 
 import type { SxProp } from "../../lib/common-props";
 
 import { BrandDiamond } from "../../lib/brand-diamond";
-import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { menuPanelVariants } from "../../lib/menu-panel";
+import { type SheetMode, useAsSheet } from "../../lib/popover-shell";
 import { withSx } from "../../lib/sx";
 import { Icon, type IconComponent } from "../icon/icon";
 
 const SIDE_OFFSET_PX = 4;
 
-const menu = componentVariants({
-  slots: {
-    // `p-1.5` keeps the rounded rows clear of the panel's own rounded corners.
-    content:
-      "z-overlay min-w-48 rounded-lg border-default border-border-subtle bg-surface-card p-1.5 text-body-sm text-text-body shadow-3 outline-none",
-    item: "relative flex w-full cursor-default items-center gap-3 rounded-md px-3 py-2.5 text-body-sm outline-none select-none data-disabled:pointer-events-none data-disabled:text-ink-400 data-highlighted:bg-surface-sunken",
-    icon: "",
-    text: "flex min-w-0 flex-1 flex-col",
-    description: "text-caption text-text-muted",
-    shortcut: "ms-auto ps-3 text-caption text-text-muted",
-    indicator: "grid size-icon-md shrink-0 place-items-center text-text-brand",
-    label: "px-3 py-1.5 text-caption font-semibold text-text-muted",
-    divider: "-mx-1.5 my-1.5 h-px bg-border-subtle",
-    chevron: "ms-auto shrink-0 text-text-muted rtl:rotate-180",
-  },
-  variants: {
-    maxHeight: {
-      sm: { content: "max-h-menu-max-sm overflow-y-auto" },
-      md: { content: "max-h-menu-max-md overflow-y-auto" },
-      lg: { content: "max-h-menu-max-lg overflow-y-auto" },
-    },
-    // 44px tap targets, or MUI's `dense` 36px rows.
-    isDense: {
-      true: { item: "min-h-9 py-1.5" },
-      false: { item: "min-h-hit" },
-    },
-    color: {
-      default: { item: "text-text-body", icon: "text-text-muted" },
-      danger: { item: "text-text-danger", icon: "text-current" },
-    },
-    isSelected: { true: { item: "bg-surface-brand-soft font-semibold" } },
-    hasDivider: { true: { item: "border-b border-border-subtle" } },
-  },
-  defaultVariants: { isDense: false, color: "default" },
-});
-
 const DenseContext = createContext(false);
+const SheetContext = createContext(false);
+const CloseContext = createContext<(() => void) | null>(null);
 
 /** Radix types its optionals without `| undefined`; ours allow it (exactOptionalPropertyTypes). */
 function disabledProps(disabled: boolean | undefined) {
@@ -72,8 +47,8 @@ function selectProps(
  * roving focus. Controlled `open` / `onOpenChange` still work.
  */
 export function Menu({
-  open,
-  defaultOpen,
+  open: openProp,
+  defaultOpen = false,
   onOpenChange,
   modal,
   children,
@@ -84,14 +59,29 @@ export function Menu({
   modal?: boolean | undefined;
   children: ReactNode;
 }) {
+  const [isUncontrolledOpen, setIsUncontrolledOpen] = useState(defaultOpen);
+  const isControlled = openProp !== undefined;
+  const isOpen = isControlled ? openProp : isUncontrolledOpen;
+  const setIsOpen = useCallback(
+    (next: boolean) => {
+      if (!isControlled) setIsUncontrolledOpen(next);
+      onOpenChange?.(next);
+    },
+    [isControlled, onOpenChange]
+  );
   return (
     <RadixMenu.Root
-      {...(open === undefined ? {} : { open })}
-      {...(defaultOpen === undefined ? {} : { defaultOpen })}
-      {...(onOpenChange === undefined ? {} : { onOpenChange })}
+      open={isOpen}
+      onOpenChange={setIsOpen}
       {...(modal === undefined ? {} : { modal })}
     >
-      {children}
+      <CloseContext
+        value={() => {
+          setIsOpen(false);
+        }}
+      >
+        {children}
+      </CloseContext>
     </RadixMenu.Root>
   );
 }
@@ -113,6 +103,10 @@ export interface MenuContentProps extends SxProp {
   portalContainer?: HTMLElement | null | undefined;
   children: ReactNode;
   "aria-label"?: string | undefined;
+  /** Sheet title when rendered as a ≤640 bottom sheet. */
+  title?: ReactNode | undefined;
+  /** `"auto"` = bottom sheet at ≤640px. */
+  sheet?: SheetMode | undefined;
 }
 
 /** Radix labels the panel by its trigger via `aria-labelledby`; blanking it lets `aria-label` name it. */
@@ -120,36 +114,87 @@ function ownLabel(label: string): { "aria-label": string; "aria-labelledby"?: st
   return { "aria-label": label, "aria-labelledby": undefined } as { "aria-label": string };
 }
 
-function panelProps({
-  sideOffset,
-  isDense,
-  maxHeight,
-  sx,
-  "aria-label": ariaLabel,
-}: MenuContentProps) {
-  return {
-    sideOffset: sideOffset ?? SIDE_OFFSET_PX,
-    collisionPadding: 16,
-    loop: true,
-    "data-surface": "light",
-    ...(ariaLabel === undefined ? {} : ownLabel(ariaLabel)),
-    className: menu({ maxHeight }).content({ className: withSx(sx, undefined) }),
-    isDense: isDense ?? false,
-  };
+function onContentKeyDown(event: KeyboardEvent, close: (() => void) | null) {
+  // Close first so Radix's Tab trap does not keep focus; do not preventDefault (Review Focus 4).
+  if (event.key === "Tab") close?.();
 }
 
 /** The panel (Portal + Content). Radix renders the `role="menu"` element. */
 export function MenuContent(props: MenuContentProps) {
-  const { isDense, ...content } = panelProps(props);
+  const {
+    sideOffset,
+    isDense = false,
+    maxHeight,
+    sx,
+    "aria-label": ariaLabel,
+    title,
+    sheet = "auto",
+    portalContainer,
+    children,
+    side,
+    align,
+  } = props;
+  const isSheet = useAsSheet(sheet);
+  const close = use(CloseContext);
+  const slots = menuPanelVariants({ maxHeight });
+  const floatingClass = slots.content({ className: withSx(sx, undefined) });
+
+  const body = (
+    <DenseContext value={isDense}>
+      <SheetContext value={isSheet}>{children}</SheetContext>
+    </DenseContext>
+  );
+
   return (
-    <RadixMenu.Portal container={props.portalContainer ?? null}>
-      <RadixMenu.Content
-        {...content}
-        {...(props.side === undefined ? {} : { side: props.side })}
-        {...(props.align === undefined ? {} : { align: props.align })}
-      >
-        <DenseContext value={isDense}>{props.children}</DenseContext>
-      </RadixMenu.Content>
+    <RadixMenu.Portal container={portalContainer ?? null}>
+      {isSheet ? (
+        <div className="fixed inset-0 z-overlay flex items-end bg-surface-overlay">
+          {/*
+            Sheet chrome (handle/title) stays outside `role="menu"` so axe's
+            aria-required-children stays happy; Radix Content is only the scroll body.
+          */}
+          <div
+            data-surface="light"
+            className="flex max-h-menu-sheet w-full flex-col overflow-hidden rounded-t-xl bg-surface-card shadow-4 motion-safe:animate-sheet-in"
+            style={{ position: "fixed", inset: "auto 0 0 0", maxWidth: "100%" }}
+          >
+            <div aria-hidden className="flex shrink-0 justify-center pt-2.5">
+              <span className="h-1 w-10 rounded-pill bg-ink-300" />
+            </div>
+            {title === undefined || title === null || title === false || title === "" ? null : (
+              <div className="shrink-0 px-6 pt-3.5 pb-1.5 font-display text-body-lg font-bold text-text-heading">
+                {title}
+              </div>
+            )}
+            <RadixMenu.Content
+              {...(ariaLabel === undefined ? {} : ownLabel(ariaLabel))}
+              className="min-h-0 flex-1 overflow-y-auto overscroll-contain border-0 bg-transparent px-3 pt-1 pb-4 shadow-none outline-none"
+              style={{ position: "relative", transform: "none" }}
+              onKeyDown={(event) => {
+                onContentKeyDown(event, close);
+              }}
+            >
+              {body}
+            </RadixMenu.Content>
+          </div>
+        </div>
+      ) : (
+        <RadixMenu.Content
+          sideOffset={sideOffset ?? SIDE_OFFSET_PX}
+          collisionPadding={16}
+          loop
+          data-surface="light"
+          {...(ariaLabel === undefined ? {} : ownLabel(ariaLabel))}
+          {...(side === undefined ? {} : { side })}
+          {...(align === undefined ? {} : { align })}
+          className={floatingClass}
+          onKeyDown={(event) => {
+            onContentKeyDown(event, close);
+          }}
+        >
+          <div className={slots.popIn()}>{body}</div>
+        </RadixMenu.Content>
+      )}
     </RadixMenu.Portal>
   );
 }
@@ -158,11 +203,13 @@ export interface MenuItemProps
   extends Omit<ComponentProps<"div">, "children" | "color" | "onSelect">, SxProp {
   /** MUI ListItemIcon. */
   icon?: IconComponent | undefined;
-  /** MUI trailing Typography, e.g. "⌘P". */
+  /** Trailing mono meta (design) / MUI shortcut, e.g. "⌘P" or "₹280". */
   shortcut?: ReactNode;
+  /** Alias of `shortcut` — design `meta`. */
+  meta?: ReactNode;
   /** MUI ListItemText secondary. */
   description?: ReactNode;
-  /** MUI `selected`: brand-soft row, semibold, `aria-current`. */
+  /** Chosen row: pink-700 + brand diamond (listbox). */
   isSelected?: boolean | undefined;
   /** MUI `divider`: a hairline under the item. */
   hasDivider?: boolean | undefined;
@@ -177,13 +224,14 @@ export interface MenuItemProps
 
 interface RowParts {
   icon?: IconComponent | undefined;
-  shortcut?: ReactNode;
+  meta?: ReactNode;
   description?: ReactNode;
-  slots: ReturnType<typeof menu>;
+  isSelected?: boolean | undefined;
+  slots: ReturnType<typeof menuPanelVariants>;
 }
 
-/** The inside of a row: icon · label (+ description) · shortcut. */
-function rowContent({ icon, shortcut, description, slots }: RowParts, label: ReactNode) {
+/** The inside of a row: icon · label (+ description) · meta · optional diamond. */
+function rowContent({ icon, meta, description, isSelected, slots }: RowParts, label: ReactNode) {
   return (
     <>
       {icon === undefined ? null : <Icon icon={icon} size="md" className={slots.icon()} />}
@@ -191,7 +239,12 @@ function rowContent({ icon, shortcut, description, slots }: RowParts, label: Rea
         <span>{label}</span>
         {isShown(description) ? <span className={slots.description()}>{description}</span> : null}
       </span>
-      {isShown(shortcut) ? <span className={slots.shortcut()}>{shortcut}</span> : null}
+      {isShown(meta) ? <span className={slots.meta()}>{meta}</span> : null}
+      {isSelected === true ? (
+        <span className={slots.diamond()}>
+          <BrandDiamond size="14px" fill="brand" />
+        </span>
+      ) : null}
     </>
   );
 }
@@ -214,6 +267,7 @@ function assertOneChild(asChild: boolean | undefined, children: ReactNode) {
 export function MenuItem({
   icon,
   shortcut,
+  meta,
   description,
   isSelected,
   hasDivider,
@@ -227,8 +281,10 @@ export function MenuItem({
   ...props
 }: MenuItemProps) {
   const isDense = use(DenseContext);
+  const isSheet = use(SheetContext);
   assertOneChild(asChild, children);
-  const slots = menu({ isDense, color, isSelected, hasDivider });
+  const slots = menuPanelVariants({ isDense, isSheet, color, isSelected, hasDivider });
+  const trailing = meta ?? shortcut;
   return (
     <RadixMenu.Item
       {...props}
@@ -237,22 +293,30 @@ export function MenuItem({
       {...(isSelected === true ? { "data-selected": "", "aria-current": true } : {})}
       className={slots.item({ className: withSx(sx, className) })}
     >
-      {renderRow(asChild, { icon, shortcut, description, slots }, children)}
+      {renderRow(asChild, { icon, meta: trailing, description, isSelected, slots }, children)}
     </RadixMenu.Item>
   );
 }
 
 /** MUI `<Divider />` inside a Menu. */
 export function MenuDivider() {
-  return <RadixMenu.Separator className={menu().divider()} />;
+  return <RadixMenu.Separator className={menuPanelVariants().divider()} />;
 }
 
-/** MUI `ListSubheader`. */
+/** MUI `ListSubheader` / design group label (mono uppercase). */
 export function MenuLabel({ children }: { children: ReactNode }) {
-  return <RadixMenu.Label className={menu().label()}>{children}</RadixMenu.Label>;
+  return <RadixMenu.Label className={menuPanelVariants().label()}>{children}</RadixMenu.Label>;
 }
 
-export type MenuCheckboxItemProps = Omit<MenuItemProps, "isSelected" | "onSelect" | "asChild"> & {
+/** Empty-list row when composing without `MenuPanel`. */
+export function MenuEmpty({ children }: { children: ReactNode }) {
+  return <div className={menuPanelVariants().empty()}>{children}</div>;
+}
+
+export type MenuCheckboxItemProps = Omit<
+  MenuItemProps,
+  "isSelected" | "onSelect" | "asChild" | "meta"
+> & {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   /** Radix closes the menu after a select; `event.preventDefault()` keeps it open for more choices. */
@@ -274,7 +338,8 @@ export function MenuCheckboxItem({
   ...props
 }: MenuCheckboxItemProps) {
   const isDense = use(DenseContext);
-  const slots = menu({ isDense, color, hasDivider });
+  const isSheet = use(SheetContext);
+  const slots = menuPanelVariants({ isDense, isSheet, color, hasDivider });
   return (
     <RadixMenu.CheckboxItem
       {...props}
@@ -286,7 +351,7 @@ export function MenuCheckboxItem({
           <Icon icon={Check} size="sm" />
         </RadixMenu.ItemIndicator>
       </span>
-      {rowContent({ icon, shortcut, description, slots }, children)}
+      {rowContent({ icon, meta: shortcut, description, slots }, children)}
     </RadixMenu.CheckboxItem>
   );
 }
@@ -307,7 +372,9 @@ export function MenuRadioGroup({
   );
 }
 
-export type MenuRadioItemProps = Omit<MenuItemProps, "isSelected" | "asChild"> & { value: string };
+export type MenuRadioItemProps = Omit<MenuItemProps, "isSelected" | "asChild" | "meta"> & {
+  value: string;
+};
 
 /** One choice in a MenuRadioGroup (`role="menuitemradio"`), marked with the brand diamond. */
 export function MenuRadioItem({
@@ -324,7 +391,8 @@ export function MenuRadioItem({
   ...props
 }: MenuRadioItemProps) {
   const isDense = use(DenseContext);
-  const slots = menu({ isDense, color, hasDivider });
+  const isSheet = use(SheetContext);
+  const slots = menuPanelVariants({ isDense, isSheet, color, hasDivider });
   return (
     <RadixMenu.RadioItem
       {...props}
@@ -333,10 +401,10 @@ export function MenuRadioItem({
     >
       <span className={slots.indicator()}>
         <RadixMenu.ItemIndicator>
-          <BrandDiamond size="12px" fill="brand" />
+          <BrandDiamond size="14px" fill="brand" />
         </RadixMenu.ItemIndicator>
       </span>
-      {rowContent({ icon, shortcut, description, slots }, children)}
+      {rowContent({ icon, meta: shortcut, description, slots }, children)}
     </RadixMenu.RadioItem>
   );
 }
@@ -359,9 +427,10 @@ export function SubMenuTrigger({
   className,
   children,
   ...props
-}: Omit<MenuItemProps, "onSelect">) {
+}: Omit<MenuItemProps, "onSelect" | "meta">) {
   const isDense = use(DenseContext);
-  const slots = menu({ isDense, color, isSelected, hasDivider });
+  const isSheet = use(SheetContext);
+  const slots = menuPanelVariants({ isDense, isSheet, color, isSelected, hasDivider });
   return (
     <RadixMenu.SubTrigger
       {...props}
@@ -369,7 +438,7 @@ export function SubMenuTrigger({
       {...(isSelected === true ? { "data-selected": "", "aria-current": true } : {})}
       className={slots.item({ className: withSx(sx, className) })}
     >
-      {rowContent({ icon, shortcut, description, slots }, children)}
+      {rowContent({ icon, meta: shortcut, description, isSelected, slots }, children)}
       <Icon icon={ChevronRight} size="sm" className={slots.chevron()} />
     </RadixMenu.SubTrigger>
   );
@@ -377,12 +446,38 @@ export function SubMenuTrigger({
 
 /** The submenu's panel. Radix places it beside its trigger, so `side` and `align` do not apply. */
 export function SubMenuContent(props: MenuContentProps) {
-  const { isDense, ...content } = panelProps(props);
+  const {
+    isDense = false,
+    maxHeight,
+    sx,
+    "aria-label": ariaLabel,
+    portalContainer,
+    children,
+  } = props;
+  const slots = menuPanelVariants({ maxHeight });
   return (
-    <RadixMenu.Portal container={props.portalContainer ?? null}>
-      <RadixMenu.SubContent {...content}>
-        <DenseContext value={isDense}>{props.children}</DenseContext>
+    <RadixMenu.Portal container={portalContainer ?? null}>
+      <RadixMenu.SubContent
+        sideOffset={SIDE_OFFSET_PX}
+        collisionPadding={16}
+        loop
+        data-surface="light"
+        {...(ariaLabel === undefined ? {} : ownLabel(ariaLabel))}
+        className={slots.content({ className: withSx(sx, undefined) })}
+      >
+        <div className={slots.popIn()}>
+          <DenseContext value={isDense}>
+            <SheetContext value={false}>{children}</SheetContext>
+          </DenseContext>
+        </div>
       </RadixMenu.SubContent>
     </RadixMenu.Portal>
   );
 }
+
+export {
+  MenuPanel,
+  type MenuEntry,
+  type MenuItemData,
+  type MenuPanelProps,
+} from "../../lib/menu-panel";

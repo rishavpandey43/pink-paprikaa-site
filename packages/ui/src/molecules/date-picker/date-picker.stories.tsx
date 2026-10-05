@@ -35,7 +35,8 @@ export const DatePickerPlayground: Story = {
     const trigger = canvas.getByRole("button", { name: /Booking date/ });
     await expect(trigger).toHaveTextContent("Sun, 4 Oct 2026");
     await userEvent.click(trigger);
-    await expect(await screen.findByRole("grid")).toBeVisible();
+    // Popover pop-in starts at opacity 0 — wait for the grid to land.
+    await waitFor(async () => expect(await screen.findByRole("grid")).toBeVisible());
     await userEvent.keyboard("{ArrowRight}{Enter}");
     await expect(trigger).toHaveTextContent("Mon, 5 Oct 2026");
     await waitFor(() => expect(screen.queryByRole("grid")).not.toBeInTheDocument());
@@ -48,7 +49,7 @@ export const Empty: Story = {
     const trigger = canvas.getByRole("button", { name: /Booking date/ });
     await expect(trigger).toHaveTextContent("Pick a date");
     await userEvent.click(trigger);
-    await expect(await screen.findByRole("grid")).toBeVisible();
+    await waitFor(async () => expect(await screen.findByRole("grid")).toBeVisible());
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("grid")).not.toBeInTheDocument());
     await expect(trigger).toHaveFocus();
@@ -62,7 +63,7 @@ export const DisabledDays: Story = {
   },
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("button", { name: /Booking date/ }));
-    await expect(await screen.findByRole("grid")).toBeVisible();
+    await waitFor(async () => expect(await screen.findByRole("grid")).toBeVisible());
     const monday = document.querySelector<HTMLButtonElement>('td[data-day="2026-10-05"] button');
     await expect(monday).toBeDisabled();
   },

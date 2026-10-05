@@ -95,6 +95,8 @@ export function DatePicker({
             portalContainer={portalContainer}
             align="start"
             aria-label="Choose a date"
+            // Task 8 wires ≤640 sheet; keep floating until then so the calendar grid stays usable.
+            sheet={false}
             trigger={
               <button
                 id={id}

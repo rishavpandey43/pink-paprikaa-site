@@ -346,6 +346,7 @@ export const twMergeConfig: TWMergeConfig = {
       "autogrid-min": [{ "autogrid-min": AUTOGRID_MIN }],
       "pattern-tile": [{ "pattern-tile": PATTERN_TILE }],
       "pattern-opacity": [{ "pattern-opacity": PATTERN_OPACITY }],
+      "max-h": [{ "max-h": ["menu-sheet"] }],
     },
     // An autogrid-min template and a fixed column count both set only grid-template-columns: last
     // one wins. `autogrid`/`autogrid-wide` also set display + gap, so they stay out of it.

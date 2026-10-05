@@ -23,6 +23,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuLabel,
+  MenuPanel,
   MenuRadioGroup,
   MenuRadioItem,
   MenuTrigger,
@@ -413,7 +414,7 @@ export const Mobile360: Story = {
         <MenuTrigger asChild>
           <DemoIconTrigger icon={MoreVertical} label="More options" />
         </MenuTrigger>
-        <MenuContent aria-label="Outlet actions" align="end">
+        <MenuContent aria-label="Outlet actions" align="end" sheet={false}>
           <MenuItem icon={Share2} shortcut="Share">
             Share outlet
           </MenuItem>
@@ -427,5 +428,142 @@ export const Mobile360: Story = {
     const rect = (await screen.findByRole("menu")).getBoundingClientRect();
     await expect(rect.left).toBeGreaterThanOrEqual(0);
     await expect(rect.right).toBeLessThanOrEqual(window.innerWidth);
+  },
+};
+
+const HEAT = [
+  { value: "mild", label: "Mild" },
+  { value: "medium", label: "Medium" },
+  { value: "hot", label: "Hot" },
+  { value: "xhot", label: "Extra Hot", disabled: true, description: "Ask at the counter" },
+];
+
+/** Card row: listbox — chosen row + disabled. */
+export const Listbox: Story = {
+  args: { children: null },
+  render: function ListboxStory() {
+    const [value, setValue] = useState("medium");
+    return (
+      <MenuPanel
+        role="listbox"
+        aria-label="How spicy?"
+        items={HEAT}
+        value={value}
+        onSelect={(item) => {
+          setValue(item.value);
+        }}
+      />
+    );
+  },
+  play: async () => {
+    await expect(screen.getByRole("option", { name: "Medium" })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    );
+    await expect(screen.getByRole("option", { name: /Extra Hot/ })).toHaveAttribute(
+      "aria-disabled",
+      "true"
+    );
+  },
+};
+
+/** Card row: groups + meta. */
+export const GroupsAndMeta: Story = {
+  args: { children: null },
+  render: function GroupsStory() {
+    const [value, setValue] = useState("cp");
+    return (
+      <MenuPanel
+        role="listbox"
+        aria-label="Dishes"
+        value={value}
+        onSelect={(item) => {
+          setValue(item.value);
+        }}
+        items={[
+          { group: "Mains" },
+          { value: "cp", label: "Chilli Paneer", meta: "₹280" },
+          { value: "hn", label: "Hakka Noodles", meta: "₹220" },
+          { group: "Drinks" },
+          { value: "ch", label: "Masala Chai", meta: "₹60" },
+        ]}
+      />
+    );
+  },
+  play: async () => {
+    await expect(screen.getByText("Mains")).toHaveClass("font-mono");
+    await expect(screen.getByText("₹280")).toBeVisible();
+  },
+};
+
+/** Card row: empty. */
+export const Empty: Story = {
+  args: { children: null },
+  render: () => (
+    <MenuPanel
+      role="listbox"
+      aria-label="Matches"
+      items={[]}
+      emptyText="No matches. Try a shorter word."
+    />
+  ),
+  play: async () => {
+    await expect(screen.getByText("No matches. Try a shorter word.")).toBeVisible();
+  },
+};
+
+/** ≤640 sheet: handle, title, 52px rows. */
+export const Sheet360: Story = {
+  args: { children: null },
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  parameters: {
+    a11y: {
+      config: {
+        rules: [
+          { id: "color-contrast", enabled: false },
+          { id: "aria-hidden-focus", enabled: false },
+          { id: "scrollable-region-focusable", enabled: false },
+        ],
+      },
+    },
+  },
+  render: () => (
+    <Menu defaultOpen>
+      <MenuTrigger asChild>
+        <DemoTrigger>Spice</DemoTrigger>
+      </MenuTrigger>
+      <MenuContent aria-label="Spice" sheet title="How spicy?">
+        <MenuItem>Mild</MenuItem>
+        <MenuItem isSelected>Medium</MenuItem>
+        <MenuItem>Hot</MenuItem>
+      </MenuContent>
+    </Menu>
+  ),
+  play: async () => {
+    // Sheet enter keyframe starts at opacity 0 — wait for it to land.
+    await waitFor(() => expect(screen.getByText("How spicy?")).toBeVisible());
+    await expect(screen.getByRole("menuitem", { name: "Mild" })).toHaveClass("min-h-13");
+    await expect(document.querySelector('[class*="animate-sheet-in"]')).not.toBeNull();
+  },
+};
+
+/** At 641px the panel stays floating (not a sheet). */
+export const Floating641: Story = {
+  args: { children: null },
+  parameters: { viewport: { width: 641, height: 800 } },
+  render: () => (
+    <Menu defaultOpen>
+      <MenuTrigger asChild>
+        <DemoTrigger>Open</DemoTrigger>
+      </MenuTrigger>
+      <MenuContent aria-label="Menu" sheet={false}>
+        <MenuItem>One</MenuItem>
+      </MenuContent>
+    </Menu>
+  ),
+  play: async () => {
+    await expect(await screen.findByRole("menu", { name: "Menu" })).toBeVisible();
+    await expect(document.querySelector("[class*=animate-pop-in]")).not.toBeNull();
+    await expect(document.querySelector(".animate-sheet-in")).toBeNull();
   },
 };

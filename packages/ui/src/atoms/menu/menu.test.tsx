@@ -134,7 +134,7 @@ describe("Menu", () => {
     expect(screen.getByRole("menu")).toBeVisible();
   });
 
-  it("isSelected marks the row (MUI selected menu) and danger colours the text", async () => {
+  it("isSelected marks the row with pink-700 + brand diamond; danger colours the text", async () => {
     const user = userEvent.setup();
     render(
       <Menu>
@@ -150,9 +150,11 @@ describe("Menu", () => {
     );
     await user.click(screen.getByRole("button", { name: "Sort by" }));
     const selected = screen.getByRole("menuitem", { name: "Popular" });
-    expect(selected).toHaveClass("bg-surface-brand-soft", "font-semibold");
+    expect(selected).toHaveClass("text-pink-700", "font-semibold");
+    expect(selected).not.toHaveClass("bg-surface-brand-soft");
     expect(selected).toHaveAttribute("data-selected");
     expect(selected).toHaveAttribute("aria-current", "true");
+    expect(selected.querySelector("[aria-hidden='true']")).not.toBeNull();
     expect(screen.getByRole("menuitem", { name: "Newest" })).not.toHaveAttribute("data-selected");
     expect(screen.getByRole("menuitem", { name: "Clear" })).toHaveClass("text-text-danger");
   });
@@ -185,8 +187,11 @@ describe("Menu", () => {
     expect(screen.getByRole("menuitem", { name: "Share outlet" })).toHaveClass(
       "min-h-hit",
       "px-3",
-      "py-2.5",
-      "text-body-sm"
+      "py-2",
+      "text-control",
+      "rounded-sm",
+      "data-highlighted:bg-state-hover",
+      "active:bg-state-press"
     );
     unmount();
     render(
@@ -259,11 +264,12 @@ describe("Menu", () => {
       "bg-surface-card",
       "border-default",
       "border-border-subtle",
-      "rounded-lg",
+      "rounded-md",
       "shadow-3",
       "z-overlay",
       "mt-2"
     );
+    expect(menu.querySelector('[class*="animate-pop-in"]')).not.toBeNull();
     expect(menu).toHaveAttribute("data-side", "top");
     expect(menu).toHaveAttribute("data-align", "end");
   });
@@ -304,8 +310,11 @@ describe("Menu", () => {
     await user.click(screen.getByRole("button", { name: "Open" }));
     const item = screen.getByRole("menuitem");
     expect(item.querySelector("svg")).not.toBeNull();
-    expect(within(item).getByText("Send a link")).toHaveClass("text-caption", "text-text-muted");
-    expect(within(item).getByText("⌘P")).toHaveClass("ms-auto", "text-caption");
+    expect(within(item).getByText("Send a link")).toHaveClass(
+      "text-control-description",
+      "text-text-muted"
+    );
+    expect(within(item).getByText("⌘P")).toHaveClass("ms-auto", "font-mono", "text-caption");
   });
 
   it("labels group items and dividers are separators", async () => {
@@ -556,5 +565,56 @@ describe("Menu", () => {
     await user.click(screen.getByRole("button", MORE));
     // Radix hides the rest of the page (aria-hidden) while the modal menu has focus.
     await expectNoA11yViolations(screen.getByRole("menu"));
+  });
+
+  it("Tab closes the menu so focus can leave (Review Focus 4)", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <OutletMenu />
+        <button type="button">After menu</button>
+      </>
+    );
+    await user.click(screen.getByRole("button", MORE));
+    expect(screen.getByRole("menu")).toBeVisible();
+    await user.tab();
+    expect(screen.queryByRole("menu")).toBeNull();
+  });
+
+  it("sheet=true renders a bottom sheet with handle, title and 52px rows", async () => {
+    const user = userEvent.setup();
+    render(
+      <Menu>
+        <MenuTrigger asChild>
+          <DemoTrigger>Spice</DemoTrigger>
+        </MenuTrigger>
+        <MenuContent aria-label="Spice" sheet title="How spicy?">
+          <MenuItem>Mild</MenuItem>
+          <MenuItem>Hot</MenuItem>
+        </MenuContent>
+      </Menu>
+    );
+    await user.click(screen.getByRole("button", { name: "Spice" }));
+    expect(screen.getByText("How spicy?")).toBeVisible();
+    expect(screen.getByRole("menuitem", { name: "Mild" })).toHaveClass("min-h-13");
+    expect(document.querySelector('[class*="animate-sheet-in"]')).not.toBeNull();
+    expect(document.querySelector(".h-1.w-10.rounded-pill")).not.toBeNull();
+  });
+
+  it("danger rows use danger-soft hover and state-press-danger", () => {
+    render(
+      <Menu defaultOpen>
+        <MenuTrigger asChild>
+          <DemoTrigger>Open</DemoTrigger>
+        </MenuTrigger>
+        <MenuContent aria-label="Menu">
+          <MenuItem color="danger">Cancel order</MenuItem>
+        </MenuContent>
+      </Menu>
+    );
+    expect(screen.getByRole("menuitem", { name: "Cancel order" })).toHaveClass(
+      "data-highlighted:bg-status-danger-soft",
+      "active:bg-state-press-danger"
+    );
   });
 });

@@ -323,6 +323,11 @@
   translate: 0 var(--motion-lift-y);
 }
 
+/* Menu / Popover / Select phone sheet body (INTERACTIONS: min(70vh, 520px)). */
+@utility max-h-menu-sheet {
+  max-height: min(70vh, 520px);
+}
+
 /* Pill controls (Button, IconButton, Tag): colours and shadow ease over --duration-fast; the press
    scale snaps in --duration-instant (design system readme §3.8). */
 @utility transition-control {
