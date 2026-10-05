@@ -2,8 +2,22 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { expect } from "storybook/test";
 
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Radio, RadioGroup } from "./radio";
+
+const CHOICE_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
 
 const meta = {
   title: "Atoms/Radio",
@@ -14,7 +28,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Exactly-one choice — portion size, spice level, payment method. Put radios in a **RadioGroup** (a `fieldset` + `legend`, 12px apart) and always give them a shared `name`. The dot is drawn as a 6px pink ring — do not swap in a filled circle. `price` is the option's absolute price. A group `status` marks every ring and reads its `message` as the group's description; a disabled group disables every option. There is no on-brand skin: keep it off the brand (pink) ground.",
+          "Exactly-one choice — portion size, spice level, payment method. Put radios in a **RadioGroup** (a `fieldset` + `legend`, 12px apart) and always give them a shared `name`. The dot is drawn as a 6px pink ring — do not swap in a filled circle. `price` is the option's absolute price. A group `status` marks every ring and reads its `message` as the group's description; a disabled group disables every option. Disabled fades the row at 50% opacity (IX). There is no on-brand skin: keep it off the brand (pink) ground.",
       },
     },
   },
@@ -24,6 +38,32 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
+
+/** Forced rest → hover → press → focus → disabled (card interaction row). */
+export const Interaction: Story = {
+  parameters: { pseudo: storyStatesPseudo(CHOICE_STATES) },
+  render: () => (
+    <StatesRow
+      states={CHOICE_STATES}
+      render={(state) => (
+        <Radio
+          name={`interaction-${state}`}
+          value="regular"
+          label="Regular"
+          price={280}
+          {...storyStateControlProps(state)}
+        />
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover label");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Radio Interaction: #cell-hover label missing");
+    }
+    await expect(hover).toHaveClass("hover:bg-state-hover");
+  },
+};
 
 export const Group: Story = {
   name: "group",

@@ -1,7 +1,23 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { expect } from "storybook/test";
+
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Checkbox } from "./checkbox";
+
+const CHOICE_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
 
 const meta = {
   title: "Atoms/Checkbox",
@@ -11,7 +27,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Multi-select choice — menu add-ons, dietary preferences, consent. Pass `price` for add-ons; it right-aligns as `+₹40` in Poppins 700 and is part of the accessible name. `description` is announced as the description. `isInvalid` paints the box red and sets `aria-invalid`; the message that says what to do next belongs to Field. Disabled is a real fill, never opacity. Use Radio when exactly one option must be chosen. There is no on-brand skin: keep it off the brand (pink) ground.",
+          "Multi-select choice — menu add-ons, dietary preferences, consent. Pass `price` for add-ons; it right-aligns as `+₹40` in Poppins 700 and is part of the accessible name. `description` is announced as the description. `isInvalid` paints the box red and sets `aria-invalid`; the message that says what to do next belongs to Field. Disabled fades the whole row at 50% opacity (IX choice rows). Use Radio when exactly one option must be chosen. There is no on-brand skin: keep it off the brand (pink) ground.",
       },
     },
   },
@@ -21,6 +37,26 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = { args: { price: 40 } };
+
+/** Forced rest → hover → press → focus → disabled (card interaction row). */
+export const Interaction: Story = {
+  parameters: { pseudo: storyStatesPseudo(CHOICE_STATES) },
+  render: () => (
+    <StatesRow
+      states={CHOICE_STATES}
+      render={(state) => (
+        <Checkbox label="Extra burnt chilli mayo" {...storyStateControlProps(state)} />
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover label");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Checkbox Interaction: #cell-hover label missing");
+    }
+    await expect(hover).toHaveClass("hover:bg-state-hover");
+  },
+};
 
 export const CheckedAndUnchecked: Story = {
   name: "checked / not",

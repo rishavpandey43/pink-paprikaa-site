@@ -14,9 +14,13 @@ import { Icon } from "../icon/icon";
 const ring = componentVariants({
   base: [
     "size-choice-box rounded-pill border-2 border-border-default bg-ink-000 transition-all duration-fast ease-out",
-    "group-has-checked/choice:border-6 group-has-checked/choice:border-pink-500",
+    "group-hover/choice:border-pink-400 group-hover/choice:bg-state-hover",
+    "group-data-[pressed]/choice:press-scale-icon group-data-[pressed]/choice:border-pink-400 group-data-[pressed]/choice:bg-state-press",
+    "group-active/choice:press-scale-icon",
+    "group-has-checked/choice:border-6 group-has-checked/choice:border-pink-500 group-has-checked/choice:bg-ink-000",
+    "group-has-checked/choice:group-hover/choice:border-brand-hover",
+    "group-has-checked/choice:group-data-[pressed]/choice:border-brand-active",
     "group-has-focus-visible/choice:outline-2 group-has-focus-visible/choice:outline-offset-2 group-has-focus-visible/choice:outline-focus",
-    "group-has-disabled/choice:border-ink-200 group-has-disabled/choice:bg-ink-200 group-has-checked/choice:group-has-disabled/choice:border-ink-400",
     "group-has-aria-invalid/choice:border-status-danger in-aria-invalid:border-status-danger",
     // Invalid reddens a chosen ring too, which the checked pink would otherwise out-rank.
     "group-has-checked/choice:group-has-aria-invalid/choice:border-status-danger in-aria-invalid:group-has-checked/choice:border-status-danger",

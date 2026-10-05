@@ -57,7 +57,7 @@ describe("Radio", () => {
     expect(screen.getByRole("radio", { name: "Regular ₹280" })).not.toBeChecked();
   });
 
-  it("ignores clicks on a disabled option, painted with a real fill (never opacity)", async () => {
+  it("ignores clicks on a disabled option; the row fades at 50% opacity (IX)", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     const { container } = render(
@@ -74,8 +74,8 @@ describe("Radio", () => {
     await user.click(screen.getByText("Family platter"));
     expect(radio).not.toBeChecked();
     expect(onChange).not.toHaveBeenCalled();
-    expect(ringOf(radio)).toHaveClass("group-has-disabled/choice:bg-ink-200");
-    expect(container.innerHTML).not.toMatch(/opacity-/);
+    expect(radio.closest("label")).toHaveClass("has-disabled:opacity-50");
+    expect(container.innerHTML).toMatch(/has-disabled:opacity-50/);
   });
 
   // The class pins the wiring; the InvalidChecked story's play asserts the computed red in Chromium.

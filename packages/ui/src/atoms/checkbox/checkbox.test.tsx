@@ -98,7 +98,7 @@ describe("Checkbox", () => {
     expect(field.onBlur).toHaveBeenCalledTimes(1);
   });
 
-  it("disables the whole row with a real fill, never opacity, and ignores clicks", async () => {
+  it("disables the whole row at 50% opacity (IX choice rows) and ignores clicks", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -108,12 +108,22 @@ describe("Checkbox", () => {
     expect(checkbox).toBeDisabled();
     expect(checkbox.closest("label")).toHaveClass(
       "has-disabled:cursor-not-allowed",
-      "has-disabled:text-ink-400"
+      "has-disabled:opacity-50"
     );
-    expect(boxOf(checkbox)).toHaveClass("group-has-disabled/choice:bg-ink-200");
     await user.click(screen.getByText("Truffle oil"));
     expect(checkbox).not.toBeChecked();
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("paints row hover/press and box hover/press/scale from the shared choice recipe", () => {
+    render(<Checkbox label="Extra burnt chilli mayo" />);
+    const checkbox = screen.getByRole("checkbox");
+    expect(checkbox.closest("label")).toHaveClass("hover:bg-state-hover", "active:bg-state-press");
+    expect(boxOf(checkbox)).toHaveClass(
+      "group-hover/choice:border-pink-400",
+      "group-data-[pressed]/choice:bg-state-press",
+      "group-data-[pressed]/choice:press-scale-icon"
+    );
   });
 
   it("puts className on the row, not the input, replacing a conflicting class", () => {

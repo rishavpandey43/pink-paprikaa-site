@@ -33,10 +33,16 @@ export function storyStatesPseudo(states: readonly StoryForceState[]) {
   // Target the control itself: the addon puts `.pseudo-hover` on each matched node (applied in a
   // post-render timeout) so rewritten Tailwind `hover:` rules apply.
   const hover = states.includes("hover")
-    ? ["#cell-hover button", "#cell-hover a", "#cell-hover [role='button']"]
+    ? ["#cell-hover button", "#cell-hover a", "#cell-hover [role='button']", "#cell-hover label"]
     : undefined;
   const focusVisible = states.includes("focus")
-    ? ["#cell-focus button", "#cell-focus a", "#cell-focus [role='button']"]
+    ? [
+        "#cell-focus button",
+        "#cell-focus a",
+        "#cell-focus [role='button']",
+        "#cell-focus label",
+        "#cell-focus input",
+      ]
     : undefined;
   return {
     ...(hover === undefined ? {} : { hover }),

@@ -14,9 +14,13 @@ import { Icon } from "../icon/icon";
 const box = componentVariants({
   base: [
     "grid size-choice-box place-items-center rounded-sm border-2 border-border-default bg-ink-000 text-transparent transition-control",
+    "group-hover/choice:border-pink-400 group-hover/choice:bg-state-hover",
+    "group-data-[pressed]/choice:press-scale-icon group-data-[pressed]/choice:border-pink-400 group-data-[pressed]/choice:bg-state-press",
+    "group-active/choice:press-scale-icon",
     "group-has-checked/choice:border-pink-500 group-has-checked/choice:bg-pink-500 group-has-checked/choice:text-ink-000",
+    "group-has-checked/choice:group-hover/choice:border-brand-hover group-has-checked/choice:group-hover/choice:bg-brand-hover",
+    "group-has-checked/choice:group-data-[pressed]/choice:border-brand-active group-has-checked/choice:group-data-[pressed]/choice:bg-brand-active",
     "group-has-focus-visible/choice:outline-2 group-has-focus-visible/choice:outline-offset-2 group-has-focus-visible/choice:outline-focus",
-    "group-has-disabled/choice:border-ink-200 group-has-disabled/choice:bg-ink-200 group-has-checked/choice:group-has-disabled/choice:text-ink-400",
     "group-has-aria-invalid/choice:border-status-danger",
   ],
 });

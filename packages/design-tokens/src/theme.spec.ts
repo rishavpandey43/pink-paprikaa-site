@@ -175,6 +175,7 @@ describe("handoff state, scrollbar, press-scale and rhythm tokens", () => {
     ["--motion-press-scale-page", "0.94"],
     ["--motion-press-scale-card", "0.99"],
     ["--motion-press-scale-stepper", "0.92"],
+    ["--spacing-switch-knob-pressed", "26px"],
     ["--spacing-gutter-mobile", "20px"],
     ["--spacing-section-mobile", "56px"],
     ["--spacing-gutter", "clamp(20px, 4vw, 40px)"],

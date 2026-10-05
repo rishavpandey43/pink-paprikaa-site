@@ -194,6 +194,7 @@ const SPACING = [
   "switch-width",
   "switch-height",
   "switch-knob",
+  "switch-knob-pressed",
   "spinner-sm",
   "spinner-md",
   "spinner-lg",

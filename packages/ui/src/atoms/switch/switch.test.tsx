@@ -83,10 +83,10 @@ describe("Switch", () => {
     expect(field.onBlur).toHaveBeenCalledTimes(1);
   });
 
-  it("disables with a real fill (never opacity) and ignores clicks", async () => {
+  it("disables the row at 50% opacity (IX) and ignores clicks", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    const { container } = render(
+    render(
       <Switch
         label="Delivery updates"
         description="Delivery starts in 2027."
@@ -96,11 +96,17 @@ describe("Switch", () => {
     );
     const toggle = screen.getByRole("switch");
     expect(toggle).toBeDisabled();
-    expect(trackOf(toggle)).toHaveClass("group-has-disabled/choice:bg-ink-200");
-    expect(container.innerHTML).not.toMatch(/opacity-/);
+    expect(toggle.closest("label")).toHaveClass("has-disabled:opacity-50");
+    expect(trackOf(toggle)).toHaveClass("group-hover/choice:bg-ink-400");
     await user.click(screen.getByText("Delivery updates"));
     expect(toggle).not.toBeChecked();
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("widens the thumb on press via the switch-knob-pressed token", () => {
+    render(<Switch label="Order updates" />);
+    const knob = trackOf(screen.getByRole("switch"))?.firstElementChild;
+    expect(knob).toHaveClass("group-data-[pressed]/choice:w-switch-knob-pressed");
   });
 
   it("has no accessibility violations off, on and described, or disabled", async () => {

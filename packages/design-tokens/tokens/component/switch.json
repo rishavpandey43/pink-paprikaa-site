@@ -11,6 +11,14 @@
       "$description": "Track height.",
       "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
     },
-    "switch-knob": { "$value": "22px", "$extensions": { "pink-paprikaa": { "utility": ["size"] } } }
+    "switch-knob": {
+      "$value": "22px",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "switch-knob-pressed": {
+      "$value": "26px",
+      "$description": "Thumb width while pressed (IX Switch).",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
+    }
   }
 }
