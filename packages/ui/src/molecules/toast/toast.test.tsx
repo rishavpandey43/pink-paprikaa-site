@@ -102,8 +102,8 @@ describe("Toast", () => {
       </ToastProvider>
     );
     const viewCart = screen.getByRole("button", { name: "View Cart" });
-    // A 44px hit height inside the pill (dev parity), its margin pulled back into the padding.
-    expect(viewCart).toHaveClass("min-h-hit", "-my-3");
+    // Design: TextButton caps sm with -mr-2 (Toast.jsx).
+    expect(viewCart).toHaveClass("uppercase", "text-overline", "-my-3", "-mr-2");
     await user.click(viewCart);
     expect(onClick).toHaveBeenCalledTimes(1);
     expect(onOpenChange).toHaveBeenCalledWith(false);

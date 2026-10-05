@@ -11,6 +11,7 @@ alwaysApply: true
 - **Nothing the design defines may be removed.** Rename to our API, move internals to `lib/`, add extras — never subtract. Only approved differences: R136 16px field text · R137 AA colours · R140 no egg, no "18 spices", Instagram only · R142 Card as real link, DietMark veg-only · R143 Typography name.
 
 ## Never
+- **A `Ruling:` may never keep our version over the design.** If a design value or behaviour can't be met, stop and ask the owner. Only R136/R137/R140/R142/R143 are approved differences.
 - `git reset --hard`, `git checkout -- <path>`, `git clean`, `git stash drop`, force-push, `git push`, merging, rebasing published history.
 - `--no-verify`; `eslint-disable` of a LAW rule (`no-raw-hex`, `atomic-layering`, module boundaries); editing a gate, budget or threshold to make it pass.
 - Deleting or weakening a test, play, story or screenshot baseline to get green. Test and story counts never go down; removing one needs a `Ruling:` line saying why.

@@ -115,8 +115,10 @@ export interface MenuPanelProps {
   emptyText?: string | undefined;
   /** 52px rows when the panel is a phone sheet. */
   isSheet?: boolean | undefined;
-  /** Keyboard-active row index (Select / Combobox). */
+  /** Keyboard-active row index (Select / Combobox / design Menu). */
   activeIndex?: number | undefined;
+  /** Reports the highlighted row when it moves (design Menu `onActiveChange`). */
+  onActiveChange?: ((index: number) => void) | undefined;
   "aria-label"?: string | undefined;
 }
 
@@ -133,6 +135,7 @@ export function MenuPanel({
   emptyText = "Nothing here yet.",
   isSheet = false,
   activeIndex = -1,
+  onActiveChange,
   "aria-label": ariaLabel,
 }: MenuPanelProps) {
   const autoId = useId();
@@ -182,6 +185,9 @@ export function MenuPanel({
             className={row.item()}
             onClick={() => {
               if (!isDisabled) onSelect?.(entry);
+            }}
+            onFocus={() => {
+              if (!isDisabled) onActiveChange?.(index);
             }}
             onKeyDown={(event) => {
               activateRow(event, entry, onSelect);

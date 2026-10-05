@@ -4,7 +4,9 @@ import { X } from "lucide-react";
 import { Toast as RadixToast } from "radix-ui";
 import { useRef } from "react";
 
+import { IconButton } from "../../atoms/icon-button/icon-button";
 import { Icon } from "../../atoms/icon/icon";
+import { TextButton } from "../../atoms/text-button/text-button";
 import { componentVariants } from "../../lib/component-variants";
 import {
   NOTIFICATION_ICON,
@@ -28,10 +30,9 @@ const snackbar = componentVariants({
     message: "min-w-0 flex-1 font-body text-snackbar font-medium text-pretty",
     // Hit areas (dev parity): the action is 44px tall (`min-h-hit`, margin pulled into the 13px
     // padding by `-my-3`); the 24px dismiss takes taps over 40px through `before:-inset-2`.
-    action:
-      "-my-3 inline-flex min-h-hit shrink-0 items-center rounded-xs px-1.5 font-display text-snackbar-action font-bold uppercase active:press-scale",
-    dismiss:
-      "relative grid size-6 shrink-0 place-items-center rounded-pill text-current opacity-70 transition-opacity duration-fast ease-out before:absolute before:-inset-2 hover:opacity-100",
+    action: "-my-3 -mr-2 shrink-0",
+    // Margin only — IconButton xs owns the glyph size and expanded hit area.
+    dismiss: "-mr-1 shrink-0",
   },
   variants: {
     isContained: {
@@ -48,10 +49,10 @@ const snackbar = componentVariants({
       "top-right": { anchor: "top-6 justify-end" },
     },
     color: {
-      neutral: { root: "bg-surface-inverse", action: "text-text-brand" },
-      brand: { root: "bg-surface-brand", action: "text-text-body" },
-      success: { root: "bg-snackbar-success-bg", action: "text-text-body" },
-      danger: { root: "bg-status-danger", action: "text-text-body" },
+      neutral: { root: "bg-surface-inverse" },
+      brand: { root: "bg-surface-brand" },
+      success: { root: "bg-snackbar-success-bg" },
+      danger: { root: "bg-status-danger" },
     },
   },
   compoundVariants: [
@@ -147,17 +148,31 @@ export function Snackbar({
         <Icon icon={icon ?? NOTIFICATION_ICON[color]} size="md" />
         <RadixToast.Description className={styles.message()}>{children}</RadixToast.Description>
         {action === undefined ? null : (
-          <RadixToast.Action
-            altText={action.altText}
-            onClick={action.onClick}
-            className={styles.action()}
-          >
-            {action.label}
+          <RadixToast.Action asChild altText={action.altText}>
+            <TextButton
+              type="button"
+              size="sm"
+              isCaps
+              color="brand"
+              disabled={action.disabled === true}
+              onClick={action.onClick}
+              className={styles.action()}
+            >
+              {action.label}
+            </TextButton>
           </RadixToast.Action>
         )}
-        <RadixToast.Close aria-label="Dismiss" className={styles.dismiss()}>
-          <Icon icon={X} size="sm" />
-        </RadixToast.Close>
+        {onOpenChange === undefined ? null : (
+          <RadixToast.Close asChild>
+            <IconButton
+              icon={X}
+              label="Dismiss"
+              size="xs"
+              variant="tint"
+              className={styles.dismiss()}
+            />
+          </RadixToast.Close>
+        )}
       </RadixToast.Root>
       <RadixToast.Viewport
         ref={viewportRef}

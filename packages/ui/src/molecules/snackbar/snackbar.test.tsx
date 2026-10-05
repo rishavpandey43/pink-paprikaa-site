@@ -16,9 +16,11 @@ describe("Snackbar", () => {
     vi.useRealTimers();
   });
 
-  it("shows its message with a dismiss button", () => {
-    render(<Snackbar>Table held for 10 minutes.</Snackbar>);
+  it("shows its message; dismiss only when onOpenChange is given", () => {
+    const { rerender } = render(<Snackbar>Table held for 10 minutes.</Snackbar>);
     expect(within(messages()).getByText("Table held for 10 minutes.")).toBeInTheDocument();
+    expect(within(messages()).queryByRole("button", { name: "Dismiss" })).toBeNull();
+    rerender(<Snackbar onOpenChange={vi.fn()}>Table held for 10 minutes.</Snackbar>);
     expect(within(messages()).getByRole("button", { name: "Dismiss" })).toBeInTheDocument();
   });
 
@@ -55,11 +57,11 @@ describe("Snackbar", () => {
   });
 
   it.each([
-    ["neutral", "ink", "bg-surface-inverse", "text-text-brand"],
-    ["brand", "brand", "bg-surface-brand", "text-text-body"],
-    ["success", "ink", "bg-snackbar-success-bg", "text-text-body"],
-    ["danger", "ink", "bg-status-danger", "text-text-body"],
-  ] as const)("paints the %s colour and its action", (color, surface, fill, actionColour) => {
+    ["neutral", "ink", "bg-surface-inverse"],
+    ["brand", "brand", "bg-surface-brand"],
+    ["success", "ink", "bg-snackbar-success-bg"],
+    ["danger", "ink", "bg-status-danger"],
+  ] as const)("paints the %s colour and a TextButton action", (color, surface, fill) => {
     render(
       <Snackbar color={color} action={{ ...UNDO, onClick: vi.fn() }}>
         Chilli Paneer removed.
@@ -68,7 +70,13 @@ describe("Snackbar", () => {
     const bar = within(messages()).getByRole("listitem");
     expect(bar).toHaveAttribute("data-surface", surface);
     expect(bar).toHaveClass(fill);
-    expect(within(bar).getByRole("button", { name: "Undo" })).toHaveClass(actionColour);
+    // Design: TextButton caps sm; surface-aware via the bar's data-surface.
+    expect(within(bar).getByRole("button", { name: "Undo" })).toHaveClass(
+      "uppercase",
+      "text-overline",
+      "-my-3",
+      "-mr-2"
+    );
   });
 
   it.each([
@@ -86,11 +94,19 @@ describe("Snackbar", () => {
     }
   );
 
-  it("gives the action a 44px hit height and the dismiss a 40px one, without growing the bar", () => {
-    render(<Snackbar action={{ ...UNDO, onClick: vi.fn() }}>Chilli Paneer removed.</Snackbar>);
-    expect(screen.getByRole("button", { name: "Undo" })).toHaveClass("min-h-hit", "-my-3");
+  it("renders the action as TextButton sm and dismiss as IconButton xs", () => {
+    render(
+      <Snackbar action={{ ...UNDO, onClick: vi.fn() }} onOpenChange={vi.fn()}>
+        Chilli Paneer removed.
+      </Snackbar>
+    );
+    expect(screen.getByRole("button", { name: "Undo" })).toHaveClass(
+      "uppercase",
+      "text-overline",
+      "-my-3"
+    );
     expect(screen.getByRole("button", { name: "Dismiss" })).toHaveClass(
-      "size-6",
+      "size-icon-button-xs",
       "before:-inset-2"
     );
   });

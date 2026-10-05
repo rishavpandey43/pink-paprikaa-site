@@ -480,4 +480,6 @@ export {
   type MenuEntry,
   type MenuItemData,
   type MenuPanelProps,
+  /** Design `MenuProps` — data-driven panel (compound `Menu` stays for ActionMenu-style trees). */
+  type MenuPanelProps as MenuProps,
 } from "../../lib/menu-panel";

@@ -1,8 +1,30 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { MenuEmpty, MenuPanel } from "./menu-panel";
 
 describe("MenuPanel", () => {
+  it("marks activeIndex and reports onActiveChange when a row is focused", async () => {
+    const user = userEvent.setup();
+    const onActiveChange = vi.fn();
+    render(
+      <MenuPanel
+        role="listbox"
+        aria-label="Heat"
+        items={[
+          { value: "mild", label: "Mild" },
+          { value: "hot", label: "Hot" },
+        ]}
+        activeIndex={1}
+        onActiveChange={onActiveChange}
+      />
+    );
+    expect(screen.getByRole("option", { name: "Hot" })).toHaveAttribute("data-highlighted");
+    expect(screen.getByRole("option", { name: "Mild" })).not.toHaveAttribute("data-highlighted");
+    await user.tab();
+    expect(onActiveChange).toHaveBeenCalledWith(0);
+  });
+
   it("listbox marks the chosen row with a brand diamond and shows emptyText", () => {
     const onSelect = vi.fn();
     const { rerender } = render(

@@ -6,6 +6,7 @@ import { Toast as RadixToast } from "radix-ui";
 import { useRef } from "react";
 
 import { Icon } from "../../atoms/icon/icon";
+import { TextButton } from "../../atoms/text-button/text-button";
 import { assignRef } from "../../lib/assign-ref";
 import { componentVariants } from "../../lib/component-variants";
 import {
@@ -38,8 +39,7 @@ const toast = componentVariants({
     root: "pointer-events-auto inline-flex max-w-full toast-swipe-y items-center gap-3 rounded-pill px-4 py-3 text-text-body shadow-3",
     message: "min-w-0 font-body text-toast font-medium text-pretty",
     // `min-h-hit` + `-my-3`: a 44px target that does not grow the pill (dev parity).
-    action:
-      "-my-3 inline-flex min-h-hit shrink-0 items-center rounded-xs px-0.5 font-display text-toast-action font-bold text-current uppercase active:press-scale",
+    action: "-my-3 -mr-2 shrink-0",
   },
   variants: {
     color: {
@@ -147,12 +147,18 @@ export function Toast({
       <Icon icon={icon ?? NOTIFICATION_ICON[color]} size="md" />
       <RadixToast.Description className={styles.message()}>{children}</RadixToast.Description>
       {action === undefined ? null : (
-        <RadixToast.Action
-          altText={action.altText}
-          onClick={action.onClick}
-          className={styles.action()}
-        >
-          {action.label}
+        <RadixToast.Action asChild altText={action.altText}>
+          <TextButton
+            type="button"
+            size="sm"
+            isCaps
+            color="brand"
+            disabled={action.disabled === true}
+            onClick={action.onClick}
+            className={styles.action()}
+          >
+            {action.label}
+          </TextButton>
         </RadixToast.Action>
       )}
     </RadixToast.Root>
