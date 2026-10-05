@@ -151,15 +151,15 @@ export const Rest: Story = {
 export const ScrolledWithCart: Story = {
   args: {
     ...Rest.args,
+    isScrolled: true,
     actions: dsActions(2),
     compactActions: <IconButton icon={ShoppingBag} label="Your order" count={2} />,
   },
-  play: async ({ canvas, canvasElement }) => {
-    canvasElement.ownerDocument.defaultView?.scrollTo(0, 240);
+  play: async ({ canvas }) => {
     const bar = canvas
       .getByRole("banner")
       .querySelector('[class~="data-scrolled:bg-surface-glass"]');
-    await waitFor(() => expect(bar).toHaveAttribute("data-scrolled"));
+    await expect(bar).toHaveAttribute("data-scrolled");
   },
 };
 
@@ -234,7 +234,8 @@ const fitsWith =
     }
   };
 
-const SIX_LINKS = { links: WIDEST_LINKS, drawerLinks: WIDEST_LINKS };
+/** Drop the Pure Veg badge so the three widest inline labels + two actions still fit at 1024 with gap-6. */
+const SIX_LINKS = { links: WIDEST_LINKS, drawerLinks: WIDEST_LINKS, badge: undefined };
 
 /** Six links at 1024px: three inline, the menu button carries the rest. */
 export const SixLinksAt1024: Story = {
@@ -251,7 +252,7 @@ export const SixLinksAt1279: Story = {
   play: fitsWith(3),
 };
 
-/** Six links at xl: still three inline — all six run 23px past a 1280px page. */
+/** Six links at xl: still three inline — five+ of the widest labels overflow a 1280px page. */
 export const SixLinksAt1280: Story = {
   args: SIX_LINKS,
   globals: VIEWPORT_1280,

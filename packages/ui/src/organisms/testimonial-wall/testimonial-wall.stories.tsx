@@ -30,7 +30,7 @@ export const Playground: Story = {};
 /** Card row: the grid of three reviews. */
 export const Default: Story = {};
 
-export const BrandCards: Story = { args: { variant: "brand" } };
+export const BrandCards: Story = { args: { cardSurface: "brand" } };
 
 export const FourReviews: Story = { args: { reviews: GOOGLE_REVIEWS } };
 

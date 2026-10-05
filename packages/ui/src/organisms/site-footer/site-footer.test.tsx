@@ -100,6 +100,20 @@ describe("SiteFooter", () => {
     expect(listOf(screen.getByRole("link", { name: "Homely Meals" }))).not.toHaveAttribute("role");
   });
 
+  it("paints social IconButtons ghost so they follow the brand surface", () => {
+    render(
+      <SiteFooter
+        columns={COLUMNS}
+        social={[
+          { network: "instagram", href: "https://instagram.com/pinkpaprikaa", label: "Instagram" },
+        ]}
+      />
+    );
+    expect(screen.getByRole("link", { name: "Instagram (Opens in a new tab)" })).toHaveClass(
+      "hover:bg-state-hover"
+    );
+  });
+
   it("names each social link and opens it in a new tab", () => {
     render(
       <SiteFooter

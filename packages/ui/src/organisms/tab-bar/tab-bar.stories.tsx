@@ -5,8 +5,11 @@ import { useState } from "react";
 import { expect } from "storybook/test";
 
 import { ringClippers } from "../../lib/story-ring";
+import { StatesRow, type StoryForceState, storyStatesPseudo } from "../../lib/story-states";
 import { VIEWPORT_360 } from "../story-fixtures";
 import { TabBar, type TabBarItem } from "./tab-bar";
+
+const TAB_STATES = ["rest", "hover", "focus"] as const satisfies readonly StoryForceState[];
 
 const FOUR: TabBarItem[] = [
   { value: "home", label: "Home", icon: House },
@@ -69,6 +72,34 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
+
+/** INTERACTIONS row: rest → hover → focus; press is `group-active` on the icon pill (see unit test). */
+export const States: Story = {
+  parameters: { pseudo: storyStatesPseudo(TAB_STATES) },
+  render: () => (
+    <StatesRow
+      states={TAB_STATES}
+      render={(state) => (
+        <div className="w-24 overflow-hidden rounded-lg border border-border-subtle">
+          <TabBar
+            items={[{ value: "home", label: "Home", icon: House }]}
+            value="home"
+            label={`Primary, ${state}`}
+          />
+        </div>
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover button");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("TabBar States: #cell-hover button missing");
+    }
+    await expect(hover).toHaveClass("group");
+    const pill = hover.querySelector(".h-7\\.5.w-14.rounded-pill");
+    await expect(pill).toHaveClass("group-hover:bg-state-hover", "group-active:press-scale-icon");
+  },
+};
 
 /** Card row: 4 tabs + count. */
 export const FourTabsWithCount: Story = {

@@ -22,6 +22,7 @@ const stylesheet = readFileSync(join(import.meta.dirname, "../../styles.css"), "
 const MIN_STEPS: [AutoGridMin, string][] = [
   ["xs", "140px"],
   ["sm", "200px"],
+  ["card", "240px"],
   ["md", "260px"],
   ["lg", "320px"],
   ["xl", "380px"],

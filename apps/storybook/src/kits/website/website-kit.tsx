@@ -94,7 +94,7 @@ export function WebsiteKit() {
     setIsBooking(true);
     setPhone("");
     setPhoneErr(null);
-    setBookingDate(null);
+    setBookingDate("");
   }
 
   function holdBooking() {

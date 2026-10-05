@@ -17,8 +17,7 @@ const dialog = componentVariants({
   slots: {
     overlay: "fixed inset-0 z-overlay flex bg-surface-overlay",
     // Only the body scrolls: the title, the close button and the footer's actions stay on screen.
-    content:
-      "flex max-h-full w-full animate-sheet-in flex-col overflow-hidden bg-surface-card shadow-4",
+    content: "flex max-h-full w-full flex-col overflow-hidden bg-surface-card shadow-4",
     handle: "flex shrink-0 justify-center pt-2.5",
     handleBar: "h-1 w-10 rounded-pill bg-ink-300",
     header: "flex shrink-0 items-start justify-between gap-4 px-6 pt-5",
@@ -29,8 +28,11 @@ const dialog = componentVariants({
   },
   variants: {
     variant: {
-      modal: { overlay: "items-center justify-center p-6", content: "rounded-xl" },
-      sheet: { overlay: "items-end", content: "rounded-t-xl" },
+      modal: {
+        overlay: "items-center justify-center p-6",
+        content: "rounded-xl motion-safe:animate-pop-in",
+      },
+      sheet: { overlay: "items-end", content: "rounded-t-xl motion-safe:animate-sheet-in" },
       // Full height on one edge. `start-0` / `end-0` are logical, so the edge flips in RTL.
       drawer: { content: "h-full rounded-none" },
     },

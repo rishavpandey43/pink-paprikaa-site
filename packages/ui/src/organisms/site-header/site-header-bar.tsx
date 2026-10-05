@@ -18,18 +18,25 @@ const isPastThresholdOnServer = (): boolean => false;
 export interface SiteHeaderBarProps {
   className: string;
   children: ReactNode;
+  /** Force the glass state; omit to follow the scroll listener (design `scrolled`). */
+  isScrolled?: boolean | undefined;
 }
 
 /**
  * The header row's client corner: solid at rest, `data-scrolled` (glass + blur, CSS) once the
  * page scrolls under it (readme §3.3, §3.9). Its children are server-rendered.
  */
-export function SiteHeaderBar({ className, children }: SiteHeaderBarProps) {
-  const isScrolled = useSyncExternalStore(
+export function SiteHeaderBar({
+  className,
+  children,
+  isScrolled: isScrolledOverride,
+}: SiteHeaderBarProps) {
+  const isScrolledFromScroll = useSyncExternalStore(
     subscribeToScroll,
     isPastThreshold,
     isPastThresholdOnServer
   );
+  const isScrolled = isScrolledOverride ?? isScrolledFromScroll;
   return (
     <div data-scrolled={isScrolled ? "" : undefined} className={className}>
       {children}

@@ -3,11 +3,16 @@
     "$type": "dimension",
     "hero-banner-y": {
       "$value": "clamp(28px, 6vw, 80px)",
-      "$description": "Hero vertical rhythm (handoff Home and Catering heroes; tighter than section-y so the fold holds the headline and actions on phones)."
+      "$description": "Hero vertical rhythm (handoff Home and Catering heroes; tighter than section-y so the fold holds the headline and actions on phones). Single clamp kept vs design's asymmetric top/bottom — fold budget wins."
     },
     "hero-banner-gap": {
       "$value": "clamp(24px, 5vw, 64px)",
       "$description": "Gap between the copy and the media column."
+    },
+    "hero-banner-center-measure": {
+      "$value": "22ch",
+      "$description": "Centred hero copy cap (design HeroBanner centered layout).",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
     }
   }
 }

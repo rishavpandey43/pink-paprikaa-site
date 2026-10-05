@@ -299,6 +299,10 @@
   transition-duration: var(--duration-page);
 }
 
+@utility opacity-82 {
+  opacity: 0.82;
+}
+
 @utility press-scale {
   scale: var(--motion-press-scale);
 }

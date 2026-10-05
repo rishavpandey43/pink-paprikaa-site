@@ -4,8 +4,8 @@ import { componentVariants } from "../../lib/component-variants";
 import { GAP_CLASS, type SpaceStep } from "../../lib/space";
 import { type Sx, withSx } from "../../lib/sx";
 
-/** Minimum track before a column drops: xs 140 · sm 200 · md 260 · lg 320 · xl 380 · 2xl 420 px. */
-export type AutoGridMin = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+/** Minimum track before a column drops: xs 140 · sm 200 · card 240 · md 260 · lg 320 · xl 380 · 2xl 420 px. */
+export type AutoGridMin = "xs" | "sm" | "card" | "md" | "lg" | "xl" | "2xl";
 
 const autoGrid = componentVariants({
   base: "grid gap-grid-gap",
@@ -14,6 +14,7 @@ const autoGrid = componentVariants({
     min: {
       xs: "autogrid-min-xs",
       sm: "autogrid-min-sm",
+      card: "autogrid-min-card",
       md: "autogrid-min-md",
       lg: "autogrid-min-lg",
       xl: "autogrid-min-xl",

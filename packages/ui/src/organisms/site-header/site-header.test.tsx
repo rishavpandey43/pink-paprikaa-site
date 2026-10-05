@@ -63,10 +63,20 @@ describe("SiteHeader", () => {
       "page"
     );
     expect(within(nav).getByRole("link", { name: "Catering" })).not.toHaveAttribute("aria-current");
-    expect(screen.getByRole("img", { name: /Pink Paprikaa/ }).closest("a")).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Pink Paprikaa home" })).toHaveAttribute(
       "href",
       "#home"
     );
+  });
+
+  it("names the home link from homeLabel and forces glass when isScrolled is set", () => {
+    const { rerender } = render(
+      <SiteHeader homeHref="#home" links={LINKS} homeLabel="Brand home" isScrolled />
+    );
+    expect(screen.getByRole("link", { name: "Brand home" })).toHaveAttribute("href", "#home");
+    expect(glassBar()).toHaveAttribute("data-scrolled");
+    rerender(<SiteHeader homeHref="#home" links={LINKS} isScrolled={false} />);
+    expect(glassBar()).not.toHaveAttribute("data-scrolled");
   });
 
   it("names its navigation from navLabel, so two mastheads on one page stay distinct", () => {
@@ -93,6 +103,14 @@ describe("SiteHeader", () => {
     for (const { label } of WIDEST_LINKS) {
       expect(within(drawer).getByRole("link", { name: label })).toBeInTheDocument();
     }
+  });
+
+  it("gives the logo link hover opacity and press scale classes", () => {
+    render(<SiteHeader homeHref="#home" links={LINKS} />);
+    expect(screen.getByRole("link", { name: "Pink Paprikaa home" })).toHaveClass(
+      "hover:opacity-82",
+      "active:press-scale"
+    );
   });
 
   it("hides the menu button from lg when every link fits inline", () => {

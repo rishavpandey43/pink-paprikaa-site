@@ -11,7 +11,7 @@ import { SectionHeader } from "../../molecules/section-header/section-header";
 const faqSection = componentVariants({
   slots: {
     root: "section-y",
-    inner: "container-page grid items-start gap-faq-section-gap lg:grid-cols-2",
+    inner: "container-page grid items-start gap-faq-section-gap md:grid-cols-2",
     lead: "flex min-w-0 flex-col gap-6 lg:sticky lg:top-faq-section-sticky",
   },
 });

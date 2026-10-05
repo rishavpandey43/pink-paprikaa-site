@@ -22,15 +22,22 @@ const tabBar = componentVariants({
     item: "flex min-w-0 flex-1",
     // The controls fill the bar edge to edge, so a ring drawn outside them is cut by the screen or
     // a phone frame's clip: it is drawn inset.
+    // Rest ink-600 / active pink-600 (R137 AA); design ink-500/pink-500 fail 4.5:1 at 11px.
     control:
-      "flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 font-display text-tab-bar-label text-text-subtle no-underline transition-colors duration-fast ease-out hover:text-text-heading focus-visible:-outline-offset-4 active:press-scale",
-    glyph: "relative inline-flex",
+      "group flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-md px-1 font-display text-tab-bar-label text-text-subtle no-underline transition-colors duration-fast ease-out hover:text-ink-800 focus-visible:-outline-offset-4 active:text-pink-600",
+    glyph:
+      "relative grid h-7.5 w-14 place-items-center rounded-pill transition-control group-hover:bg-state-hover group-active:press-scale-icon group-active:bg-state-press",
     label: "max-w-full truncate",
     count:
       "absolute -top-1 -right-2 grid h-tab-bar-count min-w-tab-bar-count place-items-center rounded-pill bg-surface-brand px-1 font-display text-tab-bar-count text-text-on-brand",
   },
   variants: {
-    isActive: { true: { control: "font-bold text-text-brand hover:text-text-brand" } },
+    isActive: {
+      true: {
+        control: "font-bold text-text-brand hover:text-text-brand",
+        glyph: "bg-state-hover",
+      },
+    },
   },
 });
 
@@ -74,7 +81,7 @@ export function TabBar({
           const hasCount = item.count !== undefined && item.count > 0;
           const content = (
             <>
-              <span className={slots.glyph()}>
+              <span className={slots.glyph({ isActive })}>
                 <Icon icon={item.icon} size="lg" />
                 {hasCount ? (
                   <span aria-hidden className={slots.count()}>

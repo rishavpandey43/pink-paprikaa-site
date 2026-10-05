@@ -47,6 +47,21 @@ describe("TabBar", () => {
     expect(screen.getByRole("button", { name: "Home" })).not.toHaveAttribute("aria-current");
   });
 
+  it("puts a 56×30 pill behind the icon with hover/press/active state classes", () => {
+    render(<TabBar items={ITEMS} value="menu" />);
+    const home = screen.getByRole("button", { name: "Home" });
+    expect(home).toHaveClass("group", "rounded-md", "hover:text-ink-800", "active:text-pink-600");
+    expect(home).not.toHaveClass("active:press-scale");
+    const menu = screen.getByRole("button", { name: "Menu" });
+    const activePill = menu.querySelector(".h-7\\.5.w-14.rounded-pill");
+    expect(activePill).toHaveClass(
+      "group-hover:bg-state-hover",
+      "group-active:bg-state-press",
+      "group-active:press-scale-icon",
+      "bg-state-hover"
+    );
+  });
+
   it("reports the chosen destination when a button tab is pressed — by pointer or keyboard", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();

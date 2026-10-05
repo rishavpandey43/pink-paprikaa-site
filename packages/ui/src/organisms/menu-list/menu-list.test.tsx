@@ -111,7 +111,9 @@ describe("MenuList", () => {
     const { container } = render(
       <MenuList items={MENU} gridCount={4} overflowLabel="Also on the menu" />
     );
-    expect(container.querySelector("ul.autogrid")?.querySelectorAll("article")).toHaveLength(4);
+    expect(
+      container.querySelector("ul.autogrid-min-card")?.querySelectorAll("article")
+    ).toHaveLength(4);
     expect(screen.getAllByRole("article")).toHaveLength(MENU.length);
     expect(screen.getByText("Also on the menu")).toBeInTheDocument();
   });
@@ -120,18 +122,20 @@ describe("MenuList", () => {
     const { container, rerender } = render(
       <MenuList items={MENU} gridCount={2} overflowLabel="Also on the menu" />
     );
-    expect(container.querySelector("ul.autogrid")?.querySelectorAll("article")).toHaveLength(2);
+    expect(
+      container.querySelector("ul.autogrid-min-card")?.querySelectorAll("article")
+    ).toHaveLength(2);
     rerender(<MenuList items={MENU} gridCount={10} overflowLabel="Also on the menu" />);
-    expect(container.querySelector("ul.autogrid")?.querySelectorAll("article")).toHaveLength(
-      MENU.length
-    );
+    expect(
+      container.querySelector("ul.autogrid-min-card")?.querySelectorAll("article")
+    ).toHaveLength(MENU.length);
     expect(screen.queryByText("Also on the menu")).not.toBeInTheDocument();
   });
 
   it("shows every dish as a row in the list variant", () => {
     const { container } = render(<MenuList items={MENU} variant="list" />);
     expect(screen.getAllByRole("article")).toHaveLength(MENU.length);
-    expect(container.querySelector("ul.autogrid")).toBeNull();
+    expect(container.querySelector("ul.autogrid-min-card")).toBeNull();
     expect(screen.queryByText("Also on the menu")).not.toBeInTheDocument();
   });
 
@@ -201,15 +205,9 @@ describe("MenuList", () => {
     expect(link).toHaveAttribute("data-router-link");
   });
 
-  it("shows the empty state for a category with no dishes", async () => {
+  it("shows the default empty state for a category with no dishes", async () => {
     const user = userEvent.setup();
-    render(
-      <MenuList
-        items={MENU}
-        categories={["Small Plates", "Thalis"]}
-        emptyState={<p>Nothing matches that yet.</p>}
-      />
-    );
+    render(<MenuList items={MENU} categories={["Small Plates", "Thalis"]} />);
     await user.click(option("Thalis"));
     expect(screen.getByText("Nothing matches that yet.")).toBeInTheDocument();
     expect(screen.queryByRole("article")).not.toBeInTheDocument();

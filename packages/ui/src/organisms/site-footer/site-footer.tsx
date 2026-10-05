@@ -6,6 +6,7 @@ import type { LinkAs } from "../../lib/link-as";
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { InstagramGlyph, LinkedinGlyph, YoutubeGlyph } from "../../atoms/icon/brand-glyphs";
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
+import { Link } from "../../atoms/link/link";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Typography } from "../../atoms/typography/typography";
 import { SURFACE_DATA } from "../../lib/common-props";
@@ -55,14 +56,13 @@ const siteFooter = componentVariants({
     column: "flex min-w-0 flex-col gap-3.5",
     items: "flex flex-col items-start gap-2.5",
     item: "inline-flex items-start gap-2 text-body text-text-body",
-    link: "inline-flex items-start gap-2 text-body text-text-link no-underline hover:underline",
+    link: "inline-flex items-start gap-2",
     itemIcon: "mt-1",
     legal: "relative container-page",
     legalBar:
       "flex flex-wrap items-center justify-between gap-x-6 gap-y-2.5 border-t border-border-subtle pt-5 text-caption text-text-subtle",
     legalText: "flex flex-wrap gap-x-6 gap-y-2.5",
     policies: "flex flex-wrap gap-x-5 gap-y-2.5",
-    policyLink: "text-text-muted no-underline hover:underline",
   },
   variants: {
     surface: {
@@ -161,7 +161,7 @@ export function SiteFooter({
                         asChild
                         icon={SOCIAL_GLYPH[link.network]}
                         label={label}
-                        variant="secondary"
+                        variant="ghost"
                       >
                         <a
                           href={link.href}
@@ -202,10 +202,12 @@ export function SiteFooter({
                           {item.label}
                         </span>
                       ) : (
-                        <LinkComponent href={item.href} className={slots.link()}>
-                          {icon}
-                          {item.label}
-                        </LinkComponent>
+                        <Link color="inverse" asChild className={slots.link()}>
+                          <LinkComponent href={item.href}>
+                            {icon}
+                            {item.label}
+                          </LinkComponent>
+                        </Link>
                       )}
                     </li>
                   );
@@ -223,9 +225,9 @@ export function SiteFooter({
               <ul role="list" className={slots.policies()}>
                 {policies.map((policy) => (
                   <li key={policy.href}>
-                    <LinkComponent href={policy.href} className={slots.policyLink()}>
-                      {policy.label}
-                    </LinkComponent>
+                    <Link color="inverse" variant="caption" asChild>
+                      <LinkComponent href={policy.href}>{policy.label}</LinkComponent>
+                    </Link>
                   </li>
                 ))}
               </ul>

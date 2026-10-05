@@ -46,9 +46,9 @@ describe("TestimonialWall", () => {
     expect(screen.getByText(/Had Honey chili potato and it was good/)).toBeInTheDocument();
   });
 
-  it("dresses every card in the wall's variant", () => {
-    render(<TestimonialWall title="Reviews" reviews={REVIEWS} variant="brand" />);
-    // ReviewCard's brand variant is Card's pale-pink `feature` surface.
+  it("dresses every card in the wall's cardSurface", () => {
+    render(<TestimonialWall title="Reviews" reviews={REVIEWS} cardSurface="brand" />);
+    // ReviewCard's brand surface is Card's pale-pink `feature` surface.
     for (const card of screen.getAllByRole("figure")) {
       expect(card).toHaveAttribute("data-surface", "soft");
     }

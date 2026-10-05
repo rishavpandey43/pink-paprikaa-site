@@ -82,6 +82,13 @@ describe("OrderTracker", () => {
     expect(screen.getByRole("link", { name: "Back to Home" })).toBeInTheDocument();
   });
 
+  it("derives Preparing/Ready badges from the step when badge is omitted", () => {
+    const { rerender } = render(<OrderTracker steps={STEPS} current={0} code="PPK-4821" />);
+    expect(within(screen.getByRole("status")).getByText("Preparing")).toBeInTheDocument();
+    rerender(<OrderTracker steps={STEPS} current={STEPS.length - 1} code="PPK-4821" />);
+    expect(within(screen.getByRole("status")).getByText("Ready")).toBeInTheDocument();
+  });
+
   it("renders no action when none is given", () => {
     render(<OrderTracker steps={STEPS} current={0} code="PPK-4821" />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();

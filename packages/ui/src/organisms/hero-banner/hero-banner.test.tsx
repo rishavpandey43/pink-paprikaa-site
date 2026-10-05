@@ -145,10 +145,10 @@ describe("HeroBanner", () => {
     expect(tint()).toHaveClass("pattern-opacity-default");
   });
 
-  it("sets the split media beside the copy from lg and stacks it below; center has one column", () => {
+  it("sets the split media beside the copy from md and stacks it below; center has one column", () => {
     const { container, rerender } = render(<HeroBanner title={TITLE} pattern="none" />);
     const inner = () => container.querySelector("section > div");
-    expect(inner()).toHaveClass("grid", "lg:grid-cols-2");
+    expect(inner()).toHaveClass("grid", "md:grid-cols-2");
     expect(inner()?.className).not.toMatch(/(^|\s)grid-cols-/);
     rerender(<HeroBanner title={TITLE} layout="center" pattern="none" />);
     expect(inner()).not.toHaveClass("lg:grid-cols-2");

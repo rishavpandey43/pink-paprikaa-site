@@ -11,6 +11,11 @@
       "$description": "AutoGrid min=\"sm\". A grid template reads it, so it has no class of its own.",
       "$extensions": { "pink-paprikaa": { "utility": [] } }
     },
+    "grid-min-card": {
+      "$value": "240px",
+      "$description": "AutoGrid min=\"card\": the design's card track (MenuList, AutoGrid card rows). A grid template reads it, so it has no class of its own.",
+      "$extensions": { "pink-paprikaa": { "utility": [] } }
+    },
     "grid-min-md": {
       "$value": "{spacing.card-min}",
       "$description": "AutoGrid min=\"md\" (default): the card minimum, 260px. A grid template reads it, so it has no class of its own.",

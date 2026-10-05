@@ -19,8 +19,8 @@ const heroBanner = componentVariants({
     inner: "relative container-page grid items-center gap-hero-banner-gap py-hero-banner-y",
     copy: "flex min-w-0 flex-col gap-5",
     badges: "flex flex-wrap gap-2",
-    actions: "flex flex-wrap gap-3",
-    meta: "flex flex-wrap items-center gap-x-4.5 gap-y-2",
+    actions: "mt-3 flex flex-wrap gap-3",
+    meta: "mt-4 flex flex-wrap items-center gap-x-4.5 gap-y-2",
     metaItem: "flex items-center gap-4.5",
     metaMark: "size-3 opacity-80",
     media: "relative min-w-0",
@@ -34,10 +34,10 @@ const heroBanner = componentVariants({
       alt: { root: "bg-surface-page-alt", metaMark: "text-pink-500" },
     },
     layout: {
-      split: { inner: "lg:grid-cols-2" },
+      split: { inner: "md:grid-cols-2" },
       center: {
         inner: "justify-items-center text-center",
-        copy: "max-w-article items-center",
+        copy: "max-w-hero-banner-center-measure items-center",
         badges: "justify-center",
         actions: "justify-center",
         meta: "justify-center",

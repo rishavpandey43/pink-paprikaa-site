@@ -4,12 +4,14 @@ import { formatRupees } from "@pink-paprikaa-web/utils";
 
 import type { BaseProps } from "../../lib/common-props";
 
+import { Badge } from "../../atoms/badge/badge";
 import { Card } from "../../atoms/card/card";
 import { Divider } from "../../atoms/divider/divider";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Typography } from "../../atoms/typography/typography";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
 import { withSx } from "../../lib/sx";
 import { StepTracker, type TrackerStep } from "../../molecules/step-tracker/step-tracker";
 
@@ -57,8 +59,10 @@ export interface OrderTrackerProps
   paymentLabel?: string | undefined;
   /** The step list's accessible name. */
   progressLabel?: string | undefined;
-  /** The status chip in the header, e.g. `<Badge color="neutral" variant="solid">Preparing</Badge>`. */
+  /** The status chip in the header. Omit to derive Preparing/Ready from the step index. */
   badge?: ReactNode;
+  /** Labels for the derived badge when `badge` is unset. */
+  statusLabels?: { pending?: string | undefined; ready?: string | undefined } | undefined;
   /** Usually one full-width secondary Button ("Back to Home"). */
   action?: ReactNode;
   headingLevel?: HeadingLevel | undefined;
@@ -79,6 +83,7 @@ export function OrderTracker({
   paymentLabel = "Paid",
   progressLabel = "Order progress",
   badge,
+  statusLabels,
   action,
   variant = "flush",
   headingLevel = 2,
@@ -87,9 +92,18 @@ export function OrderTracker({
   ...props
 }: OrderTrackerProps) {
   const slots = orderTracker({ variant });
-  const index = Math.min(Math.max(current, 0), steps.length - 1);
+  const index = steps.length === 0 ? 0 : Math.min(Math.max(current, 0), steps.length - 1);
   const step = steps[index];
   const hasReceipt = payment !== undefined || total !== undefined;
+  const isReady = steps.length > 0 && index === steps.length - 1;
+  const derivedBadge =
+    badge !== undefined ? (
+      badge
+    ) : steps.length === 0 ? null : (
+      <Badge color="neutral" variant="solid">
+        {isReady ? (statusLabels?.ready ?? "Ready") : (statusLabels?.pending ?? "Preparing")}
+      </Badge>
+    );
   return (
     <section
       data-surface={variant === "card" ? "light" : undefined}
@@ -98,7 +112,7 @@ export function OrderTracker({
     >
       <PatternField surface="brand" tile={56} className={slots.header()}>
         <div role="status" className={slots.status()}>
-          {badge}
+          {isShown(derivedBadge) ? derivedBadge : null}
           {step === undefined ? null : (
             <>
               <Typography as={headingTag(headingLevel)} variant="h2" className={slots.title()}>

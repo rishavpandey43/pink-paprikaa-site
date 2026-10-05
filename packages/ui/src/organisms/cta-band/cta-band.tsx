@@ -95,7 +95,7 @@ export function CtaBand({
             {title}
           </Typography>
           {isShown(body) ? (
-            <Typography variant="body-lg" color="muted">
+            <Typography variant="body-lg" color="muted" className="mt-0.5">
               {body}
             </Typography>
           ) : null}

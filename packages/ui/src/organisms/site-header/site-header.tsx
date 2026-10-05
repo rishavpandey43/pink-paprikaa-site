@@ -6,6 +6,7 @@ import type { BaseProps } from "../../lib/common-props";
 import type { LinkAs } from "../../lib/link-as";
 
 import { Icon } from "../../atoms/icon/icon";
+import { Link } from "../../atoms/link/link";
 import { Logo } from "../../atoms/logo/logo";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
@@ -19,7 +20,7 @@ export interface NavLink {
   isActive?: boolean | undefined;
 }
 
-/** Between lg and 2xl the inline nav keeps its first three links; the rest wait for 2xl (readme §3.10). */
+/** Between lg and 2xl the inline nav keeps its first three links; the rest wait for 2xl. */
 const INLINE_LINKS_BELOW_2XL = 3;
 
 const siteHeader = componentVariants({
@@ -28,15 +29,15 @@ const siteHeader = componentVariants({
     skipLink:
       "sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-overlay focus:rounded-pill focus:bg-surface-card focus:px-4 focus:py-2 focus:font-display focus:font-bold focus:text-text-link focus:shadow-3",
     bar: "border-b border-transparent bg-surface-card transition-colors duration-base ease-out data-scrolled:border-border-subtle data-scrolled:bg-surface-glass data-scrolled:backdrop-blur-glass",
-    row: "container-page flex items-center gap-5",
-    home: "flex shrink-0 items-center",
+    row: "container-page flex items-center gap-6",
+    home: "flex shrink-0 items-center rounded-sm transition-control hover:opacity-82 active:press-scale",
     logo: "h-auto",
     badge: "flex shrink-0 items-center",
     nav: "ml-3 hidden lg:block",
     navList: "flex flex-nowrap items-center gap-6",
     navItem: "shrink-0",
     navLink:
-      "inline-flex border-b-2 border-transparent py-1.5 font-display text-site-header-link whitespace-nowrap text-text-heading no-underline transition-colors duration-fast ease-out hover:text-text-brand",
+      "border-b-2 border-transparent py-1.5 font-display text-site-header-link whitespace-nowrap",
     spacer: "flex-1",
     actions: "hidden shrink-0 items-center gap-2 lg:flex",
     compactActions: "flex shrink-0 items-center gap-2 lg:hidden",
@@ -68,9 +69,14 @@ export interface SiteHeaderProps
    * Inline nav links. Three show between lg and 2xl, all from 2xl (the rest are in the drawer).
    * The budget the `SixLinksAt*` stories prove beside the handoff's badge and two actions: the
    * first three labels 36 characters together, all six 65, none longer than 17 ("Office & PG
-   * Lunch"). Longer names belong in `drawerLinks`.
+   * Lunch"). Longer names belong in `drawerLinks`. Five short design-card links still use this
+   * step — revealing them at xl overflows 1280 with the badge and two actions.
    */
   links: NavLink[];
+  /** Accessible name of the home link. Default "Pink Paprikaa home". */
+  homeLabel?: string | undefined;
+  /** Force the glass/scrolled bar; omit to follow scroll. */
+  isScrolled?: boolean | undefined;
   /** The drawer's links; defaults to `links` (the handoff drawer lists more destinations). */
   drawerLinks?: NavLink[] | undefined;
   /** Replaces the default lockup. Size it yourself (`className="w-…"`). */
@@ -119,6 +125,8 @@ export function SiteHeader({
   menuLabel = "Menu",
   closeMenuLabel = "Close menu",
   portalContainer = null,
+  homeLabel = "Pink Paprikaa home",
+  isScrolled,
   sx,
   className,
   ...props
@@ -132,9 +140,9 @@ export function SiteHeader({
         {skipLinkLabel}
       </a>
       {announcement}
-      <SiteHeaderBar className={slots.bar()}>
+      <SiteHeaderBar className={slots.bar()} isScrolled={isScrolled}>
         <div className={slots.row()}>
-          <LinkComponent href={homeHref} className={slots.home()}>
+          <LinkComponent href={homeHref} className={slots.home()} aria-label={homeLabel}>
             {isShown(logo) ? logo : <Logo className={slots.logo()} />}
           </LinkComponent>
           {isShown(badge) ? <div className={slots.badge()}>{badge}</div> : null}
@@ -148,13 +156,19 @@ export function SiteHeader({
                       isHiddenBelow2xl: index >= INLINE_LINKS_BELOW_2XL,
                     })}
                   >
-                    <LinkComponent
-                      href={link.href}
-                      aria-current={link.isActive === true ? "page" : undefined}
+                    <Link
+                      color="quiet"
+                      underline="hover"
+                      asChild
                       className={slots.navLink({ isActive: link.isActive === true })}
                     >
-                      {link.label}
-                    </LinkComponent>
+                      <LinkComponent
+                        href={link.href}
+                        aria-current={link.isActive === true ? "page" : undefined}
+                      >
+                        {link.label}
+                      </LinkComponent>
+                    </Link>
                   </li>
                 ))}
               </ul>

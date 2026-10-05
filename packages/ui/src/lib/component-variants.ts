@@ -215,6 +215,7 @@ const SPACING = [
   "diet-mark-lg",
   "grid-min-xs",
   "grid-min-sm",
+  "grid-min-card",
   "grid-min-md",
   "grid-min-lg",
   "grid-min-xl",
@@ -258,6 +259,7 @@ const SPACING = [
   "stat-band-gap",
   "hero-banner-y",
   "hero-banner-gap",
+  "hero-banner-center-measure",
   "faq-section-gap",
   "faq-section-sticky",
   "quote-panel-pad",
@@ -295,7 +297,7 @@ const PATTERN_OPACITY = ["default", "light", "faint"];
 /** tailwind-merge keeps a width group per side (`border-w-t` for `border-t-*`, …); all read these. */
 const BORDER_SIDES = ["x", "y", "s", "e", "bs", "be", "t", "r", "b", "l"];
 /** AutoGrid's `min` steps (`styles.css` `autogrid-min-*`, tokens/component/auto-grid.json). */
-const AUTOGRID_MIN = ["xs", "sm", "md", "lg", "xl", "2xl"];
+const AUTOGRID_MIN = ["xs", "sm", "card", "md", "lg", "xl", "2xl"];
 const ANIMATE = [
   "skeleton",
   "mark-pulse",

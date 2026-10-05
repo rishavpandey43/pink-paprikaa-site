@@ -8,6 +8,7 @@ import { Divider } from "../../atoms/divider/divider";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
 import { withSx } from "../../lib/sx";
+import { EmptyState } from "../../molecules/empty-state/empty-state";
 import { MenuItemCard } from "../../molecules/menu-item-card/menu-item-card";
 import { type MenuItemImage, MenuItemRow } from "../../molecules/menu-item-row/menu-item-row";
 import { SectionHeader } from "../../molecules/section-header/section-header";
@@ -45,7 +46,7 @@ const menuList = componentVariants({
     root: "section-y",
     inner: "container-page",
     filter: "flex flex-col",
-    cards: "mt-8 autogrid",
+    cards: "mt-8 autogrid-min-card",
     card: "flex",
     cardBody: "flex-1",
     overflow: "",
@@ -89,8 +90,12 @@ export interface MenuListProps
   note?: ReactNode;
   /** Divider label above the overflow rows, e.g. "Also on the menu". */
   overflowLabel?: string | undefined;
-  /** Shown for a category with no dishes. */
+  /** Shown for a category with no dishes. Omit for the default EmptyState. Pass `""` to hide. */
   emptyState?: ReactNode;
+  /** Default empty-state title when `emptyState` is omitted. */
+  emptyTitle?: ReactNode | undefined;
+  /** Default empty-state body when `emptyState` is omitted. */
+  emptyBody?: ReactNode | undefined;
   /** Runs on the server with the organism: the dish's add/order control. */
   renderItemAction?: ((item: MenuListItem) => ReactNode) | undefined;
   /** Runs on the server with the organism: makes each card a link. */
@@ -118,6 +123,8 @@ export function MenuList({
   note,
   overflowLabel,
   emptyState,
+  emptyTitle = "Nothing matches that yet.",
+  emptyBody = "Try another category.",
   renderItemAction,
   getItemHref,
   linkAs = "a",
@@ -137,10 +144,21 @@ export function MenuList({
     defaultCategory !== undefined && categoryNames.includes(defaultCategory)
       ? defaultCategory
       : allLabel;
+  const resolvedEmpty =
+    emptyState !== undefined ? (
+      emptyState
+    ) : (
+      <EmptyState
+        variant="symbol"
+        title={isShown(emptyTitle) ? emptyTitle : "Nothing matches that yet."}
+        body={emptyBody}
+        headingLevel={headingLevel}
+      />
+    );
 
   const panelFor = (dishes: MenuListItem[]): ReactNode => {
     if (dishes.length === 0) {
-      return isShown(emptyState) ? <div className={slots.empty()}>{emptyState}</div> : null;
+      return isShown(resolvedEmpty) ? <div className={slots.empty()}>{resolvedEmpty}</div> : null;
     }
     const cardDishes = variant === "grid" ? dishes.slice(0, gridCount) : [];
     const rowDishes = variant === "grid" ? dishes.slice(gridCount) : dishes;

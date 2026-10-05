@@ -28,6 +28,7 @@ const LONG_WORD = "Paprikaa".repeat(8);
 const MINS: { min: AutoGridMin; px: string }[] = [
   { min: "xs", px: "140px" },
   { min: "sm", px: "200px" },
+  { min: "card", px: "240px" },
   { min: "md", px: "260px" },
   { min: "lg", px: "320px" },
   { min: "xl", px: "380px" },
@@ -56,7 +57,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Every card grid in the system. Tracks are always minmax(0, 1fr) — or the auto-fit min pattern minmax(min(step, 100%), 1fr) — so a long label wraps instead of widening the column: the single most common layout bug this prevents. `min` steps: xs 140 · sm 200 · md 260 (default, the card minimum) · lg 320 (panels) · xl 380 · 2xl 420; handoff grid minimums snap to the nearest step. `columns` fixes the count instead. The gap is the fluid clamp(16px, 2vw, 24px) unless `space` picks a step.",
+          "Every card grid in the system. Tracks are always minmax(0, 1fr) — or the auto-fit min pattern minmax(min(step, 100%), 1fr) — so a long label wraps instead of widening the column: the single most common layout bug this prevents. `min` steps: xs 140 · sm 200 · card 240 (design card rows) · md 260 (default panels) · lg 320 · xl 380 · 2xl 420. `columns` fixes the count instead. The gap is the fluid clamp(16px, 2vw, 24px) unless `space` picks a step.",
       },
     },
   },
@@ -67,8 +68,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
+export const MinCard: Story = {
+  name: 'min="card" · 240px design card track',
+  args: { min: "card", children: cards(4) },
+};
+
 export const MinMd: Story = {
-  name: 'min="md" · the card\'s min={240}, snapped to 260',
+  name: 'min="md" · 260px panel track',
   args: { min: "md", children: cards(4) },
 };
 

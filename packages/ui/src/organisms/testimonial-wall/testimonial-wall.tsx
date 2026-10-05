@@ -25,16 +25,20 @@ export interface TestimonialWallProps extends Omit<BaseProps<"section">, "title"
   lede?: ReactNode;
   /** Real guest reviews only — three or six read best. */
   reviews: ReviewCardProps[];
+  /** Surface each ReviewCard paints — `page` (default) or `brand`. */
+  cardSurface?: "page" | "brand" | undefined;
+  /** Prefer `cardSurface`. `"brand"` maps to `cardSurface="brand"`. Kept for callers until they migrate. */
   variant?: "default" | "brand" | undefined;
   headingLevel?: HeadingLevel | undefined;
 }
 
-/** A grid of guest reviews under a section header, every card in the wall's variant. */
+/** A grid of guest reviews under a section header, every card in the wall's card surface. */
 export function TestimonialWall({
   overline,
   title,
   lede,
   reviews,
+  cardSurface,
   variant = "default",
   headingLevel = 2,
   sx,
@@ -42,6 +46,7 @@ export function TestimonialWall({
   ...props
 }: TestimonialWallProps) {
   const slots = testimonialWall();
+  const surface = cardSurface ?? (variant === "brand" ? "brand" : "page");
   return (
     <section className={slots.root({ className: withSx(sx, className) })} {...props}>
       <div className={slots.inner()}>
@@ -51,7 +56,7 @@ export function TestimonialWall({
             <li key={index} className={slots.item()}>
               <ReviewCard
                 {...review}
-                surface={variant === "brand" ? "brand" : undefined}
+                surface={surface === "brand" ? "brand" : undefined}
                 className={slots.card({ class: review.className })}
               />
             </li>
