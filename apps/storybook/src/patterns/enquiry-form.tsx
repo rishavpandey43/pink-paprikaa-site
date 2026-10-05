@@ -26,19 +26,6 @@ import {
 } from "@pink-paprikaa-web/ui";
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
-/** Local calendar date from an ISO `yyyy-mm-dd` (never `Date` parse — UTC shift). */
-function fromIsoDate(iso: string): Date | null {
-  if (iso === "") return null;
-  const [year, month, day] = iso.split("-").map(Number);
-  if (year === undefined || month === undefined || day === undefined) return null;
-  return new Date(year, month - 1, day);
-}
-
-function toIsoDate(date: Date): string {
-  const pad = (value: number) => String(value).padStart(2, "0");
-  return `${String(date.getFullYear())}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-}
-
 type FieldStatus = NonNullable<FieldProps["status"]>;
 
 /** Catering minimum — the handoff's rates.js `catering.minGuests`. */
@@ -260,10 +247,8 @@ export function EnquiryForm({ onSubmit }: EnquiryFormProps) {
                       aria-label="Date"
                       aria-describedby={dateField["aria-describedby"]}
                       name={field.name}
-                      value={fromIsoDate(field.value)}
-                      onValueChange={(next) => {
-                        field.onChange(next === null ? "" : toIsoDate(next));
-                      }}
+                      value={field.value}
+                      onValueChange={field.onChange}
                       placeholder="Choose a day"
                       status={statusOf(errors.date)}
                     />

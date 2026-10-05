@@ -30,6 +30,8 @@ export interface CalendarProps extends SxProp {
   defaultMonth?: Date | undefined;
   /** Moves focus to the selected day (or today) on mount: for a calendar that just opened in a popover. */
   shouldFocusDay?: boolean | undefined;
+  /** First day of the week: 0 = Sunday, 1 = Monday (default). */
+  weekStart?: 0 | 1 | undefined;
 }
 
 /**
@@ -45,20 +47,25 @@ const calendar = componentVariants({
     month: "grid gap-2",
     // Centred between the nav buttons, which sit over its two ends.
     monthCaption: "flex h-icon-button-sm items-center justify-center",
-    captionLabel: "font-display text-h4 text-text-heading",
+    // Handoff caption is 16px display 700; text-body is the 16px token (text-h4 is 20px).
+    captionLabel: "font-display text-body font-bold text-text-heading",
     nav: "absolute inset-x-0 top-0 z-raised flex items-center justify-between",
     navButton:
-      "grid size-icon-button-sm place-items-center rounded-pill text-ink-700 transition-control hover:bg-button-hover-tint aria-disabled:pointer-events-none aria-disabled:text-ink-400",
+      "grid size-icon-button-sm place-items-center rounded-pill text-icon-button-ghost-fg transition-control hover:bg-pink-50 hover:text-pink-600 active:press-scale-icon active:bg-pink-100 aria-disabled:pointer-events-none aria-disabled:text-ink-400",
     chevron: "size-icon-sm fill-current rtl:rotate-180",
     monthGrid: "border-collapse",
-    weekday: "size-10 p-0 text-center text-caption font-medium text-text-muted",
+    // 10.5 mono uppercase; text-icon-button-count is the only 10.5 token today.
+    weekday:
+      "h-7 w-10 p-0 text-center font-mono text-icon-button-count font-regular text-text-subtle uppercase",
     day: "size-10 p-0 text-center",
     dayButton:
-      "grid size-10 place-items-center rounded-md text-body-sm transition-control hover:bg-surface-sunken disabled:cursor-not-allowed",
-    selected: "*:bg-pink-500! *:text-ink-000!",
-    rangeMiddle: "*:rounded-none *:bg-surface-brand-soft! *:text-text-body!",
-    today: "*:font-bold not-data-[selected=true]:*:text-text-brand",
-    disabled: "*:text-ink-400 *:line-through",
+      "relative z-0 grid size-10 place-items-center rounded-sm text-body-sm tabular-nums transition-control hover:bg-pink-50 active:press-scale-icon active:bg-state-press disabled:cursor-not-allowed",
+    // Pink diamond under the number — marker utilities live in styles.css (no arbitrary content).
+    selected: "*:calendar-day-selected *:font-bold *:text-ink-000!",
+    rangeMiddle:
+      "*:rounded-none *:bg-surface-brand-soft! *:text-text-body! *:calendar-day-clear-marker",
+    today: "*:font-bold not-data-[selected=true]:*:calendar-day-today",
+    disabled: "*:text-ink-300 *:line-through *:decoration-ink-200",
     hidden: "invisible",
   },
 });
@@ -88,6 +95,7 @@ export function Calendar({
   numberOfMonths = 1,
   defaultMonth,
   shouldFocusDay = false,
+  weekStart = 1,
   sx,
 }: CalendarProps) {
   const slots = calendar();
@@ -99,7 +107,7 @@ export function Calendar({
   const className = withSx(sx, undefined);
   const firstMonth = defaultMonth ?? (selected instanceof Date ? selected : undefined);
   const shared = {
-    weekStartsOn: 1,
+    weekStartsOn: weekStart,
     locale: enIN,
     numberOfMonths,
     autoFocus: shouldFocusDay,

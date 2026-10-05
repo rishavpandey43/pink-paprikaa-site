@@ -40,7 +40,7 @@ describe("Combobox", () => {
     await user.type(input, "pan");
     expect(input).toHaveAttribute("aria-expanded", "true");
     expect(optionLabels()).toEqual(["Paneer Tikka", "Paneer Butter Masala"]);
-    await user.keyboard("{ArrowDown}");
+    // Typing highlights the first match — Enter commits it.
     expect(input).toHaveAttribute("aria-activedescendant", nthOption(0).id);
     await user.keyboard("{Enter}");
     expect(onValueChange).toHaveBeenCalledWith("paneer-tikka");
@@ -97,16 +97,26 @@ describe("Combobox", () => {
     expect(optionLabels()).toEqual(["Kulfi"]);
   });
 
-  it("Escape closes, a second Escape clears the text", async () => {
+  it("Escape closes, a second Escape restores the chosen label (value kept)", async () => {
     const user = userEvent.setup();
-    render(<Combobox aria-label="Search dishes" options={DISHES} />);
+    const onValueChange = vi.fn();
+    render(
+      <Combobox
+        aria-label="Search dishes"
+        options={DISHES}
+        defaultValue="kulfi"
+        onValueChange={onValueChange}
+      />
+    );
     const input = screen.getByRole("combobox");
+    await user.clear(input);
     await user.type(input, "pan");
     await user.keyboard("{Escape}");
     expect(input).toHaveAttribute("aria-expanded", "false");
     expect(input).toHaveValue("pan");
     await user.keyboard("{Escape}");
-    expect(input).toHaveValue("");
+    expect(input).toHaveValue("Kulfi");
+    expect(onValueChange).not.toHaveBeenCalled();
   });
 
   it("ArrowDown opens the closed list, ArrowUp and Home/End move through it", async () => {
@@ -131,20 +141,21 @@ describe("Combobox", () => {
     render(<Combobox aria-label="Search dishes" options={DISHES} />);
     const input = screen.getByRole("combobox");
     await user.type(input, "pan");
-    expect(input).not.toHaveAttribute("aria-activedescendant");
+    // Typing highlights the first match; ArrowUp wraps to the last.
+    expect(input).toHaveAttribute("aria-activedescendant", nthOption(0).id);
     await user.keyboard("{ArrowUp}");
     expect(input).toHaveAttribute("aria-activedescendant", nthOption(1).id);
     expect(nthOption(1)).toHaveTextContent("Paneer Butter Masala");
   });
 
-  it("Tab commits the active option", async () => {
+  it("Tab closes without committing the active option", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     render(<Combobox aria-label="Search dishes" options={DISHES} onValueChange={onValueChange} />);
     await user.type(screen.getByRole("combobox"), "kul");
     await user.keyboard("{ArrowDown}{Tab}");
-    expect(onValueChange).toHaveBeenCalledWith("kulfi");
-    expect(screen.getByRole("combobox")).toHaveValue("Kulfi");
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(screen.queryByRole("listbox")).toBeNull();
   });
 
   it("selects an option with a click", async () => {
@@ -177,7 +188,7 @@ describe("Combobox", () => {
     const user = userEvent.setup();
     const { rerender } = render(<Combobox aria-label="Search dishes" options={DISHES} />);
     await user.type(screen.getByRole("combobox"), "zzz");
-    expect(screen.getByText("No matches")).toBeVisible();
+    expect(screen.getByText("No matches. Try a shorter word.")).toBeVisible();
     rerender(<Combobox aria-label="Search dishes" options={DISHES} emptyMessage="Nothing found" />);
     expect(screen.getByText("Nothing found")).toBeVisible();
     rerender(<Combobox aria-label="Search dishes" options={[]} isLoading />);
@@ -189,7 +200,7 @@ describe("Combobox", () => {
     expect(screen.getByText("Fetching")).toBeVisible();
   });
 
-  it("clear button resets value and text, and refocuses the input", async () => {
+  it("clear button clears the query; isClearable also drops the value", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     render(
@@ -203,11 +214,30 @@ describe("Combobox", () => {
     );
     const input = screen.getByRole("combobox");
     expect(input).toHaveValue("Kulfi");
+    expect(screen.getByRole("button", { name: "Clear" })).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Clear" }));
     expect(onValueChange).toHaveBeenCalledWith(null);
     expect(input).toHaveValue("");
     expect(input).toHaveFocus();
     expect(screen.queryByRole("button", { name: "Clear" })).toBeNull();
+  });
+
+  it("clear without isClearable keeps the chosen value and only empties the query", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <Combobox
+        aria-label="Search dishes"
+        options={DISHES}
+        defaultValue="kulfi"
+        onValueChange={onValueChange}
+      />
+    );
+    const input = screen.getByRole("combobox");
+    await user.click(screen.getByRole("button", { name: "Clear" }));
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(input).toHaveValue("");
+    expect(input).toHaveFocus();
   });
 
   it("disabled options are skipped by arrows and cannot be clicked", async () => {

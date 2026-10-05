@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { useState } from "react";
-import { expect } from "storybook/test";
+import { expect, waitFor } from "storybook/test";
 
 import { Field } from "../field/field";
 import { Combobox, type ComboboxOption, type ComboboxProps } from "./combobox";
@@ -28,6 +28,13 @@ const WITH_DESCRIPTIONS: ComboboxOption[] = [
   { value: "gulab-jamun", label: "Gulab Jamun", description: "Dessert · warm, in syrup" },
 ];
 
+const WITH_META: ComboboxOption[] = [
+  { value: "paneer-tikka", label: "Paneer Tikka", meta: "₹280" },
+  { value: "dal-makhani", label: "Dal Makhani", meta: "₹240" },
+  { value: "masala-dosa", label: "Masala Dosa", meta: "₹180" },
+  { value: "gulab-jamun", label: "Gulab Jamun", meta: "₹120" },
+];
+
 const meta = {
   title: "Molecules/Combobox",
   component: Combobox,
@@ -44,7 +51,7 @@ const meta = {
       story: { inline: false, height: "360px" },
       description: {
         component:
-          "A searchable single-select (WAI-ARIA 1.2 combobox with a list popup). Type to narrow the options (case- and accent-insensitive), ArrowDown/ArrowUp to move, Enter or Tab to choose, Escape to close and then to clear. Focus stays in the input. Use Select for a short known list; use this when people search the list (dishes, localities). Pass `name` to submit the chosen `value` through a hidden input; pass `inputValue` / `onInputChange` to load options as the text changes.",
+          "A searchable single-select (WAI-ARIA 1.2 combobox with a list popup). Type to narrow the options (case- and accent-insensitive), ArrowDown/ArrowUp to move, Enter to choose, Tab closes without committing, Escape closes then restores the chosen label. Focus stays in the input. Use Select for a short known list; use this when people search the list (dishes, localities). Pass `name` to submit the chosen `value` through a hidden input; pass `inputValue` / `onInputChange` to load options as the text changes.",
       },
     },
   },
@@ -58,7 +65,8 @@ export const Playground: Story = {
     const input = canvas.getByRole("combobox", { name: "Search dishes" });
     await userEvent.type(input, "pan");
     await expect(canvas.getAllByRole("option")).toHaveLength(2);
-    await userEvent.keyboard("{ArrowDown}{Enter}");
+    // Typing already highlights the first match — Enter commits it.
+    await userEvent.keyboard("{Enter}");
     await expect(input).toHaveValue("Paneer Tikka");
     await expect(input).toHaveAttribute("aria-expanded", "false");
   },
@@ -68,7 +76,7 @@ export const WithDescriptions: Story = {
   args: { options: WITH_DESCRIPTIONS },
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("combobox"));
-    await expect(canvas.getByText("Dessert · warm, in syrup")).toBeVisible();
+    await waitFor(() => expect(canvas.getByText("Dessert · warm, in syrup")).toBeVisible());
   },
 };
 
@@ -76,14 +84,14 @@ export const Loading: Story = {
   args: { options: [], isLoading: true },
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("combobox"));
-    await expect(canvas.getByText("Loading…")).toBeVisible();
+    await waitFor(() => expect(canvas.getByText("Loading…")).toBeVisible());
   },
 };
 
 export const Empty: Story = {
   play: async ({ canvas, userEvent }) => {
     await userEvent.type(canvas.getByRole("combobox"), "momo");
-    await expect(canvas.getByText("No matches")).toBeVisible();
+    await waitFor(() => expect(canvas.getByText("No matches. Try a shorter word.")).toBeVisible());
   },
 };
 
@@ -167,5 +175,19 @@ export const Mobile360: Story = {
     const rect = listbox.getBoundingClientRect();
     await expect(rect.left).toBeGreaterThanOrEqual(0);
     await expect(rect.right).toBeLessThanOrEqual(window.innerWidth);
+  },
+};
+
+/** Card row: chosen dish at rest with meta prices. */
+export const Selected: Story = {
+  args: { options: WITH_META, defaultValue: "dal-makhani" },
+  play: async ({ canvas, userEvent }) => {
+    await expect(canvas.getByRole("combobox")).toHaveValue("Dal Makhani");
+    await userEvent.click(canvas.getByRole("combobox"));
+    await waitFor(() => expect(canvas.getByText("₹240")).toBeVisible());
+    await expect(canvas.getByRole("option", { name: /Dal Makhani/ })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    );
   },
 };

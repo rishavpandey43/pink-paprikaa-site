@@ -1,5 +1,7 @@
 "use client";
 
+import type { KeyboardEvent } from "react";
+
 import { CalendarDays } from "lucide-react";
 import { useId, useState } from "react";
 
@@ -10,20 +12,32 @@ import type { Matcher } from "./calendar";
 import { Popover } from "../../atoms/popover/popover";
 import { componentVariants } from "../../lib/component-variants";
 import { FieldControl } from "../../lib/field-control";
-import { formatDate, toIsoDate } from "../../lib/format-date";
+import { formatDate, fromIsoDate, toIsoDate } from "../../lib/format-date";
 import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
 import { Calendar } from "./calendar";
 
 export interface DatePickerProps extends SxProp {
-  value?: Date | null | undefined;
-  defaultValue?: Date | null | undefined;
-  onValueChange?: ((date: Date | null) => void) | undefined;
+  /** ISO `yyyy-mm-dd` (R133). Empty string = no day chosen. */
+  value?: string | undefined;
+  defaultValue?: string | undefined;
+  onValueChange?: ((iso: string) => void) | undefined;
   /** Default "Pick a date". */
   placeholder?: string | undefined;
   disabled?: boolean | undefined;
+  /** Sunken fill + lock; no open. */
+  readOnly?: boolean | undefined;
+  size?: "sm" | "md" | "lg" | undefined;
+  /** Earliest pickable ISO date → Calendar `fromDate`. */
+  min?: string | undefined;
+  /** Latest pickable ISO date → Calendar `toDate`. */
+  max?: string | undefined;
   /** Days that cannot be chosen: `{ before: new Date() }`, `{ dayOfWeek: [1] }`, a list of them. */
   disabledDays?: Matcher | Matcher[] | undefined;
+  /** First day of the week: 0 = Sunday, 1 = Monday (default). */
+  weekStart?: 0 | 1 | undefined;
+  /** Override the trigger label; default en-IN via `formatDate`. */
+  format?: ((iso: string) => string) | undefined;
   /** Submitted as `yyyy-mm-dd` through a hidden input. */
   name?: string | undefined;
   status?: FieldStatus | undefined;
@@ -37,8 +51,6 @@ export interface DatePickerProps extends SxProp {
 
 const datePicker = componentVariants({
   slots: {
-    // A trigger button is not a native field control, so the box's disabled paint is repeated for it,
-    // and the box keeps its focus border while the calendar (and so the focus) is open.
     box: [
       "has-[>button:disabled]:cursor-not-allowed has-[>button:disabled]:border-border-subtle has-[>button:disabled]:bg-ink-100 has-[>button:disabled]:text-ink-400",
       "has-[>button[data-state=open]]:border-2 has-[>button[data-state=open]]:border-border-brand has-[>button[data-state=open]]:shadow-focus-ring",
@@ -49,13 +61,9 @@ const datePicker = componentVariants({
 });
 
 /**
- * A date field: a button that shows the chosen day (en-IN, "Mon, 5 Oct 2026") and opens a Calendar
- * in a Popover. The week starts on Monday; the keyboard works as in the Calendar, and Escape
- * closes it and returns focus to the field. Picking a day closes it. Pass `name` to submit the day
- * as `yyyy-mm-dd`. For a date plus a time use a DatePicker with a SlotPicker beside it.
- *
- * Label and message belong to Field; the accessible name comes from `aria-label` or Field's
- * label, and the chosen date (or the placeholder) is the description.
+ * A date field: button shows the chosen day (en-IN) and opens a Calendar in a Popover.
+ * Values are ISO `yyyy-mm-dd` strings in and out (R133). ArrowDown opens. Pass `name` to submit
+ * the day. Label and message belong to Field.
  */
 export function DatePicker({
   value,
@@ -63,7 +71,13 @@ export function DatePicker({
   onValueChange,
   placeholder = "Pick a date",
   disabled = false,
+  readOnly = false,
+  size = "md",
+  min,
+  max,
   disabledDays,
+  weekStart = 1,
+  format: formatValue,
   name,
   status = "default",
   portalContainer,
@@ -74,29 +88,46 @@ export function DatePicker({
 }: DatePickerProps) {
   const valueId = useId();
   const [isOpen, setIsOpen] = useState(false);
-  const [date, setDate] = useControllableState<Date | null>({
+  const [iso, setIso] = useControllableState<string>({
     value,
-    defaultValue: defaultValue ?? null,
+    defaultValue: defaultValue ?? "",
     onChange: onValueChange,
   });
+  const date = fromIsoDate(iso);
   const slots = datePicker();
+  const fromDate = fromIsoDate(min) ?? undefined;
+  const toDate = fromIsoDate(max) ?? undefined;
+  const isLocked = disabled || readOnly;
+  const display = date === null ? placeholder : (formatValue?.(iso) ?? formatDate(date));
+
+  const onTriggerKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (isLocked) return;
+    if (!isOpen && event.key === "ArrowDown") {
+      event.preventDefault();
+      setIsOpen(true);
+    }
+  };
 
   return (
     <FieldControl
       icon={CalendarDays}
+      size={size}
       status={status}
+      isReadOnly={readOnly}
+      isExpanded={isOpen}
       className={slots.box({ className: withSx(sx, undefined) })}
     >
       {(controlClassName) => (
         <>
           <Popover
             open={isOpen}
-            onOpenChange={setIsOpen}
+            onOpenChange={(next) => {
+              if (!isLocked) setIsOpen(next);
+            }}
             portalContainer={portalContainer}
             align="start"
             aria-label="Choose a date"
-            // Task 8 wires ≤640 sheet; keep floating until then so the calendar grid stays usable.
-            sheet={false}
+            sheet="auto"
             trigger={
               <button
                 id={id}
@@ -108,9 +139,10 @@ export function DatePicker({
                   ariaDescribedby === undefined ? valueId : `${valueId} ${ariaDescribedby}`
                 }
                 aria-invalid={status === "error" ? true : undefined}
+                onKeyDown={onTriggerKeyDown}
               >
                 <span id={valueId} className={date === null ? slots.placeholder() : undefined}>
-                  {date === null ? placeholder : formatDate(date)}
+                  {display}
                 </span>
               </button>
             }
@@ -118,18 +150,18 @@ export function DatePicker({
             <Calendar
               mode="single"
               selected={date ?? undefined}
+              weekStart={weekStart}
               {...(disabledDays === undefined ? {} : { disabled: disabledDays })}
+              {...(fromDate === undefined ? {} : { fromDate })}
+              {...(toDate === undefined ? {} : { toDate })}
               shouldFocusDay
               onSelect={(next) => {
-                // Picking the chosen day again would clear a single selection; a date field keeps it.
-                if (next instanceof Date) setDate(next);
+                if (next instanceof Date) setIso(toIsoDate(next));
                 setIsOpen(false);
               }}
             />
           </Popover>
-          {name === undefined || disabled ? null : (
-            <input type="hidden" name={name} value={date === null ? "" : toIsoDate(date)} />
-          )}
+          {name === undefined || disabled ? null : <input type="hidden" name={name} value={iso} />}
         </>
       )}
     </FieldControl>

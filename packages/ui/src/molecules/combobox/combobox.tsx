@@ -2,13 +2,16 @@
 
 import type { FocusEvent, KeyboardEvent, ReactNode, Ref } from "react";
 
-import { X } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 import { useId, useRef, useState } from "react";
 
+import type { IconComponent } from "../../atoms/icon/icon";
 import type { SxProp } from "../../lib/common-props";
 import type { FieldStatus } from "../../lib/field-status";
 
 import { IconButton } from "../../atoms/icon-button/icon-button";
+import { Icon } from "../../atoms/icon/icon";
+import { BrandDiamond } from "../../lib/brand-diamond";
 import { componentVariants } from "../../lib/component-variants";
 import { FieldControl } from "../../lib/field-control";
 import { withSx } from "../../lib/sx";
@@ -19,6 +22,10 @@ export interface ComboboxOption {
   label: string;
   /** A second line under the label. */
   description?: string | undefined;
+  /** Leading glyph on the row (menu-style). */
+  icon?: IconComponent | undefined;
+  /** Trailing mono meta (price, count). */
+  meta?: ReactNode | undefined;
   disabled?: boolean | undefined;
 }
 
@@ -33,14 +40,21 @@ export interface ComboboxProps extends SxProp {
   /** Default: case- and diacritic-insensitive `includes` on the label. */
   filter?: ((option: ComboboxOption, text: string) => boolean) | undefined;
   placeholder?: string | undefined;
-  /** Default "No matches". */
+  /** Default "No matches. Try a shorter word.". */
   emptyMessage?: string | undefined;
   isLoading?: boolean | undefined;
   /** Default "Loading…". */
   loadingLabel?: string | undefined;
+  /**
+   * When true, the clear control also drops the chosen value (forms that need a hard reset).
+   * The clear control itself shows whenever the query is non-empty (design).
+   */
   isClearable?: boolean | undefined;
   /** Default "Clear". */
   clearLabel?: string | undefined;
+  /** Leading field icon. Default Search. */
+  icon?: IconComponent | undefined;
+  size?: "sm" | "md" | "lg" | undefined;
   /** Submitted through a hidden input carrying the chosen `value`. */
   name?: string | undefined;
   disabled?: boolean | undefined;
@@ -57,14 +71,19 @@ const combobox = componentVariants({
   slots: {
     root: "relative w-full min-w-0",
     popup:
-      "absolute inset-x-0 top-full z-overlay mt-1 overflow-hidden rounded-lg border-default border-border-subtle bg-surface-card text-body-sm text-text-body shadow-3",
+      "absolute inset-x-0 top-full z-overlay mt-1.5 overflow-hidden rounded-md border-default border-border-subtle bg-surface-card text-body-sm text-text-body shadow-3 motion-safe:animate-pop-in",
     list: "max-h-menu-max-md overflow-y-auto p-1.5",
     option:
-      "flex min-h-hit cursor-pointer flex-col justify-center rounded-md px-3 py-2 select-none aria-disabled:cursor-not-allowed aria-disabled:text-ink-400 data-[active=true]:bg-surface-sunken",
-    selected: "font-semibold",
+      "flex min-h-hit cursor-pointer items-center gap-3 rounded-sm px-3 py-2 select-none active:bg-surface-brand-soft aria-disabled:cursor-not-allowed aria-disabled:text-ink-400 data-[active=true]:bg-surface-page-alt",
+    selected: "font-semibold text-pink-700",
+    body: "flex min-w-0 flex-1 flex-col justify-center",
     description: "text-caption text-text-muted",
-    mark: "bg-transparent font-semibold text-text-heading",
+    meta: "ms-auto shrink-0 ps-3 font-mono text-caption text-text-subtle",
+    diamond: "ms-auto grid w-3.5 shrink-0 place-items-center",
+    mark: "bg-transparent font-bold text-pink-700",
     message: "p-3 text-text-muted",
+    optionIcon: "shrink-0 text-text-muted",
+    optionIconActive: "shrink-0 text-pink-500",
   },
 });
 
@@ -127,9 +146,9 @@ function edgeIndex(items: readonly ComboboxOption[], end: "first" | "last"): num
 /**
  * A text field with a filtered list of options, one of which is chosen (WAI-ARIA 1.2 combobox
  * with a list popup, single select, hand-built). Type to narrow, ArrowDown/ArrowUp to move the
- * active option (focus stays in the input — `aria-activedescendant`), Enter or Tab to commit,
- * Escape to close and then to clear. For a short known list use Select; reach for this when the
- * list is long enough that people search it (dishes, localities).
+ * active option (focus stays in the input — `aria-activedescendant`), Enter to commit, Tab closes
+ * without committing, Escape closes then restores the chosen label. For a short known list use
+ * Select; reach for this when the list is long enough that people search it (dishes, localities).
  *
  * Leaving the field with other text typed restores the chosen label (or empties the field when
  * nothing is chosen): the text is only a way to find an option, never a value of its own.
@@ -142,12 +161,14 @@ export function Combobox({
   inputValue,
   onInputChange,
   filter = defaultFilter,
-  placeholder,
-  emptyMessage = "No matches",
+  placeholder = "Start typing...",
+  emptyMessage = "No matches. Try a shorter word.",
   isLoading = false,
   loadingLabel = "Loading…",
   isClearable = false,
   clearLabel = "Clear",
+  icon = Search,
+  size = "md",
   name,
   disabled = false,
   status = "default",
@@ -190,6 +211,7 @@ export function Combobox({
   const isListShown = isOpen && !disabled;
   const activeOption = visible[activeIndex];
   const hasMessage = isLoading || visible.length === 0;
+  const isClearShown = !disabled && text !== "";
   const optionId = (option: ComboboxOption): string =>
     `${baseId}-option-${String(options.indexOf(option))}`;
 
@@ -207,7 +229,8 @@ export function Combobox({
     const id = inputRef.current?.labels?.[0]?.id;
     setLabelId(id === "" ? undefined : id);
     setIsOpen(true);
-    setActiveIndex(index);
+    // Typing / Arrow open: land on the first enabled match (design Combobox.jsx).
+    setActiveIndex(index < 0 ? edgeIndex(visible, "first") : index);
   }
 
   function commit(option: ComboboxOption): void {
@@ -219,7 +242,8 @@ export function Combobox({
   }
 
   function clear(): void {
-    setCurrent(null);
+    // Design: clear the query only; `isClearable` also drops the chosen value (forms).
+    if (isClearable) setCurrent(null);
     setText("");
     setIsFiltering(false);
     close();
@@ -231,12 +255,11 @@ export function Combobox({
       case "ArrowDown":
       case "ArrowUp": {
         event.preventDefault();
-        const step = event.key === "ArrowDown" ? 1 : -1;
         if (!isListShown) {
-          const selected = visible.findIndex((option) => option.value === current);
-          const first = step === 1 ? edgeIndex(visible, "first") : edgeIndex(visible, "last");
-          open(selected === -1 ? first : selected);
+          // Both arrows open on the first enabled match (design).
+          open(edgeIndex(visible, "first"));
         } else {
+          const step = event.key === "ArrowDown" ? 1 : -1;
           setActiveIndex(stepIndex(visible, activeIndex, step));
         }
         break;
@@ -259,17 +282,16 @@ export function Combobox({
         if (isListShown) {
           event.preventDefault();
           close();
-        } else if (text !== "" || current !== null) {
+        } else if (text !== labelOf(options, current)) {
+          // Closed: restore the chosen label (or clear typed text when nothing is chosen).
           event.preventDefault();
-          if (current !== null) setCurrent(null);
-          setText("");
+          setText(labelOf(options, current));
           setIsFiltering(false);
         }
         break;
       case "Tab":
-        // Commit and let focus move on.
-        if (isListShown && activeOption !== undefined) commit(activeOption);
-        else close();
+        // Close without committing; let focus move on.
+        close();
         break;
       default:
     }
@@ -304,16 +326,21 @@ export function Combobox({
   return (
     <div ref={rootRef} className={slots.root({ className: withSx(sx, undefined) })}>
       <FieldControl
+        size={size}
         status={status}
+        icon={icon}
         isLoading={isLoading && !isListShown}
+        isExpanded={isListShown}
+        affordance={isClearShown ? undefined : ChevronDown}
         trailing={
-          isClearable && !disabled && text !== "" ? (
+          isClearShown ? (
             <IconButton
               icon={X}
               label={clearLabel}
-              size="sm"
+              size="xs"
               variant="ghost"
-              className="-me-2 shrink-0"
+              tabIndex={-1}
+              className="-me-1.5 shrink-0"
               // Keep focus in the input: the press must not blur and close the list first.
               onMouseDown={(event) => {
                 event.preventDefault();
@@ -354,6 +381,7 @@ export function Combobox({
                 open(-1);
               }}
               onClick={() => {
+                // Plan T8: click opens (Ruling over audit "focus only").
                 if (!isListShown) open(-1);
               }}
               onKeyDown={onKeyDown}
@@ -396,23 +424,41 @@ export function Combobox({
           >
             {visible.map((option) => {
               const isActive = option === activeOption;
+              const isChosen = option.value === current;
               return (
                 <li
                   key={option.value}
                   id={optionId(option)}
                   role="option"
-                  aria-selected={option.value === current}
+                  aria-selected={isChosen}
                   aria-disabled={option.disabled === true ? true : undefined}
                   data-index={visible.indexOf(option)}
                   data-active={isActive}
                   className={slots.option({
-                    className: option.value === current ? slots.selected() : undefined,
+                    className: isChosen ? slots.selected() : undefined,
                   })}
                 >
-                  <span>{renderLabel(option)}</span>
-                  {option.description === undefined ? null : (
-                    <span className={slots.description()}>{option.description}</span>
+                  {option.icon === undefined ? null : (
+                    <Icon
+                      icon={option.icon}
+                      size="sm"
+                      className={
+                        isActive || isChosen ? slots.optionIconActive() : slots.optionIcon()
+                      }
+                    />
                   )}
+                  <span className={slots.body()}>
+                    <span>{renderLabel(option)}</span>
+                    {option.description === undefined ? null : (
+                      <span className={slots.description()}>{option.description}</span>
+                    )}
+                  </span>
+                  {option.meta === undefined ? null : (
+                    <span className={slots.meta()}>{option.meta}</span>
+                  )}
+                  <span className={slots.diamond()}>
+                    {isChosen ? <BrandDiamond size="14px" fill="brand" /> : null}
+                  </span>
                 </li>
               );
             })}

@@ -15,8 +15,18 @@ export type SheetMode = "auto" | boolean;
  * `true` / `false` force the mode; `"auto"` follows `matchMedia` at 640px (SSR → false until
  * mount).
  */
+function readSheetMedia(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia(SHEET_MEDIA_QUERY).matches
+  );
+}
+
 export function useAsSheet(sheet: SheetMode = "auto"): boolean {
-  const [isMobile, setIsMobile] = useState(false);
+  // Sync initial read so the first open at ≤640 is already a sheet (avoids a floating flash
+  // that can land off-screen before the effect runs).
+  const [isMobile, setIsMobile] = useState(readSheetMedia);
   useEffect(() => {
     if (typeof window.matchMedia !== "function") return;
     const mq = window.matchMedia(SHEET_MEDIA_QUERY);

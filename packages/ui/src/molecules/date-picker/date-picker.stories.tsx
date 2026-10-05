@@ -10,6 +10,7 @@ import { DatePicker } from "./date-picker";
 /** Fixed dates, so every story renders the same month whenever it runs. */
 const OCTOBER = new Date(2026, 9, 1);
 const FOURTH = new Date(2026, 9, 4);
+const FOURTH_ISO = "2026-10-04";
 
 const meta = {
   title: "Molecules/DatePicker",
@@ -20,7 +21,7 @@ const meta = {
       story: { inline: false, height: "420px" },
       description: {
         component:
-          "A date field: a button that shows the chosen day (en-IN, `Mon, 5 Oct 2026`) and opens a Calendar in a Popover. The week starts on Monday. Arrow keys, Home/End and PageUp/PageDown move across days and months; Enter picks; Escape closes and returns focus to the field. `name` submits `yyyy-mm-dd` through a hidden input; `disabledDays` takes a date, `{ before }`, `{ dayOfWeek }`, a predicate or a list. `Calendar` is the same grid on its own, single or range, one or two months. Label and message belong to Field.",
+          "A date field: a button that shows the chosen day (en-IN, `Mon, 5 Oct 2026`) and opens a Calendar in a Popover. Values are ISO `yyyy-mm-dd` in and out (R133). The week starts on Monday. ArrowDown opens; Arrow keys, Home/End and PageUp/PageDown move across days and months; Enter picks; Escape closes and returns focus to the field. `name` submits `yyyy-mm-dd` through a hidden input; `min`/`max` and `disabledDays` limit picks. `Calendar` is the same grid on its own, single or range, one or two months. Label and message belong to Field.",
       },
     },
   },
@@ -30,7 +31,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const DatePickerPlayground: Story = {
-  args: { name: "date", defaultValue: FOURTH },
+  args: { name: "date", defaultValue: FOURTH_ISO },
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole("button", { name: /Booking date/ });
     await expect(trigger).toHaveTextContent("Sun, 4 Oct 2026");
@@ -58,7 +59,7 @@ export const Empty: Story = {
 
 export const DisabledDays: Story = {
   args: {
-    defaultValue: FOURTH,
+    defaultValue: FOURTH_ISO,
     disabledDays: [{ before: FOURTH }, { dayOfWeek: [1] }],
   },
   play: async ({ canvas, userEvent }) => {
@@ -69,7 +70,7 @@ export const DisabledDays: Story = {
   },
 };
 
-export const Disabled: Story = { args: { disabled: true, defaultValue: FOURTH } };
+export const Disabled: Story = { args: { disabled: true, defaultValue: FOURTH_ISO } };
 
 export const InFieldWithError: Story = {
   render: (args) => (
@@ -93,7 +94,7 @@ export const InFieldWithError: Story = {
 };
 
 function ControlledPicker(args: Parameters<typeof DatePicker>[0]) {
-  const [date, setDate] = useState<Date | null>(FOURTH);
+  const [date, setDate] = useState(FOURTH_ISO);
   return (
     <div className="grid gap-3">
       <DatePicker {...args} value={date} onValueChange={setDate} />
@@ -101,7 +102,7 @@ function ControlledPicker(args: Parameters<typeof DatePicker>[0]) {
         type="button"
         className="justify-self-start text-body-sm underline"
         onClick={() => {
-          setDate(null);
+          setDate("");
         }}
       >
         Clear from outside
@@ -122,13 +123,16 @@ export const Controlled: Story = {
 /** The popover stays inside the smallest supported viewport. */
 export const Mobile360: Story = {
   globals: { viewport: { value: "floor360", isRotated: false } },
-  args: { defaultValue: FOURTH },
+  args: { defaultValue: FOURTH_ISO },
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("button", { name: /Booking date/ }));
-    const grid = await screen.findByRole("grid");
-    const rect = grid.getBoundingClientRect();
+    // ≤640 uses the Popover sheet; the sheet panel stays in the viewport.
+    const sheet = await screen.findByRole("dialog", { name: "Choose a date" });
+    await waitFor(() => expect(sheet).toBeVisible());
+    const rect = sheet.getBoundingClientRect();
     await expect(rect.left).toBeGreaterThanOrEqual(0);
     await expect(rect.right).toBeLessThanOrEqual(window.innerWidth);
+    await waitFor(async () => expect(await screen.findByRole("grid")).toBeVisible());
   },
 };
 
@@ -190,19 +194,17 @@ function dayButtonAt(iso: string): HTMLButtonElement {
 export const CalendarRange: Story = {
   render: () => <RangeDemo />,
   play: async ({ userEvent }) => {
-    // The ends are the brand fill, the stretch between is the soft tint, and hovering an end
-    // does not repaint it.
+    // Ends carry the pink diamond (::before); the stretch between is the soft tint.
     const start = dayButtonAt("2026-10-06");
     const middle = dayButtonAt("2026-10-07");
     const plain = dayButtonAt("2026-10-20");
-    const fill = getComputedStyle(start).backgroundColor;
-    await expect(fill).not.toBe(getComputedStyle(plain).backgroundColor);
-    await expect(getComputedStyle(middle).backgroundColor).not.toBe(fill);
+    await expect(getComputedStyle(start, "::before").content).not.toBe("none");
+    await expect(getComputedStyle(plain, "::before").content).toBe("none");
     await expect(getComputedStyle(middle).backgroundColor).not.toBe(
       getComputedStyle(plain).backgroundColor
     );
     await userEvent.hover(start);
-    await expect(getComputedStyle(start).backgroundColor).toBe(fill);
+    await expect(getComputedStyle(start, "::before").content).not.toBe("none");
     const day = dayButtonAt("2026-10-16");
     await userEvent.click(day);
     await expect(day.closest("td")).toHaveAttribute("aria-selected", "true");

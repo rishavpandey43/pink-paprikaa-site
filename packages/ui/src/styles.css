@@ -323,6 +323,50 @@
   translate: 0 var(--motion-lift-y);
 }
 
+/* Calendar selected day: pink diamond under the number (DatePicker.jsx). */
+@utility calendar-day-selected {
+  position: relative;
+  background-color: transparent;
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    margin: auto;
+    width: calc(var(--spacing) * 7);
+    height: calc(var(--spacing) * 7);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-pink-500);
+    box-shadow: var(--shadow-brand);
+    transform: rotate(45deg);
+  }
+}
+
+/* Calendar today marker when not selected (5px diamond). */
+@utility calendar-day-today {
+  color: var(--color-pink-700);
+  font-weight: var(--font-weight-bold);
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: calc(var(--spacing) * 1);
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: calc(var(--spacing) * 1);
+    height: calc(var(--spacing) * 1);
+    border-radius: var(--radius-xs);
+    background-color: var(--color-pink-500);
+    transform: rotate(45deg);
+  }
+}
+
+@utility calendar-day-clear-marker {
+  &::before {
+    content: none;
+  }
+}
+
 /* Menu / Popover / Select phone sheet body (INTERACTIONS: min(70vh, 520px)). */
 @utility max-h-menu-sheet {
   max-height: min(70vh, 520px);

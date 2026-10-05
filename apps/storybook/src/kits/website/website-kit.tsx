@@ -79,7 +79,7 @@ export function WebsiteKit() {
   const [isBooking, setIsBooking] = useState(false);
   const [isBooked, setIsBooked] = useState(false);
   const [slot, setSlot] = useState("8:00pm");
-  const [bookingDate, setBookingDate] = useState<Date | null>(null);
+  const [bookingDate, setBookingDate] = useState("");
   const [phone, setPhone] = useState("");
   const [phoneErr, setPhoneErr] = useState<string | null>(null);
 

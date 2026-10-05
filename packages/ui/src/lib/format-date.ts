@@ -25,3 +25,20 @@ function pad(value: number, length: number): string {
 export function toIsoDate(date: Date): string {
   return `${pad(date.getFullYear(), 4)}-${pad(date.getMonth() + 1, 2)}-${pad(date.getDate(), 2)}`;
 }
+
+/** Local `Date` from an ISO `yyyy-mm-dd` (never `Date.parse` — UTC shift). Empty → null. */
+export function fromIsoDate(iso: string | null | undefined): Date | null {
+  if (iso === null || iso === undefined || iso === "") return null;
+  const [year, month, day] = iso.split("-").map(Number);
+  if (
+    year === undefined ||
+    month === undefined ||
+    day === undefined ||
+    Number.isNaN(year) ||
+    Number.isNaN(month) ||
+    Number.isNaN(day)
+  ) {
+    return null;
+  }
+  return new Date(year, month - 1, day);
+}

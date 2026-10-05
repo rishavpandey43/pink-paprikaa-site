@@ -1,4 +1,4 @@
-import { formatDate, toIsoDate } from "./format-date";
+import { formatDate, fromIsoDate, toIsoDate } from "./format-date";
 
 describe("formatDate", () => {
   it("formats en-IN with weekday", () => {
@@ -23,5 +23,15 @@ describe("toIsoDate", () => {
     const date = new Date(2000, 0, 1);
     date.setFullYear(999);
     expect(toIsoDate(date)).toBe("0999-01-01");
+  });
+});
+
+describe("fromIsoDate", () => {
+  it("parses a local calendar day", () => {
+    expect(fromIsoDate("2026-10-04")).toEqual(new Date(2026, 9, 4));
+  });
+  it("returns null for empty", () => {
+    expect(fromIsoDate("")).toBeNull();
+    expect(fromIsoDate(null)).toBeNull();
   });
 });

@@ -23,7 +23,7 @@ describe("DatePicker", () => {
       <DatePicker
         aria-label="Booking date"
         name="date"
-        defaultValue={new Date(2026, 9, 4)}
+        defaultValue="2026-10-04"
         onValueChange={onValueChange}
       />
     );
@@ -31,7 +31,7 @@ describe("DatePicker", () => {
     expect(screen.getByRole("grid")).toBeVisible();
     expect(dayButton("2026-10-04")).toHaveFocus();
     await user.keyboard("{ArrowRight}{Enter}");
-    expect(onValueChange).toHaveBeenCalledWith(new Date(2026, 9, 5));
+    expect(onValueChange).toHaveBeenCalledWith("2026-10-05");
     expect(screen.getByRole("button", { name: /Booking date/ })).toHaveTextContent(
       "Mon, 5 Oct 2026"
     );
@@ -53,13 +53,13 @@ describe("DatePicker", () => {
     render(
       <DatePicker
         aria-label="Booking date"
-        defaultValue={new Date(2026, 9, 4)}
+        defaultValue="2026-10-04"
         onValueChange={onValueChange}
       />
     );
     await user.click(screen.getByRole("button", { name: /Booking date/ }));
     await user.click(dayButton("2026-10-20"));
-    expect(onValueChange).toHaveBeenCalledWith(new Date(2026, 9, 20));
+    expect(onValueChange).toHaveBeenCalledWith("2026-10-20");
   });
 
   it("keeps the date when the chosen day is picked again", async () => {
@@ -68,7 +68,7 @@ describe("DatePicker", () => {
     render(
       <DatePicker
         aria-label="Booking date"
-        defaultValue={new Date(2026, 9, 4)}
+        defaultValue="2026-10-04"
         onValueChange={onValueChange}
       />
     );
@@ -86,7 +86,7 @@ describe("DatePicker", () => {
     render(
       <DatePicker
         aria-label="Booking date"
-        defaultValue={new Date(2026, 9, 4)}
+        defaultValue="2026-10-04"
         disabledDays={{ dayOfWeek: [1] }}
         onValueChange={onValueChange}
       />
@@ -101,7 +101,7 @@ describe("DatePicker", () => {
 
   it("Escape closes and returns focus to the trigger", async () => {
     const user = userEvent.setup();
-    render(<DatePicker aria-label="Booking date" defaultValue={new Date(2026, 9, 4)} />);
+    render(<DatePicker aria-label="Booking date" defaultValue="2026-10-04" />);
     const trigger = screen.getByRole("button", { name: /Booking date/ });
     await user.click(trigger);
     expect(screen.getByRole("grid")).toBeVisible();
@@ -110,36 +110,55 @@ describe("DatePicker", () => {
     expect(trigger).toHaveFocus();
   });
 
+  it("ArrowDown on the closed trigger opens the calendar", async () => {
+    const user = userEvent.setup();
+    render(<DatePicker aria-label="Booking date" defaultValue="2026-10-04" />);
+    const trigger = screen.getByRole("button", { name: /Booking date/ });
+    trigger.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByRole("grid")).toBeVisible();
+  });
+
+  it("min and max disable days outside the range", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <DatePicker
+        aria-label="Booking date"
+        defaultValue="2026-10-12"
+        min="2026-10-10"
+        max="2026-10-20"
+        onValueChange={onValueChange}
+      />
+    );
+    await user.click(screen.getByRole("button", { name: /Booking date/ }));
+    expect(dayButton("2026-10-09")).toBeDisabled();
+    expect(dayButton("2026-10-21")).toBeDisabled();
+    await user.click(dayButton("2026-10-15"));
+    expect(onValueChange).toHaveBeenCalledWith("2026-10-15");
+  });
+
   it("is controlled by value", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     const { rerender } = render(
-      <DatePicker
-        aria-label="Booking date"
-        value={new Date(2026, 9, 4)}
-        onValueChange={onValueChange}
-      />
+      <DatePicker aria-label="Booking date" value="2026-10-04" onValueChange={onValueChange} />
     );
     const trigger = screen.getByRole("button", { name: /Booking date/ });
     await user.click(trigger);
     await user.click(dayButton("2026-10-20"));
-    expect(onValueChange).toHaveBeenCalledWith(new Date(2026, 9, 20));
+    expect(onValueChange).toHaveBeenCalledWith("2026-10-20");
     expect(trigger).toHaveTextContent("Sun, 4 Oct 2026");
-    rerender(<DatePicker aria-label="Booking date" value={new Date(2026, 9, 20)} />);
+    rerender(<DatePicker aria-label="Booking date" value="2026-10-20" />);
     expect(trigger).toHaveTextContent("Tue, 20 Oct 2026");
-    rerender(<DatePicker aria-label="Booking date" value={null} />);
+    rerender(<DatePicker aria-label="Booking date" value="" />);
     expect(trigger).toHaveTextContent("Pick a date");
   });
 
   it("when disabled it cannot be opened and submits nothing", async () => {
     const user = userEvent.setup();
     const { container } = render(
-      <DatePicker
-        aria-label="Booking date"
-        name="date"
-        defaultValue={new Date(2026, 9, 4)}
-        disabled
-      />
+      <DatePicker aria-label="Booking date" name="date" defaultValue="2026-10-04" disabled />
     );
     const trigger = screen.getByRole("button", { name: /Booking date/ });
     expect(trigger).toBeDisabled();
@@ -155,7 +174,7 @@ describe("DatePicker", () => {
         aria-label="Booking date"
         aria-describedby="date-message"
         status="error"
-        defaultValue={new Date(2026, 9, 4)}
+        defaultValue="2026-10-04"
       />
     );
     const trigger = screen.getByRole("button", { name: /Booking date/ });
@@ -174,7 +193,7 @@ describe("DatePicker", () => {
   it("is accessible closed and open", async () => {
     const user = userEvent.setup();
     const { container } = render(
-      <DatePicker aria-label="Booking date" defaultValue={new Date(2026, 9, 4)} />
+      <DatePicker aria-label="Booking date" defaultValue="2026-10-04" />
     );
     await expectNoA11yViolations(container);
     await user.click(screen.getByRole("button", { name: /Booking date/ }));

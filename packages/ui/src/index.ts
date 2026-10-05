@@ -88,6 +88,11 @@ export {
   type AccordionItem,
   type AccordionProps,
 } from "./molecules/accordion/accordion";
+export {
+  ActionMenu,
+  type ActionMenuItem,
+  type ActionMenuProps,
+} from "./molecules/action-menu/action-menu";
 export { Alert, type AlertProps } from "./molecules/alert/alert";
 export {
   AnnouncementBar,
