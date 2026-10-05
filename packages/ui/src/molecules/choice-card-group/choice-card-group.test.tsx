@@ -127,7 +127,7 @@ describe("ChoiceCardGroup", () => {
   it("submits the chosen value with its form, under its name", async () => {
     const user = userEvent.setup();
     render(
-      <form aria-label="Plan">
+      <form noValidate aria-label="Plan">
         <ChoiceCardGroup name="plate" legend="Your plate" options={PLATES} />
       </form>
     );

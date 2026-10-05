@@ -32,6 +32,8 @@ const config: StorybookConfig = {
       },
     },
     "@storybook/addon-a11y",
+    // Force :hover / :focus-visible etc. per cell in States stories (Task 3).
+    "storybook-addon-pseudo-states",
     // Turns every story into a Vitest test. The addon contributes the manager-side Testing panel
     // (run/watch stories from the sidebar); the run itself is configured in `vitest.config.mts`,
     // which applies the same `configDir` this file lives in. Registering it here is what makes the

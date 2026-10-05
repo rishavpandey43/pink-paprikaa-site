@@ -39,7 +39,7 @@ describe("CheckCard", () => {
   it("submits with its form under its name", async () => {
     const user = userEvent.setup();
     render(
-      <form aria-label="Plan">
+      <form noValidate aria-label="Plan">
         <CheckCard {...UPFRONT} name="upfront" />
       </form>
     );

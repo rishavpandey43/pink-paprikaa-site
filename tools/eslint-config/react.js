@@ -48,6 +48,9 @@ export default [
       "jsx-a11y/no-redundant-roles": ["error", { nav: ["navigation"], ol: ["list"], ul: ["list"] }],
       "react/react-in-jsx-scope": "off",
       "pink-paprikaa/no-raw-hex": "error",
+      // Native browser UI the design system replaces (Task 2): <select>, date/time inputs,
+      // `required`, `title=` tooltips, forms without noValidate.
+      "pink-paprikaa/no-native-ui": "error",
       // Curated addition ported from a predecessor workspace.
       // (`react/jsx-filename-extension` was evaluated too and dropped: its
       // 7.37.5 implementation calls the ESLint-10-removed

@@ -12,8 +12,22 @@ import {
 } from "lucide-react";
 import { expect, within } from "storybook/test";
 
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
 import { OnSurfaces } from "../../lib/story-surfaces";
 import { Button } from "./button";
+
+const BUTTON_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
 
 const meta = {
   title: "Atoms/Button",
@@ -38,6 +52,36 @@ export const Playground: Story = {
   play: async ({ canvasElement }) => {
     const button = within(canvasElement).getByRole("button");
     await expect(getComputedStyle(button).cursor).toBe("pointer");
+  },
+};
+
+/**
+ * Forced rest → hover → press → focus → disabled (Task 3). Play asserts hover uses
+ * `--color-state-hover` once Task 4 wires Button to the state tokens — skipped until then.
+ */
+export const States: Story = {
+  tags: ["!test"],
+  parameters: { pseudo: storyStatesPseudo(BUTTON_STATES) },
+  render: () => (
+    <StatesRow
+      states={BUTTON_STATES}
+      render={(state) => (
+        <Button variant="primary" {...storyStateControlProps(state)}>
+          Order Now
+        </Button>
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover button");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Button States: #cell-hover button missing");
+    }
+    // Until Task 4, primary hover is still brand-pink; leave the assertion as the contract.
+    const expected = getComputedStyle(document.documentElement)
+      .getPropertyValue("--color-state-hover")
+      .trim();
+    await expect(getComputedStyle(hover).backgroundColor).toBe(expected);
   },
 };
 

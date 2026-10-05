@@ -29,7 +29,7 @@ const quantityStepper = componentVariants({
   defaultVariants: { size: "md" },
 });
 
-/** The group takes the div's native props; the number field keeps `id`, `ref`, `name`, `required`, `disabled`, `onBlur` and the aria it is described by. */
+/** The group takes the div's native props; the number field keeps `id`, `ref`, `name`, `aria-required`, `disabled`, `onBlur` and the aria it is described by. */
 export interface QuantityStepperProps extends Omit<
   BaseProps<"div">,
   | "ref"
@@ -221,7 +221,7 @@ export function QuantityStepper({
         aria-valuemin={min}
         aria-valuemax={max}
         name={name}
-        required={required}
+        aria-required={required}
         size={Math.max(2, String(max ?? quantity).length)}
         value={draft ?? String(quantity)}
         disabled={disabled}

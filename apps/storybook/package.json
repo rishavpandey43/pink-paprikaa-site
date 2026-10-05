@@ -101,6 +101,7 @@
     "playwright": "^1.62.1",
     "react-hook-form": "^7.89.0",
     "remark-gfm": "^4.0.1",
+    "storybook-addon-pseudo-states": "^10.6.1",
     "tailwindcss": "^4.3.3",
     "vitest": "~4.1.10",
     "zod": "^4.4.3"

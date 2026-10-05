@@ -246,7 +246,8 @@ describe("QuantityStepper", () => {
     expect(input).toHaveAttribute("id", "enquiry-guests");
     expect(input).toHaveAttribute("aria-describedby", "enquiry-guests-message");
     expect(input).toHaveAttribute("aria-invalid", "true");
-    expect(input).toBeRequired();
+    expect(input).toHaveAttribute("aria-required", "true");
+    expect(input).not.toHaveAttribute("required");
   });
 
   it("gives react-hook-form's Controller a name, onBlur and a focusable ref", async () => {
