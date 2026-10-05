@@ -50,12 +50,6 @@ function isUnderLib(filename) {
 }
 
 /** @param {string} filename */
-function isSelectAtom(filename) {
-  // Platform <select> lives in the Select atom until Task 7 replaces it with our list.
-  return /(?:^|[/\\])atoms[/\\]select[/\\]/.test(filename.replaceAll("\\", "/"));
-}
-
-/** @param {string} filename */
 function isSliderAtom(filename) {
   return /(?:^|[/\\])atoms[/\\]slider[/\\]/.test(filename.replaceAll("\\", "/"));
 }
@@ -69,8 +63,7 @@ export default {
         "Ban native browser UI the design system replaces: <select>, date/time inputs, required, title tooltips, and forms without noValidate.",
     },
     messages: {
-      select:
-        "Native <select> is banned outside packages/ui/src/lib (and atoms/select until Task 7). Use the Select atom / list.",
+      select: "Native <select> is banned outside packages/ui/src/lib. Use the Select atom / list.",
       inputType:
         'Native <input type="{{value}}"> is banned outside atoms/slider. Use the design-system control instead.',
       required:
@@ -87,7 +80,7 @@ export default {
         if (!isIntrinsic(node)) return;
         const tag = node.name.name;
 
-        if (tag === "select" && !isUnderLib(filename) && !isSelectAtom(filename)) {
+        if (tag === "select" && !isUnderLib(filename)) {
           context.report({ node, messageId: "select" });
         }
 

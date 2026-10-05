@@ -11,6 +11,7 @@ import type { BaseProps } from "../../lib/common-props";
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
+import { reportOpenChange } from "../../lib/popover-shell";
 import { withSx } from "../../lib/sx";
 
 const dialog = componentVariants({
@@ -86,6 +87,8 @@ export interface DialogProps
   hasCloseButton?: boolean | undefined;
   /** Portal target; default `document.body`. Pass a positioned frame (AppShell's overlay slot) to keep the dialog inside it. */
   portalContainer?: HTMLElement | null | undefined;
+  /** Design `onClose` — called when the dialog goes from open to closed (R148). */
+  onClose?: ((reason: string) => void) | undefined;
 }
 
 /**
@@ -112,6 +115,7 @@ export function Dialog({
   open,
   defaultOpen,
   onOpenChange,
+  onClose,
   sx,
   className,
   ...props
@@ -123,7 +127,13 @@ export function Dialog({
     <DialogPrimitive.Root
       {...(open === undefined ? {} : { open })}
       {...(defaultOpen === undefined ? {} : { defaultOpen })}
-      {...(onOpenChange === undefined ? {} : { onOpenChange })}
+      {...(onOpenChange === undefined && onClose === undefined
+        ? {}
+        : {
+            onOpenChange: (next: boolean) => {
+              reportOpenChange(next, onOpenChange, onClose);
+            },
+          })}
     >
       {trigger ? <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger> : null}
       <DialogPrimitive.Portal container={portalContainer}>

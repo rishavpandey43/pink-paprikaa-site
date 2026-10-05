@@ -6,10 +6,12 @@ import { ChevronDown } from "lucide-react";
 import { useCallback, useId, useRef, useState } from "react";
 
 import type { SxProp } from "../../lib/common-props";
+import type { DesignFieldChrome } from "../../lib/design-field";
 import type { FieldStatus } from "../../lib/field-status";
 import type { SheetMode } from "../../lib/popover-shell";
 import type { IconComponent } from "../icon/icon";
 
+import { withDesignField } from "../../lib/design-field";
 import { FieldControl } from "../../lib/field-control";
 import { commitNativeSelectValue, HiddenNativeSelect } from "../../lib/hidden-native-select";
 import { ListboxPopover } from "../../lib/listbox-popover";
@@ -25,7 +27,7 @@ export interface SelectOption {
   isDisabled?: boolean | undefined;
 }
 
-export interface SelectProps extends SxProp {
+export interface SelectProps extends SxProp, DesignFieldChrome {
   options: SelectOption[];
   value?: string | undefined;
   defaultValue?: string | undefined;
@@ -90,6 +92,12 @@ export function Select({
   sheet = "auto",
   portalContainer = null,
   id,
+  label,
+  hint,
+  error,
+  success,
+  warning,
+  optional,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledby,
   "aria-describedby": ariaDescribedby,
@@ -189,85 +197,92 @@ export function Select({
     }
   };
 
-  return (
-    <FieldControl
-      control="select"
-      size={size}
-      status={status}
-      icon={icon}
-      isReadOnly={readOnly && !disabled}
-      affordance={ChevronDown}
-      isExpanded={isOpen && status === "default" && !readOnly}
-      className={withSx(sx, className)}
-    >
-      {(controlClassName) => (
-        <>
-          <ListboxPopover
-            open={isOpen}
-            onOpenChange={(next) => {
-              if (isLocked && next) return;
-              setIsOpen(next);
-              if (next) {
-                const preferred = options.findIndex((option) => option.value === value);
-                resetActive(preferred > -1 ? preferred : undefined);
-              }
-            }}
-            sheet={sheet}
-            portalContainer={portalContainer}
-            title={ariaLabel ?? placeholder}
-            aria-label={ariaLabel ?? "Options"}
-            trigger={
-              <button
-                id={triggerId}
-                type="button"
-                role="combobox"
-                disabled={disabled}
-                aria-haspopup="listbox"
-                aria-expanded={isOpen}
-                aria-controls={listId}
-                aria-required={required || undefined}
-                aria-invalid={status === "error" ? true : undefined}
-                aria-readonly={readOnly || undefined}
-                aria-label={ariaLabel}
-                aria-labelledby={ariaLabelledby}
-                aria-describedby={ariaDescribedby}
-                className={`${controlClassName}${chosen === undefined ? "text-text-subtle" : ""}`}
-                onKeyDown={onTriggerKeyDown}
-                onClick={() => {
-                  if (!isLocked) setIsOpen(!isOpen);
-                }}
-              >
-                <span className="truncate">{triggerLabel}</span>
-              </button>
-            }
-          >
-            <MenuPanel
-              id={listId}
-              role="listbox"
-              aria-label={ariaLabel ?? placeholder ?? "Options"}
-              items={items}
-              value={value}
-              isSheet={isSheet}
-              activeIndex={activeIndex}
-              onSelect={(item) => {
-                commit(item.value);
+  return withDesignField(
+    { label, hint, error, success, warning, optional },
+    id,
+    status,
+    (wired) => (
+      <FieldControl
+        control="select"
+        size={size}
+        status={wired.status}
+        icon={icon}
+        isReadOnly={readOnly && !disabled}
+        affordance={ChevronDown}
+        isExpanded={isOpen && status === "default" && !readOnly}
+        className={withSx(sx, className)}
+      >
+        {(controlClassName) => (
+          <>
+            <ListboxPopover
+              open={isOpen}
+              onOpenChange={(next) => {
+                if (isLocked && next) return;
+                setIsOpen(next);
+                if (next) {
+                  const preferred = options.findIndex((option) => option.value === value);
+                  resetActive(preferred > -1 ? preferred : undefined);
+                }
               }}
+              sheet={sheet}
+              portalContainer={portalContainer}
+              title={ariaLabel ?? placeholder}
+              aria-label={ariaLabel ?? "Options"}
+              trigger={
+                <button
+                  id={wired.id === "" ? triggerId : wired.id}
+                  type="button"
+                  role="combobox"
+                  disabled={disabled}
+                  aria-haspopup="listbox"
+                  aria-expanded={isOpen}
+                  aria-controls={listId}
+                  aria-required={required || wired["aria-required"] ? true : undefined}
+                  aria-invalid={
+                    wired.status === "error" || wired["aria-invalid"] ? true : undefined
+                  }
+                  aria-readonly={readOnly || undefined}
+                  aria-label={ariaLabel}
+                  aria-labelledby={ariaLabelledby}
+                  aria-describedby={wired["aria-describedby"] ?? ariaDescribedby}
+                  className={`${controlClassName}${chosen === undefined ? "text-text-subtle" : ""}`}
+                  onKeyDown={onTriggerKeyDown}
+                  onClick={() => {
+                    if (!isLocked) setIsOpen(!isOpen);
+                  }}
+                >
+                  <span className="truncate">{triggerLabel}</span>
+                </button>
+              }
+            >
+              <MenuPanel
+                id={listId}
+                role="listbox"
+                aria-label={ariaLabel ?? placeholder ?? "Options"}
+                items={items}
+                value={value}
+                isSheet={isSheet}
+                activeIndex={activeIndex}
+                onSelect={(item) => {
+                  commit(item.value);
+                }}
+              />
+            </ListboxPopover>
+            <HiddenNativeSelect
+              selectRef={setHiddenRef}
+              name={readOnly && !disabled ? undefined : name}
+              value={value}
+              options={options}
+              disabled={disabled || readOnly}
+              onChange={onChange}
+              onBlur={onBlur}
             />
-          </ListboxPopover>
-          <HiddenNativeSelect
-            selectRef={setHiddenRef}
-            name={readOnly && !disabled ? undefined : name}
-            value={value}
-            options={options}
-            disabled={disabled || readOnly}
-            onChange={onChange}
-            onBlur={onBlur}
-          />
-          {readOnly && !disabled && name !== undefined && value !== "" ? (
-            <input type="hidden" name={name} value={value} />
-          ) : null}
-        </>
-      )}
-    </FieldControl>
+            {readOnly && !disabled && name !== undefined && value !== "" ? (
+              <input type="hidden" name={name} value={value} />
+            ) : null}
+          </>
+        )}
+      </FieldControl>
+    )
   );
 }

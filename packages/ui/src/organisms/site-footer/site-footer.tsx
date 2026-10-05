@@ -49,7 +49,7 @@ const SOCIAL_GLYPH: Readonly<Record<FooterSocialLink["network"], IconComponent>>
 const DEFAULT_SOCIAL: FooterSocialLink[] = [
   {
     network: "instagram",
-    href: "https://instagram.com/pinkpaprikaa",
+    href: "https://instagram.com/thepinkpaprikaa/",
     label: "Pink Paprikaa on Instagram",
   },
 ];

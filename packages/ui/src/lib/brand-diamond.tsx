@@ -69,6 +69,7 @@ export const brandDiamondVariants = componentVariants({
   defaultVariants: { size: "16px", fill: "empty" },
 });
 
+/** Pixel strings are the design's size keys (map to `size-brand-diamond-*` tokens), not raw CSS. */
 export type BrandDiamondSize = "12px" | "14px" | "16px" | "20px" | "24px";
 
 export interface BrandDiamondProps {

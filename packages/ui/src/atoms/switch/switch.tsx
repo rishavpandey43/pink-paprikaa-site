@@ -18,7 +18,7 @@ const toggle = componentVariants({
     ],
     knob: [
       "absolute top-0.75 left-0.75 size-switch-knob rounded-pill bg-ink-000 shadow-1",
-      "transition-[transform,width,height] duration-base ease-out",
+      "transition-switch-knob",
       "group-has-checked/choice:translate-x-4.5",
       "group-data-[pressed]/choice:w-switch-knob-pressed group-data-[pressed]/choice:group-has-checked/choice:translate-x-3.5",
     ].join(" "),

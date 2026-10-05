@@ -24,8 +24,8 @@ export const BRAND = {
   payments: "UPI, cards, Pluxee (Sodexo)",
   orderOnlineHref: "https://order.pinkpaprikaa.com",
   directionsHref: "https://maps.google.com/?q=Pink+Paprikaa+Sector+57+Gurgaon",
-  instagramHandle: "@pinkpaprikaa",
-  instagramHref: "https://instagram.com/pinkpaprikaa",
+  instagramHandle: "@thepinkpaprikaa",
+  instagramHref: "https://instagram.com/thepinkpaprikaa/",
   youtubeHref: "https://youtube.com/@pinkpaprikaa",
   linkedinHref: "https://linkedin.com/company/pinkpaprikaa",
 } as const;

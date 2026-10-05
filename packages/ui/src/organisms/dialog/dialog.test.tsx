@@ -261,6 +261,15 @@ describe("Dialog", () => {
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
+
+  it("calls onClose when the dialog closes", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    render(<Dialog trigger={TRIGGER} title="Book a table" onClose={onClose} />);
+    await user.click(screen.getByRole("button", { name: "Book a table" }));
+    await user.keyboard("{Escape}");
+    expect(onClose).toHaveBeenCalledWith("dismiss");
+  });
 });
 
 function DrawerHarness() {

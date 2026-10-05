@@ -54,6 +54,7 @@ describe("Combobox", () => {
     const input = screen.getByRole("combobox");
     expect(input).toHaveAttribute("aria-autocomplete", "list");
     await user.click(input);
+    await user.keyboard("{ArrowDown}");
     const listbox = screen.getByRole("listbox");
     expect(input).toHaveAttribute("aria-controls", listbox.id);
     expect(screen.getAllByRole("option")).toHaveLength(12);
@@ -162,7 +163,9 @@ describe("Combobox", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     render(<Combobox aria-label="Search dishes" options={DISHES} onValueChange={onValueChange} />);
-    await user.click(screen.getByRole("combobox"));
+    const input = screen.getByRole("combobox");
+    input.focus();
+    await user.keyboard("{ArrowDown}");
     await user.click(screen.getByRole("option", { name: "Rasmalai" }));
     expect(onValueChange).toHaveBeenCalledWith("rasmalai");
     expect(screen.getByRole("combobox")).toHaveValue("Rasmalai");
@@ -267,7 +270,9 @@ describe("Combobox", () => {
     );
     const hidden = container.querySelector<HTMLInputElement>('input[type="hidden"][name="dish"]');
     expect(hidden).toHaveValue("");
-    await user.click(screen.getByRole("combobox"));
+    const input = screen.getByRole("combobox");
+    input.focus();
+    await user.keyboard("{ArrowDown}");
     await user.click(screen.getByRole("option", { name: "Gulab Jamun" }));
     expect(hidden).toHaveValue("gulab-jamun");
   });
@@ -377,7 +382,28 @@ describe("Combobox", () => {
       <Field label="Dish">{({ id }) => <Combobox id={id} options={DISHES} />}</Field>
     );
     await user.click(screen.getByRole("combobox", { name: "Dish" }));
+    await user.keyboard("{ArrowDown}");
     expect(screen.getByRole("listbox", { name: "Dish" })).toBeInTheDocument();
     await expectNoA11yViolations(container);
+  });
+
+  it("a click focuses the input only — the list stays closed", async () => {
+    const user = userEvent.setup();
+    render(<Combobox aria-label="Search dishes" options={DISHES} />);
+    const input = screen.getByRole("combobox");
+    await user.click(input);
+    expect(input).toHaveFocus();
+    expect(screen.queryByRole("listbox")).toBeNull();
+  });
+
+  it("defaultOpen starts with the list shown", () => {
+    render(<Combobox aria-label="Search dishes" options={DISHES} defaultOpen />);
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+  });
+
+  it("renders Field around itself when given a label and hint", () => {
+    render(<Combobox label="Dish" hint="Type to search" options={DISHES} />);
+    expect(screen.getByRole("combobox", { name: "Dish" })).toBeInTheDocument();
+    expect(screen.getByText("Type to search")).toBeInTheDocument();
   });
 });

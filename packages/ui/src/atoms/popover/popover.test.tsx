@@ -283,4 +283,17 @@ describe("Popover", () => {
     expect(document.querySelector(".max-h-menu-sheet")).not.toBeNull();
     expect(screen.queryByRole("button", { name: "What's in the thali?" })).toBeNull();
   });
+
+  it("calls onClose when the popover closes", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    render(
+      <Popover trigger={TRIGGER} title="Thali" onClose={onClose}>
+        Dal.
+      </Popover>
+    );
+    await user.click(screen.getByRole("button", { name: "What's in the thali?" }));
+    await user.keyboard("{Escape}");
+    expect(onClose).toHaveBeenCalledWith("dismiss");
+  });
 });

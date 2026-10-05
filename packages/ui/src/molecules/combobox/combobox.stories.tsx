@@ -76,6 +76,7 @@ export const WithDescriptions: Story = {
   args: { options: WITH_DESCRIPTIONS },
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("combobox"));
+    await userEvent.keyboard("{ArrowDown}");
     await waitFor(() => expect(canvas.getByText("Dessert · warm, in syrup")).toBeVisible());
   },
 };
@@ -84,6 +85,7 @@ export const Loading: Story = {
   args: { options: [], isLoading: true },
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("combobox"));
+    await userEvent.keyboard("{ArrowDown}");
     await waitFor(() => expect(canvas.getByText("Loading…")).toBeVisible());
   },
 };
@@ -161,6 +163,7 @@ export const Controlled: Story = {
   play: async ({ canvas, userEvent }) => {
     await expect(canvas.getByRole("combobox")).toHaveValue("Masala Dosa");
     await userEvent.click(canvas.getByRole("combobox"));
+    await userEvent.keyboard("{ArrowDown}");
     await userEvent.click(canvas.getByRole("option", { name: "Pav Bhaji" }));
     await expect(canvas.getByRole("status")).toHaveTextContent("pav-bhaji");
   },
@@ -184,6 +187,7 @@ export const Selected: Story = {
   play: async ({ canvas, userEvent }) => {
     await expect(canvas.getByRole("combobox")).toHaveValue("Dal Makhani");
     await userEvent.click(canvas.getByRole("combobox"));
+    await userEvent.keyboard("{ArrowDown}");
     await waitFor(() => expect(canvas.getByText("₹240")).toBeVisible());
     await expect(canvas.getByRole("option", { name: /Dal Makhani/ })).toHaveAttribute(
       "aria-selected",

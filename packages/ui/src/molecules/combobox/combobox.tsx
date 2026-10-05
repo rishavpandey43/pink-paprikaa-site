@@ -7,12 +7,14 @@ import { useId, useRef, useState } from "react";
 
 import type { IconComponent } from "../../atoms/icon/icon";
 import type { SxProp } from "../../lib/common-props";
+import type { DesignFieldChrome } from "../../lib/design-field";
 import type { FieldStatus } from "../../lib/field-status";
 
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { Icon } from "../../atoms/icon/icon";
 import { BrandDiamond } from "../../lib/brand-diamond";
 import { componentVariants } from "../../lib/component-variants";
+import { withDesignField } from "../../lib/design-field";
 import { FieldControl } from "../../lib/field-control";
 import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
@@ -29,7 +31,7 @@ export interface ComboboxOption {
   disabled?: boolean | undefined;
 }
 
-export interface ComboboxProps extends SxProp {
+export interface ComboboxProps extends SxProp, DesignFieldChrome {
   options: readonly ComboboxOption[];
   value?: string | null | undefined;
   defaultValue?: string | null | undefined;
@@ -63,6 +65,8 @@ export interface ComboboxProps extends SxProp {
   id?: string | undefined;
   "aria-label"?: string | undefined;
   "aria-describedby"?: string | undefined;
+  /** Docs/specimens: start with the list open. */
+  defaultOpen?: boolean | undefined;
   /** On the input, for react-hook-form's `Controller`. */
   ref?: Ref<HTMLInputElement> | undefined;
 }
@@ -173,6 +177,13 @@ export function Combobox({
   disabled = false,
   status = "default",
   id,
+  label,
+  hint,
+  error,
+  success,
+  warning,
+  optional,
+  defaultOpen = false,
   "aria-label": ariaLabel,
   "aria-describedby": ariaDescribedby,
   ref,
@@ -192,7 +203,7 @@ export function Combobox({
   });
   const [localText, setLocalText] = useState(() => labelOf(options, value ?? defaultValue ?? null));
   const text = inputValue ?? localText;
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   // Narrowing applies only to text the person typed: a committed label shows the whole list.
   const [isFiltering, setIsFiltering] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -323,153 +334,154 @@ export function Combobox({
     );
   }
 
-  return (
-    <div ref={rootRef} className={slots.root({ className: withSx(sx, undefined) })}>
-      <FieldControl
-        size={size}
-        status={status}
-        icon={icon}
-        isLoading={isLoading && !isListShown}
-        isExpanded={isListShown}
-        affordance={isClearShown ? undefined : ChevronDown}
-        trailing={
-          isClearShown ? (
-            <IconButton
-              icon={X}
-              label={clearLabel}
-              size="xs"
-              variant="ghost"
-              tabIndex={-1}
-              className="-me-1.5 shrink-0"
-              // Keep focus in the input: the press must not blur and close the list first.
-              onMouseDown={(event) => {
-                event.preventDefault();
-              }}
-              onClick={clear}
-            />
-          ) : undefined
-        }
-      >
-        {(controlClassName) => (
-          <>
-            <input
-              ref={(node) => {
-                inputRef.current = node;
-                if (typeof ref === "function") ref(node);
-                else if (ref) ref.current = node;
-              }}
-              id={id}
-              type="text"
-              role="combobox"
-              autoComplete="off"
-              aria-autocomplete="list"
-              aria-expanded={isListShown}
-              aria-controls={listId}
-              aria-activedescendant={
-                activeOption === undefined ? undefined : optionId(activeOption)
-              }
-              aria-label={ariaLabel}
-              aria-describedby={ariaDescribedby}
-              aria-invalid={status === "error" ? true : undefined}
-              className={controlClassName}
-              placeholder={placeholder}
-              disabled={disabled}
-              value={text}
-              onChange={(event) => {
-                setText(event.target.value);
-                setIsFiltering(true);
-                open(-1);
-              }}
-              onClick={() => {
-                // Plan T8: click opens (Ruling over audit "focus only").
-                if (!isListShown) open(-1);
-              }}
-              onKeyDown={onKeyDown}
-              onBlur={onBlur}
-            />
-            {name === undefined || disabled ? null : (
-              <input type="hidden" name={name} value={current ?? ""} />
-            )}
-          </>
-        )}
-      </FieldControl>
-      {isListShown ? (
-        <div
-          data-surface="light"
-          role="presentation"
-          className={slots.popup()}
-          // Pressing in the popup (a scrollbar, a gap) must not blur the input and close it.
-          onMouseDown={(event) => {
-            event.preventDefault();
-          }}
-          // One delegate for the options: the input owns the keyboard (`aria-activedescendant`).
-          onClick={(event) => {
-            const option = optionAt(event.target);
-            if (option !== undefined) commit(option);
-          }}
-          onPointerMove={(event) => {
-            const option = optionAt(event.target);
-            if (option !== undefined && option.disabled !== true && option !== activeOption) {
-              setActiveIndex(visible.indexOf(option));
-            }
-          }}
+  return withDesignField(
+    { label, hint, error, success, warning, optional },
+    id,
+    status,
+    (wired) => (
+      <div ref={rootRef} className={slots.root({ className: withSx(sx, undefined) })}>
+        <FieldControl
+          size={size}
+          status={wired.status}
+          icon={icon}
+          isLoading={isLoading && !isListShown}
+          isExpanded={isListShown}
+          affordance={isClearShown ? undefined : ChevronDown}
+          trailing={
+            isClearShown ? (
+              <IconButton
+                icon={X}
+                label={clearLabel}
+                size="xs"
+                variant="ghost"
+                tabIndex={-1}
+                className="-me-1.5 shrink-0"
+                // Keep focus in the input: the press must not blur and close the list first.
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                }}
+                onClick={clear}
+              />
+            ) : undefined
+          }
         >
-          <ul
-            id={listId}
-            role="listbox"
-            aria-label={ariaLabel}
-            aria-labelledby={ariaLabel === undefined ? labelId : undefined}
-            hidden={visible.length === 0}
-            className={slots.list()}
+          {(controlClassName) => (
+            <>
+              <input
+                ref={(node) => {
+                  inputRef.current = node;
+                  if (typeof ref === "function") ref(node);
+                  else if (ref) ref.current = node;
+                }}
+                id={wired.id === "" ? id : wired.id}
+                type="text"
+                role="combobox"
+                autoComplete="off"
+                aria-autocomplete="list"
+                aria-expanded={isListShown}
+                aria-controls={listId}
+                aria-activedescendant={
+                  activeOption === undefined ? undefined : optionId(activeOption)
+                }
+                aria-label={ariaLabel}
+                aria-describedby={wired["aria-describedby"] ?? ariaDescribedby}
+                aria-invalid={wired.status === "error" || wired["aria-invalid"] ? true : undefined}
+                className={controlClassName}
+                placeholder={placeholder}
+                disabled={disabled}
+                value={text}
+                onChange={(event) => {
+                  setText(event.target.value);
+                  setIsFiltering(true);
+                  open(-1);
+                }}
+                onKeyDown={onKeyDown}
+                onBlur={onBlur}
+              />
+              {name === undefined || disabled ? null : (
+                <input type="hidden" name={name} value={current ?? ""} />
+              )}
+            </>
+          )}
+        </FieldControl>
+        {isListShown ? (
+          <div
+            data-surface="light"
+            role="presentation"
+            className={slots.popup()}
+            // Pressing in the popup (a scrollbar, a gap) must not blur the input and close it.
+            onMouseDown={(event) => {
+              event.preventDefault();
+            }}
+            // One delegate for the options: the input owns the keyboard (`aria-activedescendant`).
+            onClick={(event) => {
+              const option = optionAt(event.target);
+              if (option !== undefined) commit(option);
+            }}
+            onPointerMove={(event) => {
+              const option = optionAt(event.target);
+              if (option !== undefined && option.disabled !== true && option !== activeOption) {
+                setActiveIndex(visible.indexOf(option));
+              }
+            }}
           >
-            {visible.map((option) => {
-              const isActive = option === activeOption;
-              const isChosen = option.value === current;
-              return (
-                <li
-                  key={option.value}
-                  id={optionId(option)}
-                  role="option"
-                  aria-selected={isChosen}
-                  aria-disabled={option.disabled === true ? true : undefined}
-                  data-index={visible.indexOf(option)}
-                  data-active={isActive}
-                  className={slots.option({
-                    className: isChosen ? slots.selected() : undefined,
-                  })}
-                >
-                  {option.icon === undefined ? null : (
-                    <Icon
-                      icon={option.icon}
-                      size="sm"
-                      className={
-                        isActive || isChosen ? slots.optionIconActive() : slots.optionIcon()
-                      }
-                    />
-                  )}
-                  <span className={slots.body()}>
-                    <span>{renderLabel(option)}</span>
-                    {option.description === undefined ? null : (
-                      <span className={slots.description()}>{option.description}</span>
+            <ul
+              id={listId}
+              role="listbox"
+              aria-label={ariaLabel}
+              aria-labelledby={ariaLabel === undefined ? labelId : undefined}
+              hidden={visible.length === 0}
+              className={slots.list()}
+            >
+              {visible.map((option) => {
+                const isActive = option === activeOption;
+                const isChosen = option.value === current;
+                return (
+                  <li
+                    key={option.value}
+                    id={optionId(option)}
+                    role="option"
+                    aria-selected={isChosen}
+                    aria-disabled={option.disabled === true ? true : undefined}
+                    data-index={visible.indexOf(option)}
+                    data-active={isActive}
+                    className={slots.option({
+                      className: isChosen ? slots.selected() : undefined,
+                    })}
+                  >
+                    {option.icon === undefined ? null : (
+                      <Icon
+                        icon={option.icon}
+                        size="sm"
+                        className={
+                          isActive || isChosen ? slots.optionIconActive() : slots.optionIcon()
+                        }
+                      />
                     )}
-                  </span>
-                  {option.meta === undefined ? null : (
-                    <span className={slots.meta()}>{option.meta}</span>
-                  )}
-                  <span className={slots.diamond()}>
-                    {isChosen ? <BrandDiamond size="14px" fill="brand" /> : null}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-          {hasMessage ? (
-            <div role="status" className={slots.message()}>
-              {isLoading ? loadingLabel : emptyMessage}
-            </div>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
+                    <span className={slots.body()}>
+                      <span>{renderLabel(option)}</span>
+                      {option.description === undefined ? null : (
+                        <span className={slots.description()}>{option.description}</span>
+                      )}
+                    </span>
+                    {option.meta === undefined ? null : (
+                      <span className={slots.meta()}>{option.meta}</span>
+                    )}
+                    <span className={slots.diamond()}>
+                      {isChosen ? <BrandDiamond size="14px" fill="brand" /> : null}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+            {hasMessage ? (
+              <div role="status" className={slots.message()}>
+                {isLoading ? loadingLabel : emptyMessage}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    )
   );
 }

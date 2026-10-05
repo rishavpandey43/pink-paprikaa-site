@@ -199,6 +199,23 @@ describe("DatePicker", () => {
     await user.click(screen.getByRole("button", { name: /Booking date/ }));
     await expectNoA11yViolations(document.body);
   });
+
+  it("defaultOpen starts with the calendar shown; inline renders the calendar in flow", () => {
+    const { rerender } = render(<DatePicker aria-label="Booking date" defaultOpen />);
+    expect(screen.getByRole("grid")).toBeVisible();
+    rerender(<DatePicker aria-label="Booking date" inline defaultValue="2026-10-04" />);
+    expect(screen.getByRole("grid")).toBeVisible();
+    expect(screen.queryByRole("button", { name: /Booking date/ })).toBeNull();
+  });
+
+  it("renders Field around itself when given a label and error", () => {
+    render(<DatePicker label="Booking date" error="Pick a day" />);
+    expect(screen.getByRole("button", { name: "Booking date" })).toHaveAttribute(
+      "aria-invalid",
+      "true"
+    );
+    expect(screen.getByText("Pick a day")).toBeInTheDocument();
+  });
 });
 
 describe("Calendar", () => {

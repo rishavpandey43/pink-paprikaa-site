@@ -164,6 +164,7 @@ export {
   MenuLabel,
   MenuPanel,
   type MenuPanelProps,
+  type MenuProps,
   MenuRadioGroup,
   MenuRadioItem,
   type MenuRadioItemProps,

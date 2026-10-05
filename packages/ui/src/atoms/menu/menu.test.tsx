@@ -491,6 +491,35 @@ describe("Menu", () => {
     expect(screen.getByRole("menu")).toBeVisible();
   });
 
+  it("calls onClose when the menu closes", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    render(
+      <Menu defaultOpen onClose={onClose}>
+        <MenuTrigger asChild>
+          <DemoTrigger>Open</DemoTrigger>
+        </MenuTrigger>
+        <MenuContent aria-label="Menu">
+          <MenuItem>One</MenuItem>
+        </MenuContent>
+      </Menu>
+    );
+    await user.keyboard("{Escape}");
+    expect(onClose).toHaveBeenCalledWith("dismiss");
+  });
+
+  it("inline minWidth renders the panel in flow", () => {
+    render(
+      <Menu defaultOpen>
+        <MenuContent aria-label="Menu" inline minWidth={240}>
+          <MenuItem>One</MenuItem>
+        </MenuContent>
+      </Menu>
+    );
+    expect(screen.getByRole("menuitem", { name: "One" })).toBeVisible();
+    expect(screen.getByRole("menu")).toHaveStyle({ minWidth: "240px" });
+  });
+
   it("opens on mount with defaultOpen", () => {
     render(
       <Menu defaultOpen>

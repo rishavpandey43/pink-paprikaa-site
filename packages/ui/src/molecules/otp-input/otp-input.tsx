@@ -5,9 +5,11 @@ import type { ReactNode, Ref } from "react";
 import { useId, useState } from "react";
 
 import type { BaseProps } from "../../lib/common-props";
+import type { DesignFieldChrome } from "../../lib/design-field";
 import type { FieldStatus } from "../../lib/field-status";
 
 import { componentVariants } from "../../lib/component-variants";
+import { withDesignField } from "../../lib/design-field";
 import { fieldControlVariants } from "../../lib/field-control";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
 import { withSx } from "../../lib/sx";
@@ -69,10 +71,13 @@ const otpInput = componentVariants({
 type CellState = "empty" | "filled" | "active";
 
 /** The wrapper takes the div's native props; the code field keeps `ref`, `name`, `disabled`, `onBlur`. */
-export interface OtpInputProps extends Omit<
-  BaseProps<"div">,
-  "ref" | "onBlur" | "defaultValue" | "children" | "aria-describedby" | "aria-invalid"
-> {
+export interface OtpInputProps
+  extends
+    Omit<
+      BaseProps<"div">,
+      "ref" | "onBlur" | "defaultValue" | "children" | "aria-describedby" | "aria-invalid"
+    >,
+    DesignFieldChrome {
   /** Accessible name of the code field, e.g. "Login code". */
   label: string;
   length?: 4 | 6 | undefined;
@@ -107,6 +112,11 @@ export function OtpInput({
   onBlur,
   status = "default",
   message,
+  hint,
+  error,
+  success,
+  warning,
+  optional,
   disabled = false,
   name,
   sx,
@@ -130,55 +140,68 @@ export function OtpInput({
     return index < code.length ? "filled" : "empty";
   }
 
-  return (
-    <div {...props} className={styles.root({ className: withSx(sx, className) })}>
-      <div className={styles.field()}>
-        <div aria-hidden="true" data-surface="light" className={styles.cells()}>
-          {Array.from({ length }, (_, index) => {
-            const state = stateOf(index);
-            return (
-              <span
-                key={index}
-                data-state={state}
-                className={box.root({ className: styles.cell({ state }) })}
-              >
-                {code[index]}
-              </span>
-            );
-          })}
+  const chrome = { label, hint, error, success, warning, optional };
+  return withDesignField(
+    chrome,
+    undefined,
+    status,
+    (wired) => (
+      <div {...props} className={styles.root({ className: withSx(sx, className) })}>
+        <div className={styles.field()}>
+          <div aria-hidden="true" data-surface="light" className={styles.cells()}>
+            {Array.from({ length }, (_, index) => {
+              const state = stateOf(index);
+              return (
+                <span
+                  key={index}
+                  data-state={state}
+                  className={box.root({ className: styles.cell({ state }) })}
+                >
+                  {code[index]}
+                </span>
+              );
+            })}
+          </div>
+          <input
+            ref={ref}
+            id={wired.id === "" ? undefined : wired.id}
+            type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            pattern="[0-9]*"
+            aria-label={label}
+            aria-describedby={
+              wired["aria-describedby"] ??
+              (hasFieldMessage({ status: wired.status, message, hint }) ? messageId : undefined)
+            }
+            aria-invalid={wired.status === "error" || wired["aria-invalid"] ? true : undefined}
+            name={name}
+            value={code}
+            disabled={disabled}
+            onChange={(event) => {
+              setCode(event.currentTarget.value.replace(/\D/g, "").slice(0, length));
+            }}
+            onFocus={() => {
+              setIsFocused(true);
+            }}
+            // The caret is transparent and the cells show only "the next one", so pin the caret to
+            // the end: an arrow key or a tap can never move the insertion point out of sight.
+            onSelect={(event) => {
+              const end = event.currentTarget.value.length;
+              event.currentTarget.setSelectionRange(end, end);
+            }}
+            onBlur={() => {
+              setIsFocused(false);
+              onBlur?.();
+            }}
+            className={styles.input()}
+          />
         </div>
-        <input
-          ref={ref}
-          type="text"
-          inputMode="numeric"
-          autoComplete="one-time-code"
-          pattern="[0-9]*"
-          aria-label={label}
-          aria-describedby={hasFieldMessage({ status, message }) ? messageId : undefined}
-          aria-invalid={status === "error" ? true : undefined}
-          name={name}
-          value={code}
-          disabled={disabled}
-          onChange={(event) => {
-            setCode(event.currentTarget.value.replace(/\D/g, "").slice(0, length));
-          }}
-          onFocus={() => {
-            setIsFocused(true);
-          }}
-          // The caret is transparent and the cells show only "the next one", so pin the caret to
-          // the end: an arrow key or a tap can never move the insertion point out of sight.
-          onSelect={(event) => {
-            const end = event.currentTarget.value.length;
-            event.currentTarget.setSelectionRange(end, end);
-          }}
-          onBlur={() => {
-            setIsFocused(false);
-            onBlur?.();
-          }}
-          className={styles.input()}
-        />
+        {wired.id === "" ? (
+          <FieldMessage id={messageId} status={wired.status} message={message} hint={hint} />
+        ) : null}
       </div>
-      <FieldMessage id={messageId} status={status} message={message} />
-    </div>
+    ),
+    { ignoreLabel: true }
   );
 }

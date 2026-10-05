@@ -91,7 +91,8 @@ describe("SiteHeader", () => {
     const nav = screen.getByRole("navigation", { name: "Main" });
     const items = within(nav).getAllByRole("listitem");
     for (const item of items.slice(0, 3)) expect(item).not.toHaveClass("hidden");
-    for (const item of items.slice(3)) expect(item).toHaveClass("hidden", "xl:block");
+    expect(items[3]).toHaveClass("hidden", "nav-4:block");
+    for (const item of items.slice(4)) expect(item).toHaveClass("hidden", "xl:block");
     for (const link of within(nav).getAllByRole("link")) {
       expect(link).toHaveClass("whitespace-nowrap");
     }
@@ -113,9 +114,9 @@ describe("SiteHeader", () => {
     );
   });
 
-  it("hides the menu button from lg when every link fits inline", () => {
+  it("hides the menu button from 860px when every link fits inline", () => {
     render(<SiteHeader homeHref="#home" links={LINKS} />);
-    expect(screen.getByRole("button", { name: "Menu" })).toHaveClass("lg:hidden");
+    expect(screen.getByRole("button", { name: "Menu" })).toHaveClass("nav-3:hidden");
   });
 
   it("the drawer traps focus, locks the page, closes on Escape and on any link, and returns focus", async () => {

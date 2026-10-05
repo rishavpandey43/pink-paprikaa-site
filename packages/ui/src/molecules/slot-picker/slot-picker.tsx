@@ -3,10 +3,12 @@ import type { ReactNode } from "react";
 import { useId } from "react";
 
 import type { BaseProps } from "../../lib/common-props";
+import type { DesignFieldChrome } from "../../lib/design-field";
 import type { FieldStatus } from "../../lib/field-status";
 
 import { joinIds } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
+import { hasDesignFieldChrome, withDesignField } from "../../lib/design-field";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
 import { withSx } from "../../lib/sx";
 
@@ -53,7 +55,8 @@ export interface SlotOption {
   isDisabled?: boolean | undefined;
 }
 
-export interface SlotPickerProps extends Omit<BaseProps<"fieldset">, "onChange" | "defaultValue"> {
+export interface SlotPickerProps
+  extends Omit<BaseProps<"fieldset">, "onChange" | "defaultValue">, DesignFieldChrome {
   /** The radios' shared name — what a native form posts. */
   name: string;
   legend: ReactNode;
@@ -89,6 +92,12 @@ export function SlotPicker({
   columns,
   status = "default",
   message,
+  hint,
+  error,
+  success,
+  warning,
+  optional,
+  label,
   sx,
   className,
   "aria-describedby": describedBy,
@@ -98,63 +107,78 @@ export function SlotPicker({
   const messageId = `${baseId}-message`;
   const isControlled = value !== undefined && onValueChange !== undefined;
   const initialValue = value ?? defaultValue;
-  const styles = slotPicker({ status, isLegendHidden });
-
-  return (
-    <fieldset
-      {...props}
-      aria-describedby={joinIds(
-        describedBy,
-        hasFieldMessage({ status, message }) ? messageId : undefined
-      )}
-      className={styles.root({ className: withSx(sx, className) })}
-    >
-      <legend className={styles.legend()}>{legend}</legend>
-      <div
-        className={styles.grid({
-          className: columns === undefined ? "grid-cols-slot-picker" : COLUMN_CLASS[columns],
-        })}
-      >
-        {slots.map((slot, index) => {
-          const labelId = `${baseId}-slot-${String(index)}`;
-          const noteId = `${baseId}-note-${String(index)}`;
-          return (
-            <label
-              key={slot.value}
-              data-surface="light"
-              className={styles.slot({ isSoldOut: slot.isDisabled === true })}
-            >
-              <input
-                type="radio"
-                name={name}
-                value={slot.value}
-                disabled={slot.isDisabled}
-                aria-labelledby={labelId}
-                aria-describedby={slot.note === undefined ? undefined : noteId}
-                aria-invalid={status === "error" ? true : undefined}
-                {...(isControlled
-                  ? { checked: value === slot.value }
-                  : { defaultChecked: initialValue === slot.value })}
-                onChange={
-                  onValueChange === undefined
-                    ? undefined
-                    : (event) => {
-                        onValueChange(event.currentTarget.value);
-                      }
-                }
-                className={styles.input()}
-              />
-              <span id={labelId}>{slot.label}</span>
-              {slot.note === undefined ? null : (
-                <span id={noteId} className={styles.note()}>
-                  {slot.note}
-                </span>
-              )}
-            </label>
-          );
-        })}
-      </div>
-      <FieldMessage id={messageId} status={status} message={message} />
-    </fieldset>
+  const chrome = { label: label ?? legend, hint, error, success, warning, optional };
+  const shouldWrap = hasDesignFieldChrome(chrome, { ignoreLabel: label === undefined });
+  return withDesignField(
+    chrome,
+    undefined,
+    status,
+    (wired) => {
+      const styles = slotPicker({
+        status: wired.status,
+        isLegendHidden: shouldWrap || isLegendHidden,
+      });
+      return (
+        <fieldset
+          {...props}
+          aria-describedby={joinIds(
+            describedBy,
+            wired["aria-describedby"] ??
+              (hasFieldMessage({ status: wired.status, message, hint }) ? messageId : undefined)
+          )}
+          className={styles.root({ className: withSx(sx, className) })}
+        >
+          <legend className={styles.legend()}>{legend}</legend>
+          <div
+            className={styles.grid({
+              className: columns === undefined ? "grid-cols-slot-picker" : COLUMN_CLASS[columns],
+            })}
+          >
+            {slots.map((slot, index) => {
+              const labelId = `${baseId}-slot-${String(index)}`;
+              const noteId = `${baseId}-note-${String(index)}`;
+              return (
+                <label
+                  key={slot.value}
+                  data-surface="light"
+                  className={styles.slot({ isSoldOut: slot.isDisabled === true })}
+                >
+                  <input
+                    type="radio"
+                    name={name}
+                    value={slot.value}
+                    disabled={slot.isDisabled}
+                    aria-labelledby={labelId}
+                    aria-describedby={slot.note === undefined ? undefined : noteId}
+                    aria-invalid={wired.status === "error" ? true : undefined}
+                    {...(isControlled
+                      ? { checked: value === slot.value }
+                      : { defaultChecked: initialValue === slot.value })}
+                    onChange={
+                      onValueChange === undefined
+                        ? undefined
+                        : (event) => {
+                            onValueChange(event.currentTarget.value);
+                          }
+                    }
+                    className={styles.input()}
+                  />
+                  <span id={labelId}>{slot.label}</span>
+                  {slot.note === undefined ? null : (
+                    <span id={noteId} className={styles.note()}>
+                      {slot.note}
+                    </span>
+                  )}
+                </label>
+              );
+            })}
+          </div>
+          {shouldWrap ? null : (
+            <FieldMessage id={messageId} status={wired.status} message={message} hint={hint} />
+          )}
+        </fieldset>
+      );
+    },
+    { ignoreLabel: label === undefined }
   );
 }

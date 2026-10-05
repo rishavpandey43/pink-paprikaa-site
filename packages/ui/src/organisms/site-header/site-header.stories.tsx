@@ -199,6 +199,21 @@ export const HandoffCompact: Story = {};
 const NAV_EDGE_VIEWPORTS = {
   viewport: {
     options: {
+      navEdge860: {
+        name: "860 — three links",
+        styles: { width: "860px", height: "900px" },
+        type: "desktop",
+      },
+      navEdge1079: {
+        name: "1079 — still three",
+        styles: { width: "1079px", height: "900px" },
+        type: "desktop",
+      },
+      navEdge1080: {
+        name: "1080 — four links",
+        styles: { width: "1080px", height: "900px" },
+        type: "desktop",
+      },
       navEdge1279: {
         name: "1279 — one below xl",
         styles: { width: "1279px", height: "900px" },
@@ -237,6 +252,14 @@ const fitsWith =
 
 const SIX_LINKS = { links: WIDEST_LINKS, drawerLinks: WIDEST_LINKS, badge: undefined };
 
+/** Six links at 860px: three inline, the menu button carries the rest. */
+export const SixLinksAt860: Story = {
+  args: SIX_LINKS,
+  parameters: NAV_EDGE_VIEWPORTS,
+  globals: { viewport: { value: "navEdge860", isRotated: false } },
+  play: fitsWith(3),
+};
+
 /** Six links at 1024px: three inline, the menu button carries the rest. */
 export const SixLinksAt1024: Story = {
   args: SIX_LINKS,
@@ -244,12 +267,20 @@ export const SixLinksAt1024: Story = {
   play: fitsWith(3),
 };
 
-/** Six links one pixel below xl: three inline. */
+/** Six links at 1080px: four inline. */
+export const SixLinksAt1080: Story = {
+  args: SIX_LINKS,
+  parameters: NAV_EDGE_VIEWPORTS,
+  globals: { viewport: { value: "navEdge1080", isRotated: false } },
+  play: fitsWith(4),
+};
+
+/** Six links one pixel below xl: four inline. */
 export const SixLinksAt1279: Story = {
   args: SIX_LINKS,
   parameters: NAV_EDGE_VIEWPORTS,
   globals: { viewport: { value: "navEdge1279", isRotated: false } },
-  play: fitsWith(3),
+  play: fitsWith(4),
 };
 
 /** Six short links at xl: all inline (design ≥1280). */

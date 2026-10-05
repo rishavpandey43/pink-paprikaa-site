@@ -256,4 +256,9 @@ describe("SlotPicker", () => {
     render(<SlotPicker ref={ref} name="pickup" legend="Pickup time" slots={SLOTS} />);
     expect(ref.current).toBe(screen.getByRole("group", { name: "Pickup time" }));
   });
+
+  it("renders Field around itself when given an error message", () => {
+    render(<SlotPicker name="pickup" legend="Pickup time" slots={SLOTS} error="Pick a slot" />);
+    expect(screen.getByText("Pick a slot")).toBeInTheDocument();
+  });
 });

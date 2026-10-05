@@ -4,6 +4,8 @@
     "sm": { "$value": "480px" },
     "md": { "$value": "768px" },
     "lg": { "$value": "1024px" },
+    "nav-3": { "$value": "860px" },
+    "nav-4": { "$value": "1080px" },
     "xl": { "$value": "1280px" },
     "2xl": { "$value": "1440px" }
   }

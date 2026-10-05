@@ -154,4 +154,10 @@ describe("Checkbox", () => {
     const { container } = render(<Checkbox label="Jain (no onion, garlic)" sx={{ mt: 4 }} />);
     expect(container.firstElementChild).toHaveClass("mt-4");
   });
+
+  it("renders Field around itself when given an error message", () => {
+    render(<Checkbox label="Terms" error="Please accept" />);
+    expect(screen.getByRole("checkbox", { name: "Terms" })).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByText("Please accept")).toBeInTheDocument();
+  });
 });

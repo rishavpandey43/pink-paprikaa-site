@@ -135,7 +135,7 @@ const BLUR = ["glass"];
 const EASE = ["out", "in-out", "entrance", "pop"];
 const CONTAINER = ["content", "wide", "narrow", "article", "prose", "prose-narrow"];
 const ASPECT = ["square", "4-3", "3-4", "4-5", "16-9", "16-10", "wide"];
-const BREAKPOINT = ["sm", "md", "lg", "xl", "2xl"];
+const BREAKPOINT = ["sm", "md", "lg", "nav-3", "nav-4", "xl", "2xl"];
 const SPACING = [
   "gutter",
   "gutter-mobile",

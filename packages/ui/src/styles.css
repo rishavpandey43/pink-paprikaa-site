@@ -466,6 +466,26 @@
   max-height: min(70vh, 520px);
 }
 
+/* Pin a Radix sheet to the viewport bottom. Position, inset and transform must also stay
+   inline on Radix Content: it writes those on the style attribute, which a class cannot beat. */
+@utility sheet-pin {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  max-width: 100%;
+}
+
+/* Radix Popover sets --radix-popover-trigger-width on the content (design minWidth = anchor). */
+@utility min-w-popover-trigger {
+  min-width: var(--radix-popover-trigger-width);
+}
+
+@utility transition-switch-knob {
+  transition-property: transform, width, height;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+
 @utility z-toast {
   z-index: var(--z-toast);
 }

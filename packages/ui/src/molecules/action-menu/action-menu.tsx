@@ -17,6 +17,7 @@ import {
   MenuLabel,
   MenuTrigger,
 } from "../../atoms/menu/menu";
+import { placementSideAlign } from "../../lib/popover-shell";
 import { withSx } from "../../lib/sx";
 
 export type ActionMenuItem =
@@ -50,6 +51,8 @@ export interface ActionMenuProps extends SxProp {
   open?: boolean | undefined;
   onOpenChange?: ((open: boolean) => void) | undefined;
   className?: string | undefined;
+  placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end" | undefined;
+  minWidth?: number | undefined;
 }
 
 function isDivider(item: ActionMenuItem): item is { divider: true } {
@@ -79,9 +82,12 @@ export function ActionMenu({
   onOpenChange,
   sx,
   className,
+  placement = "bottom-end",
+  minWidth,
 }: ActionMenuProps) {
   const TriggerIcon = icon === "ellipsis" ? Ellipsis : EllipsisVertical;
   const sheetTitle = title ?? label;
+  const placed = placementSideAlign(placement);
 
   return (
     <span className={withSx(sx, `inline-flex ${className ?? ""}`.trim())}>
@@ -89,7 +95,15 @@ export function ActionMenu({
         <MenuTrigger asChild>
           <IconButton icon={TriggerIcon} label={label} variant={variant} size={size} />
         </MenuTrigger>
-        <MenuContent aria-label={label} title={sheetTitle} sheet={sheet} side="bottom" align="end">
+        <MenuContent
+          aria-label={label}
+          title={sheetTitle}
+          sheet={sheet}
+          side={placed.side ?? "bottom"}
+          align={placed.align ?? "end"}
+          placement={placement}
+          minWidth={minWidth}
+        >
           {items.map((item, index) => {
             if (isDivider(item)) {
               return <MenuDivider key={`d-${String(index)}`} />;

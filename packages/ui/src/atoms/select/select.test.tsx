@@ -228,4 +228,57 @@ describe("Select", () => {
     await user.keyboard(" ");
     expect(screen.getByRole("listbox")).toBeVisible();
   });
+
+  it("never lets a long option label widen its box: the trigger truncates", () => {
+    render(
+      <Select
+        aria-label="Outlet"
+        defaultValue="long"
+        options={[{ value: "long", label: "A very very long outlet name that would overflow" }]}
+      />
+    );
+    expect(screen.getByRole("combobox").querySelector(".truncate")).not.toBeNull();
+  });
+
+  it("a read-only placeholder posts nothing", () => {
+    const { container } = render(
+      <form noValidate>
+        <Select aria-label="Outlet" name="outlet" readOnly placeholder="Pick" options={SLOTS} />
+      </form>
+    );
+    expect(container.querySelector('input[type="hidden"]')).toBeNull();
+    expect(container.querySelector("select")?.getAttribute("name")).toBeNull();
+  });
+
+  it("submits nothing when read-only and disabled", () => {
+    const { container } = render(
+      <form noValidate>
+        <Select
+          aria-label="Outlet"
+          name="outlet"
+          readOnly
+          disabled
+          defaultValue="20:00"
+          options={SLOTS}
+        />
+      </form>
+    );
+    expect(container.querySelector('input[type="hidden"]')).toBeNull();
+  });
+
+  it("keeps defaultValue over the placeholder", () => {
+    render(
+      <Select aria-label="Outlet" defaultValue="20:00" placeholder="Choose" options={SLOTS} />
+    );
+    expect(screen.getByRole("combobox")).toHaveTextContent("8:00pm");
+  });
+
+  it("renders Field around itself when given a label and error", () => {
+    render(<Select label="Pickup time" error="Pick a slot" options={SLOTS} />);
+    expect(screen.getByRole("combobox", { name: "Pickup time" })).toHaveAttribute(
+      "aria-invalid",
+      "true"
+    );
+    expect(screen.getByText("Pick a slot")).toBeInTheDocument();
+  });
 });

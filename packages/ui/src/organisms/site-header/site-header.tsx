@@ -20,8 +20,9 @@ export interface NavLink {
   isActive?: boolean | undefined;
 }
 
-/** Between lg and xl the inline nav keeps its first three links; from xl every link shows (design ≥1280). */
-const INLINE_LINKS_BELOW_XL = 3;
+/** Three links from 860px (`nav-3`), four from 1080px (`nav-4`), all from 1280px (`xl`). */
+const INLINE_LINKS_NAV_3 = 3;
+const INLINE_LINKS_NAV_4 = 4;
 
 const siteHeader = componentVariants({
   slots: {
@@ -33,7 +34,7 @@ const siteHeader = componentVariants({
     home: "flex shrink-0 items-center rounded-sm transition-control hover:opacity-82 active:press-scale",
     logo: "h-auto",
     badge: "flex shrink-0 items-center",
-    nav: "ml-3 hidden lg:block",
+    nav: "ml-3 hidden nav-3:block",
     navList: "flex flex-nowrap items-center gap-6",
     navItem: "shrink-0",
     navLink:
@@ -56,8 +57,13 @@ const siteHeader = componentVariants({
     isActive: {
       true: { navLink: "border-border-brand text-text-brand", drawerLink: "text-text-brand" },
     },
-    isHiddenBelowXl: { true: { navItem: "hidden xl:block" } },
-    hasHiddenLinks: { true: { menuButton: "xl:hidden" }, false: { menuButton: "lg:hidden" } },
+    isHiddenFromNav4: { true: { navItem: "hidden nav-4:block" } },
+    isHiddenFromXl: { true: { navItem: "hidden xl:block" } },
+    menuFits: {
+      xl: { menuButton: "xl:hidden" },
+      nav4: { menuButton: "nav-4:hidden" },
+      nav3: { menuButton: "nav-3:hidden" },
+    },
   },
   defaultVariants: { size: "default" },
 });
@@ -66,9 +72,8 @@ export interface SiteHeaderProps
   extends BaseProps<"header">, Pick<VariantProps<typeof siteHeader>, "size"> {
   homeHref: string;
   /**
-   * Inline nav links. Three show between lg and xl; all from xl (the rest stay in the drawer).
-   * Use the design's short labels (Menu, Our Story, Outlets, Franchise, Careers) so five fit at
-   * 1280 with the badge and two actions.
+   * Inline nav links. Three show from 860px, four from 1080px, all from 1280px (the rest stay in
+   * the drawer). Use the design's short labels so they fit with the badge and two actions.
    */
   links: NavLink[];
   /** Accessible name of the home link. Default "Pink Paprikaa home". */
@@ -130,7 +135,12 @@ export function SiteHeader({
   ...props
 }: SiteHeaderProps) {
   const slots = siteHeader({ size });
-  const hasHiddenLinks = links.length > INLINE_LINKS_BELOW_XL;
+  const menuFits =
+    links.length > INLINE_LINKS_NAV_4
+      ? "xl"
+      : links.length === INLINE_LINKS_NAV_4
+        ? "nav4"
+        : "nav3";
   const hasDrawer = drawerLinks.length > 0 || isShown(drawerActions);
   return (
     <header className={slots.root({ className: withSx(sx, className) })} {...props}>
@@ -151,7 +161,8 @@ export function SiteHeader({
                   <li
                     key={link.href}
                     className={slots.navItem({
-                      isHiddenBelowXl: index >= INLINE_LINKS_BELOW_XL,
+                      isHiddenFromNav4: index === INLINE_LINKS_NAV_3,
+                      isHiddenFromXl: index >= INLINE_LINKS_NAV_4,
                     })}
                   >
                     <Link
@@ -181,7 +192,7 @@ export function SiteHeader({
             <SiteHeaderDrawer
               menuLabel={menuLabel}
               closeLabel={closeMenuLabel}
-              triggerClassName={slots.menuButton({ hasHiddenLinks })}
+              triggerClassName={slots.menuButton({ menuFits })}
               portalContainer={portalContainer}
             >
               {drawerLinks.length > 0 ? (

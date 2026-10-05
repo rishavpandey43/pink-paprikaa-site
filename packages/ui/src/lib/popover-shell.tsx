@@ -94,3 +94,26 @@ export function PopoverSheetChrome({
     </div>
   );
 }
+
+/** Design `minWidth` default: match the trigger (`--radix-popover-trigger-width`). */
+export const matchTriggerWidth = "min-w-popover-trigger";
+
+export type Placement = "bottom-start" | "bottom-end" | "top-start" | "top-end";
+
+export function placementSideAlign(placement: Placement | undefined): {
+  side?: "top" | "bottom" | undefined;
+  align?: "start" | "end" | undefined;
+} {
+  if (placement === undefined) return {};
+  const [side, align] = placement.split("-") as ["top" | "bottom", "start" | "end"];
+  return { side, align };
+}
+
+export function reportOpenChange(
+  next: boolean,
+  onOpenChange: ((open: boolean) => void) | undefined,
+  onClose: ((reason: string) => void) | undefined
+): void {
+  onOpenChange?.(next);
+  if (!next) onClose?.("dismiss");
+}

@@ -78,4 +78,10 @@ describe("ActionMenu", () => {
     const { container } = render(<ActionMenu items={ITEMS} sx={{ mt: 4 }} />);
     expect(container.firstElementChild).toHaveClass("mt-4");
   });
+
+  it("takes placement and minWidth on the open menu", () => {
+    render(<ActionMenu items={ITEMS} defaultOpen placement="top-start" minWidth={280} />);
+    const menu = screen.getByRole("menu");
+    expect(menu).toHaveStyle({ minWidth: "280px" });
+  });
 });

@@ -5,9 +5,11 @@ import { Check } from "lucide-react";
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
 import type { SxProp } from "../../lib/common-props";
+import type { DesignFieldChrome } from "../../lib/design-field";
 
 import { ChoiceControl } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
+import { hasDesignFieldChrome, withDesignField } from "../../lib/design-field";
 import { Icon } from "../icon/icon";
 
 /** 22px, 6px radius, 2px border; checked is pink with a white 14px tick. */
@@ -25,7 +27,8 @@ const box = componentVariants({
   ],
 });
 
-export interface CheckboxProps extends Omit<ComponentProps<"input">, "type" | "size">, SxProp {
+export interface CheckboxProps
+  extends Omit<ComponentProps<"input">, "type" | "size">, SxProp, DesignFieldChrome {
   label: ReactNode;
   /** Secondary line under the label, announced as the description. */
   description?: ReactNode;
@@ -36,17 +39,39 @@ export interface CheckboxProps extends Omit<ComponentProps<"input">, "type" | "s
 }
 
 /** Multi-select choice — menu add-ons, dietary preferences, consent. */
-export function Checkbox({ price, ...props }: CheckboxProps) {
-  return (
-    <ChoiceControl
-      type="checkbox"
-      control={
-        <span className={box()}>
-          <Icon icon={Check} size="xs" />
-        </span>
-      }
-      price={price === undefined ? undefined : `+${formatRupees(price)}`}
-      {...props}
-    />
+export function Checkbox({
+  price,
+  hint,
+  error,
+  success,
+  warning,
+  optional,
+  id,
+  isInvalid,
+  ...props
+}: CheckboxProps) {
+  const chrome = { label: props.label, hint, error, success, warning, optional };
+  const shouldWrap = hasDesignFieldChrome(chrome, { ignoreLabel: true });
+  return withDesignField(
+    chrome,
+    id,
+    isInvalid === true || (error !== undefined && error !== false) ? "error" : "default",
+    (wired) => (
+      <ChoiceControl
+        type="checkbox"
+        control={
+          <span className={box()}>
+            <Icon icon={Check} size="xs" />
+          </span>
+        }
+        price={price === undefined ? undefined : `+${formatRupees(price)}`}
+        id={wired.id === "" ? id : wired.id}
+        isInvalid={wired.status === "error" || isInvalid}
+        isLabelHidden={shouldWrap}
+        {...props}
+        label={shouldWrap ? "" : props.label}
+      />
+    ),
+    { ignoreLabel: true }
   );
 }

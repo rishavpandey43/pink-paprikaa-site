@@ -16,6 +16,7 @@ import { isShown } from "../../lib/is-shown";
 import {
   PopoverSheetChrome,
   popoverShellVariants,
+  reportOpenChange,
   type SheetMode,
   useAsSheet,
 } from "../../lib/popover-shell";
@@ -55,6 +56,8 @@ export interface PopoverProps extends Omit<BaseProps<"div">, "title" | "children
   open?: boolean | undefined;
   defaultOpen?: boolean | undefined;
   onOpenChange?: ((open: boolean) => void) | undefined;
+  /** Design `onClose` — called when the popover goes from open to closed (R148). */
+  onClose?: ((reason: string) => void) | undefined;
   /** Portal target; default `document.body`. */
   portalContainer?: HTMLElement | null | undefined;
   /** `"auto"` = bottom sheet at ≤640px. */
@@ -85,6 +88,7 @@ export function Popover({
   open,
   defaultOpen,
   onOpenChange,
+  onClose,
   portalContainer = null,
   sheet = "auto",
   inline = false,
@@ -137,7 +141,13 @@ export function Popover({
     <RadixPopover.Root
       {...(open === undefined ? {} : { open })}
       {...(defaultOpen === undefined ? {} : { defaultOpen })}
-      {...(onOpenChange === undefined ? {} : { onOpenChange })}
+      {...(onOpenChange === undefined && onClose === undefined
+        ? {}
+        : {
+            onOpenChange: (next: boolean) => {
+              reportOpenChange(next, onOpenChange, onClose);
+            },
+          })}
     >
       <RadixPopover.Trigger asChild>{trigger}</RadixPopover.Trigger>
       <RadixPopover.Portal container={portalContainer}>
@@ -147,12 +157,12 @@ export function Popover({
               data-surface="light"
               {...(hasTitle ? { "aria-labelledby": titleId } : {})}
               {...props}
-              className="w-full border-0 bg-transparent p-0 shadow-none outline-none"
+              className="sheet-pin w-full border-0 bg-transparent p-0 shadow-none outline-none"
               style={{
                 position: "fixed",
                 inset: "auto 0 0 0",
-                transform: "none",
                 maxWidth: "100%",
+                transform: "none",
               }}
               onOpenAutoFocus={(event) => {
                 event.preventDefault();

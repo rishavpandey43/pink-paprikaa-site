@@ -120,6 +120,9 @@ export interface MenuPanelProps {
   /** Reports the highlighted row when it moves (design Menu `onActiveChange`). */
   onActiveChange?: ((index: number) => void) | undefined;
   "aria-label"?: string | undefined;
+  autoFocus?: boolean | undefined;
+  inline?: boolean | undefined;
+  minWidth?: number | undefined;
 }
 
 /**
@@ -137,24 +140,29 @@ export function MenuPanel({
   activeIndex = -1,
   onActiveChange,
   "aria-label": ariaLabel,
+  autoFocus = true,
+  inline = false,
+  minWidth,
 }: MenuPanelProps) {
   const autoId = useId();
   const uid = id ?? autoId;
   const list = normalizeMenuItems(items);
   const slots = menuPanelVariants({ isSheet });
   const optionRole = role === "listbox" ? "option" : "menuitem";
+  const panelClass = inline ? slots.content({ className: "relative z-auto" }) : slots.content();
+  const panelStyle = minWidth === undefined ? undefined : { minWidth };
 
   if (list.length === 0) {
     // Empty listbox must not claim `role="listbox"` without options (aria-required-children).
     return (
-      <div role="status" id={uid} aria-label={ariaLabel} className={slots.content()}>
+      <div role="status" id={uid} aria-label={ariaLabel} className={panelClass} style={panelStyle}>
         <MenuEmpty>{emptyText}</MenuEmpty>
       </div>
     );
   }
 
   return (
-    <div role={role} id={uid} aria-label={ariaLabel} className={slots.content()}>
+    <div role={role} id={uid} aria-label={ariaLabel} className={panelClass} style={panelStyle}>
       {list.map((entry, index) => {
         if (typeof entry === "object" && "divider" in entry) {
           return <div key={`d-${String(index)}`} role="separator" className={slots.divider()} />;
@@ -177,7 +185,7 @@ export function MenuPanel({
             key={`${entry.value}-${String(index)}`}
             id={`${uid}-o${String(index)}`}
             role={optionRole}
-            tabIndex={isDisabled ? -1 : 0}
+            tabIndex={isDisabled || !autoFocus ? -1 : 0}
             {...(role === "listbox" ? { "aria-selected": isChosen } : {})}
             {...(isDisabled ? { "aria-disabled": true } : {})}
             {...(isChosen ? { "data-selected": "" } : {})}

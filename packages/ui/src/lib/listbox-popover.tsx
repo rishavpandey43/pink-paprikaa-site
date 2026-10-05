@@ -47,12 +47,12 @@ export function ListboxPopover({
             <RadixPopover.Content
               data-surface="light"
               aria-label={ariaLabel}
-              className="w-full border-0 bg-transparent p-0 shadow-none outline-none"
+              className="sheet-pin w-full border-0 bg-transparent p-0 shadow-none outline-none"
               style={{
                 position: "fixed",
                 inset: "auto 0 0 0",
-                transform: "none",
                 maxWidth: "100%",
+                transform: "none",
               }}
               onOpenAutoFocus={(event) => {
                 event.preventDefault();

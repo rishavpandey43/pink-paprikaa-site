@@ -245,4 +245,9 @@ describe("OtpInput", () => {
     expect(wrapper).toHaveClass("mt-4", "italic");
     expect(ref.current).toBe(screen.getByRole("textbox", { name: "Login code" }));
   });
+
+  it("renders Field around itself when given a hint", () => {
+    render(<OtpInput label="Login code" hint="The code lasts 10 minutes." />);
+    expect(screen.getByText("The code lasts 10 minutes.")).toBeInTheDocument();
+  });
 });

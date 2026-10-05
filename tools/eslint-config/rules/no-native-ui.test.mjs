@@ -18,10 +18,6 @@ tester.run("no-native-ui", rule, {
       filename: "/packages/ui/src/lib/platform-select.tsx",
     },
     {
-      code: "const el = <select><option>A</option></select>;",
-      filename: "/packages/ui/src/atoms/select/select.tsx",
-    },
-    {
       code: 'const el = <input type="range" />;',
       filename: "/packages/ui/src/atoms/slider/slider.tsx",
     },
@@ -31,6 +27,11 @@ tester.run("no-native-ui", rule, {
     { code: "const el = <form noValidate />;", filename: "/app.tsx" },
   ],
   invalid: [
+    {
+      code: "const el = <select><option>A</option></select>;",
+      filename: "/packages/ui/src/atoms/select/select.tsx",
+      errors: [{ messageId: "select" }],
+    },
     {
       code: "const el = <select><option>A</option></select>;",
       filename: "/packages/ui/src/atoms/input/input.tsx",

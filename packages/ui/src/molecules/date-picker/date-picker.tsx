@@ -5,19 +5,23 @@ import type { KeyboardEvent } from "react";
 import { CalendarDays } from "lucide-react";
 import { useId, useState } from "react";
 
+import type { IconComponent } from "../../atoms/icon/icon";
 import type { SxProp } from "../../lib/common-props";
+import type { DesignFieldChrome } from "../../lib/design-field";
 import type { FieldStatus } from "../../lib/field-status";
+import type { SheetMode } from "../../lib/popover-shell";
 import type { Matcher } from "./calendar";
 
 import { Popover } from "../../atoms/popover/popover";
 import { componentVariants } from "../../lib/component-variants";
+import { withDesignField } from "../../lib/design-field";
 import { FieldControl } from "../../lib/field-control";
 import { formatDate, fromIsoDate, toIsoDate } from "../../lib/format-date";
 import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
 import { Calendar } from "./calendar";
 
-export interface DatePickerProps extends SxProp {
+export interface DatePickerProps extends SxProp, DesignFieldChrome {
   /** ISO `yyyy-mm-dd` (R133). Empty string = no day chosen. */
   value?: string | undefined;
   defaultValue?: string | undefined;
@@ -47,6 +51,14 @@ export interface DatePickerProps extends SxProp {
   id?: string | undefined;
   "aria-label"?: string | undefined;
   "aria-describedby"?: string | undefined;
+  /** Leading trigger icon. Default CalendarDays. */
+  icon?: IconComponent | undefined;
+  /** `"auto"` = bottom sheet at ≤640px. */
+  sheet?: SheetMode | undefined;
+  /** Render just the calendar card in flow (docs/specimens). */
+  inline?: boolean | undefined;
+  /** Docs/specimens: start with the calendar open. */
+  defaultOpen?: boolean | undefined;
 }
 
 const datePicker = componentVariants({
@@ -82,12 +94,22 @@ export function DatePicker({
   status = "default",
   portalContainer,
   id,
+  label,
+  hint,
+  error,
+  success,
+  warning,
+  optional,
+  icon = CalendarDays,
+  sheet = "auto",
+  inline = false,
+  defaultOpen = false,
   "aria-label": ariaLabel,
   "aria-describedby": ariaDescribedby,
   sx,
 }: DatePickerProps) {
   const valueId = useId();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const [iso, setIso] = useControllableState<string>({
     value,
     defaultValue: defaultValue ?? "",
@@ -108,62 +130,76 @@ export function DatePicker({
     }
   };
 
-  return (
-    <FieldControl
-      icon={CalendarDays}
-      size={size}
-      status={status}
-      isReadOnly={readOnly}
-      isExpanded={isOpen}
-      className={slots.box({ className: withSx(sx, undefined) })}
-    >
-      {(controlClassName) => (
-        <>
-          <Popover
-            open={isOpen}
-            onOpenChange={(next) => {
-              if (!isLocked) setIsOpen(next);
-            }}
-            portalContainer={portalContainer}
-            align="start"
-            aria-label="Choose a date"
-            sheet="auto"
-            trigger={
-              <button
-                id={id}
-                type="button"
-                className={`${controlClassName} ${slots.trigger()}`}
-                disabled={disabled}
-                aria-label={ariaLabel}
-                aria-describedby={
-                  ariaDescribedby === undefined ? valueId : `${valueId} ${ariaDescribedby}`
-                }
-                aria-invalid={status === "error" ? true : undefined}
-                onKeyDown={onTriggerKeyDown}
-              >
-                <span id={valueId} className={date === null ? slots.placeholder() : undefined}>
-                  {display}
-                </span>
-              </button>
-            }
-          >
-            <Calendar
-              mode="single"
-              selected={date ?? undefined}
-              weekStart={weekStart}
-              {...(disabledDays === undefined ? {} : { disabled: disabledDays })}
-              {...(fromDate === undefined ? {} : { fromDate })}
-              {...(toDate === undefined ? {} : { toDate })}
-              shouldFocusDay
-              onSelect={(next) => {
-                if (next instanceof Date) setIso(toIsoDate(next));
-                setIsOpen(false);
+  const calendar = (
+    <Calendar
+      mode="single"
+      selected={date ?? undefined}
+      weekStart={weekStart}
+      {...(disabledDays === undefined ? {} : { disabled: disabledDays })}
+      {...(fromDate === undefined ? {} : { fromDate })}
+      {...(toDate === undefined ? {} : { toDate })}
+      shouldFocusDay={!inline}
+      onSelect={(next) => {
+        if (next instanceof Date) setIso(toIsoDate(next));
+        if (!inline) setIsOpen(false);
+      }}
+    />
+  );
+
+  return withDesignField({ label, hint, error, success, warning, optional }, id, status, (wired) =>
+    inline ? (
+      calendar
+    ) : (
+      <FieldControl
+        icon={icon}
+        size={size}
+        status={wired.status}
+        isReadOnly={readOnly}
+        isExpanded={isOpen}
+        className={slots.box({ className: withSx(sx, undefined) })}
+      >
+        {(controlClassName) => (
+          <>
+            <Popover
+              open={isOpen}
+              onOpenChange={(next) => {
+                if (!isLocked) setIsOpen(next);
               }}
-            />
-          </Popover>
-          {name === undefined || disabled ? null : <input type="hidden" name={name} value={iso} />}
-        </>
-      )}
-    </FieldControl>
+              portalContainer={portalContainer}
+              align="start"
+              aria-label="Choose a date"
+              sheet={sheet}
+              trigger={
+                // eslint-disable-next-line jsx-a11y/role-supports-aria-props -- ARIA 1.2: any widget
+                <button
+                  id={wired.id === "" ? id : wired.id}
+                  type="button"
+                  className={`${controlClassName} ${slots.trigger()}`}
+                  disabled={disabled}
+                  aria-label={ariaLabel}
+                  aria-describedby={
+                    wired["aria-describedby"] ??
+                    (ariaDescribedby === undefined ? valueId : `${valueId} ${ariaDescribedby}`)
+                  }
+                  aria-invalid={
+                    wired.status === "error" || wired["aria-invalid"] ? true : undefined
+                  }
+                  onKeyDown={onTriggerKeyDown}
+                >
+                  <span id={valueId} className={date === null ? slots.placeholder() : undefined}>
+                    {display}
+                  </span>
+                </button>
+              }
+            >
+              {calendar}
+            </Popover>
+            {name === undefined || disabled ? null : (
+              <input type="hidden" name={name} value={iso} />
+            )}
+          </>
+        )}
+      </FieldControl>
+    )
   );
 }

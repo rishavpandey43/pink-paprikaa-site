@@ -98,7 +98,11 @@ describe("SiteFooter", () => {
       <SiteFooter
         columns={COLUMNS}
         social={[
-          { network: "instagram", href: "https://instagram.com/pinkpaprikaa", label: "Instagram" },
+          {
+            network: "instagram",
+            href: "https://instagram.com/thepinkpaprikaa/",
+            label: "Instagram",
+          },
         ]}
         policies={[{ label: "Privacy Policy", href: "#privacy" }]}
       />
@@ -120,7 +124,11 @@ describe("SiteFooter", () => {
       <SiteFooter
         columns={COLUMNS}
         social={[
-          { network: "instagram", href: "https://instagram.com/pinkpaprikaa", label: "Instagram" },
+          {
+            network: "instagram",
+            href: "https://instagram.com/thepinkpaprikaa/",
+            label: "Instagram",
+          },
         ]}
       />
     );
@@ -134,14 +142,18 @@ describe("SiteFooter", () => {
       <SiteFooter
         columns={COLUMNS}
         social={[
-          { network: "instagram", href: "https://instagram.com/pinkpaprikaa", label: "Instagram" },
+          {
+            network: "instagram",
+            href: "https://instagram.com/thepinkpaprikaa/",
+            label: "Instagram",
+          },
           { network: "youtube", href: "https://youtube.com/@pinkpaprikaa", label: "YouTube" },
         ]}
       />
     );
     // The aria-label overrides the anchor's content, so the label itself announces the new tab (R111).
     const instagram = screen.getByRole("link", { name: "Instagram (Opens in a new tab)" });
-    expect(instagram).toHaveAttribute("href", "https://instagram.com/pinkpaprikaa");
+    expect(instagram).toHaveAttribute("href", "https://instagram.com/thepinkpaprikaa/");
     expect(instagram).toHaveAttribute("target", "_blank");
     expect(instagram).toHaveAttribute("rel", "noopener noreferrer");
     expect(screen.getByRole("link", { name: "YouTube (Opens in a new tab)" })).toBeInTheDocument();
@@ -228,7 +240,11 @@ describe("SiteFooter", () => {
         columns={COLUMNS}
         brand={<p>100% Pure Veg Kitchen</p>}
         social={[
-          { network: "instagram", href: "https://instagram.com/pinkpaprikaa", label: "Instagram" },
+          {
+            network: "instagram",
+            href: "https://instagram.com/thepinkpaprikaa/",
+            label: "Instagram",
+          },
         ]}
         legal={<span>© 2026 Paprikaa Culinary Ventures Private Limited</span>}
         policies={[{ label: "Privacy Policy", href: "#privacy" }]}

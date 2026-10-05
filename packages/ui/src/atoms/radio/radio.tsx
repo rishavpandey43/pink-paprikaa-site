@@ -3,9 +3,11 @@ import { type ComponentProps, type ReactElement, type ReactNode, useId } from "r
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
 import type { SxProp } from "../../lib/common-props";
+import type { DesignFieldChrome } from "../../lib/design-field";
 
 import { ChoiceControl, joinIds } from "../../lib/choice-control";
 import { componentVariants } from "../../lib/component-variants";
+import { hasDesignFieldChrome, withDesignField } from "../../lib/design-field";
 import { FIELD_STATUS_ICON, type FieldStatus } from "../../lib/field-status";
 import { withSx } from "../../lib/sx";
 import { Icon } from "../icon/icon";
@@ -50,7 +52,8 @@ const radioGroup = componentVariants({
   defaultVariants: { orientation: "vertical", status: "default", isLegendHidden: false },
 });
 
-export interface RadioProps extends Omit<ComponentProps<"input">, "type" | "size">, SxProp {
+export interface RadioProps
+  extends Omit<ComponentProps<"input">, "type" | "size">, SxProp, DesignFieldChrome {
   label: ReactNode;
   description?: ReactNode;
   /** Absolute price of this option in whole rupees; renders as "₹280". */
@@ -59,14 +62,36 @@ export interface RadioProps extends Omit<ComponentProps<"input">, "type" | "size
 }
 
 /** Exactly-one choice — portion size, spice level, payment method. Give a group one shared `name`. */
-export function Radio({ price, ...props }: RadioProps) {
-  return (
-    <ChoiceControl
-      type="radio"
-      control={<span className={ring()} />}
-      price={price === undefined ? undefined : formatRupees(price)}
-      {...props}
-    />
+export function Radio({
+  price,
+  hint,
+  error,
+  success,
+  warning,
+  optional,
+  id,
+  isInvalid,
+  ...props
+}: RadioProps) {
+  const chrome = { label: props.label, hint, error, success, warning, optional };
+  const shouldWrap = hasDesignFieldChrome(chrome, { ignoreLabel: true });
+  return withDesignField(
+    chrome,
+    id,
+    isInvalid === true || (error !== undefined && error !== false) ? "error" : "default",
+    (wired) => (
+      <ChoiceControl
+        type="radio"
+        control={<span className={ring()} />}
+        price={price === undefined ? undefined : formatRupees(price)}
+        id={wired.id === "" ? id : wired.id}
+        isInvalid={wired.status === "error" || isInvalid}
+        isLabelHidden={shouldWrap}
+        {...props}
+        label={shouldWrap ? "" : props.label}
+      />
+    ),
+    { ignoreLabel: true }
   );
 }
 

@@ -19,7 +19,12 @@ import type { SxProp } from "../../lib/common-props";
 import { BrandDiamond } from "../../lib/brand-diamond";
 import { isShown } from "../../lib/is-shown";
 import { menuPanelVariants } from "../../lib/menu-panel";
-import { type SheetMode, useAsSheet } from "../../lib/popover-shell";
+import {
+  placementSideAlign,
+  reportOpenChange,
+  type SheetMode,
+  useAsSheet,
+} from "../../lib/popover-shell";
 import { withSx } from "../../lib/sx";
 import { Icon, type IconComponent } from "../icon/icon";
 
@@ -41,6 +46,16 @@ function selectProps(
   return { ...disabledProps(disabled), ...(onSelect === undefined ? {} : { onSelect }) };
 }
 
+export interface MenuRootProps {
+  open?: boolean | undefined;
+  defaultOpen?: boolean | undefined;
+  onOpenChange?: ((open: boolean) => void) | undefined;
+  /** Design `onClose` — called when the menu goes from open to closed (R148). */
+  onClose?: ((reason: string) => void) | undefined;
+  modal?: boolean | undefined;
+  children: ReactNode;
+}
+
 /**
  * MUI's `<Menu>` + `anchorEl` + `open` + `onClose`, on Radix DropdownMenu: the trigger is a part,
  * which gives correct `aria-haspopup`/`aria-expanded`/`aria-controls`, focus return, typeahead and
@@ -50,24 +65,19 @@ export function Menu({
   open: openProp,
   defaultOpen = false,
   onOpenChange,
+  onClose,
   modal,
   children,
-}: {
-  open?: boolean | undefined;
-  defaultOpen?: boolean | undefined;
-  onOpenChange?: ((open: boolean) => void) | undefined;
-  modal?: boolean | undefined;
-  children: ReactNode;
-}) {
+}: MenuRootProps) {
   const [isUncontrolledOpen, setIsUncontrolledOpen] = useState(defaultOpen);
   const isControlled = openProp !== undefined;
   const isOpen = isControlled ? openProp : isUncontrolledOpen;
   const setIsOpen = useCallback(
     (next: boolean) => {
       if (!isControlled) setIsUncontrolledOpen(next);
-      onOpenChange?.(next);
+      reportOpenChange(next, onOpenChange, onClose);
     },
-    [isControlled, onOpenChange]
+    [isControlled, onOpenChange, onClose]
   );
   return (
     <RadixMenu.Root
@@ -107,6 +117,12 @@ export interface MenuContentProps extends SxProp {
   title?: ReactNode | undefined;
   /** `"auto"` = bottom sheet at ≤640px. */
   sheet?: SheetMode | undefined;
+  /** Focus the list on open. Set false when an input owns focus (Combobox). */
+  autoFocus?: boolean | undefined;
+  /** In-flow specimen (no portal / floating). */
+  inline?: boolean | undefined;
+  minWidth?: number | undefined;
+  placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end" | undefined;
 }
 
 /** Radix labels the panel by its trigger via `aria-labelledby`; blanking it lets `aria-label` name it. */
@@ -133,17 +149,38 @@ export function MenuContent(props: MenuContentProps) {
     children,
     side,
     align,
+    autoFocus: shouldAutoFocus = true,
+    inline: isInline = false,
+    minWidth,
+    placement,
   } = props;
-  const isSheet = useAsSheet(sheet);
+  const placed = placementSideAlign(placement);
+  const resolvedSide = placed.side ?? side;
+  const resolvedAlign = placed.align ?? align;
+  const isSheet = useAsSheet(isInline ? false : sheet);
   const close = use(CloseContext);
   const slots = menuPanelVariants({ maxHeight });
   const floatingClass = slots.content({ className: withSx(sx, undefined) });
+  const minWidthStyle = minWidth === undefined ? undefined : { minWidth };
 
   const body = (
     <DenseContext value={isDense}>
       <SheetContext value={isSheet}>{children}</SheetContext>
     </DenseContext>
   );
+
+  if (isInline) {
+    return (
+      <RadixMenu.Content
+        data-surface="light"
+        className={floatingClass}
+        style={{ position: "relative", transform: "none", ...minWidthStyle }}
+        tabIndex={shouldAutoFocus ? 0 : -1}
+      >
+        {body}
+      </RadixMenu.Content>
+    );
+  }
 
   return (
     <RadixMenu.Portal container={portalContainer ?? null}>
@@ -155,8 +192,7 @@ export function MenuContent(props: MenuContentProps) {
           */}
           <div
             data-surface="light"
-            className="flex max-h-menu-sheet w-full flex-col overflow-hidden rounded-t-xl bg-surface-card shadow-4 motion-safe:animate-sheet-in"
-            style={{ position: "fixed", inset: "auto 0 0 0", maxWidth: "100%" }}
+            className="sheet-pin flex max-h-menu-sheet w-full flex-col overflow-hidden rounded-t-xl bg-surface-card shadow-4 motion-safe:animate-sheet-in"
           >
             <div aria-hidden className="flex shrink-0 justify-center pt-2.5">
               <span className="h-1 w-10 rounded-pill bg-ink-300" />
@@ -170,6 +206,7 @@ export function MenuContent(props: MenuContentProps) {
               {...(ariaLabel === undefined ? {} : ownLabel(ariaLabel))}
               className="min-h-0 flex-1 overflow-y-auto overscroll-contain border-0 bg-transparent px-3 pt-1 pb-4 shadow-none outline-none"
               style={{ position: "relative", transform: "none" }}
+              tabIndex={shouldAutoFocus ? 0 : -1}
               onKeyDown={(event) => {
                 onContentKeyDown(event, close);
               }}
@@ -185,9 +222,11 @@ export function MenuContent(props: MenuContentProps) {
           loop
           data-surface="light"
           {...(ariaLabel === undefined ? {} : ownLabel(ariaLabel))}
-          {...(side === undefined ? {} : { side })}
-          {...(align === undefined ? {} : { align })}
+          {...(resolvedSide === undefined ? {} : { side: resolvedSide })}
+          {...(resolvedAlign === undefined ? {} : { align: resolvedAlign })}
           className={floatingClass}
+          {...(minWidthStyle === undefined ? {} : { style: minWidthStyle })}
+          tabIndex={shouldAutoFocus ? 0 : -1}
           onKeyDown={(event) => {
             onContentKeyDown(event, close);
           }}

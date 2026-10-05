@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { Phone } from "lucide-react";
 
 import { expectNoA11yViolations, fakeRegister } from "../../../vitest.setup";
+import { Field } from "../../lib/field";
 import { Input } from "./input";
 
 /** The brand mark (Plan 2a's SymbolMark) is the only `.mask-symbol` element. */
@@ -209,5 +210,19 @@ describe("Input", () => {
     expect(container.firstElementChild).toHaveClass(
       "not-focus-within:hover:not-has-[>:is(input,textarea,select,button[role=combobox]):disabled]:border-border-strong"
     );
+  });
+
+  it("renders Field around itself when given label and error", () => {
+    render(<Input label="Full name" error="Add your name" />);
+    expect(screen.getByRole("textbox", { name: "Full name" })).toHaveAttribute(
+      "aria-invalid",
+      "true"
+    );
+    expect(screen.getByText("Add your name")).toBeInTheDocument();
+  });
+
+  it("still works inside Field", () => {
+    render(<Field label="Full name">{(control) => <Input {...control} />}</Field>);
+    expect(screen.getByRole("textbox", { name: "Full name" })).toBeInTheDocument();
   });
 });

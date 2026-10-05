@@ -227,4 +227,10 @@ describe("RadioGroup", () => {
     );
     expect(container.firstElementChild).toHaveClass("mt-4");
   });
+
+  it("renders Field around itself when given an error message", () => {
+    render(<Radio name="heat" value="hot" label="Hot" error="Pick a heat" />);
+    expect(screen.getByRole("radio", { name: "Hot" })).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByText("Pick a heat")).toBeInTheDocument();
+  });
 });
