@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { expect, screen, within } from "storybook/test";
+import { expect, screen, waitFor, within } from "storybook/test";
 
 import { expectNoHorizontalOverflow } from "../expect-no-overflow";
 import { FEATURED_DISH, SAMPLE_CART } from "../fixtures";
@@ -31,9 +31,10 @@ export const Home: Story = {
     await userEvent.click(canvas.getByRole("button", { name: `Customise ${FEATURED_DISH.name}` }));
     const sheet = await screen.findByRole("dialog", { name: FEATURED_DISH.name });
     await userEvent.click(within(sheet).getByRole("button", { name: /^Add to Order/ }));
-    await expect(
-      await screen.findByText(`${FEATURED_DISH.name} added to your order.`)
-    ).toBeVisible();
+    // Toast pop-in starts at opacity 0 — wait for the message to land (duration-base).
+    await waitFor(async () =>
+      expect(await screen.findByText(`${FEATURED_DISH.name} added to your order.`)).toBeVisible()
+    );
   },
 };
 
