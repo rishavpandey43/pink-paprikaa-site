@@ -63,7 +63,12 @@
         "nodejs.org",
         "github.com",
         "objects.githubusercontent.com"
-      ]
+      ],
+      "allowUnixSockets": ["/tmp/.nx", "~/.nx"]
+    },
+    "filesystem": {
+      "allowRead": ["/tmp/.nx", "~/.nx"],
+      "allowWrite": ["/tmp/.nx", "~/.nx"]
     }
   }
 }
