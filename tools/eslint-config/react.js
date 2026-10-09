@@ -110,6 +110,9 @@ export default [
       "tailwindcss/classnames-order": "off",
       // Only token-backed utilities: a missing value becomes a token, never an arbitrary value.
       "tailwindcss/no-arbitrary-value": "error",
+      // It only reports an arbitrary value that has a token-free equivalent, and the rule above
+      // already rejects every arbitrary value, so it can never fire; it cost ~2.6s per `ui` lint.
+      "tailwindcss/no-unnecessary-arbitrary-value": "off",
       "tailwindcss/no-custom-classname": "error",
     },
   },
