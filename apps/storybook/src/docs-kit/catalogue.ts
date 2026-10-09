@@ -187,10 +187,46 @@ const REGEX_SPECIAL = /[.*+?^${}()|[\]\\]/g;
  * class either, so the library writes every class out literally.
  */
 export function libraryUsesOf(step: string, reader: RegExp): string[] {
+  const prefixes = INDEXABLE_STEP.test(step)
+    ? [...(usesByStep().get(step) ?? [])]
+    : scanForPrefixes(step);
+  return [...new Set(prefixes.filter((prefix) => reader.test(prefix)))].sort();
+}
+
+/** A step made only of these can be answered from the index; anything else is scanned for. */
+const INDEXABLE_STEP = /^[a-z0-9-]+$/;
+const CLASS_PREFIX = /^-?[a-z]+(?:-[a-z]+)*$/;
+
+/** Every prefix before `-<step>` in the library source, found by scanning it for that one step. */
+function scanForPrefixes(step: string): string[] {
   const escaped = step.replace(REGEX_SPECIAL, "\\$&");
   const pattern = new RegExp(`(?<![\\w-])(-?[a-z]+(?:-[a-z]+)*?)-${escaped}(?![\\w-])`, "g");
-  const prefixes = [...LIBRARY_SOURCE.matchAll(pattern)].map((match) => match[1] ?? "");
-  return [...new Set(prefixes.filter((prefix) => reader.test(prefix)))].sort();
+  return [...LIBRARY_SOURCE.matchAll(pattern)].map((match) => match[1] ?? "");
+}
+
+let usesIndex: Map<string, Set<string>> | undefined;
+
+/**
+ * `scanForPrefixes` for every step at once, in one pass. A use is a whole hyphenated word that
+ * splits as `<prefix>-<step>`, so each `-` in a word offers one split; the prefix must be a class
+ * name (`bg`, `min-h`, `-mt`). Scanning per step re-reads the whole source for each of ~140 colour
+ * tokens, which is what made the `max-w-prose` spec outlast its timeout on a loaded machine.
+ */
+function usesByStep(): Map<string, Set<string>> {
+  if (usesIndex !== undefined) return usesIndex;
+  const index = new Map<string, Set<string>>();
+  for (const [word] of LIBRARY_SOURCE.matchAll(/(?<![\w-])[\w-]+/g)) {
+    for (let dash = word.indexOf("-", 1); dash !== -1; dash = word.indexOf("-", dash + 1)) {
+      const prefix = word.slice(0, dash);
+      if (!CLASS_PREFIX.test(prefix)) continue;
+      const step = word.slice(dash + 1);
+      const prefixes = index.get(step) ?? new Set<string>();
+      prefixes.add(prefix);
+      index.set(step, prefixes);
+    }
+  }
+  usesIndex = index;
+  return index;
 }
 
 /** Utilities that read Tailwind's colour namespace. */
