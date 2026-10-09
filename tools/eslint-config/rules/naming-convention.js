@@ -20,7 +20,7 @@ export default [
     selector: "variable",
     types: ["boolean"],
     format: ["camelCase", "UPPER_CASE", "PascalCase"],
-    prefix: ["is", "should", "has", "can", "did", "will", "does", "disable", "enable"],
+    prefix: ["is", "should", "has", "can", "did", "will", "does", "are", "disable", "enable"],
   },
   {
     selector: "memberLike",

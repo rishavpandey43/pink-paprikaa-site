@@ -2,13 +2,14 @@ import { render, screen } from "@testing-library/react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
+import type * as PatternFieldModule from "../../atoms/pattern-field/pattern-field";
 import type { SurfaceProp } from "../../lib/common-props";
 import { Section } from "./section";
 
 // Spy on the real atom: Section's wiring (surface, density) is asserted here; the pattern's own
 // rendering belongs to PatternField's suite.
 vi.mock("../../atoms/pattern-field/pattern-field", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../../atoms/pattern-field/pattern-field")>();
+  const actual = await importOriginal<typeof PatternFieldModule>();
   return { ...actual, PatternField: vi.fn(actual.PatternField) };
 });
 

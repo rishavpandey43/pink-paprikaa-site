@@ -5,6 +5,7 @@ import { Phone } from "lucide-react";
 import { expectNoA11yViolations, fakeRegister } from "../../../vitest.setup";
 import { Field } from "../../lib/field";
 import { Input } from "./input";
+import type { InputProps } from "./input";
 
 /** The brand mark (Plan 2a's SymbolMark) is the only `.mask-symbol` element. */
 const markIn = (root: HTMLElement) => root.querySelector(".mask-symbol");
@@ -201,7 +202,7 @@ describe("Input", () => {
 
   it("rejects native date types at compile time", () => {
     // @ts-expect-error date is not an InputType — use DatePicker
-    const props: import("./input").InputProps = { type: "date", "aria-label": "Day" };
+    const props: InputProps = { type: "date", "aria-label": "Day" };
     void props;
   });
 

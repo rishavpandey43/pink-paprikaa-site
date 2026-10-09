@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global document -- read inside `page.evaluate()`, which runs in the browser, not in Node */
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 // Visual parity tool (Task 12) — not shipped.
 // For each handoff components/.../Name.card.html, screenshots the card and the matching

@@ -1,6 +1,9 @@
+import js from "@eslint/js";
 import nx from "@nx/eslint-plugin";
 import prettier from "eslint-config-prettier";
 import perfectionist from "eslint-plugin-perfectionist";
+import { defineConfig } from "eslint/config";
+import globals from "globals";
 import tseslint from "typescript-eslint";
 
 import namingConvention from "./rules/naming-convention.js";
@@ -17,10 +20,13 @@ import pinkPaprikaa from "./rules/plugin.js";
 // is to keep type-aware rules running at full strictness). Composing on it
 // would silently weaken the ruleset the brief asks for, so strict
 // type-checked config is applied directly instead.
-export default tseslint.config(
+export default defineConfig(
   { ignores: ["**/dist", "**/out", "**/.next", "**/storybook-static", "**/node_modules"] },
   ...nx.configs["flat/base"],
-  // Scoped via `extends` (a `tseslint.config()`-only feature: the referenced
+  // ESLint's own recommended rules. Listed before the TypeScript presets on purpose: those switch
+  // off the ones TypeScript already covers (`no-undef`, `no-redeclare`, …) for `.ts`/`.tsx`.
+  js.configs.recommended,
+  // Scoped via `extends` (a `defineConfig()` feature: the referenced
   // configs' rules are applied constrained to this object's `files` glob)
   // rather than spread into the top-level array. Un-scoped — as this used to
   // be — `strictTypeChecked`/`stylisticTypeChecked` attach to every file
@@ -48,6 +54,12 @@ export default tseslint.config(
       ],
       // LAW since the design system rewrite (drift ledger P-08 closed).
       "@typescript-eslint/naming-convention": ["error", ...namingConvention],
+      // `verbatimModuleSyntax` already makes tsc reject a type imported as a value; this adds the
+      // autofix, so saving rewrites it to `import type`.
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports", fixStyle: "separate-type-imports" },
+      ],
     },
   },
   {
@@ -112,6 +124,12 @@ export default tseslint.config(
       "array-callback-return": "error",
       "no-console": ["error", { allow: ["warn", "error"] }],
       "max-lines": ["warn", { max: 500, skipComments: true, skipBlankLines: true }],
+      "no-sequences": "error", // the comma operator hides a second expression
+      "no-useless-concat": "error", // "a" + "b" is just "ab"
+      "no-lone-blocks": "error", // a bare { } block that scopes nothing
+      "no-template-curly-in-string": "error", // "${x}" in plain quotes was meant to be a template
+      // A value import and a type import from one module are fine; two value imports are not.
+      "no-duplicate-imports": ["error", { allowSeparateTypeImports: true }],
     },
   },
   // Workspace-wide `pink-paprikaa/no-raw-hex` for `.ts` files (CLAUDE.md rule 3), so base-only
@@ -123,6 +141,12 @@ export default tseslint.config(
     files: ["**/*.ts"],
     plugins: { "pink-paprikaa": pinkPaprikaa },
     rules: { "pink-paprikaa/no-raw-hex": "error" },
+  },
+  // Plain JS in this repo is Node: scripts, build and tool configs. TypeScript files get their
+  // globals from the compiler, so `no-undef` is only switched on here for `.js`/`.mjs`/`.cjs`.
+  {
+    files: ["**/*.js", "**/*.mjs", "**/*.cjs"],
+    languageOptions: { globals: globals.node },
   },
   // Disable type-aware linting for plain JS config files.
   {

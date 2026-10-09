@@ -1,6 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
-import { PointerEventsCheckLevel } from "@testing-library/user-event";
-import userEvent from "@testing-library/user-event";
+import userEvent, { PointerEventsCheckLevel } from "@testing-library/user-event";
 import { Flag, MapPin, MoreVertical, Phone, Share2 } from "lucide-react";
 import { createRef, useState } from "react";
 
