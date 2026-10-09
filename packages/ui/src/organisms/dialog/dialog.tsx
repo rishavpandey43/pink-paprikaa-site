@@ -1,14 +1,12 @@
 "use client";
 
-import type { ReactElement, ReactNode } from "react";
-
 import { X } from "lucide-react";
 import { Dialog as DialogPrimitive } from "radix-ui";
+import type { ReactElement, ReactNode } from "react";
 import { useRef } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { IconButton } from "../../atoms/icon-button/icon-button";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
 import { reportOpenChange } from "../../lib/popover-shell";

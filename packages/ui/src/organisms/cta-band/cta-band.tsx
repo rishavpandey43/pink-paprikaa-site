@@ -1,9 +1,8 @@
 import type { ReactNode } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Typography } from "../../atoms/typography/typography";
+import type { BaseProps } from "../../lib/common-props";
 import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";

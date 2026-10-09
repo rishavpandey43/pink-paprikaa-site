@@ -1,6 +1,5 @@
-import type { ComponentProps } from "react";
-
 import { render, screen } from "@testing-library/react";
+import type { ComponentProps } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { LinkCard } from "./link-card";

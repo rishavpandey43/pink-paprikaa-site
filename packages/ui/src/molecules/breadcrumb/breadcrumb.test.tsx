@@ -1,8 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 
-import type { LinkAsProps } from "../../lib/link-as";
-
 import { expectNoA11yViolations } from "../../../vitest.setup";
+import type { LinkAsProps } from "../../lib/link-as";
 import { Breadcrumb, type BreadcrumbItem } from "./breadcrumb";
 
 const MENU_TRAIL: BreadcrumbItem[] = [

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Flag, Phone, Share2 } from "lucide-react";
 import { expect, screen, userEvent, waitFor } from "storybook/test";
 

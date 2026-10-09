@@ -1,8 +1,7 @@
 import type { ComponentProps, ReactNode } from "react";
 
-import type { SxProp } from "../../lib/common-props";
-
 import { ChoiceControl } from "../../lib/choice-control";
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 
 /** 46×28 track, 22px knob (26 on press), 220ms slide; pink when on. */

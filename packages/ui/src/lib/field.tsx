@@ -1,12 +1,10 @@
 import type { ReactNode } from "react";
-
 import { useId } from "react";
 
 import type { BaseProps } from "./common-props";
-import type { FieldStatus } from "./field-status";
-
 import { componentVariants } from "./component-variants";
 import { FieldMessage, hasFieldMessage } from "./field-message";
+import type { FieldStatus } from "./field-status";
 import { withSx } from "./sx";
 
 const field = componentVariants({

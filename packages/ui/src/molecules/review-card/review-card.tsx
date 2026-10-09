@@ -1,12 +1,11 @@
 import { BadgeCheck } from "lucide-react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Avatar } from "../../atoms/avatar/avatar";
 import { Badge } from "../../atoms/badge/badge";
 import { Card } from "../../atoms/card/card";
 import { Link } from "../../atoms/link/link";
 import { Rating } from "../../atoms/rating/rating";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 

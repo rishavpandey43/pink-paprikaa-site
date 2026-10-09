@@ -3,9 +3,8 @@ import { createElement, type ReactNode } from "react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Icon } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";

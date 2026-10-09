@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Phone, Search } from "lucide-react";
 import { expect, waitFor } from "storybook/test";
 

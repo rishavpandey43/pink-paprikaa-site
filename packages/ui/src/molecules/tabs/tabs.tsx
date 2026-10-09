@@ -1,11 +1,9 @@
 "use client";
 
+import { Tabs as RadixTabs } from "radix-ui";
 import type { ReactNode } from "react";
 
-import { Tabs as RadixTabs } from "radix-ui";
-
 import type { BaseProps } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";

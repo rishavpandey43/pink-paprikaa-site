@@ -1,9 +1,8 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { LinkAsProps } from "../../lib/link-as";
-
 import { expectNoA11yViolations } from "../../../vitest.setup";
+import type { LinkAsProps } from "../../lib/link-as";
 import { type NavLink, SiteHeader } from "./site-header";
 
 const LINKS: NavLink[] = [

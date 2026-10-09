@@ -1,8 +1,7 @@
-import type { IconComponent } from "../../atoms/icon/icon";
-import type { BaseProps } from "../../lib/common-props";
-
 import { Button } from "../../atoms/button/button";
 import { IconButton } from "../../atoms/icon-button/icon-button";
+import type { IconComponent } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 

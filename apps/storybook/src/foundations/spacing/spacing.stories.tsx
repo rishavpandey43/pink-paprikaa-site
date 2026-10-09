@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { expect } from "storybook/test";
 
 import { AutoGrid, Card, Section, type StackProps } from "@pink-paprikaa-web/ui";

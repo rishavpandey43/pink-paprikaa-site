@@ -1,9 +1,8 @@
 import type { ReactNode } from "react";
 
 import type { BaseProps } from "../../lib/common-props";
-import type { HeadingLevel } from "../../lib/heading";
-
 import { componentVariants } from "../../lib/component-variants";
+import type { HeadingLevel } from "../../lib/heading";
 import { withSx } from "../../lib/sx";
 import { ReviewCard, type ReviewCardProps } from "../../molecules/review-card/review-card";
 import { SectionHeader } from "../../molecules/section-header/section-header";

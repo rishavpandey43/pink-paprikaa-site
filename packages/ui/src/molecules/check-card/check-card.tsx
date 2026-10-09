@@ -1,10 +1,9 @@
 import { Check } from "lucide-react";
 import { type ReactNode, useId } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Icon } from "../../atoms/icon/icon";
 import { joinIds } from "../../lib/choice-control";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
 import { withSx } from "../../lib/sx";

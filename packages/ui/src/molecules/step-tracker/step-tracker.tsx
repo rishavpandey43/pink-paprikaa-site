@@ -1,8 +1,7 @@
 import { Check } from "lucide-react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Icon } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import { SymbolMark } from "../../lib/symbol-mark";

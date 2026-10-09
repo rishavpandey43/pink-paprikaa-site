@@ -1,7 +1,6 @@
 "use client";
 
 import type { KeyboardEvent, ReactNode } from "react";
-
 import { useId } from "react";
 
 import { Icon, type IconComponent } from "../atoms/icon/icon";

@@ -2,13 +2,12 @@ import type { ReactNode } from "react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Badge } from "../../atoms/badge/badge";
 import { Card } from "../../atoms/card/card";
 import { Divider } from "../../atoms/divider/divider";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Typography } from "../../atoms/typography/typography";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";

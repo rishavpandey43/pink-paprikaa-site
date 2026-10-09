@@ -4,7 +4,6 @@ import { ToggleGroup as RadixToggleGroup } from "radix-ui";
 import { type ReactNode, useMemo } from "react";
 
 import type { BasePropsWithColor, SizeProp } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import {

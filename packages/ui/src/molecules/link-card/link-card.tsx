@@ -2,9 +2,8 @@ import { ArrowRight } from "lucide-react";
 import { Slot } from "radix-ui";
 import { createElement, type ElementType, isValidElement, type ReactNode } from "react";
 
-import type { BaseProps, SurfaceProp } from "../../lib/common-props";
-
 import { Icon } from "../../atoms/icon/icon";
+import type { BaseProps, SurfaceProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";

@@ -1,10 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { expect, within } from "storybook/test";
 
-import type { SurfaceProp } from "../../lib/common-props";
-
 import { Typography } from "../../atoms/typography/typography";
+import type { SurfaceProp } from "../../lib/common-props";
 import { Stack } from "../stack/stack";
 import { Section } from "./section";
 

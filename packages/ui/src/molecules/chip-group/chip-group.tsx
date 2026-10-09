@@ -3,14 +3,13 @@
 import { ToggleGroup } from "radix-ui";
 import { type FocusEvent, type ReactNode, type Ref, useId, useState } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-import type { FieldStatus } from "../../lib/field-status";
-
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { tagVariants } from "../../atoms/tag/tag";
 import { joinIds } from "../../lib/choice-control";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import type { FieldStatus } from "../../lib/field-status";
 import { withSx } from "../../lib/sx";
 
 export interface ChipOption {

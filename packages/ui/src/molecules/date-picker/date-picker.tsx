@@ -1,24 +1,22 @@
 "use client";
 
-import type { KeyboardEvent } from "react";
-
 import { CalendarDays } from "lucide-react";
+import type { KeyboardEvent } from "react";
 import { useId, useState } from "react";
 
 import type { IconComponent } from "../../atoms/icon/icon";
-import type { SxProp } from "../../lib/common-props";
-import type { DesignFieldChrome } from "../../lib/design-field";
-import type { FieldStatus } from "../../lib/field-status";
-import type { SheetMode } from "../../lib/popover-shell";
-import type { Matcher } from "./calendar";
-
 import { Popover } from "../../atoms/popover/popover";
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import type { DesignFieldChrome } from "../../lib/design-field";
 import { withDesignField } from "../../lib/design-field";
 import { FieldControl } from "../../lib/field-control";
+import type { FieldStatus } from "../../lib/field-status";
 import { formatDate, fromIsoDate, toIsoDate } from "../../lib/format-date";
+import type { SheetMode } from "../../lib/popover-shell";
 import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
+import type { Matcher } from "./calendar";
 import { Calendar } from "./calendar";
 
 export interface DatePickerProps extends SxProp, DesignFieldChrome {

@@ -1,8 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
-import type { AccordionItem } from "../../molecules/accordion/accordion";
-
 import { expectNoA11yViolations } from "../../../vitest.setup";
+import type { AccordionItem } from "../../molecules/accordion/accordion";
 import { FaqSection } from "./faq-section";
 
 const ITEMS: AccordionItem[] = [

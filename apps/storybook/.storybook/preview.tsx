@@ -2,7 +2,6 @@ import "./fonts";
 import "./styles.css";
 
 import type { Preview } from "@storybook/react-vite";
-
 import { INITIAL_VIEWPORTS } from "storybook/viewport";
 
 import { PROSE_COMPONENTS } from "../src/docs-kit/prose";

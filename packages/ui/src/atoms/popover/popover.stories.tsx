@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Info } from "lucide-react";
 import { useState } from "react";
 import { expect, screen, waitFor } from "storybook/test";

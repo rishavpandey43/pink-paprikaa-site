@@ -1,8 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 
-import type { TrackerStep } from "../../molecules/step-tracker/step-tracker";
-
 import { expectNoA11yViolations } from "../../../vitest.setup";
+import type { TrackerStep } from "../../molecules/step-tracker/step-tracker";
 import { OrderTracker } from "./order-tracker";
 
 const STEPS: TrackerStep[] = [

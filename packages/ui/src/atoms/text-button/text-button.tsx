@@ -1,10 +1,8 @@
-import type { ElementType } from "react";
-
 import { LoaderCircle } from "lucide-react";
 import { Slot } from "radix-ui";
+import type { ElementType } from "react";
 
 import type { BaseProps } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import { usePress } from "../../lib/use-press";

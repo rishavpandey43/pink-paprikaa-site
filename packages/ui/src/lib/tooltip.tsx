@@ -1,11 +1,9 @@
 "use client";
 
+import { Tooltip as TooltipPrimitive } from "radix-ui";
 import type { ReactElement } from "react";
 
-import { Tooltip as TooltipPrimitive } from "radix-ui";
-
 import type { SxProp } from "./common-props";
-
 import { componentVariants } from "./component-variants";
 import { withSx } from "./sx";
 

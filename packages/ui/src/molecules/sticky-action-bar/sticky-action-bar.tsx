@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
 import type { BaseProps } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
 import { withSx } from "../../lib/sx";

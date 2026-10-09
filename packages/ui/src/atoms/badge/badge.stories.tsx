@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Flame, Leaf, Star } from "lucide-react";
 
 import { OnSurfaces } from "../../lib/story-surfaces";

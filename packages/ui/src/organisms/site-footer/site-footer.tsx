@@ -1,18 +1,17 @@
 import type { ReactNode } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-import type { LinkAs } from "../../lib/link-as";
-
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { InstagramGlyph, LinkedinGlyph, YoutubeGlyph } from "../../atoms/icon/brand-glyphs";
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { Link } from "../../atoms/link/link";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import { Typography } from "../../atoms/typography/typography";
+import type { BaseProps } from "../../lib/common-props";
 import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import type { LinkAs } from "../../lib/link-as";
 import { withSx } from "../../lib/sx";
 
 export interface FooterItem {

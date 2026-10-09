@@ -1,8 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 import { Toast as RadixToast } from "radix-ui";
+import type { ReactNode } from "react";
 import { useRef } from "react";
 
 import { Icon } from "../../atoms/icon/icon";

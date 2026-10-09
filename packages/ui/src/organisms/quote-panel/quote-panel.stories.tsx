@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { MessageCircle, Utensils } from "lucide-react";
 import { expect } from "storybook/test";
 

@@ -1,6 +1,5 @@
-import type { BaseProps } from "../../lib/common-props";
-
 import { Logo } from "../../atoms/logo/logo";
+import type { BaseProps } from "../../lib/common-props";
 import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";

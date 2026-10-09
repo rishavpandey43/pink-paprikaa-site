@@ -1,21 +1,19 @@
 "use client";
 
-import type { FocusEvent, KeyboardEvent, ReactNode, Ref } from "react";
-
 import { ChevronDown, Search, X } from "lucide-react";
+import type { FocusEvent, KeyboardEvent, ReactNode, Ref } from "react";
 import { useId, useRef, useState } from "react";
 
-import type { IconComponent } from "../../atoms/icon/icon";
-import type { SxProp } from "../../lib/common-props";
-import type { DesignFieldChrome } from "../../lib/design-field";
-import type { FieldStatus } from "../../lib/field-status";
-
 import { IconButton } from "../../atoms/icon-button/icon-button";
+import type { IconComponent } from "../../atoms/icon/icon";
 import { Icon } from "../../atoms/icon/icon";
 import { BrandDiamond } from "../../lib/brand-diamond";
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import type { DesignFieldChrome } from "../../lib/design-field";
 import { withDesignField } from "../../lib/design-field";
 import { FieldControl } from "../../lib/field-control";
+import type { FieldStatus } from "../../lib/field-status";
 import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
 

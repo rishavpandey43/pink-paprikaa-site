@@ -2,9 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { House, Receipt, ShoppingBag, User, Utensils } from "lucide-react";
 
-import type { LinkAsProps } from "../../lib/link-as";
-
 import { expectNoA11yViolations } from "../../../vitest.setup";
+import type { LinkAsProps } from "../../lib/link-as";
 import { TabBar, type TabBarItem } from "./tab-bar";
 
 const ITEMS: TabBarItem[] = [

@@ -1,24 +1,22 @@
 "use client";
 
-import type { ChangeEventHandler, KeyboardEvent, ReactNode, Ref } from "react";
-
 import { ChevronDown } from "lucide-react";
+import type { ChangeEventHandler, KeyboardEvent, ReactNode, Ref } from "react";
 import { useCallback, useId, useRef, useState } from "react";
 
 import type { SxProp } from "../../lib/common-props";
 import type { DesignFieldChrome } from "../../lib/design-field";
-import type { FieldStatus } from "../../lib/field-status";
-import type { SheetMode } from "../../lib/popover-shell";
-import type { IconComponent } from "../icon/icon";
-
 import { withDesignField } from "../../lib/design-field";
 import { FieldControl } from "../../lib/field-control";
+import type { FieldStatus } from "../../lib/field-status";
 import { commitNativeSelectValue, HiddenNativeSelect } from "../../lib/hidden-native-select";
 import { ListboxPopover } from "../../lib/listbox-popover";
 import { type MenuItemData, MenuPanel } from "../../lib/menu-panel";
+import type { SheetMode } from "../../lib/popover-shell";
 import { useAsSheet } from "../../lib/popover-shell";
 import { withSx } from "../../lib/sx";
 import { useListbox } from "../../lib/use-listbox";
+import type { IconComponent } from "../icon/icon";
 
 export interface SelectOption {
   value: string;

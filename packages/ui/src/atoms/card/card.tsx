@@ -1,9 +1,7 @@
+import { Slot } from "radix-ui";
 import type { ElementType } from "react";
 
-import { Slot } from "radix-ui";
-
 import type { BaseProps, SurfaceProp } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import { usePress } from "../../lib/use-press";

@@ -2,7 +2,6 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import type { TokenEntry } from "./catalogue.js";
-
 import {
   AA_NORMAL,
   type ContrastPolicy,

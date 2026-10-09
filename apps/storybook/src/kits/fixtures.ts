@@ -1,3 +1,4 @@
+import { brand } from "@pink-paprikaa-web/content";
 import type {
   AccordionItem,
   CartLine,
@@ -9,8 +10,6 @@ import type {
   SlotOption,
   TrackerStep,
 } from "@pink-paprikaa-web/ui";
-
-import { brand } from "@pink-paprikaa-web/content";
 
 /**
  * Reference-kit fixtures. Layouts and sample copy come from the design system's ui_kits; every

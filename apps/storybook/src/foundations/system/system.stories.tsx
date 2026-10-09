@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
-
 import { expect, within } from "storybook/test";
 
 import { Box, Cluster, type Sx, Typography } from "@pink-paprikaa-web/ui";

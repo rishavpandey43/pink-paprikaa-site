@@ -1,17 +1,15 @@
 "use client";
 
 import type { ReactNode, Ref } from "react";
-
 import { useId, useState } from "react";
 
 import type { BaseProps } from "../../lib/common-props";
-import type { DesignFieldChrome } from "../../lib/design-field";
-import type { FieldStatus } from "../../lib/field-status";
-
 import { componentVariants } from "../../lib/component-variants";
+import type { DesignFieldChrome } from "../../lib/design-field";
 import { withDesignField } from "../../lib/design-field";
 import { fieldControlVariants } from "../../lib/field-control";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import type { FieldStatus } from "../../lib/field-status";
 import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
 

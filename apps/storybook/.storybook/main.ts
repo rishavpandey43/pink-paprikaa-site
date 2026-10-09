@@ -1,10 +1,9 @@
 import type { StorybookConfig } from "@storybook/react-vite";
-import type { Plugin } from "vite";
-
 import tailwindcss from "@tailwindcss/vite";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import remarkGfm from "remark-gfm";
+import type { Plugin } from "vite";
 
 const WORKSPACE_ROOT = fileURLToPath(new URL("../../../", import.meta.url));
 

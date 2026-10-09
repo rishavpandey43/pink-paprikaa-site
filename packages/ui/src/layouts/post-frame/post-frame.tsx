@@ -1,7 +1,6 @@
 import type { CSSProperties } from "react";
 
 import type { BaseProps } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import { POST_FORMATS, type PostFormat, scaledSize } from "./post-formats";

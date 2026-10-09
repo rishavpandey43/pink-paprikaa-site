@@ -1,9 +1,8 @@
 import type { ReactNode } from "react";
 
 import type { FieldControlProps } from "./field";
-import type { FieldStatus } from "./field-status";
-
 import { Field } from "./field";
+import type { FieldStatus } from "./field-status";
 
 /** Design control chrome (R147): the control may wrap Field itself when these are passed. */
 export interface DesignFieldChrome {

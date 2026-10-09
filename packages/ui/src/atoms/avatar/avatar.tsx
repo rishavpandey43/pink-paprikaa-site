@@ -1,5 +1,4 @@
 import type { BaseProps } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import { withTooltip } from "../../lib/with-tooltip";

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { expect, fn, screen, type UserEventObject, waitFor } from "storybook/test";
 
 import { ENQUIRY_MESSAGES, EnquiryForm } from "./enquiry-form";

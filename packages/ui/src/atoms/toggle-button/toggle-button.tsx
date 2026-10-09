@@ -4,7 +4,6 @@ import { Toggle as RadixToggle, ToggleGroup as RadixToggleGroup } from "radix-ui
 import { use } from "react";
 
 import type { BasePropsWithColor, SizeProp } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
 import { withSx } from "../../lib/sx";

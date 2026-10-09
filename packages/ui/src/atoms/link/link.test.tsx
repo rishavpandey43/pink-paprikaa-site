@@ -1,8 +1,7 @@
-import type { ComponentProps, MouseEvent } from "react";
-
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ArrowRight, MapPin } from "lucide-react";
+import type { ComponentProps, MouseEvent } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { Link } from "./link";

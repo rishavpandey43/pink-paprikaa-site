@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { ArrowRight, Pencil } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { expect } from "storybook/test";

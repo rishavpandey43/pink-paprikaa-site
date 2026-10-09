@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
-
 import { expect, within } from "storybook/test";
 
 import { Typography } from "../../atoms/typography/typography";

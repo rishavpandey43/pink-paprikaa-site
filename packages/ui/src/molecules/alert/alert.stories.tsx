@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Building2, TrendingDown } from "lucide-react";
 import { expect, fn } from "storybook/test";
 

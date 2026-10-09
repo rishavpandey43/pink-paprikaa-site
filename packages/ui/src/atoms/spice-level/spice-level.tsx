@@ -1,8 +1,7 @@
 import type { ComponentProps } from "react";
 
-import type { SxProp } from "../../lib/common-props";
-
 import { BrandDiamond, type BrandDiamondSize } from "../../lib/brand-diamond";
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 

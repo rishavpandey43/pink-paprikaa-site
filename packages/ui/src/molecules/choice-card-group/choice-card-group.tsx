@@ -7,12 +7,11 @@ import {
   useId,
 } from "react";
 
-import type { SxProp } from "../../lib/common-props";
-import type { FieldStatus } from "../../lib/field-status";
-
 import { joinIds } from "../../lib/choice-control";
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import type { FieldStatus } from "../../lib/field-status";
 import { isShown } from "../../lib/is-shown";
 import { StruckPrice } from "../../lib/struck-price";
 import { withSx } from "../../lib/sx";

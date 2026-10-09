@@ -1,15 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { MessageCircle, Phone } from "lucide-react";
 import { expect } from "storybook/test";
-
-import type { AccordionItem } from "../../molecules/accordion/accordion";
 
 import { Button } from "../../atoms/button/button";
 import { Card } from "../../atoms/card/card";
 import { Logo } from "../../atoms/logo/logo";
 import { StatusDot } from "../../atoms/status-dot/status-dot";
 import { Typography } from "../../atoms/typography/typography";
+import type { AccordionItem } from "../../molecules/accordion/accordion";
 import { BRAND, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
 import { FaqSection } from "./faq-section";
 

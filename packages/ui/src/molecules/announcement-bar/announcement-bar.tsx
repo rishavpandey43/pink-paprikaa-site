@@ -1,10 +1,9 @@
 import type { ReactNode } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-import type { LinkAs } from "../../lib/link-as";
-
 import { Countdown } from "../../atoms/countdown/countdown";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import type { LinkAs } from "../../lib/link-as";
 import { withSx } from "../../lib/sx";
 import { AnnouncementExpiry } from "./announcement-expiry";
 

@@ -1,12 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { expect } from "storybook/test";
-
-import type { TrackerStep } from "../../molecules/step-tracker/step-tracker";
 
 import { Badge } from "../../atoms/badge/badge";
 import { Button } from "../../atoms/button/button";
 import { ringClippers } from "../../lib/story-ring";
+import type { TrackerStep } from "../../molecules/step-tracker/step-tracker";
 import { VIEWPORT_360 } from "../story-fixtures";
 import { OrderTracker } from "./order-tracker";
 

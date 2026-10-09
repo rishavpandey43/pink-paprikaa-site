@@ -4,11 +4,10 @@ import { Leaf } from "lucide-react";
 import { ToggleGroup } from "radix-ui";
 import { type ReactNode, useState } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Badge } from "../../atoms/badge/badge";
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
 import { tagVariants } from "../../atoms/tag/tag";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
 import { withSx } from "../../lib/sx";

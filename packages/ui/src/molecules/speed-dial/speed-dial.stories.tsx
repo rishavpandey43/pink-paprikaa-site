@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { MapPin, MessageCircle, Phone } from "lucide-react";
 import { useState } from "react";
 import { expect } from "storybook/test";

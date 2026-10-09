@@ -1,7 +1,6 @@
 import { formatRupeeRange, formatRupees } from "@pink-paprikaa-web/utils";
 
 import type { BasePropsWithColor } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { assertStruckAbove, StruckPrice } from "../../lib/struck-price";
 import { withSx } from "../../lib/sx";

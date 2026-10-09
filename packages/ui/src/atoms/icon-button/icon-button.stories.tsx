@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { ComponentProps } from "react";
-
 import { ArrowLeft, Heart, Plus, Search, Share2, ShoppingBag } from "lucide-react";
+import type { ComponentProps } from "react";
 import { expect } from "storybook/test";
 
 import {

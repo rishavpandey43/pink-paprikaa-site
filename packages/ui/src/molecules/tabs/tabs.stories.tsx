@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Croissant, IceCreamCone, Soup } from "lucide-react";
 import { expect, fn } from "storybook/test";
 

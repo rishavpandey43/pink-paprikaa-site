@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { expect } from "storybook/test";
 
 import { POST_FORMATS, PostFrame, SocialHeadline } from "@pink-paprikaa-web/ui";

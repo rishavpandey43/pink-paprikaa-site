@@ -3,13 +3,12 @@
 import { MapPin } from "lucide-react";
 import { createElement, type ReactNode, useId, useLayoutEffect, useRef } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Card } from "../../atoms/card/card";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
 import { Icon } from "../../atoms/icon/icon";
 import { PriceTag } from "../../atoms/price-tag/price-tag";
 import { Typography } from "../../atoms/typography/typography";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";

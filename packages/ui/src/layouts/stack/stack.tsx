@@ -1,7 +1,6 @@
 import { Children, type ElementType, Fragment, isValidElement } from "react";
 
 import type { BaseProps } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { GAP_CLASS, type SpaceStep } from "../../lib/space";
 import { withSx } from "../../lib/sx";

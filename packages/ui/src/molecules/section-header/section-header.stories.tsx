@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { ArrowRight } from "lucide-react";
 
 import { Button } from "../../atoms/button/button";

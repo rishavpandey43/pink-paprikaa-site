@@ -2,9 +2,8 @@ import type { ReactNode } from "react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { PriceTag } from "../../atoms/price-tag/price-tag";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
 import { withSx } from "../../lib/sx";

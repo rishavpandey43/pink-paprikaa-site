@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 // Visual parity tool (Task 12) — not shipped.
 // For each handoff components/.../Name.card.html, screenshots the card and the matching
 // Storybook story at 360px and 1280px into
@@ -11,7 +12,6 @@
 // (handoff on 5050, storybook-static on 6108).
 import { createServer } from "node:http";
 import { createRequire } from "node:module";
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, extname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 

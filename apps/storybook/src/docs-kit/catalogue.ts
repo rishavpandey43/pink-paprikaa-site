@@ -1,5 +1,4 @@
 import type { TokenEntry } from "@pink-paprikaa-web/design-tokens/catalogue";
-
 import { parseColor } from "@pink-paprikaa-web/design-tokens/contrast";
 import catalogue from "@pink-paprikaa-web/design-tokens/tokens.json";
 

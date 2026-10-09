@@ -1,5 +1,4 @@
 import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
-
 import { ArrowRight, Star } from "lucide-react";
 import { expect } from "storybook/test";
 

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Clock, Flame, Leaf } from "lucide-react";
 import { useState } from "react";
 import { expect, userEvent, within } from "storybook/test";

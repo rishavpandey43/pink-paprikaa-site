@@ -1,6 +1,5 @@
-import type { ElementType } from "react";
-
 import { Slot } from "radix-ui";
+import type { ElementType } from "react";
 
 import { type BaseProps, SURFACE_DATA, type SurfaceProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";

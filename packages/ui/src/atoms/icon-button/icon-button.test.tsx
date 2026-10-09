@@ -1,8 +1,7 @@
-import type { ComponentProps } from "react";
-
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Heart, ShoppingBag } from "lucide-react";
+import type { ComponentProps } from "react";
 
 import { expectNoA11yViolations } from "../../../vitest.setup";
 import { IconButton } from "./icon-button";

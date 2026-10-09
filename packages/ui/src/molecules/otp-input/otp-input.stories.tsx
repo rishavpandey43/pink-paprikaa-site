@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { expect, fn } from "storybook/test";
 
 import { OtpInput } from "./otp-input";

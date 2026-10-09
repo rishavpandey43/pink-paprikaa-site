@@ -1,19 +1,18 @@
 import { Clock, MapPin } from "lucide-react";
 import { createElement, type ReactNode } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-import type { LinkAs } from "../../lib/link-as";
-import type { MenuItemImage } from "../menu-item-row/menu-item-row";
-
 import { Card } from "../../atoms/card/card";
 import { Icon } from "../../atoms/icon/icon";
 import { ImageSlot } from "../../atoms/image-slot/image-slot";
 import { StatusDot } from "../../atoms/status-dot/status-dot";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import type { LinkAs } from "../../lib/link-as";
 import { STRETCHED_LINK } from "../../lib/stretched-link";
 import { withSx } from "../../lib/sx";
+import type { MenuItemImage } from "../menu-item-row/menu-item-row";
 
 type OutletStatus = "open" | "busy" | "closed";
 

@@ -1,6 +1,5 @@
-import type { ReactNode } from "react";
-
 import { Lock } from "lucide-react";
+import type { ReactNode } from "react";
 
 import { Icon, type IconComponent } from "../atoms/icon/icon";
 import { componentVariants } from "./component-variants";

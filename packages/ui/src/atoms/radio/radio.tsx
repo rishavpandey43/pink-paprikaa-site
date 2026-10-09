@@ -2,11 +2,10 @@ import { type ComponentProps, type ReactElement, type ReactNode, useId } from "r
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
-import type { SxProp } from "../../lib/common-props";
-import type { DesignFieldChrome } from "../../lib/design-field";
-
 import { ChoiceControl, joinIds } from "../../lib/choice-control";
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import type { DesignFieldChrome } from "../../lib/design-field";
 import { hasDesignFieldChrome, withDesignField } from "../../lib/design-field";
 import { FIELD_STATUS_ICON, type FieldStatus } from "../../lib/field-status";
 import { withSx } from "../../lib/sx";

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { expect, screen, waitFor, within } from "storybook/test";
 
 import { expectNoHorizontalOverflow } from "../expect-no-overflow";

@@ -1,10 +1,9 @@
 import type { ReactNode } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Card } from "../../atoms/card/card";
 import { Logo } from "../../atoms/logo/logo";
 import { ProgressBar } from "../../atoms/progress-bar/progress-bar";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 

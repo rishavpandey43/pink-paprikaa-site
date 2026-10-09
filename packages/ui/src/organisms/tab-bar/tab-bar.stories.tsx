@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { House, Receipt, ShoppingBag, User, Utensils } from "lucide-react";
 import { useState } from "react";
 import { expect } from "storybook/test";

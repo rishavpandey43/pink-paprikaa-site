@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { ComponentProps } from "react";
-
 import { Heart, Info, Milk, Share2 } from "lucide-react";
+import type { ComponentProps } from "react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { Icon, type IconComponent } from "../icon/icon";

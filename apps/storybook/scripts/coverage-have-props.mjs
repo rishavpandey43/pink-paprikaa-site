@@ -5,7 +5,7 @@
  * (`NotificationAction.label` → `label`). Inherited DOM/`sx` props count when the file
  * extends `BaseProps` / `SxProp`.
  */
-import { readFileSync, existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 const repo = join(import.meta.dirname, "../../..");

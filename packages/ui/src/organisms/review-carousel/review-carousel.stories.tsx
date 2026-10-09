@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { ArrowUpRight, BadgeCheck } from "lucide-react";
 import { expect, waitFor } from "storybook/test";
 

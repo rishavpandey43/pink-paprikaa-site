@@ -1,5 +1,5 @@
-import jsxA11y from "eslint-plugin-jsx-a11y";
 import { Linter } from "eslint";
+import jsxA11y from "eslint-plugin-jsx-a11y";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 

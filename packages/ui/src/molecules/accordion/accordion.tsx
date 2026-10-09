@@ -1,11 +1,9 @@
-import type { ReactNode } from "react";
-
 import { ChevronDown } from "lucide-react";
+import type { ReactNode } from "react";
 import { createElement, useId } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Icon } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { withSx } from "../../lib/sx";

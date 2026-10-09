@@ -1,8 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 import { Popover as RadixPopover } from "radix-ui";
+import type { ReactNode } from "react";
 
 import {
   PopoverSheetChrome,

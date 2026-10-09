@@ -1,7 +1,6 @@
 import type { ComponentProps, ComponentType, SVGProps } from "react";
 
 import type { SxProp } from "../../lib/common-props";
-
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 

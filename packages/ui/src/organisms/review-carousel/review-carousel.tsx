@@ -1,9 +1,8 @@
 import { type ReactNode, useId } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Link } from "../../atoms/link/link";
 import { Typography } from "../../atoms/typography/typography";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";

@@ -1,15 +1,13 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 import { X } from "lucide-react";
 import { Popover as RadixPopover } from "radix-ui";
+import type { ReactNode } from "react";
 import { createElement, useId } from "react";
 
 import type { BaseProps } from "../../lib/common-props";
-import type { HeadingLevel } from "../../lib/heading";
-
 import { componentVariants } from "../../lib/component-variants";
+import type { HeadingLevel } from "../../lib/heading";
 import { headingTag } from "../../lib/heading";
 import { iconButtonVariants } from "../../lib/icon-button-variants";
 import { isShown } from "../../lib/is-shown";

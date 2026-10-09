@@ -1,11 +1,9 @@
 import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
-
 import { Plus } from "lucide-react";
 import { expect } from "storybook/test";
 
-import type { LinkAsProps } from "../../lib/link-as";
-
 import { IconButton } from "../../atoms/icon-button/icon-button";
+import type { LinkAsProps } from "../../lib/link-as";
 import { MenuItemCard } from "./menu-item-card";
 
 /** A router link that forwards only the LinkAsProps it is given — no stray data attributes. */

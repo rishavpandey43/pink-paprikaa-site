@@ -1,14 +1,12 @@
 "use client";
 
-import type { KeyboardEvent } from "react";
-
 import { Plus } from "lucide-react";
+import type { KeyboardEvent } from "react";
 import { useEffect, useId, useRef } from "react";
-
-import type { SxProp } from "../../lib/common-props";
 
 import { Fab } from "../../atoms/fab/fab";
 import { type IconComponent } from "../../atoms/icon/icon";
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";

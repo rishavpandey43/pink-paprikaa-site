@@ -1,9 +1,8 @@
 "use client";
 
-import type { ComponentProps, KeyboardEvent, ReactElement, ReactNode } from "react";
-
 import { Check, ChevronRight } from "lucide-react";
 import { DropdownMenu as RadixMenu } from "radix-ui";
+import type { ComponentProps, KeyboardEvent, ReactElement, ReactNode } from "react";
 import {
   Children,
   cloneElement,
@@ -14,9 +13,8 @@ import {
   useState,
 } from "react";
 
-import type { SxProp } from "../../lib/common-props";
-
 import { BrandDiamond } from "../../lib/brand-diamond";
+import type { SxProp } from "../../lib/common-props";
 import { isShown } from "../../lib/is-shown";
 import { menuPanelVariants } from "../../lib/menu-panel";
 import {

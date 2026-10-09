@@ -1,14 +1,10 @@
 "use client";
 
+import { Ellipsis, EllipsisVertical } from "lucide-react";
 import type { ReactNode } from "react";
 
-import { Ellipsis, EllipsisVertical } from "lucide-react";
-
-import type { IconComponent } from "../../atoms/icon/icon";
-import type { SxProp } from "../../lib/common-props";
-import type { SheetMode } from "../../lib/popover-shell";
-
 import { IconButton } from "../../atoms/icon-button/icon-button";
+import type { IconComponent } from "../../atoms/icon/icon";
 import {
   Menu,
   MenuContent,
@@ -17,6 +13,8 @@ import {
   MenuLabel,
   MenuTrigger,
 } from "../../atoms/menu/menu";
+import type { SxProp } from "../../lib/common-props";
+import type { SheetMode } from "../../lib/popover-shell";
 import { placementSideAlign } from "../../lib/popover-shell";
 import { withSx } from "../../lib/sx";
 

@@ -1,11 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { ArrowUpRight } from "lucide-react";
 import { expect } from "storybook/test";
 
-import type { LinkAsProps } from "../../lib/link-as";
-
 import { Button } from "../../atoms/button/button";
+import type { LinkAsProps } from "../../lib/link-as";
 import { OutletCard } from "./outlet-card";
 
 /** A router link that forwards only the LinkAsProps it is given — no stray data attributes. */

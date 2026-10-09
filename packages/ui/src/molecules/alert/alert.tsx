@@ -1,10 +1,8 @@
+import { Check, CircleAlert, Info, Megaphone, TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 
-import { Check, CircleAlert, Info, Megaphone, TriangleAlert } from "lucide-react";
-
-import type { BasePropsWithColor } from "../../lib/common-props";
-
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
+import type { BasePropsWithColor } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
 import { withSx } from "../../lib/sx";

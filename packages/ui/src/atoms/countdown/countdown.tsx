@@ -3,7 +3,6 @@
 import { type ComponentProps, type ReactNode, useSyncExternalStore } from "react";
 
 import type { SxProp } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { CreditCard, Phone } from "lucide-react";
 import { expect } from "storybook/test";
 

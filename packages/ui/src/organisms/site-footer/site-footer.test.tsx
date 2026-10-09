@@ -1,9 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 import { Phone } from "lucide-react";
 
-import type { LinkAsProps } from "../../lib/link-as";
-
 import { expectNoA11yViolations } from "../../../vitest.setup";
+import type { LinkAsProps } from "../../lib/link-as";
 import { type FooterColumn, SiteFooter } from "./site-footer";
 
 const COLUMNS: FooterColumn[] = [

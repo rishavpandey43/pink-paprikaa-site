@@ -1,20 +1,19 @@
 import { createElement, type ReactNode } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-import type { LinkAs } from "../../lib/link-as";
-import type { MenuItemImage } from "../menu-item-row/menu-item-row";
-
 import { Badge } from "../../atoms/badge/badge";
 import { Card } from "../../atoms/card/card";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
 import { ImageSlot } from "../../atoms/image-slot/image-slot";
 import { PriceTag } from "../../atoms/price-tag/price-tag";
 import { SpiceLevel } from "../../atoms/spice-level/spice-level";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";
+import type { LinkAs } from "../../lib/link-as";
 import { STRETCHED_LINK } from "../../lib/stretched-link";
 import { withSx } from "../../lib/sx";
+import type { MenuItemImage } from "../menu-item-row/menu-item-row";
 
 const menuItemCard = componentVariants({
   slots: {

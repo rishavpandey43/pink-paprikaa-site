@@ -1,7 +1,6 @@
 import { useId } from "react";
 
 import type { BasePropsWithColor } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import { SymbolMark } from "../../lib/symbol-mark";

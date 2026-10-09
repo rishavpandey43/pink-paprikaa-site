@@ -2,12 +2,11 @@ import type { ComponentProps, ReactNode } from "react";
 
 import type { SxProp } from "../../lib/common-props";
 import type { DesignFieldChrome } from "../../lib/design-field";
-import type { FieldStatus } from "../../lib/field-status";
-import type { IconComponent } from "../icon/icon";
-
 import { withDesignField } from "../../lib/design-field";
 import { FieldControl } from "../../lib/field-control";
+import type { FieldStatus } from "../../lib/field-status";
 import { withSx } from "../../lib/sx";
+import type { IconComponent } from "../icon/icon";
 
 /** Allowed single-line types. `number` renders as text + decimal inputMode (no spinner UI). */
 export type InputType = "text" | "email" | "tel" | "url" | "password" | "search" | "number";

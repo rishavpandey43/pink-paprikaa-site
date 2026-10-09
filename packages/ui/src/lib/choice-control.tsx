@@ -7,7 +7,6 @@ import {
 } from "react";
 
 import type { SxProp } from "./common-props";
-
 import { componentVariants } from "./component-variants";
 import { withSx } from "./sx";
 import { usePress } from "./use-press";

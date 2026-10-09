@@ -1,6 +1,5 @@
 // packages/ui/src/lib/sx.stories.tsx
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { expect, within } from "storybook/test";
 
 import { sxClass } from "./sx";

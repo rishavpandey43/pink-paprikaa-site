@@ -1,8 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 
-import type { LinkAsProps } from "../../lib/link-as";
-
 import { expectNoA11yViolations } from "../../../vitest.setup";
+import type { LinkAsProps } from "../../lib/link-as";
 import { AnnouncementBar } from "./announcement-bar";
 
 const DAY_MS = 86_400_000;

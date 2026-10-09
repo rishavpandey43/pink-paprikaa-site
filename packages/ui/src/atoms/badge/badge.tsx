@@ -1,5 +1,4 @@
 import type { BasePropsWithColor, ColorProp } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import { Icon, type IconComponent } from "../icon/icon";

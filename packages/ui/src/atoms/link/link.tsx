@@ -1,7 +1,6 @@
-import type { ComponentProps, ElementType } from "react";
-
 import { ArrowUpRight } from "lucide-react";
 import { Slot } from "radix-ui";
+import type { ComponentProps, ElementType } from "react";
 
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";

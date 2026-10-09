@@ -1,19 +1,17 @@
 "use client";
 
-import type { ComponentProps, ReactNode } from "react";
-
 import { Search, X } from "lucide-react";
+import type { ComponentProps, ReactNode } from "react";
 import { useId, useRef } from "react";
-
-import type { SxProp } from "../../lib/common-props";
-import type { FieldStatus } from "../../lib/field-status";
 
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { assignRef } from "../../lib/assign-ref";
 import { joinIds } from "../../lib/choice-control";
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { FieldControl } from "../../lib/field-control";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import type { FieldStatus } from "../../lib/field-status";
 import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";
 

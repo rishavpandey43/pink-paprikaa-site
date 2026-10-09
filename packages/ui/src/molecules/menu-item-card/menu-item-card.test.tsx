@@ -1,8 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
-import type { LinkAsProps } from "../../lib/link-as";
-
 import { expectNoA11yViolations } from "../../../vitest.setup";
+import type { LinkAsProps } from "../../lib/link-as";
 import { MenuItemCard } from "./menu-item-card";
 
 function RouterLink({ href, className, children }: LinkAsProps) {

@@ -1,11 +1,9 @@
-import type { ElementType, ReactNode } from "react";
-
 import { ChevronRight } from "lucide-react";
 import { Slot } from "radix-ui";
-
-import type { BaseProps } from "../../lib/common-props";
+import type { ElementType, ReactNode } from "react";
 
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { isShown } from "../../lib/is-shown";
 import { withSx } from "../../lib/sx";

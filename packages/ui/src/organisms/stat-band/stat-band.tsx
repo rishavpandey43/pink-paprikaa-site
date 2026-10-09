@@ -1,9 +1,8 @@
 import type { ReactNode } from "react";
 
 import type { IconComponent } from "../../atoms/icon/icon";
-import type { BaseProps } from "../../lib/common-props";
-
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
+import type { BaseProps } from "../../lib/common-props";
 import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";

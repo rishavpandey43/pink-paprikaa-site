@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { ComponentProps } from "react";
-
 import { ArrowRight, MapPin } from "lucide-react";
+import type { ComponentProps } from "react";
 import { expect, within } from "storybook/test";
 
 import {

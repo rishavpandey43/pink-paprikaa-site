@@ -1,7 +1,6 @@
 import type { ElementType } from "react";
 
 import type { BasePropsWithColor, ColorProp } from "../../lib/common-props";
-
 import { componentVariants } from "../../lib/component-variants";
 import { controlStates } from "../../lib/control-states";
 import { withSx } from "../../lib/sx";

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { User } from "lucide-react";
 
 import symbolPink from "../../assets/brand/symbol-pink.svg";

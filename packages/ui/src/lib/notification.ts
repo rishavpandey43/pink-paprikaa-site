@@ -1,6 +1,5 @@
-import type { ReactNode } from "react";
-
 import { Check, Info, TriangleAlert } from "lucide-react";
+import type { ReactNode } from "react";
 
 import type { IconComponent } from "../atoms/icon/icon";
 import type { BasePropsWithColor } from "./common-props";

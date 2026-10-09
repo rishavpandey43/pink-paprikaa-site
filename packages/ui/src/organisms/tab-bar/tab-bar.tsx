@@ -1,8 +1,7 @@
-import type { BaseProps } from "../../lib/common-props";
-import type { LinkAs } from "../../lib/link-as";
-
 import { Icon, type IconComponent } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import type { LinkAs } from "../../lib/link-as";
 import { withSx } from "../../lib/sx";
 
 export interface TabBarItem {

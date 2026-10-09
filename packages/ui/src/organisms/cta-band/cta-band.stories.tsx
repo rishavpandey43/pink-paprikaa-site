@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { ArrowRight, MapPin, MessageCircle } from "lucide-react";
 
 import { Button } from "../../atoms/button/button";

@@ -1,13 +1,11 @@
 "use client";
 
-import type { KeyboardEvent, Ref } from "react";
-
 import { Minus, Plus } from "lucide-react";
+import type { KeyboardEvent, Ref } from "react";
 import { useState } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Icon } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import { useControllableState } from "../../lib/use-controllable-state";

@@ -1,14 +1,12 @@
-import type { ComponentProps, ReactNode } from "react";
-
 import { Check } from "lucide-react";
+import type { ComponentProps, ReactNode } from "react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
 
-import type { SxProp } from "../../lib/common-props";
-import type { DesignFieldChrome } from "../../lib/design-field";
-
 import { ChoiceControl } from "../../lib/choice-control";
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import type { DesignFieldChrome } from "../../lib/design-field";
 import { hasDesignFieldChrome, withDesignField } from "../../lib/design-field";
 import { Icon } from "../icon/icon";
 

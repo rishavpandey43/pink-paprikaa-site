@@ -1,7 +1,6 @@
-import type { ChangeEvent } from "react";
-
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ChangeEvent } from "react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
 

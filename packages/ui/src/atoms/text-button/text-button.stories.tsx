@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Pencil, Undo2 } from "lucide-react";
 import { expect } from "storybook/test";
 

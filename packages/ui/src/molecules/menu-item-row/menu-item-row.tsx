@@ -1,12 +1,11 @@
 import { createElement, type ReactNode } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-
 import { Badge } from "../../atoms/badge/badge";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
 import { ImageSlot } from "../../atoms/image-slot/image-slot";
 import { PriceTag } from "../../atoms/price-tag/price-tag";
 import { SpiceLevel } from "../../atoms/spice-level/spice-level";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { type HeadingLevel, headingTag } from "../../lib/heading";
 import { isShown } from "../../lib/is-shown";

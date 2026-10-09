@@ -2,9 +2,8 @@ import type { ComponentProps } from "react";
 
 import { formatCount } from "@pink-paprikaa-web/utils";
 
-import type { SxProp } from "../../lib/common-props";
-
 import { BrandDiamond, type BrandDiamondSize } from "../../lib/brand-diamond";
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 import { withSx } from "../../lib/sx";
 import { SymbolMark } from "../../lib/symbol-mark";

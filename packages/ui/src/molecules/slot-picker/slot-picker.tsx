@@ -1,15 +1,13 @@
 import type { ReactNode } from "react";
-
 import { useId } from "react";
 
-import type { BaseProps } from "../../lib/common-props";
-import type { DesignFieldChrome } from "../../lib/design-field";
-import type { FieldStatus } from "../../lib/field-status";
-
 import { joinIds } from "../../lib/choice-control";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import type { DesignFieldChrome } from "../../lib/design-field";
 import { hasDesignFieldChrome, withDesignField } from "../../lib/design-field";
 import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import type { FieldStatus } from "../../lib/field-status";
 import { withSx } from "../../lib/sx";
 
 const slotPicker = componentVariants({
