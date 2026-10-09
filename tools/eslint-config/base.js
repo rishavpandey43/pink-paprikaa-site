@@ -3,7 +3,6 @@ import prettier from "eslint-config-prettier";
 import perfectionist from "eslint-plugin-perfectionist";
 import tseslint from "typescript-eslint";
 
-import { importSortRules } from "./import-sort.js";
 import namingConvention from "./rules/naming-convention.js";
 import pinkPaprikaa from "./rules/plugin.js";
 
@@ -78,7 +77,34 @@ export default tseslint.config(
           ],
         },
       ],
-      ...importSortRules,
+      "perfectionist/sort-imports": [
+        "error",
+        {
+          // The monorepo tier: workspace packages, the apps' `@/` alias and a package's own `#`
+          // subpath imports (`#ui/…`, see `imports` in its package.json).
+          internalPattern: ["^@pink-paprikaa-web/.+", "^@/.+", "^#.+"],
+          // v5 schema: a number of blank lines between groups ("always" = 1).
+          newlinesBetween: 1,
+          // Three tiers, a blank line between each: 1) packages (Node built-ins and npm),
+          // 2) this monorepo, 3) relative paths. A type import sits beside the value imports of
+          // its tier instead of the plugin default of one `import type` block at the top.
+          groups: [
+            ["value-builtin", "type-builtin", "value-external", "type-external"],
+            ["value-internal", "type-internal"],
+            [
+              "value-parent",
+              "type-parent",
+              "value-sibling",
+              "type-sibling",
+              "value-index",
+              "type-index",
+            ],
+            "ts-equals-import",
+            "unknown",
+          ],
+        },
+      ],
+      "perfectionist/sort-named-imports": "error",
 
       // Curated core rules ported from a predecessor workspace (the subset
       // not already covered by strictTypeChecked/stylisticTypeChecked).

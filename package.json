@@ -5,6 +5,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "precheck": "nx affected -t typecheck lint",
+    "lint:fix": "nx affected -t lint --fix",
     "verify": "nx affected -t typecheck lint test build",
     "verify:all": "nx run-many -t typecheck lint test build",
     "commit": "cz",
