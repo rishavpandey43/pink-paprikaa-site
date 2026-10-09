@@ -3,6 +3,7 @@ import prettier from "eslint-config-prettier";
 import perfectionist from "eslint-plugin-perfectionist";
 import tseslint from "typescript-eslint";
 
+import { importSortRules } from "./import-sort.js";
 import namingConvention from "./rules/naming-convention.js";
 import pinkPaprikaa from "./rules/plugin.js";
 
@@ -77,17 +78,7 @@ export default tseslint.config(
           ],
         },
       ],
-      "perfectionist/sort-imports": [
-        "error",
-        {
-          // Workspace packages and the apps' `@/` self-alias sort as
-          // "internal": after external packages, before relative imports.
-          internalPattern: ["^@pink-paprikaa-web/.+", "^@/.+"],
-          // v5 schema: a number of blank lines between groups ("always" = 1).
-          newlinesBetween: 1,
-        },
-      ],
-      "perfectionist/sort-named-imports": "error",
+      ...importSortRules,
 
       // Curated core rules ported from a predecessor workspace (the subset
       // not already covered by strictTypeChecked/stylisticTypeChecked).

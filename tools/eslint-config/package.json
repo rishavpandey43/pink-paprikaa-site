@@ -10,7 +10,8 @@
     "./base": "./base.js",
     "./react": "./react.js",
     "./next": "./next.js",
-    "./atomic-layering": "./atomic-layering.js"
+    "./atomic-layering": "./atomic-layering.js",
+    "./import-sort": "./import-sort.js"
   },
   "nx": {
     "tags": [
