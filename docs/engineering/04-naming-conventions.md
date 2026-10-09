@@ -39,15 +39,25 @@ convention.)
 
 ## 3. Imports (LAW — perfectionist + boundaries; auto-fixed on save)
 
-Order: Node builtins → external → internal (`@pink-paprikaa-web/*`, then `@/*`) → relative.
-One blank line between groups. Reach rules:
+Three tiers, one blank line between them: **packages** (Node built-ins and npm) → **this monorepo**
+(`@pink-paprikaa-web/*`, `@/*`, `#…`) → **relative**. A type import sits beside the value imports of
+its tier, not in a block of its own. `eslint --fix` (editor save, or `pnpm lint:fix`) arranges it.
+Reach rules:
 
-| Distance                 | Form                                      |
-| ------------------------ | ----------------------------------------- |
-| Cross-package            | scope only: `@pink-paprikaa-web/ui`       |
-| In-app, cross-folder     | alias: `@/features/menu/menu-transformer` |
-| Same module directory    | relative: `./menu-utils`                  |
-| Another package's `src/` | **never** (boundary violation)            |
+| Distance                 | Form                                                                            |
+| ------------------------ | ------------------------------------------------------------------------------- |
+| Cross-package            | scope only: `@pink-paprikaa-web/ui`                                             |
+| In-app, cross-folder     | alias: `@/features/menu/menu-transformer`                                       |
+| Same module directory    | relative: `./menu-utils`                                                        |
+| Up one or two folders    | relative: `../lib/sx`, `../../lib/sx`                                           |
+| Up three or more folders | **lint error** — use `@/` in an app; in a package, move the code closer         |
+| A package's test helper  | `#vitest.setup` (a `#` import; only tests use it, and Next never compiles them) |
+| Another package's `src/` | **never** (boundary violation)                                                  |
+
+`@/*` is a tsconfig `paths` entry in each app (`web`, `blog`, `storybook`; the Storybook app also
+mirrors it as a Vite alias in `vite.config.mts`, reused by `vitest.config.mts`). Package source
+(`packages/ui`) keeps relative imports: it is shipped to the Next apps as-is, and Next cannot
+resolve a package's `#` imports ([decision log P-12](09-decision-log.md)).
 
 ## 4. Copy & domain terms (this repo's binding — hard rules)
 

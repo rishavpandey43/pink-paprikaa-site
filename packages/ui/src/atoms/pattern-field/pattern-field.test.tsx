@@ -1,7 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { PatternField } from "./pattern-field";
 
 describe("PatternField", () => {

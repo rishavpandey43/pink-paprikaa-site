@@ -1,6 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import type { LinkAsProps } from "../../lib/link-as";
 import { AnnouncementBar } from "./announcement-bar";
 

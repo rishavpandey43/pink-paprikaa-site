@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { createRef } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { AppShell } from "./app-shell";
 
 function statusRow(): HTMLElement | null {

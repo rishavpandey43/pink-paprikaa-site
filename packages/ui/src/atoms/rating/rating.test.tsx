@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Rating } from "./rating";
 
 /** Diamonds by fill: every unit has an empty base; filled (or partly filled) ones add a pink layer. */

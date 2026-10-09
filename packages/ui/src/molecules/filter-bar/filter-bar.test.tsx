@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { Clock, Flame } from "lucide-react";
 import { createRef } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { FilterBar } from "./filter-bar";
 
 const CATEGORIES = [

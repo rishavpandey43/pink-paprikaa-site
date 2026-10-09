@@ -2,7 +2,8 @@ import { act, fireEvent, render, screen, waitFor, within } from "@testing-librar
 import userEvent from "@testing-library/user-event";
 import { createRef, useState } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Snackbar, type SnackbarProps } from "./snackbar";
 
 const UNDO = { label: "Undo", altText: "Undo removing Chilli Paneer" } as const;

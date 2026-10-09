@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Spinner } from "./spinner";
 
 /** The brand mark (Plan 2a's SymbolMark) is the only `.mask-symbol` element. */

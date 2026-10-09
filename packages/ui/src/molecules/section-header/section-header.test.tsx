@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { SectionHeader } from "./section-header";
 
 describe("SectionHeader", () => {

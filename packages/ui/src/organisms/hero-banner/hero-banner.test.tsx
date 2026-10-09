@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { HeroBanner } from "./hero-banner";
 
 const TITLE = "Desi at heart. Urban by nature.";

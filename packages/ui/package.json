@@ -16,6 +16,9 @@
     "./styles.css": "./src/styles.css",
     "./package.json": "./package.json"
   },
+  "imports": {
+    "#vitest.setup": "./vitest.setup.ts"
+  },
   "sideEffects": [
     "**/*.css"
   ],

@@ -4,6 +4,8 @@ import { playwright } from "@vitest/browser-playwright";
 import { join } from "node:path";
 import { defineConfig } from "vitest/config";
 
+import { srcAlias } from "./vite.config.mjs";
+
 /**
  * Story tests — every story in `packages/ui` run as a Vitest test, in a real browser — plus the
  * docs-kit's node specs (the `docs-kit` project below).
@@ -26,6 +28,7 @@ import { defineConfig } from "vitest/config";
  * the token contrast policy owns it — see the comment on the rule in `preview.tsx`.)
  */
 export default defineConfig({
+  resolve: { alias: srcAlias },
   test: {
     // `nx.json` runs the inferred `test` target as bare `vitest` (testMode: "watch"), so the config
     // is what makes a plain `nx test` a single run — same convention as `packages/ui`. Pass

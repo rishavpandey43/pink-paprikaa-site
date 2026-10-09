@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { PriceTag } from "./price-tag";
 
 describe("PriceTag", () => {

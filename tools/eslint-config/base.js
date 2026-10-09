@@ -70,7 +70,10 @@ export default defineConfig(
         "error",
         {
           enforceBuildableLibDependency: true,
-          allow: [],
+          // The in-project absolute aliases — `@/…` in apps, `#…` subpath imports in packages. Nx
+          // otherwise rejects any non-relative import of a file in the importer's own project.
+          // (`/**` is a prefix match; anything else is read as a regular expression.)
+          allow: ["@/**", "^#"],
           depConstraints: [
             {
               sourceTag: "type:app",
@@ -130,6 +133,21 @@ export default defineConfig(
       "no-template-curly-in-string": "error", // "${x}" in plain quotes was meant to be a template
       // A value import and a type import from one module are fine; two value imports are not.
       "no-duplicate-imports": ["error", { allowSeparateTypeImports: true }],
+      // One or two `../` is fine; three or more means the file wants an absolute path. In an app
+      // that is `@/…` (tsconfig `paths`). Package source is shipped to Next as-is, and Next cannot
+      // resolve a package's `#` imports, so there the fix is to move the file or hoist the code.
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              regex: String.raw`^(\.\./){3,}`,
+              message:
+                "Three or more `../` — use the app's `@/` alias, or move the code closer. See docs/engineering/04.",
+            },
+          ],
+        },
+      ],
     },
   },
   // Workspace-wide `pink-paprikaa/no-raw-hex` for `.ts` files (CLAUDE.md rule 3), so base-only

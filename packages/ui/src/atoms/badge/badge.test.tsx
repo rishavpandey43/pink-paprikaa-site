@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { Flame } from "lucide-react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Badge } from "./badge";
 
 describe("Badge", () => {

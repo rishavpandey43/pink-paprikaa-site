@@ -1,7 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { expectNoA11yViolations, fakeRegister } from "../../../vitest.setup";
+import { expectNoA11yViolations, fakeRegister } from "#vitest.setup";
+
 import { Slider } from "./slider";
 
 describe("Slider", () => {

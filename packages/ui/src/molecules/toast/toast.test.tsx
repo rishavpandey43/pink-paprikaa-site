@@ -5,7 +5,8 @@ import { createRef, useState } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Toast, type ToastProps, ToastProvider } from "./toast";
 
 const VIEW_CART = { label: "View Cart", altText: "View your cart" } as const;

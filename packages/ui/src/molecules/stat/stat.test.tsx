@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { Heart } from "lucide-react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Stat } from "./stat";
 
 describe("Stat", () => {

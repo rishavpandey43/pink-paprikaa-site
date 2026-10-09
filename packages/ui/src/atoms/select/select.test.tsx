@@ -2,7 +2,8 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Users } from "lucide-react";
 
-import { expectNoA11yViolations, fakeRegister } from "../../../vitest.setup";
+import { expectNoA11yViolations, fakeRegister } from "#vitest.setup";
+
 import { Select } from "./select";
 
 const SLOTS = [

@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { StepTracker, type TrackerStep } from "./step-tracker";
 
 const ORDER: TrackerStep[] = [

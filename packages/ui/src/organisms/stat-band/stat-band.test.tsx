@@ -1,7 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 import { Leaf } from "lucide-react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { StatBand, type StatBandItem } from "./stat-band";
 
 const STATS: StatBandItem[] = [

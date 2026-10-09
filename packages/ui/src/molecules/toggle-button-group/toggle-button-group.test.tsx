@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { LayoutGrid, List } from "lucide-react";
 import { createRef, useState } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { ToggleButton } from "../../atoms/toggle-button/toggle-button";
 import { ToggleButtonGroup } from "./toggle-button-group";
 

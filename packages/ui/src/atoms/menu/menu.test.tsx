@@ -3,7 +3,8 @@ import userEvent, { PointerEventsCheckLevel } from "@testing-library/user-event"
 import { Flag, MapPin, MoreVertical, Phone, Share2 } from "lucide-react";
 import { createRef, useState } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { DemoIconTrigger, DemoTrigger } from "../../lib/demo-triggers";
 import {
   Menu,

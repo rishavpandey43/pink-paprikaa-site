@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { AutoGrid, type AutoGridMin } from "./auto-grid";
 
 interface CatalogueEntry {

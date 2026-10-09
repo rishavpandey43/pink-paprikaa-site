@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { Soup } from "lucide-react";
 import { createRef } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Icon } from "../../atoms/icon/icon";
 import { type TabItem, Tabs } from "./tabs";
 

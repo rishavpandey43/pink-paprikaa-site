@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { expectNoA11yViolations, fakeRegister } from "../../../vitest.setup";
+import { expectNoA11yViolations, fakeRegister } from "#vitest.setup";
+
 import { Checkbox } from "../../atoms/checkbox/checkbox";
 import { Input } from "../../atoms/input/input";
 import { Select } from "../../atoms/select/select";

@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import type { ChangeEvent } from "react";
 
 import { formatRupees } from "@pink-paprikaa-web/utils";
+import { expectNoA11yViolations, fakeRegister } from "#vitest.setup";
 
-import { expectNoA11yViolations, fakeRegister } from "../../../vitest.setup";
 import { ChoiceCardGroup, type ChoiceOption } from "./choice-card-group";
 
 const PLATES: ChoiceOption[] = [

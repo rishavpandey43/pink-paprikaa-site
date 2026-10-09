@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import type { ComponentProps } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { LinkCard } from "./link-card";
 
 /** Stands in for next/link: the card must render into it, not around it. */

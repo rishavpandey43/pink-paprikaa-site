@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { expectNoA11yViolations, fakeRegister } from "../../../vitest.setup";
+import { expectNoA11yViolations, fakeRegister } from "#vitest.setup";
+
 import { Checkbox } from "./checkbox";
 
 /** The drawn box: the input's next sibling is the decorative control slot, the box sits inside. */

@@ -2,7 +2,8 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Flag, Share2 } from "lucide-react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { ActionMenu, type ActionMenuItem } from "./action-menu";
 
 const ITEMS: ActionMenuItem[] = [

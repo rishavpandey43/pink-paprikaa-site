@@ -2,7 +2,8 @@ import { act, render, screen } from "@testing-library/react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Countdown } from "./countdown";
 
 const ENDS_AT = "2026-10-31T23:59:59+05:30";

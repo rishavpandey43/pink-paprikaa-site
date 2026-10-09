@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { MapPin, Phone } from "lucide-react";
 import { type ComponentProps, createRef } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Fab } from "./fab";
 
 function DemoLink({ children, ...props }: ComponentProps<"a">) {

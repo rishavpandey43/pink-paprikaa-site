@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
 import type * as PatternFieldModule from "../../atoms/pattern-field/pattern-field";
 import type { SurfaceProp } from "../../lib/common-props";

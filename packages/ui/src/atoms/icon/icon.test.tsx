@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { MessageCircle } from "lucide-react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { InstagramGlyph, LinkedinGlyph, YoutubeGlyph } from "./brand-glyphs";
 import { Icon } from "./icon";
 

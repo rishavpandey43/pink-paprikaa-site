@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Skeleton } from "./skeleton";
 
 const WIDTHS = ["w-full", "w-11/12", "w-2/3", "w-5/6"];

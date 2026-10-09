@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { MapPin, MessageCircle, Phone } from "lucide-react";
 import { useState } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { SpeedDial, type SpeedDialAction } from "./speed-dial";
 
 function actions(onSelect = vi.fn()): SpeedDialAction[] {
