@@ -1,7 +1,7 @@
 /**
  * Shared `@typescript-eslint/naming-convention` options. Severity is applied by
- * the consumer (`base.js` wires these at "warn" until Phase 1 lands real code,
- * then promotes to "error").
+ * the consumer (`base.js` wires these at "error" — a LAW since the design
+ * system rewrite).
  *
  * Ported from a battle-tested predecessor config, minus its project-specific
  * filters (GraphQL `__typename`, generated-hook `loading` names). Add
@@ -20,7 +20,7 @@ export default [
     selector: "variable",
     types: ["boolean"],
     format: ["camelCase", "UPPER_CASE", "PascalCase"],
-    prefix: ["is", "should", "has", "can", "did", "will", "does", "disable", "enable"],
+    prefix: ["is", "should", "has", "can", "did", "will", "does", "are", "disable", "enable"],
   },
   {
     selector: "memberLike",
@@ -53,6 +53,13 @@ export default [
     // snake_case allowed so API payload types can mirror the wire format.
     selector: "typeProperty",
     format: ["camelCase", "snake_case"],
+  },
+  {
+    // Quoted names mirror DOM attributes a prop forwards verbatim ("aria-current",
+    // "aria-describedby"); they cannot be camelCase. Unquoted properties stay strict.
+    selector: "typeProperty",
+    modifiers: ["requiresQuotes"],
+    format: null,
   },
   {
     selector: "enumMember",

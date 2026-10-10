@@ -1,0 +1,14 @@
+name: Set up Playwright Chromium
+description: Headless Chromium for story tests and e2e, with the browser download cached
+
+runs:
+  using: composite
+  steps:
+    # The download is cached; `--with-deps` still installs the OS libraries Chromium needs.
+    - uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+    - run: pnpm exec playwright install --with-deps chromium
+      shell: bash

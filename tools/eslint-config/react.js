@@ -5,7 +5,7 @@ import tailwindcss from "eslint-plugin-tailwindcss";
 import { createRequire } from "node:module";
 
 import base from "./base.js";
-import noRawHex from "./rules/no-raw-hex.js";
+import pinkPaprikaa from "./rules/plugin.js";
 
 // `settings.react.version: "detect"` crashes under ESLint 10's flat config:
 // eslint-plugin-react@7.37.5 (the current `latest` — no newer release fixes
@@ -36,15 +36,21 @@ export default [
       react,
       "react-hooks": reactHooks,
       "jsx-a11y": jsxA11y,
-      "pink-paprikaa": { rules: { "no-raw-hex": noRawHex } },
+      "pink-paprikaa": pinkPaprikaa,
     },
     settings: { react: { version: reactVersion } },
     rules: {
       ...react.configs.flat.recommended.rules,
       ...reactHooks.configs["recommended-latest"].rules,
       ...jsxA11y.flatConfigs.recommended.rules,
+      // Safari/VoiceOver drops list semantics from a `list-style: none` list (Tailwind's preflight
+      // sets it on every list), so `role="list"` restores them. `nav` is the rule's default entry.
+      "jsx-a11y/no-redundant-roles": ["error", { nav: ["navigation"], ol: ["list"], ul: ["list"] }],
       "react/react-in-jsx-scope": "off",
       "pink-paprikaa/no-raw-hex": "error",
+      // Native browser UI the design system replaces (Task 2): <select>, date/time inputs,
+      // `required`, `title=` tooltips, forms without noValidate.
+      "pink-paprikaa/no-native-ui": "error",
       // Curated addition ported from a predecessor workspace.
       // (`react/jsx-filename-extension` was evaluated too and dropped: its
       // 7.37.5 implementation calls the ESLint-10-removed
@@ -57,6 +63,13 @@ export default [
   // `base.js` — every consumer of this preset composes `base.js` first, so plain `.ts` coverage
   // already applies here without re-registering it. This block only needs to cover `.tsx`/`.jsx`,
   // which it does above.
+  {
+    // The token-only class LAW's shorthand half (`w-(--x)`, `[mask-type:alpha]`), which the
+    // tailwindcss plugin's own rules let through. React-preset only: classes live in UI code.
+    files: ["**/*.tsx", "**/*.jsx", "**/*.ts"],
+    plugins: { "pink-paprikaa": pinkPaprikaa },
+    rules: { "pink-paprikaa/no-arbitrary-shorthand": "error" },
+  },
   // `eslint-plugin-tailwindcss`@4.x (task 2's deferred install, task 8 wires
   // it up) — this major is "Made for Tailwind CSS v4"
   // (https://github.com/francoismassart/eslint-plugin-tailwindcss#readme),
@@ -74,7 +87,7 @@ export default [
   // writes-a-classname landmine; it fails every consumer immediately. That
   // path is inherently per-consumer (this repo's Next apps keep it at
   // `src/app/global.css`; `packages/ui` keeps its Tailwind entry at
-  // `.storybook/styles.css`), so it cannot be hardcoded correctly here in
+  // `tailwind.css`), so it cannot be hardcoded correctly here in
   // the shared preset for every consumer at once — each consumer of
   // `react.js` (directly or via `next.js`) MUST add its own
   // `settings.tailwindcss.cssConfigPath` override. Next apps get theirs in
@@ -84,4 +97,23 @@ export default [
   // its `lint` target will fail immediately, not just once it writes a
   // classname.
   tailwindcss.configs.recommended,
+  {
+    files: ["**/*.tsx", "**/*.jsx", "**/*.ts"],
+    settings: {
+      tailwindcss: {
+        // `componentVariants` is the design system's configured tailwind-variants instance.
+        functions: ["componentVariants", "tv", "cn", "clsx"],
+      },
+    },
+    rules: {
+      // Prettier (prettier-plugin-tailwindcss) owns class order; two sorters would fight.
+      "tailwindcss/classnames-order": "off",
+      // Only token-backed utilities: a missing value becomes a token, never an arbitrary value.
+      "tailwindcss/no-arbitrary-value": "error",
+      // It only reports an arbitrary value that has a token-free equivalent, and the rule above
+      // already rejects every arbitrary value, so it can never fire; it cost ~2.6s per `ui` lint.
+      "tailwindcss/no-unnecessary-arbitrary-value": "off",
+      "tailwindcss/no-custom-classname": "error",
+    },
+  },
 ];

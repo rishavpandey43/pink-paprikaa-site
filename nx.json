@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "tui": { "enabled": false },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
@@ -13,7 +14,7 @@
       "!{projectRoot}/.storybook/**/*",
       "!{projectRoot}/tsconfig.stories.json"
     ],
-    "sharedGlobals": []
+    "sharedGlobals": ["{workspaceRoot}/.prettierrc", "{workspaceRoot}/.prettierignore"]
   },
   "plugins": [
     {
@@ -88,6 +89,12 @@
   ],
   "analytics": false,
   "targetDefaults": {
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "typecheck": {
+      "inputs": ["default", "^production", { "externalDependencies": ["typescript"] }]
+    },
     "test": {
       "dependsOn": ["^build"]
     },

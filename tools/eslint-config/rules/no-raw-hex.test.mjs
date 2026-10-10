@@ -1,4 +1,5 @@
 import { RuleTester } from "eslint";
+
 import rule from "./no-raw-hex.js";
 
 const tester = new RuleTester({
