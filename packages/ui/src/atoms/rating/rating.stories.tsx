@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Rating } from "./rating";
 
 const meta = {
@@ -10,89 +11,96 @@ const meta = {
     docs: {
       description: {
         component:
-          "The review score for outlet cards and social proof. Diamonds, not stars — each one a " +
-          "rotated square carrying the brand symbol. A fractional score fills by real percentage, " +
-          "clipped in screen space, so 4.3 fills exactly 30% of the fifth mark.",
+          'Review score for outlet cards and social proof. Diamonds, not stars — the brand shape; `variant="symbol"` swaps in the bare brand mark, the treatment used in ReviewCard and on marketing artwork. Partial scores fill by real percentage: the fill clips in screen space across the diamond\'s bounding box, so 4.3 fills exactly 30% of the fifth diamond. `md` (16px) is the default; below it the embedded mark stops reading, so its opacity steps up. It is one image named "4.6 out of 5" (with `count`, "…, 2,184 reviews").',
       },
     },
   },
 } satisfies Meta<typeof Rating>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
 export const Values: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-3">
-      <Rating {...args} value={5} />
-      <Rating {...args} value={4.6} />
-      <Rating {...args} value={4.3} />
-      <Rating {...args} value={2.5} />
-      <Rating {...args} value={0} />
+  name: "value",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-6">
+      <Rating value={5} />
+      <Rating value={4.6} />
+      <Rating value={4.3} />
+      <Rating value={2.5} />
+      <Rating value={0} />
     </div>
   ),
 };
 
-/** 12 / 16 / 24px marks. Below 16 the embedded symbol thins out, so its opacity steps up. */
+export const Symbol: Story = {
+  name: "symbol",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-6">
+      <Rating value={5} variant="symbol" />
+      <Rating value={4.6} variant="symbol" />
+    </div>
+  ),
+};
+
+export const Count: Story = {
+  name: "count",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-6">
+      <Rating value={4.6} count={2184} />
+      <Rating value={4.8} variant="symbol" count={912} />
+      <Rating value={4.4} count={106} size="sm" hasValue={false} />
+    </div>
+  ),
+};
+
 export const Sizes: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-3">
-      <Rating {...args} size="xs" value={4.3} />
-      <Rating {...args} size="sm" value={4.3} />
-      <Rating {...args} size="md" value={4.3} />
-      <Rating {...args} size="lg" value={4.3} />
+  name: "size",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-6">
+      <Rating value={4.3} size="sm" />
+      <Rating value={4.3} size="md" />
+      <Rating value={4.3} size="lg" />
     </div>
   ),
 };
 
-/** `symbol` drops the diamond for the bare mark — the review-card and artwork treatment. */
-export const Variants: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-3">
-      <Rating {...args} value={4.6} variant="diamond" />
-      <Rating {...args} value={4.6} variant="symbol" />
-      <Rating {...args} size="lg" value={5} variant="symbol" />
-    </div>
-  ),
-};
-
-/** Counts group the Indian way: 2,184 — never 2.1k, never a comma in the wrong place. */
-export const WithCount: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-3">
-      <Rating {...args} count={2184} value={4.6} />
-      <Rating {...args} count={912} value={4.8} variant="symbol" />
-      <Rating {...args} count={106} hasValueLabel={false} size="sm" value={4.4} />
-    </div>
-  ),
-};
-
-/** Half-point steps side by side, at the size the fill is easiest to read. */
 export const PartialFill: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-3">
-      <Rating {...args} size="lg" value={4.1} />
-      <Rating {...args} size="lg" value={4.5} />
-      <Rating {...args} size="lg" value={4.9} />
+  name: "partial fill",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-10">
+      <Rating value={4.1} size="lg" />
+      <Rating value={4.5} size="lg" />
+      <Rating value={4.9} size="lg" />
     </div>
   ),
 };
 
-/** Where it usually lands: under an outlet name, next to the count. */
+/** Where it usually lands: under an outlet name (plain elements — an atom story composes no atom). */
 export const OnAnOutletCard: Story = {
-  parameters: { layout: "padded" },
-  render: (args) => (
-    <div className="flex max-w-96 flex-col gap-2 rounded-4 bg-surface-card p-4 shadow-elevation1">
-      <p className="m-0 font-display text-h3 font-bold text-text-heading">
+  name: "on an outlet card",
+  render: () => (
+    <div
+      data-surface="light"
+      className="grid max-w-text-measure-prose gap-2 rounded-lg bg-surface-card p-4 shadow-1"
+    >
+      <p className="m-0 font-display text-h4 font-bold text-text-heading">
         Pink Paprikaa · Sector 57
       </p>
-      <Rating {...args} count={2184} size="sm" value={4.6} />
-      <p className="m-0 font-body text-caption text-text-muted">
-        100% vegetarian kitchen · ₹180–₹320 for two
-      </p>
+      <Rating value={4.6} count={2184} size="sm" />
+      <p className="m-0 font-body text-caption text-text-muted">100% vegetarian kitchen</p>
     </div>
+  ),
+};
+
+/** The score and count follow the surface's text tokens. */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: () => (
+    <OnSurfaces>
+      <Rating value={4.6} count={2184} />
+    </OnSurfaces>
   ),
 };

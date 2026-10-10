@@ -1,124 +1,209 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { CreditCard, Phone } from "lucide-react";
+import { expect } from "storybook/test";
 
-import { Building2, CreditCard, Phone, Ticket } from "lucide-react";
-
-import { Button } from "../button/button";
+import { paint } from "../../lib/story-paint";
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Input } from "./input";
 
-// `meta` is annotated rather than `satisfies`-inferred: under pnpm's isolated node_modules,
-// declaration emit for an inferred decorator type reaches for Storybook/Radix internals it
-// cannot name from here (TS2883). The annotation keeps the emitted type nameable.
-const meta: Meta<typeof Input> = {
+const INPUT_STATES = [
+  "rest",
+  "hover",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
+
+const meta = {
   title: "Atoms/Input",
   component: Input,
-  args: { "aria-label": "Mobile number", placeholder: "98765 43210" },
-  argTypes: {
-    icon: { control: false },
-    trailing: { control: false },
-  },
+  args: { "aria-label": "Full name", placeholder: "Your full name" },
+  argTypes: { icon: { control: false }, trailing: { control: false } },
+  render: (args) => (
+    <div className="w-full max-w-text-measure-prose">
+      <Input {...args} />
+    </div>
+  ),
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "The bare text field — 48px tall, 10px radius, a 2px status border. It carries no " +
-          "label, hint or message on purpose: the `Field` molecule wraps it with those, so the " +
-          "same control can sit inside a form row, a search bar or a cart drawer unchanged.",
+          "Single-line or multiline text field — 48px tall (40 sm / 56 lg), 10px radius, 2px status border. States: rest, hover (border-strong), focus (2px pink + ring), filled, `disabled`, `readOnly` (sunken fill + lock), `isLoading` (the pulsing mark), and `status` error / success / warning — a status raises the border to 2px, tints the leading icon and shows its glyph on the right. The label, hint and status message belong to **Field** (Molecules/Field), where the message replaces the hint; labels are sentence case and error copy says what to do next, never a code. `className` sizes the box; every other prop, `register()` included, lands on the native input.",
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <div className="w-full max-w-96">
-        <Story />
-      </div>
-    ),
-  ],
-};
+} satisfies Meta<typeof Input>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-/** 40 / 48 / 56px — fixed heights, so a field never wraps beside a button of the same size. */
-export const Sizes: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <Input {...args} placeholder="Small — 40px" size="sm" />
-      <Input {...args} placeholder="Medium — 48px" size="md" />
-      <Input {...args} placeholder="Large — 56px" size="lg" />
-    </div>
-  ),
-};
-
-/** The border colour and the trailing glyph. The sentence explaining it belongs to `Field`. */
-export const Statuses: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <Input {...args} aria-label="Full name" placeholder="Rest" />
-      <Input {...args} aria-label="Card number" defaultValue="4242 4242" status="error" />
-      <Input {...args} aria-label="Promo code" defaultValue="PAPRIKAA50" status="success" />
-      <Input {...args} aria-label="Pickup time" defaultValue="11:25pm" status="warning" />
-    </div>
-  ),
-};
-
-export const WithIcons: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <Input {...args} icon={Phone} />
-      <Input {...args} aria-label="Company GSTIN" icon={Building2} placeholder="22AAAAA0000A1Z5" />
-      <Input
-        {...args}
-        aria-label="Card number"
-        icon={CreditCard}
-        placeholder="4242 4242 4242 4242"
-      />
-    </div>
-  ),
-};
-
-/** A suffix is static text; `trailing` takes a real control, most often a small ghost button. */
-export const SuffixAndTrailing: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <Input {...args} aria-label="Table size" placeholder="4" suffix="guests" />
-      <Input
-        {...args}
-        aria-label="Promo code"
-        icon={Ticket}
-        placeholder="PAPRIKAA50"
-        trailing={
-          <Button size="sm" variant="ghost">
-            Apply
-          </Button>
-        }
-      />
-    </div>
-  ),
-};
-
+/** Forced rest / hover / focus / disabled — hover uses `--border-strong` (Task 2 field recipe). */
 export const States: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <Input {...args} aria-label="Promo code" defaultValue="CHAI20" isLoading />
-      <Input {...args} aria-label="Outlet" defaultValue="Sector 57" readOnly />
-      <Input {...args} aria-label="Delivery address" disabled placeholder="Not serviceable yet" />
+  parameters: { pseudo: storyStatesPseudo(INPUT_STATES) },
+  render: () => (
+    <div className="grid w-full max-w-text-measure-prose gap-4">
+      <StatesRow
+        states={INPUT_STATES}
+        render={(state) => (
+          <Input
+            aria-label={`Full name (${state})`}
+            placeholder="Your full name"
+            {...storyStateControlProps(state)}
+          />
+        )}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover .group\\/field");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Input States: #cell-hover field box missing");
+    }
+    await expect(hover.className).toMatch(/border-border-strong/);
+  },
+};
+
+export const Rest: Story = { name: "rest" };
+
+export const FilledWithIcon: Story = {
+  name: "filled + icon",
+  args: { "aria-label": "Mobile number", icon: Phone, type: "tel", defaultValue: "98765 43210" },
+};
+
+export const StatusError: Story = {
+  name: "error",
+  args: { "aria-label": "Card", icon: CreditCard, defaultValue: "4242 4242", status: "error" },
+};
+
+export const StatusSuccess: Story = {
+  name: "success",
+  args: { "aria-label": "Promo code", defaultValue: "PAPRIKAA50", status: "success" },
+};
+
+export const StatusWarning: Story = {
+  name: "warning",
+  args: { "aria-label": "Pickup time", defaultValue: "11:25pm", status: "warning" },
+};
+
+export const Loading: Story = {
+  name: "loading",
+  args: { "aria-label": "Promo code", defaultValue: "CHAI20", isLoading: true },
+};
+
+export const ReadOnly: Story = {
+  name: "readOnly",
+  args: { "aria-label": "Outlet", defaultValue: "Sector 57", readOnly: true },
+};
+
+export const Disabled: Story = {
+  name: "disabled",
+  args: {
+    "aria-label": "Delivery address",
+    placeholder: "Delivery starts in 2027",
+    disabled: true,
+  },
+};
+
+export const SuffixAndTrailing: Story = {
+  name: "suffix / trailing",
+  args: {
+    "aria-label": "Table size",
+    suffix: "guests",
+    placeholder: "4",
+    trailing: (
+      <button
+        type="button"
+        className="shrink-0 rounded-pill px-3 py-1 font-display text-body-sm font-bold text-text-link hover:bg-pink-50"
+      >
+        Check
+      </button>
+    ),
+  },
+};
+
+/** A disabled trailing button disables only itself: the field keeps its white box and body text. */
+export const DisabledTrailing: Story = {
+  name: "trailing disabled",
+  args: {
+    "aria-label": "Promo code",
+    defaultValue: "CHAI20",
+    trailing: (
+      <button
+        type="button"
+        disabled
+        className="shrink-0 rounded-pill px-3 py-1 font-display text-body-sm font-bold text-text-link disabled:text-ink-400"
+      >
+        Apply
+      </button>
+    ),
+  },
+  play: async ({ canvas }) => {
+    const input = canvas.getByRole("textbox", { name: "Promo code" });
+    const box = input.parentElement;
+    if (box === null) throw new Error("The input renders inside its field box.");
+    await expect(getComputedStyle(input).color).toBe(paint(input, "color", "--color-text-body"));
+    await expect(getComputedStyle(box).backgroundColor).toBe(
+      paint(input, "backgroundColor", "--color-surface-card")
+    );
+  },
+};
+
+/** A disabled `<fieldset>` disables its fields natively, and the box greys with them. */
+export const InDisabledFieldset: Story = {
+  name: "inside a disabled fieldset",
+  render: () => (
+    <fieldset disabled className="w-full max-w-text-measure-prose">
+      <legend className="sr-only">Delivery</legend>
+      <Input aria-label="Delivery address" defaultValue="Sector 57" />
+    </fieldset>
+  ),
+  play: async ({ canvas }) => {
+    const input = canvas.getByRole("textbox", { name: "Delivery address" });
+    const box = input.parentElement;
+    if (box === null) throw new Error("The input renders inside its field box.");
+    await expect(input).toBeDisabled();
+    await expect(getComputedStyle(input).color).toBe(paint(input, "color", "--color-ink-400"));
+    await expect(getComputedStyle(box).backgroundColor).toBe(
+      paint(input, "backgroundColor", "--color-ink-100")
+    );
+  },
+};
+
+export const Sizes: Story = {
+  name: "size",
+  render: () => (
+    <div className="grid w-full max-w-text-measure-prose gap-3">
+      <Input aria-label="Small" size="sm" placeholder="sm — 40px" />
+      <Input aria-label="Medium" size="md" placeholder="md — 48px" />
+      <Input aria-label="Large" size="lg" placeholder="lg — 56px" />
     </div>
   ),
 };
 
-/** Multiline grows with `rows` and stays draggable — kitchen notes are never one line. */
 export const Multiline: Story = {
-  render: (args) => (
-    <Input
-      {...args}
-      aria-label="Notes for the kitchen"
-      isMultiline
-      placeholder="No onion, extra hot."
-      rows={3}
-    />
+  name: "multiline",
+  args: {
+    "aria-label": "Any notes for the kitchen?",
+    isMultiline: true,
+    rows: 3,
+    placeholder: "No onion, extra hot.",
+  },
+};
+
+/** A field is its own light island: white, dark text and a light focus ring on every ground. */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: () => (
+    <OnSurfaces>
+      <Input aria-label="Mobile number" icon={Phone} placeholder="98765 43210" />
+    </OnSurfaces>
   ),
 };

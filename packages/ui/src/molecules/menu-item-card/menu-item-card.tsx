@@ -1,140 +1,129 @@
-import type { ComponentPropsWithoutRef, ElementType } from "react";
-
-import { Plus } from "lucide-react";
+import { createElement, type ReactNode } from "react";
 
 import { Badge } from "../../atoms/badge/badge";
 import { Card } from "../../atoms/card/card";
 import { DietMark } from "../../atoms/diet-mark/diet-mark";
-import { IconButton } from "../../atoms/icon-button/icon-button";
 import { ImageSlot } from "../../atoms/image-slot/image-slot";
 import { PriceTag } from "../../atoms/price-tag/price-tag";
 import { SpiceLevel } from "../../atoms/spice-level/spice-level";
-import { Text } from "../../atoms/text/text";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
+import type { LinkAs } from "../../lib/link-as";
+import { STRETCHED_LINK } from "../../lib/stretched-link";
+import { withSx } from "../../lib/sx";
+import type { MenuItemImage } from "../menu-item-row/menu-item-row";
 
 const menuItemCard = componentVariants({
   slots: {
-    // `relative` anchors the stretched link below; `h-full` lets a row of cards in a grid share one
-    // height instead of stepping down as descriptions get shorter.
-    root: "relative flex h-full flex-col",
+    // The stretched link's keyboard ring goes round the whole card (lib/stretched-link).
+    root: ["flex h-full flex-col", STRETCHED_LINK.card],
     media: "relative",
     badge: "absolute top-3 left-3",
-    /**
-     * The floating add button overlaps the image edge by half its height. `z-1` puts it above the
-     * stretched link's overlay, so tapping it adds the dish instead of opening the item page.
-     */
-    add: "absolute -bottom-4 right-3 z-1",
-    body: "flex min-w-0 flex-1 flex-col gap-2 p-5",
-    header: "flex min-w-0 items-center gap-2",
-    name: "min-w-0",
-    /**
-     * The whole card is the link's hit area. The anchor stays a real, focusable, keyboard-reachable
-     * element in the accessibility tree — which a click handler hung on the card would not be.
-     */
-    link: "after:absolute after:inset-0 after:content-['']",
-    // `mt-auto` pins the price row to the bottom edge whatever the description does above it.
-    meta: "mt-auto flex min-w-0 items-center justify-between gap-3 pt-1",
+    // Above the stretched link's overlay, so the Add button stays its own target.
+    action: "absolute right-3.5 -bottom-4.5 z-raised",
+    // flex-1 + the footer's mt-auto pin the price row to the bottom, so a grid of cards lines up.
+    body: "flex flex-1 flex-col gap-2 p-4.5",
+    header: "flex items-center gap-2",
+    name: "min-w-0 font-display text-menu-item-name text-text-heading",
+    // Stretched link: the ::after covers the whole card, so the card clicks through to the dish.
+    link: STRETCHED_LINK.link,
+    description: "m-0 line-clamp-2 max-w-none text-body-sm text-text-muted",
+    footer: "mt-auto flex items-center justify-between gap-2.5 pt-0.5",
   },
 });
 
-export interface MenuItemCardProps extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
-  /** The dish, in Title Case exactly as the kitchen prints it. */
+export interface MenuItemCardProps extends BaseProps<"article"> {
   name: string;
-  /**
-   * The element the dish name renders as. A heading by default, so a rail of cards reads as a
-   * document outline; drop to `"p"` inside something that already owns the heading level.
-   */
-  nameAs?: ElementType | undefined;
-  /** Ingredient-led, at most fourteen words — the card clamps it to two lines. */
   description?: string | undefined;
-  /** Live price in whole rupees. */
   price: number;
-  /** Pre-discount price, printed struck through after the live one. */
   was?: number | undefined;
-  /** Always pass it — the mark is what makes a 100% vegetarian kitchen legible at a glance. */
-  diet?: "veg" | "egg" | undefined;
-  /** 1 Mild · 2 Medium · 3 Hot · 4 Extra Hot. Omit it on anything that carries no heat. */
   spice?: 1 | 2 | 3 | 4 | undefined;
-  /** One short marker over the photograph — "Bestseller", "New". Never more than one. */
   badge?: string | undefined;
-  /** The dish photograph. Leave it off and the labelled placeholder holds the space. */
-  image?: string | undefined;
-  /** What the photograph shows. Leave it empty when the dish name already says it. */
-  imageAlt?: string | undefined;
-  /** What photography this card is waiting for, named as a crop a photographer can act on. */
+  image?: MenuItemImage | undefined;
+  /** What photograph belongs in the placeholder. Default "Dish photo". */
   imageLabel?: string | undefined;
-  /** The dish's own page. Passing it turns the whole card into one link and adds the hover lift. */
+  /**
+   * The floating add button (IconButton, `shadow-brand`), or nothing on a card that cannot take an
+   * order. Name it with the dish (`label="Add Masala Cold Brew"`), so a grid of cards is not a
+   * list of controls all called "Add".
+   */
+  action?: ReactNode | undefined;
+  /** Makes the dish name a link that covers the card. */
   href?: string | undefined;
-  /** Called by the floating pink add button. Omit it and no button is drawn. */
-  onAdd?: (() => void) | undefined;
+  linkAs?: LinkAs | undefined;
+  headingLevel?: HeadingLevel | undefined;
 }
 
+/**
+ * Image-first dish card for grids and rails: a 4:3 photo with an overlapping floating action,
+ * then the DietMark, the name, the price and the heat. With `href` the card is a link and lifts
+ * on hover; the action stays a separate button.
+ */
 export function MenuItemCard({
   name,
-  nameAs = "h3",
   description,
   price,
   was,
-  diet = "veg",
   spice,
   badge,
   image,
-  imageAlt = "",
-  imageLabel = "Dish photo 4:3",
+  imageLabel = "Dish photo",
+  action,
   href,
-  onAdd,
+  linkAs: LinkComponent = "a",
+  headingLevel = 3,
+  sx,
   className,
   ...props
 }: MenuItemCardProps) {
-  const slots = menuItemCard();
+  const styles = menuItemCard();
+
   return (
     <Card
-      className={slots.root({ className })}
-      isInteractive={href !== undefined}
+      asChild
       padding="none"
-      {...props}
+      isInteractive={href !== undefined}
+      className={styles.root({ className: withSx(sx, className) })}
     >
-      <div className={slots.media()}>
-        <ImageSlot alt={imageAlt} label={imageLabel} radius="none" ratio="4:3" src={image} />
-        {badge === undefined ? null : (
-          <Badge className={slots.badge()} tone="brand">
-            {badge}
-          </Badge>
-        )}
-        {onAdd === undefined ? null : (
-          <IconButton
-            className={slots.add()}
-            icon={Plus}
-            label={`Add ${name}`}
-            onClick={onAdd}
-            size="lg"
-            variant="primary"
-          />
-        )}
-      </div>
-      <div className={slots.body()}>
-        <div className={slots.header()}>
-          <DietMark size="sm" variant={diet} />
-          <Text as={nameAs} className={slots.name()} variant="subtitle1">
-            {href === undefined ? (
-              name
-            ) : (
-              <a className={slots.link()} href={href}>
-                {name}
-              </a>
+      <article {...props}>
+        <div className={styles.media()}>
+          <ImageSlot ratio="4:3" radius="none" {...(image ?? { label: imageLabel })} />
+          {badge ? (
+            <Badge color="brand" variant="solid" className={styles.badge()}>
+              {badge}
+            </Badge>
+          ) : null}
+          {isShown(action) ? <div className={styles.action()}>{action}</div> : null}
+        </div>
+        <div className={styles.body()}>
+          <div className={styles.header()}>
+            <DietMark size="sm" />
+            {/* createElement, not `const Heading = headingTag(…)` (R83): the React Compiler lint reads
+                a capitalised call result as a component created during render. */}
+            {createElement(
+              headingTag(headingLevel),
+              {
+                className: styles.name(),
+                "data-stretched-link": href === undefined ? undefined : "",
+              },
+              href === undefined ? (
+                name
+              ) : (
+                <LinkComponent href={href} className={styles.link()}>
+                  {name}
+                </LinkComponent>
+              )
             )}
-          </Text>
+          </div>
+          {description ? <p className={styles.description()}>{description}</p> : null}
+          <div className={styles.footer()}>
+            <PriceTag amount={price} was={was} />
+            {spice === undefined ? null : <SpiceLevel level={spice} size="sm" />}
+          </div>
         </div>
-        {description === undefined ? null : (
-          <Text lineClamp={2} tone="muted" variant="body2">
-            {description}
-          </Text>
-        )}
-        <div className={slots.meta()}>
-          <PriceTag amount={price} was={was} />
-          {spice === undefined ? null : <SpiceLevel level={spice} size="sm" />}
-        </div>
-      </div>
+      </article>
     </Card>
   );
 }

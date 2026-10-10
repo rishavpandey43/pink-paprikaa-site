@@ -7,24 +7,32 @@ below are **this repo's binding** of those rules.
 
 ## 1. The layer map (LAW — `@nx/enforce-module-boundaries`)
 
-| Layer                    | Holds                                                     | May import                                         |
-| ------------------------ | --------------------------------------------------------- | -------------------------------------------------- |
-| `apps/web`, `apps/blog`  | Routes, pages, feature modules, app composition. Thin.    | `ui`, `content`, `seo`, `utils`, `design-tokens`   |
-| `packages/ui`            | Presentational components (atomic layers) + their stories | `ui` (upward only — LAW), `utils`, `design-tokens` |
-| `packages/content`       | Zod schemas + typed site data — the single content truth  | `utils`                                            |
-| `packages/seo`           | JSON-LD builders, metadata helpers                        | `content` types, `utils`                           |
-| `packages/utils`         | Framework-agnostic pure functions                         | `utils`                                            |
-| `packages/design-tokens` | Token source → generated theme. Imports nothing (LAW).    | —                                                  |
-| `tools/*`                | Build/lint/pipeline tooling                               | (unconstrained; not imported by app code)          |
+| Layer                    | Holds                                                                                                                                    | May import                                                                                                            |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `apps/web`, `apps/blog`  | Routes, pages, feature modules, app composition. Thin.                                                                                   | `ui`, `content`, `seo`, `utils`, `design-tokens`                                                                      |
+| `apps/storybook`         | The design system's workbench: foundation docs (MDX + specimens), docs-kit helpers, reference kits, patterns. Local + static build only. | `ui`, `content`, `utils`, `design-tokens`                                                                             |
+| `packages/ui`            | Presentational components (atoms, molecules, organisms, layouts), `src/lib/` internals, and their stories                                | `ui` (upward only — LAW; atoms import only `atoms/icon`, `atoms/typography` (Link) + `lib`), `utils`, `design-tokens` |
+| `packages/content`       | Zod schemas + typed site data — the single content truth                                                                                 | `utils`                                                                                                               |
+| `packages/seo`           | JSON-LD builders, metadata helpers                                                                                                       | `content` types, `utils`                                                                                              |
+| `packages/utils`         | Framework-agnostic pure functions                                                                                                        | `utils`                                                                                                               |
+| `packages/design-tokens` | Token source → generated theme. Imports nothing (LAW).                                                                                   | —                                                                                                                     |
+| `tools/*`                | Build/lint/pipeline tooling                                                                                                              | (unconstrained; not imported by app code)                                                                             |
 
 Apps never import each other (LAW). Deep imports into another package's `src/` are boundary
 violations — cross-package traffic goes through the package's public surface only.
 
 ## 2. Atomic layers inside `packages/ui` (LAW — `atomic-layering` lint)
 
-`atoms → molecules → organisms → templates`, imports upward only. Definitions and this site's
-concrete examples: [coding patterns §1](03-patterns.md). Pages are NOT in the design system —
-apps bind `content` data to templates.
+`atoms → molecules → organisms → layouts`, imports upward only, and **an atom imports nothing but
+`atoms/icon` and `lib/`** — the design system's tier rule, now a gate. `src/lib/` holds library
+internals every layer may use: `component-variants.ts` (the configured tailwind-variants),
+`brand-artwork.ts` (generated logo paths), `reveal-observer.tsx`, `heading.ts`, `link-as.ts`,
+`field-status.ts`, `space.ts`, `is-shown`, `struck-price`, `symbol-mark`, `control-states`,
+`notification`, `field-message`, `field-control`, `choice-control`, `use-controllable-state`,
+`use-focus-return`, `assign-ref`, `stretched-link`, plus story-only `story-*` helpers.
+`src/index.ts` is the one public barrel. Pages are **not** in the design system — apps (and
+Storybook's reference kits) compose organisms and layouts with real content. Placement and every
+authoring rule are in [`packages/ui/AUTHORING.md`](../../packages/ui/AUTHORING.md).
 
 ## 3. Feature-module structure inside apps (CONVENTION)
 
@@ -67,6 +75,10 @@ Rules that keep this predictable:
 
 ## 4. Data flow (the whole site, one line each)
 
+- **Design tokens:** `packages/design-tokens/tokens/**` (DTCG) → Style Dictionary → `theme.css`
+  (Tailwind `@theme static`), `surfaces.css` (`data-surface` remaps) and `tokens.json` (the
+  catalogue) → `packages/ui/src/styles.css`, the one stylesheet consumers import, and Storybook's
+  foundation pages. `contrast-pairs.json` is measured on every `design-tokens:test`.
 - **Build-time content:** `packages/content` data → Zod parse (build fails on violation) → typed
   import in a feature → transformer (if shaping needed) → components. No runtime fetching.
 - **Blog:** `content/posts/*.mdx` → Content Collections (schema-validated) → `allPosts` →
@@ -81,6 +93,8 @@ Rules that keep this predictable:
 ## 5. Where does new code live? (decision tree — follow, don't re-derive)
 
 1. Visual building block, reusable, presentational → `packages/ui`, correct atomic layer.
+   Docs-only helpers (swatches, token tables, specimens) → `apps/storybook/src/docs-kit`, never
+   `packages/ui`.
 2. Business data or its schema → `packages/content`.
 3. Pure function, no React/framework → `packages/utils`.
 4. SEO/structured-data → `packages/seo`.

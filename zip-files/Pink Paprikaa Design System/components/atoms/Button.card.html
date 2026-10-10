@@ -1,4 +1,4 @@
-<!-- @dsCard group="Atoms" viewport="700x900" name="Button" subtitle="4 variants × 3 sizes, leading and trailing icons, on-brand, states, full width." -->
+<!-- @dsCard group="Atoms" viewport="700x1340" name="Button" subtitle="4 variants × 3 sizes, leading and trailing icons, on-brand, states, full width." -->
 <!doctype html><html><head><meta charset="utf-8">
 <link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -29,6 +29,11 @@ function Demo(){return(<Rows>
 
 <Row label="fullWidth" col><Button fullWidth size="lg" icon="shopping-bag">Pay &#8377;1,240</Button><Button fullWidth variant="secondary" iconAfter="arrow-right">See the Full Menu</Button></Row>
 <Note>Leading icons name the action (bag, pin, search). Trailing icons mean onward motion (arrow-right for navigation, arrow-up-right for leaving the site, chevron-down for a picker). One icon per button unless both carry distinct meaning. Labels never wrap — buttons are nowrap and never shrink.</Note>
+<Row label="states" note="primary · rest / hover / press / focus / disabled"><Button>Rest</Button><Button state="hover">Hover</Button><Button state="press">Press</Button><Button state="focus">Focus</Button><Button disabled>Disabled</Button></Row>
+<Row label="states" note="secondary"><Button variant="secondary">Rest</Button><Button variant="secondary" state="hover">Hover</Button><Button variant="secondary" state="press">Press</Button><Button variant="secondary" state="focus">Focus</Button><Button variant="secondary" disabled>Disabled</Button></Row>
+<Row label="states" note="ghost"><Button variant="ghost">Rest</Button><Button variant="ghost" state="hover">Hover</Button><Button variant="ghost" state="press">Press</Button><Button variant="ghost" state="focus">Focus</Button><Button variant="ghost" disabled>Disabled</Button></Row>
+<Row label="states" note="inverse"><Button variant="inverse">Rest</Button><Button variant="inverse" state="hover">Hover</Button><Button variant="inverse" state="press">Press</Button><Button variant="inverse" state="focus">Focus</Button><Button variant="inverse" disabled>Disabled</Button></Row>
+<Row label="states" note="on brand" className="pad on-brand"><Button on="brand">Rest</Button><Button on="brand" state="hover">Hover</Button><Button on="brand" state="press">Press</Button><Button on="brand" variant="secondary" state="hover">Hover</Button><Button on="brand" variant="secondary" state="focus">Focus</Button><Button on="brand" disabled>Disabled</Button></Row>
 </Rows>);}
 ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
 </script></body></html>

@@ -1,126 +1,115 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
-import { type AccordionItem } from "../../molecules/accordion/accordion";
+import { expectNoA11yViolations } from "#vitest.setup";
+
+import type { AccordionItem } from "../../molecules/accordion/accordion";
 import { FaqSection } from "./faq-section";
 
 const ITEMS: AccordionItem[] = [
   {
-    question: "Is everything vegetarian?",
-    answer: "Yes — 100% vegetarian kitchen. A few bakes contain egg and are marked.",
+    value: "veg",
+    question: "Is it really pure vegetarian?",
+    answer: "One kitchen, pure vegetarian, no exceptions. No egg, no meat, ever.",
   },
-  { question: "Do you deliver?", answer: "Pickup and dine-in for now. Delivery starts in 2027." },
-  { question: "Can I book a table?", answer: "Up to six guests online. Larger groups, call us." },
+  {
+    value: "pause",
+    question: "Can I pause or skip a day?",
+    answer: "Yes. Tell us by 9pm the day before.",
+  },
+  { value: "gst", question: "Do I get a GST bill?", answer: "Yes, for every order." },
 ];
 
 describe("FaqSection", () => {
-  it("renders the section heading, lede and every question", () => {
+  it("heads the section with overline, a level-2 title and the lede", () => {
     render(
       <FaqSection
-        items={ITEMS}
-        lede="Everything guests ask us at the counter."
         overline="Questions"
-        title="The things people ask"
+        title="Before you order"
+        lede="The things people ask us most."
+        items={ITEMS}
       />
     );
-
-    expect(
-      screen.getByRole("heading", { level: 2, name: "The things people ask" })
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Before you order" })).toBeInTheDocument();
     expect(screen.getByText("Questions")).toBeInTheDocument();
-    expect(screen.getByText("Everything guests ask us at the counter.")).toBeInTheDocument();
-    expect(screen.getAllByRole("button")).toHaveLength(ITEMS.length);
+    expect(screen.getByText("The things people ask us most.")).toBeInTheDocument();
   });
 
-  it("opens the first answer on arrival", () => {
-    render(<FaqSection items={ITEMS} title="The things people ask" />);
-
-    expect(screen.getByRole("button", { name: "Is everything vegetarian?" })).toHaveAttribute(
-      "aria-expanded",
-      "true"
+  it("makes each question a heading one level below the title", () => {
+    render(<FaqSection title="FAQ" items={ITEMS} />);
+    const questions = screen.getAllByRole("heading", { level: 3 });
+    expect(questions.map((question) => question.textContent)).toEqual(
+      ITEMS.map((item) => item.question)
     );
-    expect(screen.getByRole("region", { name: "Is everything vegetarian?" })).toHaveTextContent(
-      "100% vegetarian kitchen"
-    );
+    for (const question of questions) expect(question.closest("summary")).not.toBeNull();
   });
 
-  it("opens the questions named in defaultOpen instead", () => {
-    render(
-      <FaqSection defaultOpen={["Do you deliver?"]} items={ITEMS} title="The things people ask" />
-    );
+  it("takes its heading level from headingLevel and steps the questions down with it, to h6 at most", () => {
+    const { rerender } = render(<FaqSection title="FAQ" items={ITEMS} headingLevel={3} />);
+    expect(screen.getByRole("heading", { level: 3, name: "FAQ" })).toBeInTheDocument();
+    expect(screen.getAllByRole("heading", { level: 4 })).toHaveLength(ITEMS.length);
+    rerender(<FaqSection title="FAQ" items={ITEMS} headingLevel={6} />);
+    expect(screen.getAllByRole("heading", { level: 6 })).toHaveLength(ITEMS.length + 1);
+  });
 
-    expect(screen.getByRole("button", { name: "Do you deliver?" })).toHaveAttribute(
-      "aria-expanded",
-      "true"
-    );
-    expect(screen.getByRole("button", { name: "Is everything vegetarian?" })).toHaveAttribute(
-      "aria-expanded",
-      "false"
-    );
+  it("opens the first answer by default and keeps one open at a time", () => {
+    const { container } = render(<FaqSection title="FAQ" items={ITEMS} />);
+    const answers = [...container.querySelectorAll("details")];
+    expect(answers).toHaveLength(3);
+    expect(answers[0]).toHaveAttribute("open");
+    expect(container.querySelectorAll("details[open]")).toHaveLength(1);
+    const names = new Set(answers.map((answer) => answer.getAttribute("name")));
+    expect(names.size).toBe(1);
+    expect([...names][0]).toBeTruthy();
+  });
+
+  it("opens the answers named in defaultOpen instead of the first", () => {
+    const { container } = render(<FaqSection title="FAQ" items={ITEMS} defaultOpen={["pause"]} />);
+    const answers = [...container.querySelectorAll("details")];
+    expect(answers[0]).not.toHaveAttribute("open");
+    expect(answers[1]).toHaveAttribute("open");
+    expect(container.querySelectorAll("details[open]")).toHaveLength(1);
   });
 
   it("opens none when defaultOpen is empty", () => {
-    render(<FaqSection defaultOpen={[]} items={ITEMS} title="The things people ask" />);
+    const { container } = render(<FaqSection title="FAQ" items={ITEMS} defaultOpen={[]} />);
+    expect(container.querySelectorAll("details[open]")).toHaveLength(0);
+  });
 
-    for (const trigger of screen.getAllByRole("button")) {
-      expect(trigger).toHaveAttribute("aria-expanded", "false");
+  it("lets several answers stay open with isMultiple", () => {
+    const { container } = render(
+      <FaqSection title="FAQ" items={ITEMS} isMultiple defaultOpen={["veg", "pause"]} />
+    );
+    for (const answer of container.querySelectorAll("details")) {
+      expect(answer).not.toHaveAttribute("name");
     }
+    expect(container.querySelectorAll("details[open]")).toHaveLength(2);
   });
 
-  it("swaps the open answer when another question is clicked", async () => {
-    render(<FaqSection items={ITEMS} title="The things people ask" />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Do you deliver?" }));
-
-    expect(screen.getByRole("button", { name: "Is everything vegetarian?" })).toHaveAttribute(
-      "aria-expanded",
-      "false"
-    );
-    expect(screen.getAllByRole("region")).toHaveLength(1);
-  });
-
-  it("keeps several answers open when isMultiple is set", async () => {
-    render(<FaqSection isMultiple items={ITEMS} title="The things people ask" />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Do you deliver?" }));
-
-    expect(screen.getAllByRole("region")).toHaveLength(2);
-  });
-
-  it("sits the questions exactly one level below the section heading", () => {
-    const { rerender } = render(<FaqSection items={ITEMS} title="The things people ask" />);
-    expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(ITEMS.length);
-
-    rerender(<FaqSection headingLevel={3} items={ITEMS} title="The things people ask" />);
-    expect(screen.getAllByRole("heading", { level: 4 })).toHaveLength(ITEMS.length);
-  });
-
-  it("stacks the two columns on an auto-fit grid that survives 360px", () => {
-    const { container } = render(<FaqSection items={ITEMS} title="The things people ask" />);
-
-    expect(container.firstElementChild?.firstElementChild).toHaveClass(
-      "grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))]"
-    );
+  it("puts the aside beside the heading in the column that sticks at lg", () => {
+    render(<FaqSection title="FAQ" items={ITEMS} aside={<p>Still have a question?</p>} />);
+    const lead = screen.getByText("Still have a question?").closest('[class~="lg:sticky"]');
+    expect(lead).toContainElement(screen.getByRole("heading", { name: "FAQ" }));
+    expect(lead).toHaveClass("lg:top-faq-section-sticky");
   });
 
   it("merges a caller className", () => {
     const { container } = render(
-      <FaqSection className="py-0" items={ITEMS} title="The things people ask" />
+      <FaqSection title="FAQ" items={ITEMS} className="bg-surface-page-alt" />
     );
-
-    expect(container.firstElementChild).toHaveClass("py-0");
+    expect(container.firstElementChild).toHaveClass("section-y", "bg-surface-page-alt");
   });
 
   it("has no accessibility violations", async () => {
     const { container } = render(
-      <FaqSection
-        items={ITEMS}
-        lede="Everything guests ask us at the counter."
-        overline="Questions"
-        title="The things people ask"
-      />
+      <FaqSection overline="Questions" title="Before you order" items={ITEMS} aside={<p>Help</p>} />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <FaqSection title="FAQ" items={ITEMS} sx={{ mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });

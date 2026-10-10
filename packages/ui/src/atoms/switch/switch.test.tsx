@@ -1,79 +1,128 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations, fakeRegister } from "#vitest.setup";
+
 import { Switch } from "./switch";
 
-const LABEL = "Jain preferences";
+const trackOf = (input: HTMLElement) => input.nextElementSibling?.firstElementChild;
 
 describe("Switch", () => {
-  it("renders an off switch named by its label", () => {
-    render(<Switch label={LABEL} />);
-    expect(screen.getByRole("switch", { name: LABEL })).not.toBeChecked();
+  it("is a native checkbox with role switch, named by its label", () => {
+    render(<Switch label="Order updates" />);
+    const toggle = screen.getByRole("switch", { name: "Order updates" });
+    expect(toggle).toHaveAttribute("type", "checkbox");
+    expect(toggle).not.toBeChecked();
   });
 
-  it("turns on when clicked and reports the new state", async () => {
-    const handleCheckedChange = vi.fn();
-    render(<Switch label={LABEL} onCheckedChange={handleCheckedChange} />);
-
-    await userEvent.click(screen.getByRole("switch", { name: LABEL }));
-
-    expect(handleCheckedChange).toHaveBeenCalledWith(true);
-    expect(screen.getByRole("switch", { name: LABEL })).toBeChecked();
+  it("sets the label first and the track last, so a column of switches aligns", () => {
+    render(<Switch label="Order updates" />);
+    const toggle = screen.getByRole("switch");
+    expect(toggle.closest("label")).toHaveClass("items-center", "gap-3.5");
+    expect(toggle.nextElementSibling).toHaveClass("order-last");
   });
 
-  it("toggles from the space bar", async () => {
-    render(<Switch label={LABEL} />);
-
-    await userEvent.tab();
-    await userEvent.keyboard(" ");
-
-    expect(screen.getByRole("switch", { name: LABEL })).toBeChecked();
+  it("toggles on click and on the space bar", async () => {
+    const user = userEvent.setup();
+    render(<Switch label="Marketing texts" />);
+    const toggle = screen.getByRole("switch");
+    await user.click(screen.getByText("Marketing texts"));
+    expect(toggle).toBeChecked();
+    await user.keyboard(" ");
+    expect(toggle).not.toBeChecked();
   });
 
-  it("does nothing while disabled", async () => {
-    const handleCheckedChange = vi.fn();
-    render(<Switch disabled label={LABEL} onCheckedChange={handleCheckedChange} />);
-
-    await userEvent.click(screen.getByRole("switch", { name: LABEL }));
-
-    expect(handleCheckedChange).not.toHaveBeenCalled();
+  it("toggles from the space bar after Tab, ringing its track", async () => {
+    const user = userEvent.setup();
+    render(<Switch label="Jain preferences" />);
+    await user.tab();
+    const toggle = screen.getByRole("switch");
+    expect(toggle).toHaveFocus();
+    await user.keyboard(" ");
+    expect(toggle).toBeChecked();
+    expect(trackOf(toggle)).toHaveClass("group-has-focus-visible/choice:outline-2");
   });
 
-  it("describes itself with its second line", () => {
-    render(<Switch description="Hides onion and garlic." label={LABEL} />);
-    expect(screen.getByRole("switch", { name: LABEL })).toHaveAccessibleDescription(
+  it("puts className on the row, replacing a conflicting class", () => {
+    render(<Switch label="Order updates" className="gap-8" />);
+    const row = screen.getByRole("switch").closest("label");
+    expect(row).toHaveClass("gap-8");
+    expect(row).not.toHaveClass("gap-3.5");
+  });
+
+  it("fills the track and slides the knob when on — CSS off the native state", () => {
+    render(<Switch label="Order updates" defaultChecked />);
+    const track = trackOf(screen.getByRole("switch"));
+    expect(track).toHaveClass("group-has-checked/choice:bg-pink-500", "w-switch-width");
+    expect(track?.firstElementChild).toHaveClass("group-has-checked/choice:translate-x-4.5");
+  });
+
+  it("announces its description", () => {
+    render(<Switch label="Jain preferences" description="Hides onion and garlic." />);
+    expect(screen.getByRole("switch", { name: "Jain preferences" })).toHaveAccessibleDescription(
       "Hides onion and garlic."
     );
   });
 
-  it("floods the track with the brand pink and slides the knob once on", () => {
-    render(<Switch defaultChecked label={LABEL} />);
-    const track = screen.getByRole("switch", { name: LABEL });
-    expect(track).toHaveClass("data-[state=checked]:bg-brand-primary");
-    expect(track.firstElementChild).toHaveClass("data-[state=checked]:translate-x-4.5");
+  it("can hide its label visually and keep it as the name", () => {
+    render(<Switch label="Order updates" isLabelHidden />);
+    expect(screen.getByRole("switch", { name: "Order updates" })).toBeInTheDocument();
+    expect(screen.getByText("Order updates")).toHaveClass("sr-only");
   });
 
-  it("keeps a real grey track when disabled rather than fading out", () => {
-    const { container } = render(<Switch disabled label="Delivery updates" />);
-    expect(screen.getByRole("switch")).toHaveClass("bg-border-subtle");
-    expect(container.innerHTML).not.toMatch(/opacity-/);
+  it("takes react-hook-form's register(): ref, name, onChange and onBlur reach the native input", async () => {
+    const user = userEvent.setup();
+    const field = fakeRegister("alerts");
+    render(<Switch label="Order updates" {...field} />);
+    const toggle = screen.getByRole("switch");
+
+    expect(field.ref).toHaveBeenCalledWith(toggle);
+    expect(toggle).toHaveAttribute("name", "alerts");
+    await user.click(toggle);
+    expect(field.onChange).toHaveBeenCalledTimes(1);
+    await user.tab();
+    expect(field.onBlur).toHaveBeenCalledTimes(1);
   });
 
-  it("merges a caller className onto the row", () => {
-    const { container } = render(<Switch className="gap-8" label={LABEL} />);
-    expect(container.firstElementChild).toHaveClass("gap-8");
-    expect(container.firstElementChild).not.toHaveClass("gap-3.5");
+  it("disables the row at 50% opacity (IX) and ignores clicks", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <Switch
+        label="Delivery updates"
+        description="Delivery starts in 2027."
+        disabled
+        onChange={onChange}
+      />
+    );
+    const toggle = screen.getByRole("switch");
+    expect(toggle).toBeDisabled();
+    expect(toggle.closest("label")).toHaveClass("has-disabled:opacity-50");
+    expect(trackOf(toggle)).toHaveClass("group-hover/choice:bg-ink-400");
+    await user.click(screen.getByText("Delivery updates"));
+    expect(toggle).not.toBeChecked();
+    expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("has no accessibility violations", async () => {
+  it("widens the thumb on press via the switch-knob-pressed token", () => {
+    render(<Switch label="Order updates" />);
+    const knob = trackOf(screen.getByRole("switch"))?.firstElementChild;
+    expect(knob).toHaveClass("group-data-[pressed]/choice:w-switch-knob-pressed");
+  });
+
+  it("has no accessibility violations off, on and described, or disabled", async () => {
     const { container } = render(
       <>
         <Switch label="Order updates" />
-        <Switch defaultChecked description="Hides onion and garlic." label={LABEL} />
-        <Switch description="Delivery starts later." disabled label="Delivery updates" />
+        <Switch label="Jain preferences" description="Hides onion and garlic." defaultChecked />
+        <Switch label="Delivery updates" description="Delivery starts in 2027." disabled />
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(<Switch label="Order updates" sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
   });
 });

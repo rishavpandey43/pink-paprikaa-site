@@ -1,54 +1,56 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn } from "storybook/test";
 
-import { Field } from "../field/field";
-import { type Slot, SlotPicker } from "./slot-picker";
+import { type SlotOption, SlotPicker } from "./slot-picker";
 
-const PICKUP_SLOTS: (Slot | string)[] = [
+const PICKUP: SlotOption[] = [
   { value: "asap", label: "ASAP", note: "12 min" },
-  "7:30pm",
-  "8:00pm",
-  "8:30pm",
+  { value: "7:30pm", label: "7:30pm" },
+  { value: "8:00pm", label: "8:00pm" },
+  { value: "8:30pm", label: "8:30pm" },
   { value: "9pm", label: "9:00pm", isDisabled: true },
 ];
 
-// `meta` is annotated rather than `satisfies`-inferred: under pnpm's isolated node_modules,
-// declaration emit for an inferred decorator type reaches for Storybook/Radix internals it
-// cannot name from here (TS2883). The annotation keeps the emitted type nameable.
-const meta: Meta<typeof SlotPicker> = {
+const meta = {
   title: "Molecules/SlotPicker",
   component: SlotPicker,
-  args: { label: "Pickup time", slots: PICKUP_SLOTS, defaultValue: "7:30pm" },
+  args: { name: "pickup", legend: "Pickup time", slots: PICKUP },
   parameters: {
-    layout: "padded",
     docs: {
       description: {
         component:
-          "Pickup and table-booking time slots — a radio group wearing chips, so the arrow keys " +
-          "move between slots for free. The grid auto-fits at a 96px minimum so it reflows on " +
-          "any width, and sold-out slots stay visible, struck through, rather than disappearing.",
+          'Pickup and table-booking time slots — a fieldset of real radios, so it works server-rendered, posts in a native form and keeps arrow-key selection. Auto-fit grid at a 96px minimum, so it reflows on any width; `columns` fixes the count. Sold-out slots (`isDisabled`) are struck through, not hidden. `status` + `message` for "Pick a slot to continue." 44px minimum hit height. Controlled (`value` + `onValueChange`) or uncontrolled (`defaultValue`); react-hook-form binds it with `<Controller>`.',
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <div className="w-full max-w-md">
-        <Story />
-      </div>
-    ),
-  ],
-};
+} satisfies Meta<typeof SlotPicker>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+/** Card row "auto-fit". */
+export const Playground: Story = {
+  args: { defaultValue: "7:30pm", onValueChange: fn() },
+  play: async ({ args, canvas, userEvent }) => {
+    await userEvent.click(canvas.getByText("8:00pm"));
+    await expect(canvas.getByRole("radio", { name: "8:00pm" })).toBeChecked();
+    await expect(args.onValueChange).toHaveBeenCalledWith("8:00pm");
+  },
+};
 
-/** Fixed column counts for short, even sets — table sizes, guest counts. */
-export const FixedColumns: Story = {
+/** Card row "error". */
+export const WithError: Story = { args: { status: "error", message: "Pick a slot to continue." } };
+
+/** Card row "disabled". */
+export const Disabled: Story = { args: { disabled: true } };
+
+/** Card row `columns={3}` — the card shows no label, so the legend is visually hidden. */
+export const Columns: Story = {
   args: {
+    name: "guests",
+    legend: "Guests",
+    isLegendHidden: true,
     columns: 3,
-    label: "Table size",
     defaultValue: "2",
     slots: [
       { value: "2", label: "2 guests" },
@@ -58,46 +60,33 @@ export const FixedColumns: Story = {
   },
 };
 
-/** Every status carries a sentence — a colour on its own never says what went wrong. */
+/** Dev parity: every status carries a sentence — hint, warning and success beside the card's error. */
 export const Statuses: Story = {
   render: (args) => (
-    <div className="flex flex-col gap-6">
-      <SlotPicker {...args} hint="Slots open 30 minutes ahead." />
-      <SlotPicker {...args} message="Pick a slot to continue." status="error" />
-      <SlotPicker {...args} message="That slot is nearly full." status="warning" />
-      <SlotPicker {...args} message="Held for you until 7:15pm." status="success" />
-      <SlotPicker {...args} message="Table booking opens at 11am." status="disabled" />
+    <div className="flex max-w-120 flex-col gap-6">
+      <SlotPicker {...args} name="pickup-hint" message="Slots open 30 minutes ahead." />
+      <SlotPicker
+        {...args}
+        name="pickup-warning"
+        status="warning"
+        message="That slot is nearly full."
+      />
+      <SlotPicker
+        {...args}
+        name="pickup-success"
+        status="success"
+        defaultValue="7:30pm"
+        message="Held for you until 7:15pm."
+      />
     </div>
   ),
 };
 
-/** Sold-out slots stay on the grid, struck through, so the reader can see what they missed. */
-export const SoldOut: Story = {
-  args: {
-    defaultValue: "8:30pm",
-    slots: [
-      { value: "7pm", label: "7:00pm", isDisabled: true },
-      { value: "7:30pm", label: "7:30pm", isDisabled: true },
-      "8:00pm",
-      "8:30pm",
-    ],
-  },
-};
-
-/** Inside a `Field` when the group needs a hint and a status line it does not own itself. */
-export const InsideAField: Story = {
-  render: () => (
-    <Field hint="You can change this until the kitchen starts your order." label="Pickup time">
-      <SlotPicker aria-label="Pickup time" defaultValue="7:30pm" slots={PICKUP_SLOTS} />
-    </Field>
-  ),
-};
-
-/** The narrowest supported width — the grid reflows instead of overflowing. */
+/** Dev parity: the narrowest supported width — the grid reflows instead of overflowing. */
 export const Narrow: Story = {
   decorators: [
     (Story) => (
-      <div className="w-90">
+      <div className="w-80">
         <Story />
       </div>
     ),

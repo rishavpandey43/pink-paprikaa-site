@@ -1,0 +1,36 @@
+{
+  "text": {
+    "$type": "typography",
+    "link-sm": {
+      "$value": {
+        "fontSize": "13.5px",
+        "fontWeight": "{font-weight.medium}"
+      }
+    },
+    "link-md": {
+      "$value": {
+        "fontSize": "15px",
+        "fontWeight": "{font-weight.medium}"
+      }
+    },
+    "link-lg": {
+      "$value": {
+        "fontSize": "17px",
+        "fontWeight": "{font-weight.medium}"
+      }
+    }
+  },
+  "color": {
+    "$type": "color",
+    "link": {
+      "underline": {
+        "$value": "{color.pink.200}",
+        "$description": "Resting underline of the default link; white at 40% on pink and ink fields."
+      },
+      "quiet": {
+        "$value": "{color.ink.700}",
+        "$description": "Nav-link text (variant quiet); white at 85% on pink and ink fields."
+      }
+    }
+  }
+}

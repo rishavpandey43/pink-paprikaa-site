@@ -1,104 +1,130 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Building2, TrendingDown } from "lucide-react";
+import { expect, fn } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Alert } from "./alert";
 
 const meta = {
   title: "Molecules/Alert",
   component: Alert,
-  args: { children: "Pickup is running 25 minutes today." },
+  args: {
+    color: "warning",
+    title: "Kitchen is busy",
+    children: "Pickup is running 25 minutes today.",
+  },
   parameters: {
-    layout: "padded",
     docs: {
       description: {
         component:
-          "The persistent inline message — a kitchen delay, a closed outlet, a card that did " +
-          "not go through. Soft tint with a matching full 1px border. Reach for `Toast` or " +
-          "`Snackbar` when the message should disappear on its own.",
+          "Persistent inline message — kitchen delays, closed outlets, payment problems, calculator nudges. Soft tint fill with a matching **full** 1px border, never a coloured left border only. Tones: info, success, warning, danger (announced as an alert), brand, and neutral (the handoff's quiet hint). `action` takes one small Button; `onDismiss` adds a dismiss button. An Alert is a light island: on a pink or ink field it stays a tinted panel with light-skinned actions. Use Toast for transient confirmations instead.",
       },
     },
   },
 } satisfies Meta<typeof Alert>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = { args: { title: "Kitchen is busy" } };
+export const Playground: Story = {};
 
-/** Five tones. The glyph is the tone's own — it is not overridable, because the tone is the mark. */
-export const Tones: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <Alert {...args} title="Pickup only" tone="info">
+/** Card row "color" — info and success. */
+export const InfoAndSuccess: Story = {
+  render: () => (
+    <div className="grid gap-3">
+      <Alert color="info" title="Pickup only">
         Delivery starts in 2027.
       </Alert>
-      <Alert {...args} title="Order confirmed" tone="success">
-        The kitchen has it. Counter 2.
+      <Alert color="success" title="Order confirmed">
+        Kitchen has it. Counter 2.
       </Alert>
-      <Alert {...args} title="Kitchen is busy" tone="warning">
+    </div>
+  ),
+};
+
+/** Card row "warning danger". */
+export const WarningAndDanger: Story = {
+  render: () => (
+    <div className="grid gap-3">
+      <Alert color="warning" title="Kitchen is busy">
         Pickup is running 25 minutes today.
       </Alert>
-      <Alert {...args} title="That card did not go through" tone="danger">
+      <Alert color="danger" title="That card didn't go through">
         Try another card or pay by UPI.
       </Alert>
-      <Alert {...args} title="New on the menu" tone="brand">
-        Tandoori platters, ₹280 for two.
-      </Alert>
     </div>
   ),
 };
 
-/** One control under the message, never two. */
-export const WithAction: Story = {
-  render: (args) => (
-    <Alert
-      {...args}
-      action={
-        <Button size="sm" variant="ghost">
-          See the Menu
-        </Button>
-      }
-      title="New in Sector 57"
-      tone="brand"
-    >
-      Doors open Friday, 8am.
-    </Alert>
-  ),
+/** Card row "brand + action". */
+export const BrandWithAction: Story = {
+  args: {
+    color: "brand",
+    title: "New in Sector 57",
+    children: "Doors open Friday, 8am.",
+    action: <Button size="sm">See the Menu</Button>,
+  },
 };
 
-/** Without a title the message sits flush against the glyph. */
-export const MessageOnly: Story = {
-  render: (args) => <Alert {...args}>We now take UPI at every counter.</Alert>,
-};
-
-/** The dismiss control appears only when a handler is given — a payment failure keeps none. */
+/** Card row "dismissible". */
 export const Dismissible: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <Alert {...args} onDismiss={() => undefined}>
-        We now take UPI at every counter.
-      </Alert>
-      <Alert {...args} onDismiss={() => undefined} title="Thali hours" tone="brand">
-        The full thali runs 12pm – 3:30pm, every day.
-      </Alert>
-    </div>
-  ),
+  args: {
+    color: "info",
+    title: undefined,
+    children: "We now take UPI at every counter.",
+    onDismiss: fn(),
+  },
+  play: async ({ args, canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Dismiss" }));
+    await expect(args.onDismiss).toHaveBeenCalledTimes(1);
+  },
 };
 
-/** 360px is the floor every design must survive — the message wraps, the glyphs hold their size. */
+/** Handoff Plan calculator nudge — `color="brand"`, own glyph, no title. */
+export const Nudge: Story = {
+  args: {
+    color: "brand",
+    title: undefined,
+    icon: TrendingDown,
+    children: "Add 2 more people and every meal drops to ₹120.",
+  },
+};
+
+/** Handoff Plan calculator PG hint — `color="neutral"`. */
+export const Neutral: Story = {
+  args: {
+    color: "neutral",
+    title: undefined,
+    icon: Building2,
+    children: "Ordering for a PG, hostel or office of 20+? Talk to us about group pricing.",
+  },
+};
+
+/** Dev parity: 360px, the floor — title, message and dismiss wrap; the glyphs hold their size. */
 export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
+  args: {
+    color: "danger",
+    title: "That card didn't go through",
+    children: "Try another card or pay by UPI at the counter.",
+    onDismiss: fn(),
+  },
+  decorators: [
+    (Story) => (
+      <div className="max-w-90">
+        <Story />
+      </div>
+    ),
+  ],
+};
+
+/** Handoff Dawat calculator warning on the ink quote panel — a light island on every surface. */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  args: { title: undefined, children: "Full setup and service starts at 50 guests." },
   render: (args) => (
-    <div className="max-w-90">
-      <Alert
-        {...args}
-        onDismiss={() => undefined}
-        title="That card did not go through"
-        tone="danger"
-      >
-        Try another card or pay by UPI at the counter.
-      </Alert>
-    </div>
+    <OnSurfaces>
+      <Alert {...args} />
+    </OnSurfaces>
   ),
 };

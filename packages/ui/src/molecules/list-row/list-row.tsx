@@ -1,136 +1,107 @@
-import type { LucideIcon } from "lucide-react";
-import type { HTMLAttributes, ReactNode } from "react";
-
 import { ChevronRight } from "lucide-react";
+import { Slot } from "radix-ui";
+import type { ElementType, ReactNode } from "react";
 
-import { Icon } from "../../atoms/icon/icon";
-import { Text } from "../../atoms/text/text";
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { Icon, type IconComponent } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 const listRow = componentVariants({
   slots: {
-    // Hairline separated, never a stack of cards. `min-h` holds the 44px hit target even when the
-    // row carries a single short line.
-    root: "flex w-full min-h-(--layout-hit-min) items-center gap-3 rounded-2 px-3 py-3 text-left",
-    glyph: "text-text-muted",
-    // `min-w-0` so a long title truncates instead of shoving the value and chevron off the row.
-    body: "grid min-w-0 flex-1 gap-1",
-    title: "font-medium",
-    description: "",
-    value: "shrink-0",
-    chevron: "text-text-subtle",
+    root: "-mx-3",
+    row: "flex min-h-hit w-full min-w-0 items-center gap-3.5 rounded-sm px-3 py-3.5 text-start",
+    icon: "text-text-muted",
+    body: "grid min-w-0 flex-1 gap-0.5",
+    title: "text-body-sm font-medium text-text-heading",
+    description: "line-clamp-2 text-caption text-text-subtle",
+    value: "shrink-0 text-body-sm text-text-muted",
+    chevron: "text-ink-400",
   },
   variants: {
-    /** Hairline under the row. Turn it off on the last row of a group. */
-    hasDivider: { true: { root: "border-b border-border-subtle" }, false: {} },
-    /** Destructive rows — "Delete my account". Colours the glyph and the title, nothing else. */
-    isDanger: { true: { glyph: "text-status-danger", title: "text-status-danger" }, false: {} },
-    /**
-     * Set by `onClick`, not by the caller: an interactive row renders a real `<button>`, so it
-     * takes the hover tint and the press treatment.
-     */
+    hasDivider: { true: { root: "border-b border-border-subtle" } },
+    isDanger: { true: { icon: "text-text-danger", title: "text-text-danger" } },
     isInteractive: {
       true: {
-        root: [
-          "cursor-pointer transition-[background-color,transform] duration-(--duration-fast)",
-          "ease-out not-disabled:hover:bg-brand-tint",
-          "not-disabled:active:scale-(--motion-press-scale) not-disabled:active:bg-brand-soft",
-        ],
+        // Hover tint; press = state-press bg, no scale (design ListRow / INTERACTIONS).
+        row: "cursor-pointer no-underline transition-colors duration-fast ease-out hover:bg-button-hover-tint focus-visible:-outline-offset-2 active:bg-surface-brand-soft",
       },
-      false: {},
     },
   },
   defaultVariants: { hasDivider: true, isDanger: false, isInteractive: false },
 });
 
-export interface ListRowProps
-  extends
-    Omit<HTMLAttributes<HTMLElement>, "children" | "title">,
-    Omit<VariantProps<typeof listRow>, "isInteractive"> {
-  /** The row's label — sentence case, one line. */
-  title: string;
-  /** Second line explaining the row. Clamped to two lines. */
-  description?: string | undefined;
-  /** Leading element — a thumbnail or an avatar. Takes precedence over `icon`. */
-  leading?: ReactNode | undefined;
-  /** Lucide glyph on the left, used when there is no `leading` element. */
-  icon?: LucideIcon | undefined;
-  /** Right-aligned muted value, e.g. the currently chosen outlet. */
-  value?: string | undefined;
-  /**
-   * Right-aligned element, e.g. a `Badge`. Never put a control here on a row that also has
-   * `onClick` — the row is a `<button>` then, and a nested control is not reachable.
-   */
-  trailing?: ReactNode | undefined;
-  /** Trailing chevron. Only ever on a row that navigates somewhere. */
+/**
+ * `ref`, `className` and the other `div` props land on the outer wrapper (the one that draws the
+ * divider), not on the row — with `asChild`, reach the link or button through the child's own ref.
+ */
+export interface ListRowProps extends Omit<BaseProps<"div">, "title"> {
+  title: ReactNode;
+  description?: ReactNode;
+  /** Replaces the glyph, e.g. an Avatar. */
+  leading?: ReactNode;
+  icon?: IconComponent | undefined;
+  /** Right-aligned muted value, e.g. "Sector 57". */
+  value?: ReactNode;
+  /** Right-aligned control, e.g. a Switch. Never combine with `asChild`. */
+  trailing?: ReactNode;
   hasChevron?: boolean | undefined;
+  hasDivider?: boolean | undefined;
+  /** A destructive row — "Delete my account". */
+  isDanger?: boolean | undefined;
+  /** Render the row into its single child — an `<a>`, `next/link` or `<button>`. */
+  asChild?: boolean | undefined;
 }
 
+/**
+ * Settings, account and detail rows. Hairline separated — never a stack of cards — and at least
+ * 44px tall. With `asChild` the whole row is the link or button, hover-tinted.
+ */
 export function ListRow({
-  className,
-  description,
-  hasChevron = false,
-  hasDivider,
-  icon,
-  isDanger,
-  leading,
-  onClick,
   title,
-  trailing,
+  description,
+  leading,
+  icon,
   value,
+  trailing,
+  hasChevron = false,
+  hasDivider = true,
+  isDanger = false,
+  asChild = false,
+  sx,
+  className,
+  children,
   ...props
 }: ListRowProps) {
-  const isInteractive = onClick !== undefined;
-  const parts = listRow({ hasDivider, isDanger, isInteractive });
-
-  const content = (
-    <>
-      {leading ??
-        (icon === undefined ? null : <Icon className={parts.glyph()} icon={icon} size="lg" />)}
-      <span className={parts.body()}>
-        <Text
-          as="span"
-          className={parts.title()}
-          tone={isDanger ? "danger" : "heading"}
-          variant="body2"
-        >
-          {title}
-        </Text>
-        {description === undefined ? null : (
-          <Text
-            as="span"
-            className={parts.description()}
-            lineClamp={2}
-            tone="subtle"
-            variant="caption"
-          >
-            {description}
-          </Text>
-        )}
-      </span>
-      {value === undefined ? null : (
-        <Text as="span" className={parts.value()} tone="muted" variant="body2">
-          {value}
-        </Text>
-      )}
-      {trailing}
-      {hasChevron ? <Icon className={parts.chevron()} icon={ChevronRight} size="md" /> : null}
-    </>
-  );
-
-  // A real `<button>` rather than a `<div role="button">` with a hand-rolled key handler: Enter,
-  // Space, focus and the disabled state all come for free and cannot drift.
-  if (onClick === undefined) {
-    return (
-      <div className={parts.root({ className })} {...props}>
-        {content}
-      </div>
-    );
-  }
+  const Row: ElementType = asChild ? Slot.Root : "div";
+  const styles = listRow({ hasDivider, isDanger, isInteractive: asChild });
+  const glyph =
+    icon === undefined ? null : <Icon icon={icon} size="lg" className={styles.icon()} />;
 
   return (
-    <button className={parts.root({ className })} onClick={onClick} type="button" {...props}>
-      {content}
-    </button>
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
+      <Row className={styles.row()}>
+        <Slot.Slottable child={children}>
+          {(content) => (
+            <>
+              {leading ?? glyph}
+              <span className={styles.body()}>
+                <span className={styles.title()}>{title}</span>
+                {isShown(description) ? (
+                  <span className={styles.description()}>{description}</span>
+                ) : null}
+              </span>
+              {isShown(value) ? <span className={styles.value()}>{value}</span> : null}
+              {trailing}
+              {hasChevron ? (
+                <Icon icon={ChevronRight} size="md" className={styles.chevron()} />
+              ) : null}
+              {content}
+            </>
+          )}
+        </Slot.Slottable>
+      </Row>
+    </div>
   );
 }

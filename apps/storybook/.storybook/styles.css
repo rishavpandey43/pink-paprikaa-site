@@ -1,18 +1,22 @@
 /*
- * Storybook's Tailwind entry.
+ * Storybook consumes the design system exactly as an app does (spec §6.5): Tailwind, then the
+ * library's single stylesheet. The library scans itself; only this app's own docs need a @source.
  *
- * `@source` is mandatory here: Tailwind v4 auto-detects source files relative to the stylesheet's
- * own directory, which is this app's `.storybook/` — so without it the scanner never sees the
- * design system's `src/` and every component renders unstyled. Storybook lives in its own app, so
- * the path has to reach across the workspace into the library.
- *
- * The Google Fonts import is Storybook-only. The shipping apps load Poppins / DM Sans / Space Mono
- * through `next/font/google` in their root layout instead, because an `@import` costs a
- * render-blocking round trip on a static export (handoff README §5).
+ * The one exception is the library's stories: `@pink-paprikaa-web/ui/styles.css` excludes
+ * `*.stories.tsx` from its own scan (a shipping app must not pay for demo-only classes), but
+ * Storybook renders them, so it scans them here.
  */
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Poppins:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap");
-
 @import "tailwindcss";
-@import "../../../packages/ui/src/styles.css";
+@import "@pink-paprikaa-web/ui/styles.css";
 
-@source "../../../packages/ui/src/**/*.{ts,tsx,mdx}";
+@source "../src";
+@source "../../../packages/ui/src/**/*.stories.tsx";
+
+/*
+ * Docs prose at 360px: Storybook sets inline code in docs pages `nowrap`, so one long path or
+ * import line widened the whole page. Inline code (never a fenced block) wraps anywhere instead.
+ */
+.sbdocs-content :not(pre) > code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

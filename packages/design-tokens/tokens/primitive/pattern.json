@@ -1,0 +1,19 @@
+{
+  "pattern": {
+    "opacity": {
+      "$type": "number",
+      "default": { "$value": 0.08, "$description": "Brand and ink fields." },
+      "light": { "$value": 0.09, "$description": "Soft and light fields." },
+      "faint": { "$value": 0.04, "$description": "Handoff ink sections (spec C7)." }
+    },
+    "tile": {
+      "$type": "dimension",
+      "56": { "$value": "56px" },
+      "64": { "$value": "64px" },
+      "72": { "$value": "72px" },
+      "80": { "$value": "80px" },
+      "86": { "$value": "86px" },
+      "96": { "$value": "96px", "$description": "1080px canvases." }
+    }
+  }
+}

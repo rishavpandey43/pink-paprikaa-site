@@ -28,13 +28,16 @@ read-only git — so routine work doesn't generate prompts. Two other tiers matt
 
 ## Nx integration
 
-`enabledPlugins` pulls the Nx plugin from `nrwl/nx-ai-agents-config` (Nx's own repository). It
-provides the Nx MCP server plus the skills in `.agents/skills/` — `nx-generate`, `nx-run-tasks`,
-`nx-workspace` — which let Claude query the project graph and invoke generators accurately instead
-of guessing flags.
+Two pieces, both checked in:
 
-To remove it, delete `extraKnownMarketplaces` and `enabledPlugins` from `settings.json`. The local
-skill files keep working.
+- **MCP server** — `.mcp.json` registers `nx-mcp` (`npx nx mcp`), which runs against this
+  workspace's own Nx version. Claude Code asks you to approve it the first time.
+- **Skills** — `.claude/skills/*` are symlinks to `.agents/skills/` (`nx-generate`, `nx-run-tasks`,
+  `nx-workspace` and the rest), so Claude can query the project graph and run generators without
+  guessing flags. Nx regenerates `.agents/skills/`; the symlinks pick that up.
+
+The `nx@nx-claude-plugins` plugin is deliberately not used. It would load a second copy of the same
+server and skills.
 
 ## Project instructions
 

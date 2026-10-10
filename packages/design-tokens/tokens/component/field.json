@@ -1,0 +1,52 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "field-sm": {
+      "$value": "40px",
+      "$description": "Field height, size sm.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
+    "field-md": {
+      "$value": "48px",
+      "$description": "Field height, size md — the system's field (readme §3.10).",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
+    "field-lg": {
+      "$value": "56px",
+      "$description": "Field height, size lg.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
+    "field-select-min": {
+      "$value": "128px",
+      "$description": "A Select's intrinsic minimum width (R90, R95): its native select overlays the box, so a content-sized parent would otherwise shrink it to the chevron and clip the placeholder. 128px = a short placeholder plus the chrome, and still fits a two-up row at the 360px floor (~158px a column).",
+      "$extensions": { "pink-paprikaa": { "utility": ["min-w"] } }
+    },
+    "field-spinner": {
+      "$value": "18px",
+      "$description": "The pulsing mark while a field validates.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "field-suffix": {
+      "$value": { "fontSize": "12px" },
+      "$description": "A field's trailing unit or count, set in Space Mono."
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "field-ring-danger": {
+      "$value": "0 0 0 3px {color.status.danger-soft}",
+      "$description": "Focus ring of a field in error."
+    },
+    "field-ring-success": {
+      "$value": "0 0 0 3px {color.status.success-soft}",
+      "$description": "Focus ring of a field in success."
+    },
+    "field-ring-warning": {
+      "$value": "0 0 0 3px {color.status.warning-soft}",
+      "$description": "Focus ring of a field in warning."
+    }
+  }
+}

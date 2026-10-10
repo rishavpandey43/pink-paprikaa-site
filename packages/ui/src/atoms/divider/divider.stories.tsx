@@ -1,82 +1,87 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { Text } from "../text/text";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Divider } from "./divider";
 
 const meta = {
   title: "Atoms/Divider",
   component: Divider,
+  args: { variant: "line" },
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "The hairline that separates menu rows — reach for it instead of wrapping every row in " +
-          "its own card. The `diamond` variant is the brand's section break.",
+          "Hairline separator; the `diamond` variant is the brand's section break. Menu rows are separated by `Divider`, not by cards. The rule, the label and the mark follow the surface, so on a pink field they turn white with no prop. A `label` is also the separator's accessible name.",
       },
     },
   },
 } satisfies Meta<typeof Divider>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: (args) => (
-    <div className="w-80">
-      <Divider {...args} />
-    </div>
-  ),
-};
+export const Playground: Story = {};
 
-export const Variants: Story = {
-  render: (args) => (
-    <div className="grid w-80 gap-8">
-      <Divider {...args} />
-      <Divider {...args} label="Also Try" />
-      <Divider {...args} variant="diamond" />
-    </div>
-  ),
-};
+export const Line: Story = { name: 'variant="line"' };
 
-/** On a flooded pink panel the rule, the label and the mark all flip to white. */
+export const Label: Story = { name: "label", args: { label: "Also Try" } };
+
+export const Diamond: Story = { name: 'variant="diamond"', args: { variant: "diamond" } };
+
 export const OnBrand: Story = {
-  globals: { backgrounds: { value: "brand" } },
-  render: (args) => (
-    <div className="grid w-80 gap-8 rounded-4 bg-surface-brand p-8">
-      <Divider {...args} on="brand" />
-      <Divider {...args} label="Company" on="brand" />
-      <Divider {...args} on="brand" variant="diamond" />
+  name: "on a brand surface",
+  render: () => (
+    <div data-surface="brand" className="grid gap-2.5 rounded-lg bg-surface-brand p-3.5">
+      <Divider />
+      <Divider label="Company" />
+      <Divider variant="diamond" />
     </div>
   ),
 };
 
-/** How it actually reads: menu rows separated by a rule, not by cards. */
+/** How it reads: menu rows separated by a rule, not by cards, closed by the diamond. */
 export const BetweenMenuRows: Story = {
-  render: (args) => (
-    <div className="w-80">
+  name: "in context: between menu rows",
+  render: () => (
+    <div className="w-80 font-body text-body">
       {[
         { name: "Paneer Tikka Masala", price: "₹280" },
         { name: "Veg Steamed Momos", price: "₹180" },
         { name: "Masala Cold Brew", price: "₹200" },
       ].map((dish, index) => (
         <div key={dish.name}>
-          {index > 0 ? <Divider {...args} /> : null}
-          <div className="flex min-w-0 items-baseline justify-between gap-4 py-4">
-            <Text className="min-w-0" variant="subtitle1">
-              {dish.name}
-            </Text>
-            <Text tone="brand" variant="subtitle1">
-              {dish.price}
-            </Text>
+          {index > 0 ? <Divider /> : null}
+          <div className="flex items-baseline justify-between gap-4 py-4">
+            <span className="min-w-0">{dish.name}</span>
+            <span className="text-text-brand">{dish.price}</span>
           </div>
         </div>
       ))}
-      <Divider {...args} className="my-8" variant="diamond" />
-      <Text align="center" tone="muted" variant="caption">
-        100% vegetarian kitchen
-      </Text>
+      <Divider variant="diamond" className="my-8" />
     </div>
+  ),
+};
+
+export const Vertical: Story = {
+  name: 'orientation="vertical"',
+  render: () => (
+    <div className="flex h-10 items-center gap-3 font-body text-body-sm">
+      <span>Sector 57</span>
+      <Divider orientation="vertical" />
+      <span>8am – 11:30pm</span>
+    </div>
+  ),
+};
+
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: () => (
+    <OnSurfaces>
+      <div className="grid w-full gap-2.5">
+        <Divider label="Also Try" />
+        <Divider variant="diamond" />
+      </div>
+    </OnSurfaces>
   ),
 };

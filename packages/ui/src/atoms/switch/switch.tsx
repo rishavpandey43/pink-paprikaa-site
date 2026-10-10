@@ -1,88 +1,50 @@
-"use client";
+import type { ComponentProps, ReactNode } from "react";
 
-import { Switch as SwitchPrimitive } from "radix-ui";
-import { useId } from "react";
-
+import { ChoiceControl } from "../../lib/choice-control";
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
 
-const switchControl = componentVariants({
+/** 46×28 track, 22px knob (26 on press), 220ms slide; pink when on. */
+const toggle = componentVariants({
   slots: {
-    // Label left, control right, so a column of switches lines its knobs up on one edge.
-    root: "flex w-full items-center justify-between gap-3.5",
-    label: "flex min-w-0 flex-col gap-0-5",
-    labelText: "min-w-0 font-body font-medium text-body1 text-text-body",
-    description: "font-body text-body2 text-text-muted",
-    // 46 x 28 track, 22px knob, 3px inset — the 220ms slide is the system's base duration.
     track: [
-      "flex h-7 w-11.5 shrink-0 items-center rounded-6 p-0.75 bg-ink-300",
-      "transition-colors duration-(--duration-base) ease-out",
-      "data-[state=checked]:bg-brand-primary",
+      "relative flex h-switch-height w-switch-width rounded-pill bg-ink-300 transition-colors duration-base ease-out",
+      "group-hover/choice:bg-ink-400 group-data-[pressed]/choice:bg-ink-500",
+      "group-has-checked/choice:bg-pink-500",
+      "group-has-checked/choice:group-hover/choice:bg-brand-hover",
+      "group-has-checked/choice:group-data-[pressed]/choice:bg-brand-active",
+      "group-has-focus-visible/choice:outline-2 group-has-focus-visible/choice:outline-offset-2 group-has-focus-visible/choice:outline-focus",
     ],
-    thumb: [
-      "size-5.5 rounded-6 bg-surface-card shadow-elevation1",
-      "transition-transform duration-(--duration-base) ease-out",
-      "data-[state=checked]:translate-x-4.5",
-    ],
+    knob: [
+      "absolute top-0.75 left-0.75 size-switch-knob rounded-pill bg-ink-000 shadow-1",
+      "transition-switch-knob",
+      "group-has-checked/choice:translate-x-4.5",
+      "group-data-[pressed]/choice:w-switch-knob-pressed group-data-[pressed]/choice:group-has-checked/choice:translate-x-3.5",
+    ].join(" "),
   },
-  variants: {
-    /** A real grey track, never a faded one — the state contract forbids `opacity-*` here. */
-    isDisabled: {
-      true: {
-        root: "cursor-not-allowed",
-        track: "bg-border-subtle data-[state=checked]:bg-border-subtle",
-        thumb: "shadow-none",
-        labelText: "text-text-subtle",
-        description: "text-text-subtle",
-      },
-      false: { root: "cursor-pointer" },
-    },
-  },
-  defaultVariants: { isDisabled: false },
 });
 
-export interface SwitchProps extends Omit<SwitchPrimitive.SwitchProps, "children"> {
-  /** What the toggle controls, in sentence case. */
-  label?: string | undefined;
-  /** A second line under the label saying what turning it on actually does. */
-  description?: string | undefined;
+export interface SwitchProps extends Omit<ComponentProps<"input">, "type" | "size">, SxProp {
+  label: ReactNode;
+  description?: ReactNode;
+  /** Hides the label visually — it stays the accessible name — for a row that already labels it. */
+  isLabelHidden?: boolean | undefined;
 }
 
-export function Switch({
-  label,
-  description,
-  disabled = false,
-  className,
-  id,
-  ...props
-}: SwitchProps) {
-  const generatedId = useId();
-  const controlId = id ?? generatedId;
-  const labelId = `${controlId}-label`;
-  const descriptionId = `${controlId}-description`;
-  const slots = switchControl({ isDisabled: disabled });
-
+/** Instant-effect toggle for settings; never inside a save-on-submit form. */
+export function Switch(props: SwitchProps) {
+  const styles = toggle();
   return (
-    <div className={slots.root({ class: className })}>
-      <label className={slots.label()} htmlFor={controlId}>
-        <span className={slots.labelText()} id={labelId}>
-          {label}
+    <ChoiceControl
+      type="checkbox"
+      role="switch"
+      placement="end"
+      control={
+        <span className={styles.track()}>
+          <span className={styles.knob()} />
         </span>
-        {description ? (
-          <span className={slots.description()} id={descriptionId}>
-            {description}
-          </span>
-        ) : null}
-      </label>
-      <SwitchPrimitive.Root
-        aria-describedby={description ? descriptionId : undefined}
-        aria-labelledby={labelId}
-        className={slots.track()}
-        disabled={disabled}
-        id={controlId}
-        {...props}
-      >
-        <SwitchPrimitive.Thumb className={slots.thumb()} />
-      </SwitchPrimitive.Root>
-    </div>
+      }
+      {...props}
+    />
   );
 }

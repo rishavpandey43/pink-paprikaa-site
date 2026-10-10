@@ -1,0 +1,468 @@
+{
+  "$comment": "Contrast policy — design system spec §5. Every semantic text/background pair the components use. min 4.5 = WCAG AA. min 3 is allowed only with exception \"brand-fill\" (white on the brand pink, spec D3).",
+  "groups": [
+    {
+      "id": "light-text",
+      "surface": null,
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger",
+        "color-text-info"
+      ],
+      "backgrounds": [
+        "color-surface-page",
+        "color-surface-page-alt",
+        "color-surface-sunken",
+        "color-surface-card"
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "status-on-soft",
+      "surface": null,
+      "pairs": [
+        ["color-text-success", "color-status-success-soft"],
+        ["color-text-warning", "color-status-warning-soft"],
+        ["color-text-danger", "color-status-danger-soft"],
+        ["color-text-info", "color-status-info-soft"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "soft-surface",
+      "surface": "soft",
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger"
+      ],
+      "backgrounds": ["color-surface-brand-soft"],
+      "min": 4.5
+    },
+    {
+      "id": "ink-surface",
+      "surface": "ink",
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger"
+      ],
+      "backgrounds": ["color-surface-inverse"],
+      "min": 4.5
+    },
+    {
+      "id": "ink-card",
+      "surface": "ink",
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger"
+      ],
+      "backgrounds": ["color-surface-card"],
+      "backdrop": "color-surface-inverse",
+      "min": 4.5
+    },
+    {
+      "id": "brand-surface",
+      "surface": "brand",
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger"
+      ],
+      "backgrounds": ["color-surface-brand"],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "brand-card",
+      "surface": "brand",
+      "foregrounds": [
+        "color-text-heading",
+        "color-text-body",
+        "color-text-muted",
+        "color-text-subtle",
+        "color-text-brand",
+        "color-text-link",
+        "color-text-link-hover",
+        "color-text-success",
+        "color-text-warning",
+        "color-text-danger"
+      ],
+      "backgrounds": ["color-surface-card"],
+      "backdrop": "color-surface-brand",
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "on-inverse",
+      "surface": null,
+      "pairs": [["color-text-on-inverse", "color-surface-inverse"]],
+      "min": 4.5
+    },
+    {
+      "id": "on-brand-fill",
+      "surface": null,
+      "pairs": [["color-text-on-brand", "color-surface-brand"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "inverse-text-on-brand-fill",
+      "surface": null,
+      "pairs": [["color-text-on-inverse", "color-surface-brand"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "link",
+      "surface": null,
+      "pairs": [
+        ["color-link-quiet", "color-surface-page"],
+        ["color-link-quiet", "color-surface-page-alt"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "link-on-soft",
+      "surface": "soft",
+      "pairs": [["color-link-quiet", "color-surface-brand-soft"]],
+      "min": 4.5
+    },
+    {
+      "id": "link-on-ink",
+      "surface": "ink",
+      "pairs": [
+        ["color-link-quiet", "color-surface-inverse"],
+        ["color-ink-000", "color-surface-inverse"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "link-on-brand",
+      "surface": "brand",
+      "pairs": [
+        ["color-link-quiet", "color-surface-brand"],
+        ["color-ink-000", "color-surface-brand"]
+      ],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "button",
+      "surface": null,
+      "pairs": [
+        ["color-button-primary-fg", "color-button-primary-bg-hover"],
+        ["color-button-primary-fg", "color-button-primary-bg-active"],
+        ["color-text-link", "color-button-secondary-bg"],
+        ["color-text-link", "color-button-hover-tint"],
+        ["color-ink-000", "color-ink-900"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "button-primary-fill",
+      "surface": null,
+      "pairs": [["color-button-primary-fg", "color-button-primary-bg"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "button-on-soft",
+      "surface": "soft",
+      "pairs": [
+        ["color-text-link", "color-button-secondary-bg"],
+        ["color-text-link", "color-button-hover-tint"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "button-on-brand",
+      "surface": "brand",
+      "pairs": [
+        ["color-button-primary-fg", "color-button-primary-bg"],
+        ["color-button-primary-fg", "color-button-primary-bg-hover"],
+        ["color-button-primary-fg", "color-button-primary-bg-active"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "button-tint-on-brand",
+      "surface": "brand",
+      "pairs": [["color-text-link", "color-button-hover-tint"]],
+      "backdrop": "color-surface-brand",
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "button-tint-on-ink",
+      "surface": "ink",
+      "pairs": [["color-text-link", "color-button-hover-tint"]],
+      "backdrop": "color-surface-inverse",
+      "min": 4.5
+    },
+    {
+      "id": "icon-button",
+      "surface": null,
+      "pairs": [
+        ["color-icon-button-ghost-fg", "color-surface-page"],
+        ["color-icon-button-ghost-fg", "color-button-hover-tint"],
+        ["color-pink-600", "color-ink-000"],
+        ["color-pink-600", "color-pink-50"],
+        ["color-ink-900", "color-surface-glass"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "icon-button-count",
+      "surface": null,
+      "pairs": [["color-ink-000", "color-pink-500"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "icon-button-on-soft",
+      "surface": "soft",
+      "pairs": [["color-icon-button-ghost-fg", "color-surface-brand-soft"]],
+      "min": 4.5
+    },
+    {
+      "id": "icon-button-on-ink",
+      "surface": "ink",
+      "pairs": [["color-icon-button-ghost-fg", "color-surface-inverse"]],
+      "min": 4.5
+    },
+    {
+      "id": "icon-button-on-brand",
+      "surface": "brand",
+      "pairs": [["color-icon-button-ghost-fg", "color-surface-brand"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "tag",
+      "surface": null,
+      "pairs": [
+        ["color-ink-700", "color-ink-000"],
+        ["color-ink-700", "color-pink-50"],
+        ["color-pink-700", "color-ink-000"],
+        ["color-pink-700", "color-pink-50"],
+        ["color-mint-strong", "color-status-success-soft"],
+        ["color-ink-000", "color-tag-selected-hover"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "tag-selected",
+      "surface": null,
+      "pairs": [["color-ink-000", "color-tag-selected"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "tag-selected-on-brand",
+      "surface": "brand",
+      "pairs": [
+        ["color-ink-000", "color-tag-selected"],
+        ["color-ink-000", "color-tag-selected-hover"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "image-slot",
+      "surface": null,
+      "pairs": [
+        ["color-pink-700", "color-pink-100"],
+        ["color-pink-800", "color-pink-200"],
+        ["color-ink-600", "color-ink-200"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "badge",
+      "surface": null,
+      "pairs": [
+        ["color-pink-700", "color-pink-100"],
+        ["color-ink-000", "color-ink-900"],
+        ["color-ink-700", "color-ink-100"],
+        ["color-mint-strong", "color-status-success-soft"],
+        ["color-turmeric-strong", "color-status-warning-soft"],
+        ["color-danger", "color-status-danger-soft"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "badge-brand",
+      "surface": null,
+      "pairs": [["color-badge-brand-fg", "color-badge-brand-bg"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "badge-brand-on-brand",
+      "surface": "brand",
+      "pairs": [["color-badge-brand-fg", "color-badge-brand-bg"]],
+      "min": 4.5
+    },
+    {
+      "id": "avatar",
+      "surface": null,
+      "pairs": [["color-pink-700", "color-pink-100"]],
+      "min": 4.5
+    },
+    {
+      "id": "slot-picker",
+      "surface": null,
+      "pairs": [
+        ["color-ink-700", "color-surface-card"],
+        ["color-pink-700", "color-surface-page-alt"],
+        ["color-text-subtle", "color-surface-page-alt"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "alert",
+      "surface": null,
+      "pairs": [["color-pink-800", "color-surface-brand-soft"]],
+      "min": 4.5
+    },
+    {
+      "id": "toast",
+      "surface": "ink",
+      "pairs": [
+        ["color-text-body", "color-toast-success-bg"],
+        ["color-text-body", "color-status-danger"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "snackbar",
+      "surface": "ink",
+      "pairs": [
+        ["color-text-body", "color-snackbar-success-bg"],
+        ["color-text-body", "color-status-danger"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "tabs",
+      "surface": null,
+      "pairs": [["color-tabs-segmented-fg", "color-surface-card"]],
+      "min": 4.5
+    },
+    {
+      "id": "price-summary",
+      "surface": null,
+      "foregrounds": ["color-price-summary-discount"],
+      "backgrounds": [
+        "color-surface-page",
+        "color-surface-page-alt",
+        "color-surface-card",
+        "color-surface-brand-soft"
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "price-summary-ink",
+      "surface": "ink",
+      "pairs": [["color-price-summary-discount", "color-surface-inverse"]],
+      "min": 4.5
+    },
+    {
+      "id": "price-summary-brand",
+      "surface": "brand",
+      "pairs": [["color-price-summary-discount", "color-surface-brand"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "offer-seal",
+      "surface": null,
+      "pairs": [
+        ["color-pink-600", "color-ink-000"],
+        ["color-ink-900", "color-turmeric"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "calendar-selected-day",
+      "surface": null,
+      "pairs": [["color-ink-000", "color-pink-500"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "offer-seal-brand",
+      "surface": null,
+      "pairs": [["color-ink-000", "color-pink-500"]],
+      "min": 3,
+      "exception": "brand-fill"
+    },
+    {
+      "id": "choice-card-selected",
+      "surface": null,
+      "pairs": [["color-pink-700", "color-pink-50"]],
+      "min": 4.5
+    },
+    {
+      "id": "choice-card-on-brand",
+      "surface": null,
+      "pairs": [["color-text-heading", "color-white-alpha-92"]],
+      "backdrop": "color-surface-brand",
+      "min": 4.5
+    },
+    {
+      "id": "table-head",
+      "surface": null,
+      "pairs": [
+        ["color-text-heading", "color-surface-brand-soft"],
+        ["color-pink-700", "color-surface-brand-soft"]
+      ],
+      "min": 4.5
+    },
+    {
+      "id": "site-header-glass",
+      "surface": null,
+      "foregrounds": ["color-text-heading", "color-text-brand", "color-text-link"],
+      "backgrounds": ["color-surface-glass"],
+      "backdrop": "color-surface-page-alt",
+      "min": 4.5
+    }
+  ]
+}

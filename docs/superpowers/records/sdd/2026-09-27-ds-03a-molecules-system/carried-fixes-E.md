@@ -1,0 +1,4 @@
+# Carried fixes for batch E (from review C) — FIRST, fix commits, each with a test/play
+1. Minor (a11y) — otp-input.tsx:772: activeIndex always min(code.length, length-1) while the caret is transparent → ArrowLeft/tap moves the insertion point invisibly. Pin the caret to the end in onSelect (`setSelectionRange(len, len)`), so only append/Backspace are possible, matching the cells. Test: ArrowLeft then type → digit appends at the end.
+2. Minor (a11y) — quantity-stepper.tsx:1319,1355: reaching min/max disables the focused button → focus drops to <body>. Use aria-disabled + an onClick guard (button keeps focus), keep the visual disabled look via aria-disabled: variants. Test: press − to min, focus stays on the button; button reports aria-disabled.
+3. Minor — slot-picker.tsx:1830-1839: controlled `value` without onValueChange → React read-only warning. Use defaultChecked when there is no handler; JSDoc that controlled use needs onValueChange. Test: no console error.

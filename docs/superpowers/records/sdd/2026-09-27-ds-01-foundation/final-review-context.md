@@ -1,0 +1,66 @@
+16:| T6 ↔ T7/T8 | T6 turns on no-custom-classname; storybook preview decorator still uses August classes (`text-body1 leading-body1`) until T8 | CONFLICT — see Ruling R1 |
+17:| T6 ↔ writers | T6 Step 6 `nx format:write` formats every file incl. plan .md files being written concurrently | CONFLICT — see Ruling R2 |
+18:| T6 atom rule | gitignore-style `../*` patterns in no-restricted-imports may not match relative paths as intended | RISK — see Ruling R3 |
+19:| T4 self | brand.spec uses non-null `!` and casts that strict type-aware lint may reject | RISK — see Ruling R4 |
+20:| T5 self | vitest.setup `??=` on DOM globals typed non-nullable may trip `no-unnecessary-condition` | RISK — see Ruling R4 |
+26:Ruling R1: T6 implementer updates `apps/storybook/.storybook/preview.tsx` decorator classes to `font-body text-body text-text-body` if lint flags them (pulled forward from T8 Step 3) — why: a LAW must not land red — cost if wrong: trivial, T8 re-edits the same line.
+27:Ruling R2: T6 Step 6 formats only tracked files outside `docs/superpowers/plans/` (e.g. `pnpm exec prettier --write $(git ls-files … | grep -v '^docs/superpowers/plans/')`) instead of `nx format:write` — why: parallel plan writers are writing untracked .md files there — cost if wrong: a later `format:check` catches any leftover; plan files are formatted when committed.
+28:Ruling R3: if the gitignore-style atom pattern misbehaves in the probe, implement the atom rule with ESLint's `regex` pattern option (e.g. `^\.\./(?!icon(?:/|$))[^./]`) — same intent: an atom may import only the Icon atom, `../../lib/*` and packages — cost if wrong: a probe proves it either way.
+29:Ruling R4: lint-driven rewrites of plan-provided test/setup code are allowed when the asserted behaviour is unchanged (e.g. replace `!` with a guarded destructure; replace `??=` with an `in` check) — why: gates are LAW, the plan's intent is the behaviour — cost if wrong: none if assertions are preserved; reviewers check.
+34:Ruling R5: keep nx.json defaultBase = main even though local main is the live site's orphan history (so `affected` = whole workspace) — why: architecture spec §3 makes main the protected production branch; the orphan relation ends at the Phase 6 cutover — cost if wrong: slower verify runs until then, no correctness impact.
+35:Task 1: minor (deferred): apps/blog/next-env.d.ts is rewritten by every blog build (now triggered by blog lint) — decide gitignore vs committed form in the final review.
+36:Task 1: minor (deferred): apps/storybook/.storybook/main.ts comment about stories location partly stale after adding ../src globs.
+37:Task 1: minor (deferred): apps/blog build outputs omit {projectRoot}/.content-collections — a cache hit after `rm -rf .content-collections` re-breaks blog lint; add the output.
+38:Task 1: minor (deferred): CI verify installs chromium on every run before Formatting; consider moving after sync:check or caching ~/.cache/ms-playwright.
+39:Task 1: minor (deferred): docs/engineering/03-patterns.md:43,46 point at deleted files until Task 5/9 recreate them.
+40:Task 1: minor (deferred): two pre-existing playwright/no-conditional-in-test warnings in web-e2e/blog-e2e.
+45:Ruling R6: one-hex test hole (theme.spec.ts checks only primitive exact matches) — FIX via fix round 1: scan every tokens/**/*.json source, count case-insensitive brand hex, expect exactly 1 — why: hard rule 3 has no other JSON guard; component tokens land next — cost if wrong: none.
+46:Ruling R7: `--z-*`/`--duration-*` not Tailwind theme namespaces — NO CHANGE: Plan 1 Task 5 defines `@utility z-*`/`duration-*` named utilities explicitly; spec §6.3 wording (`duration-(--…)`) amended in Task 9 — why: class names are identical either way and the plan already owns them — cost if wrong: a rename of 11 tokens later.
+47:Ruling R8: mint-strong/turmeric-strong keep the plan's design-system component values (#186C51, #8A5C00) over the spec's handoff values (#1D6E52, #7A5510) — why: the design-system components use them 6×/5×, both pass AA — cost if wrong: two primitive edits; spec §5.3 table amended in Task 9.
+48:Ruling R9: contrast-pairs.json stays at the package root (plan), spec §5.4 path amended in Task 9 — why: it is policy, not a token source; SD globs tokens/** — cost if wrong: a file move.
+49:Task 2: minor (deferred): README.md:15 claims px literals only in primitives (semantic/surface shadows hold 3px) — say colour literals.
+50:Task 2: minor (deferred): references inside composite string values (focus-ring shadow) resolve to literals, catalogue reference null.
+51:Task 2: minor (deferred): surface roots listed twice in sd.config.mjs (SURFACE_ROOT + SURFACE_SELECTORS); unknown surface root would leak into theme.css silently.
+52:Task 2: minor (deferred): catalogue ramps out of order (integer-like keys: ink-000 after 900, white-alpha-06 after 92) — Plan 5 docs-kit must sort.
+53:Task 2: minor (deferred): exported relativeLuminance ignores alpha — document "opaque input".
+54:Task 2: minor (deferred): preview.tsx:95 August classes (Ruling R1 / Task 8 covers).
+57:Task 2: minor (deferred): contrast.fixtures.json also holds the brand hex literal (test fixture inside design-tokens; outside tokens/ guard) — acceptable per rule 3 scope, note for final review.
+60:Task 3: implementer DONE (9357823); concerns: formatCount negative sign, half-rounding asymmetry for negatives
+61:Task 3: minor (deferred): Math.round half-rounds negatives toward +∞ (−499.5 → −₹499); one-line fix rounds magnitude — plan-mandated; no caller has fractional discounts yet.
+62:Task 3: minor (deferred): formatCount prints ASCII hyphen/"-0" for negatives; no negative caller.
+63:Task 3: minor (deferred): formatCount lives in format-rupees.ts (one-primary-export rule) — plan-mandated.
+64:Task 3: minor (deferred): no tests for formatCount non-finite rejection / negative fractional amounts.
+65:Task 3: minor (deferred): minus/en-dash written as literal chars in spec (readability).
+71:Ruling R11: fix round 1 adds CIN/PAN/entity rejection tests (spec binds) AND switches URL fields to z.httpUrl() with a `javascript:` rejection test — why: values become links; security measures are never simplified away — cost if wrong: none.
+72:Task 4: minor (deferred): GSTIN chars 3–12 should equal PAN — optional .refine.
+73:Task 4: minor (deferred): IFSC/UPI get format patterns when the owner supplies values.
+74:Task 4: minor (deferred): founder guard's TEXT_EXT skips .ts, so running it on packages/ proves nothing; protection is the unit test.
+77:Ruling R12: remaining fields without invalid fixtures (established min, whatsapp, emails, currency literals, gstRate bounds, policies enum, non-empty arrays/text) are not added — why: whatsapp shares the tested phone regex; emails/non-empty are library primitives; the domain rules (IDs, name, entity, split, network, links) are all pinned — cost if wrong: a later schema edit could loosen an untested primitive; final review may add them.
+79:Task 4: minor (deferred): rejection tests assert only success===false, not the failing path (bite probes covered it now).
+83:Ruling R13: every optional custom prop is `?: T | undefined` (matching React DOM prop types) so compositions forward possibly-undefined values under exactOptionalPropertyTypes — broadcast to writers 2b/3a/3b/4/5 and appended to plans 2a/2c — cost if wrong: slightly looser absence semantics; zero runtime cost.
+84:Ruling R14: Plan 2b reuses 2a's lib/symbol-mark.tsx; everyone reuses lib/control-states.ts, lib/story-surfaces.tsx, transition-control — why: no duplicate internals — cost if wrong: none.
+86:Ruling R15: every spec/test that reads files uses `join(import.meta.dirname, …)` (never `new URL(…, import.meta.url)`) in packages/ui (jsdom) — broadcast to Task 7 dispatch and all plan writers — cost if wrong: none.
+87:Task 5: minor (deferred): `@source "./"` also scans test files, so test-only classes reach consumer CSS — consider `@source not "./**/*.test.tsx"`.
+88:Task 5: minor (deferred): tailwind-merge direct dep may be redundant (tailwind-variants bundles/peers it) — verify in final review.
+90:Plan-writing: 05 storybook-kits-docs written + committed. Ruling R17: misspelled review words elided with […]; PriceTag gains size="canvas" (Plan 2b) and the Marketing kit uses it; kit sample copy stays under the Reference-kit badge — cost if wrong: copy edits only.
+91:Plan-writing: 04 organisms written + committed. Ruling R18: SiteHeader drawer below lg (handoff) — spec §9.3 amended in Plan 5 T14; review misspelling elided in Plan 4 fixtures too — cost if wrong: one breakpoint class.
+93:Ruling R20: fix all three AND fold in reviewer minors 4 (z/duration/scrim/autogrid classGroups so className overrides win — correctness, same file), 5 (print transition:none), 6 (:is(selector) for selector lists), 7 (remount + mutation-path tests), 8 (@source not spec/test/stories) — why: same files, small, each would otherwise bite a later plan — cost if wrong: none.
+94:Ruling R19 (recorded): the brand symbol is one shared CSS mask (Plan 1 Task 7 Step 3b generates src/lib/brand-artwork.css with --pp-symbol-mask + @utility mask-symbol); SymbolMark = masked span; PatternField uses var(--pp-symbol-mask) — why: inline path data per diamond would add ~400 KB to a menu page — cost if wrong: none (fewer bytes).
+96:Plan-writing: 03a written + committed — ALL PLANS WRITTEN. Ruling R21: text-entry controls render values at 16px (iOS focus zoom; handoff uses 16px) — owned by 2b lib/field-control.tsx — cost if wrong: 1px larger than the DS card's 15px.
+99:Task 5: minor (deferred): RevealObserver `tagged` set retains removed sections until unmount.
+100:Task 5: minor (deferred): autogrid/scrim groups don't conflict with stock grid-cols/gap/bg-none; spec doesn't assert scrim/autogrid lists against @utility blocks.
+104:Ruling R22: untrack + gitignore apps/*/next-env.d.ts (Next regenerates it on every build/lint; create-next-app ignores it) — folded into Task 8's dispatch — cost if wrong: re-add one generated file.
+105:Task 6: minor (deferred): atom rule misses roundabout paths (../../atoms/x, ../../index barrel).
+107:Ruling R23: fix round 1 adds custom rule `pink-paprikaa/no-arbitrary-shorthand` (flags class tokens with `-(--` or a leading `[prop:`) + probe; tightens the atom rule against roundabout paths with `^(?:\.\./)+(?:atoms/(?!icon(?:/|$))|index$)` + probe; fixes stale comments (naming-convention.js header, react.js cssConfigPath note); Task 9 additionally rewrites docs/engineering/03-patterns.md §1 from the real Icon code — cost if wrong: none.
+108:Task 6: minor (deferred): compoundVariants/compoundSlots classes unchecked by the plugin (ignoredKeys) — record in 06 gate registry (Task 9).
+109:Task 6: minor (deferred): tailwind block omits **/*.js; prettier tailwindFunctions lacks cn/clsx — no .js class files / no cn helper today.
+110:Task 6: minor (deferred): atom rule would block `../z` inside nested atom folders (none exist).
+113:Task 6: minor (deferred): shorthand rule misses opacity modifier `/(--alpha)` and variant `max-(--bp):`; bare `../../atoms` barrel path allowed; react.js:56-59 comment stale.
+117:Ruling R24: storybook:test must re-run when packages/ui stories/components change — Task 8 adds inputs (e.g. "^default" or {workspaceRoot}/packages/ui/src/**) to apps/storybook test target — cost if wrong: slower cached runs.
+118:Ruling R25 (pending review): lockup inline artwork ~59 KB raw — reduce svgo floatPrecision to 1 in the generator (sub-pixel at logo sizes), measure, keep inline (forced-colors safe).
+119:Task 7: concern → Task 8: storybook-static embeds absolute local paths incl. the username; the founder guard over storybook-static must pass — remove the leak (never narrow the guard).
+121:Ruling R25 (final): fix round 1 sets svgo floatPrecision 1 (lockup 18.7 KB, wordmark 15.1 KB; ≤0.05 viewBox units ≈0.03 px at 240 px) with a before/after visual diff at the largest story size; folds in minors 2 (Logo Omit width/height, JSDoc h-* w-auto sizing), 3 (generator: {3,8} hex, assert no href="#", markup not starting <svg, finite width/height; fill="currentColor" on Logo root), 4 (ids non-empty), 5 (badge inset x/y/width asserted); and minor 6 — remove the SYMBOL_DATA_URI_WHITE export (use var(--pp-symbol-mask) only) and update contracts §1 + plan 2a note — cost if wrong: an invisible artwork change.
+122:Ruling R25 amended: floatPrecision 2 (not 1) — precision 1 visibly distorts the lotus ring around the i-dots (brand: never alter the logo); lockup 23.4→14.8 KB gz; viewBoxes unchanged; pixel diff ≤0.095% AA edges — cost if wrong: 7.5 KB gz per lockup.
+125:Task 7: minor (deferred): Logo JSDoc says h-12 w-auto, story uses h-10 w-auto (both valid).
+129:Task 8: minor (deferred, final-review triage): docgen path-rewrite has no self-check (add generateBundle throw if WORKSPACE_ROOT survives); Windows backslash paths; storybook stories re-scan glob only .stories.tsx (make {ts,tsx}); storybook typecheck inputs miss .storybook/** (set default,^production); next-env.d.ts will matter once apps import images (add next typegen before lint then).
+134:Ruling R26: fix round 1 folds ALL 11 findings (docs-only, same files, each would mislead Plan 2+ implementers) — cost if wrong: none.

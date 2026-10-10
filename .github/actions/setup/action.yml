@@ -1,0 +1,30 @@
+name: Set up workspace
+description: pnpm, Node, installed dependencies and a persisted Nx task cache
+
+inputs:
+  cache-name:
+    description: Names this job's Nx cache, so parallel jobs never contend for one cache entry
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # Must run before setup-node so that `cache: pnpm` can find pnpm.
+    # Reads the version from the `packageManager` field in package.json.
+    - uses: pnpm/action-setup@v4
+
+    - uses: actions/setup-node@v5
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+
+    - run: pnpm install --frozen-lockfile
+      shell: bash
+
+    # Nx hashes every task's inputs, so a restored cache only ever answers for identical inputs.
+    # Without it each run recomputes tasks whose result a previous run already stored.
+    - uses: actions/cache@v4
+      with:
+        path: .nx/cache
+        key: nx-${{ runner.os }}-${{ inputs.cache-name }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+        restore-keys: nx-${{ runner.os }}-${{ inputs.cache-name }}-${{ hashFiles('pnpm-lock.yaml') }}-

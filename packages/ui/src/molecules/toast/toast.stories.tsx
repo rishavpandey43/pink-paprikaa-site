@@ -1,95 +1,121 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Gift } from "lucide-react";
+import { useState } from "react";
+import { expect, fn } from "storybook/test";
 
-import { Toast } from "./toast";
+import { Button } from "../../atoms/button/button";
+import { Toast, ToastProvider } from "./toast";
+
+const VIEW_CART = { label: "View Cart", altText: "View your cart", onClick: fn() };
 
 const meta = {
   title: "Molecules/Toast",
   component: Toast,
-  args: { children: "Added to your order." },
-  argTypes: { icon: { control: false } },
+  args: { color: "brand", duration: Infinity, action: VIEW_CART, children: "Added to your order." },
+  render: (args) => (
+    <ToastProvider>
+      <Toast {...args} />
+    </ToastProvider>
+  ),
   parameters: {
     docs: {
       description: {
         component:
-          "The transient pill confirmation, bottom-centre above the tab bar. One short sentence, " +
-          "no dismiss, no exclamation mark. `isPopping` is the only sanctioned overshoot in the " +
-          "system — add-to-cart and reward confirmations only.",
+          "Transient pill confirmation, bottom-centre above the tab bar or dock. Mount one `ToastProvider` (at the app root, or `isContained` inside a positioned frame such as AppShell's overlay slot); every Toast inside it appears in its viewport. `isPop` is the only sanctioned overshoot in the system — reserve it for add-to-cart and reward confirmations. Copy is one short sentence, no exclamation mark. The optional action is an uppercase text button (`{ label, altText, onClick }`); there is no dismiss — use Snackbar for things the guest may want to reverse. Never show both at once.",
       },
+      story: { inline: false, iframeHeight: "240px" },
     },
   },
 } satisfies Meta<typeof Toast>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-/** Four tones. Danger announces assertively; the rest wait their turn. */
+/** Card row "colours" — brand with its action, ink. */
 export const Tones: Story = {
-  render: (args) => (
-    <div className="flex flex-col items-start gap-4">
-      <Toast {...args} tone="brand">
+  render: () => (
+    <ToastProvider>
+      <Toast color="brand" duration={Infinity} action={VIEW_CART}>
         Added to your order.
       </Toast>
-      <Toast {...args} tone="ink">
+      <Toast color="neutral" duration={Infinity}>
         Table held for 10 minutes.
       </Toast>
-      <Toast {...args} tone="success">
+    </ToastProvider>
+  ),
+};
+
+/** Card row "status" — success, danger. */
+export const Status: Story = {
+  render: () => (
+    <ToastProvider>
+      <Toast color="success" duration={Infinity}>
         Order confirmed.
       </Toast>
-      <Toast {...args} tone="danger">
-        That card did not go through.
+      <Toast
+        color="danger"
+        duration={Infinity}
+        action={{ label: "Retry", altText: "Try the payment again", onClick: fn() }}
+      >
+        That card didn&apos;t go through.
       </Toast>
-    </div>
+    </ToastProvider>
   ),
 };
 
-/** The inline action is set in caps by the component — write the label in Title Case. */
-export const WithAction: Story = {
-  render: (args) => (
-    <div className="flex flex-col items-start gap-4">
-      <Toast {...args} action="View Cart" onAction={() => undefined} tone="brand">
-        Added to your order.
-      </Toast>
-      <Toast {...args} action="Retry" onAction={() => undefined} tone="danger">
-        That card did not go through.
-      </Toast>
-    </div>
-  ),
-};
+/** Card row "pop" — add-to-cart only. */
+export const Pop: Story = { args: { isPop: true, children: "Chilli Paneer added." } };
 
-/** The single overshoot. Reserve it for add-to-cart and reward confirmations. */
-export const Pop: Story = {
-  render: (args) => (
-    <Toast {...args} action="View Cart" isPopping onAction={() => undefined} tone="brand">
-      Chilli Paneer added · ₹280
-    </Toast>
-  ),
-};
-
-/** Pass a Lucide component to override the tone's glyph. */
+/** Dev parity: `icon` overrides the colour's glyph. */
 export const CustomGlyph: Story = {
-  render: (args) => (
-    <Toast {...args} icon={Gift} tone="brand">
-      You earned a free masala chai.
-    </Toast>
-  ),
+  args: { icon: Gift, action: undefined, children: "You earned a free masala chai." },
 };
 
-/** In place: bottom-centre, clear of the tab bar, on a 360px frame. */
-export const InContext: Story = {
-  globals: { viewport: { value: "floor360" } },
-  parameters: { layout: "fullscreen" },
-  render: (args) => (
-    <div className="relative h-100 bg-surface-page-alt">
-      <div className="absolute inset-x-4 bottom-(--layout-tabbar-h) flex justify-center pb-4">
-        <Toast {...args} action="View Cart" isPopping onAction={() => undefined} tone="brand">
-          Added to your order.
+function AddToOrderDemo() {
+  const [added, setAdded] = useState(0);
+  return (
+    <ToastProvider>
+      <Button
+        onClick={() => {
+          setAdded((count) => count + 1);
+        }}
+      >
+        Add Chilli Paneer
+      </Button>
+      {added === 0 ? null : (
+        <Toast key={added} color="brand" isPop duration={4000} action={VIEW_CART}>
+          Chilli Paneer added.
         </Toast>
-      </div>
+      )}
+    </ToastProvider>
+  );
+}
+
+/** The real flow: each add pops a fresh toast. */
+export const AddToOrder: Story = {
+  render: () => <AddToOrderDemo />,
+  play: async ({ canvas, userEvent }) => {
+    const trigger = canvas.getByRole("button", { name: "Add Chilli Paneer" });
+    await userEvent.click(trigger);
+    await expect(await canvas.findByText("Chilli Paneer added.")).toBeInTheDocument();
+    await userEvent.click(canvas.getByRole("button", { name: "View Cart" }));
+    await expect(VIEW_CART.onClick).toHaveBeenCalledTimes(1);
+    // R91: focus goes back to the trigger, not onto the empty, outlined viewport.
+    await expect(trigger).toHaveFocus();
+  },
+};
+
+/** `isContained` — the App kit's toast inside the phone frame (a positioned box here). */
+export const Contained: Story = {
+  // The toast anchors to a positioned frame, which the centred canvas would shrink to no width.
+  parameters: { layout: "padded" },
+  render: (args) => (
+    <div className="relative h-60 max-w-120 overflow-hidden rounded-xl border border-border-subtle bg-surface-page-alt">
+      <ToastProvider isContained>
+        <Toast {...args} />
+      </ToastProvider>
     </div>
   ),
 };

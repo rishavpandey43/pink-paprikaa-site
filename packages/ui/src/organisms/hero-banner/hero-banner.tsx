@@ -1,209 +1,153 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ReactNode } from "react";
 
-import { Fragment } from "react";
-
-import { ImageSlot } from "../../atoms/image-slot/image-slot";
-import { SYMBOL_PATHS, SYMBOL_VIEW_BOX } from "../../atoms/logo/logo-paths";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
+import type { BaseProps } from "../../lib/common-props";
+import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
+import { SymbolMark } from "../../lib/symbol-mark";
 
 const heroBanner = componentVariants({
   slots: {
-    root: "w-full",
-    inner: [
-      "mx-auto grid w-full max-w-(--layout-container-max) items-center",
-      "gap-[clamp(32px,4vw,56px)]",
-      "px-(--layout-gutter-fluid) py-(--layout-section-y-fluid)",
-    ],
-    copy: "flex min-w-0 flex-col",
-    overline: "mb-4 block",
-    title: "",
-    body: "mt-5",
-    actions: "mt-8 flex flex-wrap items-center gap-3",
-    meta: "mt-9 flex flex-wrap items-center gap-4",
-    metaItem: "",
-    /** The wordmark's diamond, used as the separator between facts — never a bullet or a pipe. */
-    diamond: "block size-3 shrink-0",
+    root: "relative",
+    // A decorative layer only: the hero's own ground (or a caller's) shows through it.
+    pattern: "absolute inset-0 bg-transparent",
+    inner:
+      "relative container-page grid items-center gap-hero-banner-gap pt-hero-banner-top pb-hero-banner-bottom",
+    copy: "flex min-w-0 flex-col gap-5",
+    badges: "flex flex-wrap gap-2",
+    actions: "mt-3 flex flex-wrap gap-3",
+    meta: "mt-4 flex flex-wrap items-center gap-x-4.5 gap-y-2",
+    metaItem: "flex items-center gap-4.5",
+    metaMark: "size-3 opacity-80",
     media: "relative min-w-0",
-    image: "shadow-elevation4",
-    /**
-     * The brand's bottom legibility scrim, and one of only two gradients in the system. It is
-     * painted over a real photograph and nowhere else: over `ImageSlot`'s labelled placeholder it
-     * would just dim the note telling a photographer what to shoot.
-     */
-    scrim:
-      "pointer-events-none absolute inset-0 rounded-5 [background-image:var(--effect-scrim-bottom)]",
-    caption: "absolute right-6 bottom-6 left-6 text-text-on-inverse",
   },
   variants: {
-    /** `brand` floods pink, `ink` floods near-black, `soft` is the pale pink section opener. */
-    tone: {
-      brand: {
-        overline: "text-text-on-brand",
-        title: "text-text-on-brand",
-        body: "text-text-on-brand",
-        metaItem: "text-text-on-brand",
-        diamond: "text-text-on-brand",
-      },
-      ink: {
-        overline: "text-text-on-inverse",
-        title: "text-text-on-inverse",
-        body: "text-text-on-inverse",
-        metaItem: "text-text-on-inverse",
-        diamond: "text-text-on-inverse",
-      },
-      soft: {
-        overline: "text-text-brand",
-        title: "text-text-heading",
-        body: "text-text-muted",
-        metaItem: "text-text-muted",
-        diamond: "text-text-brand",
-      },
+    surface: {
+      // The diamond between meta facts: white on the dark fields, brand pink on the light ones.
+      brand: { root: "bg-surface-brand", metaMark: "text-ink-000" },
+      ink: { root: "bg-surface-inverse", metaMark: "text-ink-000" },
+      soft: { root: "bg-surface-brand-soft", metaMark: "text-pink-500" },
+      alt: { root: "bg-surface-page-alt", metaMark: "text-pink-500" },
     },
-    /**
-     * `split` is copy beside the photograph; the tracks auto-fit so the photo drops under the copy
-     * at 360px instead of squeezing the headline. `center` is the stacked opener with no image.
-     */
-    variant: {
-      split: { inner: "grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))]" },
+    layout: {
+      split: { inner: "md:grid-cols-2" },
       center: {
-        inner: "grid-cols-1 justify-items-center text-center",
-        copy: "max-w-(--measure-prose) items-center",
+        inner: "justify-items-center text-center",
+        copy: "max-w-hero-banner-center-measure items-center",
+        badges: "justify-center",
         actions: "justify-center",
         meta: "justify-center",
       },
     },
   },
-  defaultVariants: { tone: "brand", variant: "split" },
+  defaultVariants: { surface: "brand", layout: "split" },
 });
 
-/** The `PatternField` tone each hero tone paints its texture on. */
-const FIELD_TONE = { brand: "brand", ink: "ink", soft: "soft" } as const;
+type HeroSurface = NonNullable<VariantProps<typeof heroBanner>["surface"]>;
+type HeroPattern = "none" | "default" | "faint";
+
+/** Flooded tones carry the diamond (design system); the alt tint is plain (handoff heroes). */
+const DEFAULT_PATTERN: Readonly<Record<HeroSurface, HeroPattern>> = {
+  brand: "default",
+  ink: "default",
+  soft: "default",
+  alt: "none",
+};
 
 export interface HeroBannerProps
-  extends Omit<ComponentPropsWithoutRef<"div">, "title">, VariantProps<typeof heroBanner> {
-  /** ALL CAPS eyebrow over the headline — two or three words, never a sentence. */
-  overline?: string | undefined;
-  /** The page's headline. Set in the fluid display step, so it never overflows at 360px. */
+  extends
+    Omit<BaseProps<"section">, "title">,
+    Pick<VariantProps<typeof heroBanner>, "surface" | "layout"> {
+  overline?: ReactNode;
+  /** Badge row above the title (handoff): the product badge and the Pure Veg badge. */
+  badges?: ReactNode;
   title: ReactNode;
-  /** One or two sentences under the headline. */
-  body?: string | undefined;
-  /** One or two `Button`s. On the `brand` and `ink` tones they must carry `on="brand"`. */
-  actions?: ReactNode | undefined;
-  /** Short facts, separated by the brand diamond — `["Est. 2019", "Open till 11:30pm"]`. */
-  meta?: string[] | undefined;
-  /** The hero photograph. Leave it off and the labelled placeholder holds the space. */
-  image?: string | undefined;
-  /** What the photograph shows. Leave it empty when the headline already says it. */
-  imageAlt?: string | undefined;
-  /** What photography this hero is waiting for, named as a crop a photographer can act on. */
-  imageLabel?: string | undefined;
-  /** One short line printed on the photograph, inside the scrim. Needs a real photograph. */
-  imageCaption?: string | undefined;
+  /** `display-2` for a long headline (handoff Catering). */
+  titleSize?: "display-1" | "display-2" | undefined;
+  headingLevel?: HeadingLevel | undefined;
+  body?: ReactNode;
+  /** One or two Buttons. */
+  actions?: ReactNode;
+  /** Short facts separated by the brand diamond, e.g. `["Est. 2025", "Sector 57, Gurgaon"]`. */
+  meta?: ReactNode[] | undefined;
+  /** The image column — an ImageSlot plus any overlay (an OfferSeal positions itself on it). */
+  media?: ReactNode;
+  /** Defaults to `default` on brand/ink/soft and `none` on alt. */
+  pattern?: HeroPattern | undefined;
 }
 
-/**
- * The band at the top of a marketing page: a flooded, diamond-textured field carrying the page's
- * `h1`, its two actions, and the hero photograph.
- */
+/** The top of a marketing page: headline (fluid display type, never overflows), actions, facts, media. */
 export function HeroBanner({
-  actions,
-  body,
-  className,
-  image,
-  imageAlt = "",
-  imageCaption,
-  imageLabel = "Hero food photography 4:5",
-  meta = [],
   overline,
+  badges,
   title,
-  tone = "brand",
-  variant,
+  titleSize = "display-1",
+  headingLevel = 1,
+  body,
+  actions,
+  meta = [],
+  media,
+  surface = "brand",
+  layout,
+  pattern,
+  sx,
+  className,
   ...props
 }: HeroBannerProps) {
-  const slots = heroBanner({ tone, variant });
-  const isCentred = variant === "center";
-
+  const slots = heroBanner({ surface, layout });
+  const density = pattern ?? DEFAULT_PATTERN[surface];
+  const facts = meta.filter(isShown);
   return (
-    <PatternField
-      className={slots.root({ className })}
-      tile={86}
-      tone={FIELD_TONE[tone]}
+    <section
+      data-surface={SURFACE_DATA[surface]}
+      className={slots.root({ className: withSx(sx, className) })}
       {...props}
     >
+      {density === "none" ? null : (
+        <PatternField
+          aria-hidden
+          surface={surface === "alt" ? "page" : surface}
+          tile={86}
+          density={density}
+          className={slots.pattern()}
+        />
+      )}
       <div className={slots.inner()}>
         <div className={slots.copy()}>
-          {overline === undefined ? null : (
-            <Text as="p" className={slots.overline()} variant="overline">
+          {isShown(badges) ? <div className={slots.badges()}>{badges}</div> : null}
+          {isShown(overline) ? (
+            <Typography variant="overline" color="brand">
               {overline}
-            </Text>
-          )}
-
-          <Text as="h1" className={slots.title()} isFluid variant="display1">
+            </Typography>
+          ) : null}
+          <Typography as={headingTag(headingLevel)} variant={titleSize} isFluid isBalanced>
             {title}
-          </Text>
-
-          {body === undefined ? null : (
-            <Text className={slots.body()} measure="prose" variant="body1">
+          </Typography>
+          {isShown(body) ? (
+            <Typography as="div" variant="body-lg" color="muted" measure="narrow">
               {body}
-            </Text>
-          )}
-
-          {actions === undefined ? null : <div className={slots.actions()}>{actions}</div>}
-
-          {meta.length === 0 ? null : (
-            <div className={slots.meta()}>
-              {meta.map((fact, index) => (
-                <Fragment key={fact}>
-                  {index === 0 ? null : (
-                    <svg
-                      aria-hidden
-                      className={slots.diamond()}
-                      fill="currentColor"
-                      viewBox={SYMBOL_VIEW_BOX}
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      {SYMBOL_PATHS.map((d) => (
-                        <path d={d} key={d} />
-                      ))}
-                    </svg>
-                  )}
-                  <Text as="span" className={slots.metaItem()} variant="body2">
+            </Typography>
+          ) : null}
+          {isShown(actions) ? <div className={slots.actions()}>{actions}</div> : null}
+          {facts.length > 0 ? (
+            <ul role="list" className={slots.meta()}>
+              {facts.map((fact, index) => (
+                <li key={index} className={slots.metaItem()}>
+                  {index > 0 ? <SymbolMark className={slots.metaMark()} /> : null}
+                  <Typography as="span" variant="body-sm" color="muted">
                     {fact}
-                  </Text>
-                </Fragment>
+                  </Typography>
+                </li>
               ))}
-            </div>
-          )}
+            </ul>
+          ) : null}
         </div>
-
-        {isCentred ? null : (
-          <div className={slots.media()}>
-            <ImageSlot
-              alt={imageAlt}
-              className={slots.image()}
-              label={imageLabel}
-              radius="sheet"
-              ratio="4:5"
-              tone={tone === "soft" ? "strong" : "soft"}
-              // `exactOptionalPropertyTypes`: an optional prop cannot be handed an explicit
-              // `undefined`, so the photograph is spread in only once there is one.
-              {...(image === undefined ? {} : { src: image })}
-            />
-            {image === undefined ? null : (
-              <>
-                <div className={slots.scrim()} />
-                {imageCaption === undefined ? null : (
-                  <Text as="p" className={slots.caption()} variant="subtitle2">
-                    {imageCaption}
-                  </Text>
-                )}
-              </>
-            )}
-          </div>
-        )}
+        {isShown(media) ? <div className={slots.media()}>{media}</div> : null}
       </div>
-    </PatternField>
+    </section>
   );
 }

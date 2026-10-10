@@ -1,115 +1,152 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Clock, Flame, Leaf } from "lucide-react";
+import { Clock, Flame } from "lucide-react";
+import { createRef } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { FilterBar } from "./filter-bar";
 
-const CATEGORIES = ["All", "Small Plates", "All Day", "Chai & Coffee", "Sweets"];
+const CATEGORIES = [
+  { value: "all", label: "All" },
+  { value: "small-plates", label: "Small Plates" },
+  { value: "all-day", label: "All Day" },
+  { value: "sweets", label: "Sweets" },
+];
 
 describe("FilterBar", () => {
-  it("renders one pill per category inside a named group", () => {
-    render(<FilterBar options={CATEGORIES} value="All" />);
-
-    const group = screen.getByRole("group", { name: "Filter by category" });
-    expect(group).toBeInTheDocument();
-    expect(screen.getAllByRole("button")).toHaveLength(CATEGORIES.length);
+  it("is a named radio group with the first option chosen by default", () => {
+    render(<FilterBar label="Menu category" options={CATEGORIES} />);
+    expect(screen.getByRole("radiogroup", { name: "Menu category" })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "All" })).toHaveAttribute("aria-checked", "true");
   });
 
-  it("takes a caller-written group name", () => {
-    render(<FilterBar label="Filter the menu by category" options={CATEGORIES} />);
-
-    expect(screen.getByRole("group", { name: "Filter the menu by category" })).toBeInTheDocument();
+  it("chooses a filter on click and reports it", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<FilterBar label="Menu category" options={CATEGORIES} onValueChange={onValueChange} />);
+    await user.click(screen.getByRole("radio", { name: "Sweets" }));
+    expect(screen.getByRole("radio", { name: "Sweets" })).toHaveAttribute("aria-checked", "true");
+    expect(onValueChange).toHaveBeenLastCalledWith("sweets");
   });
 
-  it("marks exactly one pill as pressed", () => {
-    render(<FilterBar options={CATEGORIES} value="Sweets" />);
-
-    expect(screen.getByRole("button", { name: "Sweets", pressed: true })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { pressed: false })).toHaveLength(CATEGORIES.length - 1);
-  });
-
-  it("reports the pressed pill's value", async () => {
-    const handleChange = vi.fn();
-    render(<FilterBar onChange={handleChange} options={CATEGORIES} value="All" />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Small Plates" }));
-
-    expect(handleChange).toHaveBeenCalledExactlyOnceWith("Small Plates");
-  });
-
-  it("keeps an option's value separate from its label", async () => {
-    const handleChange = vi.fn();
+  it("keeps exactly one filter chosen when the chosen one is pressed again", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
     render(
       <FilterBar
-        onChange={handleChange}
-        options={[
-          { value: "jain", label: "Jain", icon: Leaf },
-          { value: "spicy", label: "Hot", icon: Flame },
-          { value: "quick", label: "Under 15 Min", icon: Clock },
-        ]}
-        value="jain"
-      />
-    );
-
-    await userEvent.click(screen.getByRole("button", { name: "Under 15 Min" }));
-
-    expect(handleChange).toHaveBeenCalledExactlyOnceWith("quick");
-  });
-
-  it("scrolls on one line by default and wraps when asked", () => {
-    const { container, rerender } = render(<FilterBar options={CATEGORIES} />);
-    expect(container.firstElementChild).toHaveClass("overflow-x-auto");
-
-    rerender(<FilterBar isWrapping options={CATEGORIES} />);
-    expect(container.firstElementChild).toHaveClass("flex-wrap");
-    expect(container.firstElementChild).not.toHaveClass("overflow-x-auto");
-  });
-
-  it("pins the standing statement after the pills as a badge, not a filter", () => {
-    render(<FilterBar note="100% Vegetarian Kitchen" options={CATEGORIES} value="All" />);
-
-    expect(screen.getByText("100% Vegetarian Kitchen")).toBeInTheDocument();
-    expect(screen.getAllByRole("button")).toHaveLength(CATEGORIES.length);
-  });
-
-  it("renders a trailing control at the end of the rail", () => {
-    render(
-      <FilterBar
+        label="Menu category"
         options={CATEGORIES}
-        trailing={<button type="button">Clear All</button>}
-        value="All"
+        defaultValue="sweets"
+        onValueChange={onValueChange}
       />
     );
-
-    expect(screen.getByRole("button", { name: "Clear All" })).toBeInTheDocument();
+    await user.click(screen.getByRole("radio", { name: "Sweets" }));
+    expect(screen.getByRole("radio", { name: "Sweets" })).toHaveAttribute("aria-checked", "true");
+    expect(onValueChange).not.toHaveBeenCalled();
   });
 
-  it("does nothing when no handler is wired", async () => {
-    render(<FilterBar options={CATEGORIES} value="All" />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Sweets" }));
-
-    expect(screen.getByRole("button", { name: "All", pressed: true })).toBeInTheDocument();
+  it("moves with the arrow keys and chooses with Space", async () => {
+    const user = userEvent.setup();
+    render(<FilterBar label="Menu category" options={CATEGORIES} />);
+    await user.tab();
+    expect(screen.getByRole("radio", { name: "All" })).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("radio", { name: "Small Plates" })).toHaveFocus();
+    await user.keyboard(" ");
+    expect(screen.getByRole("radio", { name: "Small Plates" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
   });
 
-  it("merges a caller className", () => {
-    const { container } = render(<FilterBar className="gap-1" options={CATEGORIES} />);
+  it("follows a controlled value", () => {
+    const { rerender } = render(
+      <FilterBar label="Menu category" options={CATEGORIES} value="all-day" />
+    );
+    expect(screen.getByRole("radio", { name: "All Day" })).toHaveAttribute("aria-checked", "true");
+    rerender(<FilterBar label="Menu category" options={CATEGORIES} value="sweets" />);
+    expect(screen.getByRole("radio", { name: "Sweets" })).toHaveAttribute("aria-checked", "true");
+  });
 
+  it("scrolls on one line by default and wraps on request", () => {
+    const { container, rerender } = render(
+      <FilterBar label="Menu category" options={CATEGORIES} />
+    );
+    // The group scrolls, not the root, so the note and the trailing slot stay pinned in view.
+    expect(screen.getByRole("radiogroup")).toHaveClass("overflow-x-auto", "flex-nowrap");
+    expect(container.firstElementChild).not.toHaveClass("overflow-x-auto");
+    rerender(<FilterBar label="Menu category" options={CATEGORIES} isWrapping />);
+    expect(container.firstElementChild).toHaveClass("flex-wrap");
+  });
+
+  it("pins the statement badge and the trailing slot after the filters", () => {
+    render(
+      <FilterBar
+        label="Menu category"
+        options={CATEGORIES}
+        note="100% Vegetarian"
+        trailing={<button type="button">Search</button>}
+      />
+    );
+    expect(screen.getByText("100% Vegetarian")).toBeInTheDocument();
+    // A standing statement, never a filter: still exactly one radio per option.
+    expect(screen.getAllByRole("radio")).toHaveLength(CATEGORIES.length);
+    expect(screen.getByRole("button", { name: "Search" })).toBeInTheDocument();
+  });
+
+  it("shows the note and trailing slots whenever React would render them — 0 counts", () => {
+    const { container, rerender } = render(
+      <FilterBar label="Menu category" options={CATEGORIES} note={0} trailing={0} />
+    );
+    expect(screen.getAllByText("0")).toHaveLength(2);
+    rerender(
+      <FilterBar label="Menu category" options={CATEGORIES} note={false} trailing={false} />
+    );
+    expect(container.firstElementChild?.children).toHaveLength(1);
+  });
+
+  it("lets a caller className replace its own gap", () => {
+    const { container } = render(
+      <FilterBar label="Menu category" options={CATEGORIES} className="gap-1" />
+    );
     expect(container.firstElementChild).toHaveClass("gap-1");
     expect(container.firstElementChild).not.toHaveClass("gap-2.5");
   });
 
-  it("has no accessibility violations", async () => {
+  it("has no accessibility violations with icons, note and trailing", async () => {
     const { container } = render(
       <FilterBar
+        label="Dietary and speed filters"
+        options={[
+          { value: "spicy", label: "Hot", icon: Flame },
+          { value: "quick", label: "Under 15 min", icon: Clock },
+        ]}
+        note="100% Vegetarian"
         isWrapping
-        note="100% Vegetarian Kitchen"
-        options={CATEGORIES}
-        trailing={<button type="button">Clear All</button>}
-        value="All"
       />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("forwards id, data-*, aria-* and ref to its root, and takes sx", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(
+      <FilterBar
+        ref={ref}
+        label="Menu category"
+        options={CATEGORIES}
+        id="filters"
+        data-section="menu"
+        aria-describedby="hint"
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    expect(ref.current).toHaveAttribute("id", "filters");
+    expect(ref.current).toHaveAttribute("data-section", "menu");
+    expect(ref.current).toHaveAttribute("aria-describedby", "hint");
+    expect(ref.current).toHaveClass("mt-4", "italic");
+    expect(ref.current).toContainElement(screen.getByRole("radiogroup"));
   });
 });

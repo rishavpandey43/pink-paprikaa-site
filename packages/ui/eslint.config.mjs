@@ -16,4 +16,16 @@ export default [
     // used to own the only Tailwind entry here) is now `apps/storybook`.
     settings: { tailwindcss: { cssConfigPath: "tailwind.css" } },
   },
+  {
+    // A scrolling region (ReviewCarousel's track, a Table scroll wrapper) must take keyboard
+    // focus so it can be scrolled with the arrow keys — WCAG 2.1.1, axe
+    // `scrollable-region-focusable`. `region` joins the rule's default `tabpanel` exception.
+    files: ["src/**/*.tsx"],
+    rules: {
+      "jsx-a11y/no-noninteractive-tabindex": [
+        "error",
+        { tags: [], roles: ["tabpanel", "region"], allowExpressionValues: true },
+      ],
+    },
+  },
 ];

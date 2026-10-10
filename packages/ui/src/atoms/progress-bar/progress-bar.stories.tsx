@@ -1,89 +1,97 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { ProgressBar } from "./progress-bar";
 
 const meta = {
   title: "Atoms/ProgressBar",
   component: ProgressBar,
-  args: { value: 70, label: "Uploading your photo" },
+  args: { label: "3 more visits and chai's on us", value: 3 },
+  render: (args) => (
+    <div className="w-full max-w-text-measure-prose">
+      <ProgressBar {...args} />
+    </div>
+  ),
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "Loyalty stamps and order progress. Segmented is the loyalty pattern, continuous is for " +
-          "checkout steps and uploads. Pass a `label` or an `aria-label` — a bar with neither " +
-          "reaches a screen reader unnamed.",
+          'Loyalty stamps and order progress. Segmented is the loyalty pattern (`segments` + `value` = stamps earned); continuous is for checkout steps and uploads. `pink-200` track, `pink-500` fill; `color="inverse"` on pink or ink panels, `color="success"` for a finished-feeling task. `label` always names the bar; `isLabelHidden` keeps it off screen.',
       },
     },
   },
 } satisfies Meta<typeof ProgressBar>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = { args: { segments: 6 } };
 
-/** The loyalty look: one stamp per visit, earned stamps filled. */
-export const Segments: Story = {
-  args: { segments: 6, value: 3, label: "Three more visits and chai is on us" },
-};
+export const Segments: Story = { name: "segments", args: { segments: 6 } };
 
-/** Checkout steps and uploads fill continuously. */
 export const Continuous: Story = {
-  render: (args) => (
-    <div className="flex max-w-96 flex-col gap-6">
-      <ProgressBar {...args} label="Order placed" value={20} />
-      <ProgressBar {...args} label="In the kitchen" value={55} />
-      <ProgressBar {...args} label="Out for delivery" value={90} />
+  name: "continuous",
+  args: { label: "Checkout", value: 70, isLabelHidden: true },
+};
+
+export const ColorSuccess: Story = {
+  name: "color",
+  args: { label: "Upload", value: 45, color: "success", isLabelHidden: true },
+};
+
+export const Inverse: Story = {
+  name: "inverse",
+  render: () => (
+    <div
+      data-surface="brand"
+      className="grid w-full max-w-text-measure-prose gap-4 rounded-lg bg-surface-brand p-4"
+    >
+      <ProgressBar label="4 of 6 visits" segments={6} value={4} color="inverse" isLabelHidden />
+      <ProgressBar label="Uploading your photo" value={70} color="inverse" />
     </div>
   ),
 };
 
-export const Tones: Story = {
-  render: (args) => (
-    <div className="flex max-w-96 flex-col gap-6">
-      <ProgressBar {...args} label="Brand" tone="brand" value={70} />
-      <ProgressBar {...args} label="Mint, for a finished step" tone="mint" value={100} />
-    </div>
-  ),
-};
-
-/** On a flooded pink panel the pair inverts — white fill on a glass track. */
-export const OnBrand: Story = {
-  globals: { backgrounds: { value: "brand" } },
-  render: (args) => (
-    <div className="flex max-w-96 flex-col gap-6 rounded-4 bg-surface-brand p-8">
-      <ProgressBar
-        {...args}
-        label="Four stamps in, two to go"
-        segments={6}
-        tone="inverse"
-        value={4}
-      />
-      <ProgressBar {...args} label="Uploading your photo" tone="inverse" value={70} />
-    </div>
-  ),
-};
-
-/** 6 / 8 / 12px tracks. */
-export const Sizes: Story = {
-  render: (args) => (
-    <div className="flex max-w-96 flex-col gap-6">
-      <ProgressBar {...args} label="Small" size="sm" value={40} />
-      <ProgressBar {...args} label="Medium" size="md" value={40} />
-      <ProgressBar {...args} label="Large" size="lg" value={40} />
-    </div>
-  ),
-};
-
-/** The smallest supported width — six stamps still fit without wrapping. */
+/** The 360px phone floor: six stamps still fit the column without wrapping. */
 export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
-  render: (args) => (
-    <div className="w-80">
-      <ProgressBar {...args} label="Three more visits and chai is on us" segments={6} value={3} />
+  name: "six stamps at 360px",
+  render: () => (
+    <div className="w-90">
+      <ProgressBar label="3 more visits and chai's on us" segments={6} value={3} />
     </div>
   ),
+};
+
+export const Sizes: Story = {
+  name: "size",
+  render: () => (
+    <div className="grid w-full max-w-text-measure-prose gap-4">
+      <ProgressBar label="Loyalty card, sm" segments={6} value={3} size="sm" />
+      <ProgressBar label="Loyalty card, md" segments={6} value={3} size="md" />
+    </div>
+  ),
+};
+
+/** The label is `text-text-muted`, which follows `data-surface`. The pink panel takes `color="inverse"`. */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: () => (
+    <OnSurfaces>
+      {(ground) => (
+        <div className="min-w-0 flex-1">
+          <ProgressBar
+            label="3 more visits and chai's on us"
+            segments={6}
+            value={3}
+            color={ground === "brand" ? "inverse" : undefined}
+          />
+        </div>
+      )}
+    </OnSurfaces>
+  ),
+};
+
+export const Sx: Story = {
+  args: { label: "Upload", value: 45, sx: { mt: 4, gap: 4 } },
 };

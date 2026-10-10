@@ -1,0 +1,8 @@
+# Carried fixes for batch G (from review E) — FIRST, fix commits
+1. Minor (a11y robustness) — lib/stretched-link.ts: card ring depends on the router link forwarding `data-stretched-link`; a link that drops unknown props leaves NO focus indicator. Put the attribute on the heading the component renders and select `has-[[data-stretched-link]>a:focus-visible]` (or equivalent). Keep both cards' KeyboardFocus plays green.
+2. Minor — choice-card-group.tsx:1346,1350: errored group keeps the CHECKED card's brand border; add `in-aria-invalid:has-checked:border-status-danger` (Radio precedent radio.tsx:19); test/play the danger border on checked + unchecked.
+3. Minor — choice-card-group.tsx:1414: caller `aria-invalid` overrides the guard — destructure it out (component's value wins, like ChoiceControl).
+4. Minor (a11y) — coupon-copy-button.tsx:1574,1578: copied name becomes "Copied PAPRIKAA50 Copied" and the reset re-announces "Tap to copy". Keep the label as codeLabel; announce only "Copied" via an sr-only live span that's empty otherwise.
+5. Minor — coupon-ticket.stories Brand `beforeEach` clipboard stub runs in interactive Storybook too: comment it, or scope the stub to the test runner.
+6. Minor — coupon-ticket.tsx:1861 `-translate-1/2` vs the plan doc's `-translate-x-1/2 -translate-y-1/2`: record as a deviation (sync the plan doc if format:check needs it).
+7. Minor (plan 5 parity) — Company details (apps/storybook/src/foundations/brand) lost the mono font on its fact keys/values in the KeyValueList swap; restore it (a className on the KeyValueList key/value or a KeyValueList prop if the brief has one — no new API unless needed), and do the deferred CompanyDetails xl 3-column check (play at xl: keys/values not clipped).

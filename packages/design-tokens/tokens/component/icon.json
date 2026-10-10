@@ -1,0 +1,26 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "icon-xs": { "$value": "14px", "$extensions": { "pink-paprikaa": { "utility": ["size"] } } },
+    "icon-sm": {
+      "$value": "16px",
+      "$description": "Inline with body text.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "icon-md": {
+      "$value": "20px",
+      "$description": "Buttons, list rows.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "icon-lg": {
+      "$value": "24px",
+      "$description": "Nav, tab bar.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "icon-xl": {
+      "$value": "32px",
+      "$description": "Empty states.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
+  }
+}

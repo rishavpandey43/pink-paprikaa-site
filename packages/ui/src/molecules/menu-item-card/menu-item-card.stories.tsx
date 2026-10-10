@@ -1,6 +1,40 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
+import { Plus } from "lucide-react";
+import { expect } from "storybook/test";
 
+import { IconButton } from "../../atoms/icon-button/icon-button";
+import type { LinkAsProps } from "../../lib/link-as";
 import { MenuItemCard } from "./menu-item-card";
+
+/** A router link that forwards only the LinkAsProps it is given — no stray data attributes. */
+function StrictLink({ href, className, children }: LinkAsProps) {
+  return (
+    <a href={href} className={className}>
+      {children}
+    </a>
+  );
+}
+
+/**
+ * One card at the design system's 210px. A story decorator, not a `meta` one: Storybook
+ * concatenates story and meta decorators (`decorators: []` on a story removes nothing), so a
+ * meta-level width would squeeze the grid stories too.
+ */
+const cardWidth: Decorator = (Story) => (
+  <div className="w-52.5">
+    <Story />
+  </div>
+);
+
+const addAction = (name: string) => (
+  <IconButton
+    icon={Plus}
+    label={`Add ${name}`}
+    variant="primary"
+    size="lg"
+    className="shadow-brand"
+  />
+);
 
 const meta = {
   title: "Molecules/MenuItemCard",
@@ -8,146 +42,166 @@ const meta = {
   args: {
     name: "Masala Cold Brew",
     price: 220,
-    description: "Cold brew, jaggery, cardamom.",
     spice: 1,
+    badge: "New",
+    description: "Cold brew, jaggery, cardamom.",
+    action: addAction("Masala Cold Brew"),
   },
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "The dish card for grids and rails. A 4:3 photograph with the floating pink add button " +
-          "overlapping its edge, then the diet mark, name and price. Pass `href` and the whole " +
-          "card becomes one real link that lifts −2px on hover.",
+          'Dish card for grids and horizontal rails — the website\'s "Most Ordered" and the app home. A 4:3 image on top with an overlapping floating `+` (pink, `shadow-brand`), then DietMark + name + price. Every dish is vegetarian (no `diet` prop). Give it `href` and the name becomes a link covering the card, which then lifts −2px on hover; the action stays its own button.',
       },
     },
   },
 } satisfies Meta<typeof MenuItemCard>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: (args) => (
-    <div className="w-56">
-      <MenuItemCard {...args} />
-    </div>
-  ),
-};
+export const Playground: Story = { decorators: [cardWidth] };
 
-/** The three shapes side by side: badged, discounted, and a card that cannot take an order. */
+/** Card row "variants": badge + add, discount + add, no action. */
 export const Variants: Story = {
-  render: (args) => (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-4">
-      <MenuItemCard
-        {...args}
-        badge="New"
-        href="/menu/masala-cold-brew"
-        name="Masala Cold Brew"
-        onAdd={() => undefined}
-        price={220}
-        spice={1}
-      />
-      <MenuItemCard
-        {...args}
-        description="Masala fries, amchur, curry-leaf salt."
-        href="/menu/masala-fries"
-        name="Masala Fries"
-        onAdd={() => undefined}
-        price={190}
-        spice={4}
-        was={240}
-      />
-      <MenuItemCard
-        {...args}
-        description="Assam leaf, ginger, clay cup."
-        href="/menu/kulhad-chai"
-        name="Kulhad Chai"
-        price={90}
-        spice={1}
-      />
+  render: () => (
+    <div className="flex flex-wrap gap-3.5">
+      <div className="w-52.5">
+        <MenuItemCard
+          name="Masala Cold Brew"
+          price={220}
+          spice={1}
+          badge="New"
+          description="Cold brew, jaggery, cardamom."
+          action={addAction("Masala Cold Brew")}
+        />
+      </div>
+      <div className="w-52.5">
+        <MenuItemCard
+          name="Masala Fries"
+          price={190}
+          was={240}
+          spice={4}
+          description="Masala fries, amchur, curry-leaf salt."
+          action={addAction("Masala Fries")}
+        />
+      </div>
+      <div className="w-52.5">
+        <MenuItemCard
+          name="Kulhad Chai"
+          price={90}
+          spice={1}
+          description="Assam leaf, ginger, clay cup."
+        />
+      </div>
     </div>
   ),
 };
 
-/** `egg` is the turmeric mark on the few bakes that contain egg. There is no non-veg mark. */
-export const DietMarks: Story = {
-  render: (args) => (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-4">
-      <MenuItemCard {...args} diet="veg" name="Paprikaa Chilli Paneer" price={280} spice={3} />
-      <MenuItemCard
-        {...args}
-        description="Dark chocolate, sea salt, warm from the oven."
-        diet="egg"
-        name="Chocolate Brownie"
-        price={160}
-        spice={undefined}
-      />
-    </div>
-  ),
+/** `href`: the whole card is a link to the dish; the add button stays separate. */
+export const AsLink: Story = {
+  args: { href: "#masala-cold-brew" },
+  decorators: [cardWidth],
+  // Real layout: a tap on the description lands on the stretched link; a tap on the floating
+  // button lands on the button, above the link's overlay (z-raised).
+  play: async ({ canvas }) => {
+    const link = canvas.getByRole("link", { name: "Masala Cold Brew" });
+    const add = canvas.getByRole("button", { name: "Add Masala Cold Brew" });
+    const at = (element: Element) => {
+      const box = element.getBoundingClientRect();
+      return document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+    };
+    await expect(at(canvas.getByText("Cold brew, jaggery, cardamom."))).toBe(link);
+    await expect(add.contains(at(add))).toBe(true);
+  },
+};
+
+/**
+ * Keyboard: when the stretched link has focus the ring goes round the whole card it covers — even
+ * through a router link that forwards nothing but its LinkAsProps.
+ */
+export const KeyboardFocus: Story = {
+  args: { href: "#masala-cold-brew", linkAs: StrictLink },
+  decorators: [cardWidth],
+  play: async ({ canvas, userEvent }) => {
+    const card = canvas.getByRole("article");
+    const ringOf = () => getComputedStyle(card).outlineStyle;
+    await expect(ringOf()).toBe("none");
+    // The floating Add button comes first; it rings itself, not the card.
+    await userEvent.tab();
+    await expect(canvas.getByRole("button", { name: "Add Masala Cold Brew" })).toHaveFocus();
+    await expect(ringOf()).toBe("none");
+    await userEvent.tab();
+    const link = canvas.getByRole("link", { name: "Masala Cold Brew" });
+    await expect(link).toHaveFocus();
+    await expect(ringOf()).toBe("solid");
+    // One ring, not two: the name drops its own.
+    await expect(getComputedStyle(link).outlineStyle).toBe("none");
+  },
 };
 
 /** Uneven descriptions still line up: the price row is pinned to the bottom of every card. */
 export const InAGrid: Story = {
-  render: (args) => (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-4">
+  render: () => (
+    <div className="grid max-w-content grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <MenuItemCard
-        {...args}
-        badge="Bestseller"
-        description="Amritsari paneer, burnt chilli mayo, potato brioche, house pickle."
-        href="/menu/paprikaa-chilli-paneer"
         name="Paprikaa Chilli Paneer"
-        onAdd={() => undefined}
         price={280}
         spice={3}
+        badge="Bestseller"
+        description="Amritsari paneer, burnt chilli mayo, potato brioche, house pickle."
+        href="#paprikaa-chilli-paneer"
+        action={addAction("Paprikaa Chilli Paneer")}
       />
       <MenuItemCard
-        {...args}
-        description="Assam leaf, ginger."
-        href="/menu/kulhad-chai"
         name="Kulhad Chai"
-        onAdd={() => undefined}
         price={90}
-        spice={1}
+        description="Assam leaf, ginger."
+        href="#kulhad-chai"
+        action={addAction("Kulhad Chai")}
       />
       <MenuItemCard
-        {...args}
-        description="Cold brew, jaggery, cardamom."
-        href="/menu/masala-cold-brew"
         name="Masala Cold Brew"
-        onAdd={() => undefined}
         price={220}
         spice={1}
+        description="Cold brew, jaggery, cardamom."
+        href="#masala-cold-brew"
+        action={addAction("Masala Cold Brew")}
       />
       <MenuItemCard
-        {...args}
-        description="Masala fries, amchur, curry-leaf salt."
-        href="/menu/masala-fries"
         name="Masala Fries"
-        onAdd={() => undefined}
         price={190}
-        spice={4}
         was={240}
+        spice={4}
+        description="Masala fries, amchur, curry-leaf salt."
+        href="#masala-fries"
+        action={addAction("Masala Fries")}
       />
     </div>
   ),
 };
 
-/** A long dish name wraps inside the card instead of pushing the price out of it. */
+/** 360px: a long dish name wraps inside the card instead of pushing the price out of it. */
 export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
-  render: (args) => (
-    <div className="w-full max-w-80">
-      <MenuItemCard
-        {...args}
-        badge="Bestseller"
-        href="/menu/paprikaa-chilli-paneer"
-        name="Paprikaa Chilli Paneer With Burnt Garlic"
-        onAdd={() => undefined}
-        price={280}
-        was={320}
-      />
-    </div>
-  ),
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  args: {
+    name: "Paprikaa Chilli Paneer With Burnt Garlic",
+    price: 280,
+    was: 320,
+    badge: "Bestseller",
+    href: "#paprikaa-chilli-paneer",
+    action: addAction("Paprikaa Chilli Paneer With Burnt Garlic"),
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-80">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvas }) => {
+    const card = canvas.getByRole("article");
+    await expect(card.scrollWidth).toBeLessThanOrEqual(card.clientWidth);
+  },
 };

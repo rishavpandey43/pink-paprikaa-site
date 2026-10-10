@@ -1,97 +1,98 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { Text } from "../text/text";
 import { PatternField } from "./pattern-field";
+
+function Inner({ caption }: { caption: string }) {
+  return (
+    <div className="p-4">
+      <h4 className="m-0">Flooded field</h4>
+      <p className="m-0 font-body text-caption">{caption}</p>
+    </div>
+  );
+}
 
 const meta = {
   title: "Atoms/PatternField",
   component: PatternField,
+  args: {
+    surface: "brand",
+    tile: 64,
+    radius: "lg",
+    children: <Inner caption="tile 64 · density default" />,
+  },
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "A flooded panel with the diamond symbol tiled behind it — the brand's only texture. " +
-          "Opacity is fixed per tone at 8–9% so the pattern stays a whisper. Never pair it with " +
-          "noise, grain or a gradient.",
+          "Flooded brand panel with the diamond symbol tiled behind it — the brand's single texture. It sets `data-surface` to its surface, so headings, copy and links inside follow the field with no colour props. `tile` is 96 on a 1080 canvas, 56–72 on screen; `density=\"faint\"` (4%) is the handoff's whisper for ink sections. The pattern is a whisper, never a graphic element: no noise, grain or gradients alongside it. `asChild` patterns your own `<section>`.",
       },
     },
   },
 } satisfies Meta<typeof PatternField>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-function Panel({ tone }: { tone: "brand" | "ink" | "soft" | "light" }) {
-  const isDark = tone === "brand" || tone === "ink";
-  return (
-    <div className="p-8">
-      <Text tone={isDark ? "inverse" : "heading"} variant="h3">
-        100% vegetarian kitchen
-      </Text>
-      <Text className="mt-1-5" tone={isDark ? "inverse" : "muted"} variant="body2">
-        Sector 57, Gurgaon · 8am – 11:30pm
-      </Text>
-    </div>
-  );
-}
+export const Playground: Story = {};
 
-export const Default: Story = {
-  args: { radius: "lg", tone: "brand" },
-  render: (args) => (
-    <PatternField {...args}>
-      <Panel tone="brand" />
+export const Brand: Story = { name: 'surface="brand"', args: { surface: "brand" } };
+
+export const Ink: Story = { name: 'surface="ink"', args: { surface: "ink" } };
+
+export const Soft: Story = { name: 'surface="soft"', args: { surface: "soft" } };
+
+export const Light: Story = {
+  name: 'surface="page"',
+  args: { surface: "page", className: "border border-border-subtle" },
+};
+
+export const Faint: Story = {
+  name: 'density="faint"',
+  args: {
+    surface: "ink",
+    tile: 80,
+    density: "faint",
+    children: <Inner caption="tile 80 · faint" />,
+  },
+};
+
+export const Tiles: Story = {
+  name: "tile",
+  render: () => (
+    <div className="grid grid-cols-3 gap-3">
+      {([56, 64, 72, 80, 86, 96] as const).map((tile) => (
+        <PatternField key={tile} surface="brand" tile={tile} radius="lg" className="h-40">
+          <Inner caption={`tile ${String(tile)}`} />
+        </PatternField>
+      ))}
+    </div>
+  ),
+};
+
+export const AsChild: Story = {
+  name: "asChild (section)",
+  render: () => (
+    <PatternField asChild surface="ink" density="faint" tile={80} radius="xl" className="p-8">
+      <section aria-label="Delivery zones">
+        <h2 className="m-0">Delivery zones</h2>
+        <p className="m-0 font-body text-body">Free within 3 km of Sector 57.</p>
+      </section>
     </PatternField>
   ),
 };
 
-export const Tones: Story = {
-  render: (args) => (
-    <div className="grid gap-4">
-      <PatternField {...args} radius="lg" tone="brand">
-        <Panel tone="brand" />
-      </PatternField>
-      <PatternField {...args} radius="lg" tone="ink">
-        <Panel tone="ink" />
-      </PatternField>
-      <PatternField {...args} radius="lg" tone="soft">
-        <Panel tone="soft" />
-      </PatternField>
-      <PatternField {...args} radius="lg" tone="light">
-        <Panel tone="light" />
-      </PatternField>
-    </div>
-  ),
-};
-
-/** 56–72px on screen; 96px once the panel is a 1080px marketing canvas. */
-export const TileSizes: Story = {
-  render: (args) => (
-    <div className="grid gap-4">
-      <PatternField {...args} radius="md" tile={56}>
-        <Panel tone="brand" />
-      </PatternField>
-      <PatternField {...args} radius="md" tile={72}>
-        <Panel tone="brand" />
-      </PatternField>
-      <PatternField {...args} radius="md" tile={96}>
-        <Panel tone="brand" />
-      </PatternField>
-    </div>
-  ),
-};
-
-/** A full-bleed section band — no radius, edge to edge. */
+/** A full-bleed section band: no radius, edge to edge. */
 export const FullBleedBand: Story = {
+  name: 'full-bleed band (radius="none")',
   parameters: { layout: "fullscreen" },
-  render: (args) => (
-    <PatternField {...args} tone="ink">
-      <div className="mx-auto max-w-(--layout-container-max) px-6 py-16">
-        <Text isBalanced isFluid tone="inverse" variant="h2">
-          Momos, chaat and North Indian plates from ₹180–₹320
-        </Text>
+  render: () => (
+    <PatternField surface="ink" radius="none">
+      <div className="container-page section-y">
+        <h2 className="m-0 text-balance">Momos, chaat and North Indian plates from ₹180–₹320</h2>
       </div>
     </PatternField>
   ),
 };
+
+export const Sx: Story = { args: { sx: { radius: "xl", mt: 4 } } };

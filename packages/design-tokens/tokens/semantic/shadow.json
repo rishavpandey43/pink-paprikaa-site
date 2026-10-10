@@ -1,0 +1,11 @@
+{
+  "shadow": {
+    "$type": "shadow",
+    "focus-ring": { "$value": "0 0 0 3px {color.pink.200}" },
+    "focus-ring-inverse": { "$value": "0 0 0 3px {color.white-alpha.50}" },
+    "selected": {
+      "$value": "inset 0 0 0 1px {color.pink.500}",
+      "$description": "A selected card: doubles its 1px brand border to 2px without moving the layout (ChoiceCardGroup, CheckCard)."
+    }
+  }
+}

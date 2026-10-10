@@ -1,254 +1,223 @@
-"use client";
+import { ChevronRight } from "lucide-react";
+import type { ReactNode } from "react";
 
-import type { ComponentPropsWithoutRef } from "react";
-
-import { Menu, Search, ShoppingBag, X } from "lucide-react";
-import { Dialog } from "radix-ui";
-import { useState } from "react";
-
-import { Button } from "../../atoms/button/button";
-import { IconButton } from "../../atoms/icon-button/icon-button";
+import { Icon } from "../../atoms/icon/icon";
 import { Link } from "../../atoms/link/link";
 import { Logo } from "../../atoms/logo/logo";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
+import type { LinkAs } from "../../lib/link-as";
+import { withSx } from "../../lib/sx";
+import { SiteHeaderBar } from "./site-header-bar";
+import { SiteHeaderDrawer } from "./site-header-drawer";
+
+export interface NavLink {
+  label: string;
+  href: string;
+  isActive?: boolean | undefined;
+}
+
+/** Three links from 860px (`nav-3`), four from 1080px (`nav-4`), all from 1280px (`xl`). */
+const INLINE_LINKS_NAV_3 = 3;
+const INLINE_LINKS_NAV_4 = 4;
 
 const siteHeader = componentVariants({
   slots: {
-    root: [
-      "sticky top-0 z-30 h-(--layout-header-h) w-full border-b",
-      "transition-[background-color,border-color] duration-(--duration-base) ease-out",
-    ],
-    inner: [
-      "mx-auto flex h-full w-full max-w-(--layout-container-max) items-center gap-2",
-      "px-(--layout-gutter-fluid) sm:gap-3",
-    ],
-    brand: "flex shrink-0 items-center",
-    // The rail is hidden rather than truncated below `lg` — the same links live in the sheet, so
-    // nothing is lost, and a nav that wraps would break the fixed 72px band.
-    nav: "ml-2 hidden min-w-0 items-center gap-6 lg:flex",
-    actions: "ml-auto flex shrink-0 items-center gap-1 whitespace-nowrap sm:gap-2",
-    cart: "relative",
-    /**
-     * The count sits on the cart glyph and is hidden from assistive tech: the button's own label
-     * already carries the number, so announcing it twice would read "Your order, 2 items. 2".
-     */
-    count: [
-      "pointer-events-none absolute top-1.5 right-1.5 grid h-4.5 min-w-4.5 place-items-center",
-      "rounded-6 bg-brand-primary px-1",
-      "font-display font-bold text-overline leading-overline text-text-on-brand",
-    ],
-    // Search moves into the sheet below `md`; "Book a Table" is the CTA that gives way first,
-    // because ordering is the header's job and there are only ever two.
-    search: "hidden md:inline-flex",
-    book: "hidden md:inline-flex",
-    sheetTrigger: "lg:hidden",
-    overlay: "fixed inset-0 z-40 bg-surface-overlay data-[state=open]:animate-pp-fade",
-    sheet: [
-      "fixed inset-y-0 right-0 z-50 flex w-full max-w-80 flex-col gap-7 overflow-y-auto",
-      "rounded-l-5 bg-surface-card p-6 shadow-elevation4",
-      "data-[state=open]:animate-pp-rise",
-    ],
-    sheetHeader: "flex items-center justify-between gap-4",
-    sheetTitle: "font-display font-bold text-subtitle1 text-text-heading tracking-subtitle1",
-    sheetNav: "flex flex-col",
-    sheetLink: "flex min-h-(--layout-hit-min) items-center",
-    sheetActions: "mt-auto flex flex-col gap-3",
+    root: "sticky top-0 z-header",
+    skipLink:
+      "sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-overlay focus:rounded-pill focus:bg-surface-card focus:px-4 focus:py-2 focus:font-display focus:font-bold focus:text-text-link focus:shadow-3",
+    bar: "border-b border-transparent bg-surface-card transition-colors duration-base ease-out data-scrolled:border-border-subtle data-scrolled:bg-surface-glass data-scrolled:backdrop-blur-glass",
+    row: "container-page flex items-center gap-6",
+    home: "flex shrink-0 items-center rounded-sm transition-control hover:opacity-82 active:press-scale",
+    logo: "h-auto",
+    badge: "flex shrink-0 items-center",
+    nav: "ml-3 hidden nav-3:block",
+    navList: "flex flex-nowrap items-center gap-6",
+    navItem: "shrink-0",
+    navLink:
+      "border-b-2 border-transparent py-1.5 font-display text-site-header-link whitespace-nowrap",
+    spacer: "flex-1",
+    actions: "hidden shrink-0 items-center gap-2 lg:flex",
+    compactActions: "flex shrink-0 items-center gap-2 lg:hidden",
+    menuButton: "shrink-0",
+    drawerList: "flex flex-col",
+    drawerLink:
+      "flex items-center justify-between border-b border-border-subtle py-3.5 font-display text-body-lg font-semibold text-text-heading no-underline",
+    drawerChevron: "text-text-muted",
+    drawerActions: "grid grid-cols-2 gap-2",
   },
   variants: {
-    /**
-     * Past the hero the band goes translucent white over whatever scrolls under it. It is a prop
-     * rather than an internal scroll listener so the header renders identically on the server and
-     * one page can decide its own threshold.
-     */
-    isScrolled: {
-      true: {
-        root: "border-border-subtle bg-surface-glass backdrop-blur-(--effect-blur-glass)",
-      },
-      false: { root: "border-transparent bg-surface-card" },
+    size: {
+      default: { row: "h-header", logo: "w-site-header-logo" },
+      compact: { row: "h-header-compact", logo: "w-site-header-logo-compact" },
+    },
+    isActive: {
+      true: { navLink: "border-border-brand text-text-brand", drawerLink: "text-text-brand" },
+    },
+    isHiddenFromNav4: { true: { navItem: "hidden nav-4:block" } },
+    isHiddenFromXl: { true: { navItem: "hidden xl:block" } },
+    menuFits: {
+      xl: { menuButton: "xl:hidden" },
+      nav4: { menuButton: "nav-4:hidden" },
+      nav3: { menuButton: "nav-3:hidden" },
     },
   },
-  defaultVariants: { isScrolled: false },
+  defaultVariants: { size: "default" },
 });
 
-/** One entry in the masthead rail. */
-export interface SiteHeaderLink {
-  /** What the link says, in Title Case. */
-  label: string;
-  /** Where it goes. */
-  href: string;
-}
-
-const DEFAULT_LINKS: SiteHeaderLink[] = [
-  { label: "Menu", href: "/menu" },
-  { label: "Our Story", href: "/about" },
-  { label: "Outlets", href: "/outlets" },
-  { label: "Franchise", href: "/franchise" },
-  { label: "Careers", href: "/careers" },
-];
-
 export interface SiteHeaderProps
-  extends Omit<ComponentPropsWithoutRef<"header">, "children">, VariantProps<typeof siteHeader> {
-  /** The rail, in the order a guest would look for them. Shown from 1024px; in the sheet below. */
-  links?: SiteHeaderLink[] | undefined;
+  extends BaseProps<"header">, Pick<VariantProps<typeof siteHeader>, "size"> {
+  homeHref: string;
   /**
-   * Names the rail's navigation landmark. A page has one masthead, so the default is right almost
-   * always — but a landmark's role and accessible name have to be unique across the whole
-   * document, so a page that shows more than one masthead (a specimen sheet, a comparison) must
-   * give each of them its own name or every one of them becomes unidentifiable.
+   * Inline nav links. Three show from 860px, four from 1080px, all from 1280px (the rest stay in
+   * the drawer). Use the design's short labels so they fit with the badge and two actions.
    */
+  links: NavLink[];
+  /** Accessible name of the home link. Default "Pink Paprikaa home". */
+  homeLabel?: string | undefined;
+  /** Force the glass/scrolled bar; omit to follow scroll. */
+  isScrolled?: boolean | undefined;
+  /** The drawer's links; defaults to `links` (the handoff drawer lists more destinations). */
+  drawerLinks?: NavLink[] | undefined;
+  /** Replaces the default lockup. Size it yourself (`className="w-…"`). */
+  logo?: ReactNode;
+  /** From lg: "Order online" + "WhatsApp us" — `<Button asChild size="sm"><a …/></Button>`. */
+  actions?: ReactNode;
+  /** In the drawer, under its links: the same actions, full width. */
+  drawerActions?: ReactNode;
+  /** Below lg, beside the menu button: e.g. a WhatsApp IconButton. */
+  compactActions?: ReactNode;
+  /** Above the bar, e.g. the launch AnnouncementBar with its Countdown. */
+  announcement?: ReactNode;
+  /** Beside the logo, e.g. the Pure Veg badge. */
+  badge?: ReactNode;
+  skipLinkHref?: string | undefined;
+  skipLinkLabel?: string | undefined;
+  linkAs?: LinkAs | undefined;
   navLabel?: string | undefined;
-  /** Where the lockup goes back to. */
-  homeHref?: string | undefined;
-  /** Items in the order. Zero hides the count entirely. */
-  cartCount?: number | undefined;
-  /** Opens the search field. Omit it and no search button is drawn. */
-  onSearch?: (() => void) | undefined;
-  /** Opens the order panel. Omit it and no cart button is drawn. */
-  onCart?: (() => void) | undefined;
-  /**
-   * The primary action. Ordering lives on an external domain, so the caller owns the jump — the
-   * header only guarantees the button is the one thing that never gives way as the band narrows.
-   */
-  onOrder?: (() => void) | undefined;
-  /** The second action, and the only other one this header will ever carry. */
-  onBook?: (() => void) | undefined;
+  menuLabel?: string | undefined;
+  closeMenuLabel?: string | undefined;
+  /** Where the drawer portals (default `document.body`); for page frames in kits — client callers only. */
+  portalContainer?: HTMLElement | null | undefined;
 }
 
 /**
- * The site masthead: 72px, sticky, and translucent once the page has scrolled past its hero.
- *
- * Below 1024px the rail collapses into a keyboard-accessible sheet built on Radix Dialog, so the
- * links are never truncated and the band keeps its fixed height at 360px.
+ * The website masthead: sticky, solid at rest and glass once the page scrolls under it. The
+ * nav shortens by CSS at the token breakpoints instead of wrapping or clipping, and the menu
+ * drawer holds every destination whenever the bar cannot. Server-rendered; only the glass bar
+ * and the drawer are client leaves.
  */
 export function SiteHeader({
-  cartCount = 0,
-  className,
-  homeHref = "/",
-  isScrolled,
-  links = DEFAULT_LINKS,
+  homeHref,
+  links,
+  drawerLinks = links,
+  logo,
+  actions,
+  drawerActions,
+  compactActions,
+  announcement,
+  badge,
+  size,
+  skipLinkHref = "#main",
+  skipLinkLabel = "Skip to content",
+  linkAs: LinkComponent = "a",
   navLabel = "Main",
-  onBook,
-  onCart,
-  onOrder,
-  onSearch,
+  menuLabel = "Menu",
+  closeMenuLabel = "Close menu",
+  portalContainer = null,
+  homeLabel = "Pink Paprikaa home",
+  isScrolled,
+  sx,
+  className,
   ...props
 }: SiteHeaderProps) {
-  const slots = siteHeader({ isScrolled });
-  const cartLabel = cartCount > 0 ? `Your order, ${String(cartCount)} items` : "Your order";
-  // The sheet is controlled so that following one of its links closes it — a route change inside
-  // an app router never unmounts the header, so an uncontrolled dialog would stay open over it.
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const slots = siteHeader({ size });
+  const menuFits =
+    links.length > INLINE_LINKS_NAV_4
+      ? "xl"
+      : links.length === INLINE_LINKS_NAV_4
+        ? "nav4"
+        : "nav3";
+  const hasDrawer = drawerLinks.length > 0 || isShown(drawerActions);
   return (
-    <header className={slots.root({ className })} {...props}>
-      <div className={slots.inner()}>
-        <a className={slots.brand()} href={homeHref}>
-          <Logo size="md" tone="brand" variant="wordmark" />
-        </a>
-
-        <nav aria-label={navLabel} className={slots.nav()}>
-          {links.map((link) => (
-            <Link href={link.href} key={link.href} variant="quiet">
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className={slots.actions()}>
-          {onSearch === undefined ? null : (
-            <IconButton
-              className={slots.search()}
-              icon={Search}
-              label="Search the Menu"
-              onClick={onSearch}
-            />
-          )}
-
-          {onCart === undefined ? null : (
-            <div className={slots.cart()}>
-              <IconButton icon={ShoppingBag} label={cartLabel} onClick={onCart} />
-              {cartCount > 0 ? (
-                <span aria-hidden className={slots.count()}>
-                  {cartCount}
-                </span>
-              ) : null}
-            </div>
-          )}
-
-          <Button className={slots.book()} onClick={onBook} size="sm" variant="secondary">
-            Book a Table
-          </Button>
-
-          <Button icon={ShoppingBag} onClick={onOrder} size="sm">
-            Order Now
-          </Button>
-
-          <Dialog.Root onOpenChange={setIsMenuOpen} open={isMenuOpen}>
-            <Dialog.Trigger asChild>
-              <IconButton className={slots.sheetTrigger()} icon={Menu} label="Open Navigation" />
-            </Dialog.Trigger>
-            <Dialog.Portal>
-              <Dialog.Overlay className={slots.overlay()} />
-              <Dialog.Content className={slots.sheet()}>
-                <div className={slots.sheetHeader()}>
-                  {/* Radix renders its own heading element here, so this is one of the few places
-                      the type classes are written by hand rather than nesting `Text`. */}
-                  <Dialog.Title className={slots.sheetTitle()}>Navigation</Dialog.Title>
-                  <Dialog.Close asChild>
-                    <IconButton icon={X} label="Close Navigation" />
-                  </Dialog.Close>
-                </div>
-                <Dialog.Description className="sr-only">
-                  Every page on the Pink Paprikaa site.
-                </Dialog.Description>
-
-                <nav aria-label="Site" className={slots.sheetNav()}>
-                  {links.map((link) => (
-                    <Link
-                      className={slots.sheetLink()}
-                      href={link.href}
-                      key={link.href}
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                      }}
-                      size="lg"
-                      variant="quiet"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </nav>
-
-                <div className={slots.sheetActions()}>
-                  {onSearch === undefined ? null : (
-                    <Button
-                      icon={Search}
-                      isFullWidth
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        onSearch();
-                      }}
-                      variant="ghost"
-                    >
-                      Search the Menu
-                    </Button>
-                  )}
-                  <Button
-                    isFullWidth
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      onBook?.();
-                    }}
-                    variant="secondary"
+    <header className={slots.root({ className: withSx(sx, className) })} {...props}>
+      <a href={skipLinkHref} className={slots.skipLink()}>
+        {skipLinkLabel}
+      </a>
+      {announcement}
+      <SiteHeaderBar className={slots.bar()} isScrolled={isScrolled}>
+        <div className={slots.row()}>
+          <LinkComponent href={homeHref} className={slots.home()} aria-label={homeLabel}>
+            {isShown(logo) ? logo : <Logo className={slots.logo()} />}
+          </LinkComponent>
+          {isShown(badge) ? <div className={slots.badge()}>{badge}</div> : null}
+          {links.length > 0 ? (
+            <nav aria-label={navLabel} className={slots.nav()}>
+              <ul className={slots.navList()}>
+                {links.map((link, index) => (
+                  <li
+                    key={link.href}
+                    className={slots.navItem({
+                      isHiddenFromNav4: index === INLINE_LINKS_NAV_3,
+                      isHiddenFromXl: index >= INLINE_LINKS_NAV_4,
+                    })}
                   >
-                    Book a Table
-                  </Button>
-                </div>
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog.Root>
+                    <Link
+                      color="quiet"
+                      underline="hover"
+                      asChild
+                      className={slots.navLink({ isActive: link.isActive === true })}
+                    >
+                      <LinkComponent
+                        href={link.href}
+                        aria-current={link.isActive === true ? "page" : undefined}
+                      >
+                        {link.label}
+                      </LinkComponent>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ) : null}
+          <div className={slots.spacer()} />
+          {isShown(actions) ? <div className={slots.actions()}>{actions}</div> : null}
+          {isShown(compactActions) ? (
+            <div className={slots.compactActions()}>{compactActions}</div>
+          ) : null}
+          {hasDrawer ? (
+            <SiteHeaderDrawer
+              menuLabel={menuLabel}
+              closeLabel={closeMenuLabel}
+              triggerClassName={slots.menuButton({ menuFits })}
+              portalContainer={portalContainer}
+            >
+              {drawerLinks.length > 0 ? (
+                <nav aria-label={navLabel}>
+                  <ul className={slots.drawerList()}>
+                    {drawerLinks.map((link) => (
+                      <li key={link.href}>
+                        <LinkComponent
+                          href={link.href}
+                          aria-current={link.isActive === true ? "page" : undefined}
+                          className={slots.drawerLink({ isActive: link.isActive === true })}
+                        >
+                          {link.label}
+                          <Icon icon={ChevronRight} size="sm" className={slots.drawerChevron()} />
+                        </LinkComponent>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              ) : null}
+              {isShown(drawerActions) ? (
+                <div className={slots.drawerActions()}>{drawerActions}</div>
+              ) : null}
+            </SiteHeaderDrawer>
+          ) : null}
         </div>
-      </div>
+      </SiteHeaderBar>
     </header>
   );
 }

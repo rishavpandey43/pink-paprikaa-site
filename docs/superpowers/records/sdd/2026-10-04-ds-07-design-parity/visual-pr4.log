@@ -1,0 +1,2706 @@
+
+ NX   Running target visual for project @pink-paprikaa-web/storybook and 2 tasks it depends on:
+
+
+
+> nx run @pink-paprikaa-web/design-tokens:build  [existing outputs match the cache, left as is]
+
+
+> nx run @pink-paprikaa-web/storybook:build-storybook
+
+> storybook build
+
+
+┌  Building storybook v10.5.7
+│
+◇  Cleaning outputDir: storybook-static
+│
+◇  Loading presets
+│
+▲  No story files found for the specified pattern:
+│  ../../packages/ui/src/**/*.mdx
+│
+◇  Building manager..
+│
+●  Building open services..
+│
+●  Building preview..
+│  Vite vite v8.2.1 building client environment for production...
+[2Ktransforming...│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/image-slot/image-slot.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/avatar/avatar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/rating/rating.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/input/input.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/button/button.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/link/link.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/icon/icon.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/radio/radio.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/checkbox/checkbox.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/price-tag/price-tag.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/logo/logo.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/card/card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/select/select.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/pattern-field/pattern-field.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/skeleton/skeleton.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/slider/slider.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/popover/popover.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/progress-bar/progress-bar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/countdown/countdown.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/social-headline/social-headline.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/spice-level/spice-level.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/status-dot/status-dot.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/spinner/spinner.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/menu/menu.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/switch/switch.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/toggle-button/toggle-button.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/tag/tag.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/tooltip/tooltip.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/text-button/text-button.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/fab/fab.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/app-shell/app-shell.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/auto-grid/auto-grid.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/diet-mark/diet-mark.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/divider/divider.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/typography/typography.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/box/box.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/cluster/cluster.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/icon-button/icon-button.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/container/container.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/section/section.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/link-as.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/grid/grid.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/symbol-mark.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/reveal-observer.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/post-frame/post-frame.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/field-message.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/struck-price.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/stack/stack.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/use-controllable-state.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/use-press.spec.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/accordion/accordion.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/action-menu/action-menu.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/announcement-bar/announcement-bar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/menu-panel.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/breadcrumb/breadcrumb.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/combobox/combobox.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/choice-card-group/choice-card-group.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/check-card/check-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/chip-group/chip-group.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/coupon-ticket/coupon-ticket.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/date-picker/date-picker.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/empty-state/empty-state.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/field/field.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/list-row/list-row.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/feature-item/feature-item.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/key-value-list/key-value-list.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/filter-bar/filter-bar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/logo-lockup/logo-lockup.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/link-card/link-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/menu-item-card/menu-item-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/loyalty-card/loyalty-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/offer-seal/offer-seal.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/menu-item-row/menu-item-row.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/alert/alert.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/pagination/pagination.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/otp-input/otp-input.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/review-card/review-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/price-summary/price-summary.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/search-field/search-field.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/section-header/section-header.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/outlet-card/outlet-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/slot-picker/slot-picker.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/pricing-card/pricing-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/table/table.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/quantity-stepper/quantity-stepper.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/snackbar/snackbar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/stat/stat.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/steps/steps.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/speed-dial/speed-dial.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/tabs/tabs.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/step-tracker/step-tracker.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/toast/toast.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/toggle-button-group/toggle-button-group.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/action-dock/action-dock.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/cta-band/cta-band.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/faq-section/faq-section.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/dialog/dialog.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/cart-panel/cart-panel.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/hero-banner/hero-banner.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/sticky-action-bar/sticky-action-bar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/quote-panel/quote-panel.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/menu-list/menu-list.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/review-carousel/review-carousel.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/order-tracker/order-tracker.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/stat-band/stat-band.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/tab-bar/tab-bar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/badge/badge.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/site-footer/site-footer.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/testimonial-wall/testimonial-wall.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/organisms/site-header/site-header.test.tsx"
+│  because it is not included in the active TypeScript project.
+✓ 3677 modules transformed.
+rendering chunks...
+computing gzip size...
+│  Vite
+│  storybook-static/assets/space-mono-vietnamese-400-normal-B0PMp_xB.woff
+│  5.41 kB
+│  storybook-static/assets/poppins-latin-ext-700-normal-cby-RkWa.woff2
+│  5.43 kB
+│  storybook-static/assets/space-mono-vietnamese-700-normal-D-KrLuLr.woff
+│  5.44 kB
+│  storybook-static/assets/poppins-latin-ext-500-normal-CK-6C4Hw.woff2
+│  5.48 kB
+│  storybook-static/assets/poppins-latin-ext-800-normal-CDgOlX-1.woff2
+│  5.49 kB
+│  storybook-static/assets/poppins-latin-ext-600-normal-CAhIAdZj.woff2
+│  5.52 kB
+│  storybook-static/assets/poppins-latin-ext-400-normal-by3JarPu.woff2
+│  5.64 kB
+│  storybook-static/assets/poppins-latin-ext-600-italic-BpvcrORb.woff2
+│  6.01 kB
+│  storybook-static/assets/space-mono-vietnamese-400-normal-BNOj0Qhp.woff2
+│  7.27 kB
+│  storybook-static/assets/poppins-latin-ext-700-normal-DctTR6Tg.woff
+│  7.32 kB
+│  storybook-static/assets/space-mono-vietnamese-700-normal-DWQgDHuA.woff2
+│  7.33 kB
+│  storybook-static/assets/dm-sans-latin-ext-400-normal-BtiwyxMk.woff2
+│  7.36 kB
+│  storybook-static/assets/poppins-latin-ext-800-normal-CIZaRbSk.woff
+│  7.36 kB
+│  storybook-static/assets/poppins-latin-ext-500-normal-CgAe2rWW.woff
+│  7.37 kB
+│  storybook-static/assets/dm-sans-latin-ext-500-normal-BJfUCQsA.woff2
+│  7.43 kB
+│  storybook-static/assets/poppins-latin-ext-600-normal-Df5ffKXP.woff
+│  7.43 kB
+│  storybook-static/assets/dm-sans-latin-ext-700-normal-CJIcxD6K.woff2
+│  7.45 kB
+│  storybook-static/assets/poppins-latin-ext-400-normal-DaBSavcJ.woff
+│  7.46 kB
+│  storybook-static/assets/poppins-latin-500-normal-C8OXljZJ.woff2
+│  7.74 kB
+│  storybook-static/assets/poppins-latin-700-normal-Qrb0O0WB.woff2
+│  7.81 kB
+│  storybook-static/assets/poppins-latin-800-normal-Bd8-pIP1.woff2
+│  7.82 kB
+│  storybook-static/assets/poppins-latin-400-normal-cpxAROuN.woff2
+│  7.88 kB
+│  storybook-static/assets/poppins-latin-ext-600-italic-BXg4YQvj.woff
+│  7.94 kB
+│  storybook-static/assets/poppins-latin-600-normal-zEkxB9Mr.woff2
+│  8.00 kB
+│  storybook-static/assets/dm-sans-latin-ext-400-italic-BpitL8Uu.woff2
+│  8.12 kB
+│  storybook-static/assets/poppins-latin-600-italic-CZ4wqKBi.woff2
+│  8.72 kB
+│  storybook-static/assets/dm-sans-latin-ext-400-normal-BjWJ59Pq.woff
+│  9.97 kB
+│  storybook-static/assets/dm-sans-latin-ext-700-normal-BLI3TTWz.woff
+│  10.01 kB
+│  storybook-static/assets/dm-sans-latin-ext-500-normal-DR84L5F-.woff
+│  10.06 kB
+│  storybook-static/assets/poppins-latin-500-normal-DGXqpDMm.woff
+│  10.37 kB
+│  storybook-static/assets/poppins-latin-700-normal-BVuQR_eA.woff
+│  10.43 kB
+│  storybook-static/assets/poppins-latin-800-normal-YoItoZZV.woff
+│  10.43 kB
+│  storybook-static/assets/poppins-latin-400-normal-BOb3E3N0.woff
+│  10.53 kB
+│  storybook-static/assets/poppins-latin-600-normal-BJdTmd5m.woff
+│  10.60 kB
+│  storybook-static/assets/dm-sans-latin-ext-400-italic-2EvOpbQN.woff
+│  10.97 kB
+│  storybook-static/assets/poppins-latin-600-italic-BhOZippK.woff
+│  11.55 kB
+│  storybook-static/assets/space-mono-latin-400-normal-_3DlpgIW.woff
+│  12.31 kB
+│  storybook-static/assets/space-mono-latin-700-normal-D7A851RN.woff
+│  12.41 kB
+│  storybook-static/assets/space-mono-latin-ext-700-normal-B_E7P90g.woff
+│  12.48 kB
+│  storybook-static/assets/space-mono-latin-ext-400-normal-D4cJI_B-.woff
+│  12.60 kB
+│  storybook-static/assets/dm-sans-latin-400-normal-CW0RaeGs.woff2
+│  14.20 kB
+│  storybook-static/assets/dm-sans-latin-500-normal-B9HHJjqV.woff2
+│  14.30 kB
+│  storybook-static/assets/dm-sans-latin-700-normal-DvUfVpUG.woff2
+│  14.34 kB
+│  storybook-static/assets/dm-sans-latin-400-italic-DRLHr0TN.woff2
+│  15.14 kB
+│  storybook-static/assets/space-mono-latin-ext-700-normal-B2s3bDs2.woff2
+│  15.80 kB
+│  storybook-static/assets/space-mono-latin-ext-400-normal-DTLbW2xa.woff2
+│  15.83 kB
+│  storybook-static/assets/space-mono-latin-400-normal-Rg4St2Dn.woff2
+│  16.52 kB
+│  storybook-static/assets/space-mono-latin-700-normal-mWgeinG7.woff2
+│  16.72 kB
+│  storybook-static/assets/symbol-pink-B07N40aj.svg
+│  17.25 kB │ gzip:   5.78 kB
+│  storybook-static/assets/dm-sans-latin-400-normal-BwCSEQnW.woff
+│  18.35 kB
+│  storybook-static/assets/dm-sans-latin-700-normal-CUSSCpQX.woff
+│  18.50 kB
+│  storybook-static/assets/dm-sans-latin-500-normal-Dr3UlScf.woff
+│  18.52 kB
+│  storybook-static/assets/dm-sans-latin-400-italic-i6QPgQBE.woff
+│  19.60 kB
+│  storybook-static/iframe.html
+│  20.01 kB │ gzip:   5.49 kB
+│  storybook-static/assets/poppins-devanagari-800-normal-ACzlZF75.woff2
+│  38.94 kB
+│  storybook-static/assets/poppins-devanagari-500-normal-BIdkeU1p.woff2
+│  39.08 kB
+│  storybook-static/assets/poppins-devanagari-700-normal-O-jipLrW.woff2
+│  39.25 kB
+│  storybook-static/assets/poppins-devanagari-600-normal-STEjXBNN.woff2
+│  39.29 kB
+│  storybook-static/assets/poppins-devanagari-400-normal-CJDn6rn8.woff2
+│  39.66 kB
+│  storybook-static/assets/poppins-devanagari-600-italic-C8WvgGUS.woff2
+│  45.59 kB
+│  storybook-static/assets/poppins-devanagari-800-normal-BLmXVokE.woff
+│  51.85 kB
+│  storybook-static/assets/poppins-devanagari-700-normal-fHs-vx92.woff
+│  52.24 kB
+│  storybook-static/assets/poppins-devanagari-500-normal-DMPDjHtT.woff
+│  52.42 kB
+│  storybook-static/assets/poppins-devanagari-600-normal-ClASKHrr.woff
+│  52.56 kB
+│  storybook-static/assets/poppins-devanagari-400-normal-CqVvlrh5.woff
+│  52.98 kB
+│  storybook-static/assets/poppins-devanagari-600-italic-C0b9Bbe9.woff
+│  61.21 kB
+│  storybook-static/assets/iframe-Dp7TxYhZ.css
+│  264.56 kB │ gzip:  39.19 kB
+│  storybook-static/assets/iframe-Dh7hQHV_.js
+│  0.04 kB │ gzip:   0.06 kB
+│  storybook-static/assets/is-shown-DFAhd1-T.js
+│  0.15 kB │ gzip:   0.14 kB
+│  storybook-static/assets/assign-ref-D5uL_a5k.js
+│  0.16 kB │ gzip:   0.15 kB
+│  storybook-static/assets/symbol-pink-CHQDJHjd.js
+│  0.17 kB │ gzip:   0.17 kB
+│  storybook-static/assets/heading-3fVXjSvH.js
+│  0.18 kB │ gzip:   0.16 kB
+│  storybook-static/assets/chunk-242VQQM5-bHL6qIJq.js
+│  0.24 kB │ gzip:   0.20 kB
+│  storybook-static/assets/check-CIZB-Kh7.js
+│  0.24 kB │ gzip:   0.21 kB
+│  storybook-static/assets/dom-CgSuUhSb.js
+│  0.24 kB │ gzip:   0.20 kB
+│  storybook-static/assets/chevron-down-BGVf7U5Y.js
+│  0.24 kB │ gzip:   0.21 kB
+│  storybook-static/assets/chevron-right-DkeuRWth.js
+│  0.24 kB │ gzip:   0.21 kB
+│  storybook-static/assets/loader-circle-BkAbRZ10.js
+│  0.26 kB │ gzip:   0.23 kB
+│  storybook-static/assets/plus-Cbf0BrW0.js
+│  0.27 kB │ gzip:   0.22 kB
+│  storybook-static/assets/x-7aN9gktO.js
+│  0.27 kB │ gzip:   0.22 kB
+│  storybook-static/assets/arrow-left-C-0Jb9od.js
+│  0.28 kB │ gzip:   0.23 kB
+│  storybook-static/assets/arrow-right-BmZVgUe0.js
+│  0.28 kB │ gzip:   0.23 kB
+│  storybook-static/assets/arrow-up-right-CPjn2Rr7.js
+│  0.28 kB │ gzip:   0.23 kB
+│  storybook-static/assets/clock-CvSd1j8k.js
+│  0.28 kB │ gzip:   0.24 kB
+│  storybook-static/assets/search-BcmXptSh.js
+│  0.29 kB │ gzip:   0.24 kB
+│  storybook-static/assets/clipboard-DQygVzcJ.js
+│  0.29 kB │ gzip:   0.24 kB
+│  storybook-static/assets/formatter-L2YTDE3Q-CRGuSxAF.js
+│  0.30 kB │ gzip:   0.24 kB
+│  storybook-static/assets/use-controllable-state-C0ZUWn2f.js
+│  0.30 kB │ gzip:   0.24 kB
+│  storybook-static/assets/user-BCWhvtkW.js
+│  0.31 kB │ gzip:   0.25 kB
+│  storybook-static/assets/flame-BLziSyjH.js
+│  0.31 kB │ gzip:   0.25 kB
+│  storybook-static/assets/info-CggVbisk.js
+│  0.32 kB │ gzip:   0.25 kB
+│  storybook-static/assets/lock-D5oilIo4.js
+│  0.32 kB │ gzip:   0.26 kB
+│  storybook-static/assets/chunk-QQBDHPVZ-DC5n6Pix.js
+│  0.32 kB │ gzip:   0.20 kB
+│  storybook-static/assets/credit-card-DHWWZeaf.js
+│  0.32 kB │ gzip:   0.26 kB
+│  storybook-static/assets/space-MdlivFdd.js
+│  0.34 kB │ gzip:   0.22 kB
+│  storybook-static/assets/log-out-D2O9z9lB.js
+│  0.34 kB │ gzip:   0.26 kB
+│  storybook-static/assets/copy-dBXN8jQm.js
+│  0.35 kB │ gzip:   0.28 kB
+│  storybook-static/assets/common-props-J4ZfEsVy.js
+│  0.35 kB │ gzip:   0.22 kB
+│  storybook-static/assets/message-circle-DDKBzdGC.js
+│  0.35 kB │ gzip:   0.28 kB
+│  storybook-static/assets/circle-alert-C10ApoXx.js
+│  0.36 kB │ gzip:   0.26 kB
+│  storybook-static/assets/heart-BEuZJcF7.js
+│  0.37 kB │ gzip:   0.29 kB
+│  storybook-static/assets/map-pin-CC8XyCnE.js
+│  0.37 kB │ gzip:   0.29 kB
+│  storybook-static/assets/utensils-B2fqWDTY.js
+│  0.37 kB │ gzip:   0.28 kB
+│  storybook-static/assets/leaf-BbvqXS1p.js
+│  0.38 kB │ gzip:   0.30 kB
+│  storybook-static/assets/triangle-alert-BVP68HM4.js
+│  0.38 kB │ gzip:   0.28 kB
+│  storybook-static/assets/stretched-link-D1Fbbqtf.js
+│  0.38 kB │ gzip:   0.23 kB
+│  storybook-static/assets/pencil-MjfcJKGT.js
+│  0.39 kB │ gzip:   0.29 kB
+│  storybook-static/assets/bell-CPMAdT4U.js
+│  0.40 kB │ gzip:   0.31 kB
+│  storybook-static/assets/users-DciDZrSY.js
+│  0.42 kB │ gzip:   0.29 kB
+│  storybook-static/assets/jsx-runtime-DeHZSEgm.js
+│  0.43 kB │ gzip:   0.30 kB
+│  storybook-static/assets/control-states-Dspxb6_b.js
+│  0.43 kB │ gzip:   0.27 kB
+│  storybook-static/assets/phone-Dny3Zvs2.js
+│  0.44 kB │ gzip:   0.30 kB
+│  storybook-static/assets/dist-CLgmTUij.js
+│  0.44 kB │ gzip:   0.33 kB
+│  storybook-static/assets/shopping-bag-B3to43bX.js
+│  0.45 kB │ gzip:   0.31 kB
+│  storybook-static/assets/gift-Dsq38WJV.js
+│  0.46 kB │ gzip:   0.32 kB
+│  storybook-static/assets/story-paint-B3Vw4o4H.js
+│  0.47 kB │ gzip:   0.29 kB
+│  storybook-static/assets/share-2-B4jCn7JK.js
+│  0.47 kB │ gzip:   0.30 kB
+│  storybook-static/assets/field-status-KMwku1L8.js
+│  0.49 kB │ gzip:   0.32 kB
+│  storybook-static/assets/truck-EToOVpSc.js
+│  0.52 kB │ gzip:   0.34 kB
+│  storybook-static/assets/artboard-BjNym8hY.js
+│  0.54 kB │ gzip:   0.37 kB
+│  storybook-static/assets/react-Bl2r1tuC.js
+│  0.58 kB │ gzip:   0.34 kB
+│  storybook-static/assets/star-BEPzCCto.js
+│  0.59 kB │ gzip:   0.37 kB
+│  storybook-static/assets/store-BWZB1qMd.js
+│  0.61 kB │ gzip:   0.36 kB
+│  storybook-static/assets/dist-D6URzei0.js
+│  0.64 kB │ gzip:   0.43 kB
+│  storybook-static/assets/soup-NQpeVdAR.js
+│  0.64 kB │ gzip:   0.35 kB
+│  storybook-static/assets/use-press-DN5gECfc.js
+│  0.65 kB │ gzip:   0.36 kB
+│  storybook-static/assets/brand-lines-WIfjSjzo.js
+│  0.67 kB │ gzip:   0.44 kB
+│  storybook-static/assets/refresh-cw-CpftOhRd.js
+│  0.68 kB │ gzip:   0.40 kB
+│  storybook-static/assets/src-BDz9lWIB.js
+│  0.72 kB │ gzip:   0.43 kB
+│  storybook-static/assets/specimen-CBoE7WQp.js
+│  0.74 kB │ gzip:   0.34 kB
+│  storybook-static/assets/symbol-BygA0Kml.js
+│  0.76 kB │ gzip:   0.44 kB
+│  storybook-static/assets/wordmark-DIRz8vMd.js
+│  0.77 kB │ gzip:   0.44 kB
+│  storybook-static/assets/receipt-DWHAnRyY.js
+│  0.77 kB │ gzip:   0.36 kB
+│  storybook-static/assets/docs-prose-B96p8RX-.js
+│  0.79 kB │ gzip:   0.46 kB
+│  storybook-static/assets/logo-lockup-CSpOmBOi.js
+│  0.80 kB │ gzip:   0.46 kB
+│  storybook-static/assets/canvas-CBquhFDY.js
+│  0.82 kB │ gzip:   0.48 kB
+│  storybook-static/assets/mark-legibility-D0SMBIIU.js
+│  0.82 kB │ gzip:   0.47 kB
+│  storybook-static/assets/social-post-BJUoHEwp.js
+│  0.83 kB │ gzip:   0.48 kB
+│  storybook-static/assets/diamond-symbol-CtuB28Zr.js
+│  0.85 kB │ gzip:   0.49 kB
+│  storybook-static/assets/marketing-website-vjEozUla.js
+│  0.85 kB │ gzip:   0.48 kB
+│  storybook-static/assets/ordering-app-screen-BcBXZ8C9.js
+│  0.86 kB │ gzip:   0.48 kB
+│  storybook-static/assets/docs-kit-BuRZEilu.js
+│  0.87 kB │ gzip:   0.49 kB
+│  storybook-static/assets/spacing-scale-CeVANU9R.js
+│  0.95 kB │ gzip:   0.54 kB
+│  storybook-static/assets/devanagari-C2GrdYHK.js
+│  0.96 kB │ gzip:   0.55 kB
+│  storybook-static/assets/overline-and-mono-BqvulMfP.js
+│  0.99 kB │ gzip:   0.57 kB
+│  storybook-static/assets/kit-notice-ChONTiOJ.js
+│  1.01 kB │ gzip:   0.62 kB
+│  storybook-static/assets/symbol-mark-Cu6pgiZz.js
+│  1.02 kB │ gzip:   0.66 kB
+│  storybook-static/assets/rolldown-runtime-DkW27tQK.js
+│  1.19 kB │ gzip:   0.67 kB
+│  storybook-static/assets/radii-BM0Jp2Ro.js
+│  1.23 kB │ gzip:   0.64 kB
+│  storybook-static/assets/states-BdVHGqBg.js
+│  1.26 kB │ gzip:   0.67 kB
+│  storybook-static/assets/heat-CoUEf6fB.js
+│  1.27 kB │ gzip:   0.68 kB
+│  storybook-static/assets/type-specimen-6WsV6zZg.js
+│  1.29 kB │ gzip:   0.66 kB
+│  storybook-static/assets/preload-helper-wdlQj8DP.js
+│  1.31 kB │ gzip:   0.74 kB
+│  storybook-static/assets/canvas-type-CwyoLiS7.js
+│  1.34 kB │ gzip:   0.70 kB
+│  storybook-static/assets/motion-demo-Cm719OTY.js
+│  1.34 kB │ gzip:   0.74 kB
+│  storybook-static/assets/DocsRenderer-JROSPFPF-Vz6H-FMc.js
+│  1.36 kB │ gzip:   0.73 kB
+│  storybook-static/assets/semantic-pwjHClhv.js
+│  1.37 kB │ gzip:   0.65 kB
+│  storybook-static/assets/display-8pclfvz1.js
+│  1.40 kB │ gzip:   0.75 kB
+│  storybook-static/assets/autogrid-828CDUW1.js
+│  1.45 kB │ gzip:   0.69 kB
+│  storybook-static/assets/story-surfaces-DQQZUHJ8.js
+│  1.47 kB │ gzip:   0.75 kB
+│  storybook-static/assets/elevation-C27c7vXT.js
+│  1.47 kB │ gzip:   0.78 kB
+│  storybook-static/assets/demo-triggers-DH8gWJcn.js
+│  1.48 kB │ gzip:   0.66 kB
+│  storybook-static/assets/ink-LTkwSZBP.js
+│  1.48 kB │ gzip:   0.68 kB
+│  storybook-static/assets/body-BHQTFcQ_.js
+│  1.48 kB │ gzip:   0.75 kB
+│  storybook-static/assets/shadow-ladder-ClFvdSaJ.js
+│  1.52 kB │ gzip:   0.69 kB
+│  storybook-static/assets/section-reveal-DKmAjp1K.js
+│  1.63 kB │ gzip:   0.78 kB
+│  storybook-static/assets/chunk-IMSF75WX-CGYlPTyG.js
+│  1.67 kB │ gzip:   0.91 kB
+│  storybook-static/assets/borders-CIuuzKoh.js
+│  1.67 kB │ gzip:   0.75 kB
+│  storybook-static/assets/layout-rhythm-DujlpGu2.js
+│  1.71 kB │ gzip:   0.81 kB
+│  storybook-static/assets/accents-DXKwlNt0.js
+│  1.72 kB │ gzip:   0.87 kB
+│  storybook-static/assets/status-DWWCut1n.js
+│  1.83 kB │ gzip:   0.82 kB
+│  storybook-static/assets/struck-price-D41nuwhh.js
+│  1.84 kB │ gzip:   0.94 kB
+│  storybook-static/assets/createLucideIcon-CKQsau6G.js
+│  1.85 kB │ gzip:   0.94 kB
+│  storybook-static/assets/icon-button-variants-Dh118bmg.js
+│  1.86 kB │ gzip:   0.71 kB
+│  storybook-static/assets/sx.stories-BM06SXSG.js
+│  1.87 kB │ gzip:   0.84 kB
+│  storybook-static/assets/story-ring-CAQlUOIp.js
+│  1.88 kB │ gzip:   0.97 kB
+│  storybook-static/assets/company-details-CWFrm9uA.js
+│  1.93 kB │ gzip:   0.98 kB
+│  storybook-static/assets/headings-DMDFxRnT.js
+│  1.94 kB │ gzip:   0.91 kB
+│  storybook-static/assets/diet-mark.stories-CH7gz5gG.js
+│  1.94 kB │ gzip:   0.85 kB
+│  storybook-static/assets/fluid-BzGMgHbZ.js
+│  1.95 kB │ gzip:   0.92 kB
+│  storybook-static/assets/card-anatomy-Bs6YdtsQ.js
+│  2.00 kB │ gzip:   0.80 kB
+│  storybook-static/assets/primary-C9S5PXAa.js
+│  2.03 kB │ gzip:   0.96 kB
+│  storybook-static/assets/scale-BtIDUXR7.js
+│  2.07 kB │ gzip:   0.92 kB
+│  storybook-static/assets/box-Cij00J_2.js
+│  2.10 kB │ gzip:   0.82 kB
+│  storybook-static/assets/story-fixtures-B7OlQFBA.js
+│  2.26 kB │ gzip:   1.13 kB
+│  storybook-static/assets/icon-TbhkOHZh.js
+│  2.29 kB │ gzip:   0.96 kB
+│  storybook-static/assets/surfaces-CoP-Z95u.js
+│  2.31 kB │ gzip:   1.00 kB
+│  storybook-static/assets/sx-B1Ot_huM.js
+│  2.32 kB │ gzip:   1.10 kB
+│  storybook-static/assets/token-table-DgcjPRHW.js
+│  2.33 kB │ gzip:   1.08 kB
+│  storybook-static/assets/canvas.stories-B9GIoBIY.js
+│  2.41 kB │ gzip:   0.98 kB
+│  storybook-static/assets/stat-band-ybriWb9T.js
+│  2.41 kB │ gzip:   1.08 kB
+│  storybook-static/assets/contrast-CxzzcLhe.js
+│  2.42 kB │ gzip:   1.13 kB
+│  storybook-static/assets/breakpoints-Dn_2Us28.js
+│  2.43 kB │ gzip:   1.04 kB
+│  storybook-static/assets/pattern-CdGS5zJ-.js
+│  2.44 kB │ gzip:   1.15 kB
+│  storybook-static/assets/story-states-DN-wTWkA.js
+│  2.45 kB │ gzip:   1.02 kB
+│  storybook-static/assets/diet-mark-BSgkays1.js
+│  2.55 kB │ gzip:   1.11 kB
+│  storybook-static/assets/brand-glyphs-2Y-byfLh.js
+│  2.71 kB │ gzip:   0.85 kB
+│  storybook-static/assets/loyalty-card.stories-DX_eCzxk.js
+│  2.76 kB │ gzip:   1.02 kB
+│  storybook-static/assets/motion-OnYk075Q.js
+│  2.79 kB │ gzip:   1.19 kB
+│  storybook-static/assets/container-DyWeGiKz.js
+│  2.84 kB │ gzip:   1.04 kB
+│  storybook-static/assets/dist-D49tcpoS.js
+│  2.85 kB │ gzip:   1.25 kB
+│  storybook-static/assets/switch-C1YrwgAM.js
+│  2.93 kB │ gzip:   1.02 kB
+│  storybook-static/assets/testimonial-wall.stories-BOHJAzut.js
+│  3.04 kB │ gzip:   1.08 kB
+│  storybook-static/assets/announcement-bar.stories-CDw2drHg.js
+│  3.05 kB │ gzip:   1.34 kB
+│  storybook-static/assets/dist-oCFdGwHC.js
+│  3.06 kB │ gzip:   1.37 kB
+│  storybook-static/assets/spinner.stories-BuilrZzv.js
+│  3.15 kB │ gzip:   1.05 kB
+│  storybook-static/assets/dist-DRlxtLEM.js
+│  3.24 kB │ gzip:   1.30 kB
+│  storybook-static/assets/divider-D8Eg451D.js
+│  3.26 kB │ gzip:   1.19 kB
+│  storybook-static/assets/spice-level-DSgsf2YQ.js
+│  3.26 kB │ gzip:   1.14 kB
+│  storybook-static/assets/countdown-DHAMelWh.js
+│  3.30 kB │ gzip:   1.41 kB
+│  storybook-static/assets/spinner-DidrEAOX.js
+│  3.37 kB │ gzip:   1.20 kB
+│  storybook-static/assets/chunk-DRQKCCAG-DvsmU7ha.js
+│  3.39 kB │ gzip:   1.41 kB
+│  storybook-static/assets/badge-B03vaYaa.js
+│  3.39 kB │ gzip:   1.21 kB
+│  storybook-static/assets/interactions.stories-CakMt76l.js
+│  3.40 kB │ gzip:   1.49 kB
+│  storybook-static/assets/pagination.stories-BKNeTJGJ.js
+│  3.45 kB │ gzip:   1.35 kB
+│  storybook-static/assets/logo-C5C-_VDZ.js
+│  3.46 kB │ gzip:   1.44 kB
+│  storybook-static/assets/iconography-DOk9Ns7i.js
+│  3.48 kB │ gzip:   1.39 kB
+│  storybook-static/assets/react-dom-BzEl8usk.js
+│  3.58 kB │ gzip:   1.36 kB
+│  storybook-static/assets/src-BEAmIi6G.js
+│  3.58 kB │ gzip:   1.70 kB
+│  storybook-static/assets/auto-grid-BrmIgbnN.js
+│  3.60 kB │ gzip:   1.14 kB
+│  storybook-static/assets/checkbox-BXq-6JPi.js
+│  3.64 kB │ gzip:   1.15 kB
+│  storybook-static/assets/social-headline-BHMA0sE9.js
+│  3.87 kB │ gzip:   1.17 kB
+│  storybook-static/assets/spice-level.stories-NdQKuBum.js
+│  3.87 kB │ gzip:   1.30 kB
+│  storybook-static/assets/canvas-formats-d9KW2ALe.js
+│  3.88 kB │ gzip:   1.38 kB
+│  storybook-static/assets/status-dot-BVo_1cl9.js
+│  3.89 kB │ gzip:   1.36 kB
+│  storybook-static/assets/logo-lockup-D6PfWgQ_.js
+│  3.92 kB │ gzip:   1.24 kB
+│  storybook-static/assets/price-summary-CEv4GM_N.js
+│  3.93 kB │ gzip:   1.29 kB
+│  storybook-static/assets/stat-CoaXW1rA.js
+│  4.04 kB │ gzip:   1.22 kB
+│  storybook-static/assets/price-tag-DcC4VKF7.js
+│  4.11 kB │ gzip:   1.39 kB
+│  storybook-static/assets/stack-Di9apaIQ.js
+│  4.18 kB │ gzip:   1.37 kB
+│  storybook-static/assets/countdown.stories-x1qbzmHv.js
+│  4.20 kB │ gzip:   1.70 kB
+│  storybook-static/assets/key-value-list-C6JefmPT.js
+│  4.23 kB │ gzip:   1.31 kB
+│  storybook-static/assets/card-BjbOuOii.js
+│  4.25 kB │ gzip:   1.44 kB
+│  storybook-static/assets/text-button.stories-yc9w0NSu.js
+│  4.34 kB │ gzip:   1.57 kB
+│  storybook-static/assets/empty-state.stories-DNJ9mj8P.js
+│  4.37 kB │ gzip:   1.71 kB
+│  storybook-static/assets/loyalty-card-BGHg5YfL.js
+│  4.42 kB │ gzip:   1.39 kB
+│  storybook-static/assets/check-card-BkUDwa6S.js
+│  4.45 kB │ gzip:   1.63 kB
+│  storybook-static/assets/marketing.stories-CH5J5ns2.js
+│  4.45 kB │ gzip:   1.75 kB
+│  storybook-static/assets/status-dot.stories-DVK_SSUS.js
+│  4.50 kB │ gzip:   1.37 kB
+│  storybook-static/assets/section-header-D3LETl3v.js
+│  4.55 kB │ gzip:   1.27 kB
+│  storybook-static/assets/popover-shell-CVOb6Tja.js
+│  4.57 kB │ gzip:   1.53 kB
+│  storybook-static/assets/order-tracker.stories-Bw6VDrPr.js
+│  4.57 kB │ gzip:   1.81 kB
+│  storybook-static/assets/review-card.stories-BvCyq8Xb.js
+│  4.61 kB │ gzip:   1.83 kB
+│  storybook-static/assets/step-tracker-BM67zPKp.js
+│  4.64 kB │ gzip:   1.59 kB
+│  storybook-static/assets/field-message-BS2RPODr.js
+│  4.65 kB │ gzip:   1.21 kB
+│  storybook-static/assets/cluster-CewPe-Ws.js
+│  4.69 kB │ gzip:   1.45 kB
+│  storybook-static/assets/utility-classes-Dn6fLdxv.js
+│  4.69 kB │ gzip:   1.08 kB
+│  storybook-static/assets/accordion-DbfAiaLk.js
+│  4.70 kB │ gzip:   1.67 kB
+│  storybook-static/assets/avatar-BG72k5bT.js
+│  4.73 kB │ gzip:   1.61 kB
+│  storybook-static/assets/input-DUnaq6aG.js
+│  4.79 kB │ gzip:   1.32 kB
+│  storybook-static/assets/pattern-field-DVJ5Qln7.js
+│  4.79 kB │ gzip:   1.52 kB
+│  storybook-static/assets/dist-CsbR2udO.js
+│  4.83 kB │ gzip:   2.10 kB
+│  storybook-static/assets/section-header.stories-L9BcMZDj.js
+│  4.83 kB │ gzip:   1.64 kB
+│  storybook-static/assets/testimonial-wall--3PMHg5F.js
+│  4.83 kB │ gzip:   1.24 kB
+│  storybook-static/assets/avatar.stories-BPsmWbkP.js
+│  4.84 kB │ gzip:   1.52 kB
+│  storybook-static/assets/app-shell-BnQPGpi8.js
+│  4.85 kB │ gzip:   1.70 kB
+│  storybook-static/assets/stat-band.stories-BnG8K49A.js
+│  4.85 kB │ gzip:   1.61 kB
+│  storybook-static/assets/slot-picker.stories-B_7cj_Lj.js
+│  4.86 kB │ gzip:   1.79 kB
+│  storybook-static/assets/section-C5qR5yKi.js
+│  4.86 kB │ gzip:   1.53 kB
+│  storybook-static/assets/icon-button-D3RvH7Sj.js
+│  4.89 kB │ gzip:   1.50 kB
+│  storybook-static/assets/divider.stories-DiAPEd31.js
+│  4.92 kB │ gzip:   1.58 kB
+│  storybook-static/assets/fixtures-MH70aRKX.js
+│  4.98 kB │ gzip:   2.13 kB
+│  storybook-static/assets/faq-section-B8HYrsCh.js
+│  4.99 kB │ gzip:   1.35 kB
+│  storybook-static/assets/empty-state-TFw_o-zX.js
+│  5.02 kB │ gzip:   1.44 kB
+│  storybook-static/assets/tab-bar-B4Sy4c1l.js
+│  5.04 kB │ gzip:   1.77 kB
+│  storybook-static/assets/form-states-CDA6CUfO.js
+│  5.06 kB │ gzip:   1.47 kB
+│  storybook-static/assets/skeleton.stories-DRYTJng9.js
+│  5.13 kB │ gzip:   1.80 kB
+│  storybook-static/assets/slider.stories-DdnUVKwH.js
+│  5.15 kB │ gzip:   1.84 kB
+│  storybook-static/assets/progress-bar.stories-8dak5IQV.js
+│  5.18 kB │ gzip:   1.58 kB
+│  storybook-static/assets/dist-zrD0UL4s.js
+│  5.21 kB │ gzip:   1.92 kB
+│  storybook-static/assets/accordion.stories-2iXzRlmr.js
+│  5.23 kB │ gzip:   2.09 kB
+│  storybook-static/assets/cta-band-Cl3pwI-j.js
+│  5.25 kB │ gzip:   1.62 kB
+│  storybook-static/assets/dist-fp-SWzpN.js
+│  5.26 kB │ gzip:   1.93 kB
+│  storybook-static/assets/box.stories-CifkAedW.js
+│  5.29 kB │ gzip:   2.03 kB
+│  storybook-static/assets/price-summary.stories-B9BXojg2.js
+│  5.29 kB │ gzip:   1.69 kB
+│  storybook-static/assets/announcement-bar-V1iUIzWS.js
+│  5.29 kB │ gzip:   1.68 kB
+│  storybook-static/assets/toggle-button.stories-DO9CEBTW.js
+│  5.34 kB │ gzip:   1.44 kB
+│  storybook-static/assets/chunk-KJHJLCBK-yRlRMfNs.js
+│  5.35 kB │ gzip:   2.05 kB
+│  storybook-static/assets/image-slot.stories-C39yYUf7.js
+│  5.36 kB │ gzip:   1.68 kB
+│  storybook-static/assets/logo-lockup.stories-MdX-AEnm.js
+│  5.37 kB │ gzip:   1.75 kB
+│  storybook-static/assets/price-tag.stories-DfFKd-DQ.js
+│  5.38 kB │ gzip:   1.58 kB
+│  storybook-static/assets/spacing.stories-DoOu9_oC.js
+│  5.42 kB │ gzip:   2.23 kB
+│  storybook-static/assets/brand-diamond-BdC_O68M.js
+│  5.45 kB │ gzip:   1.45 kB
+│  storybook-static/assets/pattern-field.stories-CLtDaoqA.js
+│  5.45 kB │ gzip:   1.84 kB
+│  storybook-static/assets/filter-bar-DcMowau0.js
+│  5.51 kB │ gzip:   1.62 kB
+│  storybook-static/assets/step-tracker.stories-Ea7maM8u.js
+│  5.54 kB │ gzip:   1.98 kB
+│  storybook-static/assets/progress-bar-DbMxclxt.js
+│  5.55 kB │ gzip:   1.69 kB
+│  storybook-static/assets/rating-DVkahOyk.js
+│  5.55 kB │ gzip:   1.87 kB
+│  storybook-static/assets/icon.stories-DlaZKF_x.js
+│  5.63 kB │ gzip:   2.21 kB
+│  storybook-static/assets/rating.stories-BF1ELMex.js
+│  5.69 kB │ gzip:   1.64 kB
+│  storybook-static/assets/field-DtBGzNhV.js
+│  5.71 kB │ gzip:   1.75 kB
+│  storybook-static/assets/dist-Akl9RgK5.js
+│  5.73 kB │ gzip:   2.35 kB
+│  storybook-static/assets/tag-16Pyp1G2.js
+│  5.81 kB │ gzip:   1.85 kB
+│  storybook-static/assets/action-dock.stories-C-42BWV1.js
+│  5.86 kB │ gzip:   2.28 kB
+│  storybook-static/assets/system-VMTKhnhi.js
+│  5.86 kB │ gzip:   1.75 kB
+│  storybook-static/assets/stat.stories-C-AUOEuJ.js
+│  5.88 kB │ gzip:   1.95 kB
+│  storybook-static/assets/social-headline.stories-CeRIsCOE.js
+│  5.91 kB │ gzip:   1.69 kB
+│  storybook-static/assets/fab-oKxuhztQ.js
+│  6.01 kB │ gzip:   1.93 kB
+│  storybook-static/assets/badge.stories-BjYhUUxA.js
+│  6.06 kB │ gzip:   1.81 kB
+│  storybook-static/assets/alert-DgYbbNGg.js
+│  6.13 kB │ gzip:   2.14 kB
+│  storybook-static/assets/toast.stories-D2fedn9V.js
+│  6.17 kB │ gzip:   2.25 kB
+│  storybook-static/assets/offer-seal-D5_oHrVg.js
+│  6.24 kB │ gzip:   1.72 kB
+│  storybook-static/assets/list-row-CnIMuaTU.js
+│  6.26 kB │ gzip:   1.65 kB
+│  storybook-static/assets/table-DkMEjZyL.js
+│  6.27 kB │ gzip:   1.92 kB
+│  storybook-static/assets/dist-YFsmS_Pm.js
+│  6.28 kB │ gzip:   2.26 kB
+│  storybook-static/assets/switch.stories-D2-MVbeY.js
+│  6.31 kB │ gzip:   2.00 kB
+│  storybook-static/assets/pagination-CEbBZ1Lm.js
+│  6.47 kB │ gzip:   2.10 kB
+│  storybook-static/assets/sticky-action-bar.stories-DuxMbnom.js
+│  6.48 kB │ gzip:   2.18 kB
+│  storybook-static/assets/search-field.stories-BBMSc93b.js
+│  6.48 kB │ gzip:   2.16 kB
+│  storybook-static/assets/checkbox.stories-CuBhYHeZ.js
+│  6.49 kB │ gzip:   2.17 kB
+│  storybook-static/assets/tooltip.stories-CPD2GY7B.js
+│  6.50 kB │ gzip:   2.32 kB
+│  storybook-static/assets/quantity-stepper.stories-oTnHwS2w.js
+│  6.51 kB │ gzip:   2.13 kB
+│  storybook-static/assets/container.stories-BrjUTpmU.js
+│  6.56 kB │ gzip:   2.14 kB
+│  storybook-static/assets/cart-panel.stories-ef04Hin1.js
+│  6.66 kB │ gzip:   2.47 kB
+│  storybook-static/assets/breadcrumb.stories-BE4kVG0d.js
+│  6.67 kB │ gzip:   2.29 kB
+│  storybook-static/assets/app-shell.stories-xQ-2LfVk.js
+│  6.78 kB │ gzip:   2.70 kB
+│  storybook-static/assets/search-field-CQ4Li6H1.js
+│  6.82 kB │ gzip:   1.90 kB
+│  storybook-static/assets/image-slot-CXE3hFzi.js
+│  6.96 kB │ gzip:   1.70 kB
+│  storybook-static/assets/voice-and-content-C5LINVtq.js
+│  6.97 kB │ gzip:   2.56 kB
+│  storybook-static/assets/alert.stories-rPalqDgf.js
+│  7.27 kB │ gzip:   2.48 kB
+│  storybook-static/assets/dist-DlPXFoWQ.js
+│  7.32 kB │ gzip:   2.68 kB
+│  storybook-static/assets/review-card-CyhbtZnT.js
+│  7.40 kB │ gzip:   1.97 kB
+│  storybook-static/assets/react-BZJXY1be.js
+│  7.53 kB │ gzip:   2.88 kB
+│  storybook-static/assets/radio-BAoofNzZ.js
+│  7.61 kB │ gzip:   2.11 kB
+│  storybook-static/assets/fab.stories-P_tWoBTF.js
+│  7.65 kB │ gzip:   2.11 kB
+│  storybook-static/assets/feed.stories-JODB3HUh.js
+│  7.66 kB │ gzip:   2.40 kB
+│  storybook-static/assets/menu-item-row-BKVgzKC_.js
+│  7.68 kB │ gzip:   1.92 kB
+│  storybook-static/assets/list-row.stories-fdjlhMT4.js
+│  7.71 kB │ gzip:   2.53 kB
+│  storybook-static/assets/tab-bar.stories-2X7Ho5gb.js
+│  7.72 kB │ gzip:   2.67 kB
+│  storybook-static/assets/site-footer.stories-B_m4ASAi.js
+│  7.81 kB │ gzip:   2.90 kB
+│  storybook-static/assets/outlet-card.stories-DtKyifVe.js
+│  7.84 kB │ gzip:   2.62 kB
+│  storybook-static/assets/slot-picker-fl7OMD0L.js
+│  7.86 kB │ gzip:   2.22 kB
+│  storybook-static/assets/menu-item-card-BwYtA5G9.js
+│  7.87 kB │ gzip:   1.96 kB
+│  storybook-static/assets/faq-section.stories-M1Zl3GxM.js
+│  7.88 kB │ gzip:   2.85 kB
+│  storybook-static/assets/cta-band.stories-CzRLK4oL.js
+│  7.91 kB │ gzip:   2.25 kB
+│  storybook-static/assets/toast-BLoiq4YP.js
+│  7.92 kB │ gzip:   2.31 kB
+│  storybook-static/assets/hero-banner-4RTJp6XJ.js
+│  7.93 kB │ gzip:   2.12 kB
+│  storybook-static/assets/outlet-card-BRuidysr.js
+│  7.94 kB │ gzip:   1.91 kB
+│  storybook-static/assets/menu-list.stories-CI9FIM0t.js
+│  7.96 kB │ gzip:   2.76 kB
+│  storybook-static/assets/text-button-BWJt8Cze.js
+│  7.98 kB │ gzip:   2.04 kB
+│  storybook-static/assets/steps.stories-CqpavRMW.js
+│  7.98 kB │ gzip:   2.72 kB
+│  storybook-static/assets/offer-seal.stories-9cTwtotO.js
+│  7.99 kB │ gzip:   2.66 kB
+│  storybook-static/assets/tag.stories-FmnkgeKP.js
+│  8.09 kB │ gzip:   2.56 kB
+│  storybook-static/assets/logo.stories-DppkMjDX.js
+│  8.14 kB │ gzip:   2.01 kB
+│  storybook-static/assets/post-frame-32mz2FRT.js
+│  8.19 kB │ gzip:   2.59 kB
+│  storybook-static/assets/filter-bar.stories-dQpMqp85.js
+│  8.27 kB │ gzip:   2.74 kB
+│  storybook-static/assets/button-COS5UUTn.js
+│  8.29 kB │ gzip:   2.29 kB
+│  storybook-static/assets/coupon-ticket.stories-QU94jQ1T.js
+│  8.52 kB │ gzip:   3.06 kB
+│  storybook-static/assets/choice-control-BlBYObgb.js
+│  8.55 kB │ gzip:   2.35 kB
+│  storybook-static/assets/check-card.stories-DOFGM3FZ.js
+│  8.75 kB │ gzip:   2.30 kB
+│  storybook-static/assets/site-footer--QUYWwqS.js
+│  8.76 kB │ gzip:   2.60 kB
+│  storybook-static/assets/ads.stories-Zg-GJkfM.js
+│  8.78 kB │ gzip:   2.69 kB
+│  storybook-static/assets/system.stories-ws2Dq0v1.js
+│  8.88 kB │ gzip:   2.52 kB
+│  storybook-static/assets/stack.stories-1Tj6_LD3.js
+│  9.00 kB │ gzip:   2.66 kB
+│  storybook-static/assets/key-value-list.stories-B1mov4pG.js
+│  9.05 kB │ gzip:   2.98 kB
+│  storybook-static/assets/field.stories-BZ52EG9t.js
+│  9.07 kB │ gzip:   2.90 kB
+│  storybook-static/assets/order-tracker-CcuTsHfu.js
+│  9.08 kB │ gzip:   2.33 kB
+│  storybook-static/assets/prose.stories-0r74dV03.js
+│  9.08 kB │ gzip:   2.50 kB
+│  storybook-static/assets/toggle-button-B-8r1XK0.js
+│  9.17 kB │ gzip:   2.43 kB
+│  storybook-static/assets/icon-button.stories-Vr3t31tA.js
+│  9.27 kB │ gzip:   2.41 kB
+│  storybook-static/assets/popover-DhuPO0Dp.js
+│  9.32 kB │ gzip:   2.49 kB
+│  storybook-static/assets/menu-item-card.stories-B5XBybLD.js
+│  9.34 kB │ gzip:   2.80 kB
+│  storybook-static/assets/menu-item-row.stories-BUMIjvXp.js
+│  9.52 kB │ gzip:   2.90 kB
+│  storybook-static/assets/auto-grid.stories-5PH8BGYs.js
+│  9.58 kB │ gzip:   2.93 kB
+│  storybook-static/assets/cluster.stories-BBdCzYz8.js
+│  9.74 kB │ gzip:   3.33 kB
+│  storybook-static/assets/section.stories-BumYhkDn.js
+│  9.90 kB │ gzip:   2.78 kB
+│  storybook-static/assets/type.stories-dLDFLbca.js
+│  10.14 kB │ gzip:   2.98 kB
+│  storybook-static/assets/cart-panel-6BujzukS.js
+│  10.42 kB │ gzip:   2.63 kB
+│  storybook-static/assets/link-DIEz6QXH.js
+│  10.43 kB │ gzip:   2.49 kB
+│  storybook-static/assets/menu-panel-CMm2SuFH.js
+│  10.43 kB │ gzip:   2.83 kB
+│  storybook-static/assets/link-card.stories-BEzlUcW2.js
+│  10.70 kB │ gzip:   3.15 kB
+│  storybook-static/assets/popover.stories-j3sv6L1M.js
+│  10.85 kB │ gzip:   3.02 kB
+│  storybook-static/assets/combobox.stories-CXLLTJvX.js
+│  10.91 kB │ gzip:   3.06 kB
+│  storybook-static/assets/tooltip-CY2O0TLS.js
+│  10.94 kB │ gzip:   4.05 kB
+│  storybook-static/assets/quantity-stepper-DnmU846z.js
+│  11.62 kB │ gzip:   2.63 kB
+│  storybook-static/assets/typography.stories-CYJ3qZLz.js
+│  11.65 kB │ gzip:   3.14 kB
+│  storybook-static/assets/chip-group.stories-Bcm6wbCp.js
+│  11.79 kB │ gzip:   3.75 kB
+│  storybook-static/assets/input.stories-D7badGv2.js
+│  11.83 kB │ gzip:   3.42 kB
+│  storybook-static/assets/link.stories-QG1yG6xx.js
+│  11.89 kB │ gzip:   3.16 kB
+│  storybook-static/assets/swatch-DngSeWb2.js
+│  11.94 kB │ gzip:   2.58 kB
+│  storybook-static/assets/typography-H9sf4vFN.js
+│  12.02 kB │ gzip:   2.39 kB
+│  storybook-static/assets/radio.stories-GkvvZL2F.js
+│  12.27 kB │ gzip:   3.25 kB
+│  storybook-static/assets/otp-input.stories-B5-RgMt0.js
+│  12.28 kB │ gzip:   3.52 kB
+│  storybook-static/assets/dialog-IOrdui-q.js
+│  12.28 kB │ gzip:   2.88 kB
+│  storybook-static/assets/action-menu.stories-D9DczjdS.js
+│  12.31 kB │ gzip:   3.37 kB
+│  storybook-static/assets/use-focus-return-D2AZFemv.js
+│  12.34 kB │ gzip:   4.52 kB
+│  storybook-static/assets/card.stories-BF6QtSLh.js
+│  12.38 kB │ gzip:   3.24 kB
+│  storybook-static/assets/choice-card-group-BWX1PkvL.js
+│  12.38 kB │ gzip:   3.07 kB
+│  storybook-static/assets/chip-group-DBD_7Hmj.js
+│  12.38 kB │ gzip:   3.16 kB
+│  storybook-static/assets/date-picker.stories-Bl4jts6s.js
+│  12.59 kB │ gzip:   3.45 kB
+│  storybook-static/assets/field-control-BAS-4VHV.js
+│  13.10 kB │ gzip:   2.97 kB
+│  storybook-static/assets/coupon-ticket-YE5qm2oB.js
+│  13.11 kB │ gzip:   3.09 kB
+│  storybook-static/assets/introduction-C3RJnHYh.js
+│  13.15 kB │ gzip:   4.13 kB
+│  storybook-static/assets/feature-item.stories-DUoWsdV8.js
+│  13.20 kB │ gzip:   4.19 kB
+│  storybook-static/assets/speed-dial.stories-D1Hbdkkc.js
+│  13.31 kB │ gzip:   4.07 kB
+│  storybook-static/assets/site-header.stories-CaXK7_lf.js
+│  13.41 kB │ gzip:   4.46 kB
+│  storybook-static/assets/menu-list-5dGB6NLV.js
+│  14.04 kB │ gzip:   2.89 kB
+│  storybook-static/assets/grid.stories-CiA5ksC3.js
+│  14.24 kB │ gzip:   3.94 kB
+│  storybook-static/assets/website.stories-X4YaOCQh.js
+│  14.61 kB │ gzip:   5.22 kB
+│  storybook-static/assets/app.stories-CFdgotUA.js
+│  14.68 kB │ gzip:   5.48 kB
+│  storybook-static/assets/hero-banner.stories-CoWS3_HM.js
+│  14.72 kB │ gzip:   4.23 kB
+│  storybook-static/assets/quote-panel.stories-DmFkOBNf.js
+│  15.87 kB │ gzip:   4.28 kB
+│  storybook-static/assets/review-carousel.stories-BM577_BX.js
+│  16.03 kB │ gzip:   4.47 kB
+│  storybook-static/assets/combobox-ALbeDEXH.js
+│  16.09 kB │ gzip:   4.37 kB
+│  storybook-static/assets/dialog.stories-BWqaAmB1.js
+│  16.38 kB │ gzip:   4.41 kB
+│  storybook-static/assets/snackbar.stories-DFLoFHnE.js
+│  16.69 kB │ gzip:   4.66 kB
+│  storybook-static/assets/layout.stories-cAvoDC8T.js
+│  17.54 kB │ gzip:   4.01 kB
+│  storybook-static/assets/site-header-BQl-0RqN.js
+│  17.99 kB │ gzip:   4.19 kB
+│  storybook-static/assets/colors.stories-C73k1EMh.js
+│  18.02 kB │ gzip:   4.52 kB
+│  storybook-static/assets/table.stories-Hmrw9d8d.js
+│  18.18 kB │ gzip:   5.01 kB
+│  storybook-static/assets/es2015-DOK8sqpF.js
+│  18.43 kB │ gzip:   7.03 kB
+│  storybook-static/assets/post-frame.stories-7gPwOOSd.js
+│  18.45 kB │ gzip:   4.64 kB
+│  storybook-static/assets/select-D_jZ3WzT.js
+│  19.02 kB │ gzip:   4.09 kB
+│  storybook-static/assets/choice-card-group.stories-DspOeXDB.js
+│  20.59 kB │ gzip:   5.58 kB
+│  storybook-static/assets/motion.stories-qzVjOw3a.js
+│  20.87 kB │ gzip:   6.56 kB
+│  storybook-static/assets/tabs.stories-cyNvBMWY.js
+│  20.95 kB │ gzip:   6.13 kB
+│  storybook-static/assets/button.stories-Dlb0QvUp.js
+│  20.95 kB │ gzip:   4.74 kB
+│  storybook-static/assets/pricing-card.stories-Dsl7THXc.js
+│  21.72 kB │ gzip:   5.82 kB
+│  storybook-static/assets/chunk-W22LQPXL-BGIlIx7A.js
+│  22.74 kB │ gzip:   7.59 kB
+│  storybook-static/assets/select.stories-CpEsuGRG.js
+│  22.85 kB │ gzip:   5.78 kB
+│  storybook-static/assets/docs-kit.stories-DUIkRdNY.js
+│  23.79 kB │ gzip:   5.95 kB
+│  storybook-static/assets/brand.stories-BbVwQQyZ.js
+│  26.27 kB │ gzip:   6.83 kB
+│  storybook-static/assets/toggle-button-group.stories-DUGqE1Kp.js
+│  26.83 kB │ gzip:   5.37 kB
+│  storybook-static/vite-inject-mocker-entry.js
+│  27.84 kB │ gzip:   9.66 kB
+│  storybook-static/assets/dist-vQwr46Pa.js
+│  27.87 kB │ gzip:  10.81 kB
+│  storybook-static/assets/matchers-JIUQ3HVY-C789_MAK.js
+│  28.79 kB │ gzip:   9.68 kB
+│  storybook-static/assets/menu.stories-C0TdVPLZ.js
+│  30.26 kB │ gzip:   6.48 kB
+│  storybook-static/assets/Color-6AOWCN3U-Dcv2xCER.js
+│  30.40 kB │ gzip:  11.50 kB
+│  storybook-static/assets/WithTooltip-7X4HQR7L-DQ4Qthn2.js
+│  32.74 kB │ gzip:  11.48 kB
+│  storybook-static/assets/component-variants-CuA9wWCa.js
+│  45.95 kB │ gzip:  15.12 kB
+│  storybook-static/assets/menu-Oif3X8ZT.js
+│  50.62 kB │ gzip:  10.26 kB
+│  storybook-static/assets/forms.stories-bhiRF3cv.js
+│  53.14 kB │ gzip:  18.22 kB
+│  storybook-static/assets/theming-Cvtrnj7n.js
+│  55.41 kB │ gzip:  21.35 kB
+│  storybook-static/assets/schemas-DWPX3Hzz.js
+│  67.66 kB │ gzip:  18.54 kB
+│  storybook-static/assets/syntaxhighlighter-QEQV7K2Y-hxWjqoPr.js
+│  75.92 kB │ gzip:  27.27 kB
+│  storybook-static/assets/logo-DPDttDbs.js
+│  77.37 kB │ gzip:  31.67 kB
+│  storybook-static/assets/date-picker-Bxj3UAVw.js
+│  96.18 kB │ gzip:  26.76 kB
+│  storybook-static/assets/react-18-D4o7zN8K.js
+│  179.09 kB │ gzip:  56.66 kB
+│  storybook-static/assets/axe-_9eNhXQJ.js
+│  587.04 kB │ gzip: 160.26 kB
+│  storybook-static/assets/blocks-CR-NuodU.js
+│  757.24 kB │ gzip: 240.05 kB
+│  storybook-static/assets/iframe-C-Ymkp7T.js
+│  1,186.94 kB │ gzip: 337.92 kB
+│  storybook-static/assets/catalogue-Dfp8urUg.js
+│  2,657.87 kB │ gzip: 540.20 kB
+
+│
+▲  Vite [plugin builtin:vite-reporter]
+│  (!) Some chunks are larger than 500 kB after minification. Consider:
+│  - Using dynamic import() to code-split the application
+│  - Use build.rolldownOptions.output.codeSplitting to improve chunking:
+│  ]8;;https://rolldown.rs/reference/OutputOptions.codeSplittinghttps://rolldown.rs/reference/OutputOptions.codeSplitting]8;;
+│  - Adjust chunk size limit for this warning via
+│  build.chunkSizeWarningLimit.
+│  Vite ✓ built in 6.64s
+│
+▲  Vite [33m[PLUGIN_TIMINGS] [0mYour build spent 90% of 6.6s inside plugin hooks
+│  (6.0s).
+│  Measured inside the callback, so queue time is excluded and time the
+│  callback itself awaited is not:
+│  - @tailwindcss/vite:generate:build transform (42%, 2.8s, 14 calls)
+│  - vite:react-docgen-typescript transform (27%, 1.8s, 3677 calls)
+│  Those rows are 69% of the build; the rest of the 90% is below.
+│  Not measurable — 3 hooks whose calls overlap, so elapsed time covers
+│  work other calls were doing. Profile with `node --cpu-prof`:
+│  - vite:asset load (388 calls)
+│  - plugin-csf transform (3677 calls)
+│  - vite:css transform (14 calls)
+│  See ]8;;https://rolldown.rs/reference/InputOptions.checks#plugintimingshttps://rolldown.rs/reference/InputOptions.checks#plugintimings]8;;
+│  for more details.
+
+│
+◇  Output directory:
+│  /Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/storybook-static
+│
+└  Storybook build completed successfully
+
+
+> nx run @pink-paprikaa-web/storybook:visual
+
+> @pink-paprikaa-web/storybook@0.0.1 visual /Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook
+> playwright test --config visual/playwright.config.mts
+Running 1936 tests using 5 workers
+(node:3282) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3285) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓     1 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--utilities-derive-from-the-catalogue (2.0s)
+(node:3283) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓     3 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--swatch-paints-its-token (3.9s)
+(node:3284) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓     2 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--numeric-steps-sort-by-number (8.2s)
+(node:3286) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓     5 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--swatch-copies-name-and-value (5.4s)
+  ✓     4 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--copy-without-a-clipboard (6.6s)
+  ✓     9 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--type-specimen-uses-the-step (5.2s)
+  ✓     8 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--copy-chips-copy-a-class (6.0s)
+  ✓     6 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--missing-token-fails-loudly (8.1s)
+  ✓    11 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--spacing-scale-multiplies-the-unit (2.6s)
+  ✓    13 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--shadow-ladder-paints-each-step (1.1s)
+  ✓     7 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--token-table-lists-every-match (11.5s)
+  ✓    10 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--contrast-matrix-rates-each-pair (7.9s)
+  ✓    14 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--motion-demo-runs-on-the-tokens (7.9s)
+  ✓    12 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-kit--radius-scale-shows-every-radius (11.0s)
+  ✓    17 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-prose--prose-table-names-stay-unique (7.4s)
+  ✓    16 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-prose--prose-tables-named-apart (11.4s)
+  ✓    19 [mobile] › visual/visual.spec.ts:41:7 › readme-canvas-geometry--padded-leaves-328 (3.9s)
+  ✓    15 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-prose--prose-table-scrolls-at-360 (14.1s)
+  ✓    20 [mobile] › visual/visual.spec.ts:41:7 › readme-canvas-geometry--centered-leaves-328 (5.2s)
+  ✓    21 [mobile] › visual/visual.spec.ts:41:7 › readme-canvas-geometry--fullscreen-leaves-360 (4.5s)
+  ✓    18 [mobile] › visual/visual.spec.ts:41:7 › readme-docs-prose--prose-table-that-fits-adds-no-tab-stop (9.8s)
+  ✓    22 [mobile] › visual/visual.spec.ts:41:7 › readme-system-sx--responsive-classes-have-css (4.9s)
+  ✓    24 [mobile] › visual/visual.spec.ts:41:7 › app-ordering-app--menu (3.9s)
+  ✓    25 [mobile] › visual/visual.spec.ts:41:7 › app-ordering-app--item-sheet-open (3.4s)
+  ✓    26 [mobile] › visual/visual.spec.ts:41:7 › app-ordering-app--cart (3.4s)
+  ✓    27 [mobile] › visual/visual.spec.ts:41:7 › app-ordering-app--tracking (3.6s)
+  ✓    30 [mobile] › visual/visual.spec.ts:41:7 › atoms-avatar--playground (2.0s)
+  ✘    23 [mobile] › visual/visual.spec.ts:41:7 › app-ordering-app--home (10.1s)
+  ✓    31 [mobile] › visual/visual.spec.ts:41:7 › atoms-avatar--sizes (3.7s)
+(node:4619) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    32 [mobile] › visual/visual.spec.ts:41:7 › atoms-avatar--initials (3.3s)
+  ✓    28 [mobile] › visual/visual.spec.ts:41:7 › app-ordering-app--account (8.1s)
+  ✓    33 [mobile] › visual/visual.spec.ts:41:7 › atoms-avatar--ring (2.1s)
+  ✓    35 [mobile] › visual/visual.spec.ts:41:7 › atoms-avatar--photo (1.8s)
+  ✓    29 [mobile] › visual/visual.spec.ts:41:7 › app-ordering-app--home-360 (8.5s)
+  ✓    36 [mobile] › visual/visual.spec.ts:41:7 › atoms-avatar--in-a-guest-row (2.1s)
+  ✓    37 [mobile] › visual/visual.spec.ts:41:7 › atoms-badge--playground (2.0s)
+  ✓    39 [mobile] › visual/visual.spec.ts:41:7 › atoms-badge--status-colors (2.2s)
+  ✓    41 [mobile] › visual/visual.spec.ts:41:7 › atoms-badge--on-a-menu-card (2.8s)
+  ✓    38 [mobile] › visual/visual.spec.ts:41:7 › atoms-badge--colors (4.5s)
+  ✓    40 [mobile] › visual/visual.spec.ts:41:7 › atoms-badge--with-icon (3.4s)
+  ✓    34 [mobile] › visual/visual.spec.ts:41:7 › atoms-avatar--icon-fallback (6.4s)
+  ✓    42 [mobile] › visual/visual.spec.ts:41:7 › atoms-badge--sx (2.8s)
+  ✓    45 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--states (877ms)
+  ✓    43 [mobile] › visual/visual.spec.ts:41:7 › atoms-badge--on-surfaces-story (1.5s)
+  ✓    46 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--states-primary (1.0s)
+  ✓    44 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--playground (1.9s)
+  ✓    49 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--states-on-brand (1.1s)
+  ✓    47 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--states-ghost (2.1s)
+  ✓    51 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--sizes (1.4s)
+  ✓    50 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--variants (2.1s)
+  ✓    48 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--states-inverse (2.8s)
+  ✓    53 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--trailing-icon (1.5s)
+  ✓    54 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--both-icons (1.5s)
+  ✓    55 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--icon-by-size (1.5s)
+  ✓    57 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--on-brand (1.1s)
+  ✓    52 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--leading-icon (3.4s)
+  ✓    58 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--loading (1.2s)
+  ✓    56 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--icon-after-by-size (2.4s)
+  ✓    59 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--disabled (1.6s)
+  ✓    61 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--sx (1.2s)
+  ✓    62 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--on-surfaces-story (1.4s)
+  ✓    63 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--nested-surfaces (1.4s)
+  ✓    64 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--as-child (1.3s)
+  ✓    65 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--long-label (1.3s)
+  ✓    66 [mobile] › visual/visual.spec.ts:41:7 › atoms-card--playground (1.0s)
+  ✓    67 [mobile] › visual/visual.spec.ts:41:7 › atoms-card--states (967ms)
+  ✓    60 [mobile] › visual/visual.spec.ts:41:7 › atoms-button--full-width (3.3s)
+  ✓    68 [mobile] › visual/visual.spec.ts:41:7 › atoms-card--default (985ms)
+  ✓    69 [mobile] › visual/visual.spec.ts:41:7 › atoms-card--feature-quiet (915ms)
+  ✓    70 [mobile] › visual/visual.spec.ts:41:7 › atoms-card--brand-ink (900ms)
+  ✓    71 [mobile] › visual/visual.spec.ts:41:7 › atoms-card--padding-none (884ms)
+  ✓    72 [mobile] › visual/visual.spec.ts:41:7 › atoms-card--paddings (859ms)
+  ✓    73 [mobile] › visual/visual.spec.ts:41:7 › atoms-card--as-child (937ms)
+  ✓    74 [mobile] › visual/visual.spec.ts:41:7 › atoms-card--interactive-with-link (968ms)
+  ✓    75 [mobile] › visual/visual.spec.ts:41:7 › atoms-card--light-island (993ms)
+  ✓    76 [mobile] › visual/visual.spec.ts:41:7 › atoms-card--soft-inside-brand (995ms)
+  ✓    77 [mobile] › visual/visual.spec.ts:41:7 › atoms-checkbox--playground (982ms)
+  ✓    78 [mobile] › visual/visual.spec.ts:41:7 › atoms-checkbox--interaction (1.2s)
+  ✓    79 [mobile] › visual/visual.spec.ts:41:7 › atoms-checkbox--checked-and-unchecked (1.2s)
+  ✓    82 [mobile] › visual/visual.spec.ts:41:7 › atoms-checkbox--invalid (947ms)
+  ✓    81 [mobile] › visual/visual.spec.ts:41:7 › atoms-checkbox--description (1.4s)
+  ✓    83 [mobile] › visual/visual.spec.ts:41:7 › atoms-checkbox--disabled (1.0s)
+  ✓    84 [mobile] › visual/visual.spec.ts:41:7 › atoms-checkbox--add-on-list (1.1s)
+  ✓    80 [mobile] › visual/visual.spec.ts:41:7 › atoms-checkbox--price (2.3s)
+  ✓    85 [mobile] › visual/visual.spec.ts:41:7 › atoms-checkbox--on-surfaces-story (1.5s)
+  ✓    87 [mobile] › visual/visual.spec.ts:41:7 › atoms-countdown--in-launch-bar (1.3s)
+  ✓    89 [mobile] › visual/visual.spec.ts:41:7 › atoms-countdown--ended-renders-nothing (1.0s)
+  ✓    90 [mobile] › visual/visual.spec.ts:41:7 › atoms-dietmark--playground (715ms)
+  ✓    86 [mobile] › visual/visual.spec.ts:41:7 › atoms-countdown--playground (2.0s)
+  ✓    88 [mobile] › visual/visual.spec.ts:41:7 › atoms-countdown--ended (1.6s)
+  ✓    91 [mobile] › visual/visual.spec.ts:41:7 › atoms-dietmark--sizes (833ms)
+  ✓    92 [mobile] › visual/visual.spec.ts:41:7 › atoms-dietmark--in-context (832ms)
+  ✓    93 [mobile] › visual/visual.spec.ts:41:7 › atoms-divider--playground (814ms)
+  ✓    94 [mobile] › visual/visual.spec.ts:41:7 › atoms-divider--line (932ms)
+  ✓    95 [mobile] › visual/visual.spec.ts:41:7 › atoms-divider--label (889ms)
+  ✓    96 [mobile] › visual/visual.spec.ts:41:7 › atoms-divider--diamond (760ms)
+  ✓    97 [mobile] › visual/visual.spec.ts:41:7 › atoms-divider--on-brand (789ms)
+  ✓    98 [mobile] › visual/visual.spec.ts:41:7 › atoms-divider--between-menu-rows (774ms)
+  ✓    99 [mobile] › visual/visual.spec.ts:41:7 › atoms-divider--vertical (831ms)
+  ✓   100 [mobile] › visual/visual.spec.ts:41:7 › atoms-divider--on-surfaces-story (881ms)
+  ✓   101 [mobile] › visual/visual.spec.ts:41:7 › atoms-fab--playground (937ms)
+  ✓   102 [mobile] › visual/visual.spec.ts:41:7 › atoms-fab--variants (1.2s)
+  ✓   103 [mobile] › visual/visual.spec.ts:41:7 › atoms-fab--sizes (1.3s)
+  ✓   105 [mobile] › visual/visual.spec.ts:41:7 › atoms-fab--disabled (1.1s)
+  ✓   106 [mobile] › visual/visual.spec.ts:41:7 › atoms-fab--as-link (1.1s)
+  ✓   104 [mobile] › visual/visual.spec.ts:41:7 › atoms-fab--extended (1.8s)
+  ✓   107 [mobile] › visual/visual.spec.ts:41:7 › atoms-fab--on-grounds (1.4s)
+  ✓   109 [mobile] › visual/visual.spec.ts:41:7 › atoms-fab--pinned (1.3s)
+  ✓   110 [mobile] › visual/visual.spec.ts:41:7 › atoms-fab--mobile-360 (1.3s)
+  ✓   111 [mobile] › visual/visual.spec.ts:41:7 › atoms-iconbutton--playground (1.2s)
+  ✓   112 [mobile] › visual/visual.spec.ts:41:7 › atoms-iconbutton--states (1.1s)
+  ✓   108 [mobile] › visual/visual.spec.ts:41:7 › atoms-fab--positions (2.5s)
+  ✓   114 [mobile] › visual/visual.spec.ts:41:7 › atoms-iconbutton--sizes (1.0s)
+  ✓   115 [mobile] › visual/visual.spec.ts:41:7 › atoms-iconbutton--on-brand (987ms)
+  ✓   116 [mobile] › visual/visual.spec.ts:41:7 › atoms-iconbutton--disabled (1.0s)
+  ✓   118 [mobile] › visual/visual.spec.ts:41:7 › atoms-iconbutton--count (809ms)
+  ✓   113 [mobile] › visual/visual.spec.ts:41:7 › atoms-iconbutton--variants (2.1s)
+  ✓   117 [mobile] › visual/visual.spec.ts:41:7 › atoms-iconbutton--over-photography (1.4s)
+  ✓   119 [mobile] › visual/visual.spec.ts:41:7 › atoms-iconbutton--icon-only (2.2s)
+  ✓   120 [mobile] › visual/visual.spec.ts:41:7 › atoms-iconbutton--on-surfaces-story (2.4s)
+  ✓   122 [mobile] › visual/visual.spec.ts:41:7 › atoms-icon--playground (3.3s)
+  ✓   121 [mobile] › visual/visual.spec.ts:41:7 › atoms-iconbutton--as-child (3.5s)
+  ✓   124 [mobile] › visual/visual.spec.ts:41:7 › atoms-icon--current-color (2.2s)
+  ✓   123 [mobile] › visual/visual.spec.ts:41:7 › atoms-icon--sizes (3.8s)
+  ✓   126 [mobile] › visual/visual.spec.ts:41:7 › atoms-icon--labelled (908ms)
+  ✓   125 [mobile] › visual/visual.spec.ts:41:7 › atoms-icon--glyphs (2.3s)
+  ✓   128 [mobile] › visual/visual.spec.ts:41:7 › atoms-imageslot--playground (845ms)
+  ✓   127 [mobile] › visual/visual.spec.ts:41:7 › atoms-icon--on-ink (1.4s)
+  ✓   129 [mobile] › visual/visual.spec.ts:41:7 › atoms-imageslot--ratios (988ms)
+  ✓   130 [mobile] › visual/visual.spec.ts:41:7 › atoms-imageslot--variants (1.0s)
+  ✓   132 [mobile] › visual/visual.spec.ts:41:7 › atoms-imageslot--photo (832ms)
+  ✓   131 [mobile] › visual/visual.spec.ts:41:7 › atoms-imageslot--label (1.4s)
+  ✓   135 [mobile] › visual/visual.spec.ts:41:7 › atoms-imageslot--sx (1.2s)
+  ✓   133 [mobile] › visual/visual.spec.ts:41:7 › atoms-imageslot--fill (2.1s)
+  ✓   134 [mobile] › visual/visual.spec.ts:41:7 › atoms-imageslot--radii (3.4s)
+  ✓   137 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--states (3.1s)
+  ✓   136 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--playground (5.2s)
+  ✓   138 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--rest (5.0s)
+  ✓   140 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--status-error (3.6s)
+  ✓   142 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--status-warning (2.5s)
+  ✓   139 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--filled-with-icon (7.1s)
+  ✓   143 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--loading (3.1s)
+  ✓   141 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--status-success (6.7s)
+  ✓   144 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--read-only (5.3s)
+  ✓   145 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--disabled (4.7s)
+  ✓   149 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--sizes (1.2s)
+  ✓   147 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--disabled-trailing (4.6s)
+  ✓   150 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--multiline (1.5s)
+  ✓   148 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--in-disabled-fieldset (5.4s)
+  ✓   151 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--on-surfaces-story (4.1s)
+  ✓   153 [mobile] › visual/visual.spec.ts:41:7 › atoms-link--states (3.9s)
+  ✓   155 [mobile] › visual/visual.spec.ts:41:7 › atoms-link--colors (1.2s)
+  ✓   152 [mobile] › visual/visual.spec.ts:41:7 › atoms-link--playground (5.4s)
+  ✓   146 [mobile] › visual/visual.spec.ts:41:7 › atoms-input--suffix-and-trailing (10.9s)
+  ✓   157 [mobile] › visual/visual.spec.ts:41:7 › atoms-link--variants (1.3s)
+  ✓   154 [mobile] › visual/visual.spec.ts:41:7 › atoms-link--default (5.6s)
+  ✓   158 [mobile] › visual/visual.spec.ts:41:7 › atoms-link--inherits-paragraph (2.9s)
+  ✓   156 [mobile] › visual/visual.spec.ts:41:7 › atoms-link--underline (5.0s)
+  ✓   160 [mobile] › visual/visual.spec.ts:41:7 › atoms-link--as-child (4.0s)
+  ✓   161 [mobile] › visual/visual.spec.ts:41:7 › atoms-link--in-footer-nav (3.4s)
+  ✓   162 [mobile] › visual/visual.spec.ts:41:7 › atoms-link--on-surfaces-story (3.5s)
+  ✓   159 [mobile] › visual/visual.spec.ts:41:7 › atoms-link--external (6.5s)
+  ✓   164 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--basic-menu (3.3s)
+  ✓   165 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--icon-menu (2.6s)
+  ✓   167 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--selected-menu (1.8s)
+  ✓   163 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--three-dot-menu (6.4s)
+  ✓   168 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--positioned-menu (2.7s)
+  ✓   166 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--dense-menu (4.8s)
+  ✓   170 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--account-menu (3.0s)
+  ✓   172 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--checkbox-menu (1.8s)
+  ✓   171 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--radio-menu (3.0s)
+  ✓   169 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--long-menu (5.8s)
+  ✓   174 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--on-surfaces (3.8s)
+  ✓   175 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--mobile-360 (3.7s)
+  ✓   176 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--listbox (3.5s)
+  ✓   177 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--groups-and-meta (2.8s)
+  ✓   173 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--nested-menu (5.9s)
+  ✓   179 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--sheet-360 (1.3s)
+  ✓   178 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--empty (2.2s)
+  ✓   180 [mobile] › visual/visual.spec.ts:41:7 › atoms-menu--floating-641 (1.7s)
+  ✓   182 [mobile] › visual/visual.spec.ts:41:7 › atoms-patternfield--brand (1.5s)
+  ✓   184 [mobile] › visual/visual.spec.ts:41:7 › atoms-patternfield--soft (1.4s)
+  ✓   181 [mobile] › visual/visual.spec.ts:41:7 › atoms-patternfield--playground (2.5s)
+  ✓   185 [mobile] › visual/visual.spec.ts:41:7 › atoms-patternfield--light (1.7s)
+  ✓   183 [mobile] › visual/visual.spec.ts:41:7 › atoms-patternfield--ink (2.8s)
+  ✓   188 [mobile] › visual/visual.spec.ts:41:7 › atoms-patternfield--as-child (1.0s)
+  ✓   186 [mobile] › visual/visual.spec.ts:41:7 › atoms-patternfield--faint (1.9s)
+  ✓   187 [mobile] › visual/visual.spec.ts:41:7 › atoms-patternfield--tiles (1.6s)
+  ✓   189 [mobile] › visual/visual.spec.ts:41:7 › atoms-patternfield--full-bleed-band (1.2s)
+  ✓   190 [mobile] › visual/visual.spec.ts:41:7 › atoms-patternfield--sx (1.4s)
+  ✓   192 [mobile] › visual/visual.spec.ts:41:7 › atoms-popover--sides (1.4s)
+  ✓   194 [mobile] › visual/visual.spec.ts:41:7 › atoms-popover--info-popover (1.1s)
+  ✓   191 [mobile] › visual/visual.spec.ts:41:7 › atoms-popover--playground (2.3s)
+  ✓   195 [mobile] › visual/visual.spec.ts:41:7 › atoms-popover--controlled (1.3s)
+  ✓   196 [mobile] › visual/visual.spec.ts:41:7 › atoms-popover--on-surfaces (1.2s)
+  ✓   197 [mobile] › visual/visual.spec.ts:41:7 › atoms-popover--mobile-360 (1.4s)
+  ✓   199 [mobile] › visual/visual.spec.ts:41:7 › atoms-popover--sheet-360 (1.0s)
+  ✓   198 [mobile] › visual/visual.spec.ts:41:7 › atoms-popover--sheet (1.5s)
+  ✓   200 [mobile] › visual/visual.spec.ts:41:7 › atoms-popover--floating-641 (1.1s)
+  ✓   201 [mobile] › visual/visual.spec.ts:41:7 › atoms-pricetag--playground (882ms)
+  ✓   193 [mobile] › visual/visual.spec.ts:41:7 › atoms-popover--with-title (3.9s)
+  ✓   202 [mobile] › visual/visual.spec.ts:41:7 › atoms-pricetag--amounts (884ms)
+  ✓   203 [mobile] › visual/visual.spec.ts:41:7 › atoms-pricetag--was (934ms)
+  ✓   204 [mobile] › visual/visual.spec.ts:41:7 › atoms-pricetag--range (3.3s)
+  ✓   208 [mobile] › visual/visual.spec.ts:41:7 › atoms-pricetag--sx (4.0s)
+  ✓   205 [mobile] › visual/visual.spec.ts:41:7 › atoms-pricetag--sizes (5.9s)
+  ✓   207 [mobile] › visual/visual.spec.ts:41:7 › atoms-pricetag--canvas (8.5s)
+  ✓   209 [mobile] › visual/visual.spec.ts:41:7 › atoms-pricetag--on-surfaces-story (7.2s)
+  ✓   210 [mobile] › visual/visual.spec.ts:41:7 › atoms-progressbar--playground (7.6s)
+  ✓   211 [mobile] › visual/visual.spec.ts:41:7 › atoms-progressbar--segments (8.7s)
+  ✓   212 [mobile] › visual/visual.spec.ts:41:7 › atoms-progressbar--continuous (7.9s)
+  ✓   213 [mobile] › visual/visual.spec.ts:41:7 › atoms-progressbar--color-success (8.2s)
+  ✓   214 [mobile] › visual/visual.spec.ts:41:7 › atoms-progressbar--inverse (8.3s)
+  ✓   215 [mobile] › visual/visual.spec.ts:41:7 › atoms-progressbar--narrow (6.3s)
+  ✓   216 [mobile] › visual/visual.spec.ts:41:7 › atoms-progressbar--sizes (5.1s)
+  ✓   217 [mobile] › visual/visual.spec.ts:41:7 › atoms-progressbar--on-surfaces-story (3.8s)
+  ✓   218 [mobile] › visual/visual.spec.ts:41:7 › atoms-progressbar--sx (2.6s)
+  ✓   219 [mobile] › visual/visual.spec.ts:41:7 › atoms-radio--playground (2.2s)
+  ✓   206 [mobile] › visual/visual.spec.ts:41:7 › atoms-pricetag--colors (23.3s)
+  ✓   221 [mobile] › visual/visual.spec.ts:41:7 › atoms-radio--group (1.0s)
+  ✓   220 [mobile] › visual/visual.spec.ts:41:7 › atoms-radio--interaction (2.0s)
+  ✓   222 [mobile] › visual/visual.spec.ts:41:7 › atoms-radio--no-price (924ms)
+  ✓   223 [mobile] › visual/visual.spec.ts:41:7 › atoms-radio--disabled (1.1s)
+  ✓   224 [mobile] › visual/visual.spec.ts:41:7 › atoms-radio--group-error (1.3s)
+  ✓   226 [mobile] › visual/visual.spec.ts:41:7 › atoms-radio--horizontal (1.3s)
+  ✓   225 [mobile] › visual/visual.spec.ts:41:7 › atoms-radio--invalid-checked (2.7s)
+  ✓   227 [mobile] › visual/visual.spec.ts:41:7 › atoms-radio--states (4.0s)
+  ✓   228 [mobile] › visual/visual.spec.ts:41:7 › atoms-radio--portion-picker (5.7s)
+  ✓   230 [mobile] › visual/visual.spec.ts:41:7 › atoms-rating--playground (6.3s)
+  ✓   232 [mobile] › visual/visual.spec.ts:41:7 › atoms-rating--symbol (5.5s)
+  ✓   231 [mobile] › visual/visual.spec.ts:41:7 › atoms-rating--values (8.4s)
+  ✓   233 [mobile] › visual/visual.spec.ts:41:7 › atoms-rating--count (6.0s)
+  ✓   229 [mobile] › visual/visual.spec.ts:41:7 › atoms-radio--on-surfaces-story (12.8s)
+  ✓   234 [mobile] › visual/visual.spec.ts:41:7 › atoms-rating--sizes (7.7s)
+  ✓   236 [mobile] › visual/visual.spec.ts:41:7 › atoms-rating--on-an-outlet-card (5.5s)
+  ✓   237 [mobile] › visual/visual.spec.ts:41:7 › atoms-rating--on-surfaces-story (5.2s)
+  ✓   238 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--playground (4.8s)
+  ✓   235 [mobile] › visual/visual.spec.ts:41:7 › atoms-rating--partial-fill (9.2s)
+  ✓   240 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--placeholder-and-icon (3.9s)
+  ✓   239 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--rest (6.4s)
+  ✓   241 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--status-error (6.0s)
+  ✓   243 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--status-warning (5.8s)
+  ✓   244 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--read-only-and-disabled (5.3s)
+  ✓   242 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--status-success (7.7s)
+  ✓   246 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--long-label-at-360 (3.4s)
+  ✓   247 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--two-up-at-360 (2.5s)
+  ✓   245 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--sizes (5.8s)
+  ✓   248 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--on-surfaces-story (2.3s)
+  ✓   249 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--content-sized-parent (3.6s)
+  ✓   250 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--open-list (3.8s)
+  ✓   251 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--long-list (5.1s)
+  ✓   254 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--in-app-shell (4.0s)
+  ✓   252 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--keyboard (7.9s)
+  ✓   253 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--in-dialog (9.0s)
+  ✓   256 [mobile] › visual/visual.spec.ts:41:7 › atoms-skeleton--playground (5.5s)
+  ✓   257 [mobile] › visual/visual.spec.ts:41:7 › atoms-skeleton--block (5.0s)
+  ✓   258 [mobile] › visual/visual.spec.ts:41:7 › atoms-skeleton--lines (5.2s)
+  ✓   255 [mobile] › visual/visual.spec.ts:41:7 › atoms-select--sheet-360 (12.0s)
+  ✓   259 [mobile] › visual/visual.spec.ts:41:7 › atoms-skeleton--circle (7.5s)
+  ✓   261 [mobile] › visual/visual.spec.ts:41:7 › atoms-slider--playground (7.7s)
+  ✓   262 [mobile] › visual/visual.spec.ts:41:7 › atoms-slider--dawat-guests (7.4s)
+  ✓   263 [mobile] › visual/visual.spec.ts:41:7 › atoms-slider--office-meals-on-ink (7.0s)
+  ✓   265 [mobile] › visual/visual.spec.ts:41:7 › atoms-socialheadline--playground (3.8s)
+  ✓   266 [mobile] › visual/visual.spec.ts:41:7 › atoms-socialheadline--overline (3.4s)
+  ✓   264 [mobile] › visual/visual.spec.ts:41:7 › atoms-slider--disabled (10.0s)
+  ✓   260 [mobile] › visual/visual.spec.ts:41:7 › atoms-skeleton--card-shape (18.0s)
+  ✓   268 [mobile] › visual/visual.spec.ts:41:7 › atoms-socialheadline--h-1-h-2 (6.2s)
+  ✓   270 [mobile] › visual/visual.spec.ts:41:7 › atoms-socialheadline--alignment (2.4s)
+  ✓   267 [mobile] › visual/visual.spec.ts:41:7 › atoms-socialheadline--hero (9.3s)
+  ✓   269 [mobile] › visual/visual.spec.ts:41:7 › atoms-socialheadline--body-caption (7.8s)
+  ✓   271 [mobile] › visual/visual.spec.ts:41:7 › atoms-socialheadline--on-a-canvas (3.8s)
+  ✓   273 [mobile] › visual/visual.spec.ts:41:7 › atoms-socialheadline--sx (2.9s)
+  ✓   275 [mobile] › visual/visual.spec.ts:41:7 › atoms-spicelevel--levels (759ms)
+  ✓   272 [mobile] › visual/visual.spec.ts:41:7 › atoms-socialheadline--on-surfaces-story (3.5s)
+  ✓   274 [mobile] › visual/visual.spec.ts:41:7 › atoms-spicelevel--playground (1.1s)
+  ✓   276 [mobile] › visual/visual.spec.ts:41:7 › atoms-spicelevel--with-label (586ms)
+  ✓   277 [mobile] › visual/visual.spec.ts:41:7 › atoms-spicelevel--sizes (577ms)
+  ✓   278 [mobile] › visual/visual.spec.ts:41:7 › atoms-spicelevel--in-context (606ms)
+  ✓   279 [mobile] › visual/visual.spec.ts:41:7 › atoms-spicelevel--on-surfaces-story (655ms)
+  ✓   280 [mobile] › visual/visual.spec.ts:41:7 › atoms-spinner--playground (675ms)
+  ✓   281 [mobile] › visual/visual.spec.ts:41:7 › atoms-spinner--sizes (581ms)
+  ✓   282 [mobile] › visual/visual.spec.ts:41:7 › atoms-spinner--colors (571ms)
+  ✓   283 [mobile] › visual/visual.spec.ts:41:7 › atoms-spinner--inverse (620ms)
+  ✓   284 [mobile] › visual/visual.spec.ts:41:7 › atoms-spinner--sx (581ms)
+  ✓   285 [mobile] › visual/visual.spec.ts:41:7 › atoms-statusdot--playground (690ms)
+  ✓   286 [mobile] › visual/visual.spec.ts:41:7 › atoms-statusdot--statuses (671ms)
+  ✓   287 [mobile] › visual/visual.spec.ts:41:7 › atoms-statusdot--sizes (637ms)
+  ✓   288 [mobile] › visual/visual.spec.ts:41:7 › atoms-statusdot--pulse (613ms)
+  ✓   289 [mobile] › visual/visual.spec.ts:41:7 › atoms-statusdot--bare (573ms)
+  ✓   290 [mobile] › visual/visual.spec.ts:41:7 › atoms-statusdot--outlet-strip (595ms)
+  ✓   291 [mobile] › visual/visual.spec.ts:41:7 › atoms-statusdot--sx (594ms)
+  ✓   292 [mobile] › visual/visual.spec.ts:41:7 › atoms-switch--playground (903ms)
+  ✓   293 [mobile] › visual/visual.spec.ts:41:7 › atoms-switch--interaction (1.2s)
+  ✓   295 [mobile] › visual/visual.spec.ts:41:7 › atoms-switch--description (1.1s)
+  ✓   296 [mobile] › visual/visual.spec.ts:41:7 › atoms-switch--disabled (1.2s)
+  ✓   294 [mobile] › visual/visual.spec.ts:41:7 › atoms-switch--on-and-off (1.7s)
+  ✓   297 [mobile] › visual/visual.spec.ts:41:7 › atoms-switch--label-hidden (1.3s)
+  ✓   298 [mobile] › visual/visual.spec.ts:41:7 › atoms-switch--preferences-panel (1.7s)
+  ✓   300 [mobile] › visual/visual.spec.ts:41:7 › atoms-tag--playground (1.7s)
+  ✓   299 [mobile] › visual/visual.spec.ts:41:7 › atoms-switch--on-surfaces-story (2.3s)
+  ✓   302 [mobile] › visual/visual.spec.ts:41:7 › atoms-tag--selectable (1.7s)
+  ✓   303 [mobile] › visual/visual.spec.ts:41:7 › atoms-tag--with-icon (1.1s)
+  ✓   304 [mobile] › visual/visual.spec.ts:41:7 › atoms-tag--disabled (934ms)
+  ✓   301 [mobile] › visual/visual.spec.ts:41:7 › atoms-tag--states (2.7s)
+  ✓   305 [mobile] › visual/visual.spec.ts:41:7 › atoms-tag--category-filter-rail (935ms)
+  ✓   306 [mobile] › visual/visual.spec.ts:41:7 › atoms-tag--colors (1.1s)
+  ✓   307 [mobile] › visual/visual.spec.ts:41:7 › atoms-tag--on-surfaces-story (1.0s)
+  ✓   308 [mobile] › visual/visual.spec.ts:41:7 › atoms-tag--long-label (936ms)
+  ✓   309 [mobile] › visual/visual.spec.ts:41:7 › atoms-textbutton--playground (828ms)
+  ✓   310 [mobile] › visual/visual.spec.ts:41:7 › atoms-textbutton--states (938ms)
+  ✓   311 [mobile] › visual/visual.spec.ts:41:7 › atoms-textbutton--colors (1.2s)
+  ✓   313 [mobile] › visual/visual.spec.ts:41:7 › atoms-textbutton--with-icons (1.4s)
+  ✓   314 [mobile] › visual/visual.spec.ts:41:7 › atoms-textbutton--on-surfaces-story (1.5s)
+  ✓   315 [mobile] › visual/visual.spec.ts:41:7 › atoms-togglebutton--playground (1.6s)
+  ✓   316 [mobile] › visual/visual.spec.ts:41:7 › atoms-togglebutton--standalone (1.1s)
+  ✓   312 [mobile] › visual/visual.spec.ts:41:7 › atoms-textbutton--caps (2.3s)
+  ✓   317 [mobile] › visual/visual.spec.ts:41:7 › atoms-togglebutton--sizes (1.1s)
+  ✓   318 [mobile] › visual/visual.spec.ts:41:7 › atoms-togglebutton--colors (1.2s)
+  ✓   319 [mobile] › visual/visual.spec.ts:41:7 › atoms-togglebutton--icon-only (853ms)
+  ✓   320 [mobile] › visual/visual.spec.ts:41:7 › atoms-togglebutton--disabled (845ms)
+  ✓   321 [mobile] › visual/visual.spec.ts:41:7 › atoms-tooltip--playground (903ms)
+  ✓   322 [mobile] › visual/visual.spec.ts:41:7 › atoms-tooltip--sides (773ms)
+  ✓   323 [mobile] › visual/visual.spec.ts:41:7 › atoms-tooltip--long-hint (598ms)
+  ✓   324 [mobile] › visual/visual.spec.ts:41:7 › atoms-tooltip--on-a-button (599ms)
+  ✓   325 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--playground (594ms)
+  ✓   326 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--display-1 (617ms)
+  ✓   327 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--display-2 (652ms)
+  ✓   328 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--headings (638ms)
+  ✓   329 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--body (708ms)
+  ✓   330 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--caption-overline-mono (674ms)
+  ✓   331 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--colors (696ms)
+  ✓   332 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--no-wrap (677ms)
+  ✓   333 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--link-variants (602ms)
+  ✓   334 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--line-clamp (662ms)
+  ✓   335 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--measure (659ms)
+  ✓   336 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--fluid (608ms)
+  ✓   338 [mobile] › visual/visual.spec.ts:41:7 › brand-logo--playground (620ms)
+  ✓   337 [mobile] › visual/visual.spec.ts:41:7 › atoms-typography--on-surfaces-story (712ms)
+  ✓   339 [mobile] › visual/visual.spec.ts:41:7 › brand-logo--variants (582ms)
+  ✓   340 [mobile] › visual/visual.spec.ts:41:7 › brand-logo--colors (782ms)
+  ✓   341 [mobile] › visual/visual.spec.ts:41:7 › brand-logo--clear-space (805ms)
+  ✓   342 [mobile] › visual/visual.spec.ts:41:7 › brand-logo--header-height (683ms)
+  ✓   343 [mobile] › visual/visual.spec.ts:41:7 › brand-logo--sx (767ms)
+  ✓   344 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--lockup (949ms)
+  ✓   345 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--wordmark (805ms)
+  ✓   346 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--logo-tokens (887ms)
+  ✓   347 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--clear-space (901ms)
+  ✓   348 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--symbol-mark (993ms)
+  ✓   349 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--mark-legibility (900ms)
+  ✓   350 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--pattern-fields (858ms)
+  ✓   351 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--pattern-tokens (829ms)
+  ✓   352 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--diamond-motif (1.1s)
+  ✓   353 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--company-facts (1.1s)
+  ✓   355 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--icon-sizes (807ms)
+  ✓   354 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--company-facts-xl (1.1s)
+  ✓   356 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--brand-glyphs (837ms)
+  ✓   357 [mobile] › visual/visual.spec.ts:41:7 › brand-specimens--diet-and-heat (1.1s)
+  ✓   358 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--pink-ramp (1.2s)
+  ✓   359 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--ink-ramp (1.2s)
+  ✓   360 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--accents (1.1s)
+  ✓   361 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--text-companions (1.2s)
+  ✓   362 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--heat-scale (921ms)
+  ✓   363 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--semantic-panels (831ms)
+  ✓   365 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--four-grounds (806ms)
+  ✓   366 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--light-island (824ms)
+  ✓   364 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--semantic-tokens (1.2s)
+  ✓   368 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--status-swatches (749ms)
+  ✓   369 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--status-alerts (666ms)
+  ✓   371 [mobile] › visual/visual.spec.ts:41:7 › layout-specimens--breakpoints (612ms)
+  ✓   370 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--contrast (1.2s)
+  ✓   372 [mobile] › visual/visual.spec.ts:41:7 › layout-specimens--auto-grid-cards (939ms)
+  ✓   373 [mobile] › visual/visual.spec.ts:41:7 › layout-specimens--auto-grid-tokens (1.2s)
+  ✓   367 [mobile] › visual/visual.spec.ts:41:7 › colors-specimens--surface-overrides (3.1s)
+  ✓   374 [mobile] › visual/visual.spec.ts:41:7 › layout-specimens--radii (1.8s)
+  ✓   375 [mobile] › visual/visual.spec.ts:41:7 › layout-specimens--borders (1.5s)
+  ✓   376 [mobile] › visual/visual.spec.ts:41:7 › layout-specimens--border-tokens (1.4s)
+  ✓   377 [mobile] › visual/visual.spec.ts:41:7 › layout-specimens--border-widths (1.1s)
+  ✓   378 [mobile] › visual/visual.spec.ts:41:7 › layout-specimens--depth-ladder (652ms)
+  ✓   379 [mobile] › visual/visual.spec.ts:41:7 › layout-specimens--stacking (770ms)
+  ✓   380 [mobile] › visual/visual.spec.ts:41:7 › layout-specimens--card-anatomy (788ms)
+  ✓   381 [mobile] › visual/visual.spec.ts:41:7 › layout-specimens--utility-classes (830ms)
+  ✓   382 [mobile] › visual/visual.spec.ts:41:7 › layouts-appshell--playground (952ms)
+  ✓   383 [mobile] › visual/visual.spec.ts:41:7 › layouts-appshell--with-tab-bar (784ms)
+  ✓   384 [mobile] › visual/visual.spec.ts:41:7 › layouts-appshell--with-overlay-sheet (767ms)
+  ✓   385 [mobile] › visual/visual.spec.ts:41:7 › layouts-appshell--status-tones (844ms)
+  ✓   386 [mobile] › visual/visual.spec.ts:41:7 › layouts-appshell--phone-sm (822ms)
+  ✓   387 [mobile] › visual/visual.spec.ts:41:7 › layouts-appshell--sizes (860ms)
+  ✓   388 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--playground (1.1s)
+  ✓   389 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--min-card (1.1s)
+  ✓   391 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--min-xs (966ms)
+  ✓   392 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--columns-3 (915ms)
+  ✓   390 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--min-md (1.5s)
+  ✓   393 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--mins (1.1s)
+  ✓   394 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--spacing (1.0s)
+  ✓   395 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--columns-at-360 (1.1s)
+  ✓   396 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--columns-at-768 (1.2s)
+  ✓   397 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--columns-at-1280 (1.1s)
+  ✓   398 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--long-word-holds-tracks (1.1s)
+  ✓   399 [mobile] › visual/visual.spec.ts:41:7 › layouts-autogrid--narrower-than-min-at-360 (1.1s)
+  ✓   400 [mobile] › visual/visual.spec.ts:41:7 › layouts-box--playground (955ms)
+  ✓   401 [mobile] › visual/visual.spec.ts:41:7 › layouts-box--surfaces (1.2s)
+  ✓   402 [mobile] › visual/visual.spec.ts:41:7 › layouts-box--as-element (1.6s)
+  ✓   404 [mobile] › visual/visual.spec.ts:41:7 › layouts-cluster--playground (1.5s)
+  ✓   406 [mobile] › visual/visual.spec.ts:41:7 › layouts-cluster--justify-between (1.3s)
+  ✓   405 [mobile] › visual/visual.spec.ts:41:7 › layouts-cluster--wrap (2.0s)
+  ✓   407 [mobile] › visual/visual.spec.ts:41:7 › layouts-cluster--scroll (1.1s)
+  ✓   408 [mobile] › visual/visual.spec.ts:41:7 › layouts-cluster--wrap-at-360 (894ms)
+  ✓   403 [mobile] › visual/visual.spec.ts:41:7 › layouts-box--responsive (2.7s)
+  ✓   409 [mobile] › visual/visual.spec.ts:41:7 › layouts-cluster--justify (786ms)
+  ✓   410 [mobile] › visual/visual.spec.ts:41:7 › layouts-cluster--spacing (658ms)
+  ✓   411 [mobile] › visual/visual.spec.ts:41:7 › layouts-cluster--baseline-meta-row (609ms)
+  ✓   413 [mobile] › visual/visual.spec.ts:41:7 › layouts-container--playground (557ms)
+  ✓   412 [mobile] › visual/visual.spec.ts:41:7 › layouts-cluster--scrollable-rail-at-360 (702ms)
+  ✓   414 [mobile] › visual/visual.spec.ts:41:7 › layouts-container--sizes (701ms)
+  ✓   415 [mobile] › visual/visual.spec.ts:41:7 › layouts-container--gutter (720ms)
+  ✓   416 [mobile] › visual/visual.spec.ts:41:7 › layouts-container--at-the-floor (746ms)
+  ✓   417 [mobile] › visual/visual.spec.ts:41:7 › layouts-container--at-desktop (652ms)
+  ✓   418 [mobile] › visual/visual.spec.ts:41:7 › layouts-container--in-context (735ms)
+  ✓   419 [mobile] › visual/visual.spec.ts:41:7 › layouts-grid--playground (587ms)
+  ✓   420 [mobile] › visual/visual.spec.ts:41:7 › layouts-grid--twelve-column (552ms)
+  ✓   421 [mobile] › visual/visual.spec.ts:41:7 › layouts-grid--responsive (718ms)
+  ✓   422 [mobile] › visual/visual.spec.ts:41:7 › layouts-grid--asymmetric (702ms)
+  ✓   423 [mobile] › visual/visual.spec.ts:41:7 › layouts-grid--offset (678ms)
+  ✓   425 [mobile] › visual/visual.spec.ts:41:7 › layouts-grid--at-360 (602ms)
+  ✓   424 [mobile] › visual/visual.spec.ts:41:7 › layouts-grid--nested (1.0s)
+  ✓   426 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--playground (948ms)
+  ✓   427 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--post (1.4s)
+  ✓   429 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--story-with-safe-area (1.4s)
+  ✓   431 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--wide (1.1s)
+  ✓   430 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--landscape (1.6s)
+  ✓   428 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--portrait (2.2s)
+  ✓   432 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--safe-area-guides (924ms)
+  ✓   433 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--padding (949ms)
+  ✓   434 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--alt-board (822ms)
+  ✓   435 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--leaderboard (697ms)
+  ✓   436 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--mpu (714ms)
+  ✓   437 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--all-formats (691ms)
+  ✓   438 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--fit-to-parent (713ms)
+  ✓   439 [mobile] › visual/visual.spec.ts:41:7 › layouts-postframe--fits-its-parent-at-360 (725ms)
+  ✓   440 [mobile] › visual/visual.spec.ts:41:7 › layouts-section--playground (769ms)
+  ✓   441 [mobile] › visual/visual.spec.ts:41:7 › layouts-section--surfaces (716ms)
+  ✓   442 [mobile] › visual/visual.spec.ts:41:7 › layouts-section--surfaces-at-360 (750ms)
+  ✓   443 [mobile] › visual/visual.spec.ts:41:7 › layouts-section--rhythm (671ms)
+  ✓   444 [mobile] › visual/visual.spec.ts:41:7 › layouts-section--patterns (604ms)
+  ✓   445 [mobile] › visual/visual.spec.ts:41:7 › layouts-section--widths (761ms)
+  ✓   446 [mobile] › visual/visual.spec.ts:41:7 › layouts-section--in-context (1.2s)
+  ✓   447 [mobile] › visual/visual.spec.ts:41:7 › layouts-section--nested-surfaces (1.3s)
+  ✓   449 [mobile] › visual/visual.spec.ts:41:7 › layouts-stack--space-2 (1.3s)
+  ✓   448 [mobile] › visual/visual.spec.ts:41:7 › layouts-stack--playground (1.6s)
+  ✓   450 [mobile] › visual/visual.spec.ts:41:7 › layouts-stack--space-6 (1.4s)
+  ✓   451 [mobile] › visual/visual.spec.ts:41:7 › layouts-stack--divided (1.2s)
+  ✓   452 [mobile] › visual/visual.spec.ts:41:7 › layouts-stack--steps (980ms)
+  ✓   453 [mobile] › visual/visual.spec.ts:41:7 › layouts-stack--align (897ms)
+  ✓   454 [mobile] › visual/visual.spec.ts:41:7 › layouts-stack--divided-list (1.1s)
+  ✓   455 [mobile] › visual/visual.spec.ts:41:7 › layouts-stack--divided-on-surfaces (1.1s)
+  ✓   456 [mobile] › visual/visual.spec.ts:41:7 › layouts-stack--long-word-at-360 (1.0s)
+  ✓   458 [mobile] › visual/visual.spec.ts:41:7 › marketing-social-ads--offer (1.0s)
+  ✓   457 [mobile] › visual/visual.spec.ts:41:7 › layouts-stack--with-sx (1.2s)
+  ✓   459 [mobile] › visual/visual.spec.ts:41:7 › marketing-social-ads--dish-launch (1.0s)
+  ✓   460 [mobile] › visual/visual.spec.ts:41:7 › marketing-social-ads--statement (1.4s)
+  ✓   461 [mobile] › visual/visual.spec.ts:41:7 › marketing-social-ads--carousel (1.5s)
+  ✓   463 [mobile] › visual/visual.spec.ts:41:7 › marketing-social-ads-ads-boards--offer-story-board (1.7s)
+  ✓   464 [mobile] › visual/visual.spec.ts:41:7 › marketing-social-ads-ads-boards--dish-story-board (1.8s)
+  ✓   465 [mobile] › visual/visual.spec.ts:41:7 › marketing-social-ads-ads-boards--link-banner-board (2.0s)
+  ✓   466 [mobile] › visual/visual.spec.ts:41:7 › marketing-social-ads-ads-boards--leaderboard-board (2.1s)
+  ✓   468 [mobile] › visual/visual.spec.ts:41:7 › marketing-social-ads-ads-boards--ads-360 (1.7s)
+  ✓   462 [mobile] › visual/visual.spec.ts:41:7 › marketing-social-ads--feed-360 (4.1s)
+  ✓   467 [mobile] › visual/visual.spec.ts:41:7 › marketing-social-ads-ads-boards--mpu-board (2.5s)
+  ✓   469 [mobile] › visual/visual.spec.ts:41:7 › marketing-specimens--canvas-formats (1.4s)
+  ✓   470 [mobile] › visual/visual.spec.ts:41:7 › marketing-specimens--canvas-tokens (1.1s)
+  ✓   471 [mobile] › visual/visual.spec.ts:41:7 › marketing-specimens--canvas-type (820ms)
+  ✓   472 [mobile] › visual/visual.spec.ts:41:7 › marketing-specimens--canvas-type-tokens (1.1s)
+  ✓   474 [mobile] › visual/visual.spec.ts:41:7 › molecules-accordion--playground (1.3s)
+  ✓   475 [mobile] › visual/visual.spec.ts:41:7 › molecules-accordion--multiple (1.4s)
+  ✓   477 [mobile] › visual/visual.spec.ts:41:7 › molecules-accordion--surfaces (1.3s)
+  ✓   476 [mobile] › visual/visual.spec.ts:41:7 › molecules-accordion--as-headings (1.8s)
+  ✓   473 [mobile] › visual/visual.spec.ts:41:7 › molecules-field-react-hook-form-zod--keyboard-only (2.4s)
+  ✓   478 [mobile] › visual/visual.spec.ts:41:7 › molecules-accordion--narrow (1.2s)
+  ✓   480 [mobile] › visual/visual.spec.ts:41:7 › molecules-actionmenu--variants (702ms)
+  ✓   479 [mobile] › visual/visual.spec.ts:41:7 › molecules-actionmenu--playground (1.2s)
+  ✓   481 [mobile] › visual/visual.spec.ts:41:7 › molecules-actionmenu--on-brand (835ms)
+  ✓   482 [mobile] › visual/visual.spec.ts:41:7 › molecules-actionmenu--open-in-row (849ms)
+  ✓   483 [mobile] › visual/visual.spec.ts:41:7 › molecules-actionmenu--three-dot-menu (819ms)
+  ✓   484 [mobile] › visual/visual.spec.ts:41:7 › molecules-alert--playground (793ms)
+  ✓   485 [mobile] › visual/visual.spec.ts:41:7 › molecules-alert--info-and-success (809ms)
+  ✓   486 [mobile] › visual/visual.spec.ts:41:7 › molecules-alert--warning-and-danger (796ms)
+  ✓   487 [mobile] › visual/visual.spec.ts:41:7 › molecules-alert--brand-with-action (763ms)
+  ✓   489 [mobile] › visual/visual.spec.ts:41:7 › molecules-alert--nudge (674ms)
+  ✓   490 [mobile] › visual/visual.spec.ts:41:7 › molecules-alert--neutral (724ms)
+  ✓   491 [mobile] › visual/visual.spec.ts:41:7 › molecules-alert--narrow (790ms)
+  ✓   492 [mobile] › visual/visual.spec.ts:41:7 › molecules-alert--on-surfaces-story (949ms)
+  ✓   493 [mobile] › visual/visual.spec.ts:41:7 › molecules-announcementbar--playground (750ms)
+  ✓   488 [mobile] › visual/visual.spec.ts:41:7 › molecules-alert--dismissible (1.7s)
+  ✓   494 [mobile] › visual/visual.spec.ts:41:7 › molecules-announcementbar--launch-price (771ms)
+  ✓   495 [mobile] › visual/visual.spec.ts:41:7 › molecules-announcementbar--without-countdown (833ms)
+  ✓   496 [mobile] › visual/visual.spec.ts:41:7 › molecules-announcementbar--expired (713ms)
+  ✓   497 [mobile] › visual/visual.spec.ts:41:7 › molecules-breadcrumb--playground (624ms)
+  ✓   498 [mobile] › visual/visual.spec.ts:41:7 › molecules-breadcrumb--two-levels (602ms)
+  ✓   499 [mobile] › visual/visual.spec.ts:41:7 › molecules-breadcrumb--long (649ms)
+  ✓   500 [mobile] › visual/visual.spec.ts:41:7 › molecules-breadcrumb--unlinked-level (579ms)
+  ✓   501 [mobile] › visual/visual.spec.ts:41:7 › molecules-breadcrumb--on-surfaces-story (588ms)
+  ✓   502 [mobile] › visual/visual.spec.ts:41:7 › molecules-checkcard--playground (627ms)
+  ✓   503 [mobile] › visual/visual.spec.ts:41:7 › molecules-checkcard--upfront (554ms)
+  ✓   504 [mobile] › visual/visual.spec.ts:41:7 › molecules-checkcard--no-onion-garlic (613ms)
+  ✓   505 [mobile] › visual/visual.spec.ts:41:7 › molecules-checkcard--invalid (719ms)
+  ✓   506 [mobile] › visual/visual.spec.ts:41:7 › molecules-checkcard--invalid-checked (661ms)
+  ✓   507 [mobile] › visual/visual.spec.ts:41:7 › molecules-checkcard--disabled (686ms)
+  ✓   508 [mobile] › visual/visual.spec.ts:41:7 › molecules-checkcard--disabled-checked (849ms)
+  ✓   509 [mobile] › visual/visual.spec.ts:41:7 › molecules-chipgroup--playground (803ms)
+  ✓   510 [mobile] › visual/visual.spec.ts:41:7 › molecules-chipgroup--which-meals (706ms)
+  ✓   511 [mobile] › visual/visual.spec.ts:41:7 › molecules-chipgroup--make-it-yours (727ms)
+  ✓   512 [mobile] › visual/visual.spec.ts:41:7 › molecules-chipgroup--standing-add-ons (769ms)
+  ✓   513 [mobile] › visual/visual.spec.ts:41:7 › molecules-chipgroup--starter-picks (730ms)
+  ✓   514 [mobile] › visual/visual.spec.ts:41:7 › molecules-chipgroup--segmented (719ms)
+  ✓   515 [mobile] › visual/visual.spec.ts:41:7 › molecules-chipgroup--with-error (683ms)
+  ✓   516 [mobile] › visual/visual.spec.ts:41:7 › molecules-chipgroup--on-ink (732ms)
+  ✓   517 [mobile] › visual/visual.spec.ts:41:7 › molecules-chipgroup--on-surfaces-story (746ms)
+  ✓   518 [mobile] › visual/visual.spec.ts:41:7 › molecules-chipgroup--on-surfaces-at-360 (820ms)
+  ✓   519 [mobile] › visual/visual.spec.ts:41:7 › molecules-choicecardgroup--playground (770ms)
+  ✓   520 [mobile] › visual/visual.spec.ts:41:7 › molecules-choicecardgroup--plates (823ms)
+  ✓   521 [mobile] › visual/visual.spec.ts:41:7 › molecules-choicecardgroup--with-error (788ms)
+  ✓   522 [mobile] › visual/visual.spec.ts:41:7 › molecules-choicecardgroup--plan-lengths (834ms)
+  ✓   523 [mobile] › visual/visual.spec.ts:41:7 › molecules-choicecardgroup--long-badge-in-narrow-tile (847ms)
+  ✓   524 [mobile] › visual/visual.spec.ts:41:7 › molecules-choicecardgroup--dawats (891ms)
+  ✓   525 [mobile] › visual/visual.spec.ts:41:7 › molecules-choicecardgroup--platters (831ms)
+  ✓   526 [mobile] › visual/visual.spec.ts:41:7 › molecules-choicecardgroup--service (801ms)
+  ✓   527 [mobile] › visual/visual.spec.ts:41:7 › molecules-choicecardgroup--service-at-360 (796ms)
+  ✓   528 [mobile] › visual/visual.spec.ts:41:7 › molecules-choicecardgroup--trial-on-brand (663ms)
+  ✓   529 [mobile] › visual/visual.spec.ts:41:7 › molecules-choicecardgroup--decide-list (622ms)
+  ✓   530 [mobile] › visual/visual.spec.ts:41:7 › molecules-combobox--playground (764ms)
+  ✓   531 [mobile] › visual/visual.spec.ts:41:7 › molecules-combobox--with-descriptions (869ms)
+  ✓   532 [mobile] › visual/visual.spec.ts:41:7 › molecules-combobox--loading (822ms)
+  ✓   533 [mobile] › visual/visual.spec.ts:41:7 › molecules-combobox--empty (802ms)
+  ✓   534 [mobile] › visual/visual.spec.ts:41:7 › molecules-combobox--disabled-options (909ms)
+  ✓   535 [mobile] › visual/visual.spec.ts:41:7 › molecules-combobox--clearable (668ms)
+  ✓   536 [mobile] › visual/visual.spec.ts:41:7 › molecules-combobox--disabled (795ms)
+  ✓   537 [mobile] › visual/visual.spec.ts:41:7 › molecules-combobox--in-field-with-error (769ms)
+  ✓   538 [mobile] › visual/visual.spec.ts:41:7 › molecules-combobox--controlled (864ms)
+  ✓   540 [mobile] › visual/visual.spec.ts:41:7 › molecules-combobox--selected (697ms)
+  ✓   539 [mobile] › visual/visual.spec.ts:41:7 › molecules-combobox--mobile-360 (834ms)
+  ✓   541 [mobile] › visual/visual.spec.ts:41:7 › molecules-couponticket--playground (637ms)
+  ✓   542 [mobile] › visual/visual.spec.ts:41:7 › molecules-couponticket--brand (773ms)
+  ✓   543 [mobile] › visual/visual.spec.ts:41:7 › molecules-couponticket--stub-focus-ring (784ms)
+  ✓   544 [mobile] › visual/visual.spec.ts:41:7 › molecules-couponticket--stub-focus-ring-narrow (749ms)
+  ✓   545 [mobile] › visual/visual.spec.ts:41:7 › molecules-couponticket--light (739ms)
+  ✓   546 [mobile] › visual/visual.spec.ts:41:7 › molecules-couponticket--on-pink-artwork (706ms)
+  ✓   547 [mobile] › visual/visual.spec.ts:41:7 › molecules-couponticket--on-tinted-page (749ms)
+  ✓   548 [mobile] › visual/visual.spec.ts:41:7 › molecules-couponticket--long-code (670ms)
+  ✓   549 [mobile] › visual/visual.spec.ts:41:7 › molecules-couponticket--narrow (740ms)
+  ✓   550 [mobile] › visual/visual.spec.ts:41:7 › molecules-datepicker--date-picker-playground (848ms)
+  ✓   551 [mobile] › visual/visual.spec.ts:41:7 › molecules-datepicker--empty (901ms)
+  ✓   552 [mobile] › visual/visual.spec.ts:41:7 › molecules-datepicker--disabled-days (777ms)
+  ✓   553 [mobile] › visual/visual.spec.ts:41:7 › molecules-datepicker--disabled (776ms)
+  ✓   554 [mobile] › visual/visual.spec.ts:41:7 › molecules-datepicker--in-field-with-error (760ms)
+  ✓   555 [mobile] › visual/visual.spec.ts:41:7 › molecules-datepicker--controlled (695ms)
+  ✓   556 [mobile] › visual/visual.spec.ts:41:7 › molecules-datepicker--mobile-360 (707ms)
+  ✓   557 [mobile] › visual/visual.spec.ts:41:7 › molecules-datepicker--calendar-single (679ms)
+  ✓   558 [mobile] › visual/visual.spec.ts:41:7 › molecules-datepicker--calendar-range (715ms)
+  ✓   559 [mobile] › visual/visual.spec.ts:41:7 › molecules-datepicker--calendar-disabled-days (655ms)
+  ✓   560 [mobile] › visual/visual.spec.ts:41:7 › molecules-datepicker--two-months (765ms)
+  ✓   561 [mobile] › visual/visual.spec.ts:41:7 › molecules-emptystate--playground (627ms)
+  ✓   562 [mobile] › visual/visual.spec.ts:41:7 › molecules-emptystate--with-icon (631ms)
+  ✓   563 [mobile] › visual/visual.spec.ts:41:7 › molecules-emptystate--large (664ms)
+  ✓   564 [mobile] › visual/visual.spec.ts:41:7 › molecules-emptystate--in-cart (662ms)
+  ✓   565 [mobile] › visual/visual.spec.ts:41:7 › molecules-emptystate--on-surfaces-story (651ms)
+  ✓   566 [mobile] › visual/visual.spec.ts:41:7 › molecules-featureitem--playground (612ms)
+  ✓   567 [mobile] › visual/visual.spec.ts:41:7 › molecules-featureitem--why-us (675ms)
+  ✓   568 [mobile] › visual/visual.spec.ts:41:7 › molecules-featureitem--office-perks (696ms)
+  ✓   569 [mobile] › visual/visual.spec.ts:41:7 › molecules-featureitem--what-you-get (794ms)
+  ✓   570 [mobile] › visual/visual.spec.ts:41:7 › molecules-featureitem--on-surfaces-story (680ms)
+  ✓   571 [mobile] › visual/visual.spec.ts:41:7 › molecules-field--playground (808ms)
+  ✓   572 [mobile] › visual/visual.spec.ts:41:7 › molecules-field--stack-with-hint (855ms)
+  ✓   573 [mobile] › visual/visual.spec.ts:41:7 › molecules-field--required (712ms)
+  ✓   574 [mobile] › visual/visual.spec.ts:41:7 › molecules-field--with-error (753ms)
+  ✓   575 [mobile] › visual/visual.spec.ts:41:7 › molecules-field--with-success (718ms)
+  ✓   576 [mobile] › visual/visual.spec.ts:41:7 › molecules-field--with-warning (788ms)
+  ✓   577 [mobile] › visual/visual.spec.ts:41:7 › molecules-field--optional (860ms)
+  ✓   578 [mobile] › visual/visual.spec.ts:41:7 › molecules-field--side (986ms)
+  ✓   579 [mobile] › visual/visual.spec.ts:41:7 › molecules-field--control-modes (898ms)
+  ✓   580 [mobile] › visual/visual.spec.ts:41:7 › molecules-filterbar--playground (896ms)
+  ✓   581 [mobile] › visual/visual.spec.ts:41:7 › molecules-filterbar--wrap (865ms)
+  ✓   582 [mobile] › visual/visual.spec.ts:41:7 › molecules-filterbar--scroll (731ms)
+  ✓   583 [mobile] › visual/visual.spec.ts:41:7 › molecules-filterbar--icons (629ms)
+  ✓   584 [mobile] › visual/visual.spec.ts:41:7 › molecules-filterbar--with-trailing (640ms)
+  ✓   585 [mobile] › visual/visual.spec.ts:41:7 › molecules-filterbar--scroll-pinned (667ms)
+  ✓   586 [mobile] › visual/visual.spec.ts:41:7 › molecules-filterbar--on-surfaces-story (633ms)
+  ✓   587 [mobile] › visual/visual.spec.ts:41:7 › molecules-keyvaluelist--playground (634ms)
+  ✓   588 [mobile] › visual/visual.spec.ts:41:7 › molecules-keyvaluelist--your-box (740ms)
+  ✓   589 [mobile] › visual/visual.spec.ts:41:7 › molecules-keyvaluelist--booking-rules (731ms)
+  ✓   590 [mobile] › visual/visual.spec.ts:41:7 › molecules-keyvaluelist--booking-rules-at-360 (692ms)
+  ✓   591 [mobile] › visual/visual.spec.ts:41:7 › molecules-keyvaluelist--customisations (636ms)
+  ✓   592 [mobile] › visual/visual.spec.ts:41:7 › molecules-keyvaluelist--upgrade-prices (670ms)
+  ✓   593 [mobile] › visual/visual.spec.ts:41:7 › molecules-keyvaluelist--quote-lines (601ms)
+  ✓   595 [mobile] › visual/visual.spec.ts:41:7 › molecules-linkcard--playground (611ms)
+  ✓   594 [mobile] › visual/visual.spec.ts:41:7 › molecules-keyvaluelist--on-surfaces-story (719ms)
+  ✓   596 [mobile] › visual/visual.spec.ts:41:7 › molecules-linkcard--home-doors (601ms)
+  ✓   597 [mobile] › visual/visual.spec.ts:41:7 › molecules-linkcard--about-ctas (674ms)
+  ✓   598 [mobile] › visual/visual.spec.ts:41:7 › molecules-linkcard--as-child (639ms)
+  ✓   599 [mobile] › visual/visual.spec.ts:41:7 › molecules-listrow--playground (628ms)
+  ✓   600 [mobile] › visual/visual.spec.ts:41:7 › molecules-listrow--trailing-control (666ms)
+  ✓   601 [mobile] › visual/visual.spec.ts:41:7 › molecules-listrow--with-description (922ms)
+  ✓   602 [mobile] › visual/visual.spec.ts:41:7 › molecules-listrow--trailing-badge (880ms)
+  ✓   603 [mobile] › visual/visual.spec.ts:41:7 › molecules-listrow--danger (1.1s)
+  ✓   604 [mobile] › visual/visual.spec.ts:41:7 › molecules-listrow--account-list (1.2s)
+  ✓   607 [mobile] › visual/visual.spec.ts:41:7 › molecules-logolockup--pink (796ms)
+  ✓   605 [mobile] › visual/visual.spec.ts:41:7 › molecules-listrow--narrow (1.5s)
+  ✓   606 [mobile] › visual/visual.spec.ts:41:7 › molecules-logolockup--playground (1.4s)
+  ✓   608 [mobile] › visual/visual.spec.ts:41:7 › molecules-logolockup--white (1.0s)
+  ✓   609 [mobile] › visual/visual.spec.ts:41:7 › molecules-logolockup--centred (873ms)
+  ✓   610 [mobile] › visual/visual.spec.ts:41:7 › molecules-logolockup--badge (821ms)
+  ✓   611 [mobile] › visual/visual.spec.ts:41:7 › molecules-logolockup--wordmark (776ms)
+  ✓   612 [mobile] › visual/visual.spec.ts:41:7 › molecules-logolockup--sizes (608ms)
+  ✓   613 [mobile] › visual/visual.spec.ts:41:7 › molecules-logolockup--clear-space (597ms)
+  ✓   614 [mobile] › visual/visual.spec.ts:41:7 › molecules-logolockup--sx (711ms)
+  ✓   615 [mobile] › visual/visual.spec.ts:41:7 › molecules-loyaltycard--playground (742ms)
+  ✓   616 [mobile] › visual/visual.spec.ts:41:7 › molecules-loyaltycard--in-progress (729ms)
+  ✓   617 [mobile] › visual/visual.spec.ts:41:7 › molecules-loyaltycard--one-left (718ms)
+  ✓   618 [mobile] › visual/visual.spec.ts:41:7 › molecules-loyaltycard--complete (792ms)
+  ✓   619 [mobile] › visual/visual.spec.ts:41:7 › molecules-loyaltycard--brand (783ms)
+  ✓   620 [mobile] › visual/visual.spec.ts:41:7 › molecules-loyaltycard--empty (719ms)
+  ✓   621 [mobile] › visual/visual.spec.ts:41:7 › molecules-loyaltycard--long-reward (760ms)
+  ✓   622 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemcard--playground (803ms)
+  ✓   623 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemcard--variants (707ms)
+  ✓   624 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemcard--as-link (763ms)
+  ✓   625 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemcard--keyboard-focus (795ms)
+  ✓   626 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemcard--in-a-grid (793ms)
+  ✓   627 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemcard--narrow (885ms)
+  ✓   628 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemrow--playground (871ms)
+  ✓   629 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemrow--full (743ms)
+  ✓   630 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemrow--discount (892ms)
+  ✓   631 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemrow--devanagari (888ms)
+  ✓   632 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemrow--minimal (775ms)
+  ✓   633 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemrow--as-a-menu-section (774ms)
+  ✓   634 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemrow--spice-levels (860ms)
+  ✓   635 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemrow--in-cart (711ms)
+  ✓   636 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemrow--narrow (832ms)
+  ✓   637 [mobile] › visual/visual.spec.ts:41:7 › molecules-menuitemrow--on-surfaces-story (852ms)
+  ✓   638 [mobile] › visual/visual.spec.ts:41:7 › molecules-offerseal--playground (828ms)
+  ✓   639 [mobile] › visual/visual.spec.ts:41:7 › molecules-offerseal--colors (723ms)
+  ✓   640 [mobile] › visual/visual.spec.ts:41:7 › molecules-offerseal--values (639ms)
+  ✓   641 [mobile] › visual/visual.spec.ts:41:7 › molecules-offerseal--handoff-hero (645ms)
+  ✓   642 [mobile] › visual/visual.spec.ts:41:7 › molecules-offerseal--sizes (732ms)
+  ✓   643 [mobile] › visual/visual.spec.ts:41:7 › molecules-offerseal--floor-360 (753ms)
+  ✓   644 [mobile] › visual/visual.spec.ts:41:7 › molecules-offerseal--bleed-off-corner (924ms)
+  ✓   645 [mobile] › visual/visual.spec.ts:41:7 › molecules-otpinput--playground (1.0s)
+  ✓   646 [mobile] › visual/visual.spec.ts:41:7 › molecules-otpinput--partial (963ms)
+  ✓   647 [mobile] › visual/visual.spec.ts:41:7 › molecules-otpinput--complete (954ms)
+  ✓   648 [mobile] › visual/visual.spec.ts:41:7 › molecules-otpinput--verified (1.0s)
+  ✓   649 [mobile] › visual/visual.spec.ts:41:7 › molecules-otpinput--expired (1.1s)
+  ✓   650 [mobile] › visual/visual.spec.ts:41:7 › molecules-otpinput--disabled (1.1s)
+  ✓   652 [mobile] › visual/visual.spec.ts:41:7 › molecules-otpinput--narrow (904ms)
+  ✓   651 [mobile] › visual/visual.spec.ts:41:7 › molecules-otpinput--with-hint (1.3s)
+  ✓   653 [mobile] › visual/visual.spec.ts:41:7 › molecules-outletcard--playground (967ms)
+  ✓   654 [mobile] › visual/visual.spec.ts:41:7 › molecules-outletcard--with-image (910ms)
+  ✓   655 [mobile] › visual/visual.spec.ts:41:7 › molecules-outletcard--without-image (886ms)
+  ✓   656 [mobile] › visual/visual.spec.ts:41:7 › molecules-outletcard--as-link (824ms)
+  ✓   657 [mobile] › visual/visual.spec.ts:41:7 › molecules-outletcard--keyboard-focus (887ms)
+  ✓   658 [mobile] › visual/visual.spec.ts:41:7 › molecules-outletcard--status-states (1.0s)
+  ✓   659 [mobile] › visual/visual.spec.ts:41:7 › molecules-outletcard--custom-status-line (921ms)
+  ✓   660 [mobile] › visual/visual.spec.ts:41:7 › molecules-outletcard--narrow (899ms)
+  ✓   661 [mobile] › visual/visual.spec.ts:41:7 › molecules-pagination--playground (889ms)
+  ✓   662 [mobile] › visual/visual.spec.ts:41:7 › molecules-pagination--first-page (851ms)
+  ✓   663 [mobile] › visual/visual.spec.ts:41:7 › molecules-pagination--three-pages (830ms)
+  ✓   664 [mobile] › visual/visual.spec.ts:41:7 › molecules-pagination--last-page (870ms)
+  ✓   665 [mobile] › visual/visual.spec.ts:41:7 › molecules-pagination--many-pages (822ms)
+  ✓   666 [mobile] › visual/visual.spec.ts:41:7 › molecules-pagination--narrow (817ms)
+  ✓   667 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricesummary--playground (750ms)
+  ✓   668 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricesummary--with-discount (628ms)
+  ✓   669 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricesummary--on-ink (587ms)
+  ✓   670 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricesummary--surfaces (662ms)
+  ✓   671 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricesummary--with-strong-line (613ms)
+  ✓   672 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricesummary--receipt (622ms)
+  ✓   673 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricesummary--total-only (621ms)
+  ✓   674 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricesummary--narrow (684ms)
+  ✓   675 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricingcard--playground (601ms)
+  ✓   676 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricingcard--home-plates (656ms)
+  ✓   677 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricingcard--homely-plates (715ms)
+  ✓   678 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricingcard--catering-dawats (755ms)
+  ✓   679 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricingcard--office-plates (641ms)
+  ✓   680 [mobile] › visual/visual.spec.ts:41:7 › molecules-pricingcard--long-name (627ms)
+  ✓   681 [mobile] › visual/visual.spec.ts:41:7 › molecules-quantitystepper--playground (635ms)
+  ✓   682 [mobile] › visual/visual.spec.ts:41:7 › molecules-quantitystepper--sizes (533ms)
+  ✓   683 [mobile] › visual/visual.spec.ts:41:7 › molecules-quantitystepper--at-min (611ms)
+  ✓   684 [mobile] › visual/visual.spec.ts:41:7 › molecules-quantitystepper--min-zero (611ms)
+  ✓   685 [mobile] › visual/visual.spec.ts:41:7 › molecules-quantitystepper--at-max (580ms)
+  ✓   686 [mobile] › visual/visual.spec.ts:41:7 › molecules-quantitystepper--in-a-cart-row (643ms)
+  ✓   687 [mobile] › visual/visual.spec.ts:41:7 › molecules-quantitystepper--typed-guests (631ms)
+  ✓   688 [mobile] › visual/visual.spec.ts:41:7 › molecules-reviewcard--playground (601ms)
+  ✓   689 [mobile] › visual/visual.spec.ts:41:7 › molecules-reviewcard--default (664ms)
+  ✓   690 [mobile] › visual/visual.spec.ts:41:7 › molecules-reviewcard--brand (653ms)
+  ✓   691 [mobile] › visual/visual.spec.ts:41:7 › molecules-reviewcard--symbol-mark (669ms)
+  ✓   692 [mobile] › visual/visual.spec.ts:41:7 › molecules-reviewcard--google-review (690ms)
+  ✓   693 [mobile] › visual/visual.spec.ts:41:7 › molecules-reviewcard--without-score (593ms)
+  ✓   694 [mobile] › visual/visual.spec.ts:41:7 › molecules-searchfield--playground (602ms)
+  ✓   695 [mobile] › visual/visual.spec.ts:41:7 › molecules-searchfield--with-value (700ms)
+  ✓   696 [mobile] › visual/visual.spec.ts:41:7 › molecules-searchfield--clear-label (581ms)
+  ✓   697 [mobile] › visual/visual.spec.ts:41:7 › molecules-searchfield--loading (583ms)
+  ✓   698 [mobile] › visual/visual.spec.ts:41:7 › molecules-searchfield--no-results (596ms)
+  ✓   699 [mobile] › visual/visual.spec.ts:41:7 › molecules-searchfield--disabled (606ms)
+  ✓   700 [mobile] › visual/visual.spec.ts:41:7 › molecules-searchfield--small (576ms)
+  ✓   701 [mobile] › visual/visual.spec.ts:41:7 › molecules-searchfield--statuses (669ms)
+  ✓   702 [mobile] › visual/visual.spec.ts:41:7 › molecules-searchfield--narrow (674ms)
+  ✓   703 [mobile] › visual/visual.spec.ts:41:7 › molecules-sectionheader--playground (659ms)
+  ✓   704 [mobile] › visual/visual.spec.ts:41:7 › molecules-sectionheader--with-lede (574ms)
+  ✓   705 [mobile] › visual/visual.spec.ts:41:7 › molecules-sectionheader--centred (1.2s)
+  ✓   706 [mobile] › visual/visual.spec.ts:41:7 › molecules-sectionheader--on-brand (1.3s)
+  ✓   707 [mobile] › visual/visual.spec.ts:41:7 › molecules-sectionheader--surfaces (2.0s)
+  ✓   709 [mobile] › visual/visual.spec.ts:41:7 › molecules-sectionheader--narrow (2.8s)
+  ✓   708 [mobile] › visual/visual.spec.ts:41:7 › molecules-sectionheader--heading-levels (3.2s)
+  ✓   710 [mobile] › visual/visual.spec.ts:41:7 › molecules-slotpicker--playground (3.5s)
+  ✓   712 [mobile] › visual/visual.spec.ts:41:7 › molecules-slotpicker--disabled (2.7s)
+  ✓   711 [mobile] › visual/visual.spec.ts:41:7 › molecules-slotpicker--with-error (4.3s)
+  ✓   713 [mobile] › visual/visual.spec.ts:41:7 › molecules-slotpicker--columns (3.1s)
+  ✓   714 [mobile] › visual/visual.spec.ts:41:7 › molecules-slotpicker--statuses (3.3s)
+  ✘   716 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--playground (2.4s)
+  ✓   717 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--success (1.7s)
+  ✓   715 [mobile] › visual/visual.spec.ts:41:7 › molecules-slotpicker--narrow (3.1s)
+  ✓   719 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--undo-and-dismiss (1.2s)
+(node:18731) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   718 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--danger-with-retry (2.0s)
+  ✓   720 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--closed-by-parent (1.4s)
+  ✘   721 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--top-right (1.1s)
+  ✘   722 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--top-center (1.1s)
+  ✘   723 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--bottom-right (2.0s)
+(node:18842) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:18910) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   724 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--live-copy (3.3s)
+  ✘   725 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--brand (4.2s)
+(node:19365) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   726 [mobile] › visual/visual.spec.ts:41:7 › molecules-snackbar--narrow (4.7s)
+(node:18866) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   728 [mobile] › visual/visual.spec.ts:41:7 › molecules-speeddial--controlled (6.3s)
+  ✓   727 [mobile] › visual/visual.spec.ts:41:7 › molecules-speeddial--directions (6.4s)
+  ✓   730 [mobile] › visual/visual.spec.ts:41:7 › molecules-stat--playground (3.6s)
+  ✓   732 [mobile] › visual/visual.spec.ts:41:7 › molecules-stat--default (3.6s)
+  ✓   729 [mobile] › visual/visual.spec.ts:41:7 › molecules-speeddial--mobile-360 (7.8s)
+  ✓   734 [mobile] › visual/visual.spec.ts:41:7 › molecules-stat--inverse-centre (3.2s)
+  ✓   733 [mobile] › visual/visual.spec.ts:41:7 › molecules-stat--icon-brand (5.8s)
+  ✓   737 [mobile] › visual/visual.spec.ts:41:7 › molecules-stat--narrow (3.1s)
+  ✓   735 [mobile] › visual/visual.spec.ts:41:7 › molecules-stat--with-sub (5.2s)
+  ✓   731 [mobile] › visual/visual.spec.ts:41:7 › molecules-speeddial--playground (9.9s)
+  ✓   739 [mobile] › visual/visual.spec.ts:41:7 › molecules-steptracker--playground (2.5s)
+  ✓   736 [mobile] › visual/visual.spec.ts:41:7 › molecules-stat--row (7.7s)
+  ✓   740 [mobile] › visual/visual.spec.ts:41:7 › molecules-steptracker--horizontal (4.2s)
+  ✓   741 [mobile] › visual/visual.spec.ts:41:7 › molecules-steptracker--on-brand (4.4s)
+  ✓   742 [mobile] › visual/visual.spec.ts:41:7 › molecules-steptracker--complete (5.2s)
+  ✓   745 [mobile] › visual/visual.spec.ts:41:7 › molecules-steptracker--vertical-surfaces (2.2s)
+  ✓   738 [mobile] › visual/visual.spec.ts:41:7 › molecules-stat--on-surfaces-story (10.4s)
+  ✓   743 [mobile] › visual/visual.spec.ts:41:7 › molecules-steptracker--surfaces (6.6s)
+  ✓   746 [mobile] › visual/visual.spec.ts:41:7 › molecules-steptracker--narrow (5.2s)
+  ✓   747 [mobile] › visual/visual.spec.ts:41:7 › molecules-steps--playground (5.7s)
+  ✓   748 [mobile] › visual/visual.spec.ts:41:7 › molecules-steps--how-it-works (5.9s)
+  ✓   749 [mobile] › visual/visual.spec.ts:41:7 › molecules-steps--how-to-book (5.0s)
+  ✓   750 [mobile] › visual/visual.spec.ts:41:7 › molecules-steps--starting-takes-one-message (3.6s)
+  ✓   752 [mobile] › visual/visual.spec.ts:41:7 › molecules-stickyactionbar--playground (2.4s)
+  ✓   751 [mobile] › visual/visual.spec.ts:41:7 › molecules-steps--on-surfaces-story (4.7s)
+  ✓   755 [mobile] › visual/visual.spec.ts:41:7 › molecules-stickyactionbar--in-a-scrolling-page (2.8s)
+  ✓   744 [mobile] › visual/visual.spec.ts:41:7 › molecules-steptracker--not-started (15.6s)
+  ✓   753 [mobile] › visual/visual.spec.ts:41:7 › molecules-stickyactionbar--plan-calculator (5.7s)
+  ✓   756 [mobile] › visual/visual.spec.ts:41:7 › molecules-table--price-list (3.8s)
+  ✓   758 [mobile] › visual/visual.spec.ts:41:7 › molecules-table--catering-glance (2.6s)
+  ✓   757 [mobile] › visual/visual.spec.ts:41:7 › molecules-table--scrolls-at-360 (4.3s)
+  ✓   759 [mobile] › visual/visual.spec.ts:41:7 › molecules-table--box-compare (4.5s)
+  ✓   760 [mobile] › visual/visual.spec.ts:41:7 › molecules-table--offers (4.3s)
+  ✓   762 [mobile] › visual/visual.spec.ts:41:7 › molecules-table--plan-vs-app-at-360 (3.0s)
+  ✓   761 [mobile] › visual/visual.spec.ts:41:7 › molecules-table--plan-vs-app (5.4s)
+  ✓   754 [mobile] › visual/visual.spec.ts:41:7 › molecules-stickyactionbar--dawat-calculator (13.0s)
+  ✓   763 [mobile] › visual/visual.spec.ts:41:7 › molecules-table--caption-visible (4.1s)
+  ✓   765 [mobile] › visual/visual.spec.ts:41:7 › molecules-tabs--two-items (3.5s)
+  ✓   767 [mobile] › visual/visual.spec.ts:41:7 › molecules-tabs--with-disabled-tab (1.7s)
+  ✓   766 [mobile] › visual/visual.spec.ts:41:7 › molecules-tabs--segmented (3.2s)
+  ✓   764 [mobile] › visual/visual.spec.ts:41:7 › molecules-tabs--playground (5.5s)
+  ✓   770 [mobile] › visual/visual.spec.ts:41:7 › molecules-tabs--with-icons (1.4s)
+  ✓   769 [mobile] › visual/visual.spec.ts:41:7 › molecules-tabs--full-width-long-labels (2.1s)
+  ✓   771 [mobile] › visual/visual.spec.ts:41:7 › molecules-tabs--narrow (1.4s)
+  ✓   772 [mobile] › visual/visual.spec.ts:41:7 › molecules-tabs--on-surfaces-story (1.3s)
+  ✓   768 [mobile] › visual/visual.spec.ts:41:7 › molecules-tabs--full-width (3.9s)
+  ✘   773 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--playground (1.9s)
+  ✓   777 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--custom-glyph (853ms)
+  ✘   775 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--status (1.5s)
+(node:20953) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   774 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--tones (2.3s)
+(node:20969) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   776 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--pop (1.9s)
+  ✓   778 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--contained (874ms)
+(node:20985) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20990) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   781 [mobile] › visual/visual.spec.ts:41:7 › molecules-togglebuttongroup--view-switcher (1.0s)
+  ✓   784 [mobile] › visual/visual.spec.ts:41:7 › molecules-togglebuttongroup--vertical (1.2s)
+  ✓   779 [mobile] › visual/visual.spec.ts:41:7 › molecules-toast--add-to-order (2.4s)
+  ✓   782 [mobile] › visual/visual.spec.ts:41:7 › molecules-togglebuttongroup--multiple (2.5s)
+  ✓   786 [mobile] › visual/visual.spec.ts:41:7 › molecules-togglebuttongroup--colors (904ms)
+  ✓   783 [mobile] › visual/visual.spec.ts:41:7 › molecules-togglebuttongroup--enforce-value-set (2.8s)
+  ✓   785 [mobile] › visual/visual.spec.ts:41:7 › molecules-togglebuttongroup--sizes (1.9s)
+  ✓   780 [mobile] › visual/visual.spec.ts:41:7 › molecules-togglebuttongroup--exclusive (4.0s)
+  ✓   787 [mobile] › visual/visual.spec.ts:41:7 › molecules-togglebuttongroup--full-width (1.1s)
+  ✓   788 [mobile] › visual/visual.spec.ts:41:7 › molecules-togglebuttongroup--disabled (1.1s)
+  ✓   790 [mobile] › visual/visual.spec.ts:41:7 › molecules-togglebuttongroup--mobile-360 (664ms)
+  ✓   789 [mobile] › visual/visual.spec.ts:41:7 › molecules-togglebuttongroup--on-surfaces (932ms)
+  ✓   791 [mobile] › visual/visual.spec.ts:41:7 › motion-specimens--durations (798ms)
+  ✓   792 [mobile] › visual/visual.spec.ts:41:7 › motion-specimens--easings (776ms)
+  ✓   793 [mobile] › visual/visual.spec.ts:41:7 › motion-specimens--animations (869ms)
+  ✓   794 [mobile] › visual/visual.spec.ts:41:7 › motion-specimens--motion-tokens (973ms)
+  ✓   795 [mobile] › visual/visual.spec.ts:41:7 › motion-specimens--states (1.2s)
+  ✓   796 [mobile] › visual/visual.spec.ts:41:7 › motion-specimens--state-tokens (994ms)
+  ✓   797 [mobile] › visual/visual.spec.ts:41:7 › motion-specimens--form-states (925ms)
+  ✓   798 [mobile] › visual/visual.spec.ts:41:7 › motion-specimens--section-reveal (889ms)
+  ✘   799 [mobile] › visual/visual.spec.ts:41:7 › organisms-actiondock--playground (1.0s)
+  ✘   800 [mobile] › visual/visual.spec.ts:41:7 › organisms-actiondock--mobile (1.0s)
+  ✘   801 [mobile] › visual/visual.spec.ts:41:7 › organisms-actiondock--tablet (1.2s)
+(node:21440) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   802 [mobile] › visual/visual.spec.ts:41:7 › organisms-actiondock--desktop (1.3s)
+  ✘   803 [mobile] › visual/visual.spec.ts:41:7 › organisms-actiondock--primary-only (1.2s)
+(node:21469) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21475) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21476) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21483) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   804 [mobile] › visual/visual.spec.ts:41:7 › organisms-cartpanel--playground (1.0s)
+  ✓   809 [mobile] › visual/visual.spec.ts:41:7 › organisms-cartpanel--mobile (947ms)
+  ✓   808 [mobile] › visual/visual.spec.ts:41:7 › organisms-cartpanel--dine-in (1.5s)
+  ✓   807 [mobile] › visual/visual.spec.ts:41:7 › organisms-cartpanel--one-line (1.9s)
+  ✓   806 [mobile] › visual/visual.spec.ts:41:7 › organisms-cartpanel--empty (2.5s)
+  ✓   805 [mobile] › visual/visual.spec.ts:41:7 › organisms-cartpanel--filled (2.7s)
+  ✓   810 [mobile] › visual/visual.spec.ts:41:7 › organisms-cartpanel--on-surfaces-story (1.2s)
+  ✓   811 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--playground (1.2s)
+  ✓   812 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--ink-split (1.0s)
+  ✓   813 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--brand-centred (750ms)
+  ✓   814 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--soft-split (825ms)
+  ✓   815 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--handoff-office-strip (626ms)
+  ✓   816 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--handoff-taste-first (670ms)
+  ✓   817 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--without-pattern (661ms)
+  ✓   818 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--heading-only (781ms)
+  ✓   819 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--without-action (846ms)
+  ✓   820 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--mobile (945ms)
+  ✓   821 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--tablet (980ms)
+  ✓   823 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--playground (877ms)
+  ✓   822 [mobile] › visual/visual.spec.ts:41:7 › organisms-ctaband--desktop (1.4s)
+  ✓   824 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--centred-modal (1.1s)
+  ✓   825 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--sheet (1.0s)
+  ✓   826 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--large (879ms)
+  ✓   827 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--keyboard-flow (1.2s)
+  ✓   828 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--must-be-answered (1.6s)
+  ✓   829 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--inside-a-phone-frame (1.8s)
+  ✓   831 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--drawer-end (2.3s)
+  ✓   830 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--mobile (2.9s)
+  ✓   832 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--drawer-start (2.5s)
+  ✓   833 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--drawer-sizes (2.3s)
+  ✓   835 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--drawer-long-content (1.3s)
+  ✓   836 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--drawer-360 (1.0s)
+  ✓   837 [mobile] › visual/visual.spec.ts:41:7 › organisms-faqsection--playground (798ms)
+  ✓   834 [mobile] › visual/visual.spec.ts:41:7 › organisms-dialog--drawer-with-footer (2.6s)
+  ✓   838 [mobile] › visual/visual.spec.ts:41:7 › organisms-faqsection--default (829ms)
+  ✓   839 [mobile] › visual/visual.spec.ts:41:7 › organisms-faqsection--handoff-with-aside (951ms)
+  ✓   840 [mobile] › visual/visual.spec.ts:41:7 › organisms-faqsection--multiple (781ms)
+  ✓   841 [mobile] › visual/visual.spec.ts:41:7 › organisms-faqsection--second-open (843ms)
+  ✓   842 [mobile] › visual/visual.spec.ts:41:7 › organisms-faqsection--all-closed (695ms)
+  ✓   843 [mobile] › visual/visual.spec.ts:41:7 › organisms-faqsection--without-lede (1.1s)
+  ✓   844 [mobile] › visual/visual.spec.ts:41:7 › organisms-faqsection--heading-level-3 (1.4s)
+  ✓   845 [mobile] › visual/visual.spec.ts:41:7 › organisms-faqsection--mobile (1.6s)
+  ✓   846 [mobile] › visual/visual.spec.ts:41:7 › organisms-faqsection--tablet (1.6s)
+  ✓   847 [mobile] › visual/visual.spec.ts:41:7 › organisms-faqsection--desktop (1.7s)
+  ✓   849 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--brand-split (881ms)
+  ✓   848 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--playground (1.8s)
+  ✓   850 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--soft-centred (1.4s)
+  ✓   852 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--handoff-home (1.4s)
+  ✓   853 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--handoff-catering (1.5s)
+  ✓   854 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--handoff-office (1.5s)
+  ✓   855 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--headline-only (1.2s)
+  ✓   856 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--with-photograph (1.1s)
+  ✓   857 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--mobile (1.1s)
+  ✓   851 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--ink-split (3.1s)
+  ✓   858 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--tablet (817ms)
+  ✓   859 [mobile] › visual/visual.spec.ts:41:7 › organisms-herobanner--desktop (874ms)
+  ✓   860 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--playground (799ms)
+  ✓   861 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--grid-website (900ms)
+  ✓   863 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--grid-only (803ms)
+  ✓   862 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--list-app (934ms)
+  ✓   864 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--small-grid (803ms)
+  ✓   865 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--filter-by-category (758ms)
+  ✓   866 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--preselected-category (615ms)
+  ✓   867 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--with-lede (757ms)
+  ✓   868 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--empty-category (810ms)
+  ✓   870 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--tablet (802ms)
+  ✓   871 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--desktop (774ms)
+  ✓   869 [mobile] › visual/visual.spec.ts:41:7 › organisms-menulist--mobile (1.3s)
+  ✓   872 [mobile] › visual/visual.spec.ts:41:7 › organisms-ordertracker--playground (624ms)
+  ✓   873 [mobile] › visual/visual.spec.ts:41:7 › organisms-ordertracker--order-in (841ms)
+  ✓   874 [mobile] › visual/visual.spec.ts:41:7 › organisms-ordertracker--on-the-tandoor (930ms)
+  ✓   875 [mobile] › visual/visual.spec.ts:41:7 › organisms-ordertracker--ready (766ms)
+  ✓   876 [mobile] › visual/visual.spec.ts:41:7 › organisms-ordertracker--as-card (969ms)
+  ✓   877 [mobile] › visual/visual.spec.ts:41:7 › organisms-ordertracker--delivery-steps (1.0s)
+  ✓   878 [mobile] › visual/visual.spec.ts:41:7 › organisms-ordertracker--mobile (813ms)
+  ✓   879 [mobile] › visual/visual.spec.ts:41:7 › organisms-quotepanel--playground (679ms)
+  ✓   880 [mobile] › visual/visual.spec.ts:41:7 › organisms-quotepanel--handoff-plan (657ms)
+  ✓   881 [mobile] › visual/visual.spec.ts:41:7 › organisms-quotepanel--handoff-dawat (668ms)
+  ✓   882 [mobile] › visual/visual.spec.ts:41:7 › organisms-quotepanel--handoff-office (810ms)
+  ✓   883 [mobile] › visual/visual.spec.ts:41:7 › organisms-quotepanel--amount-only (796ms)
+  ✓   884 [mobile] › visual/visual.spec.ts:41:7 › organisms-quotepanel--mobile (880ms)
+  ✓   885 [mobile] › visual/visual.spec.ts:41:7 › organisms-quotepanel--tablet (858ms)
+  ✓   886 [mobile] › visual/visual.spec.ts:41:7 › organisms-quotepanel--desktop (775ms)
+  ✓   887 [mobile] › visual/visual.spec.ts:41:7 › organisms-reviewcarousel--playground (891ms)
+  ✓   888 [mobile] › visual/visual.spec.ts:41:7 › organisms-reviewcarousel--handoff-home (944ms)
+  ✓   889 [mobile] › visual/visual.spec.ts:41:7 › organisms-reviewcarousel--handoff-on-tint (869ms)
+  ✓   890 [mobile] › visual/visual.spec.ts:41:7 › organisms-reviewcarousel--one-review (886ms)
+  ✓   891 [mobile] › visual/visual.spec.ts:41:7 › organisms-reviewcarousel--empty (912ms)
+  ✓   892 [mobile] › visual/visual.spec.ts:41:7 › organisms-reviewcarousel--paging (770ms)
+  ✓   893 [mobile] › visual/visual.spec.ts:41:7 › organisms-reviewcarousel--mobile (934ms)
+  ✓   894 [mobile] › visual/visual.spec.ts:41:7 › organisms-reviewcarousel--tablet (807ms)
+  ✓   895 [mobile] › visual/visual.spec.ts:41:7 › organisms-reviewcarousel--desktop (935ms)
+  ✓   896 [mobile] › visual/visual.spec.ts:41:7 › organisms-sitefooter--playground (755ms)
+  ✓   897 [mobile] › visual/visual.spec.ts:41:7 › organisms-sitefooter--design-system-pink (940ms)
+  ✓   899 [mobile] › visual/visual.spec.ts:41:7 › organisms-sitefooter--columns-only (713ms)
+  ✓   898 [mobile] › visual/visual.spec.ts:41:7 › organisms-sitefooter--handoff-ink (914ms)
+  ✓   900 [mobile] › visual/visual.spec.ts:41:7 › organisms-sitefooter--four-columns (666ms)
+  ✓   901 [mobile] › visual/visual.spec.ts:41:7 › organisms-sitefooter--mobile (1.0s)
+  ✓   902 [mobile] › visual/visual.spec.ts:41:7 › organisms-sitefooter--tablet (874ms)
+  ✓   903 [mobile] › visual/visual.spec.ts:41:7 › organisms-sitefooter--desktop (845ms)
+  ✓   904 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--playground (712ms)
+  ✓   905 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--rest (672ms)
+  ✓   906 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--scrolled-with-cart (649ms)
+  ✓   907 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--cart-counts (630ms)
+  ✓   908 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--handoff-compact (1.1s)
+  ✓   909 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--six-links-at-1024 (1.4s)
+  ✓   911 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--six-links-at-1280 (1.2s)
+  ✓   912 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--six-links-at-1440 (1.2s)
+  ✓   913 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--six-links-at-1536 (779ms)
+  ✓   910 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--six-links-at-1279 (2.0s)
+  ✓   914 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--drawer-keyboard (976ms)
+  ✓   916 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--mobile (1.1s)
+  ✓   917 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--tablet (1.1s)
+  ✓   915 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--drawer-open (1.3s)
+  ✓   918 [mobile] › visual/visual.spec.ts:41:7 › organisms-siteheader--desktop (1.0s)
+  ✓   919 [mobile] › visual/visual.spec.ts:41:7 › organisms-statband--playground (721ms)
+  ✓   920 [mobile] › visual/visual.spec.ts:41:7 › organisms-statband--soft (916ms)
+  ✓   921 [mobile] › visual/visual.spec.ts:41:7 › organisms-statband--brand (928ms)
+  ✓   922 [mobile] › visual/visual.spec.ts:41:7 › organisms-statband--ink (1.1s)
+  ✓   923 [mobile] › visual/visual.spec.ts:41:7 › organisms-statband--four-stats (1.1s)
+  ✓   924 [mobile] › visual/visual.spec.ts:41:7 › organisms-statband--with-icons (1.2s)
+  ✓   925 [mobile] › visual/visual.spec.ts:41:7 › organisms-statband--with-sub-lines (638ms)
+  ✓   926 [mobile] › visual/visual.spec.ts:41:7 › organisms-statband--mobile (729ms)
+  ✓   927 [mobile] › visual/visual.spec.ts:41:7 › organisms-statband--tablet (806ms)
+  ✓   928 [mobile] › visual/visual.spec.ts:41:7 › organisms-statband--desktop (1.3s)
+  ✓   930 [mobile] › visual/visual.spec.ts:41:7 › organisms-tabbar--states (1.8s)
+  ✓   932 [mobile] › visual/visual.spec.ts:41:7 › organisms-tabbar--five-tabs (1.4s)
+  ✓   929 [mobile] › visual/visual.spec.ts:41:7 › organisms-tabbar--playground (2.1s)
+  ✓   933 [mobile] › visual/visual.spec.ts:41:7 › organisms-tabbar--as-links (1.0s)
+  ✓   931 [mobile] › visual/visual.spec.ts:41:7 › organisms-tabbar--four-tabs-with-count (2.0s)
+  ✓   934 [mobile] › visual/visual.spec.ts:41:7 › organisms-tabbar--each-destination-active (684ms)
+  ✓   935 [mobile] › visual/visual.spec.ts:41:7 › organisms-tabbar--mobile (730ms)
+  ✓   936 [mobile] › visual/visual.spec.ts:41:7 › organisms-testimonialwall--playground (806ms)
+  ✓   937 [mobile] › visual/visual.spec.ts:41:7 › organisms-testimonialwall--default (772ms)
+  ✓   938 [mobile] › visual/visual.spec.ts:41:7 › organisms-testimonialwall--brand-cards (905ms)
+  ✓   939 [mobile] › visual/visual.spec.ts:41:7 › organisms-testimonialwall--four-reviews (788ms)
+  ✓   940 [mobile] › visual/visual.spec.ts:41:7 › organisms-testimonialwall--on-tint (704ms)
+  ✓   941 [mobile] › visual/visual.spec.ts:41:7 › organisms-testimonialwall--with-lede (739ms)
+  ✓   942 [mobile] › visual/visual.spec.ts:41:7 › organisms-testimonialwall--without-scores (709ms)
+  ✓   943 [mobile] › visual/visual.spec.ts:41:7 › organisms-testimonialwall--mobile (736ms)
+  ✓   944 [mobile] › visual/visual.spec.ts:41:7 › organisms-testimonialwall--tablet (865ms)
+  ✓   945 [mobile] › visual/visual.spec.ts:41:7 › organisms-testimonialwall--desktop (1.1s)
+  ✓   946 [mobile] › visual/visual.spec.ts:41:7 › spacing-specimens--scale (1.1s)
+  ✓   948 [mobile] › visual/visual.spec.ts:41:7 › spacing-specimens--rhythm-tokens (952ms)
+  ✓   947 [mobile] › visual/visual.spec.ts:41:7 › spacing-specimens--rhythm (1.5s)
+  ✓   949 [mobile] › visual/visual.spec.ts:41:7 › spacing-specimens--chrome-tokens (1.0s)
+  ✓   951 [mobile] › visual/visual.spec.ts:41:7 › type-specimens--display-steps (1.1s)
+  ✓   952 [mobile] › visual/visual.spec.ts:41:7 › type-specimens--families-and-weights (1.1s)
+  ✓   953 [mobile] › visual/visual.spec.ts:41:7 › type-specimens--heading-steps (1.1s)
+  ✓   954 [mobile] › visual/visual.spec.ts:41:7 › type-specimens--body-steps (1.2s)
+  ✓   955 [mobile] › visual/visual.spec.ts:41:7 › type-specimens--overline-and-mono (804ms)
+  ✓   956 [mobile] › visual/visual.spec.ts:41:7 › type-specimens--devanagari (726ms)
+  ✓   957 [mobile] › visual/visual.spec.ts:41:7 › type-specimens--fluid-steps (1.1s)
+  ✓   958 [mobile] › visual/visual.spec.ts:41:7 › type-specimens--fluid-tokens (2.0s)
+  ✓   959 [mobile] › visual/visual.spec.ts:41:7 › website-homepage--homepage (1.9s)
+  ✓   961 [mobile] › visual/visual.spec.ts:41:7 › foundations-interactions--global-base (1.4s)
+  ✓   962 [mobile] › visual/visual.spec.ts:41:7 › foundations-system-specimens--spacing (725ms)
+  ✓   963 [mobile] › visual/visual.spec.ts:41:7 › foundations-system-specimens--display (769ms)
+  ✓   960 [mobile] › visual/visual.spec.ts:41:7 › website-homepage--homepage-360 (2.7s)
+  ✓   964 [mobile] › visual/visual.spec.ts:41:7 › foundations-system-specimens--size (722ms)
+  ✓   965 [mobile] › visual/visual.spec.ts:41:7 › foundations-system-specimens--flex-child (895ms)
+  ✓   966 [mobile] › visual/visual.spec.ts:41:7 › foundations-system-specimens--look (916ms)
+  ✓   967 [mobile] › visual/visual.spec.ts:41:7 › foundations-system-specimens--colour (1.1s)
+(node:23474) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   968 [mobile] › visual/visual.spec.ts:41:7 › foundations-system-specimens--responsive (1.1s)
+  ✘   950 [mobile] › visual/visual.spec.ts:41:7 › spacing-specimens--component-sizes (6.2s)
+(node:23484) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23507) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23513) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23514) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   969 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--missing-token-fails-loudly (2.3s)
+  ✓   973 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--copy-without-a-clipboard (1.3s)
+  ✓   971 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--utilities-derive-from-the-catalogue (2.8s)
+  ✓   974 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--swatch-paints-its-token (849ms)
+  ✓   970 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--numeric-steps-sort-by-number (3.2s)
+  ✓   972 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--copy-chips-copy-a-class (2.0s)
+  ✓   976 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--token-table-lists-every-match (707ms)
+  ✓   977 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--type-specimen-uses-the-step (732ms)
+  ✓   975 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--swatch-copies-name-and-value (881ms)
+  ✓   978 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--contrast-matrix-rates-each-pair (775ms)
+  ✓   979 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--spacing-scale-multiplies-the-unit (722ms)
+  ✓   980 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--radius-scale-shows-every-radius (693ms)
+  ✓   981 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--shadow-ladder-paints-each-step (703ms)
+  ✓   982 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-kit--motion-demo-runs-on-the-tokens (686ms)
+  ✓   987 [desktop] › visual/visual.spec.ts:41:7 › readme-canvas-geometry--padded-leaves-328 (1.2s)
+  ✓   986 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-prose--prose-table-that-fits-adds-no-tab-stop (1.3s)
+  ✓   983 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-prose--prose-table-scrolls-at-360 (1.8s)
+  ✓   984 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-prose--prose-tables-named-apart (2.1s)
+  ✓   988 [desktop] › visual/visual.spec.ts:41:7 › readme-canvas-geometry--centered-leaves-328 (691ms)
+  ✓   985 [desktop] › visual/visual.spec.ts:41:7 › readme-docs-prose--prose-table-names-stay-unique (2.0s)
+  ✓   989 [desktop] › visual/visual.spec.ts:41:7 › readme-canvas-geometry--fullscreen-leaves-360 (822ms)
+  ✓   990 [desktop] › visual/visual.spec.ts:41:7 › readme-system-sx--responsive-classes-have-css (928ms)
+  ✓   991 [desktop] › visual/visual.spec.ts:41:7 › app-ordering-app--home (1.3s)
+  ✓   992 [desktop] › visual/visual.spec.ts:41:7 › app-ordering-app--item-sheet-open (1.2s)
+  ✓   993 [desktop] › visual/visual.spec.ts:41:7 › app-ordering-app--menu (1.6s)
+  ✓   995 [desktop] › visual/visual.spec.ts:41:7 › app-ordering-app--tracking (1.8s)
+  ✓   994 [desktop] › visual/visual.spec.ts:41:7 › app-ordering-app--cart (2.2s)
+  ✓   998 [desktop] › visual/visual.spec.ts:41:7 › atoms-avatar--playground (1.3s)
+  ✓   996 [desktop] › visual/visual.spec.ts:41:7 › app-ordering-app--account (2.3s)
+  ✓   999 [desktop] › visual/visual.spec.ts:41:7 › atoms-avatar--sizes (1.9s)
+  ✓  1000 [desktop] › visual/visual.spec.ts:41:7 › atoms-avatar--initials (2.3s)
+  ✓   997 [desktop] › visual/visual.spec.ts:41:7 › app-ordering-app--home-360 (3.9s)
+  ✓  1002 [desktop] › visual/visual.spec.ts:41:7 › atoms-avatar--ring (1.9s)
+  ✓  1001 [desktop] › visual/visual.spec.ts:41:7 › atoms-avatar--icon-fallback (2.5s)
+  ✓  1003 [desktop] › visual/visual.spec.ts:41:7 › atoms-avatar--photo (1.8s)
+  ✓  1004 [desktop] › visual/visual.spec.ts:41:7 › atoms-avatar--in-a-guest-row (1.3s)
+  ✓  1006 [desktop] › visual/visual.spec.ts:41:7 › atoms-badge--colors (1.6s)
+  ✓  1005 [desktop] › visual/visual.spec.ts:41:7 › atoms-badge--playground (2.5s)
+  ✓  1008 [desktop] › visual/visual.spec.ts:41:7 › atoms-badge--with-icon (2.7s)
+  ✓  1010 [desktop] › visual/visual.spec.ts:41:7 › atoms-badge--sx (2.0s)
+  ✓  1007 [desktop] › visual/visual.spec.ts:41:7 › atoms-badge--status-colors (3.9s)
+  ✓  1009 [desktop] › visual/visual.spec.ts:41:7 › atoms-badge--on-a-menu-card (3.7s)
+  ✓  1011 [desktop] › visual/visual.spec.ts:41:7 › atoms-badge--on-surfaces-story (2.8s)
+  ✓  1012 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--playground (2.3s)
+  ✓  1013 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--states (2.6s)
+  ✓  1014 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--states-primary (2.2s)
+  ✓  1016 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--states-inverse (1.3s)
+  ✓  1017 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--states-on-brand (1.1s)
+  ✓  1015 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--states-ghost (2.5s)
+  ✓  1018 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--variants (1.0s)
+  ✓  1019 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--sizes (1.2s)
+  ✓  1020 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--leading-icon (1.3s)
+  ✓  1021 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--trailing-icon (1.1s)
+  ✓  1022 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--both-icons (871ms)
+  ✓  1023 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--icon-by-size (978ms)
+  ✓  1024 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--icon-after-by-size (784ms)
+  ✓  1025 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--on-brand (670ms)
+  ✓  1026 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--loading (719ms)
+  ✓  1027 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--disabled (647ms)
+  ✓  1028 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--full-width (721ms)
+  ✓  1029 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--sx (734ms)
+  ✓  1030 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--on-surfaces-story (920ms)
+  ✓  1032 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--as-child (890ms)
+  ✓  1031 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--nested-surfaces (1.1s)
+  ✓  1033 [desktop] › visual/visual.spec.ts:41:7 › atoms-button--long-label (831ms)
+  ✓  1034 [desktop] › visual/visual.spec.ts:41:7 › atoms-card--playground (839ms)
+  ✓  1035 [desktop] › visual/visual.spec.ts:41:7 › atoms-card--states (711ms)
+  ✓  1036 [desktop] › visual/visual.spec.ts:41:7 › atoms-card--default (742ms)
+  ✓  1037 [desktop] › visual/visual.spec.ts:41:7 › atoms-card--feature-quiet (788ms)
+  ✓  1038 [desktop] › visual/visual.spec.ts:41:7 › atoms-card--brand-ink (843ms)
+  ✓  1039 [desktop] › visual/visual.spec.ts:41:7 › atoms-card--padding-none (739ms)
+  ✓  1040 [desktop] › visual/visual.spec.ts:41:7 › atoms-card--paddings (748ms)
+  ✓  1041 [desktop] › visual/visual.spec.ts:41:7 › atoms-card--as-child (668ms)
+  ✓  1042 [desktop] › visual/visual.spec.ts:41:7 › atoms-card--interactive-with-link (1.0s)
+  ✓  1043 [desktop] › visual/visual.spec.ts:41:7 › atoms-card--light-island (1.1s)
+  ✓  1045 [desktop] › visual/visual.spec.ts:41:7 › atoms-checkbox--playground (1.1s)
+  ✓  1046 [desktop] › visual/visual.spec.ts:41:7 › atoms-checkbox--interaction (1.4s)
+  ✓  1044 [desktop] › visual/visual.spec.ts:41:7 › atoms-card--soft-inside-brand (1.9s)
+  ✓  1047 [desktop] › visual/visual.spec.ts:41:7 › atoms-checkbox--checked-and-unchecked (1.3s)
+  ✓  1049 [desktop] › visual/visual.spec.ts:41:7 › atoms-checkbox--description (882ms)
+  ✓  1048 [desktop] › visual/visual.spec.ts:41:7 › atoms-checkbox--price (1.2s)
+  ✓  1050 [desktop] › visual/visual.spec.ts:41:7 › atoms-checkbox--invalid (653ms)
+  ✓  1051 [desktop] › visual/visual.spec.ts:41:7 › atoms-checkbox--disabled (795ms)
+  ✓  1052 [desktop] › visual/visual.spec.ts:41:7 › atoms-checkbox--add-on-list (772ms)
+  ✓  1053 [desktop] › visual/visual.spec.ts:41:7 › atoms-checkbox--on-surfaces-story (736ms)
+  ✓  1055 [desktop] › visual/visual.spec.ts:41:7 › atoms-countdown--in-launch-bar (698ms)
+  ✓  1056 [desktop] › visual/visual.spec.ts:41:7 › atoms-countdown--ended (736ms)
+  ✓  1057 [desktop] › visual/visual.spec.ts:41:7 › atoms-countdown--ended-renders-nothing (702ms)
+  ✓  1058 [desktop] › visual/visual.spec.ts:41:7 › atoms-dietmark--playground (724ms)
+  ✓  1059 [desktop] › visual/visual.spec.ts:41:7 › atoms-dietmark--sizes (751ms)
+  ✓  1060 [desktop] › visual/visual.spec.ts:41:7 › atoms-dietmark--in-context (619ms)
+  ✓  1061 [desktop] › visual/visual.spec.ts:41:7 › atoms-divider--playground (720ms)
+  ✓  1054 [desktop] › visual/visual.spec.ts:41:7 › atoms-countdown--playground (2.1s)
+  ✓  1062 [desktop] › visual/visual.spec.ts:41:7 › atoms-divider--line (704ms)
+  ✓  1063 [desktop] › visual/visual.spec.ts:41:7 › atoms-divider--label (689ms)
+  ✓  1064 [desktop] › visual/visual.spec.ts:41:7 › atoms-divider--diamond (702ms)
+  ✓  1065 [desktop] › visual/visual.spec.ts:41:7 › atoms-divider--on-brand (709ms)
+  ✓  1066 [desktop] › visual/visual.spec.ts:41:7 › atoms-divider--between-menu-rows (872ms)
+  ✓  1067 [desktop] › visual/visual.spec.ts:41:7 › atoms-divider--vertical (982ms)
+  ✓  1068 [desktop] › visual/visual.spec.ts:41:7 › atoms-divider--on-surfaces-story (1.0s)
+  ✓  1069 [desktop] › visual/visual.spec.ts:41:7 › atoms-fab--playground (904ms)
+  ✓  1070 [desktop] › visual/visual.spec.ts:41:7 › atoms-fab--variants (1.0s)
+  ✓  1071 [desktop] › visual/visual.spec.ts:41:7 › atoms-fab--sizes (1.1s)
+  ✓  1072 [desktop] › visual/visual.spec.ts:41:7 › atoms-fab--extended (1.2s)
+  ✓  1074 [desktop] › visual/visual.spec.ts:41:7 › atoms-fab--as-link (1.1s)
+  ✓  1073 [desktop] › visual/visual.spec.ts:41:7 › atoms-fab--disabled (1.5s)
+  ✓  1075 [desktop] › visual/visual.spec.ts:41:7 › atoms-fab--on-grounds (1.2s)
+  ✓  1076 [desktop] › visual/visual.spec.ts:41:7 › atoms-fab--positions (983ms)
+  ✓  1077 [desktop] › visual/visual.spec.ts:41:7 › atoms-fab--pinned (875ms)
+  ✓  1078 [desktop] › visual/visual.spec.ts:41:7 › atoms-fab--mobile-360 (878ms)
+  ✓  1079 [desktop] › visual/visual.spec.ts:41:7 › atoms-iconbutton--playground (763ms)
+  ✓  1080 [desktop] › visual/visual.spec.ts:41:7 › atoms-iconbutton--states (753ms)
+  ✓  1081 [desktop] › visual/visual.spec.ts:41:7 › atoms-iconbutton--variants (955ms)
+  ✓  1082 [desktop] › visual/visual.spec.ts:41:7 › atoms-iconbutton--sizes (985ms)
+  ✓  1083 [desktop] › visual/visual.spec.ts:41:7 › atoms-iconbutton--on-brand (961ms)
+  ✓  1084 [desktop] › visual/visual.spec.ts:41:7 › atoms-iconbutton--disabled (926ms)
+  ✓  1085 [desktop] › visual/visual.spec.ts:41:7 › atoms-iconbutton--over-photography (813ms)
+  ✓  1086 [desktop] › visual/visual.spec.ts:41:7 › atoms-iconbutton--count (678ms)
+  ✓  1087 [desktop] › visual/visual.spec.ts:41:7 › atoms-iconbutton--icon-only (877ms)
+  ✓  1088 [desktop] › visual/visual.spec.ts:41:7 › atoms-iconbutton--on-surfaces-story (853ms)
+  ✓  1089 [desktop] › visual/visual.spec.ts:41:7 › atoms-iconbutton--as-child (890ms)
+  ✓  1090 [desktop] › visual/visual.spec.ts:41:7 › atoms-icon--playground (912ms)
+  ✓  1091 [desktop] › visual/visual.spec.ts:41:7 › atoms-icon--sizes (953ms)
+  ✓  1092 [desktop] › visual/visual.spec.ts:41:7 › atoms-icon--current-color (969ms)
+  ✓  1093 [desktop] › visual/visual.spec.ts:41:7 › atoms-icon--glyphs (1.1s)
+  ✓  1095 [desktop] › visual/visual.spec.ts:41:7 › atoms-icon--on-ink (1.1s)
+  ✓  1096 [desktop] › visual/visual.spec.ts:41:7 › atoms-imageslot--playground (950ms)
+  ✓  1094 [desktop] › visual/visual.spec.ts:41:7 › atoms-icon--labelled (1.5s)
+  ✓  1097 [desktop] › visual/visual.spec.ts:41:7 › atoms-imageslot--ratios (952ms)
+  ✓  1098 [desktop] › visual/visual.spec.ts:41:7 › atoms-imageslot--variants (925ms)
+  ✓  1100 [desktop] › visual/visual.spec.ts:41:7 › atoms-imageslot--photo (800ms)
+  ✓  1099 [desktop] › visual/visual.spec.ts:41:7 › atoms-imageslot--label (1.1s)
+  ✓  1101 [desktop] › visual/visual.spec.ts:41:7 › atoms-imageslot--fill (809ms)
+  ✓  1102 [desktop] › visual/visual.spec.ts:41:7 › atoms-imageslot--radii (802ms)
+  ✓  1103 [desktop] › visual/visual.spec.ts:41:7 › atoms-imageslot--sx (701ms)
+  ✓  1104 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--playground (648ms)
+  ✓  1105 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--states (801ms)
+  ✓  1106 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--rest (837ms)
+  ✓  1107 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--filled-with-icon (866ms)
+  ✓  1108 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--status-error (844ms)
+  ✓  1109 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--status-success (933ms)
+  ✓  1110 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--status-warning (654ms)
+  ✓  1111 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--loading (656ms)
+  ✓  1112 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--read-only (718ms)
+  ✓  1113 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--disabled (796ms)
+  ✓  1114 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--suffix-and-trailing (704ms)
+  ✓  1115 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--disabled-trailing (758ms)
+  ✓  1116 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--in-disabled-fieldset (729ms)
+  ✓  1117 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--sizes (778ms)
+  ✓  1118 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--multiline (810ms)
+  ✓  1119 [desktop] › visual/visual.spec.ts:41:7 › atoms-input--on-surfaces-story (802ms)
+  ✓  1121 [desktop] › visual/visual.spec.ts:41:7 › atoms-link--states (738ms)
+  ✓  1120 [desktop] › visual/visual.spec.ts:41:7 › atoms-link--playground (1.2s)
+  ✓  1122 [desktop] › visual/visual.spec.ts:41:7 › atoms-link--default (1.3s)
+  ✓  1123 [desktop] › visual/visual.spec.ts:41:7 › atoms-link--colors (1.3s)
+  ✓  1126 [desktop] › visual/visual.spec.ts:41:7 › atoms-link--inherits-paragraph (842ms)
+  ✓  1125 [desktop] › visual/visual.spec.ts:41:7 › atoms-link--variants (1.3s)
+  ✓  1124 [desktop] › visual/visual.spec.ts:41:7 › atoms-link--underline (1.5s)
+  ✓  1127 [desktop] › visual/visual.spec.ts:41:7 › atoms-link--external (785ms)
+  ✓  1128 [desktop] › visual/visual.spec.ts:41:7 › atoms-link--as-child (822ms)
+  ✓  1129 [desktop] › visual/visual.spec.ts:41:7 › atoms-link--in-footer-nav (1.0s)
+  ✓  1130 [desktop] › visual/visual.spec.ts:41:7 › atoms-link--on-surfaces-story (1.1s)
+  ✓  1132 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--basic-menu (928ms)
+  ✓  1131 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--three-dot-menu (1.2s)
+  ✓  1133 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--icon-menu (827ms)
+  ✓  1134 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--dense-menu (811ms)
+  ✓  1135 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--selected-menu (1.0s)
+  ✓  1136 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--positioned-menu (1.0s)
+  ✓  1138 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--account-menu (1.3s)
+  ✓  1137 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--long-menu (1.6s)
+  ✓  1140 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--checkbox-menu (1.1s)
+  ✓  1141 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--nested-menu (1.3s)
+  ✓  1139 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--radio-menu (2.0s)
+  ✓  1143 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--mobile-360 (1.0s)
+  ✓  1142 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--on-surfaces (1.4s)
+  ✓  1144 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--listbox (1.2s)
+  ✓  1145 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--groups-and-meta (986ms)
+  ✓  1146 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--empty (1.0s)
+  ✓  1147 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--sheet-360 (979ms)
+  ✓  1148 [desktop] › visual/visual.spec.ts:41:7 › atoms-menu--floating-641 (1.2s)
+  ✓  1149 [desktop] › visual/visual.spec.ts:41:7 › atoms-patternfield--playground (1.2s)
+  ✓  1150 [desktop] › visual/visual.spec.ts:41:7 › atoms-patternfield--brand (1.2s)
+  ✓  1151 [desktop] › visual/visual.spec.ts:41:7 › atoms-patternfield--ink (1.0s)
+  ✓  1152 [desktop] › visual/visual.spec.ts:41:7 › atoms-patternfield--soft (1.3s)
+  ✓  1153 [desktop] › visual/visual.spec.ts:41:7 › atoms-patternfield--light (1.9s)
+  ✓  1155 [desktop] › visual/visual.spec.ts:41:7 › atoms-patternfield--tiles (1.7s)
+  ✓  1156 [desktop] › visual/visual.spec.ts:41:7 › atoms-patternfield--as-child (2.0s)
+  ✓  1154 [desktop] › visual/visual.spec.ts:41:7 › atoms-patternfield--faint (2.4s)
+  ✓  1157 [desktop] › visual/visual.spec.ts:41:7 › atoms-patternfield--full-bleed-band (2.0s)
+  ✓  1159 [desktop] › visual/visual.spec.ts:41:7 › atoms-popover--playground (1.2s)
+  ✓  1158 [desktop] › visual/visual.spec.ts:41:7 › atoms-patternfield--sx (1.5s)
+  ✓  1160 [desktop] › visual/visual.spec.ts:41:7 › atoms-popover--sides (1.2s)
+  ✓  1161 [desktop] › visual/visual.spec.ts:41:7 › atoms-popover--with-title (1.1s)
+  ✓  1162 [desktop] › visual/visual.spec.ts:41:7 › atoms-popover--info-popover (1.0s)
+  ✓  1163 [desktop] › visual/visual.spec.ts:41:7 › atoms-popover--controlled (743ms)
+  ✓  1164 [desktop] › visual/visual.spec.ts:41:7 › atoms-popover--on-surfaces (797ms)
+  ✓  1165 [desktop] › visual/visual.spec.ts:41:7 › atoms-popover--mobile-360 (737ms)
+  ✓  1166 [desktop] › visual/visual.spec.ts:41:7 › atoms-popover--sheet (793ms)
+  ✓  1167 [desktop] › visual/visual.spec.ts:41:7 › atoms-popover--sheet-360 (808ms)
+  ✓  1168 [desktop] › visual/visual.spec.ts:41:7 › atoms-popover--floating-641 (812ms)
+  ✓  1169 [desktop] › visual/visual.spec.ts:41:7 › atoms-pricetag--playground (829ms)
+  ✓  1170 [desktop] › visual/visual.spec.ts:41:7 › atoms-pricetag--amounts (731ms)
+  ✓  1171 [desktop] › visual/visual.spec.ts:41:7 › atoms-pricetag--was (760ms)
+  ✓  1172 [desktop] › visual/visual.spec.ts:41:7 › atoms-pricetag--range (681ms)
+  ✓  1173 [desktop] › visual/visual.spec.ts:41:7 › atoms-pricetag--sizes (789ms)
+  ✓  1174 [desktop] › visual/visual.spec.ts:41:7 › atoms-pricetag--colors (857ms)
+  ✓  1175 [desktop] › visual/visual.spec.ts:41:7 › atoms-pricetag--canvas (728ms)
+  ✓  1176 [desktop] › visual/visual.spec.ts:41:7 › atoms-pricetag--sx (858ms)
+  ✓  1177 [desktop] › visual/visual.spec.ts:41:7 › atoms-pricetag--on-surfaces-story (902ms)
+  ✓  1178 [desktop] › visual/visual.spec.ts:41:7 › atoms-progressbar--playground (947ms)
+  ✓  1179 [desktop] › visual/visual.spec.ts:41:7 › atoms-progressbar--segments (887ms)
+  ✓  1180 [desktop] › visual/visual.spec.ts:41:7 › atoms-progressbar--continuous (1.1s)
+  ✓  1181 [desktop] › visual/visual.spec.ts:41:7 › atoms-progressbar--color-success (1.0s)
+  ✓  1182 [desktop] › visual/visual.spec.ts:41:7 › atoms-progressbar--inverse (1.2s)
+  ✓  1183 [desktop] › visual/visual.spec.ts:41:7 › atoms-progressbar--narrow (1.1s)
+  ✓  1185 [desktop] › visual/visual.spec.ts:41:7 › atoms-progressbar--on-surfaces-story (914ms)
+  ✓  1186 [desktop] › visual/visual.spec.ts:41:7 › atoms-progressbar--sx (706ms)
+  ✓  1184 [desktop] › visual/visual.spec.ts:41:7 › atoms-progressbar--sizes (1.6s)
+  ✓  1187 [desktop] › visual/visual.spec.ts:41:7 › atoms-radio--playground (836ms)
+  ✓  1188 [desktop] › visual/visual.spec.ts:41:7 › atoms-radio--interaction (851ms)
+  ✓  1189 [desktop] › visual/visual.spec.ts:41:7 › atoms-radio--group (899ms)
+  ✓  1190 [desktop] › visual/visual.spec.ts:41:7 › atoms-radio--no-price (1.0s)
+  ✓  1191 [desktop] › visual/visual.spec.ts:41:7 › atoms-radio--disabled (841ms)
+  ✓  1192 [desktop] › visual/visual.spec.ts:41:7 › atoms-radio--group-error (844ms)
+  ✓  1193 [desktop] › visual/visual.spec.ts:41:7 › atoms-radio--invalid-checked (802ms)
+  ✓  1194 [desktop] › visual/visual.spec.ts:41:7 › atoms-radio--horizontal (821ms)
+  ✓  1195 [desktop] › visual/visual.spec.ts:41:7 › atoms-radio--states (886ms)
+  ✓  1196 [desktop] › visual/visual.spec.ts:41:7 › atoms-radio--portion-picker (884ms)
+  ✓  1197 [desktop] › visual/visual.spec.ts:41:7 › atoms-radio--on-surfaces-story (888ms)
+  ✓  1198 [desktop] › visual/visual.spec.ts:41:7 › atoms-rating--playground (929ms)
+  ✓  1199 [desktop] › visual/visual.spec.ts:41:7 › atoms-rating--values (825ms)
+  ✓  1200 [desktop] › visual/visual.spec.ts:41:7 › atoms-rating--symbol (737ms)
+  ✓  1201 [desktop] › visual/visual.spec.ts:41:7 › atoms-rating--count (943ms)
+  ✓  1202 [desktop] › visual/visual.spec.ts:41:7 › atoms-rating--sizes (950ms)
+  ✓  1203 [desktop] › visual/visual.spec.ts:41:7 › atoms-rating--partial-fill (965ms)
+  ✓  1204 [desktop] › visual/visual.spec.ts:41:7 › atoms-rating--on-an-outlet-card (909ms)
+  ✓  1205 [desktop] › visual/visual.spec.ts:41:7 › atoms-rating--on-surfaces-story (836ms)
+  ✓  1206 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--playground (980ms)
+  ✓  1207 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--rest (916ms)
+  ✓  1208 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--placeholder-and-icon (1.0s)
+  ✓  1209 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--status-error (1.0s)
+  ✓  1210 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--status-success (942ms)
+  ✓  1211 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--status-warning (784ms)
+  ✓  1212 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--read-only-and-disabled (733ms)
+  ✓  1213 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--sizes (722ms)
+  ✓  1215 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--two-up-at-360 (733ms)
+  ✓  1214 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--long-label-at-360 (958ms)
+  ✓  1216 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--on-surfaces-story (774ms)
+  ✓  1217 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--content-sized-parent (812ms)
+  ✓  1218 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--open-list (718ms)
+  ✓  1219 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--keyboard (749ms)
+  ✓  1220 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--long-list (747ms)
+  ✓  1221 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--in-dialog (1.0s)
+  ✓  1223 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--sheet-360 (1.1s)
+  ✓  1224 [desktop] › visual/visual.spec.ts:41:7 › atoms-skeleton--playground (1.1s)
+  ✓  1225 [desktop] › visual/visual.spec.ts:41:7 › atoms-skeleton--block (991ms)
+  ✘  1222 [desktop] › visual/visual.spec.ts:41:7 › atoms-select--in-app-shell (1.5s)
+  ✓  1226 [desktop] › visual/visual.spec.ts:41:7 › atoms-skeleton--lines (780ms)
+(node:25805) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1227 [desktop] › visual/visual.spec.ts:41:7 › atoms-skeleton--circle (747ms)
+  ✓  1228 [desktop] › visual/visual.spec.ts:41:7 › atoms-skeleton--card-shape (950ms)
+  ✓  1229 [desktop] › visual/visual.spec.ts:41:7 › atoms-slider--playground (1.3s)
+  ✓  1230 [desktop] › visual/visual.spec.ts:41:7 › atoms-slider--office-meals-on-ink (1.7s)
+  ✓  1233 [desktop] › visual/visual.spec.ts:41:7 › atoms-socialheadline--playground (1.3s)
+  ✓  1234 [desktop] › visual/visual.spec.ts:41:7 › atoms-socialheadline--overline (1.1s)
+  ✓  1231 [desktop] › visual/visual.spec.ts:41:7 › atoms-slider--dawat-guests (2.1s)
+  ✓  1235 [desktop] › visual/visual.spec.ts:41:7 › atoms-socialheadline--hero (1.5s)
+  ✓  1236 [desktop] › visual/visual.spec.ts:41:7 › atoms-socialheadline--h-1-h-2 (1.6s)
+  ✓  1232 [desktop] › visual/visual.spec.ts:41:7 › atoms-slider--disabled (3.7s)
+  ✓  1237 [desktop] › visual/visual.spec.ts:41:7 › atoms-socialheadline--body-caption (2.0s)
+  ✓  1239 [desktop] › visual/visual.spec.ts:41:7 › atoms-socialheadline--on-a-canvas (1.3s)
+  ✓  1238 [desktop] › visual/visual.spec.ts:41:7 › atoms-socialheadline--alignment (1.6s)
+  ✓  1240 [desktop] › visual/visual.spec.ts:41:7 › atoms-socialheadline--on-surfaces-story (1.3s)
+  ✓  1241 [desktop] › visual/visual.spec.ts:41:7 › atoms-socialheadline--sx (1.1s)
+  ✓  1242 [desktop] › visual/visual.spec.ts:41:7 › atoms-spicelevel--playground (1.3s)
+  ✓  1245 [desktop] › visual/visual.spec.ts:41:7 › atoms-spicelevel--sizes (746ms)
+  ✓  1244 [desktop] › visual/visual.spec.ts:41:7 › atoms-spicelevel--with-label (1.3s)
+  ✓  1243 [desktop] › visual/visual.spec.ts:41:7 › atoms-spicelevel--levels (1.7s)
+  ✓  1246 [desktop] › visual/visual.spec.ts:41:7 › atoms-spicelevel--in-context (1.5s)
+  ✓  1247 [desktop] › visual/visual.spec.ts:41:7 › atoms-spicelevel--on-surfaces-story (1.3s)
+  ✓  1248 [desktop] › visual/visual.spec.ts:41:7 › atoms-spinner--playground (1.5s)
+  ✓  1249 [desktop] › visual/visual.spec.ts:41:7 › atoms-spinner--sizes (1.5s)
+  ✓  1250 [desktop] › visual/visual.spec.ts:41:7 › atoms-spinner--colors (1.4s)
+  ✓  1251 [desktop] › visual/visual.spec.ts:41:7 › atoms-spinner--inverse (1.2s)
+  ✓  1252 [desktop] › visual/visual.spec.ts:41:7 › atoms-spinner--sx (1.4s)
+  ✓  1253 [desktop] › visual/visual.spec.ts:41:7 › atoms-statusdot--playground (1.2s)
+  ✓  1254 [desktop] › visual/visual.spec.ts:41:7 › atoms-statusdot--statuses (1.1s)
+  ✓  1255 [desktop] › visual/visual.spec.ts:41:7 › atoms-statusdot--sizes (1.2s)
+  ✓  1256 [desktop] › visual/visual.spec.ts:41:7 › atoms-statusdot--pulse (951ms)
+  ✓  1257 [desktop] › visual/visual.spec.ts:41:7 › atoms-statusdot--bare (983ms)
+  ✓  1258 [desktop] › visual/visual.spec.ts:41:7 › atoms-statusdot--outlet-strip (891ms)
+  ✓  1259 [desktop] › visual/visual.spec.ts:41:7 › atoms-statusdot--sx (869ms)
+  ✓  1260 [desktop] › visual/visual.spec.ts:41:7 › atoms-switch--playground (909ms)

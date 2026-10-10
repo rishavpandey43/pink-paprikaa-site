@@ -1,97 +1,200 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ArrowLeft, Heart, Plus, Search } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
+import type { ComponentProps } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { IconButton } from "./icon-button";
 
+function RouterLink({ children, ...props }: ComponentProps<"a">) {
+  return (
+    <a data-router="" {...props}>
+      {children}
+    </a>
+  );
+}
+
 describe("IconButton", () => {
-  it("takes its accessible name from the label", () => {
+  it("is a button of type button named by its label; the glyph is decorative", () => {
     render(<IconButton icon={Heart} label="Save" />);
-    expect(screen.getByRole("button", { name: "Save" })).toHaveAttribute("type", "button");
+    const button = screen.getByRole("button", { name: "Save" });
+    expect(button).toHaveAttribute("type", "button");
+    expect(button.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("holds a 44px minimum hit target even at the smallest size", () => {
-    render(<IconButton icon={Plus} label="Add" size="sm" />);
-    const node = screen.getByRole("button", { name: "Add" });
-    expect(node).toHaveClass("min-h-(--layout-hit-min)");
-    expect(node).toHaveClass("min-w-(--layout-hit-min)");
+  it("cannot be written without a name (Review Focus 2)", () => {
+    // @ts-expect-error — an icon-only control without `label` must not compile (spec §5.5)
+    render(<IconButton icon={Heart} />);
+    expect(screen.getByRole("button")).toBeInTheDocument();
   });
 
-  it("calls onClick when pressed", async () => {
-    const handleClick = vi.fn();
-    render(<IconButton icon={Plus} label="Add" onClick={handleClick} />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Add" }));
-
-    expect(handleClick).toHaveBeenCalledOnce();
-  });
-
-  it("does not call onClick while disabled", async () => {
-    const handleClick = vi.fn();
-    render(<IconButton disabled icon={Plus} label="Add" onClick={handleClick} />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Add" }));
-
-    expect(handleClick).not.toHaveBeenCalled();
-  });
-
-  it.each([
-    ["primary", "bg-brand-primary"],
-    ["secondary", "border-border-default"],
-    ["ghost", "bg-transparent"],
-    ["glass", "bg-surface-glass"],
-  ] as const)("paints the %s variant on its circle", (variant, expected) => {
-    const { container } = render(<IconButton icon={Heart} label="Save" variant={variant} />);
-    expect(container.querySelector("span")).toHaveClass(expected);
-  });
-
-  it.each([
-    ["sm", "size-8"],
-    ["md", "size-10"],
-    ["lg", "size-12"],
-  ] as const)("draws the %s circle at its fixed diameter", (size, expected) => {
-    const { container } = render(<IconButton icon={Plus} label="Add" size={size} />);
-    expect(container.querySelector("span")).toHaveClass(expected);
-  });
-
-  it("inverts the primary fill when it sits on a brand panel", () => {
-    const { container } = render(
-      <IconButton icon={Heart} label="Save" on="brand" variant="primary" />
+  it("reads the cart count out with its label and draws the bubble (Review Focus 2)", () => {
+    render(<IconButton icon={ShoppingBag} label="Your order" count={3} />);
+    const button = screen.getByRole("button", { name: "Your order (3)" });
+    const bubble = within(button).getByText("3");
+    expect(bubble).toHaveAttribute("aria-hidden", "true");
+    expect(bubble).toHaveClass(
+      "absolute",
+      "h-icon-button-count",
+      "min-w-icon-button-count",
+      "text-icon-button-count"
     );
-    const surface = container.querySelector("span");
-    expect(surface).toHaveClass("bg-surface-card");
-    expect(surface).not.toHaveClass("bg-brand-primary");
   });
 
-  it("keeps a real grey fill when disabled rather than fading out", () => {
-    const { container } = render(<IconButton disabled icon={Plus} label="Add" variant="primary" />);
-    const surface = container.querySelector("span");
-    expect(surface).toHaveClass("group-disabled:bg-(--button-bg-disabled)");
-    expect(screen.getByRole("button").className).not.toMatch(/opacity-/);
+  it.each([0, undefined])("draws no bubble for a count of %s", (count) => {
+    render(
+      <IconButton
+        icon={ShoppingBag}
+        label="Your order"
+        {...(count === undefined ? {} : { count })}
+      />
+    );
+    const button = screen.getByRole("button", { name: "Your order" });
+    expect(button.querySelector(".absolute")).toBeNull();
   });
 
-  it("renders exactly one glyph, hidden from assistive tech behind the label", () => {
-    const { container } = render(<IconButton icon={Search} label="Search" />);
-    const glyphs = container.querySelectorAll("svg");
-    expect(glyphs).toHaveLength(1);
-    expect(glyphs[0]).toHaveAttribute("aria-hidden", "true");
+  it.each([
+    ["ghost", "bg-transparent", "text-icon-button-ghost-fg"],
+    ["primary", "bg-button-primary-bg", "text-button-primary-fg"],
+    ["secondary", "bg-ink-000", "text-pink-600"],
+    ["glass", "bg-surface-glass", "backdrop-blur-glass"],
+  ] as const)("paints the %s variant with %s and %s", (variant, fill, detail) => {
+    render(<IconButton icon={Heart} label="Save" variant={variant} />);
+    expect(screen.getByRole("button")).toHaveClass(fill, detail);
   });
 
-  it("merges a caller className onto the hit target", () => {
-    render(<IconButton className="rounded-1" icon={ArrowLeft} label="Back" />);
-    const node = screen.getByRole("button", { name: "Back" });
-    expect(node).toHaveClass("rounded-1");
-    expect(node).not.toHaveClass("rounded-6");
+  it("is ghost by default and tints on hover with state-hover + pink glyph", () => {
+    render(<IconButton icon={Heart} label="Save" />);
+    expect(screen.getByRole("button")).toHaveClass(
+      "bg-transparent",
+      "hover:bg-state-hover",
+      "hover:text-pink-600",
+      "active:press-scale-icon"
+    );
+  });
+
+  it("adds tint (inherit parent colour) and xs for Alert dismiss", () => {
+    render(<IconButton icon={Heart} label="Dismiss" variant="tint" size="xs" />);
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass(
+      "text-current",
+      "hover:bg-state-hover-tint",
+      "active:bg-state-press-tint",
+      "size-icon-button-xs",
+      "before:-inset-2"
+    );
+    expect(button.firstElementChild).toHaveClass("size-icon-sm");
+  });
+
+  it("paints secondary hover border and press fill from the state tokens", () => {
+    render(<IconButton icon={Heart} label="More" variant="secondary" />);
+    expect(screen.getByRole("button")).toHaveClass(
+      "hover:border-pink-300",
+      "hover:bg-state-hover",
+      "active:bg-state-press"
+    );
+  });
+
+  it("paints glass hover white and press pink-50", () => {
+    render(<IconButton icon={Heart} label="Close" variant="glass" />);
+    expect(screen.getByRole("button")).toHaveClass("hover:bg-ink-000", "active:bg-pink-50");
+  });
+
+  it.each([
+    ["xs", "size-icon-button-xs", "size-icon-sm", "before:-inset-2"],
+    ["sm", "size-icon-button-sm", "size-icon-sm", "before:-inset-1.5"],
+    ["md", "size-icon-button-md", "size-icon-md", "before:-inset-0.5"],
+  ] as const)(
+    "draws %s at %s with a %s glyph and pads the hit area to 44px (%s)",
+    (size, box, glyph, hitArea) => {
+      render(<IconButton icon={Heart} label="Save" size={size} />);
+      const button = screen.getByRole("button");
+      expect(button).toHaveClass("relative", box, "before:absolute", hitArea);
+      expect(button.firstElementChild).toHaveClass(glyph);
+    }
+  );
+
+  it("draws lg at 48px with a 24px glyph and needs no hit-area pad", () => {
+    render(<IconButton icon={Heart} label="Save" size="lg" />);
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass("size-icon-button-lg");
+    expect(button.className).not.toMatch(/before:/);
+    expect(button.firstElementChild).toHaveClass("size-icon-lg");
+  });
+
+  it("keeps primary disabled fill; secondary/ghost stay clear", () => {
+    render(
+      <>
+        <IconButton icon={Heart} label="Primary" variant="primary" disabled />
+        <IconButton icon={Heart} label="Secondary" variant="secondary" disabled />
+        <IconButton icon={Heart} label="Ghost" variant="ghost" disabled />
+      </>
+    );
+    expect(screen.getByRole("button", { name: "Primary" })).toHaveClass("disabled:bg-ink-200");
+    expect(screen.getByRole("button", { name: "Secondary" })).toHaveClass(
+      "disabled:bg-transparent",
+      "disabled:border-ink-200"
+    );
+    expect(screen.getByRole("button", { name: "Ghost" }).className).not.toMatch(
+      /disabled:bg-ink-200/
+    );
+  });
+
+  it("fires from the pointer and the keyboard", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    render(<IconButton icon={Heart} label="Save" onClick={onClick} />);
+    await user.click(screen.getByRole("button"));
+    await user.keyboard("{Enter}");
+    expect(onClick).toHaveBeenCalledTimes(2);
+  });
+
+  it("uses the grey disabled fill and blocks presses", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    render(<IconButton icon={Heart} label="Save" variant="primary" disabled onClick={onClick} />);
+    const button = screen.getByRole("button");
+    expect(button).toBeDisabled();
+    expect(button).toHaveClass("disabled:bg-ink-200", "disabled:text-ink-400");
+    expect(button.className).not.toMatch(/opacity/);
+    await user.click(button);
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it("renders a router link through asChild with the glyph and the name, never a button type (Review Focus 3)", () => {
+    render(
+      <IconButton asChild icon={ShoppingBag} label="Your order" count={2}>
+        <RouterLink href="/cart" />
+      </IconButton>
+    );
+    const link = screen.getByRole("link", { name: "Your order (2)" });
+    expect(link).toHaveAttribute("href", "/cart");
+    expect(link).toHaveAttribute("data-router");
+    expect(link).not.toHaveAttribute("type");
+    expect(link.querySelector(".lucide-shopping-bag")).not.toBeNull();
+  });
+
+  it("lets a consumer className replace its radius", () => {
+    render(<IconButton icon={Heart} label="Save" className="rounded-md" />);
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass("rounded-md");
+    expect(button).not.toHaveClass("rounded-pill");
+  });
+
+  it("sx lands on the button and beats its own position", () => {
+    render(<IconButton icon={Heart} label="Save" sx={{ position: "absolute", mt: 2 }} />);
+    const button = screen.getByRole("button", { name: "Save" });
+    expect(button).toHaveClass("absolute", "mt-2");
+    expect(button).not.toHaveClass("relative");
   });
 
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
         <IconButton icon={Heart} label="Save" />
-        <IconButton icon={Plus} label="Add" variant="primary" />
-        <IconButton icon={ArrowLeft} label="Back" variant="glass" />
-        <IconButton disabled icon={Search} label="Search" variant="secondary" />
+        <IconButton icon={ShoppingBag} label="Your order" count={3} variant="primary" />
+        <IconButton icon={Heart} label="Save" disabled />
       </>
     );
     await expectNoA11yViolations(container);

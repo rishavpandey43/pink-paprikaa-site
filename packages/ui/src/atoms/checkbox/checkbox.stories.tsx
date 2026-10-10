@@ -1,88 +1,124 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
 
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Checkbox } from "./checkbox";
 
-// `meta` is annotated rather than `satisfies`-inferred: under pnpm's isolated node_modules,
-// declaration emit for an inferred decorator type reaches for Storybook/Radix internals it
-// cannot name from here (TS2883). The annotation keeps the emitted type nameable.
-const meta: Meta<typeof Checkbox> = {
+const CHOICE_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
+
+const meta = {
   title: "Atoms/Checkbox",
   component: Checkbox,
   args: { label: "Extra burnt chilli mayo" },
   parameters: {
-    layout: "padded",
     docs: {
       description: {
         component:
-          "The multi-select choice — menu add-ons, dietary preferences, consent. Pass `price` " +
-          "for an add-on and it right-aligns as `+₹40` in Poppins Bold. Reach for `Radio` when " +
-          "exactly one option must be chosen.",
+          "Multi-select choice — menu add-ons, dietary preferences, consent. Pass `price` for add-ons; it right-aligns as `+₹40` in Poppins 700 and is part of the accessible name. `description` is announced as the description. `isInvalid` paints the box red and sets `aria-invalid`; the message that says what to do next belongs to Field. Disabled fades the whole row at 50% opacity (IX choice rows). Use Radio when exactly one option must be chosen. There is no on-brand skin: keep it off the brand (pink) ground.",
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <div className="w-full max-w-96">
-        <Story />
-      </div>
-    ),
-  ],
-};
+} satisfies Meta<typeof Checkbox>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = { args: { price: 40 } };
 
-export const Checked: Story = { args: { defaultChecked: true } };
+/** Forced rest → hover → press → focus → disabled (card interaction row). */
+export const Interaction: Story = {
+  parameters: { pseudo: storyStatesPseudo(CHOICE_STATES) },
+  render: () => (
+    <StatesRow
+      states={CHOICE_STATES}
+      render={(state) => (
+        <Checkbox label="Extra burnt chilli mayo" {...storyStateControlProps(state)} />
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover label");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Checkbox Interaction: #cell-hover label missing");
+    }
+    await expect(hover).toHaveClass("hover:bg-state-hover");
+  },
+};
 
-/** The price is part of the row's accessible name, so the cost is never colour-only. */
-export const WithPrice: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-3">
-      <Checkbox {...args} defaultChecked price={40} />
-      <Checkbox {...args} label="Masala fries on the side" price={90} />
+export const CheckedAndUnchecked: Story = {
+  name: "checked / not",
+  render: () => (
+    <div className="grid gap-3">
+      <Checkbox label="Extra burnt chilli mayo" defaultChecked />
+      <Checkbox label="Masala fries on the side" />
     </div>
   ),
 };
 
-export const WithDescription: Story = {
+export const Price: Story = { name: "price", args: { price: 40, defaultChecked: true } };
+
+export const Description: Story = {
+  name: "description",
   args: {
     label: "Make it a meal",
-    description: "Adds masala fries and a kulhad chai.",
+    description: "Adds fries and a kulhad chai.",
     price: 120,
   },
 };
 
-/** Mixed is for a select-all row whose children are only partly chosen. */
-export const States: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-3">
-      <Checkbox {...args} label="Rest" />
-      <Checkbox {...args} defaultChecked label="Checked" />
-      <Checkbox {...args} checked="indeterminate" label="All add-ons" />
-      <Checkbox {...args} hasError label="I agree to the terms" />
-      <Checkbox {...args} description="Sold out today." disabled label="Truffle oil" />
-    </div>
+export const Invalid: Story = {
+  name: "error",
+  args: { label: "I agree to the terms", isInvalid: true },
+};
+
+export const Disabled: Story = {
+  name: "disabled",
+  args: { label: "Truffle oil", description: "Sold out today.", disabled: true },
+};
+
+/** The real shape: an add-on list in an item sheet (a plain fieldset — an atom story composes no atom). */
+export const AddOnList: Story = {
+  name: "add-on list",
+  render: () => (
+    <fieldset className="grid gap-3 rounded-lg border border-border-subtle p-5">
+      <legend className="px-1 font-display text-h4 font-bold text-text-heading">
+        Add to your order
+      </legend>
+      <Checkbox label="Extra burnt chilli mayo" price={40} defaultChecked />
+      <Checkbox label="Masala fries on the side" price={90} />
+      <Checkbox
+        label="Make it a meal"
+        description="Adds masala fries and a kulhad chai."
+        price={120}
+      />
+      <Checkbox label="Truffle oil" description="Sold out today." price={60} disabled />
+    </fieldset>
   ),
 };
 
-/** The real shape: an add-on list inside an item sheet, priced and totalled. */
-export const AddOnList: Story = {
+/** The brand ground is left out on purpose (no on-brand skin). */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
   render: () => (
-    <fieldset className="flex flex-col gap-3 rounded-4 border border-border-subtle p-5">
-      <legend className="px-1 font-display text-subtitle1 font-bold text-text-heading">
-        Add to your order
-      </legend>
-      <Checkbox defaultChecked label="Extra burnt chilli mayo" price={40} />
-      <Checkbox label="Masala fries on the side" price={90} />
+    <OnSurfaces grounds={["page", "alt", "ink", "soft"]}>
       <Checkbox
-        description="Adds masala fries and a kulhad chai."
         label="Make it a meal"
+        description="Adds fries and a kulhad chai."
         price={120}
+        defaultChecked
       />
-      <Checkbox description="Sold out today." disabled label="Truffle oil" price={60} />
-    </fieldset>
+    </OnSurfaces>
   ),
 };

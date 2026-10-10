@@ -1,0 +1,9 @@
+{
+  "grid-auto-columns": {
+    "$type": "gridTemplate",
+    "review-carousel": {
+      "$value": "minmax(min(320px, 85%), 1fr)",
+      "$description": "Review cards at least 320px (85% on phones, so the next card peeks) and stretching to fill when few (handoff GoogleReviews)."
+    }
+  }
+}

@@ -1,151 +1,385 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { createRef, useState } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
-import { Snackbar } from "./snackbar";
+import { expectNoA11yViolations } from "#vitest.setup";
+
+import { Snackbar, type SnackbarProps } from "./snackbar";
+
+const UNDO = { label: "Undo", altText: "Undo removing Chilli Paneer" } as const;
+
+function messages(): HTMLElement {
+  return screen.getByRole("region", { name: "Messages" });
+}
 
 describe("Snackbar", () => {
-  it("announces its message politely", () => {
-    render(<Snackbar duration={0}>Table held for 10 minutes.</Snackbar>);
-    expect(screen.getByRole("status")).toHaveTextContent("Table held for 10 minutes.");
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
-  it("renders nothing while closed", () => {
-    render(<Snackbar isOpen={false}>Table held for 10 minutes.</Snackbar>);
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  it("shows its message; dismiss only when onOpenChange is given", () => {
+    const { rerender } = render(<Snackbar>Table held for 10 minutes.</Snackbar>);
+    expect(within(messages()).getByText("Table held for 10 minutes.")).toBeInTheDocument();
+    expect(within(messages()).queryByRole("button", { name: "Dismiss" })).toBeNull();
+    rerender(<Snackbar onOpenChange={vi.fn()}>Table held for 10 minutes.</Snackbar>);
+    expect(within(messages()).getByRole("button", { name: "Dismiss" })).toBeInTheDocument();
   });
 
-  it("interrupts for a failure instead of waiting its turn", () => {
+  it("leaves nothing behind while closed", () => {
     render(
-      <Snackbar duration={0} tone="danger">
-        That card did not go through.
+      <Snackbar open={false} onOpenChange={vi.fn()}>
+        Code copied.
       </Snackbar>
     );
-    expect(screen.getByRole("alert")).toBeInTheDocument();
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+
+  it("anchors inside the nearest positioned box by default, or to the window", () => {
+    const { rerender } = render(<Snackbar>Code copied.</Snackbar>);
+    expect(within(messages()).getByRole("list")).toHaveClass(
+      "absolute",
+      "bottom-6",
+      "justify-center"
+    );
+    rerender(<Snackbar isContained={false}>Code copied.</Snackbar>);
+    const list = within(messages()).getByRole("list");
+    expect(list).toHaveClass("fixed", "bottom-dock-clearance");
+    expect(list).not.toHaveClass("absolute");
   });
 
   it.each([
-    ["ink", "bg-surface-inverse"],
-    ["brand", "bg-brand-primary"],
-    ["success", "bg-status-success"],
-  ] as const)("fills the %s tone", (tone, expected) => {
-    render(
-      <Snackbar duration={0} tone={tone}>
-        Code copied. Paste it at checkout.
-      </Snackbar>
-    );
-    expect(screen.getByRole("status")).toHaveClass(expected);
+    ["bottom-left", ["bottom-6", "justify-start"]],
+    ["bottom-right", ["bottom-6", "justify-end"]],
+    ["top-center", ["top-6", "justify-center"]],
+    ["top-right", ["top-6", "justify-end"]],
+  ] as const)("sits at %s", (position, classes) => {
+    render(<Snackbar position={position}>Code copied.</Snackbar>);
+    expect(within(messages()).getByRole("list")).toHaveClass(...classes);
   });
 
   it.each([
-    ["bottom-center", "justify-center"],
-    ["bottom-left", "justify-start"],
-    ["top-right", "justify-end"],
-  ] as const)("anchors itself %s", (position, expected) => {
-    const { container } = render(
-      <Snackbar duration={0} position={position}>
-        Code copied. Paste it at checkout.
-      </Snackbar>
-    );
-    expect(container.firstElementChild).toHaveClass(expected);
-  });
-
-  it("calls onAction when the text action is pressed", async () => {
-    const handleAction = vi.fn();
+    ["neutral", "ink", "bg-surface-inverse"],
+    ["brand", "brand", "bg-surface-brand"],
+    ["success", "ink", "bg-snackbar-success-bg"],
+    ["danger", "ink", "bg-status-danger"],
+  ] as const)("paints the %s colour and a TextButton action", (color, surface, fill) => {
     render(
-      <Snackbar action="Undo" duration={0} onAction={handleAction}>
+      <Snackbar color={color} action={{ ...UNDO, onClick: vi.fn() }}>
         Chilli Paneer removed.
       </Snackbar>
     );
-
-    await userEvent.click(screen.getByRole("button", { name: "Undo" }));
-
-    expect(handleAction).toHaveBeenCalledOnce();
-  });
-
-  it("inks the brand tone white on the pink flood", () => {
-    render(
-      <Snackbar duration={0} tone="brand">
-        Added to your order.
-      </Snackbar>
+    const bar = within(messages()).getByRole("listitem");
+    expect(bar).toHaveAttribute("data-surface", surface);
+    expect(bar).toHaveClass(fill);
+    // Design: TextButton caps sm; surface-aware via the bar's data-surface.
+    expect(within(bar).getByRole("button", { name: "Undo" })).toHaveClass(
+      "uppercase",
+      "text-overline",
+      "-my-3",
+      "-mr-2"
     );
-    const node = screen.getByRole("status");
-
-    expect(node).toHaveClass("bg-brand-primary");
-    expect(node).toHaveClass("text-text-on-brand");
   });
 
-  it("shows no dismiss control without a close handler", () => {
-    render(<Snackbar duration={0}>Chilli Paneer removed.</Snackbar>);
-    expect(screen.queryByRole("button", { name: "Dismiss" })).not.toBeInTheDocument();
-  });
-
-  it("calls onClose when the dismiss control is pressed", async () => {
-    const handleClose = vi.fn();
-    render(
-      <Snackbar duration={0} onClose={handleClose}>
-        Chilli Paneer removed.
-      </Snackbar>
-    );
-
-    await userEvent.click(screen.getByRole("button", { name: "Dismiss" }));
-
-    expect(handleClose).toHaveBeenCalledOnce();
-  });
-
-  it("auto-hides once the duration is up", () => {
-    vi.useFakeTimers();
-    const handleClose = vi.fn();
-    try {
-      render(<Snackbar onClose={handleClose}>Code copied. Paste it at checkout.</Snackbar>);
-
-      expect(handleClose).not.toHaveBeenCalled();
-      act(() => {
-        vi.advanceTimersByTime(3200);
-      });
-      expect(handleClose).toHaveBeenCalledOnce();
-    } finally {
-      vi.useRealTimers();
+  it.each([
+    ["neutral", "polite"],
+    ["brand", "polite"],
+    ["success", "polite"],
+    ["danger", "assertive"],
+  ] as const)(
+    "announces a %s bar %sly — a failure interrupts, a confirmation waits",
+    (color, politeness) => {
+      render(<Snackbar color={color}>Code copied.</Snackbar>);
+      expect(
+        document.body.querySelector(`[role="status"][aria-live="${politeness}"]`)
+      ).toBeInTheDocument();
     }
+  );
+
+  it("renders the action as TextButton sm and dismiss as IconButton xs", () => {
+    render(
+      <Snackbar action={{ ...UNDO, onClick: vi.fn() }} onOpenChange={vi.fn()}>
+        Chilli Paneer removed.
+      </Snackbar>
+    );
+    expect(screen.getByRole("button", { name: "Undo" })).toHaveClass(
+      "uppercase",
+      "text-overline",
+      "-my-3"
+    );
+    expect(screen.getByRole("button", { name: "Dismiss" })).toHaveClass(
+      "size-icon-button-xs",
+      "before:-inset-2"
+    );
   });
 
-  it("stays up when the duration is disabled", () => {
+  it("merges a caller className over the bar", () => {
+    render(<Snackbar className="rounded-lg">Code copied.</Snackbar>);
+    const bar = within(messages()).getByRole("listitem");
+    expect(bar).toHaveClass("rounded-lg");
+    expect(bar).not.toHaveClass("rounded-md");
+  });
+
+  it("runs its action, then closes and reports it", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    const onOpenChange = vi.fn();
+    render(
+      <Snackbar action={{ ...UNDO, onClick }} onOpenChange={onOpenChange}>
+        Chilli Paneer removed.
+      </Snackbar>
+    );
+    await user.click(screen.getByRole("button", { name: "Undo" }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(screen.queryByText("Chilli Paneer removed.")).not.toBeInTheDocument();
+  });
+
+  it("closes from its dismiss button and reports it", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(<Snackbar onOpenChange={onOpenChange}>Code copied.</Snackbar>);
+    await user.click(screen.getByRole("button", { name: "Dismiss" }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+
+  it("follows a downward swipe and closes past the threshold, handing focus back", () => {
+    const onOpenChange = vi.fn();
+    const { rerender } = render(<button type="button">Copy PAPRIKAA50</button>);
+    const trigger = screen.getByRole("button", { name: "Copy PAPRIKAA50" });
+    trigger.focus();
+    rerender(
+      <>
+        <button type="button">Copy PAPRIKAA50</button>
+        <Snackbar onOpenChange={onOpenChange}>Code copied.</Snackbar>
+      </>
+    );
+    const bar = within(messages()).getByRole("listitem");
+    expect(bar).toHaveClass("toast-swipe-y");
+    // A swipe is a touch on the focused bar: the close must not strand focus (R82).
+    act(() => {
+      bar.focus();
+    });
+    fireEvent.pointerDown(bar, { button: 0, clientX: 0, clientY: 0 });
+    fireEvent.pointerMove(bar, { clientX: 0, clientY: 20 });
+    fireEvent.pointerMove(bar, { clientX: 0, clientY: 60 });
+    expect(bar).toHaveAttribute("data-swipe", "move");
+    expect(bar.style.getPropertyValue("--radix-toast-swipe-move-y")).toBe("60px");
+    fireEvent.pointerUp(bar, { clientX: 0, clientY: 60 });
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+  });
+
+  it("closes on Escape and reports it", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(<Snackbar onOpenChange={onOpenChange}>Code copied.</Snackbar>);
+    within(messages()).getByRole("listitem").focus();
+    await user.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+
+  it("hides itself after 3.2 seconds by default", () => {
     vi.useFakeTimers();
-    const handleClose = vi.fn();
-    try {
-      render(
-        <Snackbar duration={0} onClose={handleClose}>
-          Code copied. Paste it at checkout.
-        </Snackbar>
+    const onOpenChange = vi.fn();
+    render(<Snackbar onOpenChange={onOpenChange}>Code copied.</Snackbar>);
+    act(() => {
+      vi.advanceTimersByTime(3199);
+    });
+    expect(onOpenChange).not.toHaveBeenCalled();
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it("stays until dismissed with an infinite duration", () => {
+    vi.useFakeTimers();
+    const onOpenChange = vi.fn();
+    render(
+      <Snackbar duration={Infinity} onOpenChange={onOpenChange}>
+        Code copied.
+      </Snackbar>
+    );
+    act(() => {
+      vi.advanceTimersByTime(60_000);
+    });
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  it("follows open when controlled", () => {
+    const onOpenChange = vi.fn();
+    const { rerender } = render(
+      <Snackbar open={false} onOpenChange={onOpenChange}>
+        Code copied.
+      </Snackbar>
+    );
+    expect(screen.queryByText("Code copied.")).not.toBeInTheDocument();
+    rerender(
+      <Snackbar open onOpenChange={onOpenChange}>
+        Code copied.
+      </Snackbar>
+    );
+    expect(within(messages()).getByText("Code copied.")).toBeInTheDocument();
+  });
+
+  describe("hands focus back to what opened it (R82)", () => {
+    function Opener({ action, duration }: Pick<SnackbarProps, "action" | "duration">) {
+      const [isOpen, setIsOpen] = useState(false);
+      return (
+        <>
+          <button
+            type="button"
+            onClick={() => {
+              setIsOpen(true);
+            }}
+          >
+            Remove Chilli Paneer
+          </button>
+          <Snackbar open={isOpen} onOpenChange={setIsOpen} action={action} duration={duration}>
+            Chilli Paneer removed.
+          </Snackbar>
+        </>
       );
-
-      act(() => {
-        vi.advanceTimersByTime(10_000);
-      });
-      expect(handleClose).not.toHaveBeenCalled();
-    } finally {
-      vi.useRealTimers();
     }
+
+    async function openAndFocus(name: string, action?: SnackbarProps["action"]) {
+      const user = userEvent.setup();
+      render(<Opener action={action} />);
+      const trigger = screen.getByRole("button", { name: "Remove Chilli Paneer" });
+      await user.click(trigger);
+      within(messages()).getByRole("button", { name }).focus();
+      return { user, trigger };
+    }
+
+    it("after Dismiss", async () => {
+      const { user, trigger } = await openAndFocus("Dismiss");
+      await user.keyboard("{Enter}");
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+
+    it.each(["Undo", "Retry"])("after its %s action", async (label) => {
+      const onClick = vi.fn();
+      const { user, trigger } = await openAndFocus(label, {
+        label,
+        altText: `${label} removing Chilli Paneer`,
+        onClick,
+      });
+      await user.keyboard("{Enter}");
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+
+    it("after Escape", async () => {
+      const { user, trigger } = await openAndFocus("Dismiss");
+      await user.keyboard("{Escape}");
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+
+    it("never lets the timer close it under focus, then restores focus once it does close", async () => {
+      // `shouldAdvanceTime`: the click and focus move settle in real time; the close timer is faked.
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      const user = userEvent.setup({ delay: null });
+      render(<Opener duration={1000} />);
+      const trigger = screen.getByRole("button", { name: "Remove Chilli Paneer" });
+      await user.click(trigger);
+      const dismiss = within(messages()).getByRole("button", { name: "Dismiss" });
+      act(() => {
+        dismiss.focus();
+      });
+      // Radix pauses the timer while focus is inside the bar: it waits for the guest.
+      act(() => {
+        vi.advanceTimersByTime(5000);
+      });
+      expect(dismiss).toHaveFocus();
+      await user.keyboard("{Escape}");
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+
+    it("when the parent closes it while focus is inside", () => {
+      const onOpenChange = vi.fn();
+      const { rerender } = render(
+        <>
+          <button type="button">Remove Chilli Paneer</button>
+          <Snackbar open={false} onOpenChange={onOpenChange}>
+            Chilli Paneer removed.
+          </Snackbar>
+        </>
+      );
+      const trigger = screen.getByRole("button", { name: "Remove Chilli Paneer" });
+      trigger.focus();
+      function renderWith(isOpen: boolean): void {
+        rerender(
+          <>
+            <button type="button">Remove Chilli Paneer</button>
+            <Snackbar open={isOpen} onOpenChange={onOpenChange}>
+              Chilli Paneer removed.
+            </Snackbar>
+          </>
+        );
+      }
+      renderWith(true);
+      act(() => {
+        within(messages()).getByRole("button", { name: "Dismiss" }).focus();
+      });
+      // No Radix close path: the parent flips `open` itself.
+      renderWith(false);
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+      expect(onOpenChange).not.toHaveBeenCalled();
+    });
+
+    it("leaves focus alone when it was never inside the bar", async () => {
+      const user = userEvent.setup();
+      render(
+        <>
+          <Opener duration={20} />
+          <input aria-label="Note" />
+        </>
+      );
+      await user.click(screen.getByRole("button", { name: "Remove Chilli Paneer" }));
+      const note = screen.getByRole("textbox", { name: "Note" });
+      note.focus();
+      await waitFor(() => {
+        expect(screen.queryByRole("region")).not.toBeInTheDocument();
+      });
+      expect(note).toHaveFocus();
+    });
   });
 
-  it("merges a caller className", () => {
+  it("has no accessibility violations with an action and a dismiss", async () => {
     const { container } = render(
-      <Snackbar className="fixed" duration={0}>
-        Code copied. Paste it at checkout.
-      </Snackbar>
-    );
-    const node = container.firstElementChild;
-    expect(node).toHaveClass("fixed");
-    expect(node).not.toHaveClass("absolute");
-  });
-
-  it("has no accessibility violations", async () => {
-    const { container } = render(
-      <Snackbar action="Undo" duration={0} onAction={vi.fn()} onClose={vi.fn()}>
-        Chilli Paneer removed.
-      </Snackbar>
+      <div className="relative">
+        <Snackbar action={{ ...UNDO, onClick: vi.fn() }}>Chilli Paneer removed.</Snackbar>
+      </div>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("forwards id, data-*, aria-* and ref to its root, and takes sx", () => {
+    const ref = createRef<HTMLLIElement>();
+    render(
+      <Snackbar
+        ref={ref}
+        id="copied"
+        data-section="codes"
+        aria-describedby="hint"
+        sx={{ mt: 4 }}
+        className="italic"
+      >
+        Code copied.
+      </Snackbar>
+    );
+    expect(ref.current).toBeInstanceOf(HTMLLIElement);
+    expect(ref.current).toHaveAttribute("id", "copied");
+    expect(ref.current).toHaveAttribute("data-section", "codes");
+    expect(ref.current).toHaveAttribute("aria-describedby", "hint");
+    expect(ref.current).toHaveClass("mt-4", "italic");
   });
 });

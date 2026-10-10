@@ -1,65 +1,68 @@
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
-import { SYMBOL_PATHS, SYMBOL_VIEW_BOX } from "../logo/logo-paths";
+import { useId } from "react";
 
+import type { BasePropsWithColor } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
+import { SymbolMark } from "../../lib/symbol-mark";
+
+/** The loader is the bare brand mark, pulsing at 1.2s — never a gradient ring (readme §3.8). */
 const spinner = componentVariants({
-  // The brand's loading state is the diamond symbol pulsing at 1.2s — never a gradient spinner,
-  // never a borrowed ring (guide §3.4). Colour comes from `currentColor`, so it works on any ground.
-  base: "inline-block shrink-0 animate-pp-pulse",
+  slots: {
+    root: "inline-flex",
+    mark: "block shrink-0 motion-safe:animate-mark-pulse",
+  },
   variants: {
-    /**
-     * A spinner is a standalone loading indicator, not an inline glyph, so it does NOT share
-     * `Icon`'s 14–32px scale — at those sizes a section loader reads as a speck. `md` (32px) is the
-     * default and the one to reach for; `xs`/`sm` exist for the two places a spinner sits inside
-     * another control (a `Button` in its loading state), and `lg`/`xl` for full-page waits.
-     */
     size: {
-      xs: "size-4",
-      sm: "size-5",
-      md: "size-8",
-      lg: "size-12",
-      xl: "size-16",
+      sm: { mark: "size-spinner-sm" },
+      md: { mark: "size-spinner-md" },
+      lg: { mark: "size-spinner-lg" },
     },
-    /**
-     * The mark paints with `fill="currentColor"`, so a tone is just the text colour it inherits.
-     * `brand` is the default because a standalone loader is a brand moment; `current` opts out and
-     * takes whatever colour the surrounding control already set, which is what `Button` needs so
-     * the spinner matches its label on both white and flooded-pink grounds.
-     */
-    tone: {
-      brand: "text-text-brand",
-      muted: "text-text-muted",
-      subtle: "text-text-subtle",
-      onBrand: "text-text-on-brand",
-      inverse: "text-text-on-inverse",
-      current: "",
+    color: {
+      brand: { mark: "text-pink-500" },
+      neutral: { mark: "text-ink-900" },
+      inverse: { mark: "text-ink-000" },
     },
   },
-  defaultVariants: { size: "md", tone: "brand" },
+  defaultVariants: { size: "md", color: "brand" },
 });
 
-export interface SpinnerProps extends VariantProps<typeof spinner> {
+export interface SpinnerProps extends Omit<BasePropsWithColor<"span">, "aria-label"> {
   /**
-   * What is loading, announced politely. Omit it only when the spinner sits inside a control that
-   * already says so — a `Button` in its loading state, for instance.
+   * Not accepted: the status is named by `aria-labelledby`, which would silently outrank it — use
+   * `label`. Declared `never` because JSX skips excess-property checks on hyphenated attributes.
    */
+  "aria-label"?: never;
+  size?: "sm" | "md" | "lg" | undefined;
+  /** `inverse` is the white mark, for pink or ink panels. */
+  color?: "brand" | "neutral" | "inverse" | undefined;
+  /** The status announced to assistive tech. = "Loading" */
   label?: string | undefined;
-  className?: string | undefined;
 }
 
-export function Spinner({ size, tone, label, className }: SpinnerProps) {
+/** Whole-view loading. For content with a known shape, Skeleton is the better default. */
+export function Spinner({
+  size = "md",
+  color = "brand",
+  label = "Loading",
+  sx,
+  className,
+  ...props
+}: SpinnerProps) {
+  const styles = spinner({ size, color });
+  const labelId = useId();
+  // A live region announces its content, not its name: the label is sr-only text inside it,
+  // and aria-labelledby points at that text so the status keeps its name (status is named by author only).
   return (
-    <svg
-      aria-hidden={label === undefined}
-      aria-label={label}
-      className={spinner({ size, tone, className })}
-      fill="currentColor"
-      role={label === undefined ? undefined : "status"}
-      viewBox={SYMBOL_VIEW_BOX}
-      xmlns="http://www.w3.org/2000/svg"
+    <span
+      role="status"
+      aria-labelledby={labelId}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
     >
-      {SYMBOL_PATHS.map((d) => (
-        <path d={d} key={d} />
-      ))}
-    </svg>
+      <SymbolMark className={styles.mark()} />
+      <span id={labelId} className="sr-only">
+        {label}
+      </span>
+    </span>
   );
 }

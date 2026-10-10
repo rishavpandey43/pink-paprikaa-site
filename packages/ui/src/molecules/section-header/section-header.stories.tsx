@@ -1,83 +1,73 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { ArrowRight } from "lucide-react";
 
 import { Button } from "../../atoms/button/button";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { SectionHeader } from "./section-header";
 
 const meta = {
   title: "Molecules/SectionHeader",
   component: SectionHeader,
-  parameters: {
-    layout: "padded",
-    docs: {
-      description: {
-        component:
-          "The standard section opener — every page section starts with one. The heading is always " +
-          "the fluid `h2` step so openers read the same everywhere, while `headingLevel` sets where " +
-          "it sits in the document outline. The trailing action is dropped when the header is centred.",
-      },
-    },
-  },
-  args: { overline: "The Menu", title: "Most ordered this week" },
-  argTypes: { action: { control: false }, title: { control: "text" } },
-} satisfies Meta<typeof SectionHeader>;
-
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {};
-
-/** The common shape: an overline, a heading, and a ghost button onward to the full list. */
-export const WithAction: Story = {
   args: {
+    overline: "The Menu",
+    title: "Most ordered this week",
     action: (
-      <Button iconAfter={ArrowRight} size="sm" variant="ghost">
-        See Full Menu
+      <Button variant="ghost" size="sm" iconAfter={ArrowRight}>
+        See All
       </Button>
     ),
   },
-};
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "The standard section opener — every page section starts with one. Uppercase overline, a fluid `h2-fluid` heading (so it never overflows on mobile), an optional one-sentence lede and a trailing action (usually a ghost Button; not rendered when centred). `headingLevel` (default 2) sets the element, never the look. On a pink or ink section it follows the surface — there is no `on` prop.",
+      },
+    },
+  },
+} satisfies Meta<typeof SectionHeader>;
 
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+/** Card row "with action". */
+export const Playground: Story = {};
+
+/** Card row "lede". */
 export const WithLede: Story = {
   args: {
-    overline: "Our Kitchen",
-    title: "Ground fresh, cooked to order",
-    lede: "One kitchen, one grinder and a menu that changes with what the market has that morning.",
+    overline: "Our Story",
+    title: "A cafe that tastes like where it's from",
+    lede: "We started in one Gurgaon market with a chai counter and a grinder.",
+    action: undefined,
   },
 };
 
-/** Centred openers carry no action — the section below them is the next thing to read. */
+/** Card row "centred". */
 export const Centred: Story = {
-  args: {
-    align: "center",
-    overline: "Outlets",
-    title: "Find a Paprikaa",
-    lede: "Sector 57, Gurgaon. Dine in at the back, or order from the counter out front.",
-  },
+  args: { align: "center", overline: "Outlets", title: "Find a Paprikaa", action: undefined },
 };
 
-/** On a flooded pink section every tone lifts to white — eyebrow, heading and lede alike. */
+/** Card row `on="brand"` — now a brand surface. */
 export const OnBrand: Story = {
-  globals: { backgrounds: { value: "brand" } },
-  args: {
-    on: "brand",
-    overline: "Franchise",
-    title: "Bring us to your city",
-    lede: "One kitchen, one grinder, and a playbook we hand over in full.",
-  },
+  args: { overline: "Franchise", title: "Bring us to your city", action: undefined },
   render: (args) => (
-    <div className="rounded-5 bg-surface-brand p-8">
+    <div data-surface="brand" className="rounded-lg bg-surface-brand p-6">
       <SectionHeader {...args} />
     </div>
   ),
 };
 
-/**
- * The type step never changes; only the outline does. Use this so a section inside an article does
- * not skip from `h1` to `h3`.
- */
+export const Surfaces: Story = {
+  args: { lede: "What Sector 57 ordered most." },
+  render: (args) => (
+    <OnSurfaces>
+      <SectionHeader {...args} />
+    </OnSurfaces>
+  ),
+};
+
+/** Dev parity: the outline changes, the type step never does — no skipping from h1 to h3. */
 export const HeadingLevels: Story = {
   render: (args) => (
     <div className="grid gap-10">
@@ -88,15 +78,14 @@ export const HeadingLevels: Story = {
   ),
 };
 
-/** At 360px the action wraps under the heading rather than squeezing it. */
+/** Dev parity: at 360px the action wraps under the heading rather than squeezing it. */
 export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
-  args: {
-    action: (
-      <Button iconAfter={ArrowRight} size="sm" variant="ghost">
-        See Full Menu
-      </Button>
+  args: { lede: "One kitchen, one grinder and a menu that changes with the season." },
+  decorators: [
+    (Story) => (
+      <div className="w-80 max-w-full">
+        <Story />
+      </div>
     ),
-    lede: "One kitchen, one grinder and a menu that changes with the season.",
-  },
+  ],
 };

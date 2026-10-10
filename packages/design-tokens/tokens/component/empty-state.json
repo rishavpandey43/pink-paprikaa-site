@@ -1,0 +1,25 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "empty-state-symbol-lg": {
+      "$value": "52px",
+      "$description": "EmptyState size=\"lg\" brand symbol box (md is 40px, a spacing step).",
+      "$extensions": {
+        "pink-paprikaa": {
+          "utility": ["size"]
+        }
+      }
+    }
+  },
+  "color": {
+    "$type": "color",
+    "empty-state-symbol": {
+      "$value": "{color.pink.500}",
+      "$description": "EmptyState brand symbol. White on a pink field (R89)."
+    },
+    "empty-state-icon": {
+      "$value": "{color.pink.300}",
+      "$description": "EmptyState glyph, a soft pink. White at 70% on a pink field (R89)."
+    }
+  }
+}

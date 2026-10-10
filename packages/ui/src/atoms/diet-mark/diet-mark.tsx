@@ -1,58 +1,57 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentProps } from "react";
 
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import type { SxProp } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const dietMark = componentVariants({
-  slots: {
-    // A square outline with a filled dot — the statutory Indian vegetarian mark. `shrink-0` keeps
-    // it square inside a flex row that is running out of width.
-    root: "inline-grid shrink-0 place-items-center rounded-1 border-2",
-    // The dot inherits the outline's colour through `currentColor`, so a tone is set once.
-    dot: "rounded-6 bg-current",
-  },
+  base: "inline-flex shrink-0 text-veg",
   variants: {
-    /**
-     * `veg` is the green square-and-dot every item carries. `egg` is the turmeric dot used on the
-     * few bakes that contain egg. There is deliberately no non-veg mark — the kitchen is 100%
-     * vegetarian, and adding one would misdescribe the menu.
-     */
-    variant: {
-      veg: { root: "border-status-success text-status-success" },
-      egg: { root: "border-turmeric text-turmeric" },
-    },
-    /** 14 / 16 / 20px. `md` is the menu-row size; `sm` sits inline beside caption text. */
-    size: {
-      xs: { root: "size-3.5", dot: "size-1.5" },
-      sm: { root: "size-4", dot: "size-2" },
-      md: { root: "size-5", dot: "size-2.5" },
-      lg: { root: "size-6", dot: "size-3" },
-    },
+    size: { sm: "size-diet-mark-sm", md: "size-diet-mark-md", lg: "size-diet-mark-lg" },
   },
-  defaultVariants: { variant: "veg", size: "md" },
+  defaultVariants: { size: "md" },
 });
 
-/** What each mark is announced as when the caller does not override it. */
-const DEFAULT_LABEL = { veg: "Vegetarian", egg: "Contains egg" } as const;
-
-export interface DietMarkProps
-  extends Omit<ComponentPropsWithoutRef<"span">, "children">, VariantProps<typeof dietMark> {
-  /**
-   * Accessible name. The default already says the right thing in English; override it only when
-   * the surrounding copy needs different wording.
-   */
+export interface DietMarkProps extends ComponentProps<"span">, SxProp {
+  /** sm 14px (beside a dish name) · md 16px · lg 20px. = "md" */
+  size?: "sm" | "md" | "lg" | undefined;
+  /** = "Vegetarian" */
   label?: string | undefined;
 }
 
-export function DietMark({ className, variant = "veg", size, label, ...props }: DietMarkProps) {
-  const { root, dot } = dietMark({ variant, size });
+/**
+ * The statutory Indian vegetarian mark: a green square outline with a green dot at half its size.
+ * The only diet mark in this system — the kitchen is pure veg, not even egg (spec C10). The
+ * outline keeps a 1.5px stroke at every size (non-scaling stroke), as the design system's border.
+ */
+export function DietMark({
+  size = "md",
+  label = "Vegetarian",
+  sx,
+  className,
+  ...props
+}: DietMarkProps) {
   return (
     <span
-      aria-label={label ?? DEFAULT_LABEL[variant]}
-      className={root({ className })}
       role="img"
+      aria-label={label}
+      className={dietMark({ size, className: withSx(sx, className) })}
       {...props}
     >
-      <span className={dot()} />
+      <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" className="size-full">
+        <rect
+          x="0.75"
+          y="0.75"
+          width="14.5"
+          height="14.5"
+          rx="2"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          vectorEffect="non-scaling-stroke"
+        />
+        <circle cx="8" cy="8" r="4" fill="currentColor" />
+      </svg>
     </span>
   );
 }

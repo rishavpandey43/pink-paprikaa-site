@@ -1,0 +1,13 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "section-tight": {
+      "$value": "clamp(36px, 4vw, 56px)",
+      "$description": "Section space=\"tight\" (design system Section.jsx)."
+    },
+    "section-loose": {
+      "$value": "clamp(72px, 9vw, 128px)",
+      "$description": "Section space=\"loose\" (design system Section.jsx)."
+    }
+  }
+}

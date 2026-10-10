@@ -11,13 +11,18 @@ const STATUS = {
 const resolve = (p) => (p.error ? "error" : p.success ? "success" : p.warning ? "warning" : p.status || "default");
 const messageOf = (p) => (typeof p.error === "string" ? p.error : typeof p.success === "string" ? p.success : typeof p.warning === "string" ? p.warning : p.hint);
 
-/** Text field. Carries the system's full status set. */
+// Types that open a browser-native picker or spinner. We route them to our own components.
+const NATIVE = { date: "DatePicker", "datetime-local": "DatePicker", month: "DatePicker", week: "DatePicker", time: "SlotPicker", color: null, file: null, range: null };
+const warned = {};
+
+/** Text field. Carries the system's full status set. Never renders a browser picker. */
 export function Input({
   label, hint, error, success, warning, status, icon, suffix, trailing, id,
   multiline, rows = 4, value, onChange, placeholder, type = "text",
   disabled, readOnly, loading, required, optional, size = "md", style, ...rest
 }) {
   const [focus, setFocus] = React.useState(false);
+  const [hov, setHov] = React.useState(false);
   const uid = id || React.useId();
   const key = resolve({ error, success, warning, status });
   const s = STATUS[key];
@@ -25,6 +30,12 @@ export function Input({
   const active = key !== "default" || focus;
   const Tag = multiline ? "textarea" : "input";
   const h = size === "sm" ? 40 : size === "lg" ? 56 : 48;
+  let safeType = type, inputMode;
+  if (type === "number") { safeType = "text"; inputMode = "decimal"; }
+  else if (Object.prototype.hasOwnProperty.call(NATIVE, type)) {
+    safeType = "text";
+    if (!warned[type]) { warned[type] = 1; console.warn('Input type="' + type + '" opens a browser picker. ' + (NATIVE[type] ? "Use " + NATIVE[type] + " instead." : "Not supported in this system.")); }
+  }
 
   return (
     <div style={{ display: "grid", gap: 6, minWidth: 0, ...style }}>
@@ -36,10 +47,11 @@ export function Input({
         </label>
       ) : null}
       <div
+        onPointerEnter={() => setHov(true)} onPointerLeave={() => setHov(false)}
         style={{
           display: "flex", alignItems: multiline ? "flex-start" : "center", gap: 10, minWidth: 0,
           background: disabled ? "var(--ink-100)" : readOnly ? "var(--surface-sunken)" : "var(--ink-000)",
-          border: (active ? 2 : 1) + "px solid " + (disabled ? "var(--border-subtle)" : active ? s.border : "var(--border-default)"),
+          border: (active ? 2 : 1) + "px solid " + (disabled ? "var(--border-subtle)" : active ? s.border : hov && !readOnly ? "var(--border-strong)" : "var(--border-default)"),
           borderRadius: "var(--radius-md)",
           padding: multiline ? "12px 14px" : "0 14px",
           height: multiline ? undefined : h,
@@ -50,9 +62,9 @@ export function Input({
       >
         {icon ? <Icon name={icon} size="md" style={{ color: disabled ? "var(--ink-400)" : focus || key !== "default" ? s.accent : "var(--ink-500)" }} /> : null}
         <Tag
-          id={uid} type={multiline ? undefined : type} rows={multiline ? rows : undefined}
+          id={uid} type={multiline ? undefined : safeType} inputMode={multiline ? undefined : inputMode} rows={multiline ? rows : undefined}
           value={value} onChange={onChange} placeholder={placeholder}
-          disabled={disabled} readOnly={readOnly} required={required}
+          disabled={disabled} readOnly={readOnly} aria-required={required || undefined}
           aria-invalid={key === "error" || undefined}
           aria-describedby={message ? uid + "-msg" : undefined}
           onFocus={() => setFocus(true)} onBlur={() => setFocus(false)}

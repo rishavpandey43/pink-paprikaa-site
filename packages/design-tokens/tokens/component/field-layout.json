@@ -1,0 +1,8 @@
+{
+  "grid-template-columns": {
+    "field-side": {
+      "$value": "minmax(0, 160px) minmax(0, 1fr)",
+      "$description": "Field orientation=\"side\": the design system's 160px label column beside the control. Utility: grid-cols-field-side."
+    }
+  }
+}

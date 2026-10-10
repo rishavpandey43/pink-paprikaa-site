@@ -1,112 +1,104 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn } from "storybook/test";
 
-import { useState } from "react";
+import { SearchField } from "./search-field";
 
-import { SearchField, type SearchFieldProps } from "./search-field";
-
-// `meta` is annotated rather than `satisfies`-inferred: under pnpm's isolated node_modules,
-// declaration emit for an inferred decorator type reaches for Storybook/Radix internals it
-// cannot name from here (TS2883). The annotation keeps the emitted type nameable.
-const meta: Meta<typeof SearchField> = {
+const meta = {
   title: "Molecules/SearchField",
   component: SearchField,
+  args: {
+    label: "Search the menu",
+    placeholder: "Search chai, paneer, kulfi…",
+    onValueChange: fn(),
+    onClear: fn(),
+  },
   parameters: {
-    layout: "padded",
     docs: {
       description: {
         component:
-          "Menu search — the pill-shaped sibling of `Input`, which is 10px-cornered. It is always " +
-          "full width in its container with a zero min-width, so it can never push a filter row " +
-          "wider, and its placeholder names real dishes rather than naming the act of searching.",
+          'Menu search — pill-shaped, unlike the 10px-radius Input, on the same field box (status border, focus ring, loading mark). Controlled (`value` + `onValueChange`) or uncontrolled (`defaultValue`); the clear button appears whenever there is text, empties the box, calls `onClear` and returns focus to the input. Always full-width in its container with `min-width: 0`, so it never pushes a flex row wider. The placeholder names real dishes, not "Search…". `hint` sits under the field; with a `status` it becomes the status message with its glyph.',
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <div className="w-full max-w-md">
-        <Story />
-      </div>
-    ),
-  ],
-};
+} satisfies Meta<typeof SearchField>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+/** Card row "empty". */
+export const Playground: Story = {};
 
-function LiveSearchField(props: SearchFieldProps) {
-  const [query, setQuery] = useState("paneer");
-  return (
-    <SearchField
-      {...props}
-      onChange={(event) => {
-        setQuery(event.target.value);
-      }}
-      onClear={() => {
-        setQuery("");
-      }}
-      value={query}
-    />
-  );
-}
-
-/** Type into it: the clear button appears as soon as there is a query to clear. */
-export const Interactive: Story = {
-  render: (args) => <LiveSearchField {...args} />,
+/** Card row "with value" — type, then clear. */
+export const WithValue: Story = {
+  args: { defaultValue: "paneer" },
+  play: async ({ args, canvas, userEvent }) => {
+    const box = canvas.getByRole("searchbox", { name: "Search the menu" });
+    await userEvent.type(box, " tikka");
+    await expect(box).toHaveValue("paneer tikka");
+    await userEvent.click(canvas.getByRole("button", { name: "Clear search" }));
+    await expect(box).toHaveValue("");
+    await expect(box).toHaveFocus();
+    await expect(args.onClear).toHaveBeenCalledTimes(1);
+  },
 };
 
-/** 40 / 48px — fixed heights, so the pill never wraps beside a filter chip. */
-export const Sizes: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <SearchField {...args} placeholder="Small — 40px" size="sm" />
-      <SearchField {...args} placeholder="Medium — 48px" size="md" />
-    </div>
-  ),
+/** `clearLabel` names the clear button after what it clears, e.g. on the outlet finder. */
+export const ClearLabel: Story = {
+  args: {
+    label: "Search outlets",
+    placeholder: "Search Sector 57, MKM Market…",
+    defaultValue: "Sector 57",
+    clearLabel: "Clear outlet search",
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("button", { name: "Clear outlet search" })).toBeVisible();
+  },
 };
 
-/** Every status carries a sentence — a colour on its own never says what went wrong. */
+/** Card row "loading" — `isLoading`. */
+export const Loading: Story = { args: { defaultValue: "kulfi", isLoading: true } };
+
+/** Card row "no results" — `status="warning"` + `hint`. */
+export const NoResults: Story = {
+  args: {
+    defaultValue: "pizza",
+    status: "warning",
+    hint: "Nothing matches that. Try another dish.",
+  },
+};
+
+/** Card row "disabled". */
+export const Disabled: Story = { args: { disabled: true, placeholder: "Search unavailable" } };
+
+/** Card row `size="sm"`. */
+export const Small: Story = {
+  args: { size: "sm", label: "Search outlets", placeholder: "Search outlets" },
+};
+
+/** Dev parity: every status carries a sentence — success, error and read-only beside the card's warning. */
 export const Statuses: Story = {
   render: (args) => (
-    <div className="flex flex-col gap-5">
-      <SearchField {...args} hint="34 dishes match." />
+    <div className="flex max-w-120 flex-col gap-5">
+      <SearchField {...args} defaultValue="kulfi" status="success" hint="Showing 6 matches." />
       <SearchField
         {...args}
-        message="Nothing matches that. Try another dish."
-        readOnly
-        status="warning"
-        value="pizza"
-      />
-      <SearchField {...args} message="Showing 6 matches." readOnly status="success" value="kulfi" />
-      <SearchField
-        {...args}
-        message="Search is down for a moment."
-        readOnly
+        defaultValue="chai"
         status="error"
-        value="chai"
+        hint="Search is down for a moment."
       />
       <SearchField
         {...args}
-        message="Looking through the menu."
+        defaultValue="paneer"
         readOnly
-        status="loading"
-        value="kulfi"
-      />
-      <SearchField
-        {...args}
-        label="Search unavailable"
-        message="Search opens when the kitchen does, at 8am."
-        placeholder="Search unavailable"
-        status="disabled"
+        hint="Filtered by the outlet you picked."
       />
     </div>
   ),
 };
 
-/** The narrowest supported width — the pill keeps its height and the query truncates instead. */
+/** Dev parity: the narrowest supported width — the pill keeps its height and a long query scrolls inside it. */
 export const Narrow: Story = {
+  args: { defaultValue: "paneer butter masala with extra gravy", hint: "34 dishes match." },
   decorators: [
     (Story) => (
       <div className="w-80">
@@ -114,9 +106,4 @@ export const Narrow: Story = {
       </div>
     ),
   ],
-  args: {
-    value: "paneer butter masala with extra gravy",
-    hint: "34 dishes match.",
-    readOnly: true,
-  },
 };

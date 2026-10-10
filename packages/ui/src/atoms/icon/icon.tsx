@@ -1,51 +1,67 @@
-import type { LucideIcon } from "lucide-react";
+import type { ComponentProps, ComponentType, SVGProps } from "react";
 
+import type { SxProp } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
+
+/**
+ * Anything that renders an icon glyph: a lucide-react icon or one of the brand glyphs. The SVG
+ * attributes are picked from React's own types (not spelled out) so `aria-hidden` keeps its
+ * exact type and a hyphenated key never has to be declared here.
+ *
+ * `size` is the one optional without `| undefined` (R13's exception): this type lists what `Icon`
+ * passes a glyph, and a lucide-react icon declares `size?: string | number`, so with
+ * `exactOptionalPropertyTypes` a widened `size` would stop every lucide icon being assignable.
+ */
+export type IconComponent = ComponentType<
+  Pick<SVGProps<SVGSVGElement>, "strokeWidth" | "aria-hidden" | "focusable"> & {
+    size?: number | string;
+  }
+>;
 
 const icon = componentVariants({
-  // `shrink-0` matters: an icon inside a flex row must never be squeezed by a long label.
-  base: "inline-block shrink-0",
+  base: "inline-flex shrink-0 items-center justify-center leading-none",
   variants: {
     size: {
-      xs: "size-3.5",
-      sm: "size-4",
-      md: "size-5",
-      lg: "size-6",
-      xl: "size-8",
+      xs: "size-icon-xs",
+      sm: "size-icon-sm",
+      md: "size-icon-md",
+      lg: "size-icon-lg",
+      xl: "size-icon-xl",
     },
   },
   defaultVariants: { size: "md" },
 });
 
-/** Stroke thins as the glyph grows, so weight reads consistently across sizes (handoff §7). */
-const STROKE_WIDTH = { xs: 2, sm: 2, md: 1.75, lg: 1.75, xl: 1.75 } as const;
+type IconSize = NonNullable<VariantProps<typeof icon>["size"]>;
 
-export interface IconProps extends VariantProps<typeof icon> {
-  /**
-   * The Lucide glyph itself, imported by name: `import { ShoppingBag } from "lucide-react"`.
-   *
-   * Deliberately the component and not a string name (which is what the design reference used):
-   * resolving a name at runtime requires the whole icon set in the bundle, and this site has a
-   * Lighthouse byte-weight budget. Passing the component keeps imports tree-shakeable and typos
-   * become type errors.
-   */
-  icon: LucideIcon;
-  /**
-   * Accessible name. Omit for decorative icons sitting beside a text label — the icon is then
-   * hidden from assistive tech so the label is not announced twice.
-   */
+/** Design system rule: stroke 2 at 16px and below, 1.75 above. */
+const STROKE_WIDTH: Readonly<Record<IconSize, number>> = {
+  xs: 2,
+  sm: 2,
+  md: 1.75,
+  lg: 1.75,
+  xl: 1.75,
+};
+
+export interface IconProps
+  extends Omit<ComponentProps<"span">, "children">, VariantProps<typeof icon>, SxProp {
+  icon: IconComponent;
+  /** Accessible name. Omit for a decorative icon (then it is hidden from assistive tech). */
   label?: string | undefined;
-  className?: string | undefined;
 }
 
-export function Icon({ icon: Glyph, size, label, className }: IconProps) {
+/** A Lucide-style glyph in the system's sizes, painted with `currentColor`. */
+export function Icon({ icon: Glyph, size = "md", label, sx, className, ...props }: IconProps) {
   return (
-    <Glyph
-      aria-hidden={label === undefined}
-      aria-label={label}
-      className={icon({ size, className })}
+    <span
+      className={icon({ size, className: withSx(sx, className) })}
       role={label === undefined ? undefined : "img"}
-      strokeWidth={STROKE_WIDTH[size ?? "md"]}
-    />
+      aria-label={label}
+      aria-hidden={label === undefined ? true : undefined}
+      {...props}
+    >
+      <Glyph size="100%" strokeWidth={STROKE_WIDTH[size]} aria-hidden focusable="false" />
+    </span>
   );
 }

@@ -1,41 +1,53 @@
-import type { ReactNode } from "react";
-
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
-import { Tooltip, TooltipProvider } from "./tooltip";
+import { expectNoA11yViolations } from "#vitest.setup";
 
-function renderInProvider(ui: ReactNode) {
-  return render(<TooltipProvider>{ui}</TooltipProvider>);
+import { Tooltip } from "./tooltip";
+
+function renderDairy() {
+  return render(
+    <Tooltip label="Contains dairy">
+      <button type="button">Dairy</button>
+    </Tooltip>
+  );
 }
 
+// With no `aria-label` on the content, Radix gives the styled content itself role="tooltip" and
+// points the trigger's aria-describedby at it, so the label renders once and is the element queried.
 describe("Tooltip", () => {
-  it("keeps the hint closed until the trigger is reached", () => {
-    renderInProvider(
-      <Tooltip label="Contains dairy">
-        <button type="button">Dairy</button>
-      </Tooltip>
-    );
-
-    expect(screen.getByRole("button", { name: "Dairy" })).toBeInTheDocument();
+  it("stays closed until its trigger is focused, then describes the trigger", async () => {
+    const user = userEvent.setup();
+    renderDairy();
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    await user.tab();
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Contains dairy");
+    expect(screen.getByRole("button", { name: "Dairy" })).toHaveAccessibleDescription(
+      "Contains dairy"
+    );
   });
 
-  it("opens on keyboard focus", async () => {
-    renderInProvider(
-      <Tooltip label="Contains dairy">
-        <button type="button">Dairy</button>
-      </Tooltip>
-    );
-
-    await userEvent.tab();
-
+  it("opens on hover", async () => {
+    const user = userEvent.setup();
+    renderDairy();
+    await user.hover(screen.getByRole("button", { name: "Dairy" }));
     expect(await screen.findByRole("tooltip")).toHaveTextContent("Contains dairy");
   });
 
-  it("closes again when focus leaves", async () => {
-    renderInProvider(
+  it("closes on Escape", async () => {
+    const user = userEvent.setup();
+    renderDairy();
+    await user.tab();
+    await screen.findByRole("tooltip");
+    await user.keyboard("{Escape}");
+    await waitFor(() => {
+      expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    });
+  });
+
+  it("closes when focus leaves the trigger", async () => {
+    const user = userEvent.setup();
+    render(
       <>
         <Tooltip label="Contains dairy">
           <button type="button">Dairy</button>
@@ -43,124 +55,89 @@ describe("Tooltip", () => {
         <button type="button">Elsewhere</button>
       </>
     );
-
-    await userEvent.tab();
-    expect(await screen.findByRole("tooltip")).toBeInTheDocument();
-
-    await userEvent.tab();
-    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    await user.tab();
+    await screen.findByRole("tooltip");
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Elsewhere" })).toHaveFocus();
+    await waitFor(() => {
+      expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    });
   });
 
-  it("closes on Escape", async () => {
-    renderInProvider(
-      <Tooltip label="Contains dairy">
-        <button type="button">Dairy</button>
-      </Tooltip>
+  it("is an ink pill stacked above dialogs and toasts, capped so a long hint wraps", async () => {
+    const user = userEvent.setup();
+    renderDairy();
+    await user.tab();
+    expect(await screen.findByRole("tooltip")).toHaveClass(
+      "z-tooltip",
+      "max-w-56",
+      "rounded-sm",
+      "bg-surface-inverse",
+      "text-text-on-inverse",
+      "text-caption",
+      "shadow-2"
     );
-
-    await userEvent.tab();
-    expect(await screen.findByRole("tooltip")).toBeInTheDocument();
-
-    await userEvent.keyboard("{Escape}");
-
-    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
-  });
-
-  it("describes the trigger it names while it is open", async () => {
-    renderInProvider(
-      <Tooltip isDefaultOpen label="Pickup only for now">
-        <button type="button">Delivery</button>
-      </Tooltip>
-    );
-
-    const trigger = screen.getByRole("button", { name: "Delivery" });
-    const hint = await screen.findByRole("tooltip");
-
-    expect(trigger).toHaveAttribute("aria-describedby", hint.id);
-  });
-
-  it("uses the caller's control as the trigger rather than adding one", () => {
-    renderInProvider(
-      <Tooltip label="Save for later">
-        <button type="button">Save</button>
-      </Tooltip>
-    );
-
-    expect(screen.getAllByRole("button")).toHaveLength(1);
   });
 
   it.each(["top", "bottom", "left", "right"] as const)(
-    "places the hint on the %s",
+    "opens with side %s (placement itself is checked in the browser, story Sides)",
     async (side) => {
-      renderInProvider(
-        <Tooltip isDefaultOpen label="Share" side={side}>
+      const user = userEvent.setup();
+      render(
+        <Tooltip label="Share" side={side}>
           <button type="button">Share</button>
         </Tooltip>
       );
-
-      expect(await screen.findByRole("tooltip")).toHaveAttribute("data-side", side);
+      await user.tab();
+      expect(await screen.findByRole("tooltip")).toHaveTextContent("Share");
     }
   );
 
-  it("reports every open and close", async () => {
-    const handleOpenChange = vi.fn();
-    renderInProvider(
-      <Tooltip label="Contains dairy" onOpenChange={handleOpenChange}>
+  it("keeps the trigger's own name and handlers", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    render(
+      <Tooltip label="Pickup only for now">
+        <button type="button" onClick={onClick}>
+          Delivery
+        </button>
+      </Tooltip>
+    );
+    await user.click(screen.getByRole("button", { name: "Delivery" }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+  });
+
+  it("renders only the trigger for a blank label (R48)", async () => {
+    const user = userEvent.setup();
+    render(
+      <Tooltip label="  ">
         <button type="button">Dairy</button>
       </Tooltip>
     );
-
-    await userEvent.tab();
-
-    expect(handleOpenChange).toHaveBeenCalledWith(true);
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Dairy" })).toHaveFocus();
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Dairy" })).not.toHaveAttribute("aria-describedby");
   });
 
-  it("stays open when driven from outside", async () => {
-    renderInProvider(
-      <Tooltip isOpen label="Ground this morning">
-        <button type="button">Info</button>
-      </Tooltip>
-    );
-
-    expect(await screen.findByRole("tooltip")).toHaveTextContent("Ground this morning");
-  });
-
-  it("is an ink pill, not a bordered box", async () => {
-    renderInProvider(
-      <Tooltip isDefaultOpen label="Contains dairy">
-        <button type="button">Dairy</button>
-      </Tooltip>
-    );
-    const hint = await screen.findByRole("tooltip");
-
-    expect(hint).toHaveClass("bg-surface-inverse");
-    expect(hint).toHaveClass("text-text-on-inverse");
-    expect(hint).toHaveClass("rounded-2");
-  });
-
-  it("merges a caller className", async () => {
-    renderInProvider(
-      <Tooltip className="rounded-4" isDefaultOpen label="Contains dairy">
-        <button type="button">Dairy</button>
-      </Tooltip>
-    );
-    const hint = await screen.findByRole("tooltip");
-
-    expect(hint).toHaveClass("rounded-4");
-    expect(hint).not.toHaveClass("rounded-2");
-  });
-
-  it("has no accessibility violations", async () => {
-    const { container } = render(
-      <TooltipProvider>
-        <Tooltip label="Contains dairy">
-          <button type="button">Dairy</button>
-        </Tooltip>
-        <Tooltip label="Save for later" side="bottom">
-          <button type="button">Save</button>
-        </Tooltip>
-      </TooltipProvider>
-    );
+  it("has no accessibility violations while open", async () => {
+    const user = userEvent.setup();
+    const { container } = renderDairy();
+    await user.tab();
+    const tooltip = await screen.findByRole("tooltip");
     await expectNoA11yViolations(container);
+    await expectNoA11yViolations(tooltip);
+  });
+
+  it("takes sx on its content", async () => {
+    const user = userEvent.setup();
+    render(
+      <Tooltip label="Contains dairy" sx={{ mt: 4 }}>
+        <button type="button">Dairy</button>
+      </Tooltip>
+    );
+    await user.tab();
+    expect(await screen.findByRole("tooltip")).toHaveClass("mt-4");
   });
 });

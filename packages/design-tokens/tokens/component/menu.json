@@ -1,0 +1,18 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "menu-max-sm": {
+      "$value": "216px",
+      "$description": "Menu panel scroll height, small (a long menu scrolls inside).",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-h"] } }
+    },
+    "menu-max-md": {
+      "$value": "320px",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-h"] } }
+    },
+    "menu-max-lg": {
+      "$value": "400px",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-h"] } }
+    }
+  }
+}

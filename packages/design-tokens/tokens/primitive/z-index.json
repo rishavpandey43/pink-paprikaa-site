@@ -1,0 +1,15 @@
+{
+  "z": {
+    "$type": "number",
+    "raised": { "$value": 5 },
+    "sticky": { "$value": 10 },
+    "header": { "$value": 50 },
+    "dock": { "$value": 60 },
+    "overlay": { "$value": 70 },
+    "toast": { "$value": 80 },
+    "tooltip": {
+      "$value": 90,
+      "$description": "Above dialogs and toasts: a hint never hides behind what it explains."
+    }
+  }
+}

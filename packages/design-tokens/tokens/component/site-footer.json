@@ -1,0 +1,14 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "site-footer-top": {
+      "$value": "clamp(44px, 5vw, 64px)",
+      "$description": "Footer top padding (design system SiteFooter)."
+    },
+    "site-footer-gap": { "$value": "clamp(28px, 3vw, 40px)" },
+    "site-footer-dock-clearance": {
+      "$value": "calc(110px + env(safe-area-inset-bottom, 0px))",
+      "$description": "Bottom padding when an ActionDock is on the page — the handoff's 110px plus the iOS home-indicator inset, more than the dock's own height, so it never covers the legal links."
+    }
+  }
+}

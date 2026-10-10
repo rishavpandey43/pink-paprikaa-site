@@ -1,163 +1,151 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentProps } from "react";
 
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
-import { SYMBOL_PATHS, SYMBOL_VIEW_BOX } from "../logo/logo-paths";
+import { formatCount } from "@pink-paprikaa-web/utils";
+
+import { BrandDiamond, type BrandDiamondSize } from "../../lib/brand-diamond";
+import type { SxProp } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
+import { SymbolMark } from "../../lib/symbol-mark";
+
+type RatingSize = "sm" | "md" | "lg";
+
+/** Rating.card.html's sizes, as diamond edge lengths. */
+const DIAMOND_SIZE: Readonly<Record<RatingSize, BrandDiamondSize>> = {
+  sm: "12px",
+  md: "16px",
+  lg: "24px",
+};
 
 const rating = componentVariants({
   slots: {
     root: "inline-flex items-center gap-2",
-    track: "inline-flex items-center",
-    /** One score unit. Everything inside it is absolutely placed, so it needs a fixed box. */
-    unit: "relative block shrink-0",
-    /** A full-size layer inside the unit. The clip below shrinks, this never does. */
-    layer: "absolute top-0 left-0 grid place-items-center",
-    /** The screen-space window that makes 4.3 fill exactly 30% of the fifth mark's width. */
-    clip: "absolute inset-y-0 left-0 overflow-hidden",
-    diamond: "grid place-items-center",
-    glyph: "",
-    score: "font-display font-bold text-text-heading tabular-nums",
-    reviews: "font-body text-caption text-text-subtle tabular-nums",
+    units: "inline-flex items-center",
+    value: "font-display text-rating-value font-bold text-text-heading tabular-nums",
+    count: "font-body text-rating-count text-text-subtle tabular-nums",
+  },
+  variants: {
+    variant: {
+      diamond: { units: "gap-1" },
+      symbol: { units: "gap-0.75" },
+    },
+  },
+  defaultVariants: { variant: "diamond" },
+});
+
+const symbolUnit = componentVariants({
+  slots: {
+    unit: "relative shrink-0",
+    track: "absolute inset-0 size-full text-pink-500 opacity-22",
+    fill: "absolute inset-0 size-full text-pink-500",
   },
   variants: {
     size: {
-      xs: { unit: "size-3", layer: "size-3", track: "gap-1", score: "text-caption" },
-      sm: { unit: "size-4", layer: "size-4", track: "gap-1", score: "text-body2" },
-      md: { unit: "size-6", layer: "size-6", track: "gap-1-5", score: "text-subtitle2" },
-      lg: { unit: "size-8", layer: "size-8", track: "gap-2", score: "text-subtitle1" },
+      sm: { unit: "size-brand-diamond-12" },
+      md: { unit: "size-brand-diamond-16" },
+      lg: { unit: "size-brand-diamond-24" },
     },
-    /**
-     * `diamond` is the default score mark: a rotated square carrying the brand symbol, counter
-     * rotated so the symbol itself stays upright. `symbol` drops the square and shows the bare
-     * mark — the treatment review cards and marketing artwork use.
-     *
-     * A square of side s rotated 45deg has a bounding box of s * sqrt(2), so the square is sized
-     * at 1 / sqrt(2) of the unit and the diamond lands exactly inside it. That is what lets the
-     * partial fill clip in screen space without any offset arithmetic.
-     */
-    variant: {
-      diamond: {
-        diamond: "size-[70.711%] rotate-45 rounded-1",
-        glyph: "size-[78%] -rotate-45",
-      },
-      symbol: { diamond: "size-full", glyph: "size-full" },
-    },
-    isFilled: { true: {}, false: {} },
   },
-  compoundVariants: [
-    {
-      variant: "diamond",
-      isFilled: false,
-      class: { diamond: "bg-ink-200 text-brand-primary", glyph: "opacity-50" },
-    },
-    {
-      variant: "diamond",
-      isFilled: true,
-      class: { diamond: "bg-brand-primary text-text-on-brand", glyph: "opacity-60" },
-    },
-    {
-      variant: "symbol",
-      isFilled: false,
-      class: { diamond: "text-brand-primary", glyph: "opacity-25" },
-    },
-    {
-      variant: "symbol",
-      isFilled: true,
-      class: { diamond: "text-brand-primary", glyph: "opacity-100" },
-    },
-    // Below 14px the embedded mark stops resolving, so its opacity steps up to compensate.
-    { size: "sm", variant: "diamond", isFilled: false, class: { glyph: "opacity-80" } },
-    { size: "sm", variant: "diamond", isFilled: true, class: { glyph: "opacity-85" } },
-  ],
-  defaultVariants: { size: "md", variant: "diamond", isFilled: false },
+  defaultVariants: { size: "md" },
 });
 
-/** The brand symbol, inheriting whatever colour the mark around it sets. */
-function SymbolMark({ className }: { className: string }) {
+/** Clips a fill layer to `fraction` of its unrotated box, left to right — screen space. */
+function clipTo(fraction: number) {
+  if (fraction >= 1) return undefined;
+  const hidden = Math.round((1 - fraction) * 1000) / 10;
+  return { clipPath: `inset(0 ${String(hidden)}% 0 0)` };
+}
+
+interface UnitProps {
+  /** 0…1: how much of this unit is filled. */
+  fill: number;
+  size: RatingSize;
+}
+
+function DiamondUnit({ fill, size }: UnitProps) {
   return (
-    <svg
-      aria-hidden
-      className={className}
-      fill="currentColor"
-      viewBox={SYMBOL_VIEW_BOX}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {SYMBOL_PATHS.map((d) => (
-        <path d={d} key={d} />
-      ))}
-    </svg>
+    <span className="relative grid shrink-0">
+      <BrandDiamond size={DIAMOND_SIZE[size]} fill="empty" />
+      {fill > 0 ? (
+        <span className="absolute inset-0" style={clipTo(fill)}>
+          <BrandDiamond size={DIAMOND_SIZE[size]} fill="brand" />
+        </span>
+      ) : null}
+    </span>
   );
 }
 
-export interface RatingProps
-  extends
-    Omit<ComponentPropsWithoutRef<"span">, "children">,
-    Omit<VariantProps<typeof rating>, "isFilled"> {
-  /** The score. Halves and any other fraction are honoured — 4.3 fills 30% of the fifth mark. */
-  value?: number | undefined;
-  /** How many marks the scale has. Five everywhere on the site; the prop exists for fixtures. */
-  max?: number | undefined;
-  /** Review count, rendered in brackets with Indian digit grouping — (2,184). */
-  count?: number | undefined;
-  /** Set false to drop the numeric score and leave the marks to speak for themselves. */
-  hasValueLabel?: boolean | undefined;
+function SymbolUnit({ fill, size }: UnitProps) {
+  const styles = symbolUnit({ size });
+  return (
+    <span className={styles.unit()}>
+      <SymbolMark className={styles.track()} />
+      {fill > 0 ? <SymbolMark className={styles.fill()} style={clipTo(fill)} /> : null}
+    </span>
+  );
 }
 
+export interface RatingProps extends ComponentProps<"span">, SxProp {
+  /** 0…max; any fraction (4.3 fills 30% of the fifth diamond). */
+  value: number;
+  /** = 5 */
+  max?: number | undefined;
+  /** Review count, a whole number ≥ 0, shown in brackets with Indian digit grouping and read in the name. */
+  count?: number | undefined;
+  /** sm 12 · md 16 · lg 24px diamonds. = "md" */
+  size?: RatingSize | undefined;
+  /** `symbol` swaps the diamond for the bare brand mark (ReviewCard, marketing artwork). */
+  variant?: "diamond" | "symbol" | undefined;
+  /** = true: show the score to one decimal. */
+  hasValue?: boolean | undefined;
+}
+
+/** Review score: brand diamonds, not stars. One image, named with the score (and the count). */
 export function Rating({
-  className,
-  size,
-  variant,
-  value = 5,
+  value,
   max = 5,
   count,
-  hasValueLabel = true,
+  size = "md",
+  variant = "diamond",
+  hasValue = true,
+  sx,
+  className,
   ...props
 }: RatingProps) {
-  const { root, track, unit, layer, clip, diamond, glyph, score, reviews } = rating({
-    size,
-    variant,
-  });
-  const safeMax = Math.max(1, Math.round(max));
-  const safeValue = Math.min(safeMax, Math.max(0, value));
-  const label =
-    count === undefined
-      ? `Rated ${safeValue.toFixed(1)} out of ${safeMax.toString()}`
-      : `Rated ${safeValue.toFixed(1)} out of ${safeMax.toString()} from ${count.toLocaleString("en-IN")} reviews`;
+  if (!Number.isInteger(max) || max < 1 || !Number.isFinite(value) || value < 0 || value > max) {
+    throw new RangeError(
+      `Rating: value must be between 0 and a whole max of at least 1, got ${String(value)} of ${String(max)}`
+    );
+  }
+  if (count !== undefined && (!Number.isInteger(count) || count < 0)) {
+    throw new RangeError(`Rating: count must be a whole number of reviews, got ${String(count)}`);
+  }
+  const styles = rating({ variant });
+  // Rounded once and printed one way, so the name and the visible score never disagree
+  // (4.25 → "4.3" and 4 → "4.0" in both).
+  const shown = (Math.round(value * 10) / 10).toFixed(1);
+  const score = `${shown} out of ${String(max)}`;
+  const name = count === undefined ? score : `${score}, ${formatCount(count)} reviews`;
 
   return (
-    <span aria-label={label} className={root({ className })} role="img" {...props}>
-      <span aria-hidden="true" className={track()}>
-        {Array.from({ length: safeMax }, (_, index) => {
-          const fill = Math.min(1, Math.max(0, safeValue - index));
-          return (
-            <span className={unit()} key={index}>
-              <span className={layer()}>
-                <span className={diamond({ isFilled: false })}>
-                  <SymbolMark className={glyph({ isFilled: false })} />
-                </span>
-              </span>
-              {fill > 0 ? (
-                <span className={clip()} style={{ width: `${(fill * 100).toFixed(3)}%` }}>
-                  <span className={layer()}>
-                    <span className={diamond({ isFilled: true })}>
-                      <SymbolMark className={glyph({ isFilled: true })} />
-                    </span>
-                  </span>
-                </span>
-              ) : null}
-            </span>
+    <span
+      role="img"
+      aria-label={name}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      <span className={styles.units()}>
+        {Array.from({ length: max }, (_, index) => {
+          const fill = Math.min(Math.max(value - index, 0), 1);
+          return variant === "symbol" ? (
+            <SymbolUnit key={index} fill={fill} size={size} />
+          ) : (
+            <DiamondUnit key={index} fill={fill} size={size} />
           );
         })}
       </span>
-      {hasValueLabel ? (
-        <span aria-hidden="true" className={score()}>
-          {safeValue.toFixed(1)}
-        </span>
-      ) : null}
-      {count === undefined ? null : (
-        <span aria-hidden="true" className={reviews()}>
-          ({count.toLocaleString("en-IN")})
-        </span>
-      )}
+      {hasValue ? <span className={styles.value()}>{shown}</span> : null}
+      {count === undefined ? null : <span className={styles.count()}>({formatCount(count)})</span>}
     </span>
   );
 }

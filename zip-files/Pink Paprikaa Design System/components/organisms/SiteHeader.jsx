@@ -26,7 +26,9 @@ export function SiteHeader({ links = ["Menu", "Our Story", "Outlets", "Franchise
       }}
       {...rest}
     >
-      <a href="#" style={{ display: "flex", alignItems: "center", flex: "0 0 auto" }}><Logo base={base} height={60} /></a>
+      <a href="#" aria-label="Pink Paprikaa home" style={{ display: "flex", alignItems: "center", flex: "0 0 auto", borderRadius: "var(--radius-sm)", transition: "opacity var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out)" }}
+        onPointerEnter={(e) => { e.currentTarget.style.opacity = ".82"; }} onPointerLeave={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "none"; }}
+        onPointerDown={(e) => { e.currentTarget.style.transform = "scale(.97)"; }} onPointerUp={(e) => { e.currentTarget.style.transform = "none"; }}><Logo base={base} height={60} /></a>
       <nav style={{ display: "flex", gap: 24, marginLeft: 12, flex: "0 0 auto" }}>
         {shown.map((l) => <Link key={l} variant="quiet" style={{ whiteSpace: "nowrap" }}>{l}</Link>)}
       </nav>

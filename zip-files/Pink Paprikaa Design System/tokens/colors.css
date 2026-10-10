@@ -111,3 +111,26 @@
   --border-subtle:var(--pink-200);
   --border-default:var(--pink-300);
 }
+
+/* Scrollbars — thin pink thumb on a clear track. Applied globally in base.css. */
+:root{
+  --scrollbar-thumb:var(--pink-200);
+  --scrollbar-thumb-hover:var(--pink-300);
+  --scrollbar-track:transparent;
+  --scrollbar-size:8px; /* @kind other */
+}
+
+/* Interaction states — the tint every pressable surface uses on hover and press. */
+:root{
+  --state-hover:var(--pink-50);
+  --state-press:var(--pink-100);
+  --state-hover-neutral:var(--ink-100);
+  --state-press-neutral:var(--ink-200);
+  --state-press-danger:#f8d4d4;
+  --state-hover-on-color:rgba(255,255,255,.16);
+  --state-press-on-color:rgba(255,255,255,.28);
+  --state-hover-tint:rgba(26,18,22,.06);
+  --state-press-tint:rgba(26,18,22,.12);
+  --state-disabled-fill:var(--ink-100);
+  --state-disabled-ink:var(--ink-400);
+}

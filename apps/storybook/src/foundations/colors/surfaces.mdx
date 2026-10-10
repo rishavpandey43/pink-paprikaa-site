@@ -1,0 +1,33 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./colors.stories";
+
+<Meta title="Colors/Text on surfaces" />
+
+{/* source: guidelines/color-surfaces.card.html */}
+
+# Text on surfaces
+
+`data-surface` remaps every text token — the same `h2`, `p` and link on four grounds, with no
+overrides.
+
+<Canvas of={Specimens.FourGrounds} meta={Specimens} sourceState="none" />
+
+Identical markup in all four. Card, Section, PatternField, SiteFooter, HeroBanner, CtaBand,
+StatBand, QuotePanel, PricingCard (flooded) and PostFrame set the attribute themselves; in raw
+HTML add it (or `.pp-on-brand` / `.pp-on-ink` / `.pp-on-soft`) to the flooded container. Never
+hard-code white on a heading — put the heading on a surface.
+
+## Light islands
+
+A white surface nested inside a dark one restores the light tokens. Every white-filled component —
+Card `default`, the form controls, QuotePanel `light` — sets `data-surface="light"` itself.
+
+<Canvas of={Specimens.LightIsland} meta={Specimens} sourceState="none" />
+
+## What each surface redefines
+
+Surfaces override semantic and component tokens only, never primitives, so the remap cascades.
+`light` restores, to its exact base value, every token the other three change.
+
+<Canvas of={Specimens.SurfaceOverrides} meta={Specimens} sourceState="none" />

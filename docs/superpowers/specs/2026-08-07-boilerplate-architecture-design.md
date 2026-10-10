@@ -258,17 +258,35 @@ Defined once in the root `package.json` so local and CI invocations cannot drift
 
 ## 8. Design system
 
+> **Amended 2026-09-27** by the [design system rewrite spec](2026-09-27-design-system-rewrite-design.md),
+> implemented on `feat/design-system`. Where this section and that spec disagree, the spec wins:
+>
+> - Outputs are `theme.css`, `surfaces.css` (the `data-surface` remaps) and `tokens.json`; no
+>   `tokens.ts` is produced (no JavaScript consumer — spec §3.3).
+> - Tiers are primitive → semantic → component, plus **surface** overrides; the contrast policy
+>   (`contrast-pairs.json`) is part of `design-tokens:test`.
+> - Atomic layers are `atoms → molecules → organisms → layouts` (not `templates`), with `src/lib/`
+>   internals; atoms import only Icon.
+> - Native elements first; Radix only for Dialog/Sheet, Tabs, Tooltip, Toast, ToggleGroup and `Slot`.
+> - Storybook is its own app (`apps/storybook`), local + static build only — no Netlify site in this
+>   phase (D16).
+> - The system is 90 components (30 atoms, 38 molecules, 15 organisms including CartPanel, 7 layouts),
+>   33 foundation cards across the Brand … Marketing groups, and three reference kits.
+
 ### Token pipeline
 
 Tokens are authored **once**, in W3C DTCG format, in `packages/design-tokens/tokens/`. Style Dictionary builds them into every consumable form:
 
 ```
-tokens/*.json  →  Style Dictionary  →  dist/theme.css   (Tailwind v4 @theme block)
-                                    →  dist/tokens.ts   (typed constants)
-                                    →  dist/tokens.json (Storybook catalogue)
+tokens/*.json  →  Style Dictionary  →  dist/theme.css    (Tailwind v4 @theme block)
+                                    →  dist/surfaces.css (data-surface remaps)
+                                    →  dist/tokens.json  (Storybook catalogue)
+                                    ~~→  dist/tokens.ts   (typed constants)~~
 ```
 
-Nothing hand-writes a Tailwind theme. Apps and Storybook import the generated `theme.css`; any JavaScript that needs a token value imports from `tokens.ts`. One source, three outputs, no drift.
+<sup>The `tokens.ts` line is struck: no JavaScript consumer is produced (amendment above; spec §3.3).</sup>
+
+Nothing hand-writes a Tailwind theme. Apps and Storybook import the generated `theme.css`. ~~Any JavaScript that needs a token value imports from `tokens.ts`. One source, three outputs, no drift.~~ One source, CSS + JSON outputs, no drift.
 
 ### Three token tiers
 
@@ -287,17 +305,20 @@ packages/ui/src/
   atoms/       Button  Text  Icon  Badge  Input  Spinner  Divider
   molecules/   Card  FormField  NavItem  PriceTag
   organisms/   Header  Footer  MenuSection  Gallery  ContactBlock
-  templates/   PageShell  ArticleLayout  MenuLayout
-  .storybook/
+  layouts/     PageShell  ArticleLayout  MenuLayout
+  ~~templates/~~
+  ~~.storybook/~~
 ```
 
-**Pages are not in the design system.** Templates accept content as props; apps own the routes that bind real data to them. This keeps the DS free of content and routing concerns, and the boundary is lint-enforced (§5, §7).
+<sup>Layers are `layouts`, not `templates`; Storybook is `apps/storybook`, not inside `packages/ui` (amendment above).</sup>
+
+**Pages are not in the design system.** ~~Templates~~ Layouts accept content as props; apps own the routes that bind real data to them. This keeps the DS free of content and routing concerns, and the boundary is lint-enforced (§5, §7).
 
 ### Component authoring
 
 - **tailwind-variants** for variant APIs — chosen over CVA specifically for **slots**, which multi-part organisms (a `Card` with root / header / body / footer) genuinely need, plus built-in `tailwind-merge` so consumer overrides resolve correctly instead of producing duplicate conflicting classes.
 - **Radix UI** for interactive behaviour — dialog/lightbox, drawer, tabs, accordion, navigation menu. Focus trapping, ARIA wiring and keyboard handling are where accessibility bugs actually live; this is not the place to hand-roll.
-- **Storybook 10** lives inside `packages/ui`, builds static, deploys as its own Netlify site. `@storybook/addon-a11y` runs axe in the panel during development.
+- ~~**Storybook 10** lives inside `packages/ui`, builds static, deploys as its own Netlify site.~~ Storybook is its own app (`apps/storybook`), local + static build only — no Netlify site in this phase (D16; amendment above). `@storybook/addon-a11y` runs axe in the panel during development.
 
 Phase 0 ships the pipeline, the Storybook shell, and exactly one reference component (`Button`) proving the token → variant → story → test path end to end. Real components arrive in Phase 1 once designs are supplied.
 
@@ -456,7 +477,7 @@ GitHub Actions. Netlify does **not** build — artifacts are built in CI so the 
 | Phase             | Contents                                                                                                                                                                                | Depends on       |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | **0 — this spec** | Workspace, Nx, TS, lint, hooks, commits, CI/CD, image pipeline, token pipeline, Storybook shell, one reference component _(deferred to Phase 1 — see progress table)_, empty wired apps | —                |
-| 1                 | Design tokens populated + full component library                                                                                                                                        | Designs supplied |
+| 1                 | Design tokens populated + full component library — **step 1 done** (see Phase 1 progress); step 2 is the web app                                                                        | Designs supplied |
 | 2                 | Content schemas + marketing pages                                                                                                                                                       | Phase 1          |
 | 3                 | Image migration + performance pass                                                                                                                                                      | Phase 2          |
 | 4                 | SEO — JSON-LD, sitemaps, analytics                                                                                                                                                      | Phase 2          |
@@ -470,6 +491,9 @@ Each phase gets its own spec and implementation plan. Nothing in Phase 0 assumes
 Phase 0 is complete, pending merge of `feat/phase-0-foundation` into `main`. This table is the
 authoritative record — verify it against the working tree before planning the next phase, and
 update it as items land.
+
+_Amended 2026-09-27:_ the branch and remote facts in this subsection are historical. Current branch
+and remote state lives in `CLAUDE.md` → Current state.
 
 | Item                                                         | Status      | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | ------------------------------------------------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -506,6 +530,20 @@ no real content yet to check.
 `sync:check`, `affected`, `e2e`, `lighthouse`, `guard:founder` — were verified locally instead.
 
 **Establishing ground truth.** The working tree, not this table, is authoritative if they disagree. `git log` carries the reasoning behind each completed item; `pnpm nx format:check && pnpm nx sync:check` confirms the current state is green before anything is added.
+
+### Phase 1 progress
+
+Phase 1 runs in two steps (design system spec, header). Step 1 is complete on
+`feat/design-system`, pending the owner's merge decision.
+
+| Item                                                                                                                                                                                                       | Status  | Notes                                                     |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | --------------------------------------------------------- |
+| Tokens — primitive, semantic, component, surface; contrast policy gate                                                                                                                                     | ✅ done | spec §5–§6; `design-tokens:test`                          |
+| Library core — `styles.css` consumer contract, `componentVariants`, lint gates, class order                                                                                                                | ✅ done | spec §6.5, §8.3, §11.2                                    |
+| Brand facts (`packages/content`) and formatters (`packages/utils`)                                                                                                                                         | ✅ done | spec §7.3–§7.4                                            |
+| 90 components in `packages/ui` — 30 atoms, 38 molecules, 15 organisms (14 + CartPanel), 7 layouts                                                                                                          | ✅ done | each with test (behaviour + axe) and card-parity stories  |
+| Storybook — 13 groups, 33 foundation cards as docs pages, Contrast / Voice & content / Iconography / Utility classes / Section reveal pages, Website / App / Marketing kits, React Hook Form + Zod pattern | ✅ done | `apps/storybook`; local + static build (D16)              |
+| Step 2 — the web app (the handoff's nine routes, rates, calculators, SEO, `next/font`, Netlify)                                                                                                            | ⏳ next | its own spec; carried items in the design system spec §16 |
 
 ---
 

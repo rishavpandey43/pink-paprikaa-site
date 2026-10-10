@@ -2,7 +2,11 @@
   "name": "@pink-paprikaa-web/storybook",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "visual": "playwright test --config visual/playwright.config.mts"
+  },
   "nx": {
+    "projectType": "application",
     "tags": [
       "type:app",
       "scope:shared"
@@ -12,9 +16,22 @@
         "inputs": [
           "default",
           "^default",
+          "!{projectRoot}/visual/**",
           {
             "externalDependencies": [
               "storybook"
+            ]
+          }
+        ]
+      },
+      "test": {
+        "inputs": [
+          "default",
+          "^default",
+          {
+            "externalDependencies": [
+              "storybook",
+              "vitest"
             ]
           }
         ]
@@ -33,6 +50,9 @@
       },
       "serve": {
         "continuous": true,
+        "dependsOn": [
+          "^build"
+        ],
         "executor": "nx:run-commands",
         "options": {
           "cwd": "apps/storybook",
@@ -46,16 +66,29 @@
         ],
         "options": {
           "cwd": "apps/storybook",
-          "command": "chromatic --storybook-build-dir storybook-static --storybook-base-dir apps/storybook"
+          "command": "node ../../scripts/check-founder-names.mjs storybook-static && chromatic --storybook-build-dir storybook-static --storybook-base-dir apps/storybook"
         }
+      },
+      "visual": {
+        "cache": false,
+        "dependsOn": [
+          "build-storybook"
+        ]
       }
     }
   },
   "dependencies": {
-    "@pink-paprikaa-web/ui": "workspace:*"
+    "@pink-paprikaa-web/content": "workspace:*",
+    "@pink-paprikaa-web/design-tokens": "workspace:*",
+    "@pink-paprikaa-web/ui": "workspace:*",
+    "@pink-paprikaa-web/utils": "workspace:*"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.3.0",
+    "@fontsource/dm-sans": "^5.3.0",
+    "@fontsource/poppins": "^5.3.0",
+    "@fontsource/space-mono": "^5.3.0",
+    "@hookform/resolvers": "^5.9.1",
     "@storybook/addon-a11y": "^10.5.7",
     "@storybook/addon-docs": "^10.5.7",
     "@storybook/addon-vitest": "^10.5.7",
@@ -64,9 +97,13 @@
     "@vitest/browser": "^4.1.10",
     "@vitest/browser-playwright": "^4.1.10",
     "chromatic": "^18.1.0",
+    "lucide-react": "^1.30.0",
     "playwright": "^1.62.1",
+    "react-hook-form": "^7.89.0",
     "remark-gfm": "^4.0.1",
+    "storybook-addon-pseudo-states": "^10.5.7",
     "tailwindcss": "^4.3.3",
-    "vitest": "~4.1.10"
+    "vitest": "~4.1.10",
+    "zod": "^4.4.3"
   }
 }

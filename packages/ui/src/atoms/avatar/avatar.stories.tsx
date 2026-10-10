@@ -1,107 +1,89 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { User } from "lucide-react";
 
+import symbolPink from "../../assets/brand/symbol-pink.svg";
 import { Avatar } from "./avatar";
 
 const meta = {
   title: "Atoms/Avatar",
   component: Avatar,
-  args: { name: "Aditi Rao" },
-  argTypes: {
-    icon: { control: false },
-  },
+  args: { name: "Aditi Rao", size: "md" },
+  argTypes: { icon: { control: false } },
   parameters: {
     docs: {
       description: {
         component:
-          "Circular mark for guest accounts, reviews and staff credits. With no photo it falls " +
-          "back to initials in Poppins Bold on soft pink — never a square, never a hashed colour " +
-          "block.",
+          "Circular avatar for guest accounts, reviews and staff credits. No photo → initials in Poppins 700 on pink-100. Never square, never a coloured random-hash background. `hasRing` marks the signed-in guest. With a `name` it is an image named by that name; without one it is decorative.",
       },
     },
   },
 } satisfies Meta<typeof Avatar>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-/** 24 / 32 / 40 / 56 / 80px — fixed diameters, so a row of avatars never jitters. */
 export const Sizes: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Avatar {...args} size="xs" />
-      <Avatar {...args} size="sm" />
-      <Avatar {...args} size="md" />
-      <Avatar {...args} size="lg" />
-      <Avatar {...args} size="xl" />
-    </div>
-  ),
-};
-
-/** Two letters at most: the first letter of the first two words. */
-export const Initials: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Avatar {...args} name="Aditi Rao" />
-      <Avatar {...args} name="Kabir" />
-      <Avatar {...args} name="Meera S Iyer" />
-    </div>
-  ),
-};
-
-/** The signed-out placeholder. A glyph wins over initials, so pass one or the other. */
-export const GlyphFallback: Story = {
+  name: "size",
   render: () => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Avatar icon={User} size="sm" />
+    <div className="flex flex-wrap items-center gap-3">
+      {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => (
+        <Avatar key={size} name="Aditi Rao" size={size} />
+      ))}
+    </div>
+  ),
+};
+
+export const Initials: Story = {
+  name: "name (initials)",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Avatar name="Aditi Rao" />
+      <Avatar name="Kabir" />
+      <Avatar name="Meera S Iyer" />
+    </div>
+  ),
+};
+
+export const IconFallback: Story = {
+  name: "icon",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
       <Avatar icon={User} />
       <Avatar icon={User} size="lg" />
     </div>
   ),
 };
 
-/** The pink halo marks the signed-in guest, and nothing else. */
 export const Ring: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Avatar {...args} hasRing size="sm" />
-      <Avatar {...args} hasRing />
-      <Avatar {...args} hasRing size="lg" />
-    </div>
-  ),
+  name: "hasRing",
+  args: { name: "Aditi Rao", size: "lg", hasRing: true },
 };
 
 /**
- * With a `src` the photo replaces the initials the moment it decodes. The path below is
- * deliberately unresolvable in Storybook, so this story doubles as the failed-photo case: the
- * initials hold the space instead of the layout collapsing.
+ * With `src` the photo covers the initials once it decodes. The second path is deliberately
+ * unresolvable: it is the failed-photo case, where the initials hold the space.
  */
 export const Photo: Story = {
-  args: { src: "/images/guests/aditi-rao.jpg" },
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Avatar {...args} size="sm" />
-      <Avatar {...args} />
-      <Avatar {...args} hasRing size="lg" />
+  name: "src (and a failed photo)",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Avatar name="Aditi Rao" src={symbolPink} size="lg" />
+      <Avatar name="Kabir" src="/missing/guest-photo.jpg" size="lg" hasRing />
     </div>
   ),
 };
 
-/** How it lands in a review row — avatar, name, then the note. */
-export const InAReviewRow: Story = {
-  parameters: { layout: "padded" },
-  render: (args) => (
-    <div className="flex max-w-96 items-center gap-3 rounded-4 bg-surface-card p-4 shadow-elevation1">
-      <Avatar {...args} size="lg" />
+/** In context: a signed-in guest row. */
+export const InAGuestRow: Story = {
+  name: "in context: a signed-in guest row",
+  render: () => (
+    <div className="flex max-w-96 items-center gap-3 rounded-lg bg-surface-card p-4 shadow-1">
+      <Avatar name="Aditi Rao" size="lg" hasRing />
       <div className="min-w-0">
-        <p className="m-0 font-display text-subtitle2 font-bold text-text-heading">Aditi Rao</p>
-        <p className="m-0 font-body text-caption text-text-muted">
-          Ordered the paneer tikka thali · ₹280
-        </p>
+        <p className="m-0 font-display text-body font-bold text-text-heading">Aditi Rao</p>
+        <p className="m-0 font-body text-caption text-text-muted">Signed in · 3 orders</p>
       </div>
     </div>
   ),

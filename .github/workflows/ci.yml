@@ -14,39 +14,102 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
+# The test stages split the workspace three ways, by excluding projects (`nx affected` has no
+# include flag). `ui` and `storybook` are the two slow suites; every other project with tests runs
+# in `test-other`. A NEW project that has tests runs there automatically, and is also repeated in
+# `test-ui` and `test-stories` until it is listed below — wasted time, never a missed test.
+env:
+  NOT_UI: >-
+    @pink-paprikaa-web/typescript-config,@pink-paprikaa-web/design-tokens,@pink-paprikaa-web/image-pipeline,@pink-paprikaa-web/eslint-config,@pink-paprikaa-web/content,@pink-paprikaa-web/storybook,@pink-paprikaa-web/utils,@pink-paprikaa-web/seo,@pink-paprikaa-web/web,@pink-paprikaa-web/blog,@pink-paprikaa-web/web-e2e,@pink-paprikaa-web/blog-e2e
+  NOT_STORIES: >-
+    @pink-paprikaa-web/typescript-config,@pink-paprikaa-web/design-tokens,@pink-paprikaa-web/image-pipeline,@pink-paprikaa-web/eslint-config,@pink-paprikaa-web/content,@pink-paprikaa-web/ui,@pink-paprikaa-web/utils,@pink-paprikaa-web/seo,@pink-paprikaa-web/web,@pink-paprikaa-web/blog,@pink-paprikaa-web/web-e2e,@pink-paprikaa-web/blog-e2e
+  SLOW_TESTS: "@pink-paprikaa-web/ui,@pink-paprikaa-web/storybook"
+
 jobs:
-  verify:
-    name: Verify
+  # "Verify" used to be one serial job. It is now these five stages plus the build guard, running
+  # in parallel, and the `verify` job at the bottom keeps the old check name for whatever requires it.
+  static:
+    name: Static checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
         with:
           filter: tree:0
           fetch-depth: 0
-
-      # Must run before setup-node so that `cache: pnpm` can find pnpm.
-      # Reads the version from the `packageManager` field in package.json.
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v5
+      - uses: ./.github/actions/setup
         with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
-
+          cache-name: static
       # Derives NX_BASE / NX_HEAD so `nx affected` compares against the
       # last successful commit rather than rebuilding the whole workspace.
       - uses: nrwl/nx-set-shas@v4
-
       - name: Formatting
         run: pnpm nx format:check
-
       - name: TypeScript project references in sync
         run: pnpm nx sync:check
+      - name: Typecheck
+        run: pnpm nx affected -t typecheck
 
-      - name: Typecheck, lint, test, build
-        run: pnpm nx affected -t typecheck lint test build
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          filter: tree:0
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+        with:
+          cache-name: lint
+      - uses: nrwl/nx-set-shas@v4
+      - run: pnpm nx affected -t lint
+
+  test-ui:
+    name: Test (ui ${{ matrix.shard }}/2)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          filter: tree:0
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+        with:
+          cache-name: test-ui-${{ matrix.shard }}
+      - uses: nrwl/nx-set-shas@v4
+      - run: pnpm nx affected -t test --exclude="$NOT_UI" -- --shard=${{ matrix.shard }}/2
+
+  test-stories:
+    # Every story in headless Chromium (addon-vitest browser mode), a11y on.
+    name: Test (stories)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          filter: tree:0
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+        with:
+          cache-name: test-stories
+      - uses: ./.github/actions/playwright
+      - uses: nrwl/nx-set-shas@v4
+      - run: pnpm nx affected -t test --exclude="$NOT_STORIES"
+
+  test-other:
+    name: Test (other)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          filter: tree:0
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+        with:
+          cache-name: test-other
+      - uses: nrwl/nx-set-shas@v4
+      - run: pnpm nx affected -t test --exclude="$SLOW_TESTS"
 
   e2e:
     name: E2E
@@ -56,14 +119,11 @@ jobs:
         with:
           filter: tree:0
           fetch-depth: 0
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v5
+      - uses: ./.github/actions/setup
         with:
-          node-version-file: .nvmrc
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+          cache-name: e2e
       - uses: nrwl/nx-set-shas@v4
-      - run: pnpm exec playwright install --with-deps chromium
+      - uses: ./.github/actions/playwright
       - run: pnpm nx affected -t e2e
 
   lighthouse:
@@ -74,16 +134,14 @@ jobs:
         with:
           filter: tree:0
           fetch-depth: 0
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v5
+      - uses: ./.github/actions/setup
         with:
-          node-version-file: .nvmrc
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+          cache-name: lighthouse
       - run: pnpm nx build web
       - run: pnpm exec lhci autorun
 
   guards:
+    # Builds every project cold-or-cached, so this is also the workspace build gate.
     name: Content guards
     runs-on: ubuntu-latest
     steps:
@@ -91,14 +149,24 @@ jobs:
         with:
           filter: tree:0
           fetch-depth: 0
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v5
+      - uses: ./.github/actions/setup
         with:
-          node-version-file: .nvmrc
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+          cache-name: guards
       - run: pnpm nx run-many -t build
       - run: pnpm guard:founder
+
+  verify:
+    # The single "everything but e2e and Lighthouse passed" check, under the name it always had.
+    # A stage that failed, was cancelled, or never ran (its dependency failed) fails this job too.
+    name: Verify
+    if: always()
+    needs: [static, lint, test-ui, test-stories, test-other, guards]
+    runs-on: ubuntu-latest
+    steps:
+      - name: A stage did not pass
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped')
+        run: exit 1
+      - run: echo "Static checks, lint, tests and builds all passed."
 
   deploy:
     # Phase 6 cutover — becomes real when Netlify access exists (spec §16).

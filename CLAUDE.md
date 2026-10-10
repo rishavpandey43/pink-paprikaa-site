@@ -57,6 +57,10 @@ repo's layout (`src/data/`, `src/_redirects`) — the architecture spec's `packa
 `apps/web/public/_redirects` win. And the two number their phases differently; `docs/README.md`
 reconciles them.
 
+## Working style (owner, binding)
+
+**No unnecessary planning or process: never waste tokens or time, never compromise quality.** Plan only what the next PR needs, as short requirements (not code); execute inline; run scoped checks per change and the full gate once per PR; one review per PR. Detail: `docs/engineering/07-ai-workflows.md` §2 "Lean by default". If a process step costs more than the defect it prevents, skip it.
+
 ## Hard rules
 
 1. **`Pink Paprikaa` — two `a`s.** Misspelling it is a content bug, not a typo.
@@ -113,6 +117,7 @@ pnpm nx run-many -t test              # whole workspace, ignoring affected
 pnpm nx run web:serve                 # localhost:3000
 pnpm nx run blog:serve                # localhost:3001 (basePath /blog — open /blog, `/` 404s)
 pnpm nx run storybook:serve           # localhost:6006
+pnpm nx run storybook:test            # every story in headless Chromium, axe on
 pnpm nx run web:build                 # every app builds the same way
 pnpm nx run web:serve-static          # serve the production build
 ```
@@ -136,11 +141,8 @@ workspace: the app owns `.storybook/` and the Tailwind entry, the library owns t
 `stories` globs reach across into `packages/ui/src`. `packages/ui/tailwind.css` exists solely so
 the library's ESLint config has a resolvable `tailwindcss.cssConfigPath` — nothing bundles it.
 
-`nx affected` compares against `main` by default. Because none of Phase 0 has merged to `main`
-yet, it currently reports every project as affected on this branch regardless of what the latest
-commit touched — that stops once `feat/phase-0-foundation` merges, after which a docs-only commit
-will affect zero projects as intended. CI instead uses `nrwl/nx-set-shas` to diff against the last
-successful run, so it does not have this problem.
+`nx affected` compares against `main` by default, so on a feature branch it reports everything that
+differs from `main`. CI instead uses `nrwl/nx-set-shas` to diff against the last successful run.
 
 ## Conventions
 
@@ -155,11 +157,19 @@ successful run, so it does not have this problem.
 
 ## Current state
 
-**Phase 0 (foundation) is complete, pending merge of `feat/phase-0-foundation` into `main`.**
+**Phase 0 (foundation) is complete. Phase 1 step 1 — the design system — is complete** on
+`feat/design-system` (branched from `dev`), pending the owner's merge decision: tokens with the
+contrast policy, 90 components in `packages/ui` (30 atoms, 38 molecules, 15 organisms, 7 layouts),
+and Storybook (`apps/storybook`) with the 13 design-system groups, 33 foundation cards as docs
+pages, the Website / App / Marketing reference kits and the React Hook Form + Zod pattern. Spec:
+`docs/superpowers/specs/2026-09-27-design-system-rewrite-design.md`. Step 2 (the web app) gets its
+own spec.
 
-The item-by-item record of what is built and what is deferred lives in **§15 of the architecture
-spec** ("Phase 0 progress"). Read it before planning the next phase, and update it as items
-land — it is the only place that state is tracked, so do not duplicate it here.
+Every component now takes a token-typed `sx` prop and one shared vocabulary (`surface`, `color`, `status`, `size`, `Typography`); see `packages/ui/AUTHORING.md` §13.
+
+The item-by-item record lives in **§15 of the architecture spec** ("Phase 0 progress", "Phase 1
+progress"). Read it before planning the next step, and update it as items land — it is the only
+place that state is tracked, so do not duplicate it here.
 
 The working tree is authoritative if it and that table disagree. To establish ground truth:
 
@@ -169,17 +179,22 @@ pnpm nx show projects                         # 13 projects
 git log --oneline                             # commit messages carry the reasoning
 ```
 
-Three more facts that are easy to trip on, all verified against the working tree:
+Facts that are easy to trip on, all verified against the working tree:
 
-- **No git remote is configured.** The workspace was initialised locally; the remote is pointed at
-  GitHub in Phase 6. Nothing pushes anywhere yet, and CI has never actually executed — every
-  workflow command in `.github/workflows/ci.yml` was verified locally instead.
-- **`main` is no longer the only branch.** This work landed on `feat/phase-0-foundation`; `main`
-  still points at the pre-Phase-0 state until that branch is merged. The spec's `dev` integration
-  branch (§3) still does not exist.
-- **Root `package.json` `scripts` is now real**: `verify`, `verify:all`, `commit` (`cz`), `format`,
-  `format:check`, `guard:founder`, `prepare`. `pnpm verify`, `pnpm commit` and `pnpm format` all
-  work as described in the architecture spec.
+- **Branches:** `main` holds the live site; `dev` is the integration branch; the design system is on
+  `feat/design-system`. Nothing merges without `/pre-merge`.
+- **`origin` (GitHub) is configured.** CI (`.github/workflows/ci.yml`) runs on pushes to `main` and on
+  pull requests; every workflow command is also verified locally before it lands.
+- **Storybook:** `pnpm nx run storybook:serve` (6006), `storybook:build`, `storybook:test` (every story in
+  headless Chromium, axe on) — local and static build only; public hosting waits for Phase 6.
+- **Root `package.json` scripts:** `verify`, `verify:all`, `commit` (`cz`), `format`, `format:check`,
+  `guard:founder` (scans `apps/{web,blog}/out` and `apps/storybook/storybook-static`), `prepare`.
+- **SDD records** (ledgers, briefs, reports, audits, evidence) are the git-ignored workspaces under
+  `.superpowers/sdd/`, archived to the **tracked** `docs/superpowers/records/sdd/` after every task
+  and plan. Sync them with
+  `rsync -a --exclude '*.diff' --exclude plan-path --exclude .gitignore .superpowers/sdd/ docs/superpowers/records/sdd/`.
+  Keep the `.gitignore` exclude: the workspace's own `.gitignore` is a bare `*`, and copying it
+  un-tracks the whole archive. Never delete either copy.
 
 **§18 records the traps already hit** during setup — Nx and pnpm defaults that contradict this
 spec. Read it before running any generator; four of `create-nx-workspace`'s defaults had to be

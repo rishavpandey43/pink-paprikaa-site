@@ -1,73 +1,93 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Divider } from "./divider";
 
 describe("Divider", () => {
-  it("renders a hairline with separator semantics by default", () => {
+  it("is a hairline separator in the surface's subtle border by default", () => {
     render(<Divider />);
-    const node = screen.getByRole("separator");
-    expect(node).toHaveClass("h-px");
-    expect(node).toHaveClass("bg-border-subtle");
+    const rule = screen.getByRole("separator");
+    expect(rule).toHaveClass("h-px", "w-full", "bg-border-subtle");
+    expect(rule).toBeEmptyDOMElement();
+    expect(rule).not.toHaveAttribute("aria-orientation");
   });
 
-  it("centres an ALL CAPS overline when a label is given", () => {
+  it("centres an uppercase overline label between two rules, and names the separator with it", () => {
     render(<Divider label="Also Try" />);
-    const node = screen.getByText("Also Try");
-    expect(node).toHaveClass("uppercase");
-    expect(node).toHaveClass("text-overline");
+    const rule = screen.getByRole("separator", { name: "Also Try" });
+    expect(rule).toHaveClass("flex", "items-center", "gap-3.5");
+    expect(within(rule).getByText("Also Try")).toHaveClass(
+      "font-display",
+      "text-overline",
+      "uppercase",
+      "text-text-subtle"
+    );
+    expect(rule.querySelectorAll(".bg-border-subtle")).toHaveLength(2);
   });
 
-  it("keeps the label readable rather than hiding it inside a separator role", () => {
-    render(<Divider label="Also Try" />);
-    expect(screen.queryByRole("separator")).not.toBeInTheDocument();
-    expect(screen.getByText("Also Try")).toBeVisible();
-  });
-
-  it("puts a rule on both sides of the label", () => {
-    const { container } = render(<Divider label="Also Try" />);
-    expect(container.querySelectorAll(".flex-1")).toHaveLength(2);
-  });
-
-  it("breaks the section with the brand mark on the diamond variant", () => {
-    const { container } = render(<Divider variant="diamond" />);
-    const mark = container.querySelector("svg");
+  it("breaks a section with the diamond mark in the surface-aware mark colour", () => {
+    render(<Divider variant="diamond" />);
+    const rule = screen.getByRole("separator");
+    const mark = rule.querySelector(".mask-symbol");
+    expect(rule).toHaveClass("flex", "gap-3");
+    expect(mark).toHaveClass("size-divider-mark", "text-divider-mark", "opacity-90");
     expect(mark).toHaveAttribute("aria-hidden", "true");
-    expect(mark).toHaveClass("text-text-brand");
+    expect(rule.querySelector("svg")).toBeNull();
+    expect(rule.querySelectorAll(".bg-border-subtle")).toHaveLength(2);
   });
 
-  it("ignores a label on the diamond variant", () => {
-    render(<Divider label="Also Try" variant="diamond" />);
-    expect(screen.queryByText("Also Try")).not.toBeInTheDocument();
+  it.each(["", "   "])("treats a blank label %j as no label: a plain, unnamed rule", (label) => {
+    render(<Divider label={label} />);
+    const rule = screen.getByRole("separator");
+    expect(rule).toHaveClass("h-px", "w-full");
+    expect(rule).toBeEmptyDOMElement();
+    expect(rule).not.toHaveAttribute("aria-label");
   });
 
-  it("flips the hairline to translucent white on a flooded panel", () => {
-    render(<Divider on="brand" />);
-    expect(screen.getByRole("separator")).toHaveClass("bg-text-on-brand/30");
+  it("names a diamond break with its label without printing it", () => {
+    render(<Divider variant="diamond" label="Company" />);
+    expect(screen.getByRole("separator", { name: "Company" })).toBeInTheDocument();
+    expect(screen.queryByText("Company")).not.toBeInTheDocument();
   });
 
-  it("flips the label and the mark to white on a flooded panel", () => {
-    render(<Divider label="Company" on="brand" />);
-    expect(screen.getByText("Company")).toHaveClass("text-text-on-brand");
-
-    const { container } = render(<Divider on="brand" variant="diamond" />);
-    expect(container.querySelector("svg")).toHaveClass("text-text-on-brand");
+  it("draws a plain vertical rule", () => {
+    render(<Divider orientation="vertical" label="Between" />);
+    const rule = screen.getByRole("separator", { name: "Between" });
+    expect(rule).toHaveAttribute("aria-orientation", "vertical");
+    expect(rule).toHaveClass("w-px", "self-stretch", "bg-border-subtle");
+    expect(rule).toBeEmptyDOMElement();
   });
 
-  it("merges a caller className", () => {
+  it("merges a consumer className and forwards native props", () => {
+    render(<Divider className="my-6" id="rule" />);
+    const rule = screen.getByRole("separator");
+    expect(rule).toHaveClass("my-6", "h-px");
+    expect(rule).toHaveAttribute("id", "rule");
+  });
+
+  it("lets a consumer className replace the rule colour", () => {
     render(<Divider className="bg-border-strong" />);
-    const node = screen.getByRole("separator");
-    expect(node).toHaveClass("bg-border-strong");
-    expect(node).not.toHaveClass("bg-border-subtle");
+    const rule = screen.getByRole("separator");
+    expect(rule).toHaveClass("bg-border-strong");
+    expect(rule).not.toHaveClass("bg-border-subtle");
+  });
+
+  it("sx lands on the divider and beats its own width", () => {
+    render(<Divider sx={{ w: "auto", my: 4 }} />);
+    const rule = screen.getByRole("separator");
+    expect(rule).toHaveClass("w-auto", "my-4");
+    expect(rule).not.toHaveClass("w-full");
   });
 
   it("has no accessibility violations", async () => {
     const { container } = render(
-      <div>
+      <>
         <Divider />
         <Divider label="Also Try" />
         <Divider variant="diamond" />
-      </div>
+        <Divider orientation="vertical" />
+      </>
     );
     await expectNoA11yViolations(container);
   });

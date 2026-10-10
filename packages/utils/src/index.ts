@@ -1,1 +1,1 @@
-export * from "./lib/utils.js";
+export { formatCount, formatRupeeRange, formatRupees } from "./format-rupees.js";

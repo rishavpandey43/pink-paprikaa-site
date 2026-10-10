@@ -1,106 +1,110 @@
-import type { ComponentPropsWithoutRef } from "react";
+import { BadgeCheck } from "lucide-react";
 
 import { Avatar } from "../../atoms/avatar/avatar";
+import { Badge } from "../../atoms/badge/badge";
 import { Card } from "../../atoms/card/card";
+import { Link } from "../../atoms/link/link";
 import { Rating } from "../../atoms/rating/rating";
-import { Text } from "../../atoms/text/text";
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import type { BaseProps } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const reviewCard = componentVariants({
   slots: {
-    root: "grid gap-4",
-    // `<blockquote>` carries a browser margin the grid gap already provides.
-    quoteBlock: "m-0",
-    quote: "",
-    attribution: "flex min-w-0 items-center gap-3",
-    // A grid rather than a stack of margins — the responsive contract bans per-child margins in a
-    // row that can run out of room.
-    identity: "grid min-w-0",
-    name: "font-medium",
-    meta: "",
+    root: "flex flex-col gap-3.5",
+    header: "flex flex-wrap items-center justify-between gap-3",
+    quote: "m-0",
+    quoteText: "m-0 max-w-text-measure-narrow text-body",
+    footer: "flex items-center gap-2.5",
+    person: "grid min-w-0 flex-1",
+    name: "text-body-sm font-medium text-text-heading",
+    meta: "text-caption",
+    source: "shrink-0",
   },
   variants: {
-    /** `brand` is the pale-pink treatment a testimonial wall uses. */
-    variant: {
-      default: { name: "text-text-heading", meta: "text-text-subtle", quote: "text-text-body" },
-      brand: { name: "text-text-brand", meta: "text-pink-400", quote: "text-text-brand" },
+    surface: {
+      none: { quoteText: "text-text-body", meta: "text-text-subtle" },
+      // Feature card (soft surface): heading → pink-800, brand → pink-700.
+      brand: { quoteText: "text-text-heading", meta: "text-text-brand" },
     },
   },
-  defaultVariants: { variant: "default" },
 });
 
-/** The quote marks belong to the component — guest copy is stored and passed unquoted. */
-const OPEN_QUOTE = "“";
-const CLOSE_QUOTE = "”";
-
-/** Which `Card` skin each treatment sits on. */
-const CARD_VARIANT = { default: "default", brand: "feature" } as const;
-
-export interface ReviewCardProps
-  extends Omit<ComponentPropsWithoutRef<"div">, "children">, VariantProps<typeof reviewCard> {
-  /** The guest's name. It drives the avatar initials as well as the attribution line. */
+export interface ReviewCardProps extends BaseProps<"figure"> {
   name: string;
-  /**
-   * The review itself, without quote marks. Never write one — every quote on the site is real
-   * guest copy.
-   */
-  quote: string;
-  /** Outlet and month under the name, e.g. "Sector 57 — March". */
+  /** Outlet and date, or the source: "Restaurant · Google review". */
   meta?: string | undefined;
-  /** The score, out of five. Halves and any other fraction are honoured. */
+  /** The review text without quote marks — the component adds them. Real guest copy only. */
+  quote: string;
   rating?: number | undefined;
-  /** Guest photo. The initials stand in until it loads, and forever if it fails. */
-  avatarSrc?: string | undefined;
-  /**
-   * The score mark. `diamond` is the default rotated square carrying the brand symbol; `symbol`
-   * drops the square and shows the bare mark — the quieter treatment a testimonial wall uses.
-   */
+  /** Avatar image URL; without it the Avatar shows initials. */
+  avatar?: string | undefined;
+  /** `brand` is the light-pink feature card; omit for the plain card. */
+  surface?: "brand" | undefined;
+  /** Score glyph: brand diamonds carrying the mark, or the bare mark. */
   mark?: "diamond" | "symbol" | undefined;
+  isVerified?: boolean | undefined;
+  /** Words on the verified chip. Default "Verified on Google". */
+  verifiedLabel?: string | undefined;
+  /** Link to the review where it was published. */
+  source?: { label: string; href: string } | undefined;
+  hasAvatar?: boolean | undefined;
 }
 
+/** A real guest review. Never invented copy: the fixtures are the verified Google reviews. */
 export function ReviewCard({
-  avatarSrc,
-  className,
-  mark,
-  meta,
   name,
+  meta,
   quote,
   rating,
-  variant = "default",
+  avatar,
+  surface,
+  mark = "diamond",
+  isVerified = false,
+  verifiedLabel = "Verified on Google",
+  source,
+  hasAvatar = true,
+  sx,
+  className,
   ...props
 }: ReviewCardProps) {
-  const parts = reviewCard({ variant });
-  // `exactOptionalPropertyTypes` forbids handing an optional prop an explicit `undefined`, and
-  // there is no sensible default photo — so the prop is either passed or absent.
-  const photo = avatarSrc === undefined ? {} : { src: avatarSrc };
+  const styles = reviewCard({ surface: surface ?? "none" });
+  const hasHeader = rating !== undefined || isVerified;
+
   return (
     <Card
-      className={parts.root({ className })}
+      asChild
+      variant={surface === "brand" ? "feature" : "default"}
       padding="md"
-      variant={CARD_VARIANT[variant]}
-      {...props}
+      className={styles.root({ className: withSx(sx, className) })}
     >
-      {rating === undefined ? null : (
-        <Rating hasValueLabel={false} size="md" value={rating} variant={mark} />
-      )}
-      <blockquote className={parts.quoteBlock()}>
-        <Text className={parts.quote()} measure="narrow" variant="body1">
-          {`${OPEN_QUOTE}${quote}${CLOSE_QUOTE}`}
-        </Text>
-      </blockquote>
-      <div className={parts.attribution()}>
-        <Avatar name={name} size="sm" {...photo} />
-        <div className={parts.identity()}>
-          <Text as="span" className={parts.name()} variant="body2">
-            {name}
-          </Text>
-          {meta === undefined ? null : (
-            <Text as="span" className={parts.meta()} variant="caption">
-              {meta}
-            </Text>
-          )}
-        </div>
-      </div>
+      <figure {...props}>
+        {hasHeader ? (
+          <div className={styles.header()}>
+            {rating === undefined ? null : <Rating value={rating} variant={mark} />}
+            {isVerified ? (
+              <Badge color="success" icon={BadgeCheck}>
+                {verifiedLabel}
+              </Badge>
+            ) : null}
+          </div>
+        ) : null}
+        <blockquote className={styles.quote()}>
+          <p className={styles.quoteText()}>{`“${quote}”`}</p>
+        </blockquote>
+        <figcaption className={styles.footer()}>
+          {hasAvatar ? <Avatar name={name} src={avatar} size="sm" aria-hidden /> : null}
+          <span className={styles.person()}>
+            <span className={styles.name()}>{name}</span>
+            {meta ? <span className={styles.meta()}>{meta}</span> : null}
+          </span>
+          {source ? (
+            <Link href={source.href} variant="link-sm" isExternal className={styles.source()}>
+              {source.label}
+            </Link>
+          ) : null}
+        </figcaption>
+      </figure>
     </Card>
   );
 }

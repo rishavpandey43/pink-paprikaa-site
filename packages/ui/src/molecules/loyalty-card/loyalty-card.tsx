@@ -1,88 +1,94 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ReactNode } from "react";
 
 import { Card } from "../../atoms/card/card";
 import { Logo } from "../../atoms/logo/logo";
 import { ProgressBar } from "../../atoms/progress-bar/progress-bar";
-import { Text } from "../../atoms/text/text";
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import type { BaseProps } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const loyaltyCard = componentVariants({
   slots: {
-    root: "flex items-center gap-4",
-    // `min-w-0` so a long reward name shrinks the column instead of pushing the stamps off screen.
+    root: "flex items-center gap-3.5",
+    mark: "w-8.5 shrink-0",
     body: "grid min-w-0 flex-1 gap-2",
-    // The headline is display-face, a pairing no step of the `Text` ramp carries, so the face and
-    // weight are set here and the ramp only supplies the size (see `HEADLINE_VARIANT`).
-    headline: "font-display font-bold",
+    headline: "m-0 max-w-none font-display text-body-sm font-bold text-text-heading",
   },
-  variants: {
-    /**
-     * `feature` is the pale pink card the account screen uses. `brand` is the flooded pink one —
-     * the app home's single loud element, so never put two on one screen.
-     */
-    variant: {
-      feature: { headline: "text-text-brand" },
-      brand: { headline: "text-text-on-brand" },
-    },
-  },
-  defaultVariants: { variant: "feature" },
 });
 
-/** The symbol colourway and the stamp tone each skin pairs with. */
-const SKIN = {
-  feature: { logoTone: "brand", progressTone: "brand" },
-  brand: { logoTone: "white", progressTone: "inverse" },
-} as const;
-
-export interface LoyaltyCardProps
-  extends Omit<ComponentPropsWithoutRef<"div">, "children">, VariantProps<typeof loyaltyCard> {
-  /** Stamps earned so far. Clamped into `0…goal`, so a stale count cannot overflow the track. */
-  visits?: number | undefined;
-  /** Stamps the reward costs. It is also the number of segments the track draws. */
-  goal?: number | undefined;
-  /**
-   * What the guest earns, lowercase and article-first where one is needed: "chai", "a kulfi". It
-   * is dropped into a generated sentence, so it must read naturally mid-line.
-   */
-  reward?: string | undefined;
+export interface LoyaltyCardProps extends BaseProps<"div"> {
+  visits: number;
+  goal: number;
+  /** What the guest earns, lowercase: "chai", "a kulfi". */
+  reward: string;
+  variant?: "feature" | undefined;
+  /** `brand` floods the card pink (the ground it paints, not a variant). */
+  surface?: "brand" | undefined;
+  /** Replaces the generated sentence. */
+  headline?: ReactNode | undefined;
 }
 
+function assertCount(value: number, minimum: number, name: string): void {
+  if (!Number.isInteger(value) || value < minimum) {
+    throw new RangeError(
+      `LoyaltyCard: ${name} must be a whole number ≥ ${String(minimum)}, got ${String(value)}`
+    );
+  }
+}
+
+/**
+ * Design-system copy: reads naturally at many, one and zero visits left. "Your" replaces a leading
+ * article, so an earned "a kulfi" reads "Your kulfi is on us.", never "Your a kulfi".
+ */
+function defaultHeadline(remaining: number, reward: string): string {
+  if (remaining === 0) return `Your ${reward.replace(/^an? /i, "")} is on us.`;
+  const visits = remaining === 1 ? "visit" : "visits";
+  return `${String(remaining)} more ${visits} and ${reward} is on us.`;
+}
+
+/** The loyalty stamp card on the app home and account screen. Segmented progress only. */
 export function LoyaltyCard({
-  className,
-  goal = 6,
-  reward = "chai",
+  visits,
+  goal,
+  reward,
   variant = "feature",
-  visits = 0,
+  surface,
+  headline,
+  sx,
+  className,
   ...props
 }: LoyaltyCardProps) {
-  const parts = loyaltyCard({ variant });
-  const safeGoal = Math.max(1, Math.round(goal));
-  const safeVisits = Math.min(safeGoal, Math.max(0, Math.round(visits)));
-  const remaining = safeGoal - safeVisits;
-  // Copy is generated rather than templated so it reads naturally at one, many and none remaining.
-  const headline =
-    remaining === 0
-      ? `Your ${reward} is on us.`
-      : `${remaining.toString()} more ${remaining === 1 ? "visit" : "visits"} and ${reward} is on us.`;
-  const { logoTone, progressTone } = SKIN[variant];
+  assertCount(goal, 1, "goal");
+  assertCount(visits, 0, "visits");
+  const stamped = Math.min(visits, goal);
+  const isBrand = surface === "brand";
+  const styles = loyaltyCard();
 
   return (
-    <Card className={parts.root({ className })} padding="sm" variant={variant} {...props}>
-      <Logo label="" size="md" tone={logoTone} variant="symbol" />
-      <div className={parts.body()}>
-        <Text className={parts.headline()} variant="body2">
-          {headline}
-        </Text>
-        {/*
-          Segmented, never a percentage bar: a stamp card counts visits, and a guest reads "four of
-          six stamps" off the track far faster than they read "67%".
-        */}
+    <Card
+      variant={variant}
+      surface={surface}
+      padding="sm"
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      <Logo
+        variant="symbol"
+        color={isBrand ? "inverse" : "brand"}
+        isDecorative
+        className={styles.mark()}
+      />
+      <div className={styles.body()}>
+        <p className={styles.headline()}>{headline ?? defaultHeadline(goal - stamped, reward)}</p>
         <ProgressBar
-          aria-label={`${safeVisits.toString()} of ${safeGoal.toString()} visits`}
-          segments={safeGoal}
+          value={stamped}
+          max={goal}
+          segments={goal}
+          // "Visits", not "3 of 6 visits" (R97): the bar's value text already says "3 of 6".
+          label="Visits"
+          isLabelHidden
+          color={isBrand ? "inverse" : "brand"}
           size="sm"
-          tone={progressTone}
-          value={safeVisits}
         />
       </div>
     </Card>

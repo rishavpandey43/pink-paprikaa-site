@@ -1,0 +1,20 @@
+{
+  "radius": {
+    "$type": "dimension",
+    "xs": { "$value": "4px" },
+    "sm": { "$value": "6px" },
+    "md": { "$value": "10px", "$description": "Inputs, thumbnails." },
+    "lg": { "$value": "16px", "$description": "Cards." },
+    "xl": { "$value": "24px", "$description": "Sheets, modals, feature cards." },
+    "pill": { "$value": "999px", "$description": "Buttons, chips." },
+    "diamond": {
+      "$value": "2px",
+      "$description": "Corner of every small rotated brand diamond (StatusDot, Plan 2b's brand-diamond)."
+    }
+  },
+  "border-width": {
+    "$type": "dimension",
+    "default": { "$value": "1px" },
+    "strong": { "$value": "2px" }
+  }
+}

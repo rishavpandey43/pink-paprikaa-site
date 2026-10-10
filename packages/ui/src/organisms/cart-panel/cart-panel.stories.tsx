@@ -1,118 +1,202 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ArrowRight, Pencil } from "lucide-react";
+import { type ReactNode, useState } from "react";
+import { expect } from "storybook/test";
 
-import { ShoppingBag } from "lucide-react";
-import { useState } from "react";
+import { formatRupees } from "@pink-paprikaa-web/utils";
 
 import { Button } from "../../atoms/button/button";
-import { type CartLine, CartPanel, type CartPanelProps } from "./cart-panel";
+import { Input } from "../../atoms/input/input";
+import { ringClippers } from "../../lib/story-ring";
+import { OnSurfaces } from "../../lib/story-surfaces";
+import { VIEWPORT_360 } from "../story-fixtures";
+import { CartPanel } from "./cart-panel";
+import { type CartLine, cartTotals } from "./cart-totals";
 
-const LINES: CartLine[] = [
-  { name: "Paprikaa Chilli Paneer", price: 280, quantity: 2, note: "Sharing · Hot" },
-  { name: "Masala Cold Brew", price: 220, quantity: 1, note: "Regular" },
-  { name: "Gulkand Kulfi", price: 180, quantity: 1, diet: "egg", note: "Regular" },
+const FILLED: CartLine[] = [
+  {
+    id: "chilli-paneer",
+    name: "Paprikaa Chilli Paneer",
+    price: 280,
+    quantity: 2,
+    note: "Sharing - Hot",
+  },
+  { id: "cold-brew", name: "Masala Cold Brew", price: 220, quantity: 1, note: "Regular" },
+  { id: "kulfi", name: "Gulkand Kulfi", price: 180, quantity: 1, note: "Regular" },
 ];
 
-const ONE_LINE: CartLine[] = [
-  { name: "Paprikaa Chilli Paneer", price: 280, quantity: 1, note: "Regular · Hot" },
+const ONE: CartLine[] = [
+  {
+    id: "chilli-paneer",
+    name: "Paprikaa Chilli Paneer",
+    price: 280,
+    quantity: 1,
+    note: "Regular · Hot",
+  },
 ];
+
+function Frame({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex h-165 w-90 max-w-full flex-col overflow-hidden rounded-lg border border-border-subtle">
+      {children}
+    </div>
+  );
+}
+
+function LiveCart({
+  initial,
+  title = "Your order",
+  meta = "Pickup · Sector 57 · 12 min",
+}: {
+  initial: CartLine[];
+  title?: string | undefined;
+  meta?: string | undefined;
+}) {
+  const [lines, setLines] = useState(initial);
+  const totals = cartTotals(lines);
+  return (
+    <CartPanel
+      lines={lines}
+      title={title}
+      meta={meta}
+      onQuantityChange={(id, quantity) => {
+        setLines((current) =>
+          quantity <= 0
+            ? current.filter((line) => line.id !== id)
+            : current.map((line) => (line.id === id ? { ...line, quantity } : line))
+        );
+      }}
+      noteField={
+        <Input
+          aria-label="Notes for the kitchen"
+          placeholder="Any notes for the kitchen?"
+          icon={Pencil}
+        />
+      }
+      placeAction={
+        <Button type="button" size="lg" isFullWidth iconAfter={ArrowRight}>
+          {`Pay ${formatRupees(totals.total)}`}
+        </Button>
+      }
+      browseAction={
+        <Button asChild>
+          <a href="#menu">Browse the Menu</a>
+        </Button>
+      }
+      note="Inclusive of all taxes."
+    />
+  );
+}
 
 const meta = {
   title: "Organisms/CartPanel",
   component: CartPanel,
-  args: { lines: LINES },
-  argTypes: {
-    container: { control: false },
-    lines: { control: false },
-    trigger: { control: false },
+  args: {
+    lines: FILLED,
+    title: "Your order",
+    meta: "Pickup · Sector 57 · 12 min",
   },
+  decorators: [
+    (Story) => (
+      <Frame>
+        <Story />
+      </Frame>
+    ),
+  ],
   parameters: {
-    layout: "fullscreen",
     docs: {
       description: {
         component:
-          "The cart, whole — a Radix Dialog side sheet with its own line items, a note for the " +
-          "kitchen, the totals and a pay bar that never scrolls away. Stepping a line to zero is " +
-          "what removes it, and an empty cart renders its own empty state rather than a bare list.",
+          "The whole cart: line items with a stepper, a kitchen-note field, PriceSummary totals, and a pay bar that stays outside the scroll. Quantity 0 removes the line. An empty cart is its own EmptyState.",
       },
     },
   },
 } satisfies Meta<typeof CartPanel>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-/** Opened from the floating cart button — the shape a real screen uses. */
-export const Default: Story = {
-  args: {
-    trigger: (
-      <Button icon={ShoppingBag} size="lg">
-        Cart · 4
-      </Button>
-    ),
-  },
-  render: (args) => (
-    <div className="grid min-h-100 place-items-center p-8">
-      <CartPanel {...args} />
-    </div>
-  ),
-};
-
 /**
- * The sheet inside a phone frame: `position="container"` plus the same element as `container`. Both
- * are needed; one without the other misplaces it.
+ * The panel and the phone frame both clip (`overflow-hidden` / `overflow-y-auto`), so padding
+ * must hold every stepper and field ring whole.
  */
-function FramedCart(args: CartPanelProps) {
-  const [frame, setFrame] = useState<HTMLDivElement | null>(null);
+const proveRingsWhole: Story["play"] = async ({ canvas, userEvent }) => {
+  const first = canvas.getAllByRole("button", { name: "Remove one" })[0];
+  if (first === undefined) throw new Error("CartPanel: expected a stepper.");
+  await userEvent.tab();
+  await expect(first).toHaveFocus();
+  await expect(ringClippers(first)).toEqual([]);
+  const note = canvas.queryByRole("textbox", { name: "Notes for the kitchen" });
+  if (note) {
+    note.focus();
+    await expect(note).toHaveFocus();
+    const box = note.parentElement;
+    if (!(box instanceof HTMLElement)) throw new Error("CartPanel: note field has no box.");
+    await expect(ringClippers(box)).toEqual([]);
+  }
+};
 
-  return (
-    <div
-      className="relative h-165 w-90 overflow-hidden rounded-4 border border-border-subtle bg-surface-page-alt"
-      ref={setFrame}
-    >
-      <CartPanel {...args} container={frame} isDefaultOpen position="container" />
-    </div>
-  );
-}
+export const Playground: Story = {
+  render: (args) => (
+    <LiveCart
+      initial={args.lines}
+      title={typeof args.title === "string" ? args.title : "Your order"}
+      meta={typeof args.meta === "string" ? args.meta : undefined}
+    />
+  ),
+  play: proveRingsWhole,
+};
 
-/** Three lines, a kitchen note and the totals — everything scrolls except the pay bar. */
+/** Card row: a filled pickup cart. Adding one Masala Cold Brew pays ₹1,239. */
 export const Filled: Story = {
-  render: (args) => (
-    <div className="p-6">
-      <FramedCart {...args} lines={LINES} />
-    </div>
-  ),
+  render: () => <LiveCart initial={FILLED} />,
+  play: async (context) => {
+    await proveRingsWhole(context);
+    const addButtons = context.canvas.getAllByRole("button", { name: "Add one" });
+    const addColdBrew = addButtons[1];
+    if (addColdBrew === undefined) throw new Error("CartPanel: expected the Cold Brew stepper.");
+    await context.userEvent.click(addColdBrew);
+    await expect(context.canvas.getByRole("button", { name: "Pay ₹1,239" })).toBeVisible();
+  },
 };
 
-/** Nothing in it yet. One action, never two, and never an apology. */
+/** Card row: nothing in the cart yet. */
 export const Empty: Story = {
-  render: (args) => (
-    <div className="p-6">
-      <FramedCart {...args} lines={[]} />
-    </div>
-  ),
+  args: { lines: [] },
+  render: () => <LiveCart initial={[]} />,
 };
 
-/** A single line, so the summary and the pay bar can be read against a short list. */
 export const OneLine: Story = {
-  render: (args) => (
-    <div className="p-6">
-      <FramedCart {...args} lines={ONE_LINE} />
-    </div>
-  ),
+  render: () => <LiveCart initial={ONE} />,
+  play: async (context) => {
+    await proveRingsWhole(context);
+    await context.userEvent.click(context.canvas.getByRole("button", { name: "Remove one" }));
+    await expect(context.canvas.getByRole("heading", { name: "Nothing here yet." })).toHaveFocus();
+  },
 };
 
-/** Dine-in swaps the fulfilment line; everything else is the same sheet. */
 export const DineIn: Story = {
-  render: (args) => (
-    <div className="p-6">
-      <FramedCart {...args} lines={LINES} meta="Dine-in · Table 4 · Sector 57" />
-    </div>
-  ),
+  render: () => <LiveCart initial={FILLED} meta="Dine-in · Sector 57" />,
+  play: proveRingsWhole,
 };
 
-/** The smallest supported viewport — the sheet runs full width and nothing truncates badly. */
-export const Smallest: Story = {
-  globals: { viewport: { value: "floor360" } },
-  args: { isDefaultOpen: true },
+export const Mobile: Story = {
+  globals: VIEWPORT_360,
+  parameters: { layout: "fullscreen" },
+  render: () => <LiveCart initial={FILLED} />,
+  play: proveRingsWhole,
+};
+
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  decorators: [(Story) => <Story />],
+  render: () => (
+    <OnSurfaces>
+      {(ground) => (
+        <div className="w-80">
+          <LiveCart initial={ONE} title={`Your order · ${ground}`} />
+        </div>
+      )}
+    </OnSurfaces>
+  ),
 };

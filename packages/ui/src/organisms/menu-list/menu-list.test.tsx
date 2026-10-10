@@ -1,163 +1,254 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
+import type { LinkAsProps } from "../../lib/link-as";
 import { MenuList, type MenuListItem } from "./menu-list";
 
 const MENU: MenuListItem[] = [
   {
+    id: "chilli-paneer",
     name: "Paprikaa Chilli Paneer",
     price: 280,
     spice: 3,
     category: "Small Plates",
     badge: "Bestseller",
-    description: "Amritsari paneer, burnt chilli mayo, potato brioche.",
   },
   {
+    id: "keema-pav",
     name: "Mushroom Keema Pav",
     price: 340,
     was: 380,
     spice: 2,
     category: "Small Plates",
-    description: "Slow-cooked mushroom keema, buttered pav, pickled onion.",
   },
-  { name: "Masala Cold Brew", price: 220, category: "Chai & Coffee", badge: "New" },
-  { name: "Kulhad Chai", price: 90, category: "Chai & Coffee" },
-  { name: "Bombay Toastie", price: 240, category: "All Day" },
-  { name: "Gulkand Kulfi", price: 180, category: "Sweets" },
+  {
+    id: "cold-brew",
+    name: "Masala Cold Brew",
+    price: 220,
+    spice: 1,
+    category: "Chai & Coffee",
+    badge: "New",
+  },
+  { id: "kulhad-chai", name: "Kulhad Chai", price: 90, spice: 1, category: "Chai & Coffee" },
+  { id: "toastie", name: "Bombay Toastie", price: 240, spice: 2, category: "All Day" },
+  { id: "kulfi", name: "Gulkand Kulfi", price: 180, spice: 1, category: "Sweets" },
 ];
 
-/** `MenuItemCard` and `MenuItemRow` hold different crops, so the placeholders count each. */
-const CARD_PLACEHOLDER = "Dish photo 4:3";
-const ROW_PLACEHOLDER = "Dish photo 1:1";
+/** FilterBar is a Radix ToggleGroup: single-select options are radios. */
+const option = (name: string) => screen.getByRole("radio", { name });
+
+const namesIn = (element: HTMLElement) =>
+  within(element)
+    .getAllByRole("article")
+    .map((article) => within(article).getByRole("heading").textContent);
+
+function RouterLink({ href, className, children }: LinkAsProps) {
+  return (
+    <a href={href} className={className} data-router-link="">
+      {children}
+    </a>
+  );
+}
 
 describe("MenuList", () => {
-  it("renders the section header when a title is given", () => {
-    render(<MenuList items={MENU} overline="The Menu" title="Most ordered this week" />);
+  it("heads the section with overline, a level-2 title and the action", () => {
+    render(
+      <MenuList
+        items={MENU}
+        overline="The Menu"
+        title="Most ordered this week"
+        action={<a href="#menu">See Full Menu</a>}
+      />
+    );
     expect(
       screen.getByRole("heading", { level: 2, name: "Most ordered this week" })
     ).toBeInTheDocument();
-    expect(screen.getByText("The Menu")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "See Full Menu" })).toBeInTheDocument();
   });
 
-  it("renders no header at all when the title is left off", () => {
-    render(<MenuList items={MENU} />);
-    expect(screen.queryByRole("heading", { level: 2 })).not.toBeInTheDocument();
+  it("renders the lede under the heading", () => {
+    render(
+      <MenuList
+        items={MENU}
+        title="Most ordered this week"
+        lede="Cooked to order in one pure-veg kitchen."
+      />
+    );
+    expect(screen.getByText("Cooked to order in one pure-veg kitchen.")).toBeInTheDocument();
   });
 
-  it("derives one pill per category, behind All", () => {
-    render(<MenuList items={MENU} />);
-    const group = screen.getByRole("group", { name: "Filter the menu by category" });
-    expect(group).toBeInTheDocument();
-    for (const label of ["All", "Small Plates", "Chai & Coffee", "All Day", "Sweets"]) {
-      expect(screen.getByRole("button", { name: label })).toBeInTheDocument();
-    }
-  });
-
-  it("pins the kitchen's standing statement after the pills", () => {
-    render(<MenuList items={MENU} />);
-    expect(screen.getByText("100% Vegetarian Kitchen")).toBeInTheDocument();
-  });
-
-  it("shows the first four dishes as cards and the rest as rows", () => {
-    render(<MenuList items={MENU} />);
-    expect(screen.getAllByText(CARD_PLACEHOLDER)).toHaveLength(4);
-    expect(screen.getAllByText(ROW_PLACEHOLDER)).toHaveLength(2);
-    expect(screen.getByText("Also On The Menu")).toBeInTheDocument();
-  });
-
-  it("honours a caller's grid count", () => {
-    render(<MenuList gridCount={2} items={MENU} />);
-    expect(screen.getAllByText(CARD_PLACEHOLDER)).toHaveLength(2);
-    expect(screen.getAllByText(ROW_PLACEHOLDER)).toHaveLength(4);
-  });
-
-  it("renders rows only in the list variant", () => {
+  it("renders only the filters when there is no title", () => {
     render(<MenuList items={MENU} variant="list" />);
-    expect(screen.queryByText(CARD_PLACEHOLDER)).not.toBeInTheDocument();
-    expect(screen.getAllByText(ROW_PLACEHOLDER)).toHaveLength(MENU.length);
-    expect(screen.queryByText("Also On The Menu")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { level: 2 })).not.toBeInTheDocument();
+    expect(screen.getByRole("radiogroup", { name: "Filter the menu" })).toBeInTheDocument();
   });
 
-  it("drops the overflow divider when every dish fits in the grid", () => {
-    render(<MenuList gridCount={10} items={MENU} />);
-    expect(screen.queryByText("Also On The Menu")).not.toBeInTheDocument();
-  });
-
-  it("filters the dishes when a category pill is pressed", async () => {
+  it("offers All first, then every category in the order the dishes bring them", () => {
     render(<MenuList items={MENU} />);
-    expect(screen.getByRole("heading", { name: "Kulhad Chai" })).toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole("button", { name: "Sweets" }));
-
-    expect(screen.getByRole("heading", { name: "Gulkand Kulfi" })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Kulhad Chai" })).not.toBeInTheDocument();
+    const names = within(screen.getByRole("radiogroup"))
+      .getAllByRole("radio")
+      .map((radio) => radio.textContent);
+    expect(names).toEqual(["All", "Small Plates", "Chai & Coffee", "All Day", "Sweets"]);
+    expect(option("All")).toHaveAttribute("aria-checked", "true");
   });
 
-  it("marks the selected pill as pressed", async () => {
-    render(<MenuList items={MENU} />);
-    expect(screen.getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "true");
-
-    await userEvent.click(screen.getByRole("button", { name: "Sweets" }));
-
-    expect(screen.getByRole("button", { name: "Sweets" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "false");
+  it("follows an explicit category list for order and subset", () => {
+    render(<MenuList items={MENU} categories={["Sweets", "Small Plates"]} />);
+    const names = within(screen.getByRole("radiogroup"))
+      .getAllByRole("radio")
+      .map((radio) => radio.textContent);
+    expect(names).toEqual(["All", "Sweets", "Small Plates"]);
   });
 
-  it("opens on the caller's default category", () => {
-    render(<MenuList defaultCategory="Sweets" items={MENU} />);
-    expect(screen.getByRole("heading", { name: "Gulkand Kulfi" })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Kulhad Chai" })).not.toBeInTheDocument();
+  it("pins the note beside the filters", () => {
+    render(<MenuList items={MENU} note="100% Vegetarian" />);
+    expect(screen.getByText("100% Vegetarian")).toBeInTheDocument();
   });
 
-  it("stays on the controlled category and reports the pill that was pressed", async () => {
-    const handleChange = vi.fn();
-    render(<MenuList category="Sweets" items={MENU} onCategoryChange={handleChange} />);
-
-    await userEvent.click(screen.getByRole("button", { name: "All Day" }));
-
-    expect(handleChange).toHaveBeenCalledWith("All Day");
-    expect(screen.getByRole("heading", { name: "Gulkand Kulfi" })).toBeInTheDocument();
-  });
-
-  it("calls onAdd with the dish behind the control", async () => {
-    const handleAdd = vi.fn();
-    render(<MenuList items={MENU} onAdd={handleAdd} />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Add Paprikaa Chilli Paneer" }));
-
-    expect(handleAdd).toHaveBeenCalledWith(MENU[0]);
-  });
-
-  it("draws no Add control when there is nothing to call", () => {
-    render(<MenuList items={MENU} />);
-    expect(screen.queryByRole("button", { name: /^Add / })).not.toBeInTheDocument();
-  });
-
-  it("says what to do next when nothing matches", () => {
-    render(<MenuList categories={["Breakfast"]} items={MENU} />);
-    expect(screen.getByText("Nothing matches that yet.")).toBeInTheDocument();
-    expect(screen.getByText("Try another category.")).toBeInTheDocument();
-  });
-
-  it("auto-fits the grid so one long dish name cannot widen the row at 360px", () => {
-    const { container } = render(<MenuList items={MENU} />);
+  it("shows the first gridCount dishes as cards and the rest as rows under the overflow label", () => {
+    const { container } = render(
+      <MenuList items={MENU} gridCount={4} overflowLabel="Also on the menu" />
+    );
     expect(
-      container.querySelector(
-        ".grid-cols-\\[repeat\\(auto-fit\\,minmax\\(min\\(260px\\,100\\%\\)\\,1fr\\)\\)\\]"
-      )
-    ).toBeInTheDocument();
+      container.querySelector("ul.autogrid-min-card")?.querySelectorAll("article")
+    ).toHaveLength(4);
+    expect(screen.getAllByRole("article")).toHaveLength(MENU.length);
+    expect(screen.getByText("Also on the menu")).toBeInTheDocument();
+  });
+
+  it("honours a smaller gridCount and drops the overflow when every dish fits", () => {
+    const { container, rerender } = render(
+      <MenuList items={MENU} gridCount={2} overflowLabel="Also on the menu" />
+    );
+    expect(
+      container.querySelector("ul.autogrid-min-card")?.querySelectorAll("article")
+    ).toHaveLength(2);
+    rerender(<MenuList items={MENU} gridCount={10} overflowLabel="Also on the menu" />);
+    expect(
+      container.querySelector("ul.autogrid-min-card")?.querySelectorAll("article")
+    ).toHaveLength(MENU.length);
+    expect(screen.queryByText("Also on the menu")).not.toBeInTheDocument();
+  });
+
+  it("shows every dish as a row in the list variant", () => {
+    const { container } = render(<MenuList items={MENU} variant="list" />);
+    expect(screen.getAllByRole("article")).toHaveLength(MENU.length);
+    expect(container.querySelector("ul.autogrid-min-card")).toBeNull();
+    expect(screen.queryByText("Also on the menu")).not.toBeInTheDocument();
+  });
+
+  it("keeps list semantics on the cards and the rows", () => {
+    render(<MenuList items={MENU} gridCount={2} />);
+    const lists = screen.getAllByRole("list");
+    expect(lists).toHaveLength(2);
+    const [cards, rows] = lists;
+    if (cards === undefined || rows === undefined) {
+      throw new Error("MenuList must render two lists: cards then rows.");
+    }
+    for (const list of lists) expect(list).toHaveAttribute("role", "list");
+    expect(within(cards).getAllByRole("listitem")).toHaveLength(2);
+    expect(within(rows).getAllByRole("listitem")).toHaveLength(MENU.length - 2);
+  });
+
+  it("filters to a category by pointer and by keyboard", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<MenuList items={MENU} variant="list" />);
+    await user.click(option("Chai & Coffee"));
+    expect(namesIn(container)).toEqual(["Masala Cold Brew", "Kulhad Chai"]);
+
+    await user.keyboard("{ArrowRight}");
+    await user.keyboard(" ");
+    expect(option("All Day")).toHaveAttribute("aria-checked", "true");
+    expect(namesIn(container)).toEqual(["Bombay Toastie"]);
+  });
+
+  it("opens on defaultCategory", () => {
+    const { container } = render(<MenuList items={MENU} variant="list" defaultCategory="Sweets" />);
+    expect(option("Sweets")).toHaveAttribute("aria-checked", "true");
+    expect(namesIn(container)).toEqual(["Gulkand Kulfi"]);
+  });
+
+  it("falls back to All when defaultCategory is not on offer", () => {
+    const { container } = render(<MenuList items={MENU} variant="list" defaultCategory="Thalis" />);
+    expect(option("All")).toHaveAttribute("aria-checked", "true");
+    expect(namesIn(container)).toHaveLength(MENU.length);
+  });
+
+  it("keeps the current category when the chosen option is pressed again", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<MenuList items={MENU} variant="list" />);
+    await user.click(option("Sweets"));
+    await user.click(option("Sweets"));
+    expect(namesIn(container)).toEqual(["Gulkand Kulfi"]);
+  });
+
+  it("puts each dish's action from renderItemAction on its card or row", () => {
+    render(
+      <MenuList
+        items={MENU}
+        renderItemAction={(item) => <button type="button">{`Add ${item.name}`}</button>}
+      />
+    );
+    expect(screen.getByRole("button", { name: "Add Paprikaa Chilli Paneer" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add Gulkand Kulfi" })).toBeInTheDocument();
+  });
+
+  it("links cards through linkAs with getItemHref", () => {
+    render(
+      <MenuList items={MENU} getItemHref={(item) => `#dish-${item.id}`} linkAs={RouterLink} />
+    );
+    const link = screen
+      .getAllByRole("link")
+      .find((candidate) => candidate.getAttribute("href") === "#dish-chilli-paneer");
+    expect(link).toHaveAttribute("data-router-link");
+  });
+
+  it("shows the default empty state for a category with no dishes", async () => {
+    const user = userEvent.setup();
+    render(<MenuList items={MENU} categories={["Small Plates", "Thalis"]} />);
+    await user.click(option("Thalis"));
+    expect(screen.getByText("Nothing matches that yet.")).toBeInTheDocument();
+    expect(screen.queryByRole("article")).not.toBeInTheDocument();
+  });
+
+  it("renders no wrapper for an empty emptyState and no header for an empty title", async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <MenuList items={MENU} title="" categories={["Small Plates", "Thalis"]} emptyState="" />
+    );
+    expect(screen.queryByRole("heading", { level: 2 })).not.toBeInTheDocument();
+    await user.click(option("Thalis"));
+    // The filter's own box holds the FilterBar and nothing else.
+    const filterBox = () => screen.getByRole("radiogroup").parentElement?.parentElement;
+    expect(filterBox()?.children).toHaveLength(1);
+    // React prints 0, so a 0 slot keeps its wrapper — a truthiness gate would drop it.
+    rerender(<MenuList items={MENU} categories={["Small Plates", "Thalis"]} emptyState={0} />);
+    expect(filterBox()?.children).toHaveLength(2);
   });
 
   it("merges a caller className", () => {
-    const { container } = render(<MenuList className="bg-surface-page-alt" items={MENU} />);
-    expect(container.firstElementChild).toHaveClass("bg-surface-page-alt");
+    const { container } = render(<MenuList items={MENU} className="bg-surface-page-alt" />);
+    expect(container.firstElementChild).toHaveClass("section-y", "bg-surface-page-alt");
   });
 
   it("has no accessibility violations", async () => {
     const { container } = render(
-      <MenuList items={MENU} onAdd={vi.fn()} title="Most ordered this week" />
+      <MenuList
+        items={MENU}
+        overline="The Menu"
+        title="Most ordered this week"
+        note="100% Vegetarian"
+      />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <MenuList items={MENU} title="Menu" sx={{ mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });

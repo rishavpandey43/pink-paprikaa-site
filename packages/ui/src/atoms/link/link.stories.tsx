@@ -1,156 +1,240 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { ArrowRight, MapPin } from "lucide-react";
+import type { ComponentProps } from "react";
+import { expect, within } from "storybook/test";
 
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Link } from "./link";
+
+const LINK_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
+
+function DemoRouterLink({ children, ...props }: ComponentProps<"a">) {
+  return (
+    <a data-router="" {...props}>
+      {children}
+    </a>
+  );
+}
 
 const meta = {
   title: "Atoms/Link",
   component: Link,
-  args: { children: "See the full menu", href: "/menu" },
-  argTypes: {
-    icon: { control: false },
-    iconAfter: { control: false },
+  args: {
+    href: "/menu",
+    children: "See the full menu",
+    variant: "link-md",
+    color: "link",
+    underline: "always",
   },
+  argTypes: { icon: { control: false }, iconAfter: { control: false } },
   parameters: {
     docs: {
       description: {
         component:
-          "Inline and standalone text links. The underline is the brand's link signal — never " +
-          "leave an `<a>` unstyled, browser blue is not in the palette. `quiet` is the header and " +
-          "footer nav treatment: no underline until hover.",
+          "Text links, rendered through `Typography`: `variant` is its `link-sm`/`link-md`/`link-lg` step (or `inherit` to take the size of the surrounding text), and `weight`, `align`, `noWrap` and `sx` work as they do there. Never leave an `<a>` unstyled — browser blue is not in the palette. `color` is `link` (pink), `muted`, `inverse` (the explicit white link for pink and ink fields) or `quiet` (the header/footer nav treatment); `underline` is `always`, `hover` or `none`. `isExternal` adds the arrow and the safe `rel`, and opens a new tab. `link`, `muted` and `quiet` follow the surface. `asChild` renders your router link (e.g. `next/link`) with the same styling. In running prose a bare `<a>` already carries the link style from the base layer.",
       },
     },
   },
 } satisfies Meta<typeof Link>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-export const Variants: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-6">
-      <Link {...args} variant="default">
-        See the full menu
+export const States: Story = {
+  parameters: { pseudo: storyStatesPseudo(LINK_STATES) },
+  render: () => (
+    <StatesRow
+      states={LINK_STATES}
+      render={(state) => (
+        <Link
+          href="/menu"
+          {...(state === "disabled" ? { isDisabled: true } : storyStateControlProps(state))}
+        >
+          See the full menu
+        </Link>
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover a");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Link States: #cell-hover link missing");
+    }
+    await expect(hover).toHaveClass("hover:text-text-link-hover");
+  },
+};
+
+export const Default: Story = {
+  name: 'color="link"',
+  render: () => (
+    <div className="flex flex-wrap items-center gap-4">
+      <Link href="/menu">See the full menu</Link>
+      <Link href="/outlets" icon={MapPin}>
+        Find a Paprikaa
       </Link>
-      <Link {...args} href="/privacy" variant="subtle">
-        Privacy
-      </Link>
-      <Link {...args} href="/outlets" variant="quiet">
-        Outlets
+      <Link href="/about" iconAfter={ArrowRight}>
+        Our story
       </Link>
     </div>
   ),
 };
 
-/** 14 / 16 / 18px — the link steps of the running-text ramp. */
-export const Sizes: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-6">
-      <Link {...args} size="sm">
+export const Colors: Story = {
+  name: 'color="muted" · "quiet" · "inverse"',
+  render: () => (
+    <div className="grid gap-3">
+      <div className="flex flex-wrap items-center gap-4">
+        <Link href="/menu">link</Link>
+        <Link href="/legal" color="muted" underline="hover">
+          muted
+        </Link>
+        <Link href="/outlets" color="quiet" underline="hover">
+          quiet
+        </Link>
+        <Link href="/about" color="brand">
+          brand
+        </Link>
+      </div>
+      <div
+        data-surface="brand"
+        className="flex flex-wrap items-center gap-4 rounded-lg bg-surface-brand p-3.5"
+      >
+        <Link href="/legal" color="inverse">
+          FSSAI licence
+        </Link>
+        <Link href="https://www.zomato.com" isExternal color="inverse">
+          Zomato listing
+        </Link>
+      </div>
+      <div
+        data-surface="ink"
+        className="flex flex-wrap items-center gap-4 rounded-lg bg-surface-inverse p-3.5"
+      >
+        <Link href="/legal" color="inverse">
+          FSSAI licence
+        </Link>
+        <Link href="https://www.zomato.com" isExternal color="inverse">
+          Zomato listing
+        </Link>
+      </div>
+    </div>
+  ),
+};
+
+export const Underline: Story = {
+  name: 'underline="always" · "hover" · "none"',
+  render: () => (
+    <div className="flex flex-wrap items-center gap-4">
+      <Link href="/menu" underline="always">
+        always
+      </Link>
+      <Link href="/menu" underline="hover">
+        hover
+      </Link>
+      <Link href="/menu" underline="none">
+        none
+      </Link>
+    </div>
+  ),
+};
+
+export const Variants: Story = {
+  name: 'variant="link-sm" · "link-md" · "link-lg"',
+  render: () => (
+    <div className="flex flex-wrap items-center gap-4">
+      <Link href="/menu" variant="link-sm">
         Small
       </Link>
-      <Link {...args} size="md">
+      <Link href="/menu" variant="link-md">
         Medium
       </Link>
-      <Link {...args} size="lg">
+      <Link href="/menu" variant="link-lg">
         Large
       </Link>
     </div>
   ),
 };
 
-export const WithIcons: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-6">
-      <Link {...args} href="/outlets" icon={MapPin}>
-        Find a Paprikaa
-      </Link>
-      <Link {...args} iconAfter={ArrowRight}>
-        See the full menu
-      </Link>
-    </div>
+/** `variant="inherit"` takes the size of the surrounding text: in a `body-sm` paragraph it is body-sm. */
+export const InheritsParagraph: Story = {
+  name: 'variant="inherit" (inside a body-sm paragraph)',
+  render: () => (
+    <p className="m-0 font-body text-body-sm text-text-body" data-testid="para">
+      Every thali is cooked fresh. Read the{" "}
+      <Link href="/legal" variant="inherit" data-testid="inline-link">
+        allergen guide
+      </Link>{" "}
+      before you order.
+    </p>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const paragraph = getComputedStyle(canvas.getByTestId("para"));
+    const link = getComputedStyle(canvas.getByTestId("inline-link"));
+    await expect(link.fontSize).toBe(paragraph.fontSize);
+  },
 };
 
-/** External links carry the outward arrow, `target="_blank"` and the safe `rel`. */
 export const External: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-6">
-      <Link {...args} href="https://www.zomato.com" isExternal>
-        Zomato listing
-      </Link>
-      <Link {...args} href="https://www.swiggy.com" isExternal variant="subtle">
-        Swiggy listing
-      </Link>
-    </div>
-  ),
+  name: "isExternal",
+  args: { href: "https://www.zomato.com", isExternal: true, children: "Zomato listing" },
 };
 
-/**
- * On a flooded pink panel the link goes white and the underline drops to a glass tint.
- *
- * A flooded panel is #EE2C68, where white measures 4.04:1 — enough for WCAG's large-text
- * threshold (3:1) and nothing below it. None of `Link`'s three sizes is large on its own (18px at
- * `lg`, and the face is medium rather than bold), so a link on a pink band is set at 20px bold:
- * the smallest step that qualifies. The ink panel below carries the same variant at running size,
- * which is where a body-copy `inverse` link belongs.
- */
-export const OnBrand: Story = {
-  globals: { backgrounds: { value: "brand" } },
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-6 rounded-4 bg-surface-brand p-8">
-        <Link
-          {...args}
-          className="text-subtitle1 font-bold tracking-subtitle1"
-          href="/licences"
-          variant="inverse"
-        >
-          FSSAI licence
-        </Link>
-        <Link
-          {...args}
-          className="text-subtitle1 font-bold tracking-subtitle1"
-          href="https://www.zomato.com"
-          isExternal
-          variant="inverse"
-        >
-          Zomato listing
-        </Link>
-      </div>
-      <div className="flex flex-wrap items-center gap-6 rounded-4 bg-surface-inverse p-8">
-        <Link {...args} href="/licences" variant="inverse">
-          FSSAI licence
-        </Link>
-        <Link {...args} href="https://www.zomato.com" isExternal variant="inverse">
-          Zomato listing
-        </Link>
-      </div>
-    </div>
+export const AsChild: Story = {
+  name: "asChild (router link)",
+  render: () => (
+    <Link asChild icon={MapPin}>
+      <DemoRouterLink href="/outlets">Outlets</DemoRouterLink>
+    </Link>
   ),
 };
 
 /** In context: a footer column, where `quiet` keeps the nav calm until it is pointed at. */
 export const InFooterNav: Story = {
-  parameters: { layout: "padded" },
-  render: (args) => (
-    <nav className="flex flex-col items-start gap-3">
-      <Link {...args} href="/menu" variant="quiet">
+  name: "in context: footer nav",
+  render: () => (
+    <nav aria-label="Footer" className="flex flex-col items-start gap-3">
+      <Link href="/menu" color="quiet" underline="hover">
         Menu
       </Link>
-      <Link {...args} href="/outlets" variant="quiet">
+      <Link href="/outlets" color="quiet" underline="hover">
         Outlets
       </Link>
-      <Link {...args} href="/catering" variant="quiet">
+      <Link href="/catering" color="quiet" underline="hover">
         Party Orders
       </Link>
-      <Link {...args} href="/contact" variant="quiet">
+      <Link href="/contact" color="quiet" underline="hover">
         Contact
       </Link>
     </nav>
+  ),
+};
+
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: () => (
+    <OnSurfaces>
+      <Link href="/menu">Default</Link>
+      <Link href="/legal" color="muted" underline="hover">
+        Subtle
+      </Link>
+      <Link href="/outlets" color="quiet" underline="hover">
+        Quiet
+      </Link>
+    </OnSurfaces>
   ),
 };

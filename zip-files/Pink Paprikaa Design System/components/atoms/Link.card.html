@@ -1,4 +1,4 @@
-<!-- @dsCard group="Atoms" viewport="700x470" name="Link" subtitle="Four variants, three sizes, icons and external." -->
+<!-- @dsCard group="Atoms" viewport="700x550" name="Link" subtitle="Four variants, three sizes, icons and external." -->
 <!doctype html><html><head><meta charset="utf-8">
 <link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -15,6 +15,7 @@ function Demo(){return(<Rows>
 <Row label="inverse" className="pad on-brand"><Link variant="inverse">FSSAI licence</Link></Row>
 <Row label="size"><Link size="sm">Small</Link><Link size="md">Medium</Link><Link size="lg">Large</Link></Row>
 <Row label="external"><Link external>Zomato listing</Link></Row>
+<Row label="states" note="rest / hover / press / focus / disabled"><Link>Rest</Link><Link state="hover">Hover</Link><Link state="press">Press</Link><Link state="focus">Focus</Link><Link disabled>Disabled</Link></Row>
 </Rows>);}
 ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
 </script></body></html>

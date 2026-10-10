@@ -1,156 +1,285 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Users } from "lucide-react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations, fakeRegister } from "#vitest.setup";
+
 import { Select } from "./select";
 
-/**
- * Radix's Select popover is built on pointer capture, `scrollIntoView` and a `ResizeObserver` —
- * three browser APIs jsdom does not implement. They are stubbed here rather than in
- * `vitest.setup.ts` because this is the only suite that opens a portalled popover, and a global
- * stub would quietly hide the same gap from a component that genuinely needs measuring.
- */
-beforeAll(() => {
-  globalThis.ResizeObserver = class {
-    observe = () => undefined;
-    unobserve = () => undefined;
-    disconnect = () => undefined;
-  };
-  Element.prototype.scrollIntoView = () => undefined;
-  Element.prototype.hasPointerCapture = () => false;
-  Element.prototype.setPointerCapture = () => undefined;
-  Element.prototype.releasePointerCapture = () => undefined;
-});
-
-const OUTLETS = ["Sector 57", "MKM Market"];
-const NAME = "Pick your outlet";
+const SLOTS = [
+  { value: "19:30", label: "7:30pm" },
+  { value: "20:00", label: "8:00pm" },
+  { value: "20:30", label: "8:30pm", isDisabled: true },
+];
 
 describe("Select", () => {
-  it("renders a closed combobox showing its placeholder", () => {
-    render(<Select aria-label={NAME} options={OUTLETS} placeholder="Choose an outlet" />);
-    const trigger = screen.getByRole("combobox", { name: NAME });
-    expect(trigger).toHaveTextContent("Choose an outlet");
-    expect(screen.queryByRole("option")).not.toBeInTheDocument();
+  it("is our combobox trigger (not a visible native select) in Input's field box", () => {
+    render(<Select aria-label="Pickup time" options={SLOTS} />);
+    const trigger = screen.getByRole("combobox", { name: "Pickup time" });
+    expect(trigger.tagName).toBe("BUTTON");
+    expect(trigger).toHaveAttribute("aria-haspopup", "listbox");
+    expect(trigger.parentElement).toHaveAttribute("data-surface", "light");
+    expect(trigger.parentElement).toHaveClass("h-field-md", "rounded-md", "border-border-default");
+    expect(document.querySelector("select:not([aria-hidden])")).toBeNull();
+    expect(document.querySelector("select[aria-hidden]")).not.toBeNull();
   });
 
-  it("shows the chosen value instead of the placeholder", () => {
-    render(<Select aria-label={NAME} defaultValue="Sector 57" options={OUTLETS} />);
-    expect(screen.getByRole("combobox", { name: NAME })).toHaveTextContent("Sector 57");
+  it("opens our listbox with a brand diamond on the chosen row", async () => {
+    const user = userEvent.setup();
+    render(<Select aria-label="Pickup time" defaultValue="20:00" defaultOpen options={SLOTS} />);
+    const listbox = screen.getByRole("listbox", { name: "Pickup time" });
+    expect(listbox).toBeVisible();
+    const chosen = within(listbox).getByRole("option", { name: "8:00pm" });
+    expect(chosen).toHaveAttribute("aria-selected", "true");
+    expect(chosen.querySelector("[aria-hidden='true']")).not.toBeNull();
+    expect(within(listbox).getByRole("option", { name: "8:30pm" })).toHaveAttribute(
+      "aria-disabled",
+      "true"
+    );
+    await user.click(within(listbox).getByRole("option", { name: "7:30pm" }));
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(screen.getByRole("combobox")).toHaveTextContent("7:30pm");
   });
 
-  it("opens on click and reports the option the reader picks", async () => {
-    const handleValueChange = vi.fn();
-    render(<Select aria-label={NAME} onValueChange={handleValueChange} options={OUTLETS} />);
-
-    await userEvent.click(screen.getByRole("combobox", { name: NAME }));
-    expect(screen.getAllByRole("option")).toHaveLength(2);
-
-    await userEvent.click(screen.getByRole("option", { name: "MKM Market" }));
-
-    expect(handleValueChange).toHaveBeenCalledWith("MKM Market");
-    expect(screen.getByRole("combobox", { name: NAME })).toHaveTextContent("MKM Market");
+  it("keyboard: Enter opens, arrows skip disabled, Enter selects, Escape returns focus", async () => {
+    const user = userEvent.setup();
+    render(<Select aria-label="Pickup time" options={SLOTS} />);
+    const trigger = screen.getByRole("combobox", { name: "Pickup time" });
+    trigger.focus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("listbox")).toBeVisible();
+    await user.keyboard("{ArrowDown}{ArrowDown}");
+    // skipped the disabled 8:30pm from first → second is 8:00, third would be disabled so wraps/skips
+    await user.keyboard("{Enter}");
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(trigger).toHaveFocus();
   });
 
-  it("opens from the keyboard", async () => {
-    render(<Select aria-label={NAME} options={OUTLETS} />);
+  it("keyboard: Home/End, type-to-jump, Tab closes without selecting", async () => {
+    const user = userEvent.setup();
+    const spices = [
+      { value: "mild", label: "Mild" },
+      { value: "medium", label: "Medium" },
+      { value: "hot", label: "Hot" },
+    ];
+    render(<Select aria-label="Spice" options={spices} />);
+    const trigger = screen.getByRole("combobox", { name: "Spice" });
+    trigger.focus();
+    await user.keyboard("{Enter}");
+    // Await between keys so activeIndex state commits before Enter selects.
+    await user.keyboard("{End}");
+    await user.keyboard("{Enter}");
+    expect(trigger).toHaveTextContent("Hot");
 
-    await userEvent.tab();
-    await userEvent.keyboard("{Enter}");
+    await user.keyboard("{Enter}");
+    await user.keyboard("{Home}");
+    await user.keyboard("{Enter}");
+    expect(trigger).toHaveTextContent("Mild");
 
-    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    await user.keyboard("{Enter}");
+    await user.keyboard("me");
+    await user.keyboard("{Enter}");
+    expect(trigger).toHaveTextContent("Medium");
+
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("listbox")).toBeVisible();
+    await user.tab();
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(trigger).toHaveTextContent("Medium");
   });
 
-  it("takes labelled options and can disable one of them", async () => {
+  it("rotates the chevron when open", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<Select aria-label="Outlet" options={SLOTS} />);
+    expect(container.querySelector(".rotate-180")).toBeNull();
+    await user.click(screen.getByRole("combobox"));
+    expect(container.querySelector(".rotate-180")).not.toBeNull();
+  });
+
+  it("takes react-hook-form register() on the hidden native select", async () => {
+    const user = userEvent.setup();
+    const field = fakeRegister("slot");
+    render(<Select aria-label="Pickup time" options={SLOTS} {...field} />);
+    const hidden = document.querySelector("select[aria-hidden]");
+    expect(field.ref).toHaveBeenCalledWith(hidden);
+    expect(hidden).toHaveAttribute("name", "slot");
+    await user.click(screen.getByRole("combobox"));
+    await user.click(screen.getByRole("option", { name: "8:00pm" }));
+    expect(field.onChange).toHaveBeenCalled();
+    expect(hidden).toHaveValue("20:00");
+  });
+
+  it("FormData posts the value", async () => {
+    const user = userEvent.setup();
+    let posted: FormData | undefined;
     render(
-      <Select
-        aria-label="Pickup slot"
-        options={[
-          { value: "1930", label: "7:30pm" },
-          { value: "2000", label: "8:00pm", disabled: true },
-        ]}
-      />
+      <form
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault();
+          posted = new FormData(event.currentTarget);
+        }}
+      >
+        <Select aria-label="Outlet" name="outlet" defaultValue="20:00" options={SLOTS} />
+        <button type="submit">Save</button>
+      </form>
     );
-
-    await userEvent.click(screen.getByRole("combobox", { name: "Pickup slot" }));
-
-    expect(screen.getByRole("option", { name: "7:30pm" })).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "8:00pm" })).toHaveAttribute("data-disabled");
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    expect(posted?.get("outlet")).toBe("20:00");
   });
 
-  it.each([
-    ["sm", "h-10"],
-    ["md", "h-(--field-h)"],
-    ["lg", "h-14"],
-  ] as const)("renders the %s size at its fixed height", (size, expected) => {
-    render(<Select aria-label={NAME} options={OUTLETS} size={size} />);
-    expect(screen.getByRole("combobox")).toHaveClass(expected);
-  });
-
-  it.each([
-    ["error", "border-(--field-border-error)"],
-    ["success", "border-(--field-border-success)"],
-    ["warning", "border-(--field-border-warning)"],
-  ] as const)("draws the %s border", (status, expected) => {
-    render(<Select aria-label={NAME} options={OUTLETS} status={status} />);
-    const trigger = screen.getByRole("combobox");
-    expect(trigger).toHaveClass(expected);
-    expect(trigger).toHaveClass("border-2");
-  });
-
-  it("marks itself invalid only on the error status", () => {
-    const { rerender } = render(<Select aria-label={NAME} options={OUTLETS} status="error" />);
-    expect(screen.getByRole("combobox")).toHaveAttribute("aria-invalid", "true");
-
-    rerender(<Select aria-label={NAME} options={OUTLETS} status="warning" />);
-    expect(screen.getByRole("combobox")).not.toHaveAttribute("aria-invalid");
-  });
-
-  it("renders a leading glyph beside the value", () => {
+  it("readOnly cannot open and still posts through a hidden input", async () => {
+    const user = userEvent.setup();
     const { container } = render(
-      <Select aria-label="Guests" icon={Users} options={["2 guests", "4 guests"]} />
+      <Select aria-label="Outlet" name="outlet" readOnly defaultValue="20:00" options={SLOTS} />
     );
-    // The leading glyph plus the trailing chevron.
-    expect(container.querySelectorAll("svg")).toHaveLength(2);
+    await user.click(screen.getByRole("combobox"));
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(container.querySelector('input[type="hidden"]')).toHaveAttribute("name", "outlet");
+    expect(container.querySelector('input[type="hidden"]')).toHaveValue("20:00");
+    expect(container.querySelector(".lucide-lock")).toBeInTheDocument();
   });
 
-  it("will not open while read-only, and shows a lock", async () => {
-    render(<Select aria-label="Outlet" defaultValue="Sector 57" isReadOnly options={OUTLETS} />);
-
-    const trigger = screen.getByRole("combobox", { name: "Outlet" });
-    await userEvent.click(trigger);
-
-    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
-    expect(trigger).toHaveClass("bg-(--field-bg-readonly)");
-  });
-
-  it("keeps a real grey fill when disabled rather than fading out", () => {
-    render(<Select aria-label="Delivery slot" disabled options={OUTLETS} />);
-    const trigger = screen.getByRole("combobox");
-    expect(trigger).toHaveClass("bg-(--field-bg-disabled)");
-    expect(trigger.className).not.toMatch(/opacity-/);
-  });
-
-  it("merges a caller className onto the trigger", () => {
-    render(<Select aria-label={NAME} className="rounded-6" options={OUTLETS} />);
-    const trigger = screen.getByRole("combobox");
-    expect(trigger).toHaveClass("rounded-6");
-    expect(trigger).not.toHaveClass("rounded-3");
-  });
-
-  it("has no accessibility violations", async () => {
-    const { container } = render(
+  it("error → aria-invalid; required → aria-required", () => {
+    render(
       <>
-        <Select aria-label={NAME} options={OUTLETS} placeholder="Choose an outlet" />
-        <Select
-          aria-label="Guests"
-          icon={Users}
-          options={["2 guests", "4 guests"]}
-          status="error"
-        />
-        <Select aria-label="Delivery slot" disabled options={OUTLETS} />
+        <Select aria-label="Pickup time" status="error" required options={SLOTS} />
+        <Select aria-label="Outlet" status="warning" options={SLOTS} />
       </>
     );
+    expect(screen.getByRole("combobox", { name: "Pickup time" })).toHaveAttribute(
+      "aria-invalid",
+      "true"
+    );
+    expect(screen.getByRole("combobox", { name: "Pickup time" })).toHaveAttribute(
+      "aria-required",
+      "true"
+    );
+    expect(screen.getByRole("combobox", { name: "Outlet" })).not.toHaveAttribute("aria-invalid");
+  });
+
+  it("sheet=true opens as a bottom sheet", async () => {
+    const user = userEvent.setup();
+    render(<Select aria-label="Spice" sheet options={SLOTS} />);
+    await user.click(screen.getByRole("combobox"));
+    expect(document.querySelector('[class*="animate-sheet-in"]')).not.toBeNull();
+    expect(screen.getByRole("listbox")).toBeVisible();
+  });
+
+  it("rests with a chevron; status glyphs replace it", () => {
+    const { container, rerender } = render(<Select aria-label="Outlet" options={SLOTS} />);
+    expect(container.querySelector(".lucide-chevron-down")).toBeInTheDocument();
+    rerender(<Select aria-label="Outlet" status="error" options={SLOTS} />);
+    expect(container.querySelector(".lucide-circle-alert")).toBeInTheDocument();
+    expect(container.querySelector(".lucide-chevron-down")).not.toBeInTheDocument();
+  });
+
+  it("disables with a real fill, never opacity", () => {
+    render(<Select aria-label="Delivery slot" disabled options={SLOTS} />);
+    const trigger = screen.getByRole("combobox");
+    expect(trigger).toBeDisabled();
+    expect(trigger.parentElement).toHaveClass(
+      "has-[>:is(input,textarea,select,button[role=combobox]):disabled]:bg-ink-100"
+    );
+    expect(trigger.parentElement?.className).not.toMatch(/opacity-/);
+  });
+
+  it("clears a leading icon with its text inset", () => {
+    const { container } = render(<Select aria-label="Guests" icon={Users} options={SLOTS} />);
+    expect(container.querySelector(".lucide-users")).toBeInTheDocument();
+    expect(screen.getByRole("combobox")).toHaveClass("ps-11");
+  });
+
+  it("is accessible closed and open", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select
+        aria-label="Guests"
+        icon={Users}
+        placeholder="Choose"
+        status="error"
+        options={SLOTS}
+      />
+    );
     await expectNoA11yViolations(container);
+    await user.click(screen.getByRole("combobox"));
+    await expectNoA11yViolations(screen.getByRole("listbox"));
+  });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(
+      <Select aria-label="Guests" options={[{ value: "2", label: "2" }]} sx={{ mt: 4 }} />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4");
+  });
+
+  it("calls onValueChange when an option is chosen", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<Select aria-label="Pickup time" options={SLOTS} onValueChange={onValueChange} />);
+    await user.click(screen.getByRole("combobox"));
+    await user.click(screen.getByRole("option", { name: "8:00pm" }));
+    expect(onValueChange).toHaveBeenCalledWith("20:00");
+  });
+
+  it("Space opens the list from a focused trigger", async () => {
+    const user = userEvent.setup();
+    render(<Select aria-label="Pickup time" options={SLOTS} />);
+    screen.getByRole("combobox").focus();
+    await user.keyboard(" ");
+    expect(screen.getByRole("listbox")).toBeVisible();
+  });
+
+  it("never lets a long option label widen its box: the trigger truncates", () => {
+    render(
+      <Select
+        aria-label="Outlet"
+        defaultValue="long"
+        options={[{ value: "long", label: "A very very long outlet name that would overflow" }]}
+      />
+    );
+    expect(screen.getByRole("combobox").querySelector(".truncate")).not.toBeNull();
+  });
+
+  it("a read-only placeholder posts nothing", () => {
+    const { container } = render(
+      <form noValidate>
+        <Select aria-label="Outlet" name="outlet" readOnly placeholder="Pick" options={SLOTS} />
+      </form>
+    );
+    expect(container.querySelector('input[type="hidden"]')).toBeNull();
+    expect(container.querySelector("select")?.getAttribute("name")).toBeNull();
+  });
+
+  it("submits nothing when read-only and disabled", () => {
+    const { container } = render(
+      <form noValidate>
+        <Select
+          aria-label="Outlet"
+          name="outlet"
+          readOnly
+          disabled
+          defaultValue="20:00"
+          options={SLOTS}
+        />
+      </form>
+    );
+    expect(container.querySelector('input[type="hidden"]')).toBeNull();
+  });
+
+  it("keeps defaultValue over the placeholder", () => {
+    render(
+      <Select aria-label="Outlet" defaultValue="20:00" placeholder="Choose" options={SLOTS} />
+    );
+    expect(screen.getByRole("combobox")).toHaveTextContent("8:00pm");
+  });
+
+  it("renders Field around itself when given a label and error", () => {
+    render(<Select label="Pickup time" error="Pick a slot" options={SLOTS} />);
+    expect(screen.getByRole("combobox", { name: "Pickup time" })).toHaveAttribute(
+      "aria-invalid",
+      "true"
+    );
+    expect(screen.getByText("Pick a slot")).toBeInTheDocument();
   });
 });

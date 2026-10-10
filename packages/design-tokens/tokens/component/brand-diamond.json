@@ -1,0 +1,51 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "brand-diamond-12": {
+      "$value": "12px",
+      "$description": "Rating sm, SpiceLevel sm.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "brand-diamond-14": {
+      "$value": "14px",
+      "$description": "SpiceLevel md.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "brand-diamond-16": {
+      "$value": "16px",
+      "$description": "Rating md.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "brand-diamond-20": {
+      "$value": "20px",
+      "$description": "SpiceLevel lg.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "brand-diamond-24": {
+      "$value": "24px",
+      "$description": "Rating lg.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "brand-diamond-box-12": {
+      "$value": "calc(12px * 1.4142)",
+      "$description": "Bounding box of a 12px diamond rotated 45°.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "brand-diamond-box-14": {
+      "$value": "calc(14px * 1.4142)",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "brand-diamond-box-16": {
+      "$value": "calc(16px * 1.4142)",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "brand-diamond-box-20": {
+      "$value": "calc(20px * 1.4142)",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "brand-diamond-box-24": {
+      "$value": "calc(24px * 1.4142)",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
+  }
+}

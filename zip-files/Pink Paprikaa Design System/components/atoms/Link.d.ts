@@ -11,6 +11,9 @@ export interface LinkProps {
   /** Opens in a new tab and appends the arrow glyph. */
   external?: boolean;
   onClick?: MouseEventHandler<HTMLAnchorElement>;
+  disabled?: boolean;
+  /** Force a visual state — docs/specimens only. */
+  state?: "hover" | "press" | "focus";
   style?: CSSProperties;
 }
 export function Link(props: LinkProps): JSX.Element;

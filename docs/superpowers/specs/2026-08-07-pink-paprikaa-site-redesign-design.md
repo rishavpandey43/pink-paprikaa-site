@@ -1,7 +1,7 @@
 # Pink Paprikaa — Website Rebuild: Product Requirements
 
 **Date:** 2026-08-07
-**Status:** Approved for planning
+**Status:** **Superseded (2026-09-27)** — by the design handoff in `zip-files/pink-paprikaa-handoff/` and [the design system rewrite spec](./2026-09-27-design-system-rewrite-design.md). Kept for history; its still-valid items are listed in §16 of that spec.
 **Supersedes:** the five hand-written static pages in `src/`
 **Next step:** implementation plan (writing-plans), then HLD/LLD
 

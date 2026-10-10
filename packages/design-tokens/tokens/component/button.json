@@ -1,0 +1,83 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "button-h-sm": {
+      "$value": "36px",
+      "$description": "Button sm height and minimum width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
+    },
+    "button-h-md": {
+      "$value": "44px",
+      "$description": "Button md height — the touch-target minimum.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
+    },
+    "button-h-lg": {
+      "$value": "54px",
+      "$description": "Button lg height and minimum width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
+    },
+    "text-button-h-sm": {
+      "$value": "30px",
+      "$description": "TextButton sm height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
+    "text-button-h-md": {
+      "$value": "36px",
+      "$description": "TextButton md height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "button-sm": {
+      "$value": {
+        "fontSize": "13px",
+        "lineHeight": 1,
+        "letterSpacing": "0",
+        "fontWeight": "{font-weight.bold}"
+      }
+    },
+    "button-md": {
+      "$value": {
+        "fontSize": "15px",
+        "lineHeight": 1,
+        "letterSpacing": "0",
+        "fontWeight": "{font-weight.bold}"
+      }
+    },
+    "button-lg": {
+      "$value": {
+        "fontSize": "17px",
+        "lineHeight": 1,
+        "letterSpacing": "0",
+        "fontWeight": "{font-weight.bold}"
+      }
+    }
+  },
+  "color": {
+    "$type": "color",
+    "button": {
+      "primary": {
+        "bg": { "$value": "{color.surface.brand}" },
+        "bg-hover": { "$value": "{color.brand.hover}" },
+        "bg-active": { "$value": "{color.brand.active}" },
+        "fg": { "$value": "{color.text.on-brand}" }
+      },
+      "secondary": {
+        "bg": { "$value": "{color.ink.000}" },
+        "border": { "$value": "{color.pink.500}" }
+      },
+      "hover-tint": {
+        "$value": "{color.pink.50}",
+        "$description": "Hover fill of secondary and ghost Buttons and ghost IconButtons."
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "button-primary": {
+      "$value": "{shadow.brand}",
+      "$description": "The brand glow — primary CTAs only; shadow-2 on a pink field."
+    }
+  }
+}

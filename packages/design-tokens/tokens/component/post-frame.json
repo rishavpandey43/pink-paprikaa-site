@@ -1,0 +1,23 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "canvas-pad": {
+      "$value": "{canvas.pad}",
+      "$description": "PostFrame padding on 1080-wide canvases and the 1920 screen: the 72px safe margin."
+    },
+    "canvas-pad-tight": {
+      "$value": "{canvas.pad-tight}",
+      "$description": "PostFrame padding on 1200x628 (48px), and padding=\"tight\" everywhere."
+    },
+    "story-safe-top": {
+      "$value": "{canvas.story-safe-top}",
+      "$description": "Story chrome guide: platform UI covers the top 250px.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
+    "story-safe-bottom": {
+      "$value": "{canvas.story-safe-bottom}",
+      "$description": "Story chrome guide: platform UI covers the bottom 320px.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    }
+  }
+}

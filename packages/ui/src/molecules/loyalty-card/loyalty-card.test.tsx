@@ -1,91 +1,113 @@
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { LoyaltyCard } from "./loyalty-card";
 
 describe("LoyaltyCard", () => {
-  it("pluralises the remaining visits", () => {
-    render(<LoyaltyCard goal={6} reward="chai" visits={3} />);
-    expect(screen.getByText("3 more visits and chai is on us.")).toBeInTheDocument();
-  });
-
-  it("drops to the singular with one visit left", () => {
-    render(<LoyaltyCard goal={6} reward="chai" visits={5} />);
-    expect(screen.getByText("1 more visit and chai is on us.")).toBeInTheDocument();
-  });
-
-  it("switches to the earned sentence once the goal is met", () => {
-    render(<LoyaltyCard goal={6} reward="chai" visits={6} />);
-    expect(screen.getByText("Your chai is on us.")).toBeInTheDocument();
+  it.each([
+    [3, 6, "3 more visits and chai is on us."],
+    [5, 6, "1 more visit and chai is on us."],
+    [6, 6, "Your chai is on us."],
+  ])("reads naturally at %i of %i visits", (visits, goal, headline) => {
+    render(<LoyaltyCard visits={visits} goal={goal} reward="chai" />);
+    expect(screen.getByText(headline)).toBeInTheDocument();
   });
 
   it("reads naturally with an article-first reward", () => {
-    render(<LoyaltyCard goal={6} reward="a kulfi" visits={2} />);
+    render(<LoyaltyCard visits={2} goal={6} reward="a kulfi" />);
     expect(screen.getByText("4 more visits and a kulfi is on us.")).toBeInTheDocument();
   });
 
-  it("draws one stamp per goal visit rather than a percentage bar", () => {
-    const { container } = render(<LoyaltyCard goal={6} visits={3} />);
-    const track = screen.getByRole("progressbar");
-
-    expect(track.children).toHaveLength(6);
-    expect(container.querySelector(".bg-brand-soft")).toBeInTheDocument();
+  it("drops the article once an article-first reward is earned", () => {
+    render(<LoyaltyCard visits={6} goal={6} reward="a kulfi" />);
+    expect(screen.getByText("Your kulfi is on us.")).toBeInTheDocument();
   });
 
-  it("names the track for assistive tech without printing a caption", () => {
-    render(<LoyaltyCard goal={6} visits={3} />);
-
-    expect(screen.getByRole("progressbar", { name: "3 of 6 visits" })).toBeInTheDocument();
-    expect(screen.queryByText("3 of 6 visits")).not.toBeInTheDocument();
+  it('drops an "an" too, but keeps a word that only starts with one', () => {
+    render(
+      <>
+        <LoyaltyCard visits={6} goal={6} reward="an iced chai" />
+        <LoyaltyCard visits={6} goal={6} reward="anjeer barfi" />
+      </>
+    );
+    expect(screen.getByText("Your iced chai is on us.")).toBeInTheDocument();
+    expect(screen.getByText("Your anjeer barfi is on us.")).toBeInTheDocument();
   });
 
-  it("clamps a stale count into the track", () => {
-    render(<LoyaltyCard goal={6} visits={9} />);
-
-    const track = screen.getByRole("progressbar", { name: "6 of 6 visits" });
-    expect(track).toHaveAttribute("aria-valuenow", "6");
+  it("lets the page replace the generated headline", () => {
+    render(<LoyaltyCard visits={2} goal={6} reward="a kulfi" headline="Two down, four to go." />);
+    expect(screen.getByText("Two down, four to go.")).toBeInTheDocument();
   });
 
-  it("clamps a negative count to zero", () => {
-    render(<LoyaltyCard goal={6} visits={-2} />);
-    expect(screen.getByRole("progressbar", { name: "0 of 6 visits" })).toBeInTheDocument();
+  it("shows the stamps as a segmented progress bar", () => {
+    render(<LoyaltyCard visits={3} goal={6} reward="chai" />);
+    // Named "Visits" (R97): the value text carries the count, so it is not read twice.
+    const stamps = screen.getByRole("progressbar", { name: "Visits" });
+    expect(stamps).toHaveAttribute("aria-valuenow", "3");
+    expect(stamps).toHaveAttribute("aria-valuemax", "6");
+    expect(stamps).toHaveAttribute("aria-valuetext", "3 of 6");
+    // One stamp segment per visit the goal asks for.
+    expect(stamps.children).toHaveLength(6);
+    // The name is announced, never printed: the sentence above already says it.
+    expect(screen.getByText("Visits")).toHaveClass("sr-only");
   });
 
-  it("renders the feature skin on the pale pink ground", () => {
-    const { container } = render(<LoyaltyCard goal={6} visits={3} />);
-
-    expect(container.firstElementChild).toHaveClass("bg-surface-brand-soft");
-    expect(screen.getByText("3 more visits and chai is on us.")).toHaveClass("text-text-brand");
+  it("never shows more stamps than the goal", () => {
+    render(<LoyaltyCard visits={9} goal={6} reward="chai" />);
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "6");
+    expect(screen.getByText("Your chai is on us.")).toBeInTheDocument();
   });
 
-  it("flips the ink and the stamps on the flooded pink skin", () => {
-    const { container } = render(<LoyaltyCard goal={6} variant="brand" visits={3} />);
-
-    expect(container.firstElementChild).toHaveClass("bg-surface-brand");
-    expect(screen.getByText("3 more visits and chai is on us.")).toHaveClass("text-text-on-brand");
+  it("sits on the light-pink feature card by default", () => {
+    const { container } = render(<LoyaltyCard visits={3} goal={6} reward="chai" />);
+    expect(container.firstElementChild).toHaveAttribute("data-surface", "soft");
   });
 
-  it("hides the brand symbol from assistive tech — the headline already says the brand", () => {
-    const { container } = render(<LoyaltyCard goal={6} visits={3} />);
+  it("hides the brand symbol from assistive tech — the sentence carries the meaning", () => {
+    const { container } = render(<LoyaltyCard visits={3} goal={6} reward="chai" />);
     expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("merges a caller className", () => {
-    const { container } = render(<LoyaltyCard className="rounded-1" goal={6} visits={3} />);
-    const node = container.firstElementChild;
-
-    expect(node).toHaveClass("rounded-1");
-    expect(node).not.toHaveClass("rounded-5");
+  it("lets a caller className replace the card radius", () => {
+    const { container } = render(
+      <LoyaltyCard visits={3} goal={6} reward="chai" className="rounded-lg" />
+    );
+    expect(container.firstElementChild).toHaveClass("rounded-lg");
+    expect(container.firstElementChild).not.toHaveClass("rounded-xl");
   });
 
-  it("has no accessibility violations", async () => {
+  it("floods pink for the brand surface", () => {
+    const { container } = render(
+      <LoyaltyCard visits={2} goal={6} reward="a kulfi" surface="brand" />
+    );
+    expect(container.firstElementChild).toHaveAttribute("data-surface", "brand");
+  });
+
+  it.each([[{ visits: 1, goal: 0 }], [{ visits: 1, goal: 2.5 }], [{ visits: -1, goal: 6 }]])(
+    "rejects an impossible count %o instead of drawing nonsense",
+    (counts) => {
+      // A server component is a plain function: call it to see the throw without a React error boundary.
+      expect(() => LoyaltyCard({ ...counts, reward: "chai" })).toThrow(RangeError);
+    }
+  );
+
+  it("has no accessibility violations in progress, complete and on brand", async () => {
     const { container } = render(
       <>
-        <LoyaltyCard goal={6} reward="chai" visits={3} />
-        <LoyaltyCard goal={6} reward="chai" visits={6} />
-        <LoyaltyCard goal={6} reward="a kulfi" variant="brand" visits={2} />
+        <LoyaltyCard visits={3} goal={6} reward="chai" />
+        <LoyaltyCard visits={6} goal={6} reward="chai" />
+        <LoyaltyCard visits={2} goal={6} reward="a kulfi" surface="brand" />
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, beating a default class and keeping className", () => {
+    const { container } = render(
+      <LoyaltyCard visits={2} goal={6} reward="chai" sx={{ gap: 2, mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("gap-2", "mt-4", "italic");
+    expect(container.firstElementChild).not.toHaveClass("gap-3.5");
   });
 });

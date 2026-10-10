@@ -1,0 +1,23 @@
+<!-- @dsCard group="Atoms" viewport="700x620" name="TextButton" subtitle="Text-only action with rest, hover, press, focus, disabled and loading on every surface." -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_story.js"></script>
+<script src="../../brand.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style></style>
+</head><body><div id="root"></div><script type="text/babel">
+const { TextButton } = window.PinkPaprikaaDesignSystem_23ef63;
+const S=(p)=><><TextButton {...p}>Rest</TextButton><TextButton {...p} state="hover">Hover</TextButton><TextButton {...p} state="press">Press</TextButton><TextButton {...p} state="focus">Focus</TextButton><TextButton {...p} disabled>Disabled</TextButton></>;
+function Demo(){return(<Rows>
+<Row label='tone="brand"' note="on light">{S({})}</Row>
+<Row label='tone="neutral"'>{S({tone:'neutral',icon:'pencil'})}</Row>
+<Row label='tone="danger"'>{S({tone:'danger',icon:'trash-2'})}</Row>
+<Row label='on="dark" caps' className="pad on-ink">{S({on:'dark',caps:true,size:'sm'})}</Row>
+<Row label='on="brand" caps' className="pad on-brand">{S({on:'brand',caps:true,size:'sm'})}</Row>
+<Row label="loading / icons"><TextButton loading>Saving</TextButton><TextButton iconAfter="arrow-right">View All</TextButton><TextButton size="sm" icon="copy">Copy Code</TextButton></Row>
+</Rows>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

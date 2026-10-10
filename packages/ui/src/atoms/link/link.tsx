@@ -1,83 +1,194 @@
-import type { LucideIcon } from "lucide-react";
-import type { ComponentPropsWithoutRef } from "react";
-
 import { ArrowUpRight } from "lucide-react";
+import { Slot } from "radix-ui";
+import type { ComponentProps, ElementType } from "react";
 
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
-import { Icon } from "../icon/icon";
-
-const link = componentVariants({
-  base: [
-    "inline-flex items-center gap-1.5 font-body font-medium",
-    // The underline is the brand's link signal — an unstyled `<a>` would fall back to browser
-    // blue, which is not in the palette. Every variant keeps the underline slot and only changes
-    // its colour, so a link never shifts its baseline on hover.
-    "underline decoration-2 underline-offset-3",
-    "transition-[color,text-decoration-color] duration-(--duration-fast) ease-out",
-  ],
-  variants: {
-    variant: {
-      default:
-        "text-text-link decoration-pink-200 hover:text-text-link-hover hover:decoration-current",
-      subtle:
-        "text-text-muted decoration-transparent hover:text-text-heading hover:decoration-ink-300",
-      inverse: "text-text-on-brand decoration-glass-white hover:decoration-current",
-      quiet: "text-text-body decoration-transparent hover:text-text-brand hover:decoration-current",
-    },
-    size: {
-      sm: "text-body2",
-      md: "text-body1",
-      lg: "text-subtitle2",
-    },
-  },
-  defaultVariants: { variant: "default", size: "md" },
-});
-
-/** The glyph size each link size pairs with — never larger than the text it sits beside. */
-const ICON_SIZE = { sm: "xs", md: "sm", lg: "sm" } as const;
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
+import { Icon, type IconComponent } from "../icon/icon";
+import {
+  Typography,
+  typography,
+  type TypographyColor,
+  type TypographyStyleProps,
+} from "../typography/typography";
 
 export interface LinkProps
-  extends Omit<ComponentPropsWithoutRef<"a">, "color" | "href">, VariantProps<typeof link> {
-  /** Required: an anchor without a destination is not a link to assistive tech. */
-  href: string;
-  /** Lucide glyph before the label. */
-  icon?: LucideIcon | undefined;
-  /** Lucide glyph after the label — reserve it for "onward" destinations. */
-  iconAfter?: LucideIcon | undefined;
+  extends Omit<ComponentProps<"a">, "color">, Omit<TypographyStyleProps, "color"> {
+  /** Text step. Default `link-md`; `inherit` takes the size and face of the surrounding text. */
+  variant?: TypographyStyleProps["variant"];
+  /** `link` is the pink default · `muted` · `inverse` white on pink/ink · `quiet` for nav links. */
+  color?: TypographyColor | "quiet" | undefined;
+  /** `always` underlines · `hover` shows the line on hover only · `none` never. */
+  underline?: "always" | "hover" | "none" | undefined;
+  icon?: IconComponent | undefined;
+  iconAfter?: IconComponent | undefined;
   /**
-   * Opens the destination in a new tab with the safe `rel`, and appends the outward arrow so the
-   * jump is visible before it happens. The arrow carries the "opens in a new tab" announcement.
+   * Opens in a new tab with a safe `rel` and announces "Opens in a new tab" on a trailing glyph:
+   * the outward arrow, or the caller's `iconAfter` when one is set.
    */
   isExternal?: boolean | undefined;
+  /** Inert: no navigation, `aria-disabled`, not focusable, ink-400, no underline. */
+  isDisabled?: boolean | undefined;
+  /** Render the single child (e.g. `next/link`) with Link styling. */
+  asChild?: boolean | undefined;
 }
 
+/** The colours Link paints itself; any other Typography colour passes through to Typography. */
+type OwnColor = "link" | "muted" | "inverse" | "quiet";
+
+/*
+ * Colours and the underline. The underline's 1.5px thickness and 3px offset come from the base `a`
+ * rule every anchor gets (Tailwind has no 1.5px decoration utility). `link` and `muted` paint with
+ * semantic tokens and `quiet` with a surface-aware token, so all follow a pink or ink field. The
+ * size, face and margin reset come from Typography.
+ */
+const link = componentVariants({
+  base: [
+    "inline-flex items-center gap-1.5 transition-colors duration-fast ease-out",
+    "aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:text-ink-400 aria-disabled:no-underline",
+  ],
+  variants: {
+    tone: {
+      link: "text-text-link hover:text-text-link-hover active:text-brand-active",
+      muted: "text-text-muted hover:text-text-heading active:text-pink-700",
+      inverse:
+        "text-ink-000 active:bg-state-hover-on-color active:underline active:decoration-current",
+      quiet: "text-link-quiet hover:text-text-link active:text-pink-700",
+      other: "",
+    },
+    underline: { always: "underline", hover: "underline", none: "no-underline" },
+  },
+  compoundVariants: [
+    {
+      tone: "link",
+      underline: "always",
+      class: "decoration-link-underline hover:decoration-current",
+    },
+    { tone: "link", underline: "hover", class: "decoration-transparent hover:decoration-current" },
+    {
+      tone: "muted",
+      underline: "always",
+      class: "decoration-border-default hover:decoration-current",
+    },
+    {
+      tone: "muted",
+      underline: "hover",
+      class: "decoration-transparent hover:decoration-border-default",
+    },
+    {
+      tone: "inverse",
+      underline: "always",
+      class: "decoration-white-alpha-40 hover:decoration-white-alpha-90",
+    },
+    {
+      tone: "inverse",
+      underline: "hover",
+      class: "decoration-transparent hover:decoration-white-alpha-90",
+    },
+    { tone: "quiet", underline: "always", class: "decoration-current" },
+    {
+      tone: "quiet",
+      underline: "hover",
+      class: "decoration-transparent hover:decoration-link-underline",
+    },
+    { tone: "other", underline: "always", class: "decoration-current" },
+    { tone: "other", underline: "hover", class: "decoration-transparent hover:decoration-current" },
+  ],
+  defaultVariants: { tone: "link", underline: "always" },
+});
+
+const OWN_COLORS: ReadonlySet<string> = new Set<OwnColor>(["link", "muted", "inverse", "quiet"]);
+
+const EXTERNAL = { target: "_blank", rel: "noreferrer noopener" } as const;
+
+/** Inline or standalone link. Underline is the brand's link signal. Renders through Typography. */
 export function Link({
-  children,
-  className,
-  variant,
-  size = "md",
+  variant = "link-md",
+  color = "link",
+  underline = "always",
+  weight,
+  align,
+  noWrap,
+  isFluid,
+  lineClamp,
+  measure,
+  isBalanced,
+  sx,
   icon,
   iconAfter,
   isExternal = false,
+  isDisabled = false,
+  asChild = false,
+  className,
+  children,
+  href,
   ...props
 }: LinkProps) {
-  const iconSize = ICON_SIZE[size];
-  // The outward arrow is the only glyph that carries an announcement — a caller's own `iconAfter`
-  // is decorative, because the label beside it already says where the link goes.
-  const hasExternalArrow = isExternal && iconAfter === undefined;
+  const isOwnColor = OWN_COLORS.has(color);
+  const typographyProps = {
+    variant,
+    // Link's own colours carry their classes in the recipe; any other passes to Typography.
+    color: isOwnColor ? undefined : (color as TypographyColor),
+    weight,
+    align,
+    noWrap,
+    isFluid,
+    lineClamp,
+    measure,
+    isBalanced,
+  };
+  // sx sits between the recipe and className here, so it can replace a Link default (`display`).
+  const classes = link({
+    tone: isOwnColor ? (color as OwnColor) : "other",
+    underline: isDisabled ? "none" : underline,
+    className: withSx(sx, className),
+  });
+  // An external link always announces "Opens in a new tab" (R36, built-in English) on its trailing
+  // glyph: the outward arrow, or the caller's own `iconAfter`, which replaces the arrow's drawing.
+  const after = iconAfter ?? (isExternal ? ArrowUpRight : undefined);
+  const icons = {
+    before: icon ? <Icon icon={icon} size="sm" /> : null,
+    after: after ? (
+      <Icon icon={after} size="sm" label={isExternal ? "Opens in a new tab" : undefined} />
+    ) : null,
+  };
+  const external = isExternal && !isDisabled ? EXTERNAL : undefined;
+  const disabledProps = isDisabled
+    ? { "aria-disabled": true as const, tabIndex: -1, href: undefined }
+    : { href };
+  if (asChild) {
+    // Slottable must be a direct child of the Slot, so the glyphs cannot share a fragment.
+    // The router link has no Typography element to render, so it takes the same classes directly.
+    const Component: ElementType = Slot.Root;
+    return (
+      <Component
+        className={typography({ ...typographyProps, className: classes })}
+        {...external}
+        {...props}
+        {...disabledProps}
+      >
+        {icons.before}
+        <Slot.Slottable child={children}>{(label) => label}</Slot.Slottable>
+        {icons.after}
+      </Component>
+    );
+  }
+  // Typography is typed as the paragraph; Link hands it anchor props, so the call site is widened.
+  const Anchor = Typography as (
+    props: ComponentProps<"a"> & TypographyStyleProps & { as: "a" }
+  ) => React.JSX.Element;
   return (
-    <a
-      className={link({ variant, size, className })}
-      rel={isExternal ? "noreferrer noopener" : undefined}
-      target={isExternal ? "_blank" : undefined}
+    <Anchor
+      as="a"
+      {...typographyProps}
+      className={classes}
+      {...external}
       {...props}
+      {...disabledProps}
     >
-      {icon ? <Icon icon={icon} size={iconSize} /> : null}
+      {icons.before}
       {children}
-      {hasExternalArrow ? (
-        <Icon icon={ArrowUpRight} label="Opens in a new tab" size={iconSize} />
-      ) : null}
-      {iconAfter ? <Icon icon={iconAfter} size={iconSize} /> : null}
-    </a>
+      {icons.after}
+    </Anchor>
   );
 }

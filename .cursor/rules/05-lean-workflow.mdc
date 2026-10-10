@@ -1,0 +1,23 @@
+---
+description: Lean planning and execution defaults — apply to every plan and every run
+alwaysApply: true
+---
+
+# Lean by default (owner, 2026-10-05)
+
+Source: `docs/engineering/07-ai-workflows.md` §2 "Lean by default". Overrides any heavier instruction in superpowers skills or older plans unless the owner explicitly asks for more.
+
+**Planning**
+- A plan is **requirements, not code**: per task a short spec (≤ ~2 KB) — files, props/variants/states, behaviours, the tests that must exist, exact values. Include code only for a genuinely tricky foundation piece (≤ ~50 lines). Never embed full component code; never pre-write several plans ahead — plan the next PR only.
+- Every plan states its PRs and the ≤3 commits of each up front (commit budget).
+- Audits and analysis are proportionate: summary table + gap lines with file:line. No exhaustive per-row maps unless asked.
+- Never sync or re-sort a plan doc after the code changes; the code is the truth.
+
+**Execution**
+- **Inline by default** (superpowers:executing-plans style): one agent works through the plan. Sub-agents only for genuinely parallel, independent work or a fresh-eyes review — never one per task, never a reviewer per task.
+- **One review per PR**, fixed in one wave (amend into the checkpoint commits).
+- **TDD where behaviour lives**: logic, interaction, API, a11y, new components — failing test first. Pure visual/token changes are proven by a visual check or snapshot diff, not a unit test per class.
+- **Scoped checks per change** (the touched component's tests/stories); the **full gate once per PR**.
+- No per-task report files, no plan-sync or re-sort commits. Ledger = one line per task + `Ruling:` lines.
+- Decide ambiguities yourself and record `Ruling: <decision> — <why> — <cost if wrong>`; ask the owner only about product, content or irreversible choices, batched in one question set.
+- Time-box: a task past ~45 min gets a ledger line saying why. Status replies are short.

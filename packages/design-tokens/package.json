@@ -8,7 +8,19 @@
   },
   "exports": {
     "./theme.css": "./dist/theme.css",
-    "./tokens.json": "./dist/tokens.json"
+    "./surfaces.css": "./dist/surfaces.css",
+    "./tokens.json": "./dist/tokens.json",
+    "./contrast": {
+      "types": "./src/contrast.ts",
+      "import": "./src/contrast.ts",
+      "default": "./src/contrast.ts"
+    },
+    "./catalogue": {
+      "types": "./src/catalogue.ts",
+      "import": "./src/catalogue.ts",
+      "default": "./src/catalogue.ts"
+    },
+    "./contrast-pairs.json": "./contrast-pairs.json"
   },
   "nx": {
     "tags": [
@@ -25,6 +37,11 @@
           "{projectRoot}/dist"
         ],
         "cache": true
+      },
+      "test": {
+        "dependsOn": [
+          "build"
+        ]
       }
     }
   }

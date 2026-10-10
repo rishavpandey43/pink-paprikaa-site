@@ -1,0 +1,36 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./brand.stories";
+
+<Meta title="Brand/Pattern" />
+
+{/* source: guidelines/brand-pattern.card.html */}
+{/* source: guidelines/diamond-motif.card.html */}
+
+# Pattern
+
+The white symbol, tiled faintly, is the brand's only texture. No noise, no grain, no paper
+texture, no hand-drawn illustration.
+
+<Canvas of={Specimens.PatternFields} meta={Specimens} sourceState="none" />
+
+`PatternField` paints it: `surface` sets the field and its `data-surface`, `tile` picks a tile size,
+and `density="faint"` is the lighter pattern the handoff uses on ink sections. Use it on pink
+panels, ticket stubs and loading states — never on cards, and never behind body text.
+
+<Canvas of={Specimens.PatternTokens} meta={Specimens} sourceState="none" />
+
+## Diamond + symbol
+
+Every small diamond the system draws — heat levels, review scores, order-step markers, status
+dots — is a rotated square with the brand mark inside it: white on a coloured fill, pink on an
+empty ink-200 fill, so it never blends away. The loader is the bare mark, pulsing. These are the
+live components, at the sizes the design system weighed: heat, step, score, dot and loader. The
+step markers are the vertical StepTracker's; its horizontal layout is a segmented bar instead.
+
+<Canvas of={Specimens.DiamondMotif} meta={Specimens} sourceState="none" />
+
+The design system compared five treatments before settling on this one: plain diamonds, the mark
+inside and upright, inside and aligned with the diamond, knocked out, and the mark alone (which
+loses the heat colour). Places that already use the mark on its own — the loyalty card, empty
+states, dividers, pattern fields — keep the bare symbol.

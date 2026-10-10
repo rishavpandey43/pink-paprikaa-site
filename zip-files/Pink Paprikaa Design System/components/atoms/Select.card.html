@@ -1,4 +1,4 @@
-<!-- @dsCard group="Atoms" viewport="700x1130" name="Select" subtitle="Matches Input exactly across every state." -->
+<!-- @dsCard group="Atoms" viewport="700x1420" name="Select" subtitle="Our own trigger and list panel across every state; bottom sheet on phones." -->
 <!doctype html><html><head><meta charset="utf-8">
 <link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../_story.css">
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -10,14 +10,16 @@
 <style></style>
 </head><body><div id="root"></div><script type="text/babel">
 const { Select } = window.PinkPaprikaaDesignSystem_23ef63;
-function Demo(){const [v,setV]=React.useState('Sector 57, Gurgaon');const OUT=["Sector 57, Gurgaon"];return(<Rows>
-<Row label="rest" col><Select label="Pick your outlet" value={v} onChange={e=>setV(e.target.value)} options={OUT}/></Row>
-<Row label="placeholder + icon" col><Select label="Guests" icon="users" placeholder="Choose a size" value="" onChange={()=>{}} options={["2 guests","4 guests","6 guests"]}/></Row>
-<Row label="error" col><Select label="Time" error="Pick a pickup time." value="" onChange={()=>{}} placeholder="Choose a slot" options={["7:30pm","8:00pm"]}/></Row>
-<Row label="success" col><Select label="Outlet" success="Table held at Sector 57." value={v} onChange={()=>{}} options={OUT}/></Row>
-<Row label="warning" col><Select label="Outlet" warning="This kitchen closes in 20 minutes." value={v} onChange={()=>{}} options={OUT}/></Row>
-<Row label="readOnly / disabled" col><Select label="Outlet" value={v} readOnly onChange={()=>{}} options={OUT}/><Select label="Delivery slot" disabled options={["Not available yet"]}/></Row>
-<Row label="size" col><Select size="sm" options={OUT}/><Select size="lg" options={OUT}/></Row>
+function Demo(){const [v,setV]=React.useState('Sector 57, Gurgaon');const [g,setG]=React.useState('4');const OUT=["Sector 57, Gurgaon"];
+const G=[{value:'2',label:'2 guests'},{value:'4',label:'4 guests'},{value:'6',label:'6 guests'},{value:'8',label:'8 guests',description:'Call us for 8 or more',disabled:true}];return(<Rows>
+<Row label="rest" col><Select base="../../assets" label="Pick your outlet" value={v} onChange={e=>setV(e.target.value)} options={OUT}/></Row>
+<Row label="placeholder + icon" col><Select base="../../assets" label="Guests" icon="users" placeholder="Choose a size" value="" onChange={()=>{}} options={G}/></Row>
+<Row label="error" col><Select base="../../assets" label="Time" error="Pick a pickup time." value="" onChange={()=>{}} placeholder="Choose a slot" options={["7:30pm","8:00pm"]}/></Row>
+<Row label="success" col><Select base="../../assets" label="Outlet" success="Table held at Sector 57." value={v} onChange={()=>{}} options={OUT}/></Row>
+<Row label="warning" col><Select base="../../assets" label="Outlet" warning="This kitchen closes in 20 minutes." value={v} onChange={()=>{}} options={OUT}/></Row>
+<Row label="readOnly / disabled" col><Select base="../../assets" label="Outlet" value={v} readOnly onChange={()=>{}} options={OUT}/><Select base="../../assets" label="Delivery slot" disabled options={["Not available yet"]}/></Row>
+<Row label="size" col><Select base="../../assets" size="sm" options={OUT}/><Select base="../../assets" size="lg" options={OUT}/></Row>
+<Row label="open" note="click, or focus + ↓" col style={{minHeight:300}}><Select base="../../assets" label="Guests" icon="users" sheet={false} defaultOpen value={g} onValueChange={setG} options={G}/></Row>
 </Rows>);}
 ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
 </script></body></html>

@@ -1,106 +1,113 @@
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { SocialHeadline } from "./social-headline";
 
 describe("SocialHeadline", () => {
-  it("renders canvas-scale type in a paragraph by default", () => {
+  it("sets a canvas h1 as a balanced h2 on the display face by default", () => {
     render(<SocialHeadline>Masala Cold Brew</SocialHeadline>);
-    const node = screen.getByText("Masala Cold Brew");
-    expect(node.tagName).toBe("P");
-    expect(node).toHaveClass("text-canvas-h1");
+    const headline = screen.getByRole("heading", { level: 2, name: "Masala Cold Brew" });
+    expect(headline).toHaveClass(
+      "m-0",
+      "font-display",
+      "text-canvas-h1",
+      "text-balance",
+      "text-text-heading",
+      "max-w-social-headline-default"
+    );
   });
 
   it.each([
-    ["hero", "text-canvas-hero"],
-    ["h1", "text-canvas-h1"],
-    ["h2", "text-canvas-h2"],
-    ["body", "text-canvas-body"],
-    ["caption", "text-canvas-caption"],
-    ["overline", "text-canvas-overline"],
-  ] as const)("sets the %s step in canvas pixels", (size, expected) => {
-    render(<SocialHeadline size={size}>Chai first</SocialHeadline>);
-    expect(screen.getByText("Chai first")).toHaveClass(expected);
-  });
-
-  it("sets the overline in caps with the brand's wide tracking", () => {
-    render(<SocialHeadline size="overline">Tonight Only</SocialHeadline>);
-    const node = screen.getByText("Tonight Only");
-    expect(node).toHaveClass("uppercase");
-    expect(node).toHaveClass("tracking-overline");
+    ["hero", "text-canvas-hero", "H2", "font-display"],
+    ["h1", "text-canvas-h1", "H2", "font-display"],
+    ["h2", "text-canvas-h2", "H2", "font-display"],
+    ["body", "text-canvas-body", "P", "font-body"],
+    ["caption", "text-canvas-caption", "P", "font-body"],
+    ["overline", "text-canvas-overline", "P", "font-display"],
+  ] as const)("variant %s uses %s on a <%s> in %s", (variant, sizeClass, tag, face) => {
+    render(<SocialHeadline variant={variant}>Chai first</SocialHeadline>);
+    const text = screen.getByText("Chai first");
+    expect(text.tagName).toBe(tag);
+    expect(text).toHaveClass(sizeClass, face);
   });
 
   it.each([
-    ["brand", "text-text-on-brand"],
-    ["ink", "text-text-on-inverse"],
-    ["soft", "text-pink-800"],
-    ["light", "text-text-heading"],
-  ] as const)("inks the headline for the %s ground", (on, expected) => {
-    render(<SocialHeadline on={on}>Six plates, one kitchen</SocialHeadline>);
-    expect(screen.getByText("Six plates, one kitchen")).toHaveClass(expected);
+    ["body", "text-text-body"],
+    ["caption", "text-text-body"],
+    ["hero", "text-text-heading"],
+    ["overline", "text-text-heading"],
+  ] as const)("paints %s in the surface's %s token — never its own colour", (variant, colour) => {
+    render(<SocialHeadline variant={variant}>Cold brew, jaggery, cardamom.</SocialHeadline>);
+    const text = screen.getByText("Cold brew, jaggery, cardamom.");
+    expect(text).toHaveClass(colour);
+    expect(text.className.match(/(^|\s)text-text-/g)).toHaveLength(1);
   });
 
-  it("steps running text back on a flooded ground so it does not read as a headline", () => {
+  it("sets the overline in capitals", () => {
+    render(<SocialHeadline variant="overline">Tonight Only</SocialHeadline>);
+    expect(screen.getByText("Tonight Only")).toHaveClass("uppercase");
+  });
+
+  it.each([
+    ["tight", "max-w-social-headline-tight"],
+    ["default", "max-w-social-headline-default"],
+    ["wide", "max-w-social-headline-wide"],
+  ] as const)("caps the %s measure with %s", (measure, measureClass) => {
+    render(<SocialHeadline measure={measure}>One kitchen. One grinder.</SocialHeadline>);
+    expect(screen.getByRole("heading")).toHaveClass(measureClass);
+  });
+
+  it("centres the block as well as its lines", () => {
+    render(<SocialHeadline align="center">Chai first</SocialHeadline>);
+    expect(screen.getByRole("heading")).toHaveClass("text-center", "mx-auto");
+  });
+
+  it("aligns to the end without moving the block", () => {
+    render(<SocialHeadline align="end">Chai first</SocialHeadline>);
+    const headline = screen.getByRole("heading");
+    expect(headline).toHaveClass("text-end");
+    expect(headline).not.toHaveClass("mx-auto");
+  });
+
+  it("lets `as` make it the artboard's one h1", () => {
     render(
-      <SocialHeadline on="brand" size="body">
-        Momos, chaat and North Indian plates
+      <SocialHeadline variant="hero" as="h1">
+        Chai first, decisions later.
       </SocialHeadline>
     );
-    expect(screen.getByText("Momos, chaat and North Indian plates")).toHaveClass(
-      "text-text-on-brand/88"
-    );
+    expect(screen.getByRole("heading", { level: 1 })).toHaveClass("text-canvas-hero");
   });
 
-  it("balances every line rather than leaving an orphan", () => {
-    render(<SocialHeadline>Chai first, decisions later.</SocialHeadline>);
-    expect(screen.getByText("Chai first, decisions later.")).toHaveClass("text-balance");
-  });
-
-  it.each([
-    ["narrow", "max-w-[14ch]"],
-    ["default", "max-w-[18ch]"],
-    ["wide", "max-w-[34ch]"],
-    ["none", "max-w-none"],
-  ] as const)("caps the %s measure", (measure, expected) => {
-    render(<SocialHeadline measure={measure}>Masala Cold Brew</SocialHeadline>);
-    expect(screen.getByText("Masala Cold Brew")).toHaveClass(expected);
-  });
-
-  it("widens the default measure for running text", () => {
-    render(<SocialHeadline size="body">Cold brew, jaggery, cardamom.</SocialHeadline>);
-    expect(screen.getByText("Cold brew, jaggery, cardamom.")).toHaveClass("max-w-[34ch]");
-  });
-
-  it("centres the block as well as the text", () => {
-    render(<SocialHeadline align="center">Masala Cold Brew</SocialHeadline>);
-    const node = screen.getByText("Masala Cold Brew");
-    expect(node).toHaveClass("text-center");
-    expect(node).toHaveClass("mx-auto");
-  });
-
-  it("renders as another element on request", () => {
+  it("sx lands on the headline and beats its own alignment", () => {
     render(
-      <SocialHeadline as="h2" size="hero">
-        Paneer Tikka Masala
+      <SocialHeadline align="center" sx={{ mt: 4, textAlign: "start" }}>
+        Chai first
       </SocialHeadline>
     );
-    expect(screen.getByRole("heading", { level: 2, name: "Paneer Tikka Masala" })).toBeVisible();
+    const headline = screen.getByRole("heading");
+    expect(headline).toHaveClass("mt-4", "text-start");
+    expect(headline).not.toHaveClass("text-center");
   });
 
-  it("merges a caller className", () => {
+  it("merges a consumer className", () => {
+    render(<SocialHeadline className="mt-8">Chai first</SocialHeadline>);
+    expect(screen.getByRole("heading")).toHaveClass("mt-8", "m-0");
+  });
+
+  it("lets a consumer className replace the size step", () => {
     render(<SocialHeadline className="text-canvas-h2">Masala Cold Brew</SocialHeadline>);
-    const node = screen.getByText("Masala Cold Brew");
-    expect(node).toHaveClass("text-canvas-h2");
-    expect(node).not.toHaveClass("text-canvas-h1");
+    const headline = screen.getByRole("heading");
+    expect(headline).toHaveClass("text-canvas-h2");
+    expect(headline).not.toHaveClass("text-canvas-h1");
   });
 
   it("has no accessibility violations", async () => {
     const { container } = render(
-      <div>
-        <SocialHeadline size="overline">Tonight Only</SocialHeadline>
-        <SocialHeadline size="hero">Chai first, decisions later.</SocialHeadline>
-        <SocialHeadline size="body">Cold brew, jaggery, cardamom · ₹180</SocialHeadline>
-      </div>
+      <>
+        <SocialHeadline variant="overline">Tonight Only</SocialHeadline>
+        <SocialHeadline variant="hero">Chai first, decisions later.</SocialHeadline>
+      </>
     );
     await expectNoA11yViolations(container);
   });

@@ -1,78 +1,104 @@
-import type { ComponentPropsWithoutRef } from "react";
+import { useId } from "react";
 
+import { ARTWORK, type Mark } from "../../lib/brand-artwork";
+import type { BasePropsWithColor } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
-import { SYMBOL_PATHS, SYMBOL_VIEW_BOX, WORDMARK_PATHS, WORDMARK_VIEW_BOX } from "./logo-paths";
+import { withSx } from "../../lib/sx";
 
 const logo = componentVariants({
-  slots: {
-    root: "inline-flex shrink-0 items-center justify-center",
-    // The marks carry `fill="currentColor"`, so the colourway is a text colour on the mark itself
-    // and the same path data serves every tone. Width follows the viewBox so the lockup can never
-    // be stretched.
-    mark: "block w-auto",
-  },
+  base: "inline-block h-auto shrink-0",
   variants: {
-    variant: {
-      wordmark: {},
-      symbol: {},
-    },
-    tone: {
-      brand: { mark: "text-text-brand" },
-      white: { mark: "text-text-on-brand" },
-      badge: { root: "bg-surface-brand", mark: "text-text-on-brand" },
-    },
-    /** Heights: 28 / 40 / 56px. The wordmark is ~1.9:1, so width follows. */
-    size: {
-      sm: { mark: "h-7" },
-      md: { mark: "h-10" },
-      lg: { mark: "h-14" },
-    },
+    variant: { lockup: "w-logo-lockup", wordmark: "w-logo-wordmark", symbol: "w-logo-symbol" },
+    color: { brand: "text-pink-500", inverse: "text-ink-000", badge: "" },
   },
-  compoundVariants: [
-    // The plate needs clear space around the mark — the guide sets it at the height of the "P".
-    { tone: "badge", variant: "symbol", class: { root: "rounded-4 p-2" } },
-    { tone: "badge", variant: "wordmark", class: { root: "rounded-4 px-4 py-3" } },
-  ],
-  defaultVariants: { variant: "wordmark", tone: "brand", size: "md" },
+  defaultVariants: { variant: "lockup", color: "brand" },
 });
 
+/** Badge plate: the artwork sits centred on a 100×100 pink square at the design system's inset. */
+const BADGE_ARTWORK_WIDTH: Readonly<Record<Mark, number>> = {
+  lockup: 76,
+  wordmark: 76,
+  symbol: 60,
+};
+const DEFAULT_TITLE: Readonly<Record<Mark, string>> = {
+  lockup: "Pink Paprikaa — India's First Desi Urban Café",
+  wordmark: "Pink Paprikaa",
+  symbol: "Pink Paprikaa",
+};
+
 export interface LogoProps
-  extends Omit<ComponentPropsWithoutRef<"span">, "children">, VariantProps<typeof logo> {
-  /**
-   * Accessible name. Defaults to the brand name; pass an empty string when the lockup sits beside
-   * the words "Pink Paprikaa" in text, so the name is not announced twice.
-   */
-  label?: string | undefined;
+  extends
+    Omit<
+      BasePropsWithColor<"svg">,
+      "children" | "dangerouslySetInnerHTML" | "viewBox" | "width" | "height"
+    >,
+    VariantProps<typeof logo> {
+  /** Accessible name. Defaults to the brand name (with the tagline for the lockup). */
+  title?: string | undefined;
+  /** Hide from assistive tech when a visible brand name sits beside it. */
+  isDecorative?: boolean | undefined;
 }
 
+/**
+ * The brand marks. `lockup` (with the drawn tagline) is the default everywhere; `wordmark` only
+ * below ~120px wide; `symbol` is the diamond mark. Colors: `brand` on light, `inverse` on pink or ink,
+ * `badge` on its own pink plate. Size it with classes only (no width/height attributes): `w-50` to
+ * set the width, or `h-12 w-auto` in a header to set the height — the other side follows the
+ * artwork. The root paints with `fill="currentColor"`, so an unfilled path never renders black.
+ *
+ * The markup is the build-time artwork compiled from the committed SVGs — never user input — so
+ * `dangerouslySetInnerHTML` is safe here.
+ */
 export function Logo({
+  variant = "lockup",
+  color = "brand",
+  title,
+  isDecorative = false,
+  sx,
   className,
-  label = "Pink Paprikaa",
-  size,
-  tone,
-  variant = "wordmark",
   ...props
 }: LogoProps) {
-  const { mark, root } = logo({ size, tone, variant });
-  const isDecorative = label === "";
-  const paths = variant === "symbol" ? SYMBOL_PATHS : WORDMARK_PATHS;
-  const viewBox = variant === "symbol" ? SYMBOL_VIEW_BOX : WORDMARK_VIEW_BOX;
+  const mark: Mark = variant;
+  const artwork = ARTWORK[mark];
+  const instance = useId().replace(/[^\w-]/g, "");
+  const markup = artwork.markup.replaceAll("__ID__", `${instance}-`);
+  const a11y = isDecorative
+    ? { "aria-hidden": true as const }
+    : { role: "img", "aria-label": title ?? DEFAULT_TITLE[mark] };
+
+  if (color === "badge") {
+    const width = BADGE_ARTWORK_WIDTH[mark];
+    const height = (width * artwork.height) / artwork.width;
+    return (
+      <svg
+        viewBox="0 0 100 100"
+        className={logo({ variant, color, className: withSx(sx, className) })}
+        {...a11y}
+        {...props}
+      >
+        <rect width="100" height="100" className="fill-pink-500" />
+        <svg
+          x={(100 - width) / 2}
+          y={(100 - height) / 2}
+          width={width}
+          height={height}
+          viewBox={artwork.viewBox}
+          fill="currentColor"
+          className="text-ink-000"
+          dangerouslySetInnerHTML={{ __html: markup }}
+        />
+      </svg>
+    );
+  }
 
   return (
-    <span className={root({ class: className })} {...props}>
-      <svg
-        aria-hidden={isDecorative}
-        aria-label={isDecorative ? undefined : label}
-        className={mark()}
-        fill="currentColor"
-        role={isDecorative ? undefined : "img"}
-        viewBox={viewBox}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {paths.map((d) => (
-          <path d={d} key={d} />
-        ))}
-      </svg>
-    </span>
+    <svg
+      viewBox={artwork.viewBox}
+      fill="currentColor"
+      className={logo({ variant, color, className: withSx(sx, className) })}
+      {...a11y}
+      {...props}
+      dangerouslySetInnerHTML={{ __html: markup }}
+    />
   );
 }

@@ -1,56 +1,48 @@
-import type { ComponentPropsWithoutRef, MouseEvent, ReactNode } from "react";
-
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { Icon } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import type { LinkAs } from "../../lib/link-as";
+import { withSx } from "../../lib/sx";
+
+const pageButton = componentVariants({
+  base: [
+    "grid h-10 min-w-10 place-items-center rounded-pill px-2.5 font-display text-body-sm font-bold",
+    "tabular-nums no-underline transition-control",
+  ],
+  variants: {
+    state: {
+      idle: [
+        "border border-border-default bg-surface-card text-ink-700",
+        "hover:border-pink-300 hover:bg-surface-page-alt hover:text-pink-700",
+        "active:press-scale-page active:bg-surface-brand-soft",
+      ],
+      current: ["cursor-default border border-border-brand bg-surface-brand text-text-on-brand"],
+      inert: ["cursor-not-allowed border border-ink-200 bg-ink-100 text-ink-400"],
+    },
+  },
+  defaultVariants: { state: "idle" },
+});
 
 const pagination = componentVariants({
   slots: {
-    root: "w-full min-w-0",
-    // Wraps rather than overflowing: twelve pages plus two arrows do not fit 360px on one line.
-    list: "flex flex-wrap items-center justify-center gap-2 p-0 list-none",
-    item: "flex",
-    step: [
-      "grid h-11 min-w-11 place-items-center rounded-6 px-3 no-underline",
-      "font-display font-bold text-body2",
-      "border border-border-default bg-surface-card text-text-body",
-      "transition-[background-color,border-color,color,transform] duration-(--duration-fast) ease-out",
-      "hover:border-brand-primary hover:bg-brand-tint hover:text-text-link",
-      "active:scale-(--motion-press-scale)",
-    ],
-    // No destination, so it is a span rather than a link — a dead anchor is worse than no anchor.
-    stepInert: [
-      "grid h-11 min-w-11 cursor-not-allowed place-items-center rounded-6 px-3",
-      "font-display font-bold text-body2",
-      "border border-border-subtle bg-surface-sunken text-text-subtle",
-    ],
-    gap: "grid h-11 min-w-11 place-items-center font-display font-bold text-body2 text-text-subtle",
+    root: "min-w-0",
+    list: "m-0 flex list-none flex-wrap items-center gap-2 p-0",
+    // Bare ellipsis — no pill (design Pagination.jsx).
+    gap: "grid min-w-6 place-items-center font-display font-bold text-ink-400",
   },
-  variants: {
-    /** The page being viewed is a flooded pink pill, and stays put under the pointer. */
-    isCurrent: {
-      true: {
-        step: [
-          "border-transparent bg-brand-primary text-text-on-brand",
-          "hover:border-transparent hover:bg-brand-primary hover:text-text-on-brand",
-        ],
-      },
-      false: {},
-    },
-  },
-  defaultVariants: { isCurrent: false },
 });
 
-/** A rendered slot: a page number, or the gap standing in for the pages between. */
 type PageSlot = number | "gap";
 
-/** Page 1 and the last page always show; everything past ±1 of the current page collapses. */
-function toSlots(page: number, pages: number): PageSlot[] {
+/** The first, the last and one either side of `page`; each hidden run becomes one gap. */
+function pageSlots(page: number, pages: number): PageSlot[] {
   const slots: PageSlot[] = [];
-  for (let index = 1; index <= pages; index += 1) {
-    if (index === 1 || index === pages || Math.abs(index - page) <= 1) {
-      slots.push(index);
+  for (let candidate = 1; candidate <= pages; candidate += 1) {
+    if (candidate === 1 || candidate === pages || Math.abs(candidate - page) <= 1) {
+      slots.push(candidate);
     } else if (slots.at(-1) !== "gap") {
       slots.push("gap");
     }
@@ -58,82 +50,156 @@ function toSlots(page: number, pages: number): PageSlot[] {
   return slots;
 }
 
-export interface PaginationProps extends Omit<ComponentPropsWithoutRef<"nav">, "onChange"> {
-  /** The page being viewed, counting from 1. */
-  page?: number | undefined;
-  /** How many pages the listing runs to. */
-  pages?: number | undefined;
-  /**
-   * Builds the URL for a page number. Every page is a real link so the listing stays crawlable on
-   * a static export — a pager built from bare buttons hides pages 2 onwards from search.
-   */
-  getPageHref: (page: number) => string;
-  /**
-   * Fires when a page link is activated, with the event, so a client router can take over. Leave
-   * it off and the browser follows the href.
-   */
-  onPageChange?: ((page: number, event: MouseEvent<HTMLAnchorElement>) => void) | undefined;
-  /** Names the pager for assistive tech. Change it only when a page carries two pagers. */
-  label?: string | undefined;
+export type PageButtonState = "idle" | "current" | "inert";
+
+export interface PageButtonProps extends ComponentPropsWithoutRef<"button"> {
+  /** Visual state. `current` and `inert` are not interactive. */
+  state?: PageButtonState | undefined;
+  children?: ReactNode;
 }
 
-export function Pagination({
+/**
+ * One page control for custom pagers (design `PageButton`). Pagination paints these as links
+ * or buttons depending on `getPageHref` / `onPageChange`.
+ */
+export function PageButton({
+  state = "idle",
   className,
-  page = 1,
-  pages = 1,
-  getPageHref,
-  onPageChange,
-  label = "Pagination",
+  type = "button",
   ...props
-}: PaginationProps) {
-  const slots = pagination();
-  const current = Math.min(Math.max(1, Math.round(page)), Math.max(1, Math.round(pages)));
-  const total = Math.max(1, Math.round(pages));
+}: PageButtonProps) {
+  return <button type={type} className={pageButton({ state, className })} {...props} />;
+}
 
-  const handleClick = (target: number) => (event: MouseEvent<HTMLAnchorElement>) => {
-    onPageChange?.(target, event);
-  };
+type PaginationShared = BaseProps<"nav"> & {
+  page: number;
+  pages: number;
+  /** The landmark's name. */
+  label?: string | undefined;
+};
 
-  const renderStep = (target: number, name: string, content: ReactNode, isCurrent = false) => (
-    <a
-      aria-current={isCurrent ? "page" : undefined}
-      aria-label={name}
-      className={slots.step({ isCurrent })}
-      href={getPageHref(target)}
-      onClick={handleClick(target)}
-    >
-      {content}
-    </a>
+export type PaginationProps = PaginationShared &
+  (
+    | {
+        /** The href of a page — paging is navigation (static export). */
+        getPageHref: (page: number) => string;
+        onPageChange?: undefined;
+        /** The link component (default `"a"`; pass `next/link` in an app). */
+        linkAs?: LinkAs | undefined;
+      }
+    | {
+        /** Client paging (R135). Exactly one of `getPageHref` / `onPageChange` is required. */
+        onPageChange: (page: number) => void;
+        getPageHref?: undefined;
+        linkAs?: undefined;
+      }
   );
 
+/** Paging for press, blog and careers listings. Wraps rather than overflowing on mobile. */
+export function Pagination(props: PaginationProps) {
+  const {
+    page,
+    pages,
+    label = "Pagination",
+    sx,
+    className,
+    getPageHref,
+    onPageChange,
+    linkAs: LinkComponent = "a",
+    ...navProps
+  } = props as PaginationProps & {
+    getPageHref?: (page: number) => string;
+    onPageChange?: (page: number) => void;
+    linkAs?: LinkAs;
+  };
+  if (pages < 2) return null;
+
+  const current = Math.min(Math.max(1, Math.round(page)), pages);
+  const styles = pagination();
+
+  function pageControl(target: number, content: ReactNode, state: PageButtonState = "idle") {
+    const className = pageButton({ state });
+    if (state === "inert") {
+      return <span className={className}>{content}</span>;
+    }
+    // Current stays a link/button to itself with aria-current (static-site paging).
+    if (getPageHref !== undefined) {
+      return (
+        <LinkComponent
+          href={getPageHref(target)}
+          className={className}
+          aria-current={state === "current" ? "page" : undefined}
+        >
+          {content}
+        </LinkComponent>
+      );
+    }
+    const changePage = onPageChange;
+    return (
+      <button
+        type="button"
+        className={className}
+        aria-current={state === "current" ? "page" : undefined}
+        onClick={() => {
+          if (state !== "current") changePage(target);
+        }}
+      >
+        {content}
+      </button>
+    );
+  }
+
   return (
-    <nav aria-label={label} className={slots.root({ class: className })} {...props}>
-      <ol className={slots.list()}>
-        <li className={slots.item()}>
+    <nav
+      aria-label={label}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...navProps}
+    >
+      {/* An ordered list: the pages are a sequence (dev parity). */}
+      <ol data-surface="light" className={styles.list()}>
+        <li aria-hidden={current <= 1 ? true : undefined}>
           {current > 1 ? (
-            renderStep(current - 1, "Previous page", <Icon icon={ChevronLeft} size="sm" />)
+            pageControl(
+              current - 1,
+              <>
+                <Icon icon={ChevronLeft} size="sm" />
+                <span className="sr-only">Previous page</span>
+              </>
+            )
           ) : (
-            <span className={slots.stepInert()}>
+            <span className={pageButton({ state: "inert" })}>
               <Icon icon={ChevronLeft} size="sm" />
             </span>
           )}
         </li>
-        {toSlots(current, total).map((slot, index) => (
-          <li className={slots.item()} key={`${String(slot)}-${String(index)}`}>
-            {slot === "gap" ? (
-              <span aria-hidden="true" className={slots.gap()}>
-                …
-              </span>
-            ) : (
-              renderStep(slot, `Page ${String(slot)}`, slot, slot === current)
-            )}
-          </li>
-        ))}
-        <li className={slots.item()}>
-          {current < total ? (
-            renderStep(current + 1, "Next page", <Icon icon={ChevronRight} size="sm" />)
+        {pageSlots(current, pages).map((slot, index) =>
+          slot === "gap" ? (
+            <li key={`gap-${String(index)}`} aria-hidden="true">
+              <span className={styles.gap()}>…</span>
+            </li>
           ) : (
-            <span className={slots.stepInert()}>
+            <li key={slot}>
+              {pageControl(
+                slot,
+                <>
+                  <span className="sr-only">Page</span> {slot}
+                </>,
+                slot === current ? "current" : "idle"
+              )}
+            </li>
+          )
+        )}
+        <li aria-hidden={current >= pages ? true : undefined}>
+          {current < pages ? (
+            pageControl(
+              current + 1,
+              <>
+                <Icon icon={ChevronRight} size="sm" />
+                <span className="sr-only">Next page</span>
+              </>
+            )
+          ) : (
+            <span className={pageButton({ state: "inert" })}>
               <Icon icon={ChevronRight} size="sm" />
             </span>
           )}

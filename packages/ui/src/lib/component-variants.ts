@@ -1,120 +1,364 @@
 import { createTV, type TWMergeConfig } from "tailwind-variants";
 
 /**
- * Custom theme scales emitted by `@pink-paprikaa-web/design-tokens`.
+ * The design system's variant builder. Every component declares its classes through this — never
+ * through the bare `tv` from tailwind-variants.
  *
- * `tailwind-variants` resolves conflicting classes through `tailwind-merge`, which classifies a
- * utility by inspecting the part after the prefix against its known scales. Our token names are
- * not t-shirt sizes, so without this config `tailwind-merge` guesses wrong in ways that silently
- * delete classes — the worst failure mode there is:
- *
- *   `text-h1` (a font size) is not a recognised size, so it falls through to the *text colour*
- *   group. A component declaring `base: "text-h1"` and `tone: { muted: "text-text-muted" }` then
- *   has the two merged as one colour decision, and `text-h1` disappears from the output.
- *
- * Every list below mirrors a token namespace in `packages/design-tokens/tokens/*.json`.
- * `component-variants.spec.ts` asserts each list against the generated `dist/tokens.json`, so a
- * token added there and forgotten here fails the test rather than corrupting class output.
+ * tailwind-variants resolves conflicts with tailwind-merge, which classifies a class by its value.
+ * The token names are not Tailwind's stock scales, so without these lists tailwind-merge guesses
+ * wrong and silently deletes classes: `text-h1` would be read as a text *colour* and dropped next
+ * to `text-text-muted`, `border-default` as a border colour next to `border-border-subtle`. The
+ * stylesheet's own utilities (`z-header`, `duration-fast`, `scrim-*`, `autogrid*`, `pattern-*`)
+ * are registered too, so a later one replaces an earlier one. `component-variants.spec.ts`
+ * asserts every token list equals the token build (and the stylesheet's animations), so a new
+ * token cannot be forgotten here.
  */
-const FONT_SIZES = [
-  "display1",
-  "display2",
+const TEXT = [
+  "display-1",
+  "display-2",
   "h1",
   "h2",
   "h3",
-  "subtitle1",
-  "subtitle2",
-  "body1",
-  "body2",
+  "h4",
+  "body-lg",
+  "body",
+  "body-sm",
   "caption",
   "overline",
   "mono",
-  "display1-fluid",
-  "display2-fluid",
+  "display-1-fluid",
+  "display-2-fluid",
   "h1-fluid",
   "h2-fluid",
   "h3-fluid",
-  "subtitle1-fluid",
-  "body1-fluid",
+  "h4-fluid",
+  "body-fluid",
   "canvas-hero",
   "canvas-h1",
   "canvas-h2",
   "canvas-body",
   "canvas-caption",
   "canvas-overline",
+  "link-sm",
+  "link-md",
+  "link-lg",
+  "button-sm",
+  "button-md",
+  "button-lg",
+  "icon-button-count",
+  "tag",
+  "image-slot-label",
+  "status-dot-label",
+  "avatar-xs",
+  "avatar-sm",
+  "avatar-md",
+  "avatar-lg",
+  "avatar-xl",
+  "field-suffix",
+  "control",
+  "control-description",
+  "progress-label",
+  "rating-value",
+  "rating-count",
+  "price-sm",
+  "price-md",
+  "price-lg",
+  "price-canvas",
+  "price-amount",
+  "price-was",
+  "app-shell-status",
+  "otp-digit",
+  "slot-picker-note",
+  "alert-title",
+  "toast",
+  "toast-action",
+  "snackbar",
+  "snackbar-action",
+  "tabs-label",
+  "breadcrumb",
+  "stat-value",
+  "stat-label",
+  "stat-sub",
+  "accordion-question",
+  "accordion-answer",
+  "menu-item-name",
+  "menu-item-devanagari",
+  "offer-seal-sm",
+  "offer-seal-md",
+  "offer-seal-lg",
+  "offer-seal-xl",
+  "offer-seal-value",
+  "offer-seal-label",
+  "offer-seal-note",
+  "coupon-ticket-headline-md",
+  "coupon-ticket-headline-lg",
+  "coupon-ticket-code-md",
+  "coupon-ticket-code-lg",
+  "coupon-ticket-stub-label-lg",
+  "choice-card-title",
+  "steps-title",
+  "feature-item-title-md",
+  "feature-item-title-sm",
+  "pricing-card-price",
+  "link-card-title",
+  "link-card-title-lg",
+  "sticky-action-bar-amount",
+  "table-head",
+  "quote-panel-amount",
+  "tab-bar-label",
+  "tab-bar-count",
+  "dialog-title",
+  "dialog-body",
+  "site-header-link",
 ];
-
-const RADII = ["1", "2", "3", "4", "5", "6"];
-
-const SHADOWS = [
-  "elevation1",
-  "elevation2",
-  "elevation3",
-  "elevation4",
+const FONT = ["display", "body", "devanagari", "mono"];
+const FONT_WEIGHT = ["regular", "medium", "semibold", "bold", "black"];
+const RADIUS = ["xs", "sm", "md", "lg", "xl", "pill", "diamond", "app-shell", "offer-seal"];
+const SHADOW = [
+  "1",
+  "2",
+  "3",
+  "4",
   "brand",
   "inset",
   "focus-ring",
   "focus-ring-inverse",
+  "button-primary",
+  "avatar-ring",
+  "field-ring-danger",
+  "field-ring-success",
+  "field-ring-warning",
+  "selected",
+  "choice-card-radio",
 ];
-
-const EASINGS = ["out", "in-out", "entrance", "pop"];
-
-const TRACKINGS = ["display1", "display2", "h1", "h2", "h3", "subtitle1", "overline", "mono"];
-
-const LEADINGS = [
-  "display1",
-  "display2",
-  "h1",
-  "h2",
-  "h3",
-  "subtitle1",
-  "subtitle2",
-  "body1",
-  "body2",
-  "caption",
-  "overline",
-  "mono",
+const BLUR = ["glass"];
+const EASE = ["out", "in-out", "entrance", "pop"];
+const CONTAINER = ["content", "wide", "narrow", "article", "prose", "prose-narrow"];
+const ASPECT = ["square", "4-3", "3-4", "4-5", "16-9", "16-10", "wide"];
+const BREAKPOINT = ["sm", "md", "lg", "nav-3", "nav-4", "xl", "2xl"];
+const SPACING = [
+  "gutter",
+  "gutter-mobile",
+  "gutter-desktop",
+  "section",
+  "section-mobile",
+  "section-desktop",
+  "grid-gap",
+  "scrollbar",
+  "header",
+  "header-compact",
+  "tabbar",
+  "hit",
+  "card-min",
+  "card-min-wide",
+  "dock-clearance",
+  "icon-xs",
+  "icon-sm",
+  "icon-md",
+  "icon-lg",
+  "icon-xl",
+  "logo-lockup",
+  "logo-wordmark",
+  "logo-symbol",
+  "text-measure-prose",
+  "text-measure-narrow",
+  "social-headline-tight",
+  "social-headline-default",
+  "social-headline-wide",
+  "button-h-sm",
+  "button-h-md",
+  "button-h-lg",
+  "text-button-h-sm",
+  "text-button-h-md",
+  "icon-button-xs",
+  "icon-button-sm",
+  "icon-button-md",
+  "icon-button-lg",
+  "icon-button-count",
+  "tag-h",
+  "divider-mark",
+  "badge-icon",
+  "status-dot-sm",
+  "status-dot-md",
+  "avatar-xs",
+  "avatar-sm",
+  "avatar-md",
+  "avatar-lg",
+  "avatar-xl",
+  "field-sm",
+  "field-md",
+  "field-lg",
+  "field-select-min",
+  "field-spinner",
+  "choice-box",
+  "switch-width",
+  "switch-height",
+  "switch-knob",
+  "switch-knob-pressed",
+  "spinner-sm",
+  "spinner-md",
+  "spinner-lg",
+  "progress-sm",
+  "progress-md",
+  "brand-diamond-12",
+  "brand-diamond-14",
+  "brand-diamond-16",
+  "brand-diamond-20",
+  "brand-diamond-24",
+  "brand-diamond-box-12",
+  "brand-diamond-box-14",
+  "brand-diamond-box-16",
+  "brand-diamond-box-20",
+  "brand-diamond-box-24",
+  "diet-mark-sm",
+  "diet-mark-md",
+  "diet-mark-lg",
+  "grid-min-xs",
+  "grid-min-sm",
+  "grid-min-card",
+  "grid-min-280",
+  "grid-min-md",
+  "grid-min-lg",
+  "grid-min-xl",
+  "grid-min-2xl",
+  "section-tight",
+  "section-loose",
+  "app-shell-w",
+  "app-shell-h",
+  "app-shell-sm-w",
+  "app-shell-sm-h",
+  "app-shell-status-x",
+  "app-shell-home",
+  "app-shell-home-bar-w",
+  "app-shell-home-bar-h",
+  "canvas-pad",
+  "canvas-pad-tight",
+  "story-safe-top",
+  "story-safe-bottom",
+  "quantity-stepper-count",
+  "cart-panel-thumb",
+  "snackbar",
+  "empty-state-symbol-lg",
+  "section-header-measure",
+  "section-header-measure-centered",
+  "accordion-answer-measure",
+  "step-tracker-marker",
+  "offer-seal",
+  "offer-seal-clear",
+  "coupon-ticket-md",
+  "coupon-ticket-lg",
+  "coupon-ticket-stub-md",
+  "coupon-ticket-stub-lg",
+  "coupon-ticket-notch",
+  "pricing-card-pad",
+  "table-sm",
+  "table-md",
+  "table-lg",
+  "cta-band-y",
+  "cta-band-copy",
+  "stat-band-y",
+  "stat-band-gap",
+  "hero-banner-top",
+  "hero-banner-bottom",
+  "hero-banner-gap",
+  "hero-banner-center-measure",
+  "faq-section-gap",
+  "faq-section-sticky",
+  "quote-panel-pad",
+  "site-footer-top",
+  "site-footer-gap",
+  "site-footer-dock-clearance",
+  "action-dock-bottom",
+  "action-dock-float",
+  "tab-bar-count",
+  "dialog-sm",
+  "dialog-md",
+  "dialog-lg",
+  "dialog-drawer-sm",
+  "dialog-drawer-md",
+  "dialog-drawer-lg",
+  "popover-pad",
+  "popover-max-w",
+  "menu-max-sm",
+  "menu-max-md",
+  "menu-max-lg",
+  "toggle-button-h-sm",
+  "toggle-button-h-md",
+  "toggle-button-h-lg",
+  "fab-md",
+  "fab-lg",
+  "site-header-logo",
+  "site-header-logo-compact",
 ];
-
-const FONT_FAMILIES = ["display", "body", "devanagari", "mono"];
-
-/** Half-steps only: whole numbers already resolve through `tailwind-merge`'s number validator. */
-const SPACINGS = ["0-5", "1-5"];
+const BORDER_WIDTH = ["default", "strong"];
+const Z = ["raised", "sticky", "header", "dock", "overlay", "toast", "tooltip"];
+const DURATION = ["instant", "fast", "base", "slow", "page"];
+/** PatternField's named utilities (`styles.css`): `pattern-tile-*` and `pattern-opacity-*`. */
+const PATTERN_TILE = ["56", "64", "72", "80", "86", "96"];
+const PATTERN_OPACITY = ["default", "light", "faint"];
+/** tailwind-merge keeps a width group per side (`border-w-t` for `border-t-*`, …); all read these. */
+const BORDER_SIDES = ["x", "y", "s", "e", "bs", "be", "t", "r", "b", "l"];
+/** AutoGrid's `min` steps (`styles.css` `autogrid-min-*`, tokens/component/auto-grid.json). */
+const AUTOGRID_MIN = ["xs", "sm", "card", "280", "md", "lg", "xl", "2xl"];
+const ANIMATE = [
+  "skeleton",
+  "mark-pulse",
+  "spin-pulse",
+  "dot-pulse",
+  "rotate",
+  "sheet-in",
+  "drawer-in-start",
+  "drawer-in-end",
+  "toast-pop",
+  "pop-in",
+  "ease-demo",
+];
+/** Named press-scale utilities (`styles.css`); last one wins when merged. */
+const PRESS_SCALE = [
+  "press-scale",
+  "press-scale-icon",
+  "press-scale-page",
+  "press-scale-card",
+  "press-scale-stepper",
+];
 
 export const twMergeConfig: TWMergeConfig = {
   extend: {
     theme: {
-      text: FONT_SIZES,
-      radius: RADII,
-      shadow: SHADOWS,
-      ease: EASINGS,
-      tracking: TRACKINGS,
-      leading: LEADINGS,
-      font: FONT_FAMILIES,
-      spacing: SPACINGS,
+      text: TEXT,
+      font: FONT,
+      "font-weight": FONT_WEIGHT,
+      radius: RADIUS,
+      shadow: SHADOW,
+      blur: BLUR,
+      ease: EASE,
+      container: CONTAINER,
+      aspect: ASPECT,
+      breakpoint: BREAKPOINT,
+      spacing: SPACING,
+      animate: ANIMATE,
     },
+    classGroups: {
+      "border-w": [{ border: BORDER_WIDTH }],
+      ...Object.fromEntries(
+        BORDER_SIDES.map((side) => [`border-w-${side}`, [{ [`border-${side}`]: BORDER_WIDTH }]])
+      ),
+      z: [{ z: Z }],
+      duration: [{ duration: DURATION }],
+      "press-scale": PRESS_SCALE,
+      scrim: ["scrim-bottom", "scrim-top"],
+      autogrid: ["autogrid", "autogrid-wide"],
+      "autogrid-min": [{ "autogrid-min": AUTOGRID_MIN }],
+      "pattern-tile": [{ "pattern-tile": PATTERN_TILE }],
+      "pattern-opacity": [{ "pattern-opacity": PATTERN_OPACITY }],
+      "max-h": [{ "max-h": ["menu-sheet"] }],
+    },
+    // An autogrid-min template and a fixed column count both set only grid-template-columns: last
+    // one wins. `autogrid`/`autogrid-wide` also set display + gap, so they stay out of it.
+    conflictingClassGroups: { "autogrid-min": ["grid-cols"], "grid-cols": ["autogrid-min"] },
   },
 };
 
-/**
- * The design system's variant builder — every component declares its classes through this.
- *
- * It is `tailwind-variants`' `tv` (the shape the engineering handbook makes canonical, 03 §1)
- * pre-configured with the scales above. Never import the bare `tv` from `tailwind-variants`
- * directly: that instance merges against stock Tailwind scales only and drops our token classes.
- *
- * ```tsx
- * const button = componentVariants({
- *   base: "inline-flex items-center justify-center rounded-6 font-display",
- *   variants: {
- *     variant: { primary: "bg-brand-primary text-text-on-brand shadow-brand" },
- *     size: { md: "h-(--button-h-md) px-(--button-px-md) text-body2" },
- *   },
- *   defaultVariants: { variant: "primary", size: "md" },
- * });
- * ```
- */
 export const componentVariants = createTV({ twMergeConfig });
 
-/** Props a `componentVariants` definition contributes to a component's public props. */
 export type { VariantProps } from "tailwind-variants";

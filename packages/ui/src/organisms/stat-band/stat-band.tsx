@@ -1,70 +1,69 @@
-import type { LucideIcon } from "lucide-react";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ReactNode } from "react";
 
+import type { IconComponent } from "../../atoms/icon/icon";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { componentVariants } from "../../lib/component-variants";
+import type { BaseProps } from "../../lib/common-props";
+import { SURFACE_DATA } from "../../lib/common-props";
+import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 import { Stat } from "../../molecules/stat/stat";
+
+export interface StatBandItem {
+  value: ReactNode;
+  label: ReactNode;
+  sub?: ReactNode;
+  icon?: IconComponent | undefined;
+}
 
 const statBand = componentVariants({
   slots: {
-    // The proof band between two content sections: one flooded ground, one row of numbers.
-    root: "w-full",
-    inner: [
-      "mx-auto grid w-full max-w-(--layout-container-max) gap-8",
-      // `min(200px,100%)` is load-bearing — a bare `1fr` track keeps a min-content floor, so one
-      // long label would push the row wider than a 360px screen instead of dropping a column.
-      "grid-cols-[repeat(auto-fit,minmax(min(200px,100%),1fr))]",
-      "px-(--layout-gutter-fluid) py-[clamp(40px,5vw,64px)]",
-    ],
+    root: "relative",
+    // A decorative layer only: the band's own ground (or a caller's) shows through it.
+    pattern: "absolute inset-0 bg-transparent",
+    grid: "relative container-page grid autogrid-min-sm gap-stat-band-gap py-stat-band-y",
   },
+  variants: {
+    surface: {
+      soft: { root: "bg-surface-brand-soft" },
+      brand: { root: "bg-surface-brand" },
+      ink: { root: "bg-surface-inverse" },
+    },
+  },
+  defaultVariants: { surface: "soft" },
 });
 
-/** Which `Stat` ink each ground takes. The ink steps have no contrast on a flooded panel. */
-const STAT_TONE = { soft: "brand", brand: "inverse", ink: "inverse" } as const;
+type StatBandSurface = NonNullable<VariantProps<typeof statBand>["surface"]>;
 
-/** The three grounds the band may flood with. */
-export type StatBandTone = keyof typeof STAT_TONE;
+/** Numbers read in brand pink on the soft field and white on the flooded ones (design system). */
+const STAT_COLOR: Readonly<Record<StatBandSurface, "brand" | "inverse">> = {
+  soft: "brand",
+  brand: "inverse",
+  ink: "inverse",
+};
 
-export interface StatBandItem {
-  /** The number itself. Never invent one — a stat with no source is a content bug. */
-  value: ReactNode;
-  /** One short line under the number, sentence case and no full stop. */
-  label: string;
-  /** Optional second line for the detail behind the number. */
-  sub?: string;
-  /** Lucide glyph above the number. Set it on every item or none — a half-set row reads broken. */
-  icon?: LucideIcon;
-}
-
-export interface StatBandProps extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
-  /**
-   * Three or four numbers. More than four reads as noise, and every one has to be checkable —
-   * the band's whole job is that a guest can verify it.
-   */
+export interface StatBandProps
+  extends BaseProps<"section">, Pick<VariantProps<typeof statBand>, "surface"> {
+  /** Three or four real, verifiable numbers — more reads as noise. */
   stats: StatBandItem[];
-  /** The ground. `soft` is the default pale pink; `brand` and `ink` flood and invert the type. */
-  tone?: StatBandTone | undefined;
 }
 
-export function StatBand({ className, stats, tone = "soft", ...props }: StatBandProps) {
-  const parts = statBand();
+/** A proof band of big numbers between two content sections, over the tiled diamond. */
+export function StatBand({ stats, surface = "soft", sx, className, ...props }: StatBandProps) {
+  const slots = statBand({ surface });
   return (
-    <PatternField className={parts.root({ className })} tile={80} tone={tone} {...props}>
-      <div className={parts.inner()}>
-        {stats.map(({ icon, label, sub, value }) => (
-          <Stat
-            align="center"
-            key={label}
-            label={label}
-            tone={STAT_TONE[tone]}
-            value={value}
-            // `exactOptionalPropertyTypes` forbids passing an explicit `undefined` to an optional
-            // prop, so an absent glyph or sub-line is left off rather than handed through.
-            {...(icon === undefined ? {} : { icon })}
-            {...(sub === undefined ? {} : { sub })}
-          />
+    <section
+      data-surface={SURFACE_DATA[surface]}
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      <PatternField aria-hidden surface={surface} tile={80} className={slots.pattern()} />
+      <ul role="list" className={slots.grid()}>
+        {stats.map((stat, index) => (
+          <li key={index}>
+            <Stat {...stat} color={STAT_COLOR[surface]} align="center" />
+          </li>
         ))}
-      </div>
-    </PatternField>
+      </ul>
+    </section>
   );
 }

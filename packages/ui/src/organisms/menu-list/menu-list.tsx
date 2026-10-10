@@ -1,235 +1,230 @@
-"use client";
-
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-
-import { useState } from "react";
+import type { ReactNode } from "react";
 
 import { Divider } from "../../atoms/divider/divider";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import type { HeadingLevel } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
+import type { LinkAs } from "../../lib/link-as";
+import { withSx } from "../../lib/sx";
 import { EmptyState } from "../../molecules/empty-state/empty-state";
-import { FilterBar } from "../../molecules/filter-bar/filter-bar";
 import { MenuItemCard } from "../../molecules/menu-item-card/menu-item-card";
-import { MenuItemRow } from "../../molecules/menu-item-row/menu-item-row";
+import { type MenuItemImage, MenuItemRow } from "../../molecules/menu-item-row/menu-item-row";
 import { SectionHeader } from "../../molecules/section-header/section-header";
+import { MenuListFilter } from "./menu-list-filter";
+
+export interface MenuListItem {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  description?: string | undefined;
+  spice?: 1 | 2 | 3 | 4 | undefined;
+  badge?: string | undefined;
+  was?: number | undefined;
+  image?: MenuItemImage | undefined;
+  /** Placeholder label while the photo is missing. */
+  imageLabel?: string | undefined;
+}
+
+/** How many dishes show as cards before the grid variant hands over to rows (design system). */
+const DEFAULT_GRID_COUNT = 4;
+
+/** Dish headings sit one level below the section title. */
+const CHILD_LEVEL: Readonly<Record<HeadingLevel, HeadingLevel>> = {
+  1: 2,
+  2: 3,
+  3: 4,
+  4: 5,
+  5: 6,
+  6: 6,
+};
 
 const menuList = componentVariants({
   slots: {
-    root: "w-full",
-    inner: [
-      "mx-auto w-full max-w-(--layout-container-max)",
-      "px-(--layout-gutter-fluid) py-(--layout-section-y-fluid)",
-    ],
-    filters: "",
-    /**
-     * `min(260px,100%)` is what keeps the section alive at 360px: a bare `1fr` track has a
-     * min-content floor, so one long dish name would push the row wider than the viewport.
-     */
-    grid: [
-      "mt-8 grid gap-(--layout-gap-grid)",
-      "grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))]",
-    ],
-    overflow: "mt-12",
-    rows: "mt-2",
-    list: "mt-5",
+    root: "section-y",
+    inner: "container-page",
+    filter: "flex flex-col",
+    cards: "mt-8 autogrid-min-card",
+    card: "flex",
+    cardBody: "flex-1",
+    overflow: "",
+    rows: "",
     empty: "mt-6",
   },
   variants: {
-    hasHeader: { true: { filters: "mt-7" }, false: { filters: "" } },
+    variant: {
+      grid: { overflow: "mt-12", rows: "mt-2" },
+      list: { overflow: "mt-5" },
+    },
+    hasHeader: { true: { filter: "mt-7" } },
   },
-  defaultVariants: { hasHeader: true },
+  defaultVariants: { variant: "grid", hasHeader: true },
 });
 
-/** The category pill that means "show everything". */
-const ALL_CATEGORY = "All";
-
-/**
- * The fields a dish hands straight to `MenuItemCard` / `MenuItemRow`.
- *
- * They are spread in conditionally rather than passed as `badge={item.badge}`: the workspace runs
- * `exactOptionalPropertyTypes`, so handing an optional prop an explicit `undefined` is an error.
- */
-function dishProps(item: MenuListItem) {
-  return {
-    name: item.name,
-    price: item.price,
-    ...(item.was === undefined ? {} : { was: item.was }),
-    ...(item.description === undefined ? {} : { description: item.description }),
-    ...(item.diet === undefined ? {} : { diet: item.diet }),
-    ...(item.spice === undefined ? {} : { spice: item.spice }),
-    ...(item.badge === undefined ? {} : { badge: item.badge }),
-    ...(item.image === undefined ? {} : { image: item.image }),
-  };
-}
-
-/** One dish, exactly as the kitchen prints it. */
-export interface MenuListItem {
-  /** The dish, in Title Case. Doubles as the list key, so it must be unique in `items`. */
-  name: string;
-  /** Live price in whole rupees. */
-  price: number;
-  /** Pre-discount price, printed struck through after the live one. */
-  was?: number;
-  /** The category the filter pills derive from — "Small Plates", "Chai & Coffee". */
-  category?: string;
-  /** Ingredient-led, at most fourteen words. */
-  description?: string;
-  /** Always pass it — the mark is what makes a 100% vegetarian kitchen legible at a glance. */
-  diet?: "veg" | "egg";
-  /** 1 Mild · 2 Medium · 3 Hot · 4 Extra Hot. Omit it on anything that carries no heat. */
-  spice?: 1 | 2 | 3 | 4;
-  /** One short marker — "Bestseller", "New". Never more than one. */
-  badge?: string;
-  /** The dish photograph. Leave it off and the labelled placeholder holds the space. */
-  image?: string;
-  /** The dish's own page. Passing it turns the whole card into one link. */
-  href?: string;
+/** A dish's display props — the list's own fields (id, category) stay out of the card's DOM. */
+function dishOf({ id: _id, category: _category, ...dish }: MenuListItem) {
+  return dish;
 }
 
 export interface MenuListProps
-  extends
-    Omit<ComponentPropsWithoutRef<"section">, "onChange" | "title">,
-    VariantProps<typeof menuList> {
-  /** The dishes, in the order the kitchen wants them read. */
+  extends Omit<BaseProps<"section">, "title">, Pick<VariantProps<typeof menuList>, "variant"> {
   items: MenuListItem[];
-  /** Override the derived pills. By default it is "All" plus every distinct `category`. */
+  /** Filter order and subset; defaults to every category in the dishes, in order. "All" is always first. */
   categories?: string[] | undefined;
-  /** ALL CAPS eyebrow over the heading. */
-  overline?: string | undefined;
-  /** The section heading. Omit it and the filters render with no header at all. */
-  title?: string | undefined;
-  /** One-sentence lede under the heading. */
-  lede?: string | undefined;
-  /** Trailing element in the header, usually a ghost `Button`. */
-  action?: ReactNode | undefined;
-  /** The heading level so the page outline never skips a step. */
-  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6 | undefined;
-  /**
-   * `grid` is the website — cards first, then the rest as rows. `list` is the app pattern: rows
-   * only, which is also what a phone gets the most menu onto one screen with.
-   */
-  variant?: "grid" | "list" | undefined;
-  /** How many dishes show as cards before the overflow list takes over. Ignored by `list`. */
-  gridCount?: number | undefined;
-  /** The standing statement pinned after the pills. Not a filter. */
-  note?: string | undefined;
-  /** The selected category. Pass it with `onCategoryChange` to drive the filter from outside. */
-  category?: string | undefined;
-  /** The category selected on first render when the component owns its own state. */
+  allLabel?: string | undefined;
+  /** The category chosen on arrival; "All" when omitted or not on offer. */
   defaultCategory?: string | undefined;
-  /** Called with the category a pill selects. */
-  onCategoryChange?: ((category: string) => void) | undefined;
-  /** Called with the dish behind the Add control. Omit it and no Add control is drawn. */
-  onAdd?: ((item: MenuListItem) => void) | undefined;
+  /** Accessible name of the filter group. */
+  filterLabel?: string | undefined;
+  overline?: ReactNode;
+  /** Omit (or pass null) for filters with no section header — the app pattern. */
+  title?: ReactNode | null | undefined;
+  /** One sentence under the heading (shown only with a `title`). */
+  lede?: ReactNode;
+  action?: ReactNode;
+  /** How many dishes show as cards before rows take over. */
+  gridCount?: number | undefined;
+  /** Statement badge in the filter bar, e.g. "100% Vegetarian". */
+  note?: ReactNode;
+  /** Divider label above the overflow rows, e.g. "Also on the menu". */
+  overflowLabel?: string | undefined;
+  /** Shown for a category with no dishes. Omit for the default EmptyState. Pass `""` to hide. */
+  emptyState?: ReactNode;
+  /** Default empty-state title when `emptyState` is omitted. */
+  emptyTitle?: ReactNode | undefined;
+  /** Default empty-state body when `emptyState` is omitted. */
+  emptyBody?: ReactNode | undefined;
+  /** Runs on the server with the organism: the dish's add/order control. */
+  renderItemAction?: ((item: MenuListItem) => ReactNode) | undefined;
+  /** Runs on the server with the organism: makes each card a link. */
+  getItemHref?: ((item: MenuListItem) => string) | undefined;
+  linkAs?: LinkAs | undefined;
+  headingLevel?: HeadingLevel | undefined;
 }
 
 /**
- * The whole menu section — header, category filters, and the dishes. Reach for this rather than
- * assembling cards by hand, so the filters and the empty state stay wired to the same list.
+ * The filterable menu section — use it rather than assembling cards by hand. Every dish is
+ * rendered on the server, once per filter option; only the chosen option is client state.
  */
 export function MenuList({
-  action,
-  categories,
-  category,
-  className,
-  defaultCategory,
-  gridCount = 4,
-  headingLevel = 2,
   items,
-  lede,
-  note = "100% Vegetarian Kitchen",
-  onAdd,
-  onCategoryChange,
-  overline = "The Menu",
+  categories,
+  allLabel = "All",
+  defaultCategory,
+  filterLabel = "Filter the menu",
+  overline,
   title,
+  lede,
+  action,
   variant = "grid",
+  gridCount = DEFAULT_GRID_COUNT,
+  note,
+  overflowLabel,
+  emptyState,
+  emptyTitle = "Nothing matches that yet.",
+  emptyBody = "Try another category.",
+  renderItemAction,
+  getItemHref,
+  linkAs = "a",
+  headingLevel = 2,
+  sx,
+  className,
   ...props
 }: MenuListProps) {
-  const derived = [...new Set(items.map((item) => item.category).filter((c) => c !== undefined))];
-  const pills = categories ?? [ALL_CATEGORY, ...derived];
-  const fallback = defaultCategory ?? pills[0] ?? ALL_CATEGORY;
-
-  const [ownCategory, setOwnCategory] = useState(fallback);
-  const active = category ?? ownCategory;
-
-  const slots = menuList({ hasHeader: title !== undefined });
-  const shown = items.filter((item) => active === ALL_CATEGORY || item.category === active);
-  const cards = variant === "grid" ? shown.slice(0, gridCount) : [];
-  const rows = variant === "grid" ? shown.slice(gridCount) : shown;
-
-  const addProps = (item: MenuListItem) =>
-    onAdd === undefined
-      ? {}
-      : {
-          onAdd: () => {
-            onAdd(item);
-          },
-        };
-
-  const renderRows = (list: MenuListItem[]) =>
-    list.map((item, index) => (
-      <MenuItemRow
-        {...dishProps(item)}
-        {...addProps(item)}
-        hasDivider={index < list.length - 1}
-        key={item.name}
+  const hasHeader = isShown(title);
+  const slots = menuList({ variant, hasHeader });
+  const itemLevel = CHILD_LEVEL[headingLevel];
+  const categoryNames = (categories ?? [...new Set(items.map((item) => item.category))]).filter(
+    (name) => name !== allLabel
+  );
+  const options = [allLabel, ...categoryNames].map((name) => ({ value: name, label: name }));
+  const initial =
+    defaultCategory !== undefined && categoryNames.includes(defaultCategory)
+      ? defaultCategory
+      : allLabel;
+  const resolvedEmpty =
+    emptyState !== undefined ? (
+      emptyState
+    ) : (
+      <EmptyState
+        variant="symbol"
+        title={isShown(emptyTitle) ? emptyTitle : "Nothing matches that yet."}
+        body={emptyBody}
+        headingLevel={headingLevel}
       />
-    ));
+    );
+
+  const panelFor = (dishes: MenuListItem[]): ReactNode => {
+    if (dishes.length === 0) {
+      return isShown(resolvedEmpty) ? <div className={slots.empty()}>{resolvedEmpty}</div> : null;
+    }
+    const cardDishes = variant === "grid" ? dishes.slice(0, gridCount) : [];
+    const rowDishes = variant === "grid" ? dishes.slice(gridCount) : dishes;
+    return (
+      <>
+        {cardDishes.length > 0 ? (
+          <ul role="list" className={slots.cards()}>
+            {cardDishes.map((item) => (
+              <li key={item.id} className={slots.card()}>
+                <MenuItemCard
+                  {...dishOf(item)}
+                  action={renderItemAction?.(item)}
+                  href={getItemHref?.(item)}
+                  linkAs={linkAs}
+                  headingLevel={itemLevel}
+                  className={slots.cardBody()}
+                />
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        {rowDishes.length > 0 ? (
+          <div className={slots.overflow()}>
+            {variant === "grid" ? <Divider label={overflowLabel} /> : null}
+            <ul role="list" className={slots.rows()}>
+              {rowDishes.map((item, index) => (
+                <li key={item.id}>
+                  <MenuItemRow
+                    {...dishOf(item)}
+                    action={renderItemAction?.(item)}
+                    hasDivider={index < rowDishes.length - 1}
+                    headingLevel={itemLevel}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </>
+    );
+  };
+
+  const panels = options.map(({ value }) => ({
+    value,
+    content: panelFor(value === allLabel ? items : items.filter((item) => item.category === value)),
+  }));
 
   return (
-    <section className={slots.root({ className })} {...props}>
+    <section className={slots.root({ className: withSx(sx, className) })} {...props}>
       <div className={slots.inner()}>
-        {title === undefined ? null : (
+        {hasHeader ? (
           <SectionHeader
-            action={action}
-            headingLevel={headingLevel}
-            {...(lede === undefined ? {} : { lede })}
             overline={overline}
             title={title}
+            lede={lede}
+            action={action}
+            headingLevel={headingLevel}
           />
-        )}
-
-        <FilterBar
-          className={slots.filters()}
-          isWrapping
-          label="Filter the menu by category"
+        ) : null}
+        <MenuListFilter
+          label={filterLabel}
+          options={options}
+          panels={panels}
+          defaultValue={initial}
           note={note}
-          onChange={(next) => {
-            setOwnCategory(next);
-            onCategoryChange?.(next);
-          }}
-          options={pills}
-          value={active}
+          className={slots.filter()}
         />
-
-        {shown.length === 0 ? (
-          <EmptyState
-            body="Try another category."
-            className={slots.empty()}
-            hasSymbol
-            title="Nothing matches that yet."
-          />
-        ) : variant === "list" ? (
-          <div className={slots.list()}>{renderRows(rows)}</div>
-        ) : (
-          <>
-            <div className={slots.grid()}>
-              {cards.map((item) => (
-                <MenuItemCard
-                  {...dishProps(item)}
-                  {...addProps(item)}
-                  {...(item.href === undefined ? {} : { href: item.href })}
-                  key={item.name}
-                />
-              ))}
-            </div>
-            {rows.length === 0 ? null : (
-              <div className={slots.overflow()}>
-                <Divider label="Also On The Menu" />
-                <div className={slots.rows()}>{renderRows(rows)}</div>
-              </div>
-            )}
-          </>
-        )}
       </div>
     </section>
   );

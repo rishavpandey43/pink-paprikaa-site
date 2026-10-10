@@ -1,130 +1,135 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Accordion, type AccordionItem } from "./accordion";
 
-const ITEMS: AccordionItem[] = [
+const FAQ: AccordionItem[] = [
   {
+    value: "veg",
     question: "Is everything vegetarian?",
-    answer: "Yes — 100% vegetarian kitchen. A few bakes contain egg and are marked.",
+    answer: "Yes. The whole kitchen is pure vegetarian — no meat, no egg.",
   },
-  { question: "Do you deliver?", answer: "Pickup only for now. Delivery starts in 2027." },
-  { question: "Can I book a table?", answer: "Up to six guests online. Larger groups, call us." },
+  {
+    value: "delivery",
+    question: "Do you deliver?",
+    answer: "Pickup only for now. Delivery starts in 2027.",
+  },
+  {
+    value: "booking",
+    question: "Can I book a table?",
+    answer: "Yes, up to 6 guests online. Larger groups, give us a call.",
+  },
 ];
 
-describe("Accordion", () => {
-  it("renders every question as a collapsed trigger", () => {
-    render(<Accordion items={ITEMS} />);
+function detailsOf(container: HTMLElement): HTMLDetailsElement[] {
+  return [...container.querySelectorAll("details")];
+}
 
-    const triggers = screen.getAllByRole("button");
-    expect(triggers).toHaveLength(3);
-    for (const trigger of triggers) {
-      expect(trigger).toHaveAttribute("aria-expanded", "false");
+describe("Accordion", () => {
+  it("renders each item as a native disclosure with its question as the summary", () => {
+    const { container } = render(<Accordion items={FAQ} />);
+    const details = detailsOf(container);
+    expect(details).toHaveLength(3);
+    expect(details[0]?.querySelector("summary")).toHaveTextContent("Is everything vegetarian?");
+  });
+
+  it("keeps every answer in the page, open or closed — find-in-page and search engines see them all", () => {
+    render(<Accordion items={FAQ} />);
+    for (const item of FAQ) {
+      const answer = screen.getByText(item.answer as string);
+      expect(answer).toBeInTheDocument();
+      expect(answer).not.toHaveAttribute("hidden");
+      expect(answer.closest("[hidden]")).toBeNull();
     }
   });
 
-  it("reveals the answer when the question is clicked", async () => {
-    render(<Accordion items={ITEMS} />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Do you deliver?" }));
-
-    expect(screen.getByRole("region", { name: "Do you deliver?" })).toHaveTextContent(
-      "Pickup only for now. Delivery starts in 2027."
-    );
+  it("opens nothing by default until defaultOpen names an item", () => {
+    const { container, rerender } = render(<Accordion items={FAQ} />);
+    expect(detailsOf(container).map((d) => d.open)).toEqual([false, false, false]);
+    rerender(<Accordion items={FAQ} defaultOpen={["veg"]} />);
+    expect(detailsOf(container).map((d) => d.open)).toEqual([true, false, false]);
   });
 
-  it("closes the open answer when its question is clicked again", async () => {
-    render(<Accordion items={ITEMS} />);
-    const trigger = screen.getByRole("button", { name: "Do you deliver?" });
-
-    await userEvent.click(trigger);
-    await userEvent.click(trigger);
-
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
+  it("reveals an answer when its question is clicked, and hides it on a second click", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<Accordion items={FAQ} defaultOpen={[]} />);
+    const delivery = detailsOf(container)[1];
+    await user.click(screen.getByText("Do you deliver?"));
+    expect(delivery?.open).toBe(true);
+    await user.click(screen.getByText("Do you deliver?"));
+    expect(delivery?.open).toBe(false);
   });
 
-  it("keeps one answer open at a time by default", async () => {
-    render(<Accordion items={ITEMS} />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Is everything vegetarian?" }));
-    await userEvent.click(screen.getByRole("button", { name: "Do you deliver?" }));
-
-    expect(screen.getByRole("button", { name: "Is everything vegetarian?" })).toHaveAttribute(
-      "aria-expanded",
-      "false"
-    );
-    expect(screen.getByRole("button", { name: "Do you deliver?" })).toHaveAttribute(
-      "aria-expanded",
-      "true"
-    );
-  });
-
-  it("keeps several answers open when multiple is set", async () => {
-    render(<Accordion isMultiple items={ITEMS} />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Is everything vegetarian?" }));
-    await userEvent.click(screen.getByRole("button", { name: "Do you deliver?" }));
-
-    expect(screen.getAllByRole("region")).toHaveLength(2);
-  });
-
-  it("opens the questions named in defaultOpen", () => {
-    render(<Accordion defaultOpen={[ITEMS[0]?.question ?? ""]} items={ITEMS} />);
-
-    expect(screen.getByRole("button", { name: "Is everything vegetarian?" })).toHaveAttribute(
-      "aria-expanded",
-      "true"
-    );
-  });
-
-  it("moves between questions with the arrow keys", async () => {
-    render(<Accordion items={ITEMS} />);
-
-    await userEvent.tab();
-    await userEvent.keyboard("{ArrowDown}");
-
-    expect(screen.getByRole("button", { name: "Do you deliver?" })).toHaveFocus();
-  });
-
-  it("does not open a disabled question", async () => {
-    render(
-      <Accordion
-        items={[{ question: "Is franchising open?", answer: "Not yet.", isDisabled: true }]}
-      />
-    );
-
-    const trigger = screen.getByRole("button", { name: "Is franchising open?" });
-    await userEvent.click(trigger);
-
-    expect(trigger).toBeDisabled();
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
-  });
-
-  it("renders the questions at the requested heading level", () => {
-    render(<Accordion headingLevel={2} items={ITEMS} />);
-
-    expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(3);
-  });
-
-  it("turns the open question brand pink and rotates its chevron", () => {
-    render(<Accordion items={ITEMS} />);
-
-    const trigger = screen.getByRole("button", { name: "Do you deliver?" });
-    expect(trigger).toHaveClass("data-[state=open]:text-text-brand");
-    expect(trigger.querySelector("svg")).toHaveClass("group-data-[state=open]:rotate-180");
-  });
-
-  it("merges a caller className", () => {
-    const { container } = render(<Accordion className="border-t-0" items={ITEMS} />);
-
+  it("merges a caller className over its own top rule", () => {
+    const { container } = render(<Accordion items={FAQ} className="border-t-0" />);
     expect(container.firstElementChild).toHaveClass("border-t-0");
+    expect(container.firstElementChild).not.toHaveClass("border-t");
+  });
+
+  it("opens the items it is told to, or none", () => {
+    const { container, rerender } = render(<Accordion items={FAQ} defaultOpen={["booking"]} />);
+    expect(detailsOf(container).map((d) => d.open)).toEqual([false, false, true]);
+    rerender(<Accordion items={FAQ} defaultOpen={[]} />);
+    expect(detailsOf(container).map((d) => d.open)).toEqual([false, false, false]);
+  });
+
+  it("groups single-open items under one shared name", () => {
+    const { container } = render(<Accordion items={FAQ} />);
+    const names = new Set(detailsOf(container).map((d) => d.getAttribute("name")));
+    expect(names.size).toBe(1);
+    expect([...names][0]).toBeTruthy();
+  });
+
+  it("uses the name it is given, so two accordions never share a group", () => {
+    const { container } = render(<Accordion items={FAQ} name="faq-home" />);
+    for (const details of detailsOf(container)) expect(details).toHaveAttribute("name", "faq-home");
+  });
+
+  it("leaves items independent when isMultiple", () => {
+    const { container } = render(
+      <Accordion items={FAQ} isMultiple defaultOpen={["veg", "delivery"]} />
+    );
+    for (const details of detailsOf(container)) expect(details).not.toHaveAttribute("name");
+    expect(detailsOf(container).map((d) => d.open)).toEqual([true, true, false]);
+  });
+
+  it("keeps the questions plain summary text unless a headingLevel is given", () => {
+    render(<Accordion items={FAQ} />);
+    expect(screen.queryAllByRole("heading")).toHaveLength(0);
+  });
+
+  it("wraps each question in a heading at headingLevel, inside its summary", async () => {
+    const { container } = render(<Accordion items={FAQ} headingLevel={3} />);
+    const headings = screen.getAllByRole("heading", { level: 3 });
+    expect(headings.map((heading) => heading.textContent)).toEqual(
+      FAQ.map((item) => item.question)
+    );
+    for (const heading of headings) expect(heading.closest("summary")).not.toBeNull();
+    await expectNoA11yViolations(container);
+  });
+
+  it("draws a decorative chevron that turns when its item opens", () => {
+    const { container } = render(<Accordion items={FAQ} />);
+    const chevron = container.querySelector("summary svg.lucide-chevron-down")?.parentElement;
+    expect(chevron).toHaveAttribute("aria-hidden", "true");
+    expect(chevron).toHaveClass("group-open/accordion-item:rotate-180");
   });
 
   it("has no accessibility violations", async () => {
-    const { container } = render(
-      <Accordion defaultOpen={[ITEMS[0]?.question ?? ""]} items={ITEMS} />
-    );
+    const { container } = render(<Accordion items={FAQ} />);
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <Accordion
+        items={[{ value: "a", question: "Q", answer: "A" }]}
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });

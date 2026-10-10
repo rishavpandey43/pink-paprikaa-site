@@ -1,98 +1,72 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ReactNode } from "react";
+import { createElement } from "react";
 
-import { Text } from "../../atoms/text/text";
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import type { BaseProps } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 const sectionHeader = componentVariants({
   slots: {
-    // `items-end` sits the trailing action on the heading's baseline edge; `flex-wrap` drops it
-    // onto its own line before it can squeeze the title (responsive contract).
-    root: "flex w-full flex-wrap items-end gap-6",
-    body: "min-w-0",
-    // The gaps hang off the optional parts, so a header with no overline has no stray top margin.
-    overline: "mb-2",
-    title: "",
-    lede: "mt-3",
+    root: "flex flex-wrap items-end gap-6",
+    copy: "min-w-0",
+    overline: "m-0 font-display text-overline text-text-brand uppercase",
+    title: "m-0 font-display text-h2-fluid text-pretty text-text-heading",
+    lede: "m-0 mt-3 text-body-lg text-text-muted",
     action: "shrink-0",
   },
   variants: {
-    /** `center` is the standalone opener — no action, prose centred under the heading. */
     align: {
-      start: { root: "justify-between", body: "max-w-(--measure-prose)" },
-      center: { root: "justify-center text-center", body: "mx-auto max-w-(--measure-prose)" },
-    },
-    /** `brand` when the section floods pink or ink — every tone lifts to white on the fill. */
-    on: {
-      light: {
-        overline: "block text-text-brand",
-        title: "text-text-heading",
-        lede: "text-text-muted",
-      },
-      brand: {
-        overline: "block text-text-on-brand",
-        title: "text-text-on-brand",
-        lede: "text-text-on-brand",
+      start: { root: "justify-between text-start", copy: "max-w-section-header-measure" },
+      center: {
+        root: "justify-center text-center",
+        copy: "mx-auto max-w-section-header-measure-centered",
       },
     },
+    hasOverline: { true: { title: "mt-2.5" } },
   },
-  defaultVariants: { align: "start", on: "light" },
+  defaultVariants: { align: "start", hasOverline: false },
 });
 
-/**
- * The rendered element for each heading level. A lookup rather than a computed `h${level}` string,
- * because a template literal widens to `string`, which is not an `ElementType`.
- */
-const HEADING_ELEMENT = { 1: "h1", 2: "h2", 3: "h3", 4: "h4", 5: "h5", 6: "h6" } as const;
-
-export interface SectionHeaderProps
-  extends Omit<ComponentPropsWithoutRef<"div">, "title">, VariantProps<typeof sectionHeader> {
-  /** ALL CAPS eyebrow naming the section — two or three words, never a sentence. */
-  overline?: string | undefined;
-  /** The section's heading. */
+export interface SectionHeaderProps extends Omit<BaseProps<"div">, "title"> {
+  /** Uppercase eyebrow. */
+  overline?: ReactNode;
   title: ReactNode;
-  /** One-sentence lede under the heading, roughly twenty words at most. */
-  lede?: string | undefined;
-  /** Trailing element, usually a ghost `Button`. Not rendered when `align` is `center`. */
-  action?: ReactNode | undefined;
-  /**
-   * The heading level in the document outline, independent of how big the heading looks: the type
-   * step is always the fluid `h2` so a section opener reads the same everywhere, while the level
-   * follows whatever the page around it needs. Set it so headings never skip a level.
-   */
-  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6 | undefined;
+  headingLevel?: HeadingLevel | undefined;
+  /** One sentence, at most about 20 words. */
+  lede?: ReactNode;
+  /** Trailing element, usually a ghost Button. Not rendered when centred. */
+  action?: ReactNode;
+  align?: "start" | "center" | undefined;
 }
 
+/** The standard section opener — every page section starts with one. */
 export function SectionHeader({
-  action,
-  align,
-  className,
-  headingLevel = 2,
-  lede,
-  on,
   overline,
   title,
+  headingLevel = 2,
+  lede,
+  action,
+  align = "start",
+  sx,
+  className,
   ...props
 }: SectionHeaderProps) {
-  const parts = sectionHeader({ align, on });
+  const hasOverline = isShown(overline);
+  const styles = sectionHeader({ align, hasOverline });
+
   return (
-    <div className={parts.root({ className })} {...props}>
-      <div className={parts.body()}>
-        {overline === undefined ? null : (
-          <Text as="p" className={parts.overline()} variant="overline">
-            {overline}
-          </Text>
-        )}
-        <Text as={HEADING_ELEMENT[headingLevel]} className={parts.title()} isFluid variant="h2">
-          {title}
-        </Text>
-        {lede === undefined ? null : (
-          <Text className={parts.lede()} isFluid variant="body1">
-            {lede}
-          </Text>
-        )}
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
+      <div className={styles.copy()}>
+        {hasOverline ? <p className={styles.overline()}>{overline}</p> : null}
+        {/* createElement, not `const Heading = headingTag(…)` (R83): the React Compiler lint reads
+            a capitalised call result as a component created during render. */}
+        {createElement(headingTag(headingLevel), { className: styles.title() }, title)}
+        {isShown(lede) ? <p className={styles.lede()}>{lede}</p> : null}
       </div>
-      {action !== undefined && align !== "center" ? (
-        <div className={parts.action()}>{action}</div>
+      {isShown(action) && align === "start" ? (
+        <div className={styles.action()}>{action}</div>
       ) : null}
     </div>
   );

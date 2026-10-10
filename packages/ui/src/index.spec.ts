@@ -1,11 +1,13 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
 import * as publicApi from "./index";
 
-const SRC = dirname(fileURLToPath(import.meta.url));
-const LAYERS = ["atoms", "molecules", "organisms", "templates"] as const;
+const SRC = import.meta.dirname;
+/** The four tiers (AUTHORING §2). A tier with no folder yet is skipped, not failed. */
+const LAYERS = ["atoms", "molecules", "organisms", "layouts"].filter((layer) =>
+  existsSync(join(SRC, layer))
+);
 
 /** `menu-item-card` → `MenuItemCard` */
 function toPascalCase(kebab: string): string {
@@ -25,14 +27,14 @@ function componentFolders(layer: string): string[] {
 const barrel = readFileSync(join(SRC, "index.ts"), "utf8");
 
 /**
- * The barrel is the package's only public surface, and it is hand-maintained. These tests are the
- * guard: add a component folder and forget the export, and the suite fails rather than the
- * component silently being unreachable from `@pink-paprikaa-web/ui`.
+ * The barrel is the package's only public surface (AUTHORING §12), and it is hand-maintained. Add
+ * a component folder and forget the export, the test or the stories, and this suite fails rather
+ * than the component silently being unreachable, untested or absent from Storybook.
  */
 describe("public API", () => {
-  it.each(LAYERS)("re-exports every %s component folder", (layer) => {
+  it.each(LAYERS)("re-exports every %s component folder from the barrel", (layer) => {
     const missing = componentFolders(layer).filter(
-      (name) => !barrel.includes(`./${layer}/${name}/${name}`)
+      (name) => !barrel.includes(`./${layer}/${name}/${name}"`)
     );
     expect(missing).toEqual([]);
   });
@@ -44,23 +46,13 @@ describe("public API", () => {
     expect(missing).toEqual([]);
   });
 
-  /**
-   * The trio is the package's structural contract (AUTHORING.md §1). It is asserted here rather
-   * than trusted, because a missing file is invisible: a component with no test still passes the
-   * suite, and one with no stories simply never appears in Storybook. `Spinner` shipped exactly
-   * that way — built as a `Button` dependency, absent from Storybook until this test existed.
-   */
-  it.each(LAYERS)("gives every %s component the full file trio", (layer) => {
+  it.each(LAYERS)("gives every %s component the full file trio (AUTHORING §2)", (layer) => {
     const incomplete = componentFolders(layer).flatMap((name) =>
       ["tsx", "test.tsx", "stories.tsx"]
         .filter((role) => !existsSync(join(SRC, layer, name, `${name}.${role}`)))
         .map((role) => `${layer}/${name}/${name}.${role}`)
     );
     expect(incomplete).toEqual([]);
-  });
-
-  it("exports the variant builder components are authored with", () => {
-    expect(publicApi).toHaveProperty("componentVariants");
   });
 
   it("has no default export — the package is named exports only", () => {

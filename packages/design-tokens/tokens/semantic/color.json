@@ -1,0 +1,86 @@
+{
+  "color": {
+    "$type": "color",
+    "surface": {
+      "page": { "$value": "{color.ink.000}" },
+      "page-alt": { "$value": "{color.pink.50}" },
+      "card": { "$value": "{color.ink.000}" },
+      "sunken": { "$value": "{color.ink.100}" },
+      "brand": { "$value": "{color.pink.500}" },
+      "brand-soft": { "$value": "{color.pink.100}" },
+      "inverse": { "$value": "{color.ink.900}" },
+      "overlay": { "$value": "{color.ink-alpha.56}" },
+      "glass": { "$value": "{color.white-alpha.72}" }
+    },
+    "text": {
+      "body": { "$value": "{color.ink.800}" },
+      "heading": { "$value": "{color.ink.900}" },
+      "muted": { "$value": "{color.ink.600}" },
+      "subtle": {
+        "$value": "{color.ink.600}",
+        "$description": "Design system ink-500 measures 3.79:1 on white; the handoff moved it to ink-600 (spec §3.2)."
+      },
+      "brand": {
+        "$value": "{color.pink.600}",
+        "$description": "pink-500 text measures 4.04:1; pink-600 passes AA (spec §5.3)."
+      },
+      "on-brand": { "$value": "{color.ink.000}" },
+      "on-inverse": { "$value": "{color.ink.000}" },
+      "link": { "$value": "{color.pink.600}" },
+      "link-hover": { "$value": "{color.pink.700}" },
+      "success": { "$value": "{color.mint-strong}" },
+      "warning": { "$value": "{color.turmeric-strong}" },
+      "danger": { "$value": "{color.danger}" },
+      "info": { "$value": "{color.kesar-strong}" }
+    },
+    "border": {
+      "subtle": { "$value": "{color.ink.200}" },
+      "default": { "$value": "{color.ink.300}" },
+      "strong": { "$value": "{color.ink.900}" },
+      "brand": { "$value": "{color.pink.500}" },
+      "brand-soft": { "$value": "{color.pink.200}" }
+    },
+    "brand": {
+      "hover": { "$value": "{color.pink.600}" },
+      "active": { "$value": "{color.pink.700}" }
+    },
+    "status": {
+      "success": { "$value": "{color.mint}" },
+      "success-soft": { "$value": "{color.mint-soft}" },
+      "warning": { "$value": "{color.turmeric}" },
+      "warning-soft": { "$value": "{color.turmeric-soft}" },
+      "danger": { "$value": "{color.danger}" },
+      "danger-soft": { "$value": "{color.danger-soft}" },
+      "info": { "$value": "{color.kesar}" },
+      "info-soft": { "$value": "{color.kesar-soft}" }
+    },
+    "heat": {
+      "1": { "$value": "{color.mint}" },
+      "2": { "$value": "{color.turmeric}" },
+      "3": { "$value": "{color.tandoor}" },
+      "4": { "$value": "{color.pink.600}" }
+    },
+    "focus": {
+      "$value": "{color.pink.500}",
+      "$description": "Focus outline colour; white on dark surfaces."
+    },
+    "state": {
+      "hover": { "$value": "{color.pink.50}" },
+      "press": { "$value": "{color.pink.100}" },
+      "hover-neutral": { "$value": "{color.ink.100}" },
+      "press-neutral": { "$value": "{color.ink.200}" },
+      "press-danger": { "$value": "{color.danger-press}" },
+      "hover-on-color": { "$value": "{color.white-alpha.16}" },
+      "press-on-color": { "$value": "{color.white-alpha.28}" },
+      "hover-tint": { "$value": "{color.ink-alpha.06}" },
+      "press-tint": { "$value": "{color.ink-alpha.12}" },
+      "disabled-fill": { "$value": "{color.ink.100}" },
+      "disabled-ink": { "$value": "{color.ink.400}" }
+    },
+    "scrollbar": {
+      "thumb": { "$value": "{color.pink.200}" },
+      "thumb-hover": { "$value": "{color.pink.300}" },
+      "track": { "$value": "transparent" }
+    }
+  }
+}

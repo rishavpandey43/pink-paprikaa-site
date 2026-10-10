@@ -1,130 +1,77 @@
-import type { LucideIcon } from "lucide-react";
-import type { ComponentPropsWithoutRef } from "react";
+import { Slot } from "radix-ui";
+import type { ElementType, ReactElement } from "react";
 
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
-import { Icon } from "../icon/icon";
+import type { BaseProps } from "../../lib/common-props";
+import { iconButtonVariants } from "../../lib/icon-button-variants";
+import { withSx } from "../../lib/sx";
+import { usePress } from "../../lib/use-press";
+import { Icon, type IconComponent } from "../icon/icon";
 
-const iconButton = componentVariants({
-  slots: {
-    /**
-     * The hit target, not the visual. It is always at least 44 x 44 (`--layout-hit-min`) even when
-     * the painted circle is 32px, so a small toolbar glyph is still comfortably tappable — the
-     * reason this atom is two elements rather than one.
-     */
-    root: [
-      "group inline-flex shrink-0 items-center justify-center rounded-6 border-0 bg-transparent p-0",
-      "min-h-(--layout-hit-min) min-w-(--layout-hit-min)",
-      "transition-transform duration-(--duration-instant) ease-out",
-      "not-disabled:active:scale-(--motion-press-scale)",
-      "disabled:cursor-not-allowed",
-    ],
-    /** The painted circle. Sized independently of the hit target. */
-    surface: [
-      "inline-flex items-center justify-center rounded-6",
-      "transition-[background-color,border-color,color,box-shadow] duration-(--duration-fast) ease-out",
-      // Disabled is a real grey fill, never a reduced opacity (state contract).
-      "group-disabled:border-transparent group-disabled:shadow-none",
-      "group-disabled:bg-(--button-bg-disabled) group-disabled:text-(--button-fg-disabled)",
-    ],
-  },
-  variants: {
-    variant: {
-      primary: {
-        surface:
-          "bg-brand-primary text-text-on-brand shadow-brand group-not-disabled:group-hover:bg-brand-primary-hover",
-      },
-      secondary: {
-        surface:
-          "border border-border-default bg-surface-card text-text-link group-not-disabled:group-hover:bg-brand-tint",
-      },
-      ghost: {
-        surface: "bg-transparent text-text-body group-not-disabled:group-hover:bg-brand-tint",
-      },
-      /** Translucent white over food photography — the only variant that blurs what is behind it. */
-      glass: {
-        surface:
-          "bg-surface-glass text-text-heading shadow-elevation2 backdrop-blur-(--effect-blur-glass) group-not-disabled:group-hover:bg-surface-card",
-      },
-    },
-    size: {
-      sm: { surface: "size-8" },
-      md: { surface: "size-10" },
-      lg: { surface: "size-12" },
-    },
-    /**
-     * Set `brand` when the button sits on a flooded pink panel: the fills invert, because
-     * pink-on-pink has no contrast to work with.
-     */
-    on: { light: {}, brand: {} },
-  },
-  compoundVariants: [
-    {
-      on: "brand",
-      variant: "primary",
-      class: {
-        surface:
-          "bg-surface-card text-text-link shadow-elevation2 group-not-disabled:group-hover:bg-brand-tint",
-      },
-    },
-    {
-      on: "brand",
-      variant: "secondary",
-      class: {
-        surface:
-          "border-text-on-brand bg-transparent text-text-on-brand group-not-disabled:group-hover:bg-glass-white group-not-disabled:group-hover:text-text-link",
-      },
-    },
-    {
-      on: "brand",
-      variant: "ghost",
-      class: {
-        surface:
-          "text-text-on-brand group-not-disabled:group-hover:bg-glass-white group-not-disabled:group-hover:text-text-link",
-      },
-    },
-  ],
-  defaultVariants: { variant: "ghost", size: "md", on: "light" },
-});
-
-/** The glyph size each circle size pairs with — 16 / 20 / 24px. */
-const ICON_SIZE = { sm: "sm", md: "md", lg: "lg" } as const;
-
-export interface IconButtonProps
-  extends
-    Omit<ComponentPropsWithoutRef<"button">, "children" | "color">,
-    VariantProps<typeof iconButton> {
-  /** The Lucide glyph itself, imported by name: `import { Heart } from "lucide-react"`. */
-  icon: LucideIcon;
-  /**
-   * Required accessible name — an icon-only control is silent without it. Title Case, and phrased
-   * as the action it performs: "Save", "Share", "Back".
-   */
+export interface IconButtonProps extends Omit<BaseProps<"button">, "children" | "aria-label"> {
+  icon: IconComponent;
+  /** The accessible name — required: an icon-only control has no other (spec §5.5). */
   label: string;
+  /** ghost (default) · primary · secondary · glass (over photography) · tint (inherit parent colour). */
+  variant?: "primary" | "secondary" | "ghost" | "glass" | "tint" | undefined;
+  /** Drawn at 28 / 32 / 40 / 48px; xs–md keep a 44px touch target. */
+  size?: "xs" | "sm" | "md" | "lg" | undefined;
+  /** Cart-style count bubble, read out with the label ("Your order (3)"). Hidden at 0. */
+  count?: number | undefined;
+  /** Render as the single child element (e.g. `<Link href="/cart" />`); the glyph replaces its content. */
+  asChild?: boolean | undefined;
+  /** Only with `asChild`: the element to render as. */
+  children?: ReactElement | undefined;
 }
 
+/** Re-export the shared recipe (R132) for callers that styled a Radix trigger. */
+export { iconButtonVariants };
+
+const GLYPH_SIZE = { xs: "sm", sm: "sm", md: "md", lg: "lg" } as const;
+
+/** Circular, icon-only button for toolbars, card overlays and app headers. */
 export function IconButton({
-  className,
-  variant,
-  size = "md",
-  on,
   icon,
   label,
+  variant,
+  size = "md",
+  count,
+  asChild = false,
   disabled = false,
   type = "button",
+  sx,
+  className,
+  children,
   ...props
 }: IconButtonProps) {
-  const { root, surface } = iconButton({ variant, size, on });
+  const slots = iconButtonVariants({ variant, size });
+  const Component: ElementType = asChild ? Slot.Root : "button";
+  const hasCount = count !== undefined && count > 0;
+  const state = asChild ? { "aria-disabled": disabled || undefined } : { type, disabled };
+  const { pressProps } = usePress({
+    disabled,
+    onPointerDown: props.onPointerDown,
+    onPointerUp: props.onPointerUp,
+    onPointerLeave: props.onPointerLeave,
+    onKeyDown: props.onKeyDown,
+    onKeyUp: props.onKeyUp,
+    onBlur: props.onBlur,
+  });
   return (
-    <button
-      aria-label={label}
-      className={root({ className })}
-      disabled={disabled}
-      type={type}
+    <Component
+      className={slots.root({ className: withSx(sx, className) })}
+      aria-label={hasCount ? `${label} (${String(count)})` : label}
+      {...state}
       {...props}
+      {...pressProps}
     >
-      <span className={surface()}>
-        <Icon icon={icon} size={ICON_SIZE[size]} />
-      </span>
-    </button>
+      <Slot.Slottable child={children}>
+        {() => <Icon icon={icon} size={GLYPH_SIZE[size]} />}
+      </Slot.Slottable>
+      {hasCount ? (
+        <span aria-hidden className={slots.count()}>
+          {String(count)}
+        </span>
+      ) : null}
+    </Component>
   );
 }

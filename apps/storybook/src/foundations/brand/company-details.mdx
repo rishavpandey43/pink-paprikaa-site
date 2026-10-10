@@ -1,0 +1,25 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./brand.stories";
+
+<Meta title="Brand/Company details" />
+
+{/* source: guidelines/brand-company.card.html */}
+
+# Company details
+
+`brand` from `@pink-paprikaa-web/content` is the single source for name, legal, GST, contact,
+outlets and billing — the design system's `brand.js`, validated by a Zod schema where it enters the
+workspace. Every design reads from it; a page never retypes a fact. The derived strings —
+copyright, licence lines, footer policies — come from `toBrandLines(brand, year)`, with the year
+passed in when the site is built.
+
+<Canvas of={Specimens.CompanyFacts} meta={Specimens} sourceState="none" />
+
+A fact the owner has not supplied yet is `null` in the data — never the string "TODO" — and this
+page shows every one as **Owner to supply**, then lists them by path. The count is computed from
+the data, so a new pending fact appears here the moment it is added, and the page's test fails if
+a box stops showing one.
+
+The design system itself never imports these facts (a boundary rule): components take them as
+props, and only apps and this Storybook bind them.

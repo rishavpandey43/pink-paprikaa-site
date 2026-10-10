@@ -1,127 +1,162 @@
-"use client";
+import { type ComponentProps, type ReactElement, type ReactNode, useId } from "react";
 
-import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
-import { useId } from "react";
+import { formatRupees } from "@pink-paprikaa-web/utils";
 
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { ChoiceControl, joinIds } from "../../lib/choice-control";
+import type { SxProp } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import type { DesignFieldChrome } from "../../lib/design-field";
+import { hasDesignFieldChrome, withDesignField } from "../../lib/design-field";
+import { FIELD_STATUS_ICON, type FieldStatus } from "../../lib/field-status";
+import { withSx } from "../../lib/sx";
+import { Icon } from "../icon/icon";
+
+/** 22px circle; checked is a 6px pink ring around a white centre — never a filled dot. */
+const ring = componentVariants({
+  base: [
+    "size-choice-box rounded-pill border-2 border-border-default bg-ink-000 transition-all duration-fast ease-out",
+    "group-hover/choice:border-pink-400 group-hover/choice:bg-state-hover",
+    "group-data-[pressed]/choice:press-scale-icon group-data-[pressed]/choice:border-pink-400 group-data-[pressed]/choice:bg-state-press",
+    "group-active/choice:press-scale-icon",
+    "group-has-checked/choice:border-6 group-has-checked/choice:border-pink-500 group-has-checked/choice:bg-ink-000",
+    "group-has-checked/choice:group-hover/choice:border-brand-hover",
+    "group-has-checked/choice:group-data-[pressed]/choice:border-brand-active",
+    "group-has-focus-visible/choice:outline-2 group-has-focus-visible/choice:outline-offset-2 group-has-focus-visible/choice:outline-focus",
+    "group-has-aria-invalid/choice:border-status-danger in-aria-invalid:border-status-danger",
+    // Invalid reddens a chosen ring too, which the checked pink would otherwise out-rank.
+    "group-has-checked/choice:group-has-aria-invalid/choice:border-status-danger in-aria-invalid:group-has-checked/choice:border-status-danger",
+  ],
+});
 
 const radioGroup = componentVariants({
-  base: "flex",
-  variants: {
-    orientation: { vertical: "flex-col gap-3", horizontal: "flex-row flex-wrap gap-x-6 gap-y-3" },
-  },
-  defaultVariants: { orientation: "vertical" },
-});
-
-const radio = componentVariants({
   slots: {
-    root: "flex items-start gap-3",
-    /**
-     * The checked mark is a 6px pink ring, never a filled disc: a 22px circle flooded pink with a
-     * 10px card-coloured dot in the middle leaves exactly that ring, and needs no border width
-     * outside the scale to draw it.
-     */
-    control: [
-      "mt-px grid size-5.5 shrink-0 place-items-center rounded-6 border-2",
-      "border-(--field-border-default) bg-(--field-bg-default)",
-      "transition-[background-color,border-color] duration-(--duration-fast) ease-out",
-      "data-[state=checked]:border-brand-primary data-[state=checked]:bg-brand-primary",
-    ],
-    indicator: "size-2.5 rounded-6 bg-surface-card",
-    label: "flex min-w-0 flex-1 flex-col gap-0-5",
-    labelRow: "flex min-w-0 items-baseline justify-between gap-3",
-    labelText: "min-w-0 font-body font-medium text-body1 text-text-body",
-    price: "shrink-0 font-display font-bold text-body2 text-text-heading",
-    description: "font-body text-body2 text-text-muted",
+    root: "min-w-0",
+    legend: "mb-3 font-body text-body-sm font-medium text-text-body",
+    options: "flex gap-3",
+    message: "mt-2 mb-0 flex max-w-none items-center gap-1.5 font-body text-caption",
   },
   variants: {
-    /** Marks the option invalid — set it on every option when the whole group is unanswered. */
-    hasError: { true: { control: "border-status-danger" }, false: {} },
-    isDisabled: {
-      true: {
-        root: "cursor-not-allowed",
-        control: "border-border-subtle bg-(--field-bg-disabled)",
-        indicator: "bg-(--field-fg-disabled)",
-        labelText: "text-text-subtle",
-        price: "text-text-subtle",
-        description: "text-text-subtle",
-      },
-      false: { root: "cursor-pointer" },
+    orientation: {
+      vertical: { options: "flex-col" },
+      horizontal: { options: "flex-row flex-wrap gap-x-6" },
     },
+    status: {
+      default: { message: "text-text-subtle" },
+      error: { message: "text-text-danger" },
+      success: { message: "text-text-success" },
+      warning: { message: "text-text-warning" },
+    },
+    isLegendHidden: { true: { legend: "sr-only" } },
   },
-  defaultVariants: { hasError: false, isDisabled: false },
+  defaultVariants: { orientation: "vertical", status: "default", isLegendHidden: false },
 });
 
-export interface RadioGroupProps
-  extends
-    Omit<RadioGroupPrimitive.RadioGroupProps, "orientation">,
-    VariantProps<typeof radioGroup> {}
+export interface RadioProps
+  extends Omit<ComponentProps<"input">, "type" | "size">, SxProp, DesignFieldChrome {
+  label: ReactNode;
+  description?: ReactNode;
+  /** Absolute price of this option in whole rupees; renders as "₹280". */
+  price?: number | undefined;
+  isInvalid?: boolean | undefined;
+}
 
-/**
- * The wrapper every `Radio` must sit inside — it owns the shared name, the chosen value and the
- * arrow-key roving focus that makes a radio group usable from the keyboard.
- */
-export function RadioGroup({ className, orientation, ...props }: RadioGroupProps) {
-  return (
-    <RadioGroupPrimitive.Root
-      className={radioGroup({ orientation, className })}
-      orientation={orientation ?? "vertical"}
-      {...props}
-    />
+/** Exactly-one choice — portion size, spice level, payment method. Give a group one shared `name`. */
+export function Radio({
+  price,
+  hint,
+  error,
+  success,
+  warning,
+  optional,
+  id,
+  isInvalid,
+  ...props
+}: RadioProps) {
+  const chrome = { label: props.label, hint, error, success, warning, optional };
+  const shouldWrap = hasDesignFieldChrome(chrome, { ignoreLabel: true });
+  return withDesignField(
+    chrome,
+    id,
+    isInvalid === true || (error !== undefined && error !== false) ? "error" : "default",
+    (wired) => (
+      <ChoiceControl
+        type="radio"
+        control={<span className={ring()} />}
+        price={price === undefined ? undefined : formatRupees(price)}
+        id={wired.id === "" ? id : wired.id}
+        isInvalid={wired.status === "error" || isInvalid}
+        isLabelHidden={shouldWrap}
+        {...props}
+        label={shouldWrap ? "" : props.label}
+      />
+    ),
+    { ignoreLabel: true }
   );
 }
 
-type RadioVariants = Omit<VariantProps<typeof radio>, "isDisabled">;
-
-export interface RadioProps
-  extends Omit<RadioGroupPrimitive.RadioGroupItemProps, "children">, RadioVariants {
-  /** The option itself, in sentence case. */
-  label?: string | undefined;
-  /** A second line under the label — what the portion feeds, or when it is available. */
-  description?: string | undefined;
-  /** The absolute price of this option in whole rupees. Renders right-aligned as `₹280`. */
-  price?: number | undefined;
+interface RadioGroupOwnProps extends ComponentProps<"fieldset">, SxProp {
+  legend: ReactNode;
+  isLegendHidden?: boolean | undefined;
+  orientation?: "vertical" | "horizontal" | undefined;
 }
 
-export function Radio({
-  label,
-  description,
-  price,
-  hasError = false,
-  disabled = false,
+/** A status always brings its message: an error is never shown by colour alone (spec §5.5). */
+export type RadioGroupProps = RadioGroupOwnProps &
+  (
+    | {
+        status?: "default" | undefined;
+        /** A plain hint under the options, read as the group's description. */
+        message?: ReactNode;
+      }
+    | {
+        /** `error` marks the group invalid and turns every ring red, a chosen one too. */
+        status: Exclude<FieldStatus, "default">;
+        /**
+         * Shown under the options with the status glyph, and read as the group's description. Words
+         * or an element — a blank string still renders no message (R48), so never pass one.
+         */
+        message: string | ReactElement;
+      }
+  );
+
+/** A `<fieldset>` + `<legend>` around Radios, exposed as a radiogroup. */
+export function RadioGroup({
+  legend,
+  isLegendHidden = false,
+  orientation = "vertical",
+  status = "default",
+  message,
+  sx,
   className,
-  id,
+  children,
+  "aria-describedby": describedBy,
   ...props
-}: RadioProps) {
-  const generatedId = useId();
-  const controlId = id ?? generatedId;
-  const labelId = `${controlId}-label`;
-  const descriptionId = `${controlId}-description`;
-  const slots = radio({ hasError, isDisabled: disabled });
+}: RadioGroupProps) {
+  const messageId = useId();
+  const styles = radioGroup({ orientation, status, isLegendHidden });
+  const statusIcon = status === "default" ? undefined : FIELD_STATUS_ICON[status];
+  // R48: a blank message is no message — an empty line would describe the group as nothing.
+  const hasMessage =
+    typeof message === "string"
+      ? message.trim() !== ""
+      : message !== undefined && message !== null && typeof message !== "boolean";
 
   return (
-    <div className={slots.root({ class: className })}>
-      <RadioGroupPrimitive.Item
-        aria-describedby={description ? descriptionId : undefined}
-        aria-labelledby={labelId}
-        className={slots.control()}
-        disabled={disabled}
-        id={controlId}
-        {...props}
-      >
-        <RadioGroupPrimitive.Indicator className={slots.indicator()} />
-      </RadioGroupPrimitive.Item>
-      <label className={slots.label()} htmlFor={controlId}>
-        <span className={slots.labelRow()} id={labelId}>
-          <span className={slots.labelText()}>{label}</span>
-          {price === undefined ? null : <span className={slots.price()}>₹{price}</span>}
-        </span>
-        {description ? (
-          <span className={slots.description()} id={descriptionId}>
-            {description}
-          </span>
-        ) : null}
-      </label>
-    </div>
+    <fieldset
+      role="radiogroup"
+      aria-invalid={status === "error" ? true : undefined}
+      aria-describedby={joinIds(hasMessage ? messageId : undefined, describedBy)}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      <legend className={styles.legend()}>{legend}</legend>
+      <div className={styles.options()}>{children}</div>
+      {hasMessage ? (
+        <p id={messageId} className={styles.message()}>
+          {statusIcon === undefined ? null : <Icon icon={statusIcon} size="xs" />}
+          {message}
+        </p>
+      ) : null}
+    </fieldset>
   );
 }
