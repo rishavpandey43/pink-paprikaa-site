@@ -1,0 +1,21 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./layout.stories";
+
+<Meta title="Layout/Card anatomy" />
+
+{/* source: guidelines/card-anatomy.card.html */}
+
+# Card anatomy
+
+`default`, `feature` and `quiet` — fill, radius, border and shadow per variant — plus the two
+flooded variants that set their own surface.
+
+<Canvas of={Specimens.CardAnatomy} meta={Specimens} sourceState="none" />
+
+- **Default:** the card fill, `radius-lg`, a `border-subtle` rule and `shadow-1`; with
+  `isInteractive` it lifts on hover to `shadow-3`.
+- **Feature:** the soft pink fill, `radius-xl`, no border, no shadow.
+- **Menu row:** no card at all — a `border-subtle` rule between rows.
+- **No card ever gets a coloured left border.** Media cards use `padding="none"` and put the radius
+  on the image corners only.

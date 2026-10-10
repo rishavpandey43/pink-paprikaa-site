@@ -1,8 +1,10 @@
+import "./fonts";
 import "./styles.css";
 
 import type { Preview } from "@storybook/react-vite";
-
 import { INITIAL_VIEWPORTS } from "storybook/viewport";
+
+import { PROSE_COMPONENTS } from "../src/docs-kit/prose";
 
 /**
  * The system's own breakpoints, plus 360px.
@@ -39,6 +41,7 @@ const deviceViewports = { ...viewports, ...INITIAL_VIEWPORTS };
 const backgrounds = {
   page: { name: "Page — white", value: "var(--color-surface-page)" },
   tint: { name: "Page alt — pink tint", value: "var(--color-surface-page-alt)" },
+  soft: { name: "Soft — light pink", value: "var(--color-surface-brand-soft)" },
   brand: { name: "Brand — flooded pink", value: "var(--color-surface-brand)" },
   inverse: { name: "Inverse — ink", value: "var(--color-surface-inverse)" },
 } as const;
@@ -52,6 +55,8 @@ const preview: Preview = {
       expanded: true,
       matchers: { color: /(background|color)$/i, date: /Date$/i },
     },
+    // A markdown table scrolls in its own frame at 360px instead of the page (docs-kit/prose).
+    docs: { components: PROSE_COMPONENTS },
     viewport: { options: deviceViewports },
     backgrounds: { options: backgrounds },
     a11y: {
@@ -60,39 +65,89 @@ const preview: Preview = {
       config: {
         rules: [
           /**
-           * `color-contrast` is OFF, and this is a deliberate, owner-made brand decision — not an
-           * oversight and not a convenience.
-           *
-           * White on the brand pink `#EE2C68` measures **4.04:1**. WCAG AA asks 4.5:1 for normal
-           * text and 3:1 for large, so white-on-brand passes at heading sizes and falls just short
-           * at body sizes. The three ways out were: darken the panel (rejected — `#EE2C68` is the
-           * brand), enlarge every label on pink (rejected — it distorts the components), or use
-           * dark ink on pink (rejected — "white type on a flooded pink field" is the brand's
-           * signature relationship, design guide §3.1).
-           *
-           * The owner chose to keep white text. With that settled, leaving the rule on would mean
-           * ~460 permanent failures that no one can ever action, which trains everyone to ignore a
-           * red suite — the rule would protect nothing and cost the gate its credibility.
-           *
-           * Everything else axe checks still FAILS the story: names, roles, labels, landmarks,
-           * focus order, keyboard reachability, ARIA correctness. Only this one ratio is exempt.
-           * Revisit if the brand palette is ever reopened.
+           * `color-contrast` is owned by the token contrast policy (spec §5.4): every text/background
+           * pair the components use is measured in `packages/design-tokens` on every build, with white
+           * on the brand pink as the single declared exception at the AA-large floor. axe cannot scope
+           * an exception to one pair, so here it is off; every other axe rule fails the story.
            */
           { id: "color-contrast", enabled: false },
         ],
       },
     },
     options: {
-      // Atoms → molecules → organisms → templates, matching the layering rule, instead of
-      // alphabetical (which would file "Atoms" after "Organisms" only by accident of spelling).
+      // Introduction, then the design system's thirteen tab groups in its own order (foundations,
+      // then the atomic layers, then the reference kits), instead of alphabetical. Foundation pages
+      // follow the design system's card order; component stories inside a layer stay alphabetical.
       storySort: {
-        order: ["Foundations", "Atoms", "Molecules", "Organisms", "Templates"],
+        // Task 11b — Claude Design tree order (extras last in each group).
+        order: [
+          "Readme",
+          ["Readme", "Docs kit", "Docs prose", "Canvas geometry", "System (sx)"],
+          "Templates",
+          ["Marketing website", "Ordering app screen", "Social post"],
+          "App",
+          ["Ordering app"],
+          "Atoms",
+          "Brand",
+          [
+            "Logo",
+            "Company details",
+            "Logo lockup",
+            "Pattern",
+            "Symbol",
+            "Wordmark",
+            "Iconography",
+            "Voice & content",
+          ],
+          "Colors",
+          [
+            "Spice accents",
+            "Spice heat scale",
+            "Warm ink neutrals",
+            "Brand pink",
+            "Semantic surfaces & text",
+            "Status colors",
+            "Text on surfaces",
+            "Contrast",
+          ],
+          "Explore",
+          ["Diamond + symbol", "Mark legibility"],
+          "Layout",
+          ["Auto grid", "Breakpoints", "Card anatomy", "Form states", "Utility classes"],
+          "Layouts",
+          "Marketing",
+          ["Canvas formats", "Canvas type", "Social & ads"],
+          "Molecules",
+          "Motion",
+          ["Duration & easing", "Interaction states", "Section reveal"],
+          "Organisms",
+          "Spacing",
+          ["Borders & focus", "Shadows", "Corner radii", "Layout rhythm", "Spacing scale"],
+          "Type",
+          ["Fluid type", "Body", "Devanagari", "Display", "Headings", "Overline & mono"],
+          "Website",
+          ["Homepage"],
+        ],
       },
     },
   },
+  /**
+   * storybook:test renders without Storybook's `iframe.html`, whose head pads the canvas by layout
+   * (`centered` and `padded` 1rem a side, `fullscreen` none). Without it every 360 play measured
+   * 32px more room than the canvas a reviewer sees, so the runner gets the same gutter here.
+   */
+  beforeEach: ({ parameters }) => {
+    if (!("__vitest_browser__" in globalThis)) return;
+    document.body.style.boxSizing = "border-box";
+    document.body.style.padding = parameters.layout === "fullscreen" ? "0" : "1rem";
+    return () => {
+      document.body.style.removeProperty("box-sizing");
+      document.body.style.removeProperty("padding");
+    };
+  },
   decorators: [
     (Story) => (
-      <div className="font-body text-body1 leading-body1 text-text-body">
+      <div className="font-body text-body text-text-body">
         <Story />
       </div>
     ),

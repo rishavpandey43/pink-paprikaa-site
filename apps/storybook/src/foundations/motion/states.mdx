@@ -1,0 +1,18 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./motion.stories";
+
+<Meta title="Motion/Interaction states" />
+
+{/* source: guidelines/states.card.html */}
+
+# Interaction states
+
+Anything a guest can press has five states. Hover darkens one step (pointer only, never on touch).
+Press darkens a second step and scales to 0.97 in 80ms; Space/Enter show it too. Focus is
+keyboard-only: a 2px ring, white on coloured surfaces. Disabled is a real grey, never just opacity.
+All components read one hook, `usePress`, and the `--state-*` tokens.
+
+<Canvas of={Specimens.States} meta={Specimens} sourceState="none" />
+
+<Canvas of={Specimens.StateTokens} meta={Specimens} sourceState="none" />

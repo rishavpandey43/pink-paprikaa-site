@@ -1,0 +1,40 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./motion.stories";
+
+<Meta title="Layout/Form states" />
+
+{/* source: guidelines/form-states.card.html */}
+
+# Form states
+
+One status system across every control: default, error, success, warning, disabled, read-only and
+loading.
+
+| State      | Border                     | Message              | Applies to                                                                                           |
+| ---------- | -------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------- |
+| `default`  | 1px `border-default`       | hint, subtle         | all                                                                                                  |
+| `hover`    | 1px `border-strong`        | —                    | Input, Select, Combobox, DatePicker, SearchField, OtpInput; Checkbox/Radio/Switch tint the whole row |
+| `focus`    | 2px pink + ring            | —                    | all                                                                                                  |
+| `error`    | 2px danger                 | says what to do next | Input, Select, Combobox, DatePicker, SearchField, OtpInput, Checkbox, Radio, SlotPicker, Field       |
+| `success`  | 2px mint                   | confirms the result  | Input, Select, Combobox, DatePicker, SearchField, OtpInput, Field                                    |
+| `warning`  | 2px turmeric               | flags a caveat       | Input, Select, Combobox, DatePicker, SearchField, Field                                              |
+| `disabled` | ink-100 fill, ink-400 text | —                    | all — a real fill, never opacity                                                                     |
+| `readOnly` | sunken fill + lock glyph   | —                    | Input, Select, DatePicker                                                                            |
+| `loading`  | unchanged                  | trailing Spinner     | Input, SearchField                                                                                   |
+
+A status raises the border, tints the leading icon, shows the matching glyph and **replaces the
+hint with its message** — never a status colour without a message. The control carries `status`;
+`Field` renders the message and wires `aria-describedby` and `aria-invalid`.
+
+**No browser-native UI.** Dropdowns are `Select` / `Combobox`, dates `DatePicker`, times
+`SlotPicker`, quantities `QuantityStepper`. `Input` refuses date/time/color/file/range types.
+
+**No browser validation bubbles.** Forms are `noValidate`; controls set `aria-required`, and errors
+render through the field's `message`. Validate on submit, re-validate on change once a field has
+shown an error.
+
+**Pickers open our panels:** popover on desktop (flips above when there is no room), bottom sheet
+at ≤640px.
+
+<Canvas of={Specimens.FormStates} meta={Specimens} sourceState="none" />

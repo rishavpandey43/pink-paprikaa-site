@@ -6,8 +6,18 @@
     "moduleResolution": "bundler",
     "jsx": "preserve",
     "types": ["node", "vite/client"],
-    "lib": ["es2022", "dom", "dom.iterable"]
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "paths": { "@/*": ["./src/*"] }
   },
-  "include": [".storybook/**/*.ts", ".storybook/**/*.tsx", "vite.config.mts", "vitest.config.mts"],
+  "include": [
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "vite.config.mts",
+    "vitest.config.mts",
+    "visual/**/*.ts",
+    "visual/**/*.mts"
+  ],
   "exclude": ["out-tsc", "storybook-static", "eslint.config.mjs"]
 }

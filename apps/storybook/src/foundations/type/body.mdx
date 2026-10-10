@@ -1,0 +1,18 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./type.stories";
+
+<Meta title="Type/Body" />
+
+{/* source: guidelines/type-body.card.html */}
+
+# Body
+
+DM Sans for running text and interface copy, regular and medium, at a generous line-height.
+
+<Canvas of={Specimens.BodySteps} meta={Specimens} sourceState="none" />
+
+Body sentences stay short — about 12 words on average, never more than 24. Prose uses
+`text-wrap: pretty` and the prose measure (`max-w-text-measure-prose`); helper text drops to `body-sm` in the
+muted tone and fine print to `caption` in the subtle tone. Cap line length with `Typography measure`:
+`prose` for long-form, `narrow` for pull quotes (Spacing → Layout rhythm lists both widths).

@@ -1,0 +1,17 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./colors.stories";
+
+<Meta title="Colors/Spice heat scale" />
+
+{/* source: guidelines/color-heat.card.html */}
+
+# Spice heat scale
+
+Heat is shown with diamonds on the heat ramp, never with emoji. The labels are plain English —
+Mild, Medium, Hot, Extra Hot — because a guest should never have to decode a control.
+
+<Canvas of={Specimens.HeatScale} meta={Specimens} sourceState="none" />
+
+`SpiceLevel` draws it (`level` 1–4, `hasLabel`). The ramp is semantic: each step references an
+accent, and the hottest is the brand's own `pink-600`.

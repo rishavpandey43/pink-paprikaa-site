@@ -1,0 +1,24 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./layout.stories";
+
+<Meta title="Layout/Breakpoints" />
+
+{/* source: guidelines/breakpoints.card.html */}
+
+# Breakpoints
+
+Five breakpoints and the column count at each. Every design must survive **360px** on the low end.
+
+<Canvas of={Specimens.Breakpoints} meta={Specimens} sourceState="none" />
+
+- **Never a bare `1fr` track.** Always `minmax(0, 1fr)`, or `AutoGrid` — `1fr` carries a
+  min-content floor, and a long uppercase label silently widens the track and overflows the row.
+- **Nothing clips text.** Buttons, tags and pills never wrap and never shrink; anything that could
+  run long uses `text-wrap: pretty` (prose), `text-wrap: balance` (headlines) or `line-clamp-*`. A
+  nav shortens its link list at narrower widths rather than clipping a word.
+- **Flex rows that hold text carry `min-w-0`**, and any row that can run out of space wraps with a
+  `gap` — never per-child margins.
+- **Fixed-height controls never wrap** — buttons, fields, tags — and every touch target is at least
+  the hit token (`--spacing-hit`).
+- **Images always sit in an aspect-ratio box**, so a missing photo cannot collapse a layout.

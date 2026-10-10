@@ -1,0 +1,28 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./layout.stories";
+
+<Meta title="Layout/Utility classes" />
+
+{/* source: spec §6.5 — the design system's utility classes */}
+
+# Utility classes
+
+The design system's `.pp-*` classes are Tailwind utilities here (or built-ins). Each is used live
+below, so a renamed utility fails lint on this page's specimen.
+
+| Design system                                         | This system                                                               |
+| ----------------------------------------------------- | ------------------------------------------------------------------------- |
+| `.pp-container`                                       | `container-page`, or the `Container` layout                               |
+| `.pp-section`                                         | `section-y`, or the `Section` layout                                      |
+| `.pp-autogrid` · `.pp-autogrid-wide`                  | `autogrid` · `autogrid-wide`, or `AutoGrid`                               |
+| `.pp-cluster`                                         | `cluster`, or `Cluster`                                                   |
+| `.pp-clamp-2` · `.pp-clamp-3`                         | `line-clamp-2` · `line-clamp-3` (Tailwind built-ins)                      |
+| `.pp-fluid-display-1` … `.pp-fluid-h3`                | `text-display-1-fluid` … `text-h3-fluid`                                  |
+| `.pp-display-2` · `.pp-overline` · `.pp-mono`         | `text-display-2` · `text-overline` · `text-mono` (+ a font)               |
+| `--scrim-bottom` · `--scrim-top`                      | `scrim-bottom` · `scrim-top`                                              |
+| `.pp-on-brand` · `.pp-on-ink` · `.pp-on-soft`         | `data-surface="brand"` … (the classes still work)                         |
+| `--dur-*` · `--ease-*` · `--press-scale` · `--lift-y` | `duration-fast` … · `ease-out` … · `press-scale` · `lift`                 |
+| stacking                                              | `z-raised` · `z-sticky` · `z-header` · `z-dock` · `z-overlay` · `z-toast` |
+
+<Canvas of={Specimens.UtilityClasses} meta={Specimens} sourceState="none" />

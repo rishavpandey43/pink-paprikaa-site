@@ -1,0 +1,72 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./system.stories";
+
+<Meta title="Foundations/System (sx)" />
+
+# System (sx)
+
+Every component takes one style-override prop, `sx`, in the direction MUI v7 took: a single typed
+object instead of a growing list of one-off props. Ours is stricter than MUI's. Values are **tokens
+only**: a spacing step, a named radius, a surface colour. A raw length, a hex or a class name is a
+type error, so an override can never leave the design system.
+
+```tsx
+<Box sx={{ p: 6, radius: "lg", bg: "soft" }} />
+```
+
+Each family below renders live, with the exact object printed beside it.
+
+## Spacing
+
+`m` `mt` `mb` `ms` `me` `mx` `my`, `p` `pt` `pb` `ps` `pe` `px` `py`, `gap` `gapX` `gapY`. Values are
+steps of the spacing scale; margins also take `"auto"`.
+
+<Canvas of={Specimens.Spacing} meta={Specimens} sourceState="none" />
+
+## Display
+
+<Canvas of={Specimens.Display} meta={Specimens} sourceState="none" />
+
+## Size
+
+`w` is `full`, `auto` or `fit`. `h`, `minW` and `maxW` are the few extra sizes a layout needs.
+
+<Canvas of={Specimens.Size} meta={Specimens} sourceState="none" />
+
+## Flex child
+
+`grow`, `shrink` and `alignSelf` position a component inside a flex parent.
+
+<Canvas of={Specimens.FlexChild} meta={Specimens} sourceState="none" />
+
+## Look
+
+`radius`, `shadow` and `border` pick from the radius scale, the elevation ladder and the default hairline.
+
+<Canvas of={Specimens.Look} meta={Specimens} sourceState="none" />
+
+## Colour
+
+`bg` paints **light grounds only**: `page`, `page-alt`, `card`, `sunken`, `soft`. A brand or ink ground
+changes the text colour of everything inside it, which the surface system does through
+`data-surface`, so those are set with the component's `surface` prop, never with `sx.bg`. `color` picks a
+text colour.
+
+<Canvas of={Specimens.Colour} meta={Specimens} sourceState="none" />
+
+## Responsive
+
+Spacing, display, alignment and width accept `{ base, sm, md, lg, xl }`, mobile first.
+
+<Canvas of={Specimens.Responsive} meta={Specimens} sourceState="none" />
+
+## Rules
+
+- **`className` wins.** `sx` is applied before `className`, so a class a caller passes overrides the
+  same `sx` key. Reach for `sx` first and `className` only for what `sx` cannot say.
+- **One object, the outermost element.** `sx` styles the component's root (or its outermost slot).
+- **CSS budget.** Responsive classes are assembled at runtime, so the stylesheet declares the full
+  set once. That whole system may add at most 20 KB gzip to the built CSS.
+- **Beyond `sx`.** Anything it cannot express (nested selectors, state styles) belongs in a
+  component variant, not in an override.

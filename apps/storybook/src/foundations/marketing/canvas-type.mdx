@@ -1,0 +1,19 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./marketing.stories";
+
+<Meta title="Marketing/Canvas type" />
+
+{/* source: guidelines/canvas-type.card.html */}
+
+# Canvas type
+
+The type scale for a 1080px artboard, set through `SocialHeadline` and previewed scaled to fit.
+
+<Canvas of={Specimens.CanvasType} meta={Specimens} sourceState="none" />
+
+Canvas type is its own scale: screen sizes look like fine print on a 1080 canvas and are never used
+there. Headlines stay at six words or fewer, balanced, two or three lines at most. Prices on
+artwork keep the `₹` rules — no space, no decimals — and use `PriceTag size="canvas"`.
+
+<Canvas of={Specimens.CanvasTypeTokens} meta={Specimens} sourceState="none" />

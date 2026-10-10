@@ -1,0 +1,38 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./marketing.stories";
+
+<Meta title="Marketing/Canvas formats" />
+
+{/* source: guidelines/canvas-formats.card.html */}
+
+# Canvas formats
+
+The only seven artboard sizes, shown to scale. The brand ships far more artwork than product UI,
+so canvases are tokens. Never invent a size outside this list — add a canvas token instead.
+
+<Canvas of={Specimens.CanvasFormats} meta={Specimens} sourceState="none" />
+
+| Format        | Use                                            |
+| ------------- | ---------------------------------------------- |
+| `post`        | Instagram feed 1:1, carousel slides            |
+| `portrait`    | Feed 4:5 — the loudest, default for statements |
+| `story`       | Stories, Reels covers                          |
+| `landscape`   | Link previews, OG images, email headers        |
+| `wide`        | In-store screens, menu boards                  |
+| `leaderboard` | Display ad                                     |
+| `mpu`         | Display ad                                     |
+
+- **Build every asset inside `PostFrame`** — it pins the true pixel canvas and scales for preview,
+  so nothing is designed at an arbitrary size. Keep to the safe margins.
+- **Safe margins:** the canvas pad on 1080px canvases, the tight pad on the 1200 × 628 landscape;
+  stories keep the top and bottom story-safe bands clear of platform chrome.
+- **One idea per board:** overline, headline, signature. One field colour per board — flooded pink
+  with the tiled pattern is the house look; ink for statements; the soft pinks for product-led
+  boards.
+- **One `OfferSeal` per board**, cornered and allowed to bleed off the edge — but the number stays
+  fully inside the canvas. Pass `bleed`; never position the seal by hand.
+- **Every board is signed** with `LogoLockup` (or `Logo` on small ad units), white on pink or ink.
+- **Display ads** carry the smallest possible message: mark, one line, one button.
+
+<Canvas of={Specimens.CanvasTokens} meta={Specimens} sourceState="none" />

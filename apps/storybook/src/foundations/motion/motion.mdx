@@ -1,0 +1,36 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./motion.stories";
+
+<Meta title="Motion/Duration & easing" />
+
+{/* source: guidelines/motion.card.html */}
+
+# Duration & easing
+
+Hover 140ms, state 220ms, sheets 340ms. `--ease-pop` only for add-to-cart.
+
+<Canvas of={Specimens.Durations} meta={Specimens} sourceState="none" />
+
+- `ease-out` for anything entering, `ease-in-out` for moves, `ease-entrance` for sheets.
+- **`ease-pop` — one overshoot — is reserved for add-to-cart and reward confirmations** (`Toast
+isPop`). Nowhere else; no bouncing UI.
+- Fades always pair with a small translate (8–12px) — never opacity alone.
+- `prefers-reduced-motion` is honoured globally: durations collapse, and reveals keep the fade but
+  drop the translate. The looping specimen above goes still.
+- **CSS does every animation.** The system ships no motion library (spec D15); adding one needs a
+  decision-log entry naming the component and the CSS limit it hit.
+
+<Canvas of={Specimens.MotionTokens} meta={Specimens} sourceState="none" />
+
+## Animations
+
+The system's seven keyframes, running — the loader really is the brand mark pulsing, not a
+borrowed ring. `animate-sheet-in` and `animate-toast-pop` are entrances: they play once on mount,
+so reload the page to see them again.
+
+<Canvas of={Specimens.Animations} meta={Specimens} sourceState="none" />
+
+To check reduced motion, turn on the operating system's **Reduce motion** setting (macOS: System
+Settings → Accessibility → Display) and reload: every specimen on this page goes still, and nothing
+breaks.

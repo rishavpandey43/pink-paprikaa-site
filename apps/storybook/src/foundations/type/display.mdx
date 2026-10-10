@@ -1,0 +1,23 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as Specimens from "./type.stories";
+
+<Meta title="Type/Display" />
+
+{/* source: guidelines/type-display.card.html */}
+
+# Display
+
+Poppins at the black weight, tight negative tracking and a line-height near 1.0 — for the one loud
+line on a hero or a board.
+
+<Canvas of={Specimens.DisplaySteps} meta={Specimens} sourceState="none" />
+
+Fixed display sizes are for specimens and fixed moments; responsive layouts use the fluid twins
+(Type → Fluid). **Poppins, DM Sans and Space Mono are the brand's final typefaces** — Poppins for
+display and headings (it carries Devanagari), DM Sans for body and UI, Space Mono for order and
+promo codes. Do not substitute.
+
+## Families & weights
+
+<Canvas of={Specimens.FamiliesAndWeights} meta={Specimens} sourceState="none" />
