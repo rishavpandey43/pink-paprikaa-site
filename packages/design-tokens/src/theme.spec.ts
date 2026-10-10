@@ -58,8 +58,12 @@ describe("theme.css", () => {
   it("expands a typography token into Tailwind's font-size sub-properties", () => {
     expect(theme).toContain("--text-h1: 40px;");
     expect(theme).toContain("--text-h1--line-height: 1.1;");
-    expect(theme).toContain("--text-h1--letter-spacing: -0.02em;");
+    expect(theme).toContain("--text-h1--letter-spacing: 0;");
     expect(theme).toContain("--text-h1--font-weight: 700;");
+  });
+
+  it("never tracks text tighter than 0 — negative tracking made large Poppins letters collide", () => {
+    expect(theme).not.toMatch(/letter-spacing: -/);
   });
 
   it("sets Tailwind's spacing multiplier to the 4px unit", () => {

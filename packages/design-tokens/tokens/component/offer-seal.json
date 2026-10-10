@@ -40,7 +40,7 @@
       "$value": {
         "fontSize": "3em",
         "lineHeight": 1,
-        "letterSpacing": "-0.03em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       },
       "$description": "The number, 0.3 × side."

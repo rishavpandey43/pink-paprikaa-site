@@ -22,7 +22,7 @@
       "$value": {
         "fontSize": "72px",
         "lineHeight": 1.02,
-        "letterSpacing": "-0.03em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       }
     },
@@ -30,7 +30,7 @@
       "$value": {
         "fontSize": "56px",
         "lineHeight": 1.05,
-        "letterSpacing": "-0.025em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       }
     },
@@ -38,7 +38,7 @@
       "$value": {
         "fontSize": "40px",
         "lineHeight": 1.1,
-        "letterSpacing": "-0.02em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },
@@ -46,7 +46,7 @@
       "$value": {
         "fontSize": "32px",
         "lineHeight": 1.15,
-        "letterSpacing": "-0.015em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },
@@ -54,7 +54,7 @@
       "$value": {
         "fontSize": "25px",
         "lineHeight": 1.2,
-        "letterSpacing": "-0.01em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },
@@ -62,7 +62,7 @@
       "$value": {
         "fontSize": "20px",
         "lineHeight": 1.3,
-        "letterSpacing": "-0.005em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },
@@ -98,7 +98,7 @@
       "$value": {
         "fontSize": "clamp(40px, 7vw, 72px)",
         "lineHeight": 1.02,
-        "letterSpacing": "-0.03em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       }
     },
@@ -106,7 +106,7 @@
       "$value": {
         "fontSize": "clamp(34px, 5.4vw, 56px)",
         "lineHeight": 1.05,
-        "letterSpacing": "-0.025em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       }
     },
@@ -114,7 +114,7 @@
       "$value": {
         "fontSize": "clamp(28px, 3.6vw, 40px)",
         "lineHeight": 1.1,
-        "letterSpacing": "-0.02em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },
@@ -122,7 +122,7 @@
       "$value": {
         "fontSize": "clamp(24px, 2.8vw, 32px)",
         "lineHeight": 1.15,
-        "letterSpacing": "-0.015em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },
@@ -130,7 +130,7 @@
       "$value": {
         "fontSize": "clamp(20px, 2.1vw, 25px)",
         "lineHeight": 1.2,
-        "letterSpacing": "-0.01em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },
@@ -138,7 +138,7 @@
       "$value": {
         "fontSize": "clamp(17px, 1.6vw, 20px)",
         "lineHeight": 1.3,
-        "letterSpacing": "-0.005em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },
@@ -153,7 +153,7 @@
       "$value": {
         "fontSize": "132px",
         "lineHeight": 0.96,
-        "letterSpacing": "-0.035em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       },
       "$description": "Marketing canvas type (1080px artboards) — never on screens. Set through SocialHeadline."
@@ -162,7 +162,7 @@
       "$value": {
         "fontSize": "96px",
         "lineHeight": 1,
-        "letterSpacing": "-0.03em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       }
     },
@@ -170,7 +170,7 @@
       "$value": {
         "fontSize": "72px",
         "lineHeight": 1.05,
-        "letterSpacing": "-0.025em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       }
     },

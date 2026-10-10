@@ -5,7 +5,7 @@
       "$value": {
         "fontSize": "18px",
         "lineHeight": 1.3,
-        "letterSpacing": "-0.005em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       },
       "$description": "Row layout title (Home \"doors\")."
@@ -14,7 +14,7 @@
       "$value": {
         "fontSize": "22px",
         "lineHeight": 1.2,
-        "letterSpacing": "-0.01em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       },
       "$description": "Stack layout title (About CTA cards)."

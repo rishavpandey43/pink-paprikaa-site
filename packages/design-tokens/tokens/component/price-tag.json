@@ -9,7 +9,7 @@
       "$description": "A price on a 1080px artboard (FeedArtboards DishLaunchPost), under a canvas-h1 headline."
     },
     "price-amount": {
-      "$value": { "fontSize": "1em", "letterSpacing": "-0.01em" },
+      "$value": { "fontSize": "1em", "letterSpacing": "0" },
       "$description": "The amount, relative to the tag's size, so one class on the tag scales the whole price."
     },
     "price-was": {

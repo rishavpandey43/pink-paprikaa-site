@@ -12,7 +12,7 @@
       "$value": {
         "fontSize": "clamp(44px, 6vw, 60px)",
         "lineHeight": 1,
-        "letterSpacing": "-0.03em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       },
       "$description": "The estimate's big number (handoff PlanCalculator)."

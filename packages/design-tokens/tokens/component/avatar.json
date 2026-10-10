@@ -13,7 +13,7 @@
       "$value": {
         "fontSize": "10px",
         "lineHeight": 1,
-        "letterSpacing": "-0.01em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       },
       "$description": "Initials: max(10px, 0.38 × the avatar size)."
@@ -22,7 +22,7 @@
       "$value": {
         "fontSize": "12px",
         "lineHeight": 1,
-        "letterSpacing": "-0.01em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },
@@ -30,7 +30,7 @@
       "$value": {
         "fontSize": "15px",
         "lineHeight": 1,
-        "letterSpacing": "-0.01em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },
@@ -38,7 +38,7 @@
       "$value": {
         "fontSize": "21px",
         "lineHeight": 1,
-        "letterSpacing": "-0.01em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },
@@ -46,7 +46,7 @@
       "$value": {
         "fontSize": "30px",
         "lineHeight": 1,
-        "letterSpacing": "-0.01em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     }

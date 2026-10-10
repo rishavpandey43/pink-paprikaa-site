@@ -36,7 +36,7 @@
       "$value": {
         "fontSize": "22px",
         "lineHeight": 1.25,
-        "letterSpacing": "-0.01em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.bold}"
       }
     },

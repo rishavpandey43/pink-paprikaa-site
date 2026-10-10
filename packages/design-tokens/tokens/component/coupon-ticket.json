@@ -33,7 +33,7 @@
       "$value": {
         "fontSize": "30px",
         "lineHeight": 1.05,
-        "letterSpacing": "-0.025em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       }
     },
@@ -41,7 +41,7 @@
       "$value": {
         "fontSize": "50px",
         "lineHeight": 1.05,
-        "letterSpacing": "-0.025em",
+        "letterSpacing": "0",
         "fontWeight": "{font-weight.black}"
       }
     },
