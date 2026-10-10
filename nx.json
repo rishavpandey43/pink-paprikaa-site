@@ -14,7 +14,7 @@
       "!{projectRoot}/.storybook/**/*",
       "!{projectRoot}/tsconfig.stories.json"
     ],
-    "sharedGlobals": []
+    "sharedGlobals": ["{workspaceRoot}/.prettierrc", "{workspaceRoot}/.prettierignore"]
   },
   "plugins": [
     {

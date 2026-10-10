@@ -1,7 +1,6 @@
 "use client";
 
-import type { Matcher } from "react-day-picker";
-import { type DateRange, DayPicker } from "react-day-picker";
+import { type DateRange, DayPicker, type Matcher } from "react-day-picker";
 import { enIN } from "react-day-picker/locale";
 
 import type { SxProp } from "../../lib/common-props";

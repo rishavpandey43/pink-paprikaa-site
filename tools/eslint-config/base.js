@@ -1,7 +1,9 @@
 import js from "@eslint/js";
 import nx from "@nx/eslint-plugin";
-import prettier from "eslint-config-prettier";
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
+import importX from "eslint-plugin-import-x";
 import perfectionist from "eslint-plugin-perfectionist";
+import prettierRecommended from "eslint-plugin-prettier/recommended";
 import { defineConfig } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -64,7 +66,21 @@ export default defineConfig(
   },
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
-    plugins: { perfectionist },
+    plugins: { perfectionist, "import-x": importX },
+    settings: {
+      // File extensions and the TypeScript parser, as the plugin ships them for TS projects.
+      "import-x/extensions": importX.flatConfigs.typescript.settings["import-x/extensions"],
+      "import-x/external-module-folders": ["node_modules", "node_modules/@types"],
+      // `no-named-as-default(-member)` is for OUR modules mixing default and named exports. A
+      // third-party package's own shape is not ours to change — `import sharp from "sharp"` is how
+      // it is documented, and a named import of a CommonJS package can be undefined at runtime —
+      // so packages in `node_modules` are not analysed.
+      "import-x/ignore": ["node_modules"],
+      "import-x/parsers": importX.flatConfigs.typescript.settings["import-x/parsers"],
+      // Without a TypeScript-aware resolver `no-named-as-default(-member)` cannot find a `.ts`
+      // module's exports and silently reports nothing.
+      "import-x/resolver-next": [createTypeScriptImportResolver({ alwaysTryTypes: true })],
+    },
     rules: {
       "@nx/enforce-module-boundaries": [
         "error",
@@ -131,8 +147,16 @@ export default defineConfig(
       "no-useless-concat": "error", // "a" + "b" is just "ab"
       "no-lone-blocks": "error", // a bare { } block that scopes nothing
       "no-template-curly-in-string": "error", // "${x}" in plain quotes was meant to be a template
-      // A value import and a type import from one module are fine; two value imports are not.
-      "no-duplicate-imports": ["error", { allowSeparateTypeImports: true }],
+      // The import rules of the reference setup, from `eslint-plugin-import-x` (the maintained,
+      // flat-config fork: `eslint-plugin-import` does not support ESLint 10). `no-duplicates` is
+      // autofixable and merges two value imports of one module; a type import beside a value
+      // import stays separate. Known fixer bug: for `import type { A } from "x"` plus
+      // `import { type B, C } from "x"` its autofix writes `import type { type B, C, A }`, turning
+      // the value `C` into a type-only import — `tsc` rejects that at once, so merge such a pair by
+      // hand into one `import { type B, C, type A }`.
+      "import-x/no-duplicates": "error",
+      "import-x/no-named-as-default": "error", // `import api from "./api"` when `api` is also a named export
+      "import-x/no-named-as-default-member": "error", // `api.fetch` when `fetch` is a named export
       // One or two `../` is fine; three or more means the file wants an absolute path. In an app
       // that is `@/…` (tsconfig `paths`). Package source is shipped to Next as-is, and Next cannot
       // resolve a package's `#` imports, so there the fix is to move the file or hoist the code.
@@ -171,5 +195,8 @@ export default defineConfig(
     files: ["**/*.js", "**/*.mjs"],
     ...tseslint.configs.disableTypeChecked,
   },
-  prettier
+  // Last on purpose. Runs Prettier as the `prettier/prettier` rule (so `eslint --fix` formats, with
+  // `.prettierrc` and its Tailwind class-order plugin) and switches off every ESLint rule that
+  // would fight it (`eslint-config-prettier`, bundled in the recommended config).
+  prettierRecommended
 );
