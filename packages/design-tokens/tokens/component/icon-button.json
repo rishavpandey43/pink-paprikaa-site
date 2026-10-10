@@ -1,0 +1,47 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "icon-button-xs": {
+      "$value": "28px",
+      "$description": "Alert/Snackbar dismiss; a ::before keeps the 44px hit area.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "icon-button-sm": {
+      "$value": "32px",
+      "$description": "Drawn size; a ::before keeps the 44px hit area.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "size"] } }
+    },
+    "icon-button-md": {
+      "$value": "40px",
+      "$description": "Drawn size; a ::before keeps the 44px hit area.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "icon-button-lg": {
+      "$value": "48px",
+      "$description": "The app size (touch surfaces).",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    },
+    "icon-button-count": {
+      "$value": "18px",
+      "$description": "Cart-count bubble height and minimum width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h", "min-w"] } }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "icon-button-count": {
+      "$value": { "fontSize": "10.5px", "lineHeight": 1, "fontWeight": "{font-weight.bold}" }
+    }
+  },
+  "color": {
+    "$type": "color",
+    "icon-button": {
+      "ghost": {
+        "fg": {
+          "$value": "{color.ink.700}",
+          "$description": "Ghost glyph; white on pink and ink fields."
+        }
+      }
+    }
+  }
+}

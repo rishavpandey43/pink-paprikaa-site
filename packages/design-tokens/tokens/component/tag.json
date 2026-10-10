@@ -1,0 +1,29 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "tag-h": {
+      "$value": "38px",
+      "$description": "Tag height — fixed; tags never wrap.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "tag": {
+      "$value": { "fontSize": "14px", "lineHeight": 1, "fontWeight": "{font-weight.medium}" }
+    }
+  },
+  "color": {
+    "$type": "color",
+    "tag": {
+      "selected": {
+        "$value": "{color.pink.500}",
+        "$description": "Selected fill and border; ink on a pink field, where pink would vanish."
+      },
+      "selected-hover": {
+        "$value": "{color.brand.hover}",
+        "$description": "Hover fill and border of a pressable selected tag (readme §3.8); ink-800 on a pink field."
+      }
+    }
+  }
+}

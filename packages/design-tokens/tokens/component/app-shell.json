@@ -1,0 +1,52 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "app-shell-w": {
+      "$value": "390px",
+      "$description": "AppShell size=\"phone\" width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
+    },
+    "app-shell-h": {
+      "$value": "844px",
+      "$description": "AppShell size=\"phone\" height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
+    "app-shell-sm-w": {
+      "$value": "360px",
+      "$description": "AppShell size=\"phone-sm\": the system's 360px floor.",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
+    },
+    "app-shell-sm-h": {
+      "$value": "780px",
+      "$description": "AppShell size=\"phone-sm\" height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
+    "app-shell-status-x": { "$value": "22px", "$description": "Status bar side inset." },
+    "app-shell-home": {
+      "$value": "22px",
+      "$description": "Home-indicator strip height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    },
+    "app-shell-home-bar-w": {
+      "$value": "130px",
+      "$description": "Home-indicator bar width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
+    },
+    "app-shell-home-bar-h": {
+      "$value": "5px",
+      "$description": "Home-indicator bar height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["h"] } }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "app-shell": { "$value": "44px", "$description": "Phone frame corner." }
+  },
+  "text": {
+    "$type": "typography",
+    "app-shell-status": {
+      "$value": { "fontSize": "13px", "lineHeight": 1, "fontWeight": "{font-weight.semibold}" },
+      "$description": "Status-bar clock."
+    }
+  }
+}

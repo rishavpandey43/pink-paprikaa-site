@@ -1,0 +1,13 @@
+{
+  "text": {
+    "$type": "typography",
+    "control": {
+      "$value": { "fontSize": "15px" },
+      "$description": "The label of a checkbox, radio or switch."
+    },
+    "control-description": {
+      "$value": { "fontSize": "13px" },
+      "$description": "The secondary line under a checkbox, radio or switch label."
+    }
+  }
+}

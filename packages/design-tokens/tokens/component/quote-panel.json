@@ -1,0 +1,21 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "quote-panel-pad": {
+      "$value": "clamp(18px, 3vw, 28px)",
+      "$description": "QuotePanel padding (handoff Plan, Dawat and Office calculators)."
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "quote-panel-amount": {
+      "$value": {
+        "fontSize": "clamp(44px, 6vw, 60px)",
+        "lineHeight": 1,
+        "letterSpacing": "0",
+        "fontWeight": "{font-weight.black}"
+      },
+      "$description": "The estimate's big number (handoff PlanCalculator)."
+    }
+  }
+}

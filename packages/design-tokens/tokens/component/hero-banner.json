@@ -1,0 +1,22 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "hero-banner-top": {
+      "$value": "clamp(44px, 6vw, 72px)",
+      "$description": "Hero top padding (design HeroBanner asymmetric rhythm)."
+    },
+    "hero-banner-bottom": {
+      "$value": "clamp(52px, 7vw, 80px)",
+      "$description": "Hero bottom padding (design HeroBanner asymmetric rhythm)."
+    },
+    "hero-banner-gap": {
+      "$value": "clamp(24px, 5vw, 64px)",
+      "$description": "Gap between the copy and the media column."
+    },
+    "hero-banner-center-measure": {
+      "$value": "22ch",
+      "$description": "Centred hero copy cap (design HeroBanner centered layout).",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    }
+  }
+}

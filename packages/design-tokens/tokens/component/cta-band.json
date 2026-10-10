@@ -1,0 +1,14 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "cta-band-y": {
+      "$value": "clamp(48px, 6vw, 72px)",
+      "$description": "CtaBand vertical rhythm (design system CtaBand)."
+    },
+    "cta-band-copy": {
+      "$value": "36ch",
+      "$description": "Copy measure beside the action in the split layout.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    }
+  }
+}

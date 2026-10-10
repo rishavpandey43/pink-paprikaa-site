@@ -1,0 +1,22 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "site-header-logo": {
+      "$value": "114px",
+      "$description": "Lockup width at the design system header's 60px logo height (lockup viewBox 361.88 × 190.13).",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
+    },
+    "site-header-logo-compact": {
+      "$value": "76px",
+      "$description": "Lockup width at the handoff header's 40px logo height.",
+      "$extensions": { "pink-paprikaa": { "utility": ["w"] } }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "site-header-link": {
+      "$value": { "fontSize": "15px", "lineHeight": 1.2, "fontWeight": "{font-weight.semibold}" },
+      "$description": "Header nav link (handoff PPHeader: Poppins 600 15px)."
+    }
+  }
+}

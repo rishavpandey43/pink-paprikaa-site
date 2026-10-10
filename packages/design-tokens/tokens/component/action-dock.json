@@ -1,0 +1,13 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "action-dock-bottom": {
+      "$value": "calc(10px + env(safe-area-inset-bottom, 0px))",
+      "$description": "Mobile bar bottom padding: 10px plus the iOS home-indicator inset (handoff). Needs viewport-fit=cover in the app's viewport meta."
+    },
+    "action-dock-float": {
+      "$value": "calc(24px + env(safe-area-inset-bottom, 0px))",
+      "$description": "The floating pill's offset from the viewport bottom at md and up."
+    }
+  }
+}

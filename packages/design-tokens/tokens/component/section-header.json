@@ -1,0 +1,15 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "section-header-measure": {
+      "$value": "48ch",
+      "$description": "Width of the overline, title and lede when the header is start-aligned.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "section-header-measure-centered": {
+      "$value": "56ch",
+      "$description": "Width of the overline, title and lede when the header is centred.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "dialog-sm": {
+      "$value": "400px",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "dialog-md": {
+      "$value": "460px",
+      "$description": "Design system Dialog default width.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "dialog-lg": {
+      "$value": "640px",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "dialog-drawer-sm": {
+      "$value": "320px",
+      "$description": "Drawer panel width, small.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "dialog-drawer-md": {
+      "$value": "400px",
+      "$description": "Drawer panel width, default.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    },
+    "dialog-drawer-lg": {
+      "$value": "480px",
+      "$description": "Drawer panel width, large.",
+      "$extensions": { "pink-paprikaa": { "utility": ["max-w"] } }
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "dialog-title": {
+      "$value": {
+        "fontSize": "22px",
+        "lineHeight": 1.25,
+        "letterSpacing": "0",
+        "fontWeight": "{font-weight.bold}"
+      }
+    },
+    "dialog-body": {
+      "$value": { "fontSize": "15px", "lineHeight": 1.6, "fontWeight": "{font-weight.regular}" }
+    }
+  }
+}

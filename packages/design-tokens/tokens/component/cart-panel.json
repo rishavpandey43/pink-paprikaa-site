@@ -1,0 +1,10 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "cart-panel-thumb": {
+      "$value": "56px",
+      "$description": "Cart line thumbnail — placeholder or dish photo.",
+      "$extensions": { "pink-paprikaa": { "utility": ["size"] } }
+    }
+  }
+}

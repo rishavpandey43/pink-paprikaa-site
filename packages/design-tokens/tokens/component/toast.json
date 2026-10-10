@@ -1,0 +1,20 @@
+{
+  "color": {
+    "$type": "color",
+    "toast-success-bg": {
+      "$value": "{color.mint-strong}",
+      "$description": "Success toast fill. White on the design system's mint measures 3.16:1; on the strong mint it measures 6.36:1."
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "toast": {
+      "$value": { "fontSize": "14.5px", "lineHeight": 1.6 },
+      "$description": "Toast message (DM Sans 500)."
+    },
+    "toast-action": {
+      "$value": { "fontSize": "13px", "lineHeight": 1.4, "letterSpacing": "0.04em" },
+      "$description": "Toast action label (Poppins 700, uppercase)."
+    }
+  }
+}

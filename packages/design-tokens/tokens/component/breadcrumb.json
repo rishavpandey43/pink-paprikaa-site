@@ -1,0 +1,16 @@
+{
+  "color": {
+    "$type": "color",
+    "breadcrumb-chevron": {
+      "$value": "{color.ink.400}",
+      "$description": "Decorative chevron between crumbs; white at 50% on brand and ink fields."
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "breadcrumb": {
+      "$value": { "fontSize": "13.5px", "lineHeight": 1.6 },
+      "$description": "Breadcrumb links and current page (DM Sans)."
+    }
+  }
+}

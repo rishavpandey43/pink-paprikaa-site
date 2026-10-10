@@ -1,0 +1,16 @@
+{
+  "text": {
+    "$type": "typography",
+    "choice-card-title": {
+      "$value": { "fontSize": "15px", "lineHeight": 1.3, "fontWeight": "{font-weight.bold}" },
+      "$description": "Choice card title and calculator step labels (handoff 15px Poppins 700)."
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "choice-card-radio": {
+      "$value": "inset 0 0 0 3px {color.ink.000}",
+      "$description": "The white ring inside a checked radio on the brand-surface card."
+    }
+  }
+}

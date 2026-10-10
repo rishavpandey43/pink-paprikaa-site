@@ -1,0 +1,15 @@
+{
+  "grid-template-columns": {
+    "slot-picker": {
+      "$value": "repeat(auto-fit, minmax(min(96px, 100%), 1fr))",
+      "$description": "SlotPicker without columns: auto-fit at the design system's 96px minimum, never a bare 1fr. Utility: grid-cols-slot-picker."
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "slot-picker-note": {
+      "$value": { "fontSize": "11.5px", "lineHeight": 1.3 },
+      "$description": "The small line under a slot label, e.g. \"12 min\" (DM Sans 400)."
+    }
+  }
+}

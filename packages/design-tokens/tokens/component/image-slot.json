@@ -1,0 +1,13 @@
+{
+  "text": {
+    "$type": "typography",
+    "image-slot-label": {
+      "$value": {
+        "fontSize": "10.5px",
+        "letterSpacing": "0.12em",
+        "fontWeight": "{font-weight.bold}"
+      },
+      "$description": "The placeholder's crop label. Inherits line height, as in the design system."
+    }
+  }
+}

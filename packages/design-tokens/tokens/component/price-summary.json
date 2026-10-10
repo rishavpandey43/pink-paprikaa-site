@@ -1,0 +1,9 @@
+{
+  "color": {
+    "$type": "color",
+    "price-summary-discount": {
+      "$value": "{color.mint-strong}",
+      "$description": "A discount line's amount. White on brand and ink fields, where the minus sign carries the meaning."
+    }
+  }
+}
