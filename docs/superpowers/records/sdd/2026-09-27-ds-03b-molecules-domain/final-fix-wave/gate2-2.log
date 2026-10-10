@@ -1,0 +1,1534 @@
+
+ NX   Running targets typecheck, lint, test, build for 12 projects and 1 task they depend on:
+
+- @pink-paprikaa-web/design-tokens
+- @pink-paprikaa-web/image-pipeline
+- @pink-paprikaa-web/eslint-config
+- @pink-paprikaa-web/content
+- @pink-paprikaa-web/storybook
+- @pink-paprikaa-web/utils
+- @pink-paprikaa-web/blog-e2e
+- @pink-paprikaa-web/seo
+- @pink-paprikaa-web/web-e2e
+- @pink-paprikaa-web/ui
+- @pink-paprikaa-web/blog
+- @pink-paprikaa-web/web
+
+
+
+> nx run @pink-paprikaa-web/design-tokens:typecheck
+
+> tsc --build tsconfig.json --emitDeclarationOnly
+
+
+> nx run @pink-paprikaa-web/utils:typecheck
+
+> tsc --build tsconfig.json --emitDeclarationOnly
+
+
+> nx run @pink-paprikaa-web/content:typecheck
+
+> tsc --build tsconfig.json --emitDeclarationOnly
+
+
+> nx run @pink-paprikaa-web/ui:typecheck
+
+> tsc --build --emitDeclarationOnly
+
+
+> nx run @pink-paprikaa-web/image-pipeline:build
+
+> tsc --build tsconfig.lib.json
+
+
+> nx run @pink-paprikaa-web/design-tokens:build
+
+
+> @pink-paprikaa-web/design-tokens@0.0.0 build /Users/rishavpa/Professional/pink-paprikaa-site/packages/design-tokens
+> style-dictionary build --config sd.config.mjs
+
+
+css
+✔︎ dist/theme.css
+✔︎ dist/surfaces.css
+✔︎ dist/tokens.json
+
+> nx run @pink-paprikaa-web/design-tokens:lint
+
+> eslint .
+
+
+> nx run @pink-paprikaa-web/eslint-config:test
+
+
+> @pink-paprikaa-web/eslint-config@0.0.0 test /Users/rishavpa/Professional/pink-paprikaa-site/tools/eslint-config
+> node --test *.test.mjs rules/*.test.mjs
+
+✔ no tier imports the package barrel, by any spelling (40.481583ms)
+✔ every tier may import lib, assets, the stylesheet, the test setup and packages (8.211333ms)
+✔ a layer never imports one above it, and may import any below (1.39625ms)
+✔ an atom imports no other atom but Icon (1.213167ms)
+✔ a lib file never imports the package barrel, by any spelling (R41) (3.070708ms)
+✔ a lib file may import its siblings, the Icon atom, the stylesheet, the test setup and packages (1.523792ms)
+✔ a lib file imports no tier above the atoms, and no atom but Icon (1.06425ms)
+✔ allows role=list on a list, which Safari needs once list-style is none (11.94775ms)
+✔ still flags every other redundant role (1.373792ms)
+no-arbitrary-shorthand: all RuleTester cases passed
+✔ rules/no-arbitrary-shorthand.test.mjs (380.256875ms)
+no-raw-hex: all RuleTester cases passed
+✔ rules/no-raw-hex.test.mjs (260.880458ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2074.40625
+
+> nx run @pink-paprikaa-web/web:build
+
+> next build
+
+▲ Next.js 16.1.7 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1724.7ms
+  Running TypeScript ...
+⚠ TypeScript project references are not fully supported. Attempting to build in incremental mode.
+  Collecting page data using 10 workers ...
+  Generating static pages using 10 workers (0/3) ...
+✓ Generating static pages using 10 workers (3/3) in 218.8ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+
+> nx run @pink-paprikaa-web/blog:build
+
+> next build
+
+Starting content-collections content-collections.ts
+build started ...
+... finished build of 1 collection and 1 document in 6ms
+▲ Next.js 16.1.7 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1700.1ms
+  Running TypeScript ...
+⚠ TypeScript project references are not fully supported. Attempting to build in incremental mode.
+  Collecting page data using 10 workers ...
+  Generating static pages using 10 workers (0/3) ...
+✓ Generating static pages using 10 workers (3/3) in 194.2ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+
+> nx run @pink-paprikaa-web/design-tokens:test
+
+> vitest
+
+
+ RUN  v4.1.10 /Users/rishavpa/Professional/pink-paprikaa-site/packages/design-tokens
+
+ ✓ |@pink-paprikaa-web/design-tokens| src/theme.spec.ts (34 tests) 79ms
+ ✓ |@pink-paprikaa-web/design-tokens| src/policy.spec.ts (230 tests) 31ms
+ ✓ |@pink-paprikaa-web/design-tokens| src/surface-aliases.spec.ts (4 tests) 4ms
+ ✓ |@pink-paprikaa-web/design-tokens| src/contrast.spec.ts (16 tests) 3ms
+
+ Test Files  4 passed (4)
+      Tests  284 passed (284)
+   Start at  00:15:31
+   Duration  345ms (transform 54ms, setup 0ms, import 112ms, tests 117ms, environment 0ms)
+
+
+> nx run @pink-paprikaa-web/eslint-config:lint
+
+> eslint .
+
+
+> nx run @pink-paprikaa-web/utils:test
+
+> vitest
+
+
+ RUN  v4.1.10 /Users/rishavpa/Professional/pink-paprikaa-site/packages/utils
+
+ ✓ |@pink-paprikaa-web/utils| src/format-rupees.spec.ts (18 tests) 4ms
+
+ Test Files  1 passed (1)
+      Tests  18 passed (18)
+   Start at  00:15:32
+   Duration  163ms (transform 17ms, setup 0ms, import 34ms, tests 4ms, environment 0ms)
+
+
+> nx run @pink-paprikaa-web/utils:lint
+
+> eslint .
+
+
+> nx run @pink-paprikaa-web/storybook:build-storybook
+
+> storybook build
+
+
+┌  Building storybook v10.5.7
+│
+◇  Cleaning outputDir: storybook-static
+│
+◇  Loading presets
+│
+▲  No story files found for the specified pattern:
+│  ../../packages/ui/src/**/*.mdx
+│
+◇  Building manager..
+│
+●  Building open services..
+│
+●  Building preview..
+│  Vite vite v8.2.1 building client environment for production...
+[2Ktransforming...│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/card/card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/avatar/avatar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/badge/badge.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/countdown/countdown.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/diet-mark/diet-mark.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/checkbox/checkbox.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/divider/divider.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/button/button.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/input/input.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/link/link.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/image-slot/image-slot.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/icon-button/icon-button.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/pattern-field/pattern-field.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/logo/logo.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/icon/icon.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/price-tag/price-tag.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/progress-bar/progress-bar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/slider/slider.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/skeleton/skeleton.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/spice-level/spice-level.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/radio/radio.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/status-dot/status-dot.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/select/select.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/spinner/spinner.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/social-headline/social-headline.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/tooltip/tooltip.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/switch/switch.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/tag/tag.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/rating/rating.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/atoms/text/text.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/auto-grid/auto-grid.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/app-shell/app-shell.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/cluster/cluster.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/container/container.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/stack/stack.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/section/section.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/layouts/post-frame/post-frame.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/link-as.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/field-message.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/symbol-mark.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/struck-price.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/reveal-observer.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/lib/use-controllable-state.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/alert/alert.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/announcement-bar/announcement-bar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/accordion/accordion.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/check-card/check-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/breadcrumb/breadcrumb.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/coupon-ticket/coupon-ticket.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/chip-group/chip-group.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/empty-state/empty-state.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/logo-lockup/logo-lockup.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/choice-card-group/choice-card-group.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/key-value-list/key-value-list.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/link-card/link-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/list-row/list-row.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/feature-item/feature-item.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/offer-seal/offer-seal.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/field/field.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/otp-input/otp-input.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/loyalty-card/loyalty-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/menu-item-card/menu-item-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/pagination/pagination.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/filter-bar/filter-bar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/price-summary/price-summary.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/menu-item-row/menu-item-row.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/outlet-card/outlet-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/review-card/review-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/section-header/section-header.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/quantity-stepper/quantity-stepper.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/search-field/search-field.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/slot-picker/slot-picker.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/pricing-card/pricing-card.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/stat/stat.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/sticky-action-bar/sticky-action-bar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/steps/steps.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/table/table.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/step-tracker/step-tracker.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/tabs/tabs.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/snackbar/snackbar.test.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] Skipping docgen for
+│  "/Users/rishavpa/Professional/pink-paprikaa-site/packages/ui/src/molecules/toast/toast.test.tsx"
+│  because it is not included in the active TypeScript project.
+✓ 2643 modules transformed.
+rendering chunks...
+computing gzip size...
+│  Vite
+│  storybook-static/assets/space-mono-vietnamese-400-normal-B0PMp_xB.woff
+│  5.41 kB
+│  storybook-static/assets/poppins-latin-ext-700-normal-cby-RkWa.woff2
+│  5.43 kB
+│  storybook-static/assets/space-mono-vietnamese-700-normal-D-KrLuLr.woff
+│  5.44 kB
+│  storybook-static/assets/poppins-latin-ext-500-normal-CK-6C4Hw.woff2
+│  5.48 kB
+│  storybook-static/assets/poppins-latin-ext-800-normal-CDgOlX-1.woff2
+│  5.49 kB
+│  storybook-static/assets/poppins-latin-ext-600-normal-CAhIAdZj.woff2
+│  5.52 kB
+│  storybook-static/assets/poppins-latin-ext-400-normal-by3JarPu.woff2
+│  5.64 kB
+│  storybook-static/assets/poppins-latin-ext-600-italic-BpvcrORb.woff2
+│  6.01 kB
+│  storybook-static/assets/space-mono-vietnamese-400-normal-BNOj0Qhp.woff2
+│  7.27 kB
+│  storybook-static/assets/poppins-latin-ext-700-normal-DctTR6Tg.woff
+│  7.32 kB
+│  storybook-static/assets/space-mono-vietnamese-700-normal-DWQgDHuA.woff2
+│  7.33 kB
+│  storybook-static/assets/dm-sans-latin-ext-400-normal-BtiwyxMk.woff2
+│  7.36 kB
+│  storybook-static/assets/poppins-latin-ext-800-normal-CIZaRbSk.woff
+│  7.36 kB
+│  storybook-static/assets/poppins-latin-ext-500-normal-CgAe2rWW.woff
+│  7.37 kB
+│  storybook-static/assets/dm-sans-latin-ext-500-normal-BJfUCQsA.woff2
+│  7.43 kB
+│  storybook-static/assets/poppins-latin-ext-600-normal-Df5ffKXP.woff
+│  7.43 kB
+│  storybook-static/assets/dm-sans-latin-ext-700-normal-CJIcxD6K.woff2
+│  7.45 kB
+│  storybook-static/assets/poppins-latin-ext-400-normal-DaBSavcJ.woff
+│  7.46 kB
+│  storybook-static/assets/poppins-latin-500-normal-C8OXljZJ.woff2
+│  7.74 kB
+│  storybook-static/assets/poppins-latin-700-normal-Qrb0O0WB.woff2
+│  7.81 kB
+│  storybook-static/assets/poppins-latin-800-normal-Bd8-pIP1.woff2
+│  7.82 kB
+│  storybook-static/assets/poppins-latin-400-normal-cpxAROuN.woff2
+│  7.88 kB
+│  storybook-static/assets/poppins-latin-ext-600-italic-BXg4YQvj.woff
+│  7.94 kB
+│  storybook-static/assets/poppins-latin-600-normal-zEkxB9Mr.woff2
+│  8.00 kB
+│  storybook-static/assets/dm-sans-latin-ext-400-italic-BpitL8Uu.woff2
+│  8.12 kB
+│  storybook-static/assets/poppins-latin-600-italic-CZ4wqKBi.woff2
+│  8.72 kB
+│  storybook-static/assets/dm-sans-latin-ext-400-normal-BjWJ59Pq.woff
+│  9.97 kB
+│  storybook-static/assets/dm-sans-latin-ext-700-normal-BLI3TTWz.woff
+│  10.01 kB
+│  storybook-static/assets/dm-sans-latin-ext-500-normal-DR84L5F-.woff
+│  10.06 kB
+│  storybook-static/assets/poppins-latin-500-normal-DGXqpDMm.woff
+│  10.37 kB
+│  storybook-static/assets/poppins-latin-700-normal-BVuQR_eA.woff
+│  10.43 kB
+│  storybook-static/assets/poppins-latin-800-normal-YoItoZZV.woff
+│  10.43 kB
+│  storybook-static/assets/poppins-latin-400-normal-BOb3E3N0.woff
+│  10.53 kB
+│  storybook-static/assets/poppins-latin-600-normal-BJdTmd5m.woff
+│  10.60 kB
+│  storybook-static/assets/dm-sans-latin-ext-400-italic-2EvOpbQN.woff
+│  10.97 kB
+│  storybook-static/assets/poppins-latin-600-italic-BhOZippK.woff
+│  11.55 kB
+│  storybook-static/assets/space-mono-latin-400-normal-_3DlpgIW.woff
+│  12.31 kB
+│  storybook-static/assets/space-mono-latin-700-normal-D7A851RN.woff
+│  12.41 kB
+│  storybook-static/assets/space-mono-latin-ext-700-normal-B_E7P90g.woff
+│  12.48 kB
+│  storybook-static/assets/space-mono-latin-ext-400-normal-D4cJI_B-.woff
+│  12.60 kB
+│  storybook-static/assets/dm-sans-latin-400-normal-CW0RaeGs.woff2
+│  14.20 kB
+│  storybook-static/assets/dm-sans-latin-500-normal-B9HHJjqV.woff2
+│  14.30 kB
+│  storybook-static/assets/dm-sans-latin-700-normal-DvUfVpUG.woff2
+│  14.34 kB
+│  storybook-static/assets/dm-sans-latin-400-italic-DRLHr0TN.woff2
+│  15.14 kB
+│  storybook-static/assets/space-mono-latin-ext-700-normal-B2s3bDs2.woff2
+│  15.80 kB
+│  storybook-static/assets/space-mono-latin-ext-400-normal-DTLbW2xa.woff2
+│  15.83 kB
+│  storybook-static/assets/space-mono-latin-400-normal-Rg4St2Dn.woff2
+│  16.52 kB
+│  storybook-static/assets/space-mono-latin-700-normal-mWgeinG7.woff2
+│  16.72 kB
+│  storybook-static/assets/symbol-pink-B07N40aj.svg
+│  17.25 kB │ gzip:   5.78 kB
+│  storybook-static/assets/dm-sans-latin-400-normal-BwCSEQnW.woff
+│  18.35 kB
+│  storybook-static/assets/dm-sans-latin-700-normal-CUSSCpQX.woff
+│  18.50 kB
+│  storybook-static/assets/dm-sans-latin-500-normal-Dr3UlScf.woff
+│  18.52 kB
+│  storybook-static/assets/dm-sans-latin-400-italic-i6QPgQBE.woff
+│  19.60 kB
+│  storybook-static/iframe.html
+│  20.01 kB │ gzip:   5.49 kB
+│  storybook-static/assets/poppins-devanagari-800-normal-ACzlZF75.woff2
+│  38.94 kB
+│  storybook-static/assets/poppins-devanagari-500-normal-BIdkeU1p.woff2
+│  39.08 kB
+│  storybook-static/assets/poppins-devanagari-700-normal-O-jipLrW.woff2
+│  39.25 kB
+│  storybook-static/assets/poppins-devanagari-600-normal-STEjXBNN.woff2
+│  39.29 kB
+│  storybook-static/assets/poppins-devanagari-400-normal-CJDn6rn8.woff2
+│  39.66 kB
+│  storybook-static/assets/poppins-devanagari-600-italic-C8WvgGUS.woff2
+│  45.59 kB
+│  storybook-static/assets/poppins-devanagari-800-normal-BLmXVokE.woff
+│  51.85 kB
+│  storybook-static/assets/poppins-devanagari-700-normal-fHs-vx92.woff
+│  52.24 kB
+│  storybook-static/assets/poppins-devanagari-500-normal-DMPDjHtT.woff
+│  52.42 kB
+│  storybook-static/assets/poppins-devanagari-600-normal-ClASKHrr.woff
+│  52.56 kB
+│  storybook-static/assets/poppins-devanagari-400-normal-CqVvlrh5.woff
+│  52.98 kB
+│  storybook-static/assets/poppins-devanagari-600-italic-C0b9Bbe9.woff
+│  61.21 kB
+│  storybook-static/assets/iframe-BkyILazi.css
+│  141.12 kB │ gzip:  23.65 kB
+│  storybook-static/assets/iframe-EdVMz9Bl.js
+│  0.04 kB │ gzip:   0.06 kB
+│  storybook-static/assets/is-shown-DFAhd1-T.js
+│  0.15 kB │ gzip:   0.14 kB
+│  storybook-static/assets/symbol-pink-CHQDJHjd.js
+│  0.17 kB │ gzip:   0.17 kB
+│  storybook-static/assets/heading-3fVXjSvH.js
+│  0.18 kB │ gzip:   0.16 kB
+│  storybook-static/assets/chunk-242VQQM5-bHL6qIJq.js
+│  0.24 kB │ gzip:   0.20 kB
+│  storybook-static/assets/check-Gvr9Ovod.js
+│  0.24 kB │ gzip:   0.21 kB
+│  storybook-static/assets/dom-CgSuUhSb.js
+│  0.24 kB │ gzip:   0.20 kB
+│  storybook-static/assets/chevron-down-YZpZWnQS.js
+│  0.24 kB │ gzip:   0.21 kB
+│  storybook-static/assets/chevron-right-Dlq6EJsN.js
+│  0.24 kB │ gzip:   0.21 kB
+│  storybook-static/assets/plus-BlI_Pkpp.js
+│  0.27 kB │ gzip:   0.22 kB
+│  storybook-static/assets/x-B7ZniOA-.js
+│  0.27 kB │ gzip:   0.22 kB
+│  storybook-static/assets/arrow-right-Bz9M-2ik.js
+│  0.28 kB │ gzip:   0.23 kB
+│  storybook-static/assets/arrow-up-right-Dp2ugQ4x.js
+│  0.28 kB │ gzip:   0.23 kB
+│  storybook-static/assets/clock-BQgCWUSt.js
+│  0.28 kB │ gzip:   0.23 kB
+│  storybook-static/assets/search-xT3JeC_v.js
+│  0.29 kB │ gzip:   0.24 kB
+│  storybook-static/assets/formatter-L2YTDE3Q-CRGuSxAF.js
+│  0.30 kB │ gzip:   0.24 kB
+│  storybook-static/assets/use-controllable-state-C0ZUWn2f.js
+│  0.30 kB │ gzip:   0.24 kB
+│  storybook-static/assets/user-BunVflQu.js
+│  0.31 kB │ gzip:   0.25 kB
+│  storybook-static/assets/flame-DAKCsChJ.js
+│  0.31 kB │ gzip:   0.25 kB
+│  storybook-static/assets/info-BcZ0f_0B.js
+│  0.32 kB │ gzip:   0.25 kB
+│  storybook-static/assets/lock-CGGhSdPp.js
+│  0.32 kB │ gzip:   0.26 kB
+│  storybook-static/assets/chunk-QQBDHPVZ-DC5n6Pix.js
+│  0.32 kB │ gzip:   0.20 kB
+│  storybook-static/assets/credit-card-BkeANSWK.js
+│  0.32 kB │ gzip:   0.26 kB
+│  storybook-static/assets/space-MdlivFdd.js
+│  0.34 kB │ gzip:   0.22 kB
+│  storybook-static/assets/copy-BNVbtXDm.js
+│  0.35 kB │ gzip:   0.28 kB
+│  storybook-static/assets/message-circle-Dybiqx4L.js
+│  0.35 kB │ gzip:   0.28 kB
+│  storybook-static/assets/circle-alert-BaQKO90h.js
+│  0.36 kB │ gzip:   0.26 kB
+│  storybook-static/assets/heart-CpPT-a5C.js
+│  0.37 kB │ gzip:   0.29 kB
+│  storybook-static/assets/map-pin-DTXvkDoS.js
+│  0.37 kB │ gzip:   0.29 kB
+│  storybook-static/assets/utensils-D7dJi596.js
+│  0.37 kB │ gzip:   0.28 kB
+│  storybook-static/assets/leaf-7Li9Qv5e.js
+│  0.38 kB │ gzip:   0.30 kB
+│  storybook-static/assets/triangle-alert-_6YIUMkl.js
+│  0.38 kB │ gzip:   0.28 kB
+│  storybook-static/assets/stretched-link-D1Fbbqtf.js
+│  0.38 kB │ gzip:   0.23 kB
+│  storybook-static/assets/bell-qvCz1ZN5.js
+│  0.40 kB │ gzip:   0.31 kB
+│  storybook-static/assets/users-DZFF21Nb.js
+│  0.42 kB │ gzip:   0.29 kB
+│  storybook-static/assets/jsx-runtime-DeHZSEgm.js
+│  0.43 kB │ gzip:   0.30 kB
+│  storybook-static/assets/dist-CLgmTUij.js
+│  0.44 kB │ gzip:   0.33 kB
+│  storybook-static/assets/shopping-bag-DIjRKv15.js
+│  0.45 kB │ gzip:   0.31 kB
+│  storybook-static/assets/gift-CVbdLDQE.js
+│  0.46 kB │ gzip:   0.32 kB
+│  storybook-static/assets/story-paint-B3Vw4o4H.js
+│  0.47 kB │ gzip:   0.29 kB
+│  storybook-static/assets/share-2-D3B7gfpi.js
+│  0.47 kB │ gzip:   0.30 kB
+│  storybook-static/assets/control-states-cISA102W.js
+│  0.48 kB │ gzip:   0.28 kB
+│  storybook-static/assets/field-status-D55ePmjN.js
+│  0.49 kB │ gzip:   0.32 kB
+│  storybook-static/assets/react-Bl2r1tuC.js
+│  0.58 kB │ gzip:   0.34 kB
+│  storybook-static/assets/star-DD7krgi4.js
+│  0.59 kB │ gzip:   0.37 kB
+│  storybook-static/assets/store-CpmLW13l.js
+│  0.61 kB │ gzip:   0.36 kB
+│  storybook-static/assets/soup-BdC4ELTA.js
+│  0.64 kB │ gzip:   0.35 kB
+│  storybook-static/assets/src-BDz9lWIB.js
+│  0.72 kB │ gzip:   0.43 kB
+│  storybook-static/assets/specimen-CBoE7WQp.js
+│  0.74 kB │ gzip:   0.34 kB
+│  storybook-static/assets/receipt-XN0KPGDc.js
+│  0.77 kB │ gzip:   0.36 kB
+│  storybook-static/assets/devanagari-P_8HjiDJ.js
+│  0.96 kB │ gzip:   0.55 kB
+│  storybook-static/assets/overline-and-mono-BGVDdKLe.js
+│  0.99 kB │ gzip:   0.57 kB
+│  storybook-static/assets/symbol-mark--trNX6Jd.js
+│  1.02 kB │ gzip:   0.66 kB
+│  storybook-static/assets/rolldown-runtime-DkW27tQK.js
+│  1.19 kB │ gzip:   0.67 kB
+│  storybook-static/assets/type-specimen-CRsykaLS.js
+│  1.25 kB │ gzip:   0.65 kB
+│  storybook-static/assets/heat-DoCO-H9p.js
+│  1.26 kB │ gzip:   0.67 kB
+│  storybook-static/assets/motion-demo-4b-D6lQX.js
+│  1.30 kB │ gzip:   0.72 kB
+│  storybook-static/assets/preload-helper-wdlQj8DP.js
+│  1.31 kB │ gzip:   0.74 kB
+│  storybook-static/assets/semantic-Dn2j4-xR.js
+│  1.36 kB │ gzip:   0.65 kB
+│  storybook-static/assets/DocsRenderer-JROSPFPF-BHNKWSWN.js
+│  1.36 kB │ gzip:   0.73 kB
+│  storybook-static/assets/display-GMaRutfN.js
+│  1.40 kB │ gzip:   0.75 kB
+│  storybook-static/assets/ink-B3l62ukt.js
+│  1.47 kB │ gzip:   0.68 kB
+│  storybook-static/assets/story-surfaces-R5k2vOvI.js
+│  1.47 kB │ gzip:   0.75 kB
+│  storybook-static/assets/body-D9tyr8ug.js
+│  1.48 kB │ gzip:   0.75 kB
+│  storybook-static/assets/section-reveal-DKvzVqFe.js
+│  1.64 kB │ gzip:   0.78 kB
+│  storybook-static/assets/chunk-IMSF75WX-CGYlPTyG.js
+│  1.67 kB │ gzip:   0.91 kB
+│  storybook-static/assets/accents-y4jHgemo.js
+│  1.71 kB │ gzip:   0.87 kB
+│  storybook-static/assets/status-CfHgwcUP.js
+│  1.77 kB │ gzip:   0.81 kB
+│  storybook-static/assets/shape-CIylSZBk.js
+│  1.77 kB │ gzip:   0.79 kB
+│  storybook-static/assets/layout-rhythm-BtMKoFjX.js
+│  1.80 kB │ gzip:   0.84 kB
+│  storybook-static/assets/struck-price-uOYtN8jf.js
+│  1.84 kB │ gzip:   0.94 kB
+│  storybook-static/assets/headings-D9_DEAtn.js
+│  1.93 kB │ gzip:   0.91 kB
+│  storybook-static/assets/fluid-DV1W-Shr.js
+│  1.93 kB │ gzip:   0.91 kB
+│  storybook-static/assets/company-details-D5lxSnLc.js
+│  1.93 kB │ gzip:   0.97 kB
+│  storybook-static/assets/diet-mark.stories-NYAZvnIB.js
+│  1.93 kB │ gzip:   0.85 kB
+│  storybook-static/assets/primary-B2yT2gCm.js
+│  2.03 kB │ gzip:   0.96 kB
+│  storybook-static/assets/scale-BTDosCxZ.js
+│  2.05 kB │ gzip:   0.93 kB
+│  storybook-static/assets/diet-mark-BBtEiV1f.js
+│  2.13 kB │ gzip:   0.98 kB
+│  storybook-static/assets/badge-C70y6L5-.js
+│  2.18 kB │ gzip:   0.93 kB
+│  storybook-static/assets/states-P-p17ZEk.js
+│  2.21 kB │ gzip:   0.93 kB
+│  storybook-static/assets/spacing-scale-CLZ7XDgR.js
+│  2.24 kB │ gzip:   0.90 kB
+│  storybook-static/assets/switch-BfNuUQNm.js
+│  2.25 kB │ gzip:   0.86 kB
+│  storybook-static/assets/surfaces-HjwToN6O.js
+│  2.30 kB │ gzip:   1.00 kB
+│  storybook-static/assets/canvas.stories-CVKoM8YD.js
+│  2.41 kB │ gzip:   0.99 kB
+│  storybook-static/assets/container-DTe4GY7O.js
+│  2.42 kB │ gzip:   0.91 kB
+│  storybook-static/assets/contrast-DB6RKEEt.js
+│  2.42 kB │ gzip:   1.13 kB
+│  storybook-static/assets/pattern-DDS0TPyo.js
+│  2.44 kB │ gzip:   1.15 kB
+│  storybook-static/assets/brand-glyphs-2Y-byfLh.js
+│  2.71 kB │ gzip:   0.85 kB
+│  storybook-static/assets/spinner.stories-B6RbkrtP.js
+│  2.82 kB │ gzip:   0.96 kB
+│  storybook-static/assets/dist-D49tcpoS.js
+│  2.85 kB │ gzip:   1.25 kB
+│  storybook-static/assets/spice-level-Cj0y1c0L.js
+│  2.85 kB │ gzip:   1.01 kB
+│  storybook-static/assets/countdown-C4SkLPlb.js
+│  2.89 kB │ gzip:   1.28 kB
+│  storybook-static/assets/spinner-CRCoiXGG.js
+│  2.94 kB │ gzip:   1.08 kB
+│  storybook-static/assets/card-ynBOqkNn.js
+│  2.99 kB │ gzip:   1.07 kB
+│  storybook-static/assets/dist-oCFdGwHC.js
+│  3.06 kB │ gzip:   1.37 kB
+│  storybook-static/assets/auto-grid-CreZFXQ4.js
+│  3.10 kB │ gzip:   1.00 kB
+│  storybook-static/assets/motion-Cvnv1PgS.js
+│  3.15 kB │ gzip:   1.31 kB
+│  storybook-static/assets/dist-B4bHfIsx.js
+│  3.22 kB │ gzip:   1.29 kB
+│  storybook-static/assets/chunk-DRQKCCAG-DvsmU7ha.js
+│  3.39 kB │ gzip:   1.41 kB
+│  storybook-static/assets/logo-dUvH84fo.js
+│  3.40 kB │ gzip:   1.43 kB
+│  storybook-static/assets/avatar-2YKJAZ0r.js
+│  3.42 kB │ gzip:   1.22 kB
+│  storybook-static/assets/social-headline-C2CgQUG7.js
+│  3.44 kB │ gzip:   1.05 kB
+│  storybook-static/assets/status-dot-DgTmg58f.js
+│  3.46 kB │ gzip:   1.24 kB
+│  storybook-static/assets/iconography-BnIgKQyd.js
+│  3.48 kB │ gzip:   1.39 kB
+│  storybook-static/assets/react-dom-BzEl8usk.js
+│  3.58 kB │ gzip:   1.36 kB
+│  storybook-static/assets/price-tag-8tcjkccg.js
+│  3.65 kB │ gzip:   1.27 kB
+│  storybook-static/assets/createLucideIcon-Bduyx0Y6.js
+│  3.67 kB │ gzip:   1.64 kB
+│  storybook-static/assets/stack-DCvJ45Mz.js
+│  3.77 kB │ gzip:   1.25 kB
+│  storybook-static/assets/key-value-list-Di19x3cq.js
+│  3.82 kB │ gzip:   1.19 kB
+│  storybook-static/assets/spice-level.stories-B5NbrVl-.js
+│  3.87 kB │ gzip:   1.30 kB
+│  storybook-static/assets/link-CCX3yuq2.js
+│  3.95 kB │ gzip:   1.26 kB
+│  storybook-static/assets/select-m-iBhBF2.js
+│  3.96 kB │ gzip:   1.33 kB
+│  storybook-static/assets/form-states-BPPxJGHu.js
+│  4.02 kB │ gzip:   1.18 kB
+│  storybook-static/assets/status-dot.stories-Cn-vgzei.js
+│  4.16 kB │ gzip:   1.30 kB
+│  storybook-static/assets/countdown.stories-prNlbu0U.js
+│  4.20 kB │ gzip:   1.70 kB
+│  storybook-static/assets/step-tracker-Ce-YaPw_.js
+│  4.23 kB │ gzip:   1.47 kB
+│  storybook-static/assets/cluster-EI01egho.js
+│  4.27 kB │ gzip:   1.31 kB
+│  storybook-static/assets/pattern-field-Cy_XddHN.js
+│  4.30 kB │ gzip:   1.37 kB
+│  storybook-static/assets/input-C9v5R-WV.js
+│  4.32 kB │ gzip:   1.30 kB
+│  storybook-static/assets/section-DpVexEFo.js
+│  4.58 kB │ gzip:   1.45 kB
+│  storybook-static/assets/field-message-kUZfXyDR.js
+│  4.66 kB │ gzip:   1.22 kB
+│  storybook-static/assets/skeleton.stories-AaEzalLQ.js
+│  4.72 kB │ gzip:   1.67 kB
+│  storybook-static/assets/slider.stories-CNEqoRJP.js
+│  4.74 kB │ gzip:   1.71 kB
+│  storybook-static/assets/tag-w5Hj6r8W.js
+│  4.76 kB │ gzip:   1.54 kB
+│  storybook-static/assets/dist-CsbR2udO.js
+│  4.83 kB │ gzip:   2.10 kB
+│  storybook-static/assets/switch.stories-BG6e_x9-.js
+│  4.83 kB │ gzip:   1.45 kB
+│  storybook-static/assets/avatar.stories-l3deZfwT.js
+│  4.84 kB │ gzip:   1.51 kB
+│  storybook-static/assets/progress-bar.stories-ClGJnzfU.js
+│  4.87 kB │ gzip:   1.51 kB
+│  storybook-static/assets/image-slot.stories-BlA7C_V1.js
+│  4.91 kB │ gzip:   1.58 kB
+│  storybook-static/assets/badge.stories-BYF9CxE4.js
+│  4.95 kB │ gzip:   1.49 kB
+│  storybook-static/assets/price-tag.stories-Cd76xAyy.js
+│  5.07 kB │ gzip:   1.50 kB
+│  storybook-static/assets/icon-button-fMiWWpvZ.js
+│  5.10 kB │ gzip:   1.62 kB
+│  storybook-static/assets/progress-bar-BheOS1Iw.js
+│  5.12 kB │ gzip:   1.56 kB
+│  storybook-static/assets/rating-C7JMTNYt.js
+│  5.14 kB │ gzip:   1.74 kB
+│  storybook-static/assets/pattern-field.stories-BaT6JEH_.js
+│  5.14 kB │ gzip:   1.78 kB
+│  storybook-static/assets/field-OWHzp5Qw.js
+│  5.24 kB │ gzip:   1.61 kB
+│  storybook-static/assets/chunk-KJHJLCBK-yRlRMfNs.js
+│  5.35 kB │ gzip:   2.05 kB
+│  storybook-static/assets/brand-diamond-BkVQvcSI.js
+│  5.45 kB │ gzip:   1.45 kB
+│  storybook-static/assets/step-tracker.stories-Bf_Mawbb.js
+│  5.54 kB │ gzip:   1.97 kB
+│  storybook-static/assets/social-headline.stories-DHNBgRSk.js
+│  5.56 kB │ gzip:   1.62 kB
+│  storybook-static/assets/icon.stories-AbM_ER4Y.js
+│  5.61 kB │ gzip:   2.20 kB
+│  storybook-static/assets/rating.stories-BT4PqsEG.js
+│  5.69 kB │ gzip:   1.64 kB
+│  storybook-static/assets/dist-Akl9RgK5.js
+│  5.73 kB │ gzip:   2.35 kB
+│  storybook-static/assets/table-Crxgg0VX.js
+│  5.85 kB │ gzip:   1.80 kB
+│  storybook-static/assets/sticky-action-bar.stories-WmVk5R_8.js
+│  6.06 kB │ gzip:   2.06 kB
+│  storybook-static/assets/loyalty-card.stories-CU0eqqas.js
+│  6.17 kB │ gzip:   1.98 kB
+│  storybook-static/assets/breadcrumb.stories-CfElVM7W.js
+│  6.18 kB │ gzip:   2.15 kB
+│  storybook-static/assets/prose.stories-B881d9bp.js
+│  6.39 kB │ gzip:   1.89 kB
+│  storybook-static/assets/image-slot-Bm9TfMSM.js
+│  6.49 kB │ gzip:   1.56 kB
+│  storybook-static/assets/container.stories-UNjYqHdz.js
+│  6.59 kB │ gzip:   2.16 kB
+│  storybook-static/assets/dist-JrbLSU14.js
+│  6.72 kB │ gzip:   2.48 kB
+│  storybook-static/assets/tag.stories-CWe-Ecb8.js
+│  6.86 kB │ gzip:   2.18 kB
+│  storybook-static/assets/voice-and-content-CJ-HL8eR.js
+│  6.97 kB │ gzip:   2.56 kB
+│  storybook-static/assets/text-C_8do869.js
+│  6.99 kB │ gzip:   1.75 kB
+│  storybook-static/assets/spacing.stories-JZ6rgmdt.js
+│  7.16 kB │ gzip:   2.64 kB
+│  storybook-static/assets/button-DtfyUij6.js
+│  7.19 kB │ gzip:   2.03 kB
+│  storybook-static/assets/choice-control-CAWfvihu.js
+│  7.26 kB │ gzip:   1.87 kB
+│  storybook-static/assets/dist-DlPXFoWQ.js
+│  7.32 kB │ gzip:   2.68 kB
+│  storybook-static/assets/react-BZJXY1be.js
+│  7.53 kB │ gzip:   2.88 kB
+│  storybook-static/assets/logo.stories-D6qhkgJO.js
+│  7.56 kB │ gzip:   1.89 kB
+│  storybook-static/assets/steps.stories-CzBtBBLZ.js
+│  7.57 kB │ gzip:   2.60 kB
+│  storybook-static/assets/divider.stories-BFH8Vjrc.js
+│  7.62 kB │ gzip:   2.37 kB
+│  storybook-static/assets/accordion.stories-CaUamNGV.js
+│  7.63 kB │ gzip:   2.80 kB
+│  storybook-static/assets/link.stories-B1AgHOY3.js
+│  7.67 kB │ gzip:   1.99 kB
+│  storybook-static/assets/announcement-bar.stories-0X_5O58D.js
+│  7.76 kB │ gzip:   2.59 kB
+│  storybook-static/assets/checkbox.stories-BaYgc4ZV.js
+│  7.92 kB │ gzip:   2.36 kB
+│  storybook-static/assets/pagination.stories-YVMJrOoo.js
+│  7.96 kB │ gzip:   2.56 kB
+│  storybook-static/assets/icon-button.stories-DR5hvR2J.js
+│  7.98 kB │ gzip:   2.02 kB
+│  storybook-static/assets/stack.stories-DEfnogRc.js
+│  8.21 kB │ gzip:   2.46 kB
+│  storybook-static/assets/logo-lockup.stories-sdG6M_VJ.js
+│  8.45 kB │ gzip:   2.41 kB
+│  storybook-static/assets/price-summary.stories-Ct5o4STY.js
+│  8.64 kB │ gzip:   2.54 kB
+│  storybook-static/assets/section-header.stories-CO5wy_Es.js
+│  8.81 kB │ gzip:   2.50 kB
+│  storybook-static/assets/empty-state.stories-BU0pfPy3.js
+│  8.83 kB │ gzip:   2.70 kB
+│  storybook-static/assets/field.stories-SQ4VFyY5.js
+│  9.03 kB │ gzip:   2.89 kB
+│  storybook-static/assets/key-value-list.stories-iOd-OB_3.js
+│  9.07 kB │ gzip:   2.98 kB
+│  storybook-static/assets/text.stories-Cll0zqhk.js
+│  9.15 kB │ gzip:   2.40 kB
+│  storybook-static/assets/auto-grid.stories-BPXNKtGk.js
+│  9.26 kB │ gzip:   2.88 kB
+│  storybook-static/assets/stat.stories-Dj1G5zrM.js
+│  9.29 kB │ gzip:   2.73 kB
+│  storybook-static/assets/section.stories-DwnwvX9q.js
+│  9.56 kB │ gzip:   2.77 kB
+│  storybook-static/assets/cluster.stories-DVo4b13N.js
+│  9.74 kB │ gzip:   3.33 kB
+│  storybook-static/assets/type.stories-D6EGCJTD.js
+│  10.03 kB │ gzip:   2.94 kB
+│  storybook-static/assets/input.stories-B0xqWNSn.js
+│  10.25 kB │ gzip:   2.96 kB
+│  storybook-static/assets/link-card.stories-YHuIKtJX.js
+│  10.29 kB │ gzip:   3.05 kB
+│  storybook-static/assets/card.stories-BF_dc-LS.js
+│  10.77 kB │ gzip:   2.74 kB
+│  storybook-static/assets/app-shell.stories-Ea5NdQrg.js
+│  11.25 kB │ gzip:   3.80 kB
+│  storybook-static/assets/review-card.stories-Dt52xorC.js
+│  11.41 kB │ gzip:   3.35 kB
+│  storybook-static/assets/swatch-CvTSJmPb.js
+│  11.60 kB │ gzip:   2.53 kB
+│  storybook-static/assets/otp-input.stories-DBOhAzhY.js
+│  11.90 kB │ gzip:   3.35 kB
+│  storybook-static/assets/field-control-CsXUWoK8.js
+│  11.97 kB │ gzip:   2.78 kB
+│  storybook-static/assets/slot-picker.stories-BedmaOvV.js
+│  11.98 kB │ gzip:   3.50 kB
+│  storybook-static/assets/use-focus-return-Bk44yS1l.js
+│  12.31 kB │ gzip:   4.51 kB
+│  storybook-static/assets/check-card.stories-CV_mmMix.js
+│  12.65 kB │ gzip:   3.50 kB
+│  storybook-static/assets/alert.stories-B9xc3WNb.js
+│  12.85 kB │ gzip:   4.11 kB
+│  storybook-static/assets/search-field.stories-C-cg1eJY.js
+│  12.86 kB │ gzip:   3.65 kB
+│  storybook-static/assets/introduction-eJsi7B5T.js
+│  13.13 kB │ gzip:   4.12 kB
+│  storybook-static/assets/filter-bar.stories-DH0L3PiO.js
+│  13.29 kB │ gzip:   3.84 kB
+│  storybook-static/assets/motion.stories-DsrtW0lH.js
+│  13.32 kB │ gzip:   4.31 kB
+│  storybook-static/assets/list-row.stories-BqwuC1x5.js
+│  13.49 kB │ gzip:   3.75 kB
+│  storybook-static/assets/toast.stories-iCxcQ0LU.js
+│  13.55 kB │ gzip:   3.95 kB
+│  storybook-static/assets/offer-seal.stories-CPfOjqr_.js
+│  13.58 kB │ gzip:   3.83 kB
+│  storybook-static/assets/feature-item.stories-CQwW3BQJ.js
+│  13.80 kB │ gzip:   4.48 kB
+│  storybook-static/assets/select.stories-b-bDhLTt.js
+│  14.07 kB │ gzip:   3.74 kB
+│  storybook-static/assets/outlet-card.stories-DZ_jGTV4.js
+│  15.22 kB │ gzip:   4.08 kB
+│  storybook-static/assets/button.stories-CrUXzdwP.js
+│  15.37 kB │ gzip:   3.62 kB
+│  storybook-static/assets/quantity-stepper.stories-gfWtBoQx.js
+│  16.10 kB │ gzip:   4.11 kB
+│  storybook-static/assets/snackbar.stories-B_HjLXCN.js
+│  16.57 kB │ gzip:   4.55 kB
+│  storybook-static/assets/menu-item-card.stories-D-VwHgOA.js
+│  16.62 kB │ gzip:   4.31 kB
+│  storybook-static/assets/menu-item-row.stories-BWLHBgkP.js
+│  16.62 kB │ gzip:   4.28 kB
+│  storybook-static/assets/colors.stories-Ck9B0tTn.js
+│  16.75 kB │ gzip:   4.18 kB
+│  storybook-static/assets/radio.stories-DJuUVbqJ.js
+│  17.30 kB │ gzip:   4.37 kB
+│  storybook-static/assets/table.stories-CIz8wLto.js
+│  18.18 kB │ gzip:   5.01 kB
+│  storybook-static/assets/tabs.stories-DlN1N3ba.js
+│  20.19 kB │ gzip:   5.88 kB
+│  storybook-static/assets/coupon-ticket.stories-Cw6X092K.js
+│  20.72 kB │ gzip:   5.53 kB
+│  storybook-static/assets/pricing-card.stories-C5OzvlgY.js
+│  21.11 kB │ gzip:   5.69 kB
+│  storybook-static/assets/chunk-W22LQPXL-DgKlFWSl.js
+│  22.74 kB │ gzip:   7.59 kB
+│  storybook-static/assets/docs-kit.stories-CSKPuzTi.js
+│  23.65 kB │ gzip:   5.92 kB
+│  storybook-static/assets/chip-group.stories-DJm2HXyR.js
+│  23.87 kB │ gzip:   6.37 kB
+│  storybook-static/assets/brand.stories-AcBszuho.js
+│  24.54 kB │ gzip:   6.60 kB
+│  storybook-static/assets/post-frame.stories-DOVxHTyK.js
+│  25.62 kB │ gzip:   6.45 kB
+│  storybook-static/vite-inject-mocker-entry.js
+│  27.84 kB │ gzip:   9.66 kB
+│  storybook-static/assets/matchers-JIUQ3HVY-C789_MAK.js
+│  28.79 kB │ gzip:   9.68 kB
+│  storybook-static/assets/Color-6AOWCN3U-BlBxPLRr.js
+│  30.41 kB │ gzip:  11.50 kB
+│  storybook-static/assets/choice-card-group.stories-CnRKQhCU.js
+│  31.54 kB │ gzip:   7.76 kB
+│  storybook-static/assets/WithTooltip-7X4HQR7L-BD4oiVIc.js
+│  32.74 kB │ gzip:  11.47 kB
+│  storybook-static/assets/tooltip.stories-DQMaRimB.js
+│  43.54 kB │ gzip:  15.85 kB
+│  storybook-static/assets/component-variants-D302mLJN.js
+│  44.97 kB │ gzip:  14.81 kB
+│  storybook-static/assets/theming-Cvtrnj7n.js
+│  55.41 kB │ gzip:  21.35 kB
+│  storybook-static/assets/fixtures-BqPiXZDz.js
+│  70.61 kB │ gzip:  20.16 kB
+│  storybook-static/assets/syntaxhighlighter-QEQV7K2Y-BfyeyK7-.js
+│  75.92 kB │ gzip:  27.27 kB
+│  storybook-static/assets/logo-DG492BbN.js
+│  76.93 kB │ gzip:  31.54 kB
+│  storybook-static/assets/react-18-D4o7zN8K.js
+│  179.09 kB │ gzip:  56.66 kB
+│  storybook-static/assets/blocks-BG6nNeiG.js
+│  191.55 kB │ gzip:  60.71 kB
+│  storybook-static/assets/components-D6qyRp8R.js
+│  566.58 kB │ gzip: 180.37 kB
+│  storybook-static/assets/axe-_9eNhXQJ.js
+│  587.04 kB │ gzip: 160.26 kB
+│  storybook-static/assets/iframe-Qcz887d3.js
+│  1,159.40 kB │ gzip: 329.81 kB
+│  storybook-static/assets/token-table-BEe0VW62.js
+│  1,642.95 kB │ gzip: 346.20 kB
+
+│
+▲  Vite [plugin builtin:vite-reporter]
+│  (!) Some chunks are larger than 500 kB after minification. Consider:
+│  - Using dynamic import() to code-split the application
+│  - Use build.rolldownOptions.output.codeSplitting to improve chunking:
+│  ]8;;https://rolldown.rs/reference/OutputOptions.codeSplittinghttps://rolldown.rs/reference/OutputOptions.codeSplitting]8;;
+│  - Adjust chunk size limit for this warning via
+│  build.chunkSizeWarningLimit.
+│  Vite ✓ built in 3.17s
+│
+▲  Vite [33m[PLUGIN_TIMINGS] [0mYour build spent 87% of 3.2s inside plugin hooks
+│  (2.8s).
+│  Measured inside the callback, so queue time is excluded and time the
+│  callback itself awaited is not:
+│  - vite:react-docgen-typescript transform (36%, 1.1s, 2643 calls)
+│  Those rows are 36% of the build; the rest of the 87% is below.
+│  Not measurable — 4 hooks whose calls overlap, so elapsed time covers
+│  work other calls were doing. Profile with `node --cpu-prof`:
+│  - vite:asset load (273 calls)
+│  - plugin-csf transform (2643 calls)
+│  - vite:css transform (14 calls)
+│  … and 1 more
+│  See ]8;;https://rolldown.rs/reference/InputOptions.checks#plugintimingshttps://rolldown.rs/reference/InputOptions.checks#plugintimings]8;;
+│  for more details.
+
+│
+◇  Output directory:
+│  /Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook/storybook-static
+│
+└  Storybook build completed successfully
+
+
+> nx run @pink-paprikaa-web/blog:lint
+
+> eslint .
+
+
+> nx run @pink-paprikaa-web/web:lint
+
+> eslint .
+
+
+> nx run @pink-paprikaa-web/ui:test
+
+> vitest
+
+
+ RUN  v4.1.10 /Users/rishavpa/Professional/pink-paprikaa-site/packages/ui
+
+ ✓ |@pink-paprikaa-web/ui| src/molecules/field/field.test.tsx (17 tests) 599ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/radio/radio.test.tsx (23 tests) 851ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/search-field/search-field.test.tsx (17 tests) 714ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/select/select.test.tsx (22 tests) 585ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/slot-picker/slot-picker.test.tsx (19 tests) 987ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/input/input.test.tsx (19 tests) 390ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/quantity-stepper/quantity-stepper.test.tsx (28 tests) 1175ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/snackbar/snackbar.test.tsx (32 tests) 1009ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/filter-bar/filter-bar.test.tsx (10 tests) 338ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/toast/toast.test.tsx (24 tests) 872ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/pagination/pagination.test.tsx (10 tests) 910ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/rating/rating.test.tsx (24 tests) 820ms
+     ✓ has no accessibility violations with a count, as symbols, and without the score  423ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/button/button.test.tsx (29 tests) 678ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/choice-card-group/choice-card-group.test.tsx (24 tests) 1775ms
+     ✓ is a fieldset named by its legend, with one radio per option  301ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/tabs/tabs.test.tsx (13 tests) 901ms
+     ✓ is a named tab list whose first tab is selected by default  318ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/otp-input/otp-input.test.tsx (17 tests) 801ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/tooltip/tooltip.test.tsx (12 tests) 801ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/menu-item-card/menu-item-card.test.tsx (14 tests) 360ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/coupon-ticket/coupon-ticket.test.tsx (14 tests) 459ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/step-tracker/step-tracker.test.tsx (11 tests) 649ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/menu-item-row/menu-item-row.test.tsx (14 tests) 733ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/logo/logo.test.tsx (17 tests) 432ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/accordion/accordion.test.tsx (11 tests) 405ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/icon-button/icon-button.test.tsx (18 tests) 410ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/chip-group/chip-group.test.tsx (21 tests) 1211ms
+     ✓ as a single group is a named radio group that always keeps its one choice  470ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/loyalty-card/loyalty-card.test.tsx (17 tests) 342ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/check-card/check-card.test.tsx (12 tests) 312ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/list-row/list-row.test.tsx (10 tests) 259ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/checkbox/checkbox.test.tsx (12 tests) 303ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/alert/alert.test.tsx (19 tests) 260ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/outlet-card/outlet-card.test.tsx (15 tests) 269ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/switch/switch.test.tsx (11 tests) 264ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/divider/divider.test.tsx (10 tests) 309ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/progress-bar/progress-bar.test.tsx (18 tests) 284ms
+ ✓ |@pink-paprikaa-web/ui| src/layouts/post-frame/post-frame.test.tsx (28 tests) 285ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/avatar/avatar.test.tsx (19 tests) 222ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/link-card/link-card.test.tsx (14 tests) 335ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/breadcrumb/breadcrumb.test.tsx (9 tests) 299ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/review-card/review-card.test.tsx (10 tests) 383ms
+ ✓ |@pink-paprikaa-web/ui| src/layouts/cluster/cluster.test.tsx (23 tests) 309ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/tag/tag.test.tsx (17 tests) 211ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/feature-item/feature-item.test.tsx (6 tests) 228ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/status-dot/status-dot.test.tsx (21 tests) 339ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/empty-state/empty-state.test.tsx (8 tests) 280ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/pricing-card/pricing-card.test.tsx (15 tests) 325ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/spinner/spinner.test.tsx (13 tests) 406ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/sticky-action-bar/sticky-action-bar.test.tsx (7 tests) 154ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/steps/steps.test.tsx (8 tests) 296ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/link/link.test.tsx (22 tests) 313ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/slider/slider.test.tsx (6 tests) 271ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/badge/badge.test.tsx (14 tests) 172ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/table/table.test.tsx (10 tests) 316ms
+ ✓ |@pink-paprikaa-web/ui| src/layouts/stack/stack.test.tsx (20 tests) 279ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/use-controllable-state.test.tsx (5 tests) 324ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/spice-level/spice-level.test.tsx (16 tests) 466ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/logo-lockup/logo-lockup.test.tsx (11 tests) 468ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/diet-mark/diet-mark.test.tsx (8 tests) 398ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/social-headline/social-headline.test.tsx (21 tests) 323ms
+ ✓ |@pink-paprikaa-web/ui| src/layouts/container/container.test.tsx (18 tests) 190ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/section-header/section-header.test.tsx (12 tests) 165ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/key-value-list/key-value-list.test.tsx (10 tests) 430ms
+ ✓ |@pink-paprikaa-web/ui| src/layouts/section/section.test.tsx (23 tests) 373ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/countdown/countdown.test.tsx (13 tests) 324ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/offer-seal/offer-seal.test.tsx (19 tests) 349ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/field-message.test.tsx (9 tests) 285ms
+ ✓ |@pink-paprikaa-web/ui| src/layouts/app-shell/app-shell.test.tsx (10 tests) 496ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/image-slot/image-slot.test.tsx (27 tests) 399ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/text/text.test.tsx (40 tests) 234ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/price-summary/price-summary.test.tsx (9 tests) 227ms
+ ✓ |@pink-paprikaa-web/ui| src/layouts/auto-grid/auto-grid.test.tsx (19 tests) 195ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/icon/icon.test.tsx (12 tests) 144ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/stat/stat.test.tsx (14 tests) 249ms
+ ✓ |@pink-paprikaa-web/ui| src/molecules/announcement-bar/announcement-bar.test.tsx (9 tests) 219ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/skeleton/skeleton.test.tsx (8 tests) 122ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/link-as.test.tsx (2 tests) 100ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/price-tag/price-tag.test.tsx (22 tests) 135ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/struck-price.test.tsx (6 tests) 29ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/reveal-observer.test.tsx (10 tests) 44ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/pattern-field/pattern-field.test.tsx (22 tests) 241ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/symbol-mark.test.tsx (2 tests) 27ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/component-variants.spec.ts (46 tests) 32ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/brand-artwork.spec.ts (12 tests) 8ms
+ ✓ |@pink-paprikaa-web/ui| src/styles.spec.ts (6 tests) 4ms
+ ✓ |@pink-paprikaa-web/ui| src/layouts/post-frame/post-formats.spec.ts (13 tests) 4ms
+ ✓ |@pink-paprikaa-web/ui| src/atoms/card/card.test.tsx (19 tests) 176ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/space.spec.ts (22 tests) 3ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/heading.spec.ts (6 tests) 2ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/assign-ref.spec.ts (3 tests) 3ms
+ ✓ |@pink-paprikaa-web/ui| src/index.spec.ts (10 tests) 7ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/field-status.spec.ts (1 test) 2ms
+ ✓ |@pink-paprikaa-web/ui| src/lib/is-shown.spec.ts (7 tests) 2ms
+
+ Test Files  91 passed (91)
+      Tests  1376 passed (1376)
+   Start at  00:15:34
+   Duration  23.11s (transform 2.64s, setup 28.81s, import 20.72s, tests 34.09s, environment 60.15s)
+
+
+> nx run @pink-paprikaa-web/content:test
+
+> vitest
+
+
+ RUN  v4.1.10 /Users/rishavpa/Professional/pink-paprikaa-site/packages/content
+
+ ✓ |@pink-paprikaa-web/content| src/brand/brand.spec.ts (15 tests) 6ms
+ ✓ |@pink-paprikaa-web/content| src/brand/brand-lines.spec.ts (5 tests) 2ms
+
+ Test Files  2 passed (2)
+      Tests  20 passed (20)
+   Start at  00:15:58
+   Duration  292ms (transform 44ms, setup 0ms, import 137ms, tests 8ms, environment 0ms)
+
+
+> nx run @pink-paprikaa-web/content:lint
+
+> eslint .
+
+
+> nx run @pink-paprikaa-web/storybook:lint
+
+> eslint .
+
+
+> nx run @pink-paprikaa-web/storybook:test
+
+> vitest
+
+│
+▲  No story files found for the specified pattern:
+│  ../../packages/ui/src/**/*.mdx
+
+ RUN  v4.1.10 /Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook
+
+ ✓ |docs-kit| src/docs-kit/library-source.spec.ts (1 test) 3ms
+ ✓ |docs-kit| src/docs-kit/catalogue.spec.ts (151 tests) 1057ms
+     ✓ never offers Tailwind's static max-w-prose (65ch shadows --container-prose)  543ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/coupon-ticket/coupon-ticket.stories.tsx (9 tests) 824ms
+   ✓ Playground  663ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/check-card/check-card.stories.tsx (7 tests) 869ms
+   ✓ Playground  757ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/chip-group/chip-group.stories.tsx (10 tests) 841ms
+   ✓ Playground  517ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/select/select.stories.tsx (12 tests) 1115ms
+   ✓ Playground  876ms
+ ✓ |storybook (chromium)| src/foundations/spacing/spacing.stories.tsx (9 tests) 956ms
+   ✓ Scale  485ms
+ ✓ |storybook (chromium)| src/foundations/brand/brand.stories.tsx (13 tests) 1065ms
+   ✓ Lockup  620ms
+ ✓ |storybook (chromium)| src/docs-kit/docs-kit.stories.tsx (14 tests) 1149ms
+   ✓ Missing Token Fails Loudly  602ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/snackbar/snackbar.stories.tsx (11 tests) 1706ms
+   ✓ Playground  1058ms
+   ✓ Closed By Parent  421ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/countdown/countdown.stories.tsx (4 tests) 1753ms
+   ✓ Playground  1709ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/radio/radio.stories.tsx (10 tests) 417ms
+ ✓ |storybook (chromium)| src/foundations/colors/colors.stories.tsx (12 tests) 2161ms
+   ✓ Pink Ramp  722ms
+   ✓ Surface Overrides  694ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/choice-card-group/choice-card-group.stories.tsx (11 tests) 484ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/tooltip/tooltip.stories.tsx (4 tests) 312ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/menu-item-row/menu-item-row.stories.tsx (10 tests) 389ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/otp-input/otp-input.stories.tsx (8 tests) 299ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/input/input.stories.tsx (15 tests) 426ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/button/button.stories.tsx (16 tests) 442ms
+ ✓ |storybook (chromium)| src/foundations/type/type.stories.tsx (8 tests) 310ms
+ ✓ |storybook (chromium)| src/foundations/motion/motion.stories.tsx (8 tests) 322ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/cluster/cluster.stories.tsx (9 tests) 356ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/filter-bar/filter-bar.stories.tsx (7 tests) 243ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/step-tracker/step-tracker.stories.tsx (8 tests) 294ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/auto-grid/auto-grid.stories.tsx (11 tests) 342ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/post-frame/post-frame.stories.tsx (14 tests) 372ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/field/field.stories.tsx (9 tests) 362ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/stack/stack.stories.tsx (9 tests) 289ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/quantity-stepper/quantity-stepper.stories.tsx (7 tests) 294ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/text/text.stories.tsx (13 tests) 255ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/tabs/tabs.stories.tsx (9 tests) 284ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/key-value-list/key-value-list.stories.tsx (8 tests) 265ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/stat/stat.stories.tsx (8 tests) 242ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/table/table.stories.tsx (8 tests) 283ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/search-field/search-field.stories.tsx (9 tests) 362ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/checkbox/checkbox.stories.tsx (8 tests) 318ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/rating/rating.stories.tsx (8 tests) 366ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/toast/toast.stories.tsx (7 tests) 353ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/icon-button/icon-button.stories.tsx (10 tests) 287ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/app-shell/app-shell.stories.tsx (6 tests) 180ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/divider/divider.stories.tsx (8 tests) 178ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/card/card.stories.tsx (10 tests) 225ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/outlet-card/outlet-card.stories.tsx (8 tests) 225ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/tag/tag.stories.tsx (8 tests) 226ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/slot-picker/slot-picker.stories.tsx (6 tests) 255ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/pagination/pagination.stories.tsx (6 tests) 279ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/progress-bar/progress-bar.stories.tsx (8 tests) 316ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/price-summary/price-summary.stories.tsx (8 tests) 266ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/alert/alert.stories.tsx (9 tests) 197ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/pattern-field/pattern-field.stories.tsx (9 tests) 173ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/spice-level/spice-level.stories.tsx (6 tests) 172ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/list-row/list-row.stories.tsx (7 tests) 176ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/menu-item-card/menu-item-card.stories.tsx (6 tests) 212ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/logo-lockup/logo-lockup.stories.tsx (8 tests) 253ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/image-slot/image-slot.stories.tsx (7 tests) 231ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/pricing-card/pricing-card.stories.tsx (6 tests) 201ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/badge/badge.stories.tsx (6 tests) 159ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/link/link.stories.tsx (9 tests) 288ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/switch/switch.stories.tsx (7 tests) 181ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/offer-seal/offer-seal.stories.tsx (7 tests) 175ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/section/section.stories.tsx (8 tests) 169ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/price-tag/price-tag.stories.tsx (8 tests) 183ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/social-headline/social-headline.stories.tsx (8 tests) 253ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/accordion/accordion.stories.tsx (4 tests) 281ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/review-card/review-card.stories.tsx (6 tests) 167ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/section-header/section-header.stories.tsx (7 tests) 164ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/avatar/avatar.stories.tsx (7 tests) 170ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/empty-state/empty-state.stories.tsx (5 tests) 196ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/loyalty-card/loyalty-card.stories.tsx (7 tests) 257ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/container/container.stories.tsx (6 tests) 133ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/icon/icon.stories.tsx (6 tests) 139ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/steps/steps.stories.tsx (5 tests) 142ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/status-dot/status-dot.stories.tsx (6 tests) 176ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/breadcrumb/breadcrumb.stories.tsx (5 tests) 186ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/feature-item/feature-item.stories.tsx (5 tests) 137ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/logo/logo.stories.tsx (5 tests) 137ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/skeleton/skeleton.stories.tsx (5 tests) 129ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/slider/slider.stories.tsx (4 tests) 121ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/sticky-action-bar/sticky-action-bar.stories.tsx (4 tests) 122ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/announcement-bar/announcement-bar.stories.tsx (4 tests) 108ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/spinner/spinner.stories.tsx (4 tests) 111ms
+ ✓ |storybook (chromium)| src/docs-kit/prose.stories.tsx (3 tests) 112ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/link-card/link-card.stories.tsx (4 tests) 108ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/diet-mark/diet-mark.stories.tsx (3 tests) 65ms
+ ✓ |storybook (chromium)| src/docs-kit/canvas.stories.tsx (3 tests) 63ms
+
+ Test Files  85 passed (85)
+      Tests  792 passed (792)
+   Start at  00:16:00
+   Duration  13.97s (transform 1.22s, setup 28.57s, import 25.57s, tests 30.86s, environment 0ms)
+
+
+> nx run @pink-paprikaa-web/seo:lint
+
+> eslint .
+
+
+> nx run @pink-paprikaa-web/blog-e2e:lint
+
+> eslint .
+
+
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/blog-e2e/src/blog.spec.ts
+  21:16  warning  Avoid having conditionals in tests  playwright/no-conditional-in-test
+
+✖ 1 problem (0 errors, 1 warning)
+
+
+> nx run @pink-paprikaa-web/image-pipeline:lint
+
+> eslint .
+
+
+> nx run @pink-paprikaa-web/storybook:typecheck
+
+> tsc --build --emitDeclarationOnly
+
+
+> nx run @pink-paprikaa-web/ui:lint
+
+> eslint .
+
+
+> nx run @pink-paprikaa-web/image-pipeline:test
+
+> vitest
+
+
+ RUN  v4.1.10 /Users/rishavpa/Professional/pink-paprikaa-site/tools/image-pipeline
+
+ ✓ |@pink-paprikaa-web/image-pipeline| src/pipeline.test.ts (1 test) 207ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  00:16:17
+   Duration  407ms (transform 16ms, setup 0ms, import 77ms, tests 207ms, environment 0ms)
+
+
+> nx run @pink-paprikaa-web/seo:typecheck
+
+> tsc --build tsconfig.json --emitDeclarationOnly
+
+
+> nx run @pink-paprikaa-web/blog-e2e:typecheck
+
+> tsc --build tsconfig.json --emitDeclarationOnly
+
+
+> nx run @pink-paprikaa-web/seo:test
+
+> vitest
+
+
+ RUN  v4.1.10 /Users/rishavpa/Professional/pink-paprikaa-site/packages/seo
+
+ ✓ |@pink-paprikaa-web/seo| src/lib/seo.spec.ts (1 test) 2ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  00:16:18
+   Duration  143ms (transform 13ms, setup 0ms, import 18ms, tests 2ms, environment 0ms)
+
+
+> nx run @pink-paprikaa-web/image-pipeline:typecheck
+
+> tsc --build tsconfig.json --emitDeclarationOnly
+
+
+> nx run @pink-paprikaa-web/web-e2e:typecheck
+
+> tsc --build tsconfig.json --emitDeclarationOnly
+
+
+> nx run @pink-paprikaa-web/web-e2e:lint
+
+> eslint .
+
+
+/Users/rishavpa/Professional/pink-paprikaa-site/apps/web-e2e/src/home.spec.ts
+  20:16  warning  Avoid having conditionals in tests  playwright/no-conditional-in-test
+
+✖ 1 problem (0 errors, 1 warning)
+
+
+
+
+ NX   Successfully ran targets typecheck, lint, test, build for 12 projects and 1 task they depend on
+
+
+  Run duration:      57.7s
+  Cache:             Skipped (--skip-nx-cache)
+  Critical path:     47.1s (2 tasks)
+  Recoverable time:  10.6s (18% of the run)
+
+  Recommendations:
+    - Cache: drop --skip-nx-cache to restore unchanged tasks instantly.
+    - Speed up or split the longest tasks on the critical path:
+        @pink-paprikaa-web/ui:lint    45.2s
+exit 0

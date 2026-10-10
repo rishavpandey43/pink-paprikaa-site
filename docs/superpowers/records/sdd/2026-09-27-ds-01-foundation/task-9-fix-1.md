@@ -1,0 +1,13 @@
+# Task 9 — fix round 1 findings (fix ALL; docs-only)
+
+1. IMPORTANT — docs/engineering/05-tooling-and-config.md:33 swaps next.config names. Real files: apps/web/next.config.js and apps/blog/next.config.mjs (blog's own comment explains .mjs). Verify with ls, fix the row.
+2. AUTHORING.md:184-187 — add pitfall: a component colour token defined as a semantic alias (e.g. {color.text.link}) compiles to `--color-x: var(--color-text-link)` on :root and resolves THERE, so it does NOT follow surfaces. The component token itself must be overridden in surface/*.json and restored in light.json; the contrast gate catches it only if the pair is listed.
+3. AUTHORING.md:255 — "inset ring (shadow-focus-ring)" is wrong; token is `0 0 0 3px …` outer spread. Say "the 3px focus ring". Also fix the same wording in spec §5.5 if present.
+4. AUTHORING.md:39-42 — atom import list labelled LAW is stricter than the lint (lint regexes also allow ../../assets/* and ../../styles.css). State what the lint permits (LAW) vs the narrower convention.
+5. AUTHORING.md:116-117 — "type and disabled never reach a slotted child" reads as Slot filtering; Slot merges every prop. Reword: "don't pass type/disabled when asChild".
+6. AUTHORING.md:176-178 — typography composite example lacks `"$type": "typography"`; declarations() branches on it. Add it.
+7. AUTHORING §3 — say a contract's `?: T` is implemented as `?: T | undefined` (R13, exactOptionalPropertyTypes).
+8. Spec docs/superpowers/specs/2026-09-27-design-system-rewrite-design.md: §6.3 amendment (~line 315) points to §11.2 for no-arbitrary-shorthand but §11.2 table has no such row — add the row. Line ~774 says no-custom-classname runs "against src/styles.css"; real cssConfigPath is packages/ui/tailwind.css — fix.
+9. Spec §6.1 (~line 235+) stale: tree lists primitive files spacing/radius/border/shadow/effect/layout; real files are space, shape, elevation (+ semantic/shadow.json) — list what `ls packages/design-tokens/tokens/**` shows. "Tiers" sentence says only primitives hold px literals — contradicts §6.4 amendment and AUTHORING §5 (component tier holds e.g. 14px in icon.json). Amend (marked + dated like the other amendments).
+10. docs/engineering/06 "Known gaps" (~lines 52-60: className: inside compoundVariants unchecked; shorthand rule misses /(--alpha) and max-(--bp):) — add a row with an owner to 09's drift ledger (owner: Plan 1 final fix wave / lint rule banning className in compound entries).
+11. Trivial: 03:64 "Three rules enforce this" vs AUTHORING:197 "Four rules" — make consistent (count what is actually listed). Recipe docs/engineering/08 §3 omits the light.json restore step AUTHORING and new-component.md include — add it.

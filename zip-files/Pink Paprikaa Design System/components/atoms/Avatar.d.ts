@@ -9,6 +9,8 @@ export interface AvatarProps {
   icon?: string;
   /** Pink halo, for the signed-in guest. */
   ring?: boolean;
+  /** Show the name in our Tooltip on hover/focus (never the browser's title bubble). */
+  tooltip?: boolean;
   style?: CSSProperties;
 }
 export function Avatar(props: AvatarProps): JSX.Element;

@@ -24,6 +24,8 @@ import pinkPaprikaa from "./rules/plugin.js";
 // type-checked config is applied directly instead.
 export default defineConfig(
   { ignores: ["**/dist", "**/out", "**/.next", "**/storybook-static", "**/node_modules"] },
+  // Read-only or verbatim files no project owns. .prettierignore skips the same three.
+  { ignores: ["**/zip-files/**", "**/.github/skills/**", "**/docs/superpowers/records/**"] },
   ...nx.configs["flat/base"],
   // ESLint's own recommended rules. Listed before the TypeScript presets on purpose: those switch
   // off the ones TypeScript already covers (`no-undef`, `no-redeclare`, …) for `.ts`/`.tsx`.

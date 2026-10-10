@@ -1,0 +1,5 @@
+
+> @pink-paprikaa-web/source@0.0.0 guard:founder /Users/rishavpa/Professional/pink-paprikaa-site
+> node scripts/check-founder-names.mjs apps/web/out apps/blog/out apps/storybook/storybook-static
+
+Founder-name guard: clean.

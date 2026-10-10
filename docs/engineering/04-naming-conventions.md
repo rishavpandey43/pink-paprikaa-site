@@ -39,15 +39,25 @@ convention.)
 
 ## 3. Imports (LAW — perfectionist + boundaries; auto-fixed on save)
 
-Order: Node builtins → external → internal (`@pink-paprikaa-web/*`, then `@/*`) → relative.
-One blank line between groups. Reach rules:
+Three tiers, one blank line between them: **packages** (Node built-ins and npm) → **this monorepo**
+(`@pink-paprikaa-web/*`, `@/*`, `#…`) → **relative**. A type import sits beside the value imports of
+its tier, not in a block of its own. `eslint --fix` (editor save, or `pnpm lint:fix`) arranges it.
+Reach rules:
 
-| Distance                 | Form                                      |
-| ------------------------ | ----------------------------------------- |
-| Cross-package            | scope only: `@pink-paprikaa-web/ui`       |
-| In-app, cross-folder     | alias: `@/features/menu/menu-transformer` |
-| Same module directory    | relative: `./menu-utils`                  |
-| Another package's `src/` | **never** (boundary violation)            |
+| Distance                 | Form                                                                            |
+| ------------------------ | ------------------------------------------------------------------------------- |
+| Cross-package            | scope only: `@pink-paprikaa-web/ui`                                             |
+| In-app, cross-folder     | alias: `@/features/menu/menu-transformer`                                       |
+| Same module directory    | relative: `./menu-utils`                                                        |
+| Up one or two folders    | relative: `../lib/sx`, `../../lib/sx`                                           |
+| Up three or more folders | **lint error** — use `@/` in an app; in a package, move the code closer         |
+| A package's test helper  | `#vitest.setup` (a `#` import; only tests use it, and Next never compiles them) |
+| Another package's `src/` | **never** (boundary violation)                                                  |
+
+`@/*` is a tsconfig `paths` entry in each app (`web`, `blog`, `storybook`; the Storybook app also
+mirrors it as a Vite alias in `vite.config.mts`, reused by `vitest.config.mts`). Package source
+(`packages/ui`) keeps relative imports: it is shipped to the Next apps as-is, and Next cannot
+resolve a package's `#` imports ([decision log P-12](09-decision-log.md)).
 
 ## 4. Copy & domain terms (this repo's binding — hard rules)
 
@@ -64,3 +74,26 @@ One blank line between groups. Reach rules:
 - Transformers say both ends: `toMenuView`, `fromCsvRow` — never `process`, `handleData`.
 - If two names differ by one typo-able character (`payRun`/`payrun`), rename one — the
   reference codebase shipped twin transformer files differing by a typo (R-15's lesson).
+
+## 6. Props — translating a design-system `.d.ts` (LAW for booleans; CONVENTION otherwise)
+
+Every design-system prop keeps its name and meaning except these translations (spec §8.2):
+
+| Design system prop pattern                               | This system                                                                             |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `icon?: string` (a Lucide name)                          | `icon?: IconComponent` — a `lucide-react` icon or a brand glyph                         |
+| `style?: CSSProperties`                                  | `className?: string` (+ native props)                                                   |
+| `on?: "light" \| "brand"`                                | removed — surface-aware through `data-surface` (D5)                                     |
+| `base?: string` (asset folder)                           | removed — artwork is inlined                                                            |
+| boolean `fullWidth`, `loading`, `selected`, `chevron`, … | `isFullWidth`, `isLoading`, `isSelected`, `hasChevron`, … (`is/has` prefixes — LAW)     |
+| numeric px `size`/`width`/`min`/`tile`                   | token-backed enums (`size: "sm" \| "md" \| "lg"`, AutoGrid `min: "xs" … "2xl"`)         |
+| free CSS strings (`radius`, a tone colour, `measure`)    | token enums only                                                                        |
+| `onClick` used for navigation                            | `href` / `asChild`                                                                      |
+| `onChange(value)`                                        | `onValueChange(value)` (native-backed controls keep native `onChange` for `register()`) |
+| `open` + `onClose`                                       | `open` / `defaultOpen` / `onOpenChange`                                                 |
+| `error?: boolean \| string` on a control                 | control `status` + `aria-invalid`; the message is rendered by `Field`                   |
+| string-or-object option lists                            | object lists only (`{ value, label }`) — strings are not control flow                   |
+
+Controlled/uncontrolled pairs follow Radix: `value`/`defaultValue`/`onValueChange`,
+`checked`/`defaultChecked`/`onCheckedChange`, `open`/`defaultOpen`/`onOpenChange`. Titled
+components take `headingLevel`.

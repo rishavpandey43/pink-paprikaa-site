@@ -1,0 +1,27 @@
+Chromium 151.0.7922.34
+
+== molecules-accordion--as-headings
+heading level=3 "Is everything vegetarian?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=3 "Do you deliver?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=3 "Can I book a table?"  ancestors: DisclosureTriangleGrouped < group < generic
+DisclosureTriangle (summary) nodes: 3; with a heading child: 3
+
+== organisms-faqsection--default
+heading level=2 "The things people ask"  ancestors: generic < generic < generic
+heading level=3 "Where do you deliver?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=3 "Can I pause or skip a day?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=3 "Can I customise my meals?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=3 "Do I get a GST bill?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=3 "Can I try it before I commit?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=3 "Is it really pure vegetarian?"  ancestors: DisclosureTriangleGrouped < group < generic
+DisclosureTriangle (summary) nodes: 6; with a heading child: 6
+
+== organisms-faqsection--heading-level-3
+heading level=3 "Plans and delivery"  ancestors: generic < generic < generic
+heading level=4 "Where do you deliver?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=4 "Can I pause or skip a day?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=4 "Can I customise my meals?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=4 "Do I get a GST bill?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=4 "Can I try it before I commit?"  ancestors: DisclosureTriangleGrouped < group < generic
+heading level=4 "Is it really pure vegetarian?"  ancestors: DisclosureTriangleGrouped < group < generic
+DisclosureTriangle (summary) nodes: 6; with a heading child: 6

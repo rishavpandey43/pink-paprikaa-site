@@ -1,5 +1,7 @@
 # Pink Paprikaa — Design System
 
+> Developers: the implementation handoff lives in **`handoff/README.md`**.
+
 **Brand:** Pink Paprikaa · *India's First Desi Urban Café*
 **Registered entity:** Paprikaa Culinary Ventures Private Limited
 
@@ -19,7 +21,9 @@ the whole identity.
 ### Company facts live in one file
 `brand.js` (plain script → `window.PP_BRAND`; ES-module twin at `tokens/brand.module.js`) holds every fact a
 design might need to print: legal entity, CIN, GSTIN, FSSAI, PAN, registered
-address, website, phone, WhatsApp, emails, social handles, opening hours, the
+address, website, phone, WhatsApp, emails, Instagram (@thepinkpaprikaa),
+ordering links (own site order.pinkpaprikaa.com, Swiggy, Zomato), Google rating
+(4.3 · 98 reviews, with the Maps link), founding year (2025), opening hours, the
 outlet list, and billing constants (5% GST split, invoice prefix, bank/UPI).
 **Never retype these in a page** — read `window.PP_BRAND` (or import it) and
 use the derived `PP_BRAND.lines.*` strings for footers and legal lines.
@@ -173,7 +177,7 @@ Copy follows that lead.
 - **The diamond symbol is the only pattern.** Tiled/rotated at 6–10% opacity it
   makes the brand's one texture (used on pink panels, ticket stubs, loading
   states). No noise, no grain, no paper texture, no hand-drawn illustration.
-- Images always carry `--radius-md` (12px→`--radius-lg` on cards) except when
+- Images always carry `--radius-md` (10px → `--radius-lg` 16px on cards) except when
   full-bleed.
 
 ### 3.5 Cards, borders, shadows
@@ -206,7 +210,8 @@ corners only on bottom sheets), inputs 10, thumbnails 10, avatars circular.
   `--pink-50`; on imagery, brighten scrim slightly. Never opacity-fade a button.
 - **Press:** `scale(var(--press-scale))` = 0.97 **and** darken to
   `--brand-active`. Both, together, 80ms.
-- **Focus:** 2px pink outline, 2px offset (or `--focus-ring` inset for fields).
+- **Focus:** 2px pink outline, 2px offset (or `--focus-ring` inset for fields). On pink, ink or status fills the ring is white.
+- **Every pressable thing has all five states — rest, hover, press, focus-visible, disabled.** No exceptions: Button, IconButton, TextButton, Link, Tag, Pagination, Tabs, TabBar, Accordion, ListRow, SlotPicker, QuantityStepper, Menu rows, calendar days, coupon stub, Checkbox/Radio/Switch, field triggers (hover = `--border-strong`). They all read one hook, `usePress` (exported from `TextButton.jsx`), and the `--state-*` tokens: `--state-hover` (pink-50) / `--state-press` (pink-100) on light, `--state-hover-on-color` / `--state-press-on-color` (white 16% / 28%) on pink, ink and status fills, `--state-hover-tint` / `--state-press-tint` for neutral overlays. A text-only action (toast CTA, "Undo", "Edit") is a **TextButton**, never a bare `<button>` — at rest it reads as a word, on hover it gains a tinted pill.
 - **Disabled:** `--ink-200` fill, `--ink-400` text, no shadow, `cursor:not-allowed`.
   Not just reduced opacity.
 - **Text colour follows the surface, never the component.** Any flooded field
@@ -284,7 +289,7 @@ Six deliberate steps, all warm-ink tinted — pick by *meaning*, not by taste:
 - Sizes: 16 (inline with body), 20 (buttons, list rows), 24 (nav, tab bar),
   32 (empty states).
 - **Brand glyphs are PNG/SVG assets, not icons:** the diamond symbol
-  (`assets/symbol-*.png`) is a brand mark used for bullets, loaders, pattern
+  (`assets/symbol-*.svg`) is a brand mark used for bullets, loaders, pattern
   tiles, and the app's launcher — do not restyle or recolour it beyond
   pink/white. The chilli in the logo is part of the lockup and must not be
   extracted as a standalone icon.
@@ -358,6 +363,7 @@ Never invent a size outside this list; add one to `tokens/canvas.css` instead.
 | `templates/` | Copy-and-go starting points for consuming projects |
 | `brand.js` · `tokens/brand.module.js` | Company facts — legal, GST, contact, outlets, billing |
 | `SKILL.md` | Agent Skills entry point |
+| `handoff/` | Developer handoff — README, TOKENS, COMPONENTS, SCREENS, BRAND |
 | `thumbnail.html` | Homepage tile for this design system |
 | `uploads/` | The original brand files as supplied |
 
@@ -409,18 +415,20 @@ The library follows **Atomic Design**. Four tiers, one folder each, and every
 component ships a `.jsx`, a `.d.ts` props contract, a `.prompt.md` usage note and
 a `.card.html` **story** showing all of its variants in the Design System tab.
 
-#### `components/atoms/` — 28 indivisible primitives
+#### `components/atoms/` — 31 indivisible primitives
 Typography & links: **Text**, **Link**
 Brand: **Logo**, **Icon**, **PatternField**, **SocialHeadline**
-Actions: **Button**, **IconButton**, **Tag**
+Actions: **Button**, **IconButton**, **TextButton**, **Tag**
 Surfaces: **Card**, **Divider**, **ImageSlot**
 Form controls: **Input**, **Select**, **Checkbox**, **Radio**, **Switch**
+Overlays: **Popover** (floating surface / bottom sheet), **Menu** (the shared option panel)
 Indicators: **Badge**, **StatusDot**, **Avatar**, **Rating**, **ProgressBar**,
 **Spinner**, **Skeleton**, **Tooltip**
 Menu primitives: **DietMark**, **SpiceLevel**, **PriceTag**
 
-#### `components/molecules/` — 24 small compositions
-Forms: **Field**, **SearchField**, **QuantityStepper**, **OtpInput**, **SlotPicker**
+#### `components/molecules/` — 30 small compositions
+Forms: **Field**, **SearchField**, **QuantityStepper**, **OtpInput**, **SlotPicker**, **Combobox**, **DatePicker**
+Overflow: **ActionMenu**
 Messaging: **Alert**, **Toast**, **Snackbar**, **EmptyState**
 Navigation: **Tabs**, **Breadcrumb**, **Pagination**
 Content: **SectionHeader**, **Stat**, **Accordion**, **ListRow**, **PriceSummary**,
@@ -471,6 +479,7 @@ standard set was authored; these five are brand-specific and justified):
   canvas sizes, canvas type scale and signature block so no asset is designed at
   an invented size.
 - `SlotPicker`, `OtpInput`, `SearchField` — required by the ordering flow.
+- `Popover`, `Menu`, `Combobox`, `DatePicker`, `ActionMenu` — no browser-native UI anywhere: every dropdown, list, calendar and overflow menu is ours. `Input` refuses date/time/color/file/range types; `required` is announced via aria-required (no browser validation bubbles) — forms use `noValidate` and our error states; scrollbars use the `--scrollbar-*` tokens.
 - `Logo` — wraps the asset files so nobody hand-places or recolours the lockup.
 
 ---

@@ -1,0 +1,4 @@
+# Carried fixes for batch H (from review F) — FIRST, before Task 13
+H1. Minor — packages/ui/src/lib/story-ring.ts:80: shadowReach strips only rgb()/rgba(); Chromium keeps oklch()/color()/lab() in computed box-shadow and their channels would be read as lengths. Strip any `\w+\([^)]*\)` before splitting; add a spec case with an oklch() shadow.
+H2. Minor — story-ring.ts:61-65: containingBlock misses backdrop-filter, will-change: transform/filter, container-type (non-normal) and content-visibility (auto). Add those checks with spec cases.
+H3. Minor — packages/ui/src/organisms/dialog/dialog.tsx:97-107: a trigger-less dialog returns focus to the element focused at open; Safari/Firefox on macOS don't focus a button on mouse click, so a pointer-opened confirm returns focus to <body>. Ruling R115: document it in the component/prop JSDoc (reliable for keyboard opens; pass a trigger for pointer-reliable focus return) — no new prop. Sync plan 4 Task 11.

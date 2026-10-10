@@ -43,10 +43,29 @@ SCOPE  →  PLAN  →  IMPLEMENT  →  SELF-REVIEW  →  GATE  →  [INDEPENDENT
 | **Independent review** | For substantial work: a _separate_ session/agent reviews the diff against the task brief — the implementer never accepts its own work. Findings loop until clean or explicitly adjudicated. |
 | **Record**             | Conventional commit telling the why; decisions → [09](09-decision-log.md); handbook edits in the same PR when a pattern changed.                                                            |
 
-For large multi-task effort, the full orchestration used to build Phase 0 applies: fresh
-implementer per task with a written brief, reviewer per task, fix rounds with scoped
-re-review, a progress ledger that survives crashes, and a final whole-branch review. That
-process lives in the superpowers SDD skill; this handbook's contract is the repo-side half.
+### Lean by default (owner, 2026-10-05) — overrides heavier skill guidance
+
+The design-system build showed the full per-task orchestration (fresh implementer + reviewer per
+task, full-code plans, per-task reports) costing more time and tokens than the work itself. These
+defaults apply to every plan and every executor (Claude, Cursor, any agent); a heavier process
+needs the owner's explicit request.
+
+**Planning**
+
+- A plan is **requirements, not code**: per task a short spec (≤ ~2 KB) — files, props/variants/states, behaviours, the tests that must exist, exact values. Include code only for a genuinely tricky foundation piece (≤ ~50 lines). Never embed full component code; never pre-write several plans ahead — plan the next PR only.
+- Every plan states its PRs and the ≤3 commits of each up front (commit budget).
+- Audits and analysis are proportionate: summary table + gap lines with file:line. No exhaustive per-row maps unless asked.
+- Never sync or re-sort a plan doc after the code changes; the code is the truth.
+
+**Execution**
+
+- **Inline by default** (superpowers:executing-plans style): one agent works through the plan. Sub-agents only for genuinely parallel, independent work or a fresh-eyes review — never one per task, never a reviewer per task.
+- **One review per PR**, fixed in one wave (amend into the checkpoint commits).
+- **TDD where behaviour lives**: logic, interaction, API, a11y, new components — failing test first. Pure visual/token changes are proven by a visual check or snapshot diff, not a unit test per class.
+- **Scoped checks per change** (the touched component's tests/stories); the **full gate once per PR**.
+- No per-task report files, no plan-sync or re-sort commits. Ledger = one line per task + `Ruling:` lines.
+- Decide ambiguities yourself and record `Ruling: <decision> — <why> — <cost if wrong>`; ask the owner only about product, content or irreversible choices, batched in one question set.
+- Time-box: a task past ~45 min gets a ledger line saying why. Status replies are short.
 
 ## 3. Guardrails that make weak models behave like strong ones
 

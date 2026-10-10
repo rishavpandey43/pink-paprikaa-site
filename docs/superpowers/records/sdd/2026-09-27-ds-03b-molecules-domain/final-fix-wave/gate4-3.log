@@ -1,0 +1,147 @@
+
+ NX   Running target test for project @pink-paprikaa-web/storybook and 1 task it depends on:
+
+
+
+> nx run @pink-paprikaa-web/design-tokens:build
+
+
+> @pink-paprikaa-web/design-tokens@0.0.0 build /Users/rishavpa/Professional/pink-paprikaa-site/packages/design-tokens
+> style-dictionary build --config sd.config.mjs
+
+
+css
+✔︎ dist/theme.css
+✔︎ dist/surfaces.css
+✔︎ dist/tokens.json
+
+> nx run @pink-paprikaa-web/storybook:test
+
+> vitest
+
+│
+▲  No story files found for the specified pattern:
+│  ../../packages/ui/src/**/*.mdx
+
+ RUN  v4.1.10 /Users/rishavpa/Professional/pink-paprikaa-site/apps/storybook
+
+ ✓ |docs-kit| src/docs-kit/library-source.spec.ts (1 test) 2ms
+ ✓ |docs-kit| src/docs-kit/catalogue.spec.ts (151 tests) 852ms
+     ✓ never offers Tailwind's static max-w-prose (65ch shadows --container-prose)  370ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/text/text.stories.tsx (13 tests) 928ms
+   ✓ Playground  717ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/rating/rating.stories.tsx (8 tests) 607ms
+   ✓ Playground  397ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/step-tracker/step-tracker.stories.tsx (8 tests) 961ms
+   ✓ Playground  789ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/radio/radio.stories.tsx (10 tests) 841ms
+   ✓ Playground  494ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/snackbar/snackbar.stories.tsx (11 tests) 1410ms
+   ✓ Playground  741ms
+   ✓ Closed By Parent  417ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/countdown/countdown.stories.tsx (4 tests) 1737ms
+   ✓ Playground  1678ms
+ ✓ |storybook (chromium)| src/foundations/brand/brand.stories.tsx (13 tests) 820ms
+   ✓ Lockup  348ms
+ ✓ |storybook (chromium)| src/foundations/spacing/spacing.stories.tsx (9 tests) 908ms
+   ✓ Scale  415ms
+ ✓ |storybook (chromium)| src/docs-kit/docs-kit.stories.tsx (14 tests) 962ms
+   ✓ Missing Token Fails Loudly  425ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/button/button.stories.tsx (16 tests) 378ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/chip-group/chip-group.stories.tsx (10 tests) 549ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/choice-card-group/choice-card-group.stories.tsx (11 tests) 648ms
+ ✓ |storybook (chromium)| src/foundations/colors/colors.stories.tsx (12 tests) 2274ms
+   ✓ Pink Ramp  741ms
+   ✓ Surface Overrides  784ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/input/input.stories.tsx (15 tests) 502ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/select/select.stories.tsx (12 tests) 601ms
+   ✓ Playground  380ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/post-frame/post-frame.stories.tsx (14 tests) 735ms
+   ✓ Playground  481ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/tabs/tabs.stories.tsx (9 tests) 744ms
+   ✓ Playground  512ms
+ ✓ |storybook (chromium)| src/foundations/type/type.stories.tsx (8 tests) 490ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/avatar/avatar.stories.tsx (7 tests) 360ms
+ ✓ |storybook (chromium)| src/foundations/motion/motion.stories.tsx (8 tests) 476ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/check-card/check-card.stories.tsx (7 tests) 258ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/tooltip/tooltip.stories.tsx (4 tests) 307ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/link/link.stories.tsx (9 tests) 454ms
+   ✓ Playground  308ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/coupon-ticket/coupon-ticket.stories.tsx (9 tests) 489ms
+   ✓ Playground  311ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/menu-item-row/menu-item-row.stories.tsx (10 tests) 528ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/outlet-card/outlet-card.stories.tsx (8 tests) 255ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/cluster/cluster.stories.tsx (9 tests) 305ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/pricing-card/pricing-card.stories.tsx (6 tests) 330ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/search-field/search-field.stories.tsx (9 tests) 394ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/filter-bar/filter-bar.stories.tsx (7 tests) 353ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/breadcrumb/breadcrumb.stories.tsx (5 tests) 165ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/card/card.stories.tsx (10 tests) 240ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/logo-lockup/logo-lockup.stories.tsx (8 tests) 225ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/slot-picker/slot-picker.stories.tsx (6 tests) 220ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/pagination/pagination.stories.tsx (6 tests) 331ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/tag/tag.stories.tsx (8 tests) 209ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/section/section.stories.tsx (8 tests) 229ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/quantity-stepper/quantity-stepper.stories.tsx (7 tests) 290ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/icon/icon.stories.tsx (6 tests) 203ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/stack/stack.stories.tsx (9 tests) 213ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/feature-item/feature-item.stories.tsx (5 tests) 188ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/key-value-list/key-value-list.stories.tsx (8 tests) 256ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/app-shell/app-shell.stories.tsx (6 tests) 225ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/icon-button/icon-button.stories.tsx (10 tests) 295ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/divider/divider.stories.tsx (8 tests) 344ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/table/table.stories.tsx (8 tests) 260ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/list-row/list-row.stories.tsx (7 tests) 207ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/container/container.stories.tsx (6 tests) 201ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/pattern-field/pattern-field.stories.tsx (9 tests) 212ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/checkbox/checkbox.stories.tsx (8 tests) 252ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/section-header/section-header.stories.tsx (7 tests) 197ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/layouts/auto-grid/auto-grid.stories.tsx (11 tests) 266ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/stat/stat.stories.tsx (8 tests) 268ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/toast/toast.stories.tsx (7 tests) 302ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/progress-bar/progress-bar.stories.tsx (8 tests) 196ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/otp-input/otp-input.stories.tsx (8 tests) 273ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/field/field.stories.tsx (9 tests) 239ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/spice-level/spice-level.stories.tsx (6 tests) 259ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/menu-item-card/menu-item-card.stories.tsx (6 tests) 244ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/badge/badge.stories.tsx (6 tests) 218ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/review-card/review-card.stories.tsx (6 tests) 207ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/alert/alert.stories.tsx (9 tests) 261ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/price-tag/price-tag.stories.tsx (8 tests) 236ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/slider/slider.stories.tsx (4 tests) 208ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/logo/logo.stories.tsx (5 tests) 148ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/offer-seal/offer-seal.stories.tsx (7 tests) 211ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/status-dot/status-dot.stories.tsx (6 tests) 213ms
+ ✓ |storybook (chromium)| src/docs-kit/prose.stories.tsx (4 tests) 184ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/price-summary/price-summary.stories.tsx (8 tests) 256ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/image-slot/image-slot.stories.tsx (7 tests) 242ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/social-headline/social-headline.stories.tsx (8 tests) 277ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/skeleton/skeleton.stories.tsx (5 tests) 184ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/loyalty-card/loyalty-card.stories.tsx (7 tests) 187ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/steps/steps.stories.tsx (5 tests) 205ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/link-card/link-card.stories.tsx (4 tests) 100ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/switch/switch.stories.tsx (7 tests) 232ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/empty-state/empty-state.stories.tsx (5 tests) 125ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/accordion/accordion.stories.tsx (4 tests) 200ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/spinner/spinner.stories.tsx (4 tests) 129ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/atoms/diet-mark/diet-mark.stories.tsx (3 tests) 82ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/sticky-action-bar/sticky-action-bar.stories.tsx (4 tests) 107ms
+ ✓ |storybook (chromium)| ../../packages/ui/src/molecules/announcement-bar/announcement-bar.stories.tsx (4 tests) 119ms
+ ✓ |storybook (chromium)| src/docs-kit/canvas.stories.tsx (3 tests) 131ms
+
+ Test Files  85 passed (85)
+      Tests  793 passed (793)
+   Start at  01:44:26
+   Duration  17.07s (transform 1.66s, setup 41.85s, import 38.73s, tests 32.92s, environment 0ms)
+
+
+
+
+ NX   Successfully ran target test for project @pink-paprikaa-web/storybook and 1 task it depends on
+
+
+  Run duration:      21.4s
+  Cache:             Skipped (--skip-nx-cache)
+  Critical path:     21.3s (2 tasks)
+  Recoverable time:  <1ms
+exit 0

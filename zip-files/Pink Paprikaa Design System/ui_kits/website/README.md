@@ -16,7 +16,7 @@ this kit contains no layout of its own beyond two brand-specific sections.
 | FAQ | `FaqSection` |
 | Franchise | `CtaBand` |
 | Footer | `SiteFooter` |
-| Overlays | `Toast`, `Dialog`, `Select`, `SlotPicker`, `Input`, `Field` |
+| Overlays | `Toast`, `Dialog`, `Select`, `DatePicker`, `SlotPicker`, `Input`, `Field` |
 
 `Sections.jsx` holds only Story and Outlets, because those two compositions are
 specific to this page rather than reusable organisms.
@@ -25,7 +25,8 @@ specific to this page rather than reusable organisms.
 - Category filters actually filter the menu.
 - Adding a dish increments the header cart and pops an `--ease-pop` `Toast`.
 - The header goes translucent past 24px of scroll.
-- "Book a Table" opens a `Dialog` with a two-step confirm.
+- "Book a Table" opens a `Dialog` (`<form noValidate>`): Outlet and Guests (`Select`), Date (`DatePicker`, min today), Time (`SlotPicker`), Mobile (`Input`, validated in code — empty and short-number messages), then a two-step confirm.
+- Every control has hover, press, focus and disabled states; no browser-native pickers or validation bubbles appear.
 
 ## Not real yet
 No Pink Paprikaa site was supplied, so this is a brand-faithful reconstruction,

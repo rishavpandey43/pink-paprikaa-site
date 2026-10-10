@@ -1,5 +1,7 @@
 # Porting Pink Paprikaa DS into a React app
 
+> **Full developer handoff: start at `handoff/README.md`** (tokens, all components with props, screens, brand, behaviour, QA).
+
 ## What's in this folder
 - `styles.css` → entry stylesheet; `@import`s everything in `tokens/` (colours, type, spacing, radii, shadows, motion, fonts, base).
 - `tokens/` → CSS custom properties. Framework-agnostic — use as-is.
@@ -33,3 +35,9 @@ Components use relative imports between each other, so keep the folder structure
 
 ## Still placeholder
 Opening hours, guest reviews, delivery date, bank details, photography (every image is an `ImageSlot`).
+
+## Interaction states
+Every pressable component imports `usePress` from `components/atoms/TextButton.jsx` (hover · press · focus-visible) and styles with the `--state-*` tokens. Keep that file when porting; build any new pressable on the same hook.
+
+## No browser-native UI
+Never use native `<select>`, `type="date|time"`, `title` tooltips or browser validation. Use `Select`, `Combobox`, `DatePicker`, `SlotPicker`, `ActionMenu`, `Tooltip`; forms are `noValidate`. Port `Popover` with `createPortal` to `document.body`.

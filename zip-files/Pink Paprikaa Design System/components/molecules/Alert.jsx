@@ -1,5 +1,6 @@
 import React from "react";
 import { Icon } from "../atoms/Icon.jsx";
+import { IconButton } from "../atoms/IconButton.jsx";
 
 const T = {
   info: { bg: "var(--status-info-soft)", fg: "#5a2a80", bd: "var(--kesar)", icon: "info" },
@@ -29,9 +30,7 @@ export function Alert({ tone = "info", title, children, action, onDismiss, style
         {action ? <div style={{ marginTop: 10 }}>{action}</div> : null}
       </div>
       {onDismiss ? (
-        <button type="button" aria-label="Dismiss" onClick={onDismiss} style={{ border: "none", background: "transparent", color: "inherit", cursor: "pointer", padding: 2, display: "grid", placeItems: "center" }}>
-          <Icon name="x" size="sm" />
-        </button>
+        <IconButton icon="x" label="Dismiss" size="xs" on="tint" onClick={onDismiss} style={{ margin: "-4px -6px -4px 0" }} />
       ) : null}
     </div>
   );

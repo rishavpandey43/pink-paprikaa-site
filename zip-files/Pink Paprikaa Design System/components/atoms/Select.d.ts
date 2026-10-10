@@ -1,4 +1,4 @@
-import type { CSSProperties, ChangeEventHandler } from "react";
+import type { CSSProperties } from "react";
 
 export interface SelectOption { value: string; label: string; disabled?: boolean }
 
@@ -13,7 +13,11 @@ export interface SelectProps {
   /** Strings, or {value,label} pairs. */
   options?: (string | SelectOption)[];
   value?: string;
-  /** Disabled first option shown when nothing is chosen. */
+  /** Uncontrolled start value. Without a placeholder, defaults to the first option. */
+  defaultValue?: string;
+  /** Name for a hidden form input. */
+  name?: string;
+  /** Shown in the trigger when nothing is chosen. */
   placeholder?: string;
   /** Leading Lucide icon name. */
   icon?: string;
@@ -22,7 +26,15 @@ export interface SelectProps {
   readOnly?: boolean;
   required?: boolean;
   optional?: boolean;
-  onChange?: ChangeEventHandler<HTMLSelectElement>;
+  /** Event-shaped for drop-in compatibility: e.target.value. */
+  onChange?: (e: { target: { value: string; name?: string }; value: string }) => void;
+  onValueChange?: (value: string) => void;
+  /** Path to /assets for the selected-row mark. */
+  base?: string;
+  /** "auto" = bottom sheet at 640px and below. */
+  sheet?: "auto" | boolean;
+  /** Docs/specimens only. */
+  defaultOpen?: boolean;
   style?: CSSProperties;
 }
 export function Select(props: SelectProps): JSX.Element;

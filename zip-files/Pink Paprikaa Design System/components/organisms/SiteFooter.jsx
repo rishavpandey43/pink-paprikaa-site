@@ -16,7 +16,7 @@ const DEFAULT_COLUMNS = [
 export function SiteFooter({
   columns = DEFAULT_COLUMNS,
   blurb = "Chai at 8am, chilli paneer at midnight. " + (B ? B.lines.outletsCount : "One kitchen in Sector 57, Gurgaon") + ".",
-  social = B ? Object.values(B.social).map((s) => s.icon) : ["instagram", "youtube", "linkedin"],
+  social = B ? Object.values(B.social).map((s) => s.icon) : ["instagram"],
   legal = B ? B.lines.copyright : "© 2026 Paprikaa Culinary Ventures Private Limited",
   policies = B ? B.lines.footerPolicies : ["Privacy", "Terms", "FSSAI Lic."],
   contact = B ? [B.contact.website, B.contact.phoneDisplay, B.contact.email] : null,

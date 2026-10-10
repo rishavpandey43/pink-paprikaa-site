@@ -1,0 +1,15 @@
+---
+description: How components, tokens and stories are written in packages/ui and apps/storybook
+globs: packages/ui/**,packages/design-tokens/**,apps/storybook/**
+alwaysApply: false
+---
+
+# Component code rules (detail: `packages/ui/AUTHORING.md`, `docs/superpowers/slim/RULES.md`)
+
+- Layers import upward only (LAW): atoms → `atoms/icon` + `lib` only; molecules → atoms + lib; organisms → molecules + atoms + lib; layouts top tier; nothing imports a layout. Shared internals between same-tier components go in `lib/` (e.g. `lib/menu-panel.tsx`).
+- `componentVariants` (never bare `tv`); named export; no `forwardRef`; `?: T | undefined`; props extend `BaseProps<"el">` (`lib/common-props.ts`); native props spread on the root; `sx` via `withSx(sx, className)` on the outermost slot; `surface` / `color` / `status` / `size` names; text-rooted components inherit `TypographyProps`.
+- Design `on="brand|dark|tint"` → surrounding `data-surface` or a `variant`; design `tone` → `surface`/`color`/`status`. Record every mapping in the component JSDoc and in `docs/superpowers/specs/2026-10-04-design-parity/coverage.md`.
+- Tokens first: a missing value becomes a token in `packages/design-tokens/tokens/**`, registered in `lib/component-variants.ts`; new text/background pairs go in `contrast-pairs.json` (AA 4.5:1 must pass).
+- Hover only behind `@media (hover:hover)`; press feedback via `lib/use-press.ts` (`data-pressed`, Space and Enter); motion via tokens and `motion-safe:`; reduced motion honoured.
+- `packages/ui` never imports `@pink-paprikaa-web/content`; stories use prop fixtures.
+- Per-component check before commit: `pnpm nx test ui -- <name>` · `pnpm nx run storybook:test -- <name>.stories` · `pnpm nx run storybook:visual -- <name>` (update ONLY this component's baselines when its change is intentional).

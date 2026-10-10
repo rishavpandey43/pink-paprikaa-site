@@ -1,4 +1,4 @@
-<!-- @dsCard group="Layout" viewport="700x300" name="Form states" subtitle="One status system across every control: default, error, success, warning, disabled, read-only." -->
+<!-- @dsCard group="Layout" viewport="700x470" name="Form states" subtitle="One status system across every control: default, error, success, warning, disabled, read-only." -->
 <!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
 <style>html,body{margin:0}body{padding:20px 24px;font-family:var(--font-body);background:var(--surface-page)}
 table{border-collapse:collapse;width:100%;font-size:12.5px}
@@ -8,11 +8,17 @@ td{padding:9px 12px 9px 0;border-top:1px solid var(--border-subtle);color:var(--
 code{font-family:var(--font-mono);font-size:11px;color:var(--text-heading)}</style></head><body>
 <table><tr><th>State</th><th>Border</th><th>Message</th><th>Applies to</th></tr>
 <tr><td><code>default</code></td><td><span class="sw" style="background:var(--border-default)"></span>1px border-default</td><td>hint, subtle</td><td>all</td></tr>
+<tr><td><code>hover</code></td><td><span class="sw" style="background:var(--border-strong)"></span>1px border-strong</td><td>&mdash;</td><td>Input, Select, Combobox, DatePicker, SearchField, OtpInput; Checkbox/Radio/Switch tint the whole row</td></tr>
 <tr><td><code>focus</code></td><td><span class="sw" style="background:var(--pink-500)"></span>2px pink + ring</td><td>&mdash;</td><td>all</td></tr>
-<tr><td><code>error</code></td><td><span class="sw" style="background:var(--status-danger)"></span>2px danger</td><td>says what to do next</td><td>Input, Select, SearchField, OtpInput, Checkbox, Radio, SlotPicker, Field</td></tr>
-<tr><td><code>success</code></td><td><span class="sw" style="background:var(--status-success)"></span>2px mint</td><td>confirms the result</td><td>Input, Select, SearchField, OtpInput, Field</td></tr>
-<tr><td><code>warning</code></td><td><span class="sw" style="background:var(--status-warning)"></span>2px turmeric</td><td>flags a caveat</td><td>Input, Select, SearchField, Field</td></tr>
+<tr><td><code>error</code></td><td><span class="sw" style="background:var(--status-danger)"></span>2px danger</td><td>says what to do next</td><td>Input, Select, Combobox, DatePicker, SearchField, OtpInput, Checkbox, Radio, SlotPicker, Field</td></tr>
+<tr><td><code>success</code></td><td><span class="sw" style="background:var(--status-success)"></span>2px mint</td><td>confirms the result</td><td>Input, Select, Combobox, DatePicker, SearchField, OtpInput, Field</td></tr>
+<tr><td><code>warning</code></td><td><span class="sw" style="background:var(--status-warning)"></span>2px turmeric</td><td>flags a caveat</td><td>Input, Select, Combobox, DatePicker, SearchField, Field</td></tr>
 <tr><td><code>disabled</code></td><td><span class="sw" style="background:var(--ink-200)"></span>ink-100 fill, ink-400 text</td><td>&mdash;</td><td>all &mdash; a real fill, never opacity</td></tr>
-<tr><td><code>readOnly</code></td><td><span class="sw" style="background:var(--surface-sunken)"></span>sunken fill + lock glyph</td><td>&mdash;</td><td>Input, Select</td></tr>
+<tr><td><code>readOnly</code></td><td><span class="sw" style="background:var(--surface-sunken)"></span>sunken fill + lock glyph</td><td>&mdash;</td><td>Input, Select, DatePicker</td></tr>
 <tr><td><code>loading</code></td><td>unchanged</td><td>trailing Spinner</td><td>Input, SearchField</td></tr>
-</table></body></html>
+</table>
+<div style="margin-top:14px;display:grid;gap:6px;font-size:12.5px;color:var(--text-muted);line-height:1.5">
+<div><b style="color:var(--text-heading)">No browser-native UI.</b> Dropdowns are <code>Select</code> / <code>Combobox</code>, dates <code>DatePicker</code>, times <code>SlotPicker</code>, quantities <code>QuantityStepper</code>. <code>Input</code> refuses date/time/color/file/range types.</div>
+<div><b style="color:var(--text-heading)">No browser validation bubbles.</b> Forms are <code>noValidate</code>; controls set <code>aria-required</code>, and errors render through the control's <code>error</code> prop. Validate on submit, re-validate on change once a field has shown an error.</div>
+<div><b style="color:var(--text-heading)">Pickers open our panels:</b> popover on desktop (flips above when there is no room), bottom sheet at ≤640px.</div>
+</div></body></html>
