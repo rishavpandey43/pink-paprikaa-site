@@ -1,132 +1,162 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
+import type { LinkAsProps } from "../../lib/link-as";
 import { MenuItemCard } from "./menu-item-card";
 
+function RouterLink({ href, className, children }: LinkAsProps) {
+  return (
+    <a href={href} className={className} data-router="">
+      {children}
+    </a>
+  );
+}
+
 describe("MenuItemCard", () => {
-  it("renders the dish as a heading with its price", () => {
+  it("names the dish as a heading and always shows the vegetarian mark", () => {
     render(<MenuItemCard name="Masala Cold Brew" price={220} />);
-
-    expect(screen.getByRole("heading", { name: "Masala Cold Brew" })).toBeInTheDocument();
-    expect(screen.getByText("₹220")).toBeInTheDocument();
-  });
-
-  it("renders the dish name at a caller-chosen level", () => {
-    render(<MenuItemCard name="Kulhad Chai" nameAs="h4" price={90} />);
-
-    expect(screen.getByRole("heading", { level: 4, name: "Kulhad Chai" })).toBeInTheDocument();
-  });
-
-  it("is a card, not a row — a bordered surface that lifts on hover", () => {
-    const { container } = render(
-      <MenuItemCard href="/menu/kulhad-chai" name="Kulhad Chai" price={90} />
-    );
-    const card = container.firstElementChild;
-
-    expect(card).toHaveClass("bg-surface-card");
-    expect(card).toHaveClass("rounded-4");
-    expect(card).toHaveClass("shadow-elevation1");
-    expect(card).toHaveClass("hover:shadow-elevation3");
-  });
-
-  it("stretches one real link over the whole card rather than hanging a click on it", () => {
-    render(<MenuItemCard href="/menu/masala-cold-brew" name="Masala Cold Brew" price={220} />);
-    const link = screen.getByRole("link", { name: "Masala Cold Brew" });
-
-    expect(link).toHaveAttribute("href", "/menu/masala-cold-brew");
-    expect(link).toHaveClass("after:inset-0");
-  });
-
-  it("stays a plain card with no link when no destination is given", () => {
-    const { container } = render(<MenuItemCard name="Masala Cold Brew" price={220} />);
-
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
-    expect(container.firstElementChild).not.toHaveClass("hover:shadow-elevation3");
-  });
-
-  it("prints the pre-discount price struck through beside the live one", () => {
-    render(<MenuItemCard name="Masala Fries" price={190} was={240} />);
-
-    expect(screen.getByText("₹240").tagName).toBe("S");
-  });
-
-  it("marks the dish vegetarian by default and turmeric when it contains egg", () => {
-    const { rerender } = render(<MenuItemCard name="Masala Fries" price={190} />);
+    expect(screen.getByRole("heading", { level: 3, name: "Masala Cold Brew" })).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Vegetarian" })).toBeInTheDocument();
-
-    rerender(<MenuItemCard diet="egg" name="Chocolate Brownie" price={160} />);
-    expect(screen.getByRole("img", { name: "Contains egg" })).toBeInTheDocument();
   });
 
-  it("names the heat rather than leaving colour to carry it", () => {
-    render(<MenuItemCard name="Masala Fries" price={190} spice={4} />);
-
-    expect(screen.getByRole("img", { name: "Spice level: Extra Hot" })).toBeInTheDocument();
+  it("takes no diet prop — every dish on the menu is vegetarian", () => {
+    // @ts-expect-error — the kitchen is egg-free (spec C10): a diet prop must never compile.
+    render(<MenuItemCard name="Masala Fries" price={190} diet="egg" />);
+    expect(screen.getByRole("img", { name: "Vegetarian" })).toBeInTheDocument();
   });
 
-  it("shows the badge over the photograph when one is given", () => {
-    render(<MenuItemCard badge="New" name="Masala Cold Brew" price={220} />);
+  it("prints the price and the struck-through old price", () => {
+    render(<MenuItemCard name="Masala Fries" price={190} was={240} />);
+    const card = screen.getByRole("article");
+    expect(card).toHaveTextContent("₹190");
+    expect(card).toHaveTextContent("₹240");
+  });
 
+  it("shows the badge, the heat and the description when given", () => {
+    render(
+      <MenuItemCard
+        name="Masala Cold Brew"
+        price={220}
+        spice={1}
+        badge="New"
+        description="Cold brew, jaggery, cardamom."
+      />
+    );
     expect(screen.getByText("New")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Spice level 1 of 4" })).toBeInTheDocument();
+    // Ingredient-led, 14 words at most — the card clamps it so a grid keeps one rhythm.
+    expect(screen.getByText("Cold brew, jaggery, cardamom.")).toHaveClass("line-clamp-2");
   });
 
-  it("names the floating add button after the dish and calls back when pressed", async () => {
-    const handleAdd = vi.fn();
-    render(<MenuItemCard name="Masala Cold Brew" onAdd={handleAdd} price={220} />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Add Masala Cold Brew" }));
-
-    expect(handleAdd).toHaveBeenCalledOnce();
-  });
-
-  it("draws no add button on a card that cannot take an order", () => {
+  it("labels the 4:3 photo placeholder until photography exists", () => {
     render(<MenuItemCard name="Kulhad Chai" price={90} />);
+    expect(screen.getByText("Dish photo")).toBeInTheDocument();
+  });
 
+  it("shows the photograph once one is supplied", () => {
+    render(
+      <MenuItemCard
+        name="Kulhad Chai"
+        price={90}
+        image={{
+          src: "/menu/kulhad-chai.avif",
+          alt: "Kulhad chai in a clay cup",
+          width: 420,
+          height: 315,
+        }}
+      />
+    );
+    expect(screen.getByRole("img", { name: "Kulhad chai in a clay cup" })).toHaveAttribute(
+      "src",
+      "/menu/kulhad-chai.avif"
+    );
+    expect(screen.queryByText("Dish photo")).not.toBeInTheDocument();
+  });
+
+  it("draws no action on a card that cannot take an order", () => {
+    render(<MenuItemCard name="Kulhad Chai" price={90} />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
-  it("renders the labelled placeholder until a photograph exists", () => {
-    render(<MenuItemCard name="Kulhad Chai" price={90} />);
-
-    expect(screen.getByText("Dish photo 4:3")).toBeInTheDocument();
+  it("draws the action slot whenever React would render it — a 0 counts, false does not", () => {
+    const { container, rerender } = render(
+      <MenuItemCard name="Kulhad Chai" price={90} action={0} />
+    );
+    expect(container.querySelector(".z-raised")).toHaveTextContent("0");
+    rerender(<MenuItemCard name="Kulhad Chai" price={90} action={false} />);
+    expect(container.querySelector(".z-raised")).toBeNull();
   });
 
-  it("renders the photograph with its alt text once one is supplied", () => {
+  it("makes the name a link that covers the card when given an href", () => {
+    render(<MenuItemCard name="Kulhad Chai" price={90} href="/menu/kulhad-chai" />);
+    const link = screen.getByRole("link", { name: "Kulhad Chai" });
+    expect(link).toHaveAttribute("href", "/menu/kulhad-chai");
+    // One real, focusable link stretched over the card — never a click handler on the card.
+    expect(link).toHaveClass("after:inset-0");
+  });
+
+  it("lifts only when it is a link — a lift on a plain card promises a click that does nothing", () => {
+    const { rerender } = render(<MenuItemCard name="Kulhad Chai" price={90} />);
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.getByRole("article")).not.toHaveClass("hover:lift");
+    rerender(<MenuItemCard name="Kulhad Chai" price={90} href="/menu/kulhad-chai" />);
+    expect(screen.getByRole("article")).toHaveClass("hover:lift");
+  });
+
+  it("lets a caller className replace the card radius", () => {
+    render(<MenuItemCard name="Kulhad Chai" price={90} className="rounded-md" />);
+    expect(screen.getByRole("article")).toHaveClass("rounded-md");
+    expect(screen.getByRole("article")).not.toHaveClass("rounded-lg");
+  });
+
+  it("renders the link through the app's router link when given one", () => {
+    render(
+      <MenuItemCard name="Kulhad Chai" price={90} href="/menu/kulhad-chai" linkAs={RouterLink} />
+    );
+    expect(screen.getByRole("link", { name: "Kulhad Chai" })).toHaveAttribute("data-router");
+  });
+
+  it("keeps the floating action a sibling of the link, never nested inside it", () => {
     render(
       <MenuItemCard
-        image="/menu/kulhad-chai.jpg"
-        imageAlt="Kulhad chai in a clay cup"
-        name="Kulhad Chai"
-        price={90}
+        name="Masala Cold Brew"
+        price={220}
+        href="/menu/masala-cold-brew"
+        action={
+          <button type="button" aria-label="Add Masala Cold Brew">
+            +
+          </button>
+        }
       />
     );
-
-    expect(screen.getByRole("img", { name: "Kulhad chai in a clay cup" })).toBeInTheDocument();
+    const link = screen.getByRole("link", { name: "Masala Cold Brew" });
+    expect(link).not.toContainElement(screen.getByRole("button", { name: "Add Masala Cold Brew" }));
   });
 
-  it("merges a caller className", () => {
-    const { container } = render(
-      <MenuItemCard className="rounded-1" name="Kulhad Chai" price={90} />
-    );
-
-    expect(container.firstElementChild).toHaveClass("rounded-1");
-    expect(container.firstElementChild).not.toHaveClass("rounded-4");
-  });
-
-  it("has no accessibility violations", async () => {
+  it("has no accessibility violations as a link with an action", async () => {
     const { container } = render(
       <MenuItemCard
+        name="Masala Cold Brew"
+        price={220}
+        spice={1}
         badge="New"
         description="Cold brew, jaggery, cardamom."
         href="/menu/masala-cold-brew"
-        name="Masala Cold Brew"
-        onAdd={vi.fn()}
-        price={220}
-        spice={1}
-        was={260}
+        action={
+          <button type="button" aria-label="Add Masala Cold Brew">
+            +
+          </button>
+        }
       />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <MenuItemCard name="Paneer tikka" price={240} sx={{ mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });

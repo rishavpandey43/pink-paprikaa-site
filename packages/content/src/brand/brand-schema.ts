@@ -1,0 +1,99 @@
+import { z } from "zod";
+
+const GSTIN = /^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[\dA-Z]$/;
+const FSSAI = /^\d{14}$/;
+const CIN = /^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/;
+const PAN = /^[A-Z]{5}\d{4}[A-Z]$/;
+const INDIAN_PHONE = /^\+91\d{10}$/;
+
+const text = z.string().min(1);
+/** A fact the owner has not supplied yet: null until they do (spec C16). */
+const pending = text.nullable();
+
+/** Brand social is Instagram only (R140). SiteFooter may still accept other glyphs for demos. */
+export const socialNetworkSchema = z.literal("instagram");
+export type SocialNetwork = z.infer<typeof socialNetworkSchema>;
+
+const linkLabel = z.object({ label: text, url: z.httpUrl() });
+
+export const brandSchema = z.object({
+  name: z.literal("Pink Paprikaa"),
+  nameDevanagari: text,
+  tagline: text,
+  statement: text,
+  vegStatement: text,
+  established: z.number().int().min(2025),
+  about: text,
+  ordering: z.object({
+    website: linkLabel,
+    swiggy: linkLabel,
+    zomato: linkLabel,
+  }),
+  reviews: z.object({
+    google: z.object({
+      rating: z.number().min(0).max(5),
+      count: z.number().int().min(0),
+      label: text,
+      url: z.httpUrl(),
+    }),
+  }),
+  legal: z.object({
+    entity: z.literal("Paprikaa Culinary Ventures Private Limited"),
+    cin: z.string().regex(CIN),
+    gstin: z.string().regex(GSTIN),
+    fssai: z.string().regex(FSSAI),
+    pan: z.string().regex(PAN),
+    registeredAddress: text,
+  }),
+  contact: z.object({
+    website: text,
+    websiteUrl: z.httpUrl(),
+    phone: z.string().regex(INDIAN_PHONE),
+    phoneDisplay: text,
+    whatsapp: z.string().regex(INDIAN_PHONE),
+    email: z.email(),
+    ordersEmail: z.email(),
+    franchiseEmail: z.email(),
+    careersEmail: z.email(),
+  }),
+  social: z
+    .array(z.object({ network: socialNetworkSchema, handle: text, url: z.httpUrl() }))
+    .min(1),
+  hours: z.object({ weekday: text, weekend: text, display: text }),
+  outlets: z
+    .array(
+      z.object({
+        id: text,
+        city: text,
+        name: text,
+        address: text,
+        hours: pending,
+        phone: z.string().regex(INDIAN_PHONE),
+        mapsUrl: z.httpUrl().nullable(),
+      })
+    )
+    .min(1),
+  billing: z
+    .object({
+      gstRate: z.number().min(0).max(1),
+      gstSplit: z.object({ cgst: z.number().min(0), sgst: z.number().min(0) }),
+      currency: z.literal("INR"),
+      currencySymbol: z.literal("₹"),
+      taxNote: text,
+      invoicePrefix: text,
+      bankName: pending,
+      accountName: text,
+      accountNumber: pending,
+      ifsc: pending,
+      upi: pending,
+    })
+    .refine(
+      (billing) => Math.abs(billing.gstSplit.cgst + billing.gstSplit.sgst - billing.gstRate) < 1e-9,
+      {
+        message: "gstSplit must add up to gstRate",
+      }
+    ),
+  policies: z.array(z.enum(["Privacy", "Terms", "Refunds"])).min(1),
+});
+
+export type Brand = z.infer<typeof brandSchema>;

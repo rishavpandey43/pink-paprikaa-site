@@ -1,88 +1,80 @@
-import type { LucideIcon } from "lucide-react";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-
 import { Utensils } from "lucide-react";
+import type { ReactNode } from "react";
+import { createElement } from "react";
 
-import { Icon } from "../../atoms/icon/icon";
-import { Logo } from "../../atoms/logo/logo";
-import { Text } from "../../atoms/text/text";
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { Icon, type IconComponent } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
+import { SymbolMark } from "../../lib/symbol-mark";
 
 const emptyState = componentVariants({
   slots: {
     root: "grid justify-items-center gap-2.5 text-center",
-    /** Pink-300 rather than the full brand pink: the mark sets the mood, the copy does the work. */
-    glyph: "mb-1 text-pink-300",
-    symbol: "mb-1",
+    symbol: "mb-1 text-empty-state-symbol opacity-85",
+    icon: "mb-1 text-empty-state-icon",
+    title: "m-0 font-display text-text-heading",
+    body: "m-0 max-w-text-measure-narrow text-body-sm text-text-muted",
     action: "mt-2",
   },
   variants: {
     size: {
-      md: { root: "px-5 py-10" },
-      lg: { root: "px-6 py-16" },
+      md: { root: "px-5 py-10", symbol: "size-10", title: "text-h4" },
+      lg: {
+        root: "px-6 py-16",
+        symbol: "size-empty-state-symbol-lg",
+        icon: "size-10",
+        title: "text-h3",
+      },
     },
   },
   defaultVariants: { size: "md" },
 });
 
-/** The wordmark's diamond, at the size each layout wants. */
-const SYMBOL_SIZE = { md: "md", lg: "lg" } as const;
-
-export interface EmptyStateProps
-  extends
-    Omit<ComponentPropsWithoutRef<"div">, "color" | "title">,
-    VariantProps<typeof emptyState> {
-  /** Short and plain, never apologetic — "Nothing here yet." */
-  title?: string | undefined;
-  /** One line saying what to do next. Two short sentences in total, across both. */
-  body?: string | undefined;
-  /** The Lucide glyph, drawn at 32px. Ignored when `hasSymbol` is set. */
-  icon?: LucideIcon | undefined;
-  /** Swap the glyph for the brand diamond — the warmer of the two, and the default for a cart. */
-  hasSymbol?: boolean | undefined;
-  /** Exactly one control, usually a `Button`. Never two. */
-  action?: ReactNode | undefined;
+export interface EmptyStateProps extends Omit<BaseProps<"div">, "title"> {
+  /** Short and plain: "Nothing here yet." */
+  title: ReactNode;
+  /** One line that says what to do next. */
+  body?: ReactNode;
+  /** Lucide glyph for the icon variant (default Utensils). */
+  icon?: IconComponent | undefined;
+  /** `symbol` uses the brand diamond instead of a glyph — the warmer option. */
+  variant?: "icon" | "symbol" | undefined;
+  /** Exactly one action, usually a Button — never two. */
+  action?: ReactNode;
+  size?: "md" | "lg" | undefined;
+  headingLevel?: HeadingLevel | undefined;
 }
 
-/**
- * The nothing-here state: an empty cart, a search that matched nothing, a first-time order list.
- * It always names what is missing and always says what to do next.
- */
+/** Empty cart, no search results, no orders yet. Always says what to do next; never apologetic. */
 export function EmptyState({
-  className,
-  title = "Nothing here yet.",
-  body = "Let's fix that.",
-  icon,
-  hasSymbol = false,
+  title,
+  body,
+  icon = Utensils,
+  variant = "icon",
   action,
-  size,
+  size = "md",
+  headingLevel = 3,
+  sx,
+  className,
   ...props
 }: EmptyStateProps) {
-  const slots = emptyState({ size });
-  const Glyph = icon ?? Utensils;
+  const styles = emptyState({ size });
 
   return (
-    <div className={slots.root({ className })} {...props}>
-      {hasSymbol ? (
-        <Logo
-          className={slots.symbol()}
-          label=""
-          size={SYMBOL_SIZE[size ?? "md"]}
-          tone="brand"
-          variant="symbol"
-        />
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
+      {variant === "symbol" ? (
+        <SymbolMark className={styles.symbol()} />
       ) : (
-        <Icon className={slots.glyph()} icon={Glyph} size="xl" />
+        <Icon icon={icon} size="xl" className={styles.icon()} />
       )}
-      <Text as="p" variant={size === "lg" ? "h3" : "subtitle1"}>
-        {title}
-      </Text>
-      {body === "" ? null : (
-        <Text measure="narrow" tone="muted" variant="body2">
-          {body}
-        </Text>
-      )}
-      {action === undefined ? null : <div className={slots.action()}>{action}</div>}
+      {/* createElement, not `const Heading = headingTag(…)`: the React Compiler lint reads a
+          capitalised call result as a component created during render. */}
+      {createElement(headingTag(headingLevel), { className: styles.title() }, title)}
+      {isShown(body) ? <p className={styles.body()}>{body}</p> : null}
+      {isShown(action) ? <div className={styles.action()}>{action}</div> : null}
     </div>
   );
 }

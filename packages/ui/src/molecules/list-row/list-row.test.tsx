@@ -1,130 +1,124 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Bell, MapPin, Trash2 } from "lucide-react";
+import { Bell, LogOut, MapPin } from "lucide-react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { ListRow } from "./list-row";
 
 describe("ListRow", () => {
-  it("renders a plain row with no button semantics when it does nothing", () => {
-    render(<ListRow title="Order updates" />);
-    expect(screen.getByText("Order updates")).toBeVisible();
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
-  });
-
-  it("renders a real button when it is clickable", () => {
-    render(<ListRow onClick={vi.fn()} title="Default outlet" value="Sector 57" />);
-    expect(screen.getByRole("button", { name: /Default outlet/ })).toHaveAttribute(
-      "type",
-      "button"
-    );
-  });
-
-  it("calls onClick when pressed", async () => {
-    const handleClick = vi.fn();
-    render(<ListRow onClick={handleClick} title="Default outlet" />);
-
-    await userEvent.click(screen.getByRole("button", { name: /Default outlet/ }));
-
-    expect(handleClick).toHaveBeenCalledOnce();
-  });
-
-  it("is reachable and operable from the keyboard", async () => {
-    const handleClick = vi.fn();
-    render(<ListRow onClick={handleClick} title="Default outlet" />);
-
-    await userEvent.tab();
-    expect(screen.getByRole("button", { name: /Default outlet/ })).toHaveFocus();
-
-    await userEvent.keyboard("{Enter}");
-    await userEvent.keyboard(" ");
-
-    expect(handleClick).toHaveBeenCalledTimes(2);
-  });
-
-  it("renders the description, the value and the trailing element", () => {
+  it("shows its title, description and value", () => {
     render(
       <ListRow
-        description="UPI, cards and Paprikaa credit."
-        title="Payment methods"
-        trailing={<span>4 of 6</span>}
+        icon={MapPin}
+        title="Default outlet"
+        description="Where your pickups go."
         value="Sector 57"
       />
     );
-    expect(screen.getByText("UPI, cards and Paprikaa credit.")).toBeVisible();
-    expect(screen.getByText("Sector 57")).toBeVisible();
-    expect(screen.getByText("4 of 6")).toBeVisible();
+    expect(screen.getByText("Default outlet")).toHaveClass("text-text-heading");
+    expect(screen.getByText("Where your pickups go.")).toHaveClass("line-clamp-2");
+    expect(screen.getByText("Sector 57")).toHaveClass("text-text-muted");
+    // A static row is only text: no button or link semantics.
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
-  it("clamps a long description to two lines", () => {
-    render(<ListRow description="UPI, cards and Paprikaa credit." title="Payment methods" />);
-    expect(screen.getByText("UPI, cards and Paprikaa credit.")).toHaveClass("line-clamp-2");
-  });
-
-  it("prefers a leading element over the icon", () => {
-    const { container } = render(
-      <ListRow icon={MapPin} leading={<span>PP</span>} title="Default outlet" />
-    );
-    expect(screen.getByText("PP")).toBeVisible();
-    expect(container.querySelectorAll("svg")).toHaveLength(0);
-  });
-
-  it("renders the chevron only when asked", () => {
+  it("draws its glyph and chevron decoratively, and the chevron only when asked", () => {
     const { container, rerender } = render(<ListRow icon={MapPin} title="Default outlet" />);
-    expect(container.querySelectorAll("svg")).toHaveLength(1);
-
-    rerender(<ListRow hasChevron icon={MapPin} title="Default outlet" />);
-    expect(container.querySelectorAll("svg")).toHaveLength(2);
+    expect(container.querySelector("svg.lucide-chevron-right")).not.toBeInTheDocument();
+    rerender(<ListRow icon={MapPin} title="Default outlet" hasChevron />);
+    for (const glyph of container.querySelectorAll("svg")) {
+      expect(glyph.closest("[aria-hidden='true']")).not.toBeNull();
+    }
+    expect(container.querySelector("svg.lucide-chevron-right")).toBeInTheDocument();
   });
 
-  it("colours a destructive row's title", () => {
-    render(<ListRow icon={Trash2} isDanger title="Delete my account" />);
-    expect(screen.getByText("Delete my account")).toHaveClass("text-status-danger");
+  it("puts a leading element in place of the glyph", () => {
+    const { container } = render(
+      <ListRow icon={MapPin} leading={<span data-leading="">SP</span>} title="Sector 57" />
+    );
+    expect(container.querySelector("[data-leading]")).toBeInTheDocument();
+    expect(container.querySelector("svg.lucide-map-pin")).not.toBeInTheDocument();
   });
 
-  it("drops the hairline when the row closes a group", () => {
-    const { container, rerender } = render(<ListRow title="Order updates" />);
+  it("renders a trailing control, such as a switch", () => {
+    render(
+      <ListRow
+        icon={Bell}
+        title="Order updates"
+        trailing={<input type="checkbox" role="switch" aria-label="Order updates" />}
+      />
+    );
+    expect(screen.getByRole("switch", { name: "Order updates" })).toBeInTheDocument();
+  });
+
+  it("separates rows with a hairline unless hasDivider is false", () => {
+    const { container, rerender } = render(<ListRow title="Loyalty" />);
     expect(container.firstElementChild).toHaveClass("border-b");
-
-    rerender(<ListRow hasDivider={false} title="Order updates" />);
+    rerender(<ListRow title="Loyalty" hasDivider={false} />);
     expect(container.firstElementChild).not.toHaveClass("border-b");
   });
 
-  it("holds the 44px hit target", () => {
-    const { container } = render(<ListRow onClick={vi.fn()} title="Default outlet" />);
-    expect(container.firstElementChild).toHaveClass("min-h-(--layout-hit-min)");
+  it("paints a destructive row in the danger colour", () => {
+    render(<ListRow icon={LogOut} title="Delete my account" isDanger />);
+    expect(screen.getByText("Delete my account")).toHaveClass("text-text-danger");
   });
 
-  it("merges a caller className", () => {
-    const { container } = render(<ListRow className="rounded-4" title="Order updates" />);
-    expect(container.firstElementChild).toHaveClass("rounded-4");
-    expect(container.firstElementChild).not.toHaveClass("rounded-2");
+  it("renders into a link with asChild, keeping its layout and hover", () => {
+    render(
+      <ListRow asChild icon={MapPin} title="Default outlet" value="Sector 57" hasChevron>
+        <a href="/account/outlet">{/* ListRow renders its content here */}</a>
+      </ListRow>
+    );
+    const link = screen.getByRole("link", { name: /Default outlet/ });
+    expect(link).toHaveAttribute("href", "/account/outlet");
+    expect(link).toHaveClass("min-h-hit", "hover:bg-button-hover-tint");
+    expect(link).toHaveTextContent("Default outletSector 57");
   });
 
-  it("has no accessibility violations", async () => {
+  it("renders into a button with asChild, so an action row is keyboard-operable", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    render(
+      <ListRow asChild icon={LogOut} title="Sign out" isDanger hasDivider={false}>
+        <button type="button" onClick={onClick} />
+      </ListRow>
+    );
+    await user.tab();
+    await user.keyboard("{Enter}");
+    await user.keyboard(" ");
+    expect(onClick).toHaveBeenCalledTimes(2);
+    expect(screen.getByRole("button", { name: "Sign out" })).toHaveClass(
+      "w-full",
+      "text-start",
+      "active:bg-surface-brand-soft"
+    );
+  });
+
+  it("merges a caller className over its own", () => {
+    const { container } = render(<ListRow title="Loyalty" className="mx-0" />);
+    expect(container.firstElementChild).toHaveClass("mx-0");
+    expect(container.firstElementChild).not.toHaveClass("-mx-3");
+  });
+
+  it("has no accessibility violations as a static row and as a link", async () => {
     const { container } = render(
-      <div>
-        <ListRow
-          hasChevron
-          icon={MapPin}
-          onClick={vi.fn()}
-          title="Default outlet"
-          value="Sector 57"
-        />
-        <ListRow
-          description="Order updates and offers, at most twice a week."
-          icon={Bell}
-          title="Notifications"
-        />
-        <ListRow
-          hasDivider={false}
-          icon={Trash2}
-          isDanger
-          onClick={vi.fn()}
-          title="Delete my account"
-        />
-      </div>
+      <>
+        <ListRow icon={Bell} title="Order updates" description="Texts when your food is ready." />
+        <ListRow asChild icon={MapPin} title="Default outlet" value="Sector 57" hasChevron>
+          <a href="/account/outlet">{/* ListRow renders its content here */}</a>
+        </ListRow>
+        <ListRow asChild icon={LogOut} title="Delete my account" isDanger hasDivider={false}>
+          <button type="button" onClick={vi.fn()} />
+        </ListRow>
+      </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(<ListRow title="Orders" sx={{ mt: 4 }} className="italic" />);
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });

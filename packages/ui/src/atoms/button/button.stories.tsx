@@ -1,130 +1,398 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Calendar,
+  ChevronDown,
+  MapPin,
+  MessageCircle,
+  Search,
+  ShoppingBag,
+} from "lucide-react";
+import { expect, within } from "storybook/test";
 
-import { ArrowRight, MapPin, ShoppingBag } from "lucide-react";
-
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Button } from "./button";
+
+const BUTTON_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
 
 const meta = {
   title: "Atoms/Button",
   component: Button,
-  args: { children: "Order Now" },
-  argTypes: {
-    icon: { control: false },
-    iconAfter: { control: false },
-  },
+  args: { children: "Order Now", variant: "primary", size: "md" },
+  argTypes: { icon: { control: false }, iconAfter: { control: false } },
   parameters: {
     docs: {
       description: {
         component:
-          "The brand's action button — pill, Poppins Bold, Title Case. Use `primary` once per " +
-          "view. Press is a 0.97 scale *and* a darkening, together; disabled is a real grey fill, " +
-          "never a faded one.",
+          "The brand's action button — pill, Poppins 700, Title Case; use `primary` once per view. Variants: `primary` (flooded pink + the brand glow), `secondary` (2px pink outline on white), `ghost` (text only), `inverse` (ink). On a flooded pink field the skins follow the surface — primary flips to white-on-pink, secondary and ghost to white — with no prop to pass; inverse stays ink. Press = 0.97 scale + darken; disabled is a real grey fill, not opacity. Leading icons name the action (bag, pin, search); trailing icons mean onward motion (arrow-right to navigate, arrow-up-right to leave the site, chevron-down for a picker). Labels never wrap. Icon-only? Use `IconButton`. `asChild` renders an `<a>` or `next/link` as a Button.",
       },
     },
   },
 } satisfies Meta<typeof Button>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {
+  // Tailwind 4's preflight gives buttons `cursor: default`; the base layer restores the hand.
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole("button");
+    await expect(getComputedStyle(button).cursor).toBe("pointer");
+  },
+};
+
+/** Forced rest → hover → press → focus → disabled for secondary (state-hover / state-press). */
+export const States: Story = {
+  parameters: { pseudo: storyStatesPseudo(BUTTON_STATES) },
+  render: () => (
+    <StatesRow
+      states={BUTTON_STATES}
+      render={(state) => (
+        <Button variant="secondary" {...storyStateControlProps(state)}>
+          Order Now
+        </Button>
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover button");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Button States: #cell-hover button missing");
+    }
+    // Class proves the recipe paints hover with the state token. Computed :hover fill is forced by
+    // storybook-addon-pseudo-states in the Storybook UI (parameters.pseudo); vitest does not apply
+    // that decorator the same way.
+    await expect(hover).toHaveClass("hover:bg-state-hover");
+    await expect(
+      getComputedStyle(document.documentElement).getPropertyValue("--color-state-hover").trim()
+        .length
+    ).toBeGreaterThan(0);
+  },
+};
+
+/** Primary / ghost / inverse / on-brand forced states (card rows). */
+export const StatesPrimary: Story = {
+  parameters: { pseudo: storyStatesPseudo(BUTTON_STATES) },
+  render: () => (
+    <StatesRow
+      states={BUTTON_STATES}
+      render={(state) => (
+        <Button variant="primary" {...storyStateControlProps(state)}>
+          Order Now
+        </Button>
+      )}
+    />
+  ),
+};
+
+export const StatesGhost: Story = {
+  parameters: { pseudo: storyStatesPseudo(BUTTON_STATES) },
+  render: () => (
+    <StatesRow
+      states={BUTTON_STATES}
+      render={(state) => (
+        <Button variant="ghost" {...storyStateControlProps(state)}>
+          Order Now
+        </Button>
+      )}
+    />
+  ),
+};
+
+export const StatesInverse: Story = {
+  parameters: { pseudo: storyStatesPseudo(BUTTON_STATES) },
+  render: () => (
+    <StatesRow
+      states={BUTTON_STATES}
+      render={(state) => (
+        <Button variant="inverse" {...storyStateControlProps(state)}>
+          Order Now
+        </Button>
+      )}
+    />
+  ),
+};
+
+export const StatesOnBrand: Story = {
+  parameters: { pseudo: storyStatesPseudo(BUTTON_STATES) },
+  decorators: [
+    (Story) => (
+      <div data-surface="brand" className="bg-surface-brand p-6">
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => (
+    <StatesRow
+      states={BUTTON_STATES}
+      render={(state) => (
+        <Button variant="secondary" {...storyStateControlProps(state)}>
+          Order Now
+        </Button>
+      )}
+    />
+  ),
+};
 
 export const Variants: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Button {...args} variant="primary">
-        Order Now
+  name: "variant",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button>Order Now</Button>
+      <Button variant="secondary">See Menu</Button>
+      <Button variant="ghost">Find Us</Button>
+      <Button variant="inverse">Book</Button>
+    </div>
+  ),
+};
+
+export const Sizes: Story = {
+  name: "size",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button size="sm">Small</Button>
+      <Button size="md">Medium</Button>
+      <Button size="lg">Large</Button>
+    </div>
+  ),
+};
+
+export const LeadingIcon: Story = {
+  name: "icon",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button icon={ShoppingBag}>Order Now</Button>
+      <Button variant="secondary" icon={MapPin}>
+        Directions
       </Button>
-      <Button {...args} variant="secondary">
-        See Full Menu
-      </Button>
-      <Button {...args} variant="ghost">
-        Find a Paprikaa
-      </Button>
-      <Button {...args} variant="inverse">
-        Franchise With Us
+      <Button variant="ghost" icon={Search}>
+        Search Menu
       </Button>
     </div>
   ),
 };
 
-/** 36 / 44 / 54px — fixed heights, so a button never wraps or shrinks in a tight row. */
-export const Sizes: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Button {...args} size="sm">
+export const TrailingIcon: Story = {
+  name: "iconAfter",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button iconAfter={ArrowRight}>Full Menu</Button>
+      <Button variant="secondary" iconAfter={ArrowRight}>
+        Our Story
+      </Button>
+      <Button variant="ghost" iconAfter={ArrowUpRight}>
+        Zomato
+      </Button>
+    </div>
+  ),
+};
+
+export const BothIcons: Story = {
+  name: "icon + iconAfter",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button icon={MapPin} iconAfter={ArrowUpRight}>
+        Directions
+      </Button>
+      <Button variant="secondary" icon={Calendar} iconAfter={ChevronDown}>
+        Pick a Date
+      </Button>
+    </div>
+  ),
+};
+
+export const IconBySize: Story = {
+  name: "icon × size",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button size="sm" icon={ShoppingBag}>
         Small
       </Button>
-      <Button {...args} size="md">
+      <Button size="md" icon={ShoppingBag}>
         Medium
       </Button>
-      <Button {...args} size="lg">
+      <Button size="lg" icon={ShoppingBag}>
         Large
       </Button>
     </div>
   ),
 };
 
-export const WithIcons: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Button {...args} icon={ShoppingBag} size="lg">
-        Order Now
+export const IconAfterBySize: Story = {
+  name: "iconAfter × size",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button size="sm" variant="secondary" iconAfter={ArrowRight}>
+        Small
       </Button>
-      <Button {...args} iconAfter={ArrowRight} variant="ghost">
-        Find a Paprikaa
+      <Button size="md" variant="secondary" iconAfter={ArrowRight}>
+        Medium
       </Button>
-      <Button {...args} icon={MapPin} variant="secondary">
-        Outlets
+      <Button size="lg" variant="secondary" iconAfter={ArrowRight}>
+        Large
       </Button>
     </div>
   ),
 };
 
-/** On a flooded pink panel the fills invert — pink-on-pink has no contrast to work with. */
 export const OnBrand: Story = {
-  globals: { backgrounds: { value: "brand" } },
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-4 rounded-4 bg-surface-brand p-8">
-      <Button {...args} icon={ShoppingBag} on="brand" variant="primary">
-        Order Now
+  name: "on a brand surface",
+  render: () => (
+    <div
+      data-surface="brand"
+      className="flex flex-wrap items-center gap-3 rounded-lg bg-surface-brand p-3.5"
+    >
+      <Button icon={ShoppingBag}>Order Now</Button>
+      <Button variant="secondary" iconAfter={ArrowRight}>
+        Our Story
       </Button>
-      <Button {...args} on="brand" variant="secondary">
-        See Full Menu
+      <Button variant="inverse" icon={MessageCircle}>
+        Chat on WhatsApp
       </Button>
-      <Button {...args} on="brand" variant="ghost">
-        Find a Paprikaa
+    </div>
+  ),
+  // On a pink field primary trades the brand glow for shadow-2 (surface/brand.json). A probe
+  // painted with var(--shadow-2) gives the expected value in the browser's own format.
+  play: async ({ canvasElement }) => {
+    const primary = within(canvasElement).getByRole("button", { name: "Order Now" });
+    const probe = document.createElement("div");
+    probe.style.boxShadow = "var(--shadow-2)";
+    canvasElement.append(probe);
+    const expected = getComputedStyle(probe).boxShadow;
+    probe.remove();
+    await expect(getComputedStyle(primary).boxShadow).toContain(expected);
+  },
+};
+
+export const Loading: Story = {
+  name: "isLoading",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button isLoading icon={ShoppingBag}>
+        Placing order
+      </Button>
+      <Button variant="secondary" isLoading>
+        Checking code
       </Button>
     </div>
   ),
 };
 
-export const States: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Button {...args}>Rest</Button>
-      <Button {...args} isLoading>
-        Adding
-      </Button>
-      <Button {...args} disabled>
+export const Disabled: Story = {
+  name: "disabled",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button disabled icon={ShoppingBag}>
         Sold Out
       </Button>
-      <Button {...args} disabled variant="secondary">
-        Unavailable
+      <Button variant="secondary" disabled iconAfter={ArrowRight}>
+        Closed
+      </Button>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    for (const button of within(canvasElement).getAllByRole("button")) {
+      await expect(getComputedStyle(button).cursor).toBe("not-allowed");
+    }
+  },
+};
+
+export const FullWidth: Story = {
+  name: "isFullWidth",
+  render: () => (
+    <div className="grid w-90 gap-2.5">
+      <Button isFullWidth size="lg" icon={ShoppingBag}>
+        Pay ₹1,240
+      </Button>
+      <Button isFullWidth variant="secondary" iconAfter={ArrowRight}>
+        See the Full Menu
       </Button>
     </div>
   ),
 };
 
-/** Full width is the mobile cart-bar shape — one action, edge to edge. */
-export const FullWidth: Story = {
-  parameters: { layout: "padded" },
-  render: (args) => (
-    <div className="w-full max-w-80">
-      <Button {...args} icon={ShoppingBag} isFullWidth size="lg">
-        Add to Cart · ₹280
+export const Sx: Story = {
+  name: "sx",
+  render: () => (
+    <div className="grid w-90 gap-2.5">
+      <Button sx={{ mt: 4 }}>Order Now</Button>
+      <Button sx={{ w: "full" }} variant="secondary">
+        See the Full Menu
       </Button>
     </div>
   ),
+};
+
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: () => (
+    <OnSurfaces>
+      <Button>Order Now</Button>
+      <Button variant="secondary">See Menu</Button>
+      <Button variant="ghost">Find Us</Button>
+      <Button variant="inverse">Book</Button>
+    </OnSurfaces>
+  ),
+};
+
+export const NestedSurfaces: Story = {
+  name: "nested surfaces (light island)",
+  render: () => (
+    <div data-surface="brand" className="grid gap-4 rounded-xl bg-surface-brand p-6">
+      <Button variant="secondary">On the pink field</Button>
+      <div data-surface="light" className="rounded-lg bg-surface-card p-4">
+        <Button variant="secondary">On a white card inside it</Button>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const onField = canvas.getByRole("button", { name: "On the pink field" });
+    const onIsland = canvas.getByRole("button", { name: "On a white card inside it" });
+    await expect(getComputedStyle(onField).backgroundColor).toBe("rgba(0, 0, 0, 0)");
+    await expect(getComputedStyle(onIsland).backgroundColor).toBe("rgb(255, 255, 255)");
+  },
+};
+
+export const AsChild: Story = {
+  name: "asChild (a link)",
+  render: () => (
+    <Button asChild variant="secondary" icon={MessageCircle}>
+      <a href="https://wa.me/919090704001">Order on WhatsApp</a>
+    </Button>
+  ),
+};
+
+export const LongLabel: Story = {
+  name: "long label at 360px",
+  render: () => (
+    <div data-testid="frame" className="grid w-90 gap-3">
+      <Button icon={ShoppingBag}>Order the full Sunday thali for the whole family</Button>
+      <Button isFullWidth variant="secondary" iconAfter={ArrowRight}>
+        See the full menu, every category and every price
+      </Button>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const frame = canvas.getByTestId("frame").getBoundingClientRect();
+    for (const button of canvas.getAllByRole("button")) {
+      const box = button.getBoundingClientRect();
+      await expect(box.right).toBeLessThanOrEqual(frame.right + 0.5);
+      await expect(box.height).toBe(44);
+    }
+  },
 };

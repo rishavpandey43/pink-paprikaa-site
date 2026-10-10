@@ -1,103 +1,179 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Clock, Flame, Leaf, Search } from "lucide-react";
+import { expect } from "storybook/test";
 
-import { Clock, Flame, Leaf } from "lucide-react";
-import { useState } from "react";
+import { Button } from "../../atoms/button/button";
+import { OnSurfaces } from "../../lib/story-surfaces";
+import { FilterBar } from "./filter-bar";
 
-import { FilterBar, type FilterBarProps } from "./filter-bar";
-
-const CATEGORIES = ["All", "Small Plates", "All Day", "Chai & Coffee", "Sweets"];
-
-/**
- * The rail is controlled, so every story owns the selection. A named component rather than an
- * inline `render` arrow: hooks may only be called from a component.
- */
-function ControlledFilterBar({ value: initialValue, ...props }: FilterBarProps) {
-  const [value, setValue] = useState(initialValue ?? CATEGORIES[0]);
-  return <FilterBar {...props} onChange={setValue} value={value} />;
-}
+const WEBSITE = [
+  { value: "all", label: "All" },
+  { value: "small-plates", label: "Small Plates" },
+  { value: "all-day", label: "All Day" },
+  { value: "chai-coffee", label: "Chai & Coffee" },
+  { value: "sweets", label: "Sweets" },
+];
 
 const meta = {
   title: "Molecules/FilterBar",
   component: FilterBar,
-  args: { options: CATEGORIES, value: "All" },
-  argTypes: { trailing: { control: false } },
+  args: { label: "Menu category", options: WEBSITE, note: "100% Vegetarian", isWrapping: true },
+  decorators: [
+    (Story) => (
+      <div className="w-190 max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "The menu category rail. Exactly one category is selected at a time. It scrolls on one " +
-          "line by default — the app pattern — and wraps with `isWrapping` for the website, where " +
-          "every category should be visible at once.",
+          "Menu category rail on both the website and the app. Scrolls horizontally by default (the app pattern); pass `isWrapping` for the website. Exactly one option is selected at a time — pressing the chosen filter keeps it. Radix ToggleGroup items styled with the Tag skin; arrow keys move, Space/Enter choose.",
       },
     },
   },
 } satisfies Meta<typeof FilterBar>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: (args) => <ControlledFilterBar {...args} />,
+/** The overflow ancestors of `element` whose padding box cuts its focus outline. */
+function ringClippers(element: HTMLElement) {
+  const style = getComputedStyle(element);
+  const reach = Number.parseFloat(style.outlineWidth) + Number.parseFloat(style.outlineOffset);
+  // Scroll extents are whole pixels, so a child scrolled fully into view can sit a fraction past.
+  const box = element.getBoundingClientRect();
+  const slack = 1;
+  const clippers: HTMLElement[] = [];
+  for (let node = element.parentElement; node !== null; node = node.parentElement) {
+    const { overflowX, overflowY } = getComputedStyle(node);
+    if (overflowX === "visible" && overflowY === "visible") continue;
+    const frame = node.getBoundingClientRect();
+    const left = frame.left + node.clientLeft;
+    const top = frame.top + node.clientTop;
+    if (
+      box.left - reach < left - slack ||
+      box.top - reach < top - slack ||
+      box.right + reach > left + node.clientWidth + slack ||
+      box.bottom + reach > top + node.clientHeight + slack
+    ) {
+      clippers.push(node);
+    }
+  }
+  return clippers;
+}
+
+export const Playground: Story = {};
+
+/** Card row "wrap" — the website, with the statement badge. */
+export const Wrap: Story = {
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("radio", { name: "Sweets" }));
+    await expect(canvas.getByRole("radio", { name: "Sweets" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
+    await userEvent.keyboard("{ArrowLeft} ");
+    await expect(canvas.getByRole("radio", { name: "Chai & Coffee" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
+  },
 };
 
-/** The website rail: every category visible at once, no hidden right edge. */
-export const Wrapping: Story = {
-  args: { isWrapping: true, note: "100% Vegetarian Kitchen" },
-  render: (args) => <ControlledFilterBar {...args} />,
-};
-
-/** The app rail: one line tall on a phone, the overflow scrolled rather than wrapped. */
-export const Scrolling: Story = {
-  args: { options: [...CATEGORIES, "Breakfast", "Momos", "Sandwiches", "Desserts"] },
-  render: (args) => (
-    <div className="max-w-90">
-      <ControlledFilterBar {...args} />
-    </div>
-  ),
-};
-
-/** Options can carry a glyph, and a value that is not the visible label. */
-export const WithIcons: Story = {
+/** Card row "scroll" — the app rail, one line. */
+export const Scroll: Story = {
   args: {
-    isWrapping: true,
+    isWrapping: false,
+    note: undefined,
+    options: [...WEBSITE, { value: "bar", label: "Bar" }],
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-90 max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
+  // The rail is a scroll container, so a chip's focus ring is clipped like any other paint: the
+  // first chip's and, scrolled to the end, the last chip's ring must both stay whole.
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.tab();
+    const first = canvas.getByRole("radio", { name: "All" });
+    await expect(first).toHaveFocus();
+    await expect(first.matches(":focus-visible")).toBe(true);
+    await expect(ringClippers(first)).toEqual([]);
+    await userEvent.keyboard("{End}");
+    const last = canvas.getByRole("radio", { name: "Bar" });
+    await expect(last).toHaveFocus();
+    await expect(ringClippers(last)).toEqual([]);
+  },
+};
+
+/** Card row "icons". */
+export const Icons: Story = {
+  args: {
+    label: "Dietary and speed filters",
+    note: undefined,
+    defaultValue: "jain",
     options: [
       { value: "jain", label: "Jain", icon: Leaf },
       { value: "spicy", label: "Hot", icon: Flame },
-      { value: "quick", label: "Under 15 Min", icon: Clock },
+      { value: "quick", label: "Under 15 min", icon: Clock },
     ],
-    value: "jain",
   },
-  render: (args) => <ControlledFilterBar {...args} />,
 };
 
-/** The kitchen statement is a badge pinned after the pills — it is never a filter. */
-export const WithStatement: Story = {
-  args: { isWrapping: true, note: "100% Vegetarian Kitchen" },
-  render: (args) => <ControlledFilterBar {...args} />,
-};
-
-/** A trailing control sits at the end of the rail and never gets squeezed. */
-export const WithTrailingControl: Story = {
+/** `trailing`: a control pinned to the end of the rail, never squeezed by it. */
+export const WithTrailing: Story = {
   args: {
-    isWrapping: true,
     trailing: (
-      <button className="font-body text-body2 text-text-link underline" type="button">
-        Clear All
-      </button>
+      <Button size="sm" variant="ghost" icon={Search}>
+        Search
+      </Button>
     ),
   },
-  render: (args) => <ControlledFilterBar {...args} />,
 };
 
-/** At 360px the rail scrolls; the pills keep their 38px height and never wrap mid-label. */
-export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
-  args: { options: [...CATEGORIES, "Breakfast", "Momos"] },
+/** 360px, scrolling: the filters scroll under a pinned statement badge and trailing control. */
+export const ScrollPinned: Story = {
+  args: {
+    isWrapping: false,
+    options: [...WEBSITE, { value: "bar", label: "Bar" }],
+    trailing: (
+      <Button size="sm" variant="ghost" icon={Search}>
+        Search
+      </Button>
+    ),
+  },
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  play: async ({ canvas }) => {
+    const group = canvas.getByRole("radiogroup");
+    const root = group.parentElement;
+    await expect(root).toBeInstanceOf(HTMLElement);
+    if (root === null) return;
+    await expect(group.scrollWidth).toBeGreaterThan(group.clientWidth);
+    const edge = root.getBoundingClientRect().right;
+    await expect(
+      canvas.getByText("100% Vegetarian").getBoundingClientRect().right
+    ).toBeLessThanOrEqual(edge);
+    await expect(
+      canvas.getByRole("button", { name: "Search" }).getBoundingClientRect().right
+    ).toBeLessThanOrEqual(edge);
+    const page = document.documentElement;
+    await expect(page.scrollWidth).toBeLessThanOrEqual(page.clientWidth);
+  },
+};
+
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
   render: (args) => (
-    <div className="w-full max-w-80">
-      <ControlledFilterBar {...args} />
-    </div>
+    <OnSurfaces>
+      <div className="min-w-0 flex-1">
+        <FilterBar {...args} />
+      </div>
+    </OnSurfaces>
   ),
 };

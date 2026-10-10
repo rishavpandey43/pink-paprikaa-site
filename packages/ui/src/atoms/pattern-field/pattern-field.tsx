@@ -1,77 +1,85 @@
-"use client";
+import { Slot } from "radix-ui";
+import type { ElementType } from "react";
 
-import { type ComponentPropsWithoutRef, useId } from "react";
+import { type BaseProps, SURFACE_DATA, type SurfaceProp } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
-import { SYMBOL_PATHS, SYMBOL_VIEW_BOX } from "../logo/logo-paths";
+export interface PatternFieldProps extends BaseProps<"div"> {
+  /** The field colour; also its `data-surface`, so everything inside follows it. */
+  surface?: Extract<SurfaceProp, "brand" | "ink" | "soft" | "page"> | undefined;
+  /** Tile size in px — 96 on a 1080 canvas, 56–72 on screen. */
+  tile?: 56 | 64 | 72 | 80 | 86 | 96 | undefined;
+  /** default = 8% on brand/ink, 9% on soft/light · faint = 4% (the handoff's ink sections). */
+  density?: "default" | "faint" | undefined;
+  radius?: "none" | "md" | "lg" | "xl" | undefined;
+  /** Pattern an existing element (e.g. a `<section>`) instead of rendering a `<div>`. */
+  asChild?: boolean | undefined;
+}
+
+/** One white symbol tile (R19), used as a mask: the colour painted through it comes from the surface. */
+const PATTERN_MASK = { maskImage: "var(--pp-symbol-mask)" } as const;
 
 const patternField = componentVariants({
   slots: {
-    // `isolate` keeps the texture layer's stacking context inside the panel, so a card that
-    // overlaps the field cannot slide underneath it.
+    // `isolate`: the texture's stacking context stays inside the panel, so an overlapping card
+    // cannot slide underneath it.
     root: "relative isolate overflow-hidden",
-    // The texture is the diamond symbol and nothing else — no noise, no grain, no gradient. Colour
-    // comes from `currentColor` on the layer, opacity from the tone (never above 12%).
-    texture: "pointer-events-none absolute inset-0 size-full",
+    pattern: "pointer-events-none absolute inset-0",
     content: "relative h-full",
   },
   variants: {
-    tone: {
-      brand: { root: "bg-surface-brand", texture: "text-text-on-brand opacity-8" },
-      ink: { root: "bg-surface-inverse", texture: "text-text-on-inverse opacity-8" },
-      soft: { root: "bg-surface-brand-soft", texture: "text-text-brand opacity-9" },
-      light: { root: "bg-surface-card", texture: "text-text-brand opacity-9" },
+    // Each surface carries its field's default opacity; `density="faint"` is declared later, so the
+    // merge (`pattern-opacity-*` is a registered class group) replaces it: one opacity per field.
+    surface: {
+      brand: { root: "bg-surface-brand", pattern: "bg-ink-000 pattern-opacity-default" },
+      ink: { root: "bg-surface-inverse", pattern: "bg-ink-000 pattern-opacity-default" },
+      soft: { root: "bg-surface-brand-soft", pattern: "bg-pink-500 pattern-opacity-light" },
+      page: { root: "bg-surface-page", pattern: "bg-pink-500 pattern-opacity-light" },
     },
+    tile: {
+      56: { pattern: "pattern-tile-56" },
+      64: { pattern: "pattern-tile-64" },
+      72: { pattern: "pattern-tile-72" },
+      80: { pattern: "pattern-tile-80" },
+      86: { pattern: "pattern-tile-86" },
+      96: { pattern: "pattern-tile-96" },
+    },
+    density: { default: {}, faint: { pattern: "pattern-opacity-faint" } },
     radius: {
-      none: {},
-      md: { root: "rounded-4" },
-      lg: { root: "rounded-5" },
+      none: { root: "rounded-none" },
+      md: { root: "rounded-md" },
+      lg: { root: "rounded-lg" },
+      xl: { root: "rounded-xl" },
     },
   },
-  defaultVariants: { tone: "brand", radius: "none" },
+  defaultVariants: { surface: "brand", tile: 64, density: "default", radius: "none" },
 });
 
-export interface PatternFieldProps
-  extends ComponentPropsWithoutRef<"div">, VariantProps<typeof patternField> {
-  /**
-   * Tile edge in px. 56–72 on screen, 96 on a 1080 marketing canvas. It is a number rather than a
-   * class because it lands on the SVG pattern's own geometry, which no token can express.
-   */
-  tile?: number | undefined;
-}
-
+/** The brand's only texture: the diamond symbol tiled at low opacity over a flooded field. */
 export function PatternField({
-  children,
-  className,
+  surface = "brand",
+  tile,
+  density,
   radius,
-  tile = 64,
-  tone,
+  asChild = false,
+  sx,
+  className,
+  children,
   ...props
 }: PatternFieldProps) {
-  // `useId()` includes punctuation React reserves; strip it so the value is a legal SVG fragment
-  // reference, and unique per instance so two fields on one page cannot share a paint server.
-  const patternId = `pp-pattern-field-${useId().replace(/\W/g, "")}`;
-  const { content, root, texture } = patternField({ radius, tone });
-
+  const slots = patternField({ surface, tile, density, radius });
+  const Component: ElementType = asChild ? Slot.Root : "div";
   return (
-    <div className={root({ class: className })} {...props}>
-      <svg aria-hidden className={texture()} xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern
-            height={tile}
-            id={patternId}
-            patternUnits="userSpaceOnUse"
-            viewBox={SYMBOL_VIEW_BOX}
-            width={tile}
-          >
-            {SYMBOL_PATHS.map((d) => (
-              <path d={d} fill="currentColor" key={d} />
-            ))}
-          </pattern>
-        </defs>
-        <rect fill={`url(#${patternId})`} height="100%" width="100%" />
-      </svg>
-      <div className={content()}>{children}</div>
-    </div>
+    <Component
+      data-surface={SURFACE_DATA[surface]}
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      <span aria-hidden className={slots.pattern()} style={PATTERN_MASK} />
+      <Slot.Slottable child={children}>
+        {(content) => <div className={slots.content()}>{content}</div>}
+      </Slot.Slottable>
+    </Component>
   );
 }

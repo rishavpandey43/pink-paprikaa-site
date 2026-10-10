@@ -1,99 +1,106 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
+import { Typography } from "../../atoms/typography/typography";
+import type { BaseProps } from "../../lib/common-props";
+import { SURFACE_DATA } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
-import {
-  SectionHeader,
-  type SectionHeaderProps,
-} from "../../molecules/section-header/section-header";
+import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 
 const ctaBand = componentVariants({
   slots: {
-    // Full-bleed: the band floods edge to edge and the container inside it holds the copy back to
-    // the page frame. The ground and its tiled diamond come from `PatternField`.
-    root: "w-full",
-    inner: [
-      "mx-auto w-full max-w-(--layout-container-max)",
-      "px-(--layout-gutter-fluid) py-[clamp(48px,6vw,72px)]",
-    ],
-    action: "",
+    root: "relative",
+    // A decorative layer only: the band's own ground (or a caller's) shows through it.
+    pattern: "absolute inset-0 bg-transparent",
+    inner: "relative container-page flex flex-wrap gap-8 py-cta-band-y",
+    copy: "flex min-w-0 flex-col gap-2.5",
+    action: "flex shrink-0 flex-wrap items-center gap-2.5",
   },
   variants: {
-    /**
-     * `split` hands the action to `SectionHeader`, which sits it on the heading's baseline edge and
-     * wraps it onto its own line before the title can be squeezed. `center` stacks copy and action.
-     */
+    surface: {
+      ink: { root: "bg-surface-inverse" },
+      brand: { root: "bg-surface-brand" },
+      soft: { root: "bg-surface-brand-soft" },
+    },
     align: {
-      split: {},
-      center: { inner: "flex flex-col items-center", action: "mt-8 flex w-full justify-center" },
+      split: { inner: "items-end justify-between", copy: "max-w-cta-band-copy" },
+      center: {
+        inner: "flex-col items-center text-center",
+        copy: "max-w-text-measure-narrow items-center",
+        action: "justify-center",
+      },
     },
   },
-  defaultVariants: { align: "split" },
+  defaultVariants: { surface: "ink", align: "split" },
 });
 
-/**
- * Which `SectionHeader` ink each ground takes. `ink` and `brand` are both flooded, so their type
- * inverts; only `soft` keeps the light-ground steps.
- */
-const HEADER_ON = { ink: "brand", brand: "brand", soft: "light" } as const;
-
-/** The three grounds the band may flood with. */
-export type CtaBandTone = keyof typeof HEADER_ON;
-
 export interface CtaBandProps
-  extends Omit<ComponentPropsWithoutRef<"div">, "title">, VariantProps<typeof ctaBand> {
-  /** ALL CAPS eyebrow naming the ask — "Franchise", "Careers". Two or three words, never a line. */
-  overline?: string | undefined;
-  /** The band's closing argument, in one line. */
+  extends
+    Omit<BaseProps<"section">, "title">,
+    Pick<VariantProps<typeof ctaBand>, "surface" | "align"> {
+  overline?: ReactNode;
   title: ReactNode;
-  /** One sentence of support under the heading. */
-  body?: string | undefined;
-  /**
-   * The single action, almost always one `Button`. Never two: the band exists to ask for one
-   * thing, and a second action halves the answer rate. On `ink` and `brand` pass `on="brand"`.
-   */
-  action?: ReactNode | undefined;
-  /** The ground. `ink` closes a page, `brand` is the loudest, `soft` the quietest. */
-  tone?: CtaBandTone | undefined;
-  /** Where the heading sits in the document outline. The type step is always the fluid `h2`. */
-  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6 | undefined;
+  body?: ReactNode;
+  /** One or two Buttons — `<Button asChild><a …/></Button>`. */
+  action?: ReactNode;
+  /** The tiled diamond behind the band; `faint` is the handoff's 4% ink sections (spec C7). */
+  pattern?: "none" | "default" | "faint" | undefined;
+  headingLevel?: HeadingLevel | undefined;
 }
 
+/**
+ * The band that closes a page — one per page, never two. Paints its own field (ink, brand or
+ * soft) and sets that surface, so the heading, body and buttons inside need no colour props.
+ */
 export function CtaBand({
-  action,
-  align = "split",
-  body,
-  className,
-  headingLevel = 2,
   overline,
   title,
-  tone = "ink",
+  body,
+  action,
+  surface = "ink",
+  align,
+  pattern = "default",
+  headingLevel = 2,
+  sx,
+  className,
   ...props
 }: CtaBandProps) {
-  const parts = ctaBand({ align });
-
-  // `exactOptionalPropertyTypes` forbids handing an optional prop an explicit `undefined`, so the
-  // optional half of the header's contract is assembled rather than passed through inline.
-  const headerProps: Pick<SectionHeaderProps, "action" | "lede" | "overline"> = {};
-  if (overline !== undefined) headerProps.overline = overline;
-  if (body !== undefined) headerProps.lede = body;
-  // A centred header drops its action by contract, so the centred band renders it underneath.
-  if (action !== undefined && align === "split") headerProps.action = action;
-
+  const slots = ctaBand({ surface, align });
   return (
-    <PatternField className={parts.root({ className })} tile={72} tone={tone} {...props}>
-      <div className={parts.inner()}>
-        <SectionHeader
-          align={align === "center" ? "center" : "start"}
-          headingLevel={headingLevel}
-          on={HEADER_ON[tone]}
-          title={title}
-          {...headerProps}
+    <section
+      data-surface={SURFACE_DATA[surface]}
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      {pattern === "none" ? null : (
+        <PatternField
+          aria-hidden
+          surface={surface}
+          tile={72}
+          density={pattern}
+          className={slots.pattern()}
         />
-        {action !== undefined && align === "center" ? (
-          <div className={parts.action()}>{action}</div>
-        ) : null}
+      )}
+      <div className={slots.inner()}>
+        <div className={slots.copy()}>
+          {isShown(overline) ? (
+            <Typography variant="overline" color="brand">
+              {overline}
+            </Typography>
+          ) : null}
+          <Typography as={headingTag(headingLevel)} variant="h2" isFluid isBalanced>
+            {title}
+          </Typography>
+          {isShown(body) ? (
+            <Typography variant="body-lg" color="muted" className="mt-0.5">
+              {body}
+            </Typography>
+          ) : null}
+        </div>
+        {isShown(action) ? <div className={slots.action()}>{action}</div> : null}
       </div>
-    </PatternField>
+    </section>
   );
 }

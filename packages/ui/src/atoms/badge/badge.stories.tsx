@@ -1,103 +1,115 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Flame, Leaf, Star } from "lucide-react";
 
-import { Text } from "../text/text";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Badge } from "./badge";
 
 const meta = {
   title: "Atoms/Badge",
   component: Badge,
-  args: { children: "Bestseller" },
-  argTypes: {
-    icon: { control: false },
-  },
+  args: { children: "Bestseller", color: "brand", variant: "solid" },
+  argTypes: { icon: { control: false } },
   parameters: {
     docs: {
       description: {
         component:
-          "Uppercase status marker for menu items, orders and cards — non-interactive, always " +
-          "ALL CAPS, two words maximum. For a tappable filter pill use `Tag` instead.",
+          "Uppercase status marker for menu items, orders and cards — non-interactive. Always ALL CAPS and two words maximum. For a filterable, tappable pill use `Tag` instead. The solid `brand` skin turns white on a pink field so it never vanishes; the other skins carry their own fills and read on any surface. `color` is the palette, `variant` is `solid` or `soft`; the status colours (success, warning, danger) only have a soft skin.",
       },
     },
   },
 } satisfies Meta<typeof Badge>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-export const Tones: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-2">
-      <Badge {...args} tone="brand">
-        Bestseller
-      </Badge>
-      <Badge {...args} tone="soft">
-        New
-      </Badge>
-      <Badge {...args} tone="ink">
-        Tonight Only
-      </Badge>
-      <Badge {...args} tone="neutral">
-        Veg
-      </Badge>
+export const Colors: Story = {
+  name: "color × variant",
+  render: () => (
+    <div className="grid gap-3">
+      {(["solid", "soft"] as const).map((variant) => (
+        <div key={variant} className="flex flex-wrap items-center gap-3">
+          <Badge color="brand" variant={variant}>
+            Bestseller
+          </Badge>
+          <Badge color="neutral" variant={variant}>
+            {variant === "solid" ? "Tonight Only" : "Veg"}
+          </Badge>
+        </div>
+      ))}
     </div>
   ),
 };
 
-/** The soft ground carries the state; the ink is the status colour itself. */
-export const StatusTones: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-2">
-      <Badge {...args} tone="success">
-        Confirmed
-      </Badge>
-      <Badge {...args} tone="warning">
-        Kitchen Busy
-      </Badge>
-      <Badge {...args} tone="danger">
-        Sold Out
-      </Badge>
+export const StatusColors: Story = {
+  name: 'color="success" · "warning" · "danger"',
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Badge color="success">Confirmed</Badge>
+      <Badge color="warning">Kitchen Busy</Badge>
+      <Badge color="danger">Sold Out</Badge>
     </div>
   ),
 };
 
-export const WithIcons: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-2">
-      <Badge {...args} icon={Flame} tone="soft">
+export const WithIcon: Story = {
+  name: "icon",
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Badge color="brand" icon={Flame}>
         Hot
       </Badge>
-      <Badge {...args} icon={Leaf} tone="success">
+      <Badge color="success" icon={Leaf}>
         100% Veg
       </Badge>
-      <Badge {...args} icon={Star} tone="brand">
+      <Badge color="brand" variant="solid" icon={Star}>
         Chef Pick
       </Badge>
     </div>
   ),
 };
 
-/** In context: the markers that sit on a menu card, above the dish name. */
+/** In context: the markers on a menu card, above the dish name. */
 export const OnAMenuCard: Story = {
-  parameters: { layout: "padded" },
-  render: (args) => (
-    <div className="flex max-w-72 flex-col gap-2 rounded-4 bg-surface-card p-4 shadow-elevation1">
+  name: "in context: on a menu card",
+  render: () => (
+    <div className="grid max-w-72 gap-2 rounded-lg bg-surface-card p-4 shadow-1">
       <div className="flex flex-wrap items-center gap-2">
-        <Badge {...args} tone="brand">
+        <Badge color="brand" variant="solid">
           Bestseller
         </Badge>
-        <Badge {...args} icon={Flame} tone="soft">
+        <Badge color="brand" icon={Flame}>
           Hot
         </Badge>
       </div>
-      <Text variant="subtitle1">Paneer Tikka Masala</Text>
-      <Text variant="body2" tone="muted">
-        ₹280
-      </Text>
+      <h4 className="m-0">Paneer Tikka Masala</h4>
+      <p className="m-0 font-body text-body-sm text-text-muted">₹280</p>
     </div>
+  ),
+};
+
+export const Sx: Story = {
+  name: "sx",
+  render: () => (
+    <div className="flex items-center">
+      <Badge sx={{ ms: 4 }}>Margin start</Badge>
+      <Badge sx={{ px: 4 }}>Wide padding</Badge>
+    </div>
+  ),
+};
+
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: () => (
+    <OnSurfaces>
+      <Badge color="brand" variant="solid">
+        Bestseller
+      </Badge>
+      <Badge color="brand">New</Badge>
+      <Badge color="neutral" variant="solid">
+        Signature
+      </Badge>
+    </OnSurfaces>
   ),
 };

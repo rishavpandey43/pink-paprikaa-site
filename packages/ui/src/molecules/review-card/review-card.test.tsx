@@ -1,95 +1,97 @@
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { ReviewCard } from "./review-card";
 
-const QUOTE = "The chilli paneer is the whole reason I moved to Sector 57.";
+const REVIEW = {
+  name: "Vikas Kumar",
+  meta: "Restaurant · Google review",
+  quote: "Very nice and economical food or very tasty food as home",
+} as const;
 
 describe("ReviewCard", () => {
-  it("renders the guest quote inside the component's own quote marks", () => {
-    render(<ReviewCard name="Aditi Rao" quote={QUOTE} />);
-    expect(screen.getByText(`“${QUOTE}”`)).toBeInTheDocument();
+  it("quotes the guest in curly quotes inside a blockquote, attributed in the caption", () => {
+    const { container } = render(<ReviewCard {...REVIEW} />);
+    expect(container.querySelector("blockquote")).toHaveTextContent(`“${REVIEW.quote}”`);
+    expect(container.querySelector("figcaption")).toHaveTextContent(REVIEW.name);
+    expect(container.querySelector("figcaption")).toHaveTextContent(REVIEW.meta);
   });
 
-  it("marks the quote up as a blockquote", () => {
-    const { container } = render(<ReviewCard name="Aditi Rao" quote={QUOTE} />);
-    expect(container.querySelector("blockquote")).toHaveTextContent(QUOTE);
+  it("shows the score when given one", () => {
+    render(<ReviewCard {...REVIEW} rating={5} />);
+    expect(screen.getByRole("img", { name: "5.0 out of 5" })).toBeInTheDocument();
   });
 
-  it("attributes the review to the guest", () => {
-    render(<ReviewCard meta="Sector 57 — March" name="Aditi Rao" quote={QUOTE} />);
-
-    expect(screen.getByText("Aditi Rao")).toBeInTheDocument();
-    expect(screen.getByText("Sector 57 — March")).toBeInTheDocument();
+  it("sits on a white light-island card by default", () => {
+    const { container } = render(<ReviewCard {...REVIEW} />);
+    expect(container.firstElementChild).toHaveAttribute("data-surface", "light");
   });
 
-  it("falls back to the guest's initials when there is no photo", () => {
-    render(<ReviewCard name="Aditi Rao" quote={QUOTE} />);
-    expect(screen.getByText("AR")).toBeInTheDocument();
+  it("omits the score and the meta line when neither is given", () => {
+    const { container } = render(<ReviewCard name={REVIEW.name} quote={REVIEW.quote} />);
+    expect(screen.queryByRole("img", { name: /out of 5/ })).not.toBeInTheDocument();
+    expect(container.querySelector("figcaption")).not.toHaveTextContent(REVIEW.meta);
   });
 
-  it("omits the meta line when none is given", () => {
-    render(<ReviewCard name="Aditi Rao" quote={QUOTE} />);
-    expect(screen.queryByText("Sector 57 — March")).not.toBeInTheDocument();
+  it("lets a caller className replace the card radius", () => {
+    const { container } = render(<ReviewCard {...REVIEW} className="rounded-md" />);
+    expect(container.firstElementChild).toHaveClass("rounded-md");
+    expect(container.firstElementChild).not.toHaveClass("rounded-lg");
   });
 
-  it("names the score for assistive tech", () => {
-    render(<ReviewCard name="Aditi Rao" quote={QUOTE} rating={4.5} />);
-    expect(screen.getByRole("img", { name: "Rated 4.5 out of 5" })).toBeInTheDocument();
+  it("uses the light-pink feature treatment for the brand surface", () => {
+    const { container } = render(<ReviewCard {...REVIEW} surface="brand" />);
+    expect(container.firstElementChild).toHaveAttribute("data-surface", "soft");
   });
 
-  it("renders no score at all when none is given", () => {
-    render(<ReviewCard name="Aditi Rao" quote={QUOTE} />);
-    expect(screen.queryByRole("img", { name: /Rated/ })).not.toBeInTheDocument();
+  it("marks a verified review with a chip whose words the page can change", () => {
+    const { rerender } = render(<ReviewCard {...REVIEW} isVerified />);
+    expect(screen.getByText("Verified on Google")).toBeInTheDocument();
+    rerender(<ReviewCard {...REVIEW} isVerified verifiedLabel="Verified guest" />);
+    expect(screen.getByText("Verified guest")).toBeInTheDocument();
   });
 
-  it("renders the default treatment on the plain card skin", () => {
-    const { container } = render(<ReviewCard name="Aditi Rao" quote={QUOTE} />);
-    const node = container.firstElementChild;
-
-    expect(node).toHaveClass("bg-surface-card");
-    expect(screen.getByText("Aditi Rao")).toHaveClass("text-text-heading");
-  });
-
-  it("inks the brand treatment in the brand pink on the pale pink skin", () => {
-    const { container } = render(<ReviewCard name="Meera Iyer" quote={QUOTE} variant="brand" />);
-    const node = container.firstElementChild;
-
-    expect(node).toHaveClass("bg-surface-brand-soft");
-    expect(screen.getByText("Meera Iyer")).toHaveClass("text-text-brand");
-  });
-
-  it("drops the diamond for the bare mark when asked", () => {
-    const { container } = render(
-      <ReviewCard mark="symbol" name="Rhea Dutta" quote={QUOTE} rating={4.3} />
+  it("links to the review at its source, in a new tab", () => {
+    render(
+      <ReviewCard
+        {...REVIEW}
+        source={{ label: "View on Google", href: "https://maps.app.goo.gl/32n6SYDUMejsa3NeA" }}
+      />
     );
-    expect(container.querySelector(".rotate-45")).not.toBeInTheDocument();
-  });
-
-  it("merges a caller className", () => {
-    const { container } = render(
-      <ReviewCard className="rounded-1" name="Aditi Rao" quote={QUOTE} />
+    expect(screen.getByRole("link", { name: /View on Google/ })).toHaveAttribute(
+      "target",
+      "_blank"
     );
-    const node = container.firstElementChild;
-
-    expect(node).toHaveClass("rounded-1");
-    expect(node).not.toHaveClass("rounded-4");
   });
 
-  it("has no accessibility violations", async () => {
+  it("drops the avatar when asked (the handoff's Google reviews)", () => {
+    const { container, rerender } = render(<ReviewCard {...REVIEW} />);
+    expect(container.querySelector("figcaption")).toHaveTextContent("VK");
+    rerender(<ReviewCard {...REVIEW} hasAvatar={false} />);
+    expect(container.querySelector("figcaption")).not.toHaveTextContent("VK");
+  });
+
+  it("has no accessibility violations with every part shown, on both treatments", async () => {
     const { container } = render(
       <>
-        <ReviewCard meta="Sector 57 — March" name="Aditi Rao" quote={QUOTE} rating={5} />
         <ReviewCard
-          mark="symbol"
-          meta="Sector 57 — April"
-          name="Kabir Shah"
-          quote="Chai at 8am, chilli paneer at 11pm. They mean it."
-          rating={4.5}
-          variant="brand"
+          {...REVIEW}
+          rating={5}
+          isVerified
+          source={{ label: "View on Google", href: "https://maps.app.goo.gl/32n6SYDUMejsa3NeA" }}
         />
+        <ReviewCard {...REVIEW} rating={4} surface="brand" mark="symbol" />
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, beating a default class and keeping className", () => {
+    const { container } = render(
+      <ReviewCard {...REVIEW} sx={{ gap: 2, mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("gap-2", "mt-4", "italic");
+    expect(container.firstElementChild).not.toHaveClass("gap-3.5");
   });
 });

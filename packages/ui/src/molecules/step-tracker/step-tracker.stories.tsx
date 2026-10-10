@@ -1,89 +1,108 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
 
-import { StepTracker } from "./step-tracker";
+import { groundOf } from "../../lib/story-paint";
+import { OnSurfaces } from "../../lib/story-surfaces";
+import { StepTracker, type TrackerStep } from "./step-tracker";
 
-const ORDER_STEPS = [
-  { label: "Order in", note: "The kitchen is on it." },
+const ORDER: TrackerStep[] = [
+  { label: "Order in", note: "Kitchen's on it." },
   { label: "On the tandoor", note: "Chilli paneer is charring." },
-  { label: "Ready for pickup", note: "Counter 2, ask for Pink Paprikaa." },
+  { label: "Ready for pickup", note: "Counter 2, ask for Paprikaa." },
+];
+
+const CHECKOUT: TrackerStep[] = [
+  { label: "Cart" },
+  { label: "Details" },
+  { label: "Pay" },
+  { label: "Confirmed" },
 ];
 
 const meta = {
   title: "Molecules/StepTracker",
   component: StepTracker,
-  args: { steps: ORDER_STEPS, current: 1, label: "Order progress" },
-  argTypes: {
-    steps: { control: false },
-  },
+  args: { steps: ORDER, current: 1 },
   parameters: {
-    layout: "padded",
     docs: {
       description: {
         component:
-          "Order tracking and multi-step checkout. Vertical markers are brand diamonds that take " +
-          "a check once the step is done; horizontal renders as a segmented bar. Step copy is " +
-          "written in the brand's voice, never as system status text.",
+          'Order tracking and multi-step checkout. Vertical markers are brand diamonds with a check when complete; horizontal renders as a segmented bar. The current step carries `aria-current="step"`. Step copy is the brand voice, not system status text. On a pink or ink field it follows the surface — the bar turns white — so there is no `tone` prop.',
       },
     },
   },
 } satisfies Meta<typeof StepTracker>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+/** Card row "vertical". */
+export const Playground: Story = {};
 
-/** Nothing has started yet — every diamond stays grey. */
+/** Card row "horizontal". */
+export const Horizontal: Story = {
+  args: { steps: CHECKOUT, current: 1, orientation: "horizontal" },
+};
+
+/** Card row "inverse" — horizontal on a pink field. */
+export const OnBrand: Story = {
+  args: { steps: CHECKOUT, current: 2, orientation: "horizontal" },
+  render: (args) => (
+    <div data-surface="brand" className="rounded-lg bg-surface-brand p-6">
+      <StepTracker {...args} />
+    </div>
+  ),
+};
+
+/** Every step complete. */
+export const Complete: Story = { args: { current: 3 } };
+
+export const Surfaces: Story = {
+  args: { steps: CHECKOUT, current: 2, orientation: "horizontal" },
+  render: (args) => (
+    <OnSurfaces>
+      <StepTracker {...args} className="w-full" />
+    </OnSurfaces>
+  ),
+};
+
+/** Dev parity: nothing has started yet — every diamond stays grey. */
 export const NotStarted: Story = { args: { current: -1 } };
 
-/** The last step reached: everything behind it carries a check. */
-export const Complete: Story = { args: { current: 2 } };
-
-/** Checkout progress — a segmented bar with captions, notes dropped for want of room. */
-export const Horizontal: Story = {
-  args: {
-    orientation: "horizontal",
-    current: 1,
-    label: "Checkout progress",
-    steps: ["Cart", "Details", "Pay", "Done"],
+/**
+ * The vertical markers on every field. On pink the reached diamonds turn white with a pink mark and
+ * the ones to come fade to white at 25% (R89) — a pink diamond on the pink field would vanish. On
+ * ink the ones to come take the same white at 25%, so they never out-shine the reached pink ones.
+ */
+export const VerticalSurfaces: Story = {
+  render: (args) => (
+    <OnSurfaces>
+      <StepTracker {...args} />
+    </OnSurfaces>
+  ),
+  play: async ({ canvasElement }) => {
+    const diamonds = [
+      ...canvasElement.querySelectorAll('li > [aria-hidden="true"] > span:first-child'),
+    ];
+    // 3 steps on each of the 5 grounds.
+    await expect(diamonds).toHaveLength(15);
+    for (const diamond of diamonds) {
+      const fill = getComputedStyle(diamond).backgroundColor;
+      await expect(fill).not.toBe(groundOf(diamond));
+      // The brand mark, and the check on a complete step, stand out from their own diamond.
+      for (const glyph of [diamond.firstElementChild, diamond.nextElementSibling]) {
+        if (glyph !== null) await expect(getComputedStyle(glyph).color).not.toBe(fill);
+      }
+    }
   },
 };
 
-/** On a brand-flooded panel the markers and the type invert to white, straight onto the fill. */
-export const OnBrand: Story = {
-  globals: { backgrounds: { value: "brand" } },
-  args: { tone: "inverse", current: 1 },
-  render: (args) => (
-    <div className="rounded-4 bg-surface-brand p-8">
-      <StepTracker {...args} />
-    </div>
-  ),
-};
-
-/** The horizontal bar on a brand-flooded panel — the checkout header shape. */
-export const HorizontalOnBrand: Story = {
-  globals: { backgrounds: { value: "brand" } },
-  args: {
-    orientation: "horizontal",
-    tone: "inverse",
-    current: 2,
-    label: "Checkout progress",
-    steps: ["Cart", "Details", "Pay", "Done"],
-  },
-  render: (args) => (
-    <div className="rounded-4 bg-surface-brand p-8">
-      <StepTracker {...args} />
-    </div>
-  ),
-};
-
-/** The smallest supported width — labels wrap, the diamonds hold their column. */
+/** Dev parity: the smallest supported width — labels wrap, the diamonds hold their column. */
 export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
-  render: (args) => (
-    <div className="w-full max-w-80">
-      <StepTracker {...args} />
-    </div>
-  ),
+  decorators: [
+    (Story) => (
+      <div className="w-80 max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
 };

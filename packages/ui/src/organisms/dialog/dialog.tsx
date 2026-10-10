@@ -1,162 +1,193 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 import { X } from "lucide-react";
 import { Dialog as DialogPrimitive } from "radix-ui";
+import type { ReactElement, ReactNode } from "react";
+import { useRef } from "react";
 
 import { IconButton } from "../../atoms/icon-button/icon-button";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
+import { reportOpenChange } from "../../lib/popover-shell";
+import { withSx } from "../../lib/sx";
 
 const dialog = componentVariants({
   slots: {
-    /** The 56% ink scrim. Nothing is ever readable through it — that is the point. */
-    overlay: "inset-0 z-50 bg-surface-overlay animate-pp-fade",
-    content: [
-      "z-50 flex flex-col overflow-hidden bg-surface-card shadow-elevation4",
-      "animate-pp-rise",
-    ],
-    /** The sheet's grab handle. Purely an affordance, so it is hidden from assistive tech. */
-    grabber: "mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-6 bg-ink-300",
+    overlay: "fixed inset-0 z-overlay flex bg-surface-overlay",
+    // Only the body scrolls: the title, the close button and the footer's actions stay on screen.
+    content: "flex max-h-full w-full flex-col overflow-hidden bg-surface-card shadow-4",
+    handle: "flex shrink-0 justify-center pt-2.5",
+    handleBar: "h-1 w-10 rounded-pill bg-ink-300",
     header: "flex shrink-0 items-start justify-between gap-4 px-6 pt-5",
-    title: "min-w-0 font-display font-bold text-h3 leading-h3 tracking-h3 text-text-heading",
-    description: "shrink-0 px-6 pt-1-5 font-body text-body2 leading-body2 text-text-muted",
-    body: [
-      "min-h-0 flex-1 overflow-y-auto px-6 pt-3 pb-5",
-      "font-body text-body1 leading-body1 text-text-body",
-    ],
-    /** Buttons sit right, and wrap rather than shrink when two long labels meet 360px. */
-    footer: "flex shrink-0 flex-wrap items-center justify-end gap-2.5 px-6 pb-6",
+    title: "font-display text-dialog-title text-text-heading",
+    description: "shrink-0 px-6 pt-1 text-body-sm text-text-muted",
+    body: "min-h-0 flex-1 overflow-y-auto px-6 pt-3 pb-5 text-dialog-body text-text-body",
+    footer: "flex shrink-0 flex-wrap justify-end gap-2.5 px-6 pb-6",
   },
   variants: {
-    /**
-     * `modal` is the centred decision box. `sheet` rises from the bottom edge with a grab handle
-     * and only its top corners rounded — the app default on a phone, where a centred box leaves
-     * the thumb nowhere useful to land.
-     */
     variant: {
       modal: {
-        content: [
-          "top-1/2 left-1/2 max-h-[calc(100%-40px)] w-[calc(100%-40px)] rounded-5",
-          "-translate-x-1/2 -translate-y-1/2",
-        ],
+        overlay: "items-center justify-center p-6",
+        content: "rounded-xl motion-safe:animate-pop-in",
       },
-      sheet: { content: "inset-x-0 bottom-0 max-h-[calc(100%-56px)] w-full rounded-t-5" },
+      sheet: { overlay: "items-end", content: "rounded-t-xl motion-safe:animate-sheet-in" },
+      // Full height on one edge. `start-0` / `end-0` are logical, so the edge flips in RTL.
+      drawer: { content: "h-full rounded-none" },
     },
-    /** 328 / 460 / 640px, capped at the viewport. Ignored by `sheet`, which is always full width. */
-    size: {
-      sm: { content: "max-w-82" },
-      md: { content: "max-w-115" },
-      lg: { content: "max-w-160" },
-    },
-    /**
-     * `container` swaps `fixed` for `absolute` so the dialog can be previewed inside a phone frame
-     * — pass that frame as `container` too, or it portals to the body and the anchoring is lost.
-     */
-    position: {
-      viewport: { content: "fixed", overlay: "fixed" },
-      container: { content: "absolute", overlay: "absolute" },
-    },
+    size: { sm: {}, md: {}, lg: {} },
+    side: { start: {}, end: {} },
   },
-  compoundVariants: [{ variant: "sheet", class: { content: "max-w-full" } }],
-  defaultVariants: { variant: "modal", size: "md", position: "viewport" },
+  compoundVariants: [
+    {
+      variant: "drawer",
+      side: "start",
+      class: { overlay: "justify-start", content: "start-0 animate-drawer-in-start" },
+    },
+    {
+      variant: "drawer",
+      side: "end",
+      class: { overlay: "justify-end", content: "end-0 animate-drawer-in-end" },
+    },
+    { variant: "drawer", size: "sm", class: { content: "max-w-dialog-drawer-sm" } },
+    { variant: "drawer", size: "md", class: { content: "max-w-dialog-drawer-md" } },
+    { variant: "drawer", size: "lg", class: { content: "max-w-dialog-drawer-lg" } },
+    { variant: "modal", size: "sm", class: { content: "max-w-dialog-sm" } },
+    { variant: "modal", size: "md", class: { content: "max-w-dialog-md" } },
+    { variant: "modal", size: "lg", class: { content: "max-w-dialog-lg" } },
+  ],
+  defaultVariants: { variant: "modal", size: "md", side: "end" },
 });
 
-export interface DialogProps extends VariantProps<typeof dialog> {
+export interface DialogProps
+  extends
+    Omit<BaseProps<"div">, "title" | "children">,
+    Pick<DialogPrimitive.DialogProps, "open" | "defaultOpen" | "onOpenChange">,
+    Pick<VariantProps<typeof dialog>, "variant" | "size" | "side"> {
   /**
-   * Names the dialog, and is its accessible name — so it is required. Sentence case, and phrased
-   * as the decision being asked for: "Remove this item?".
+   * The element that opens the dialog, e.g. a Button; focus returns to it on close. Without one,
+   * focus returns to the element focused when the dialog opened — reliable for keyboard opens, but
+   * Safari and Firefox on macOS do not focus a button on click, so a dialog opened by pointer
+   * returns focus to `<body>`. Pass a trigger where focus return must survive a pointer open.
    */
-  title: string;
-  /** One line under the title saying what will happen. Wired as the dialog's description. */
-  description?: string | undefined;
-  /** The body. Form fields, a list, a sentence — whatever the decision needs. */
-  children?: ReactNode | undefined;
-  /** Buttons, right-aligned. The confirming action goes last. */
-  footer?: ReactNode | undefined;
-  /** The control that opens it. Leave it off and drive `isOpen` yourself. */
-  trigger?: ReactNode | undefined;
-  /** Drive it from outside. Leave unset and the trigger runs it. */
-  isOpen?: boolean | undefined;
-  /** Open it on mount — for stories and specimens, not for real pages. */
-  isDefaultOpen?: boolean | undefined;
-  /** Fires whenever the dialog opens or closes, controlled or not. */
-  onOpenChange?: ((isOpen: boolean) => void) | undefined;
-  /** Drops the close glyph, for a decision that must be answered rather than dismissed. */
-  hasCloseButton?: boolean | undefined;
-  /** Accessible name for the close glyph. */
+  trigger?: ReactElement | undefined;
+  title: ReactNode;
+  description?: ReactNode;
+  children?: ReactNode;
+  /** Buttons, right-aligned. */
+  footer?: ReactNode;
   closeLabel?: string | undefined;
-  /** Portal target. Pass the positioned ancestor when `position` is `container`. */
-  container?: HTMLElement | null | undefined;
-  className?: string | undefined;
+  /**
+   * `false` hides the close button only. Escape and the scrim still ask to close through
+   * `onOpenChange` — a decision that must be answered is controlled, keeps itself open, and gives
+   * its own action buttons in `footer`.
+   */
+  hasCloseButton?: boolean | undefined;
+  /** Portal target; default `document.body`. Pass a positioned frame (AppShell's overlay slot) to keep the dialog inside it. */
+  portalContainer?: HTMLElement | null | undefined;
+  /** Design `onClose` — called when the dialog goes from open to closed (R148). */
+  onClose?: ((reason: string) => void) | undefined;
 }
 
 /**
- * The modal for a decision that has to be made now: a 24px card on a 56% ink scrim, with focus
- * trapped inside it and Escape wired to close — all of it Radix's, never hand-rolled. Reach for
- * `variant="sheet"` on a phone screen.
+ * A decision that must be made now: a centred modal (24px radius, `--shadow-4`, 56% ink scrim),
+ * or a bottom sheet with a grab handle — the app default. Radix Dialog: focus is trapped, Escape
+ * and the scrim close it, focus returns to the trigger (or, without one, to what had focus when it
+ * opened — see `trigger` for pointer opens), the page behind cannot scroll.
+ *
+ * The Radix root renders no element, so the native props, `ref`, `className` and `sx` all land on
+ * the panel (the element with `role="dialog"`).
  */
 export function Dialog({
-  children,
-  className,
-  closeLabel = "Close",
-  container,
-  description,
-  footer,
-  hasCloseButton = true,
-  isDefaultOpen,
-  isOpen,
-  onOpenChange,
-  position,
-  size,
-  title,
   trigger,
-  variant,
+  title,
+  description,
+  children,
+  footer,
+  variant = "modal",
+  size = "md",
+  side = "end",
+  closeLabel = "Close",
+  hasCloseButton = true,
+  portalContainer = null,
+  open,
+  defaultOpen,
+  onOpenChange,
+  onClose,
+  sx,
+  className,
+  ...props
 }: DialogProps) {
-  const slots = dialog({ position, size, variant });
-
-  // Radix declares these three without `| undefined`, and the workspace runs
-  // `exactOptionalPropertyTypes`, so an unset prop has to be left off rather than passed through
-  // as `undefined` — which is also exactly what "uncontrolled" means to Radix.
-  const rootProps: DialogPrimitive.DialogProps = {};
-  if (isDefaultOpen !== undefined) rootProps.defaultOpen = isDefaultOpen;
-  if (isOpen !== undefined) rootProps.open = isOpen;
-  if (onOpenChange !== undefined) rootProps.onOpenChange = onOpenChange;
-
-  const portalProps: DialogPrimitive.DialogPortalProps = {};
-  if (container !== null && container !== undefined) portalProps.container = container;
-
-  // Radix wires `aria-describedby` to its own `Description` and warns in development when neither
-  // that nor an explicit `aria-describedby={undefined}` is present. A dialog whose body is a form
-  // has no one-line description, so the opt-out is set for it rather than inventing prose.
-  const contentProps = description === undefined ? { "aria-describedby": undefined } : {};
-
+  const slots = dialog({ variant, size, side });
+  // Radix refocuses only its own trigger on close; without one, focus would drop to <body>.
+  const returnFocusRef = useRef<HTMLElement | null>(null);
   return (
-    <DialogPrimitive.Root {...rootProps}>
-      {trigger === undefined ? null : (
-        <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger>
-      )}
-      <DialogPrimitive.Portal {...portalProps}>
-        <DialogPrimitive.Overlay className={slots.overlay()} />
-        <DialogPrimitive.Content className={slots.content({ class: className })} {...contentProps}>
-          {variant === "sheet" ? <span aria-hidden className={slots.grabber()} /> : null}
-          <div className={slots.header()}>
-            <DialogPrimitive.Title className={slots.title()}>{title}</DialogPrimitive.Title>
-            {hasCloseButton ? (
-              <DialogPrimitive.Close asChild>
-                <IconButton icon={X} label={closeLabel} size="sm" />
-              </DialogPrimitive.Close>
+    <DialogPrimitive.Root
+      {...(open === undefined ? {} : { open })}
+      {...(defaultOpen === undefined ? {} : { defaultOpen })}
+      {...(onOpenChange === undefined && onClose === undefined
+        ? {}
+        : {
+            onOpenChange: (next: boolean) => {
+              reportOpenChange(next, onOpenChange, onClose);
+            },
+          })}
+    >
+      {trigger ? <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger> : null}
+      <DialogPrimitive.Portal container={portalContainer}>
+        <DialogPrimitive.Overlay className={slots.overlay()}>
+          <DialogPrimitive.Content
+            data-surface="light"
+            {...props}
+            className={slots.content({ className: withSx(sx, className) })}
+            onOpenAutoFocus={() => {
+              const active = document.activeElement;
+              returnFocusRef.current = active instanceof HTMLElement ? active : null;
+            }}
+            onCloseAutoFocus={
+              trigger
+                ? undefined
+                : (event) => {
+                    event.preventDefault();
+                    if (returnFocusRef.current?.isConnected === true)
+                      returnFocusRef.current.focus();
+                  }
+            }
+          >
+            {variant === "sheet" ? (
+              <div aria-hidden className={slots.handle()}>
+                <span className={slots.handleBar()} />
+              </div>
             ) : null}
-          </div>
-          {description === undefined ? null : (
-            <DialogPrimitive.Description className={slots.description()}>
-              {description}
-            </DialogPrimitive.Description>
-          )}
-          <div className={slots.body()}>{children}</div>
-          {footer === undefined ? null : <div className={slots.footer()}>{footer}</div>}
-        </DialogPrimitive.Content>
+            <div className={slots.header()}>
+              <DialogPrimitive.Title className={slots.title()}>{title}</DialogPrimitive.Title>
+              {hasCloseButton ? (
+                <DialogPrimitive.Close asChild>
+                  <IconButton icon={X} label={closeLabel} size="sm" variant="ghost" />
+                </DialogPrimitive.Close>
+              ) : null}
+            </div>
+            {isShown(description) ? (
+              <DialogPrimitive.Description className={slots.description()}>
+                {description}
+              </DialogPrimitive.Description>
+            ) : null}
+            {isShown(children) ? <div className={slots.body()}>{children}</div> : null}
+            {isShown(footer) ? <div className={slots.footer()}>{footer}</div> : null}
+          </DialogPrimitive.Content>
+        </DialogPrimitive.Overlay>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>
   );
+}
+
+export type DrawerProps = Omit<DialogProps, "variant">;
+
+/**
+ * A full-height panel on one edge — filters, the cart, a menu on mobile. Dialog's behaviour
+ * (focus trap, Escape, scrim, focus return) with `side` ("end" by default, "start" for RTL-aware
+ * left-hand drawers) and `size` as its max width (320 / 400 / 480px; full width below that).
+ */
+export function Drawer(props: DrawerProps) {
+  return <Dialog variant="drawer" {...props} />;
 }

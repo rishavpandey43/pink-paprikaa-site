@@ -1,62 +1,64 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { PriceSummary } from "./price-summary";
+
+const SUBTOTAL_AND_GST = [
+  { label: "Subtotal", amount: 1180 },
+  { label: "GST (5%)", amount: 59 },
+];
 
 const meta = {
   title: "Molecules/PriceSummary",
   component: PriceSummary,
+  args: { lines: SUBTOTAL_AND_GST, total: 1239 },
   parameters: {
-    layout: "padded",
     docs: {
       description: {
         component:
-          "Cart totals, checkout summaries and order receipts. Labels and amounts sit on two grid " +
-          "tracks and the figures are set in Space Mono, so every rupee amount ends on the same " +
-          "right edge with its digits lined up. It formats the money itself — never hand-write a " +
-          "price string into it.",
+          "Cart totals, checkout summary and order receipts, as a definition list. Never hand-format a rupee amount — this component and PriceTag are the only correct sources: `₹` with no space, Indian grouping, discounts with a true minus in mint. On an ink or pink field it follows the surface (no `tone` prop): every line turns light and the discount turns white, the minus carrying its meaning.",
       },
     },
-  },
-  args: {
-    total: 1239,
-    lines: [
-      { label: "Subtotal", amount: 1180 },
-      { label: "GST (5%)", amount: 59 },
-    ],
   },
 } satisfies Meta<typeof PriceSummary>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: (args) => (
-    <div className="max-w-100">
-      <PriceSummary {...args} />
-    </div>
-  ),
-};
+/** Card row "simple". */
+export const Playground: Story = {};
 
-/** A saving prints in mint with a leading minus. Pass the amount as a positive number. */
+/** Card row "discount". */
 export const WithDiscount: Story = {
   args: {
     total: 1139,
     note: "Inclusive of all taxes.",
-    lines: [
-      { label: "Subtotal", amount: 1180 },
-      { label: "GST (5%)", amount: 59 },
-      { label: "First order", amount: 100, isDiscount: true },
-    ],
+    lines: [...SUBTOTAL_AND_GST, { label: "First order", amount: 100, isDiscount: true }],
   },
+};
+
+/** Card row "inverse" — on an ink field. */
+export const OnInk: Story = {
   render: (args) => (
-    <div className="max-w-100">
+    <div data-surface="ink" className="rounded-lg bg-surface-inverse p-6">
       <PriceSummary {...args} />
     </div>
   ),
 };
 
-/** `isStrong` pulls one line up to heading weight — a running subtotal above the taxes. */
+export const Surfaces: Story = {
+  args: {
+    total: 1139,
+    lines: [...SUBTOTAL_AND_GST, { label: "First order", amount: 100, isDiscount: true }],
+  },
+  render: (args) => (
+    <OnSurfaces>
+      <PriceSummary {...args} className="w-full" />
+    </OnSurfaces>
+  ),
+};
+
+/** Dev parity: `isStrong` pulls a running subtotal up to heading weight above the taxes. */
 export const WithStrongLine: Story = {
   args: {
     total: 1239,
@@ -68,71 +70,33 @@ export const WithStrongLine: Story = {
       { label: "GST (5%)", amount: 59 },
     ],
   },
-  render: (args) => (
-    <div className="max-w-100">
-      <PriceSummary {...args} />
-    </div>
-  ),
 };
 
-/** The receipt shape — a renamed total and the statutory fine print under it. */
+/** Dev parity: the receipt shape — a renamed total and the fine print under it. */
 export const Receipt: Story = {
-  args: {
-    total: 1239,
-    totalLabel: "Amount Paid",
-    note: "Inclusive of all taxes. Paid by UPI.",
-    lines: [
-      { label: "Subtotal", amount: 1180 },
-      { label: "GST (5%)", amount: 59 },
-    ],
-  },
-  render: (args) => (
-    <div className="max-w-100">
-      <PriceSummary {...args} />
-    </div>
-  ),
+  args: { totalLabel: "Amount paid", note: "Inclusive of all taxes. Paid by UPI." },
 };
 
-/** On a flooded ink panel every ink tone lifts, and the saving takes the soft mint. */
-export const OnInk: Story = {
-  globals: { backgrounds: { value: "inverse" } },
-  args: {
-    tone: "inverse",
-    total: 1139,
-    note: "Inclusive of all taxes.",
-    lines: [
-      { label: "Subtotal", amount: 1180 },
-      { label: "GST (5%)", amount: 59 },
-      { label: "First order", amount: 100, isDiscount: true },
-    ],
-  },
-  render: (args) => (
-    <div className="max-w-100 rounded-5 bg-surface-inverse p-6">
-      <PriceSummary {...args} />
-    </div>
-  ),
-};
-
-/** A single item, no lines at all — the smallest useful summary. */
+/** Dev parity: a total with no lines — the smallest useful summary. */
 export const TotalOnly: Story = {
-  args: { total: 280, lines: [], note: "Inclusive of all taxes." },
-  render: (args) => (
-    <div className="max-w-100">
-      <PriceSummary {...args} />
-    </div>
-  ),
+  args: { lines: [], total: 280, note: "Inclusive of all taxes." },
 };
 
-/** At 360px the label column gives way first; the amount column never wraps. */
+/** Dev parity: at 360px the label gives way first; the amount never wraps. */
 export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
   args: {
     total: 1139,
-    note: "Inclusive of all taxes.",
     lines: [
       { label: "Subtotal before the counter discount", amount: 1180 },
       { label: "GST (5%)", amount: 59 },
       { label: "First order", amount: 100, isDiscount: true },
     ],
   },
+  decorators: [
+    (Story) => (
+      <div className="w-80 max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
 };

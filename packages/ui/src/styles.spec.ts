@@ -1,0 +1,76 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+
+/* `import.meta.dirname`, not `new URL(".", import.meta.url)`: Vite rewrites that literal pattern
+   into an asset URL (http://localhost/...) when it transforms a jsdom test. */
+const SRC = import.meta.dirname;
+
+interface CatalogueEntry {
+  path: string[];
+  surface: string | null;
+}
+
+const catalogue = JSON.parse(
+  readFileSync(join(SRC, "../../design-tokens/dist/tokens.json"), "utf8")
+) as CatalogueEntry[];
+const stylesheet = readFileSync(join(SRC, "styles.css"), "utf8");
+
+/** Every shadow token some `data-surface` overrides, e.g. `focus-ring`. */
+const surfaceShadows = [
+  ...new Set(
+    catalogue
+      .filter((entry) => entry.surface !== null && entry.path[0] === "shadow")
+      .map((entry) => entry.path.slice(1).join("-"))
+  ),
+];
+
+function cssFiles(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) return cssFiles(path);
+    return entry.name.endsWith(".css") ? [path] : [];
+  });
+}
+
+describe("library stylesheets", () => {
+  it.each(cssFiles(SRC))("%s holds no literal colour — tokens only", (file) => {
+    const css = readFileSync(file, "utf8");
+    expect(css).not.toMatch(/#[\da-f]{3,8}\b/i);
+    expect(css).not.toMatch(/\brgba?\(/i);
+    expect(css).not.toMatch(/\bhsla?\(|\boklch\(/i);
+  });
+});
+
+/*
+ * Tailwind 4 inlines a theme shadow into `shadow-<name>` at build time, so a surface override of
+ * `--shadow-<name>` never reaches the class. Each overridden shadow needs an `@utility` that reads
+ * the variable at the element instead (the fix `shadow-button-primary` shipped with).
+ */
+describe("surface-overridden shadows", () => {
+  // An empty list would pass the it.each below vacuously (a renamed catalogue field, say).
+  it("finds the shadows a surface overrides", () => {
+    expect(surfaceShadows).toContain("focus-ring");
+  });
+
+  it.each(surfaceShadows)("shadow-%s reads its variable at the element", (name) => {
+    // Token names are [a-z0-9-], so they need no escaping; any whitespace or a final `;` passes.
+    expect(stylesheet).toMatch(
+      new RegExp(
+        `@utility shadow-${name}\\s*\\{\\s*--tw-shadow:\\s*var\\(--shadow-${name}\\);?\\s*\\}`
+      )
+    );
+  });
+});
+
+/*
+ * The base reduced-motion reset matches `*, ::before, ::after`, never `::details-content`, so the
+ * Accordion's height transition must switch itself off (proved in Chromium in plan 3b batch B).
+ */
+describe("details-content-motion", () => {
+  it("turns its height transition off under reduced motion", () => {
+    const utility = /@utility details-content-motion\s*\{([\s\S]*?)\n\}/.exec(stylesheet)?.[1];
+    expect(utility).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)\s*\{\s*&::details-content\s*\{\s*transition: none;/
+    );
+  });
+});

@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
 
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Breadcrumb } from "./breadcrumb";
 
 const meta = {
@@ -9,31 +11,28 @@ const meta = {
     items: [{ label: "Home", href: "#" }, { label: "Menu", href: "#" }, { label: "Small Plates" }],
   },
   parameters: {
-    layout: "padded",
     docs: {
       description: {
         component:
-          "The path trail for website sub-pages — a menu category, an outlet, a careers post. " +
-          "Chevron separators, quiet links, the current page in ink. It wraps rather than " +
-          "clipping, so a long page name stays readable at 360px.",
+          'Path trail for website sub-pages (menu category, outlet, careers). Not used in the app. Chevron separators, muted links, current page in heading ink at 500 weight (`aria-current="page"`, never a link). Wraps, never clips. `linkAs` renders each crumb with the app\'s router link. On a pink or ink field it follows the surface — no `tone` prop.',
       },
     },
   },
 } satisfies Meta<typeof Breadcrumb>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+/** Card row "3 levels". */
+export const Playground: Story = {};
 
-/** Two levels is the shallowest trail worth drawing. */
+/** Card row "2 levels". */
 export const TwoLevels: Story = {
   args: { items: [{ label: "Home", href: "#" }, { label: "Outlets" }] },
 };
 
-/** Four levels with a long leaf — the row wraps, and nothing is ever truncated. */
-export const LongTrail: Story = {
+/** Card row "long" — wraps, never clips. */
+export const Long: Story = {
   args: {
     items: [
       { label: "Home", href: "#" },
@@ -42,40 +41,27 @@ export const LongTrail: Story = {
       { label: "Apply for a 2027 city" },
     ],
   },
+  globals: { viewport: { value: "floor360", isRotated: false } },
+  play: async ({ canvas }) => {
+    await expect(window.innerWidth).toBe(360);
+    await expect(canvas.getByRole("navigation").scrollWidth).toBeLessThanOrEqual(
+      canvas.getByRole("navigation").clientWidth
+    );
+    await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(window.innerWidth);
+  },
 };
 
-/** A crumb with no destination stays as text — useful for a grouping level that has no page. */
+/** Dev parity: a grouping level with no page of its own stays plain text. */
 export const UnlinkedLevel: Story = {
-  args: {
-    items: [{ label: "Home", href: "#" }, { label: "Company" }, { label: "Press" }],
-  },
+  args: { items: [{ label: "Home", href: "#" }, { label: "Company" }, { label: "Press" }] },
 };
 
-/** On a brand-flooded band the whole trail flips to white. */
-export const OnBrand: Story = {
-  globals: { backgrounds: { value: "brand" } },
-  args: { tone: "inverse" },
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
   render: (args) => (
-    <div className="rounded-4 bg-surface-brand p-8">
-      <Breadcrumb {...args} />
-    </div>
-  ),
-};
-
-/** The smallest supported width. */
-export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
-  args: {
-    items: [
-      { label: "Home", href: "#" },
-      { label: "Company", href: "#" },
-      { label: "Franchise", href: "#" },
-      { label: "Apply for a 2027 city" },
-    ],
-  },
-  render: (args) => (
-    <div className="w-full max-w-80">
-      <Breadcrumb {...args} />
-    </div>
+    <OnSurfaces>
+      {/* One landmark per ground, so each needs its own name (axe landmark-unique). */}
+      {(ground) => <Breadcrumb {...args} aria-label={`Breadcrumb on ${ground}`} />}
+    </OnSurfaces>
   ),
 };

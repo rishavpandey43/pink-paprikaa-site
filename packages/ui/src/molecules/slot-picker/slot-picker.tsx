@@ -1,57 +1,42 @@
-"use client";
-
-import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
+import type { ReactNode } from "react";
 import { useId } from "react";
 
+import { joinIds } from "../../lib/choice-control";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
-import { FieldMessage, type FieldStatus } from "../field/field";
+import type { DesignFieldChrome } from "../../lib/design-field";
+import { hasDesignFieldChrome, withDesignField } from "../../lib/design-field";
+import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import type { FieldStatus } from "../../lib/field-status";
+import { withSx } from "../../lib/sx";
 
 const slotPicker = componentVariants({
   slots: {
-    root: "grid min-w-0 gap-2.5",
-    label: "font-body font-medium text-body2 text-text-body",
-    grid: "grid min-w-0 gap-2.5",
-    slot: [
-      "grid min-h-(--layout-hit-min) min-w-0 place-items-center gap-0-5 rounded-3 px-2.5 py-2",
-      "border border-(--field-border-default) bg-(--field-bg-default) text-text-body",
-      "transition-[background-color,border-color,color,transform] duration-(--duration-fast) ease-out",
-      "not-disabled:hover:border-brand-primary not-disabled:hover:bg-brand-tint",
-      "not-disabled:active:scale-(--motion-press-scale)",
-      "not-disabled:active:duration-(--duration-instant)",
-      "data-[state=checked]:border-2 data-[state=checked]:border-brand-primary",
-      "data-[state=checked]:bg-brand-tint data-[state=checked]:text-text-brand",
-      // Disabled is a real grey fill, never a reduced opacity (state contract).
-      "disabled:cursor-not-allowed disabled:border-border-subtle",
-      "disabled:bg-(--field-bg-disabled) disabled:text-(--field-fg-disabled)",
-    ],
-    slotLabel: "min-w-0 font-display font-bold text-body2",
-    slotNote: "min-w-0 font-body font-normal text-caption text-text-subtle",
+    // `group/slot-picker` lets the legend mute while the fieldset is disabled (dev parity).
+    root: "group/slot-picker m-0 grid min-w-0 gap-2.5 border-0 p-0",
+    legend:
+      "mb-2.5 p-0 text-body-sm font-medium text-text-body group-disabled/slot-picker:text-text-subtle",
+    grid: "grid gap-2.5",
+    slot: "grid min-h-hit min-w-0 cursor-pointer place-items-center gap-0.5 rounded-md border border-border-default bg-surface-card px-2.5 py-2 text-center font-display text-body-sm font-bold text-ink-700 transition-control hover:border-pink-300 hover:bg-surface-page-alt hover:text-pink-700 active:press-scale active:bg-surface-brand-soft has-checked:border-2 has-checked:border-border-brand has-checked:bg-surface-page-alt has-checked:text-pink-700 has-checked:hover:border-brand-hover has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-border-subtle has-disabled:bg-surface-sunken has-disabled:text-ink-400",
+    input: "sr-only",
+    note: "font-body text-slot-picker-note font-regular text-text-subtle",
   },
   variants: {
-    /**
-     * The shared form-status system. Only the message statuses change the slots themselves; the
-     * mode statuses are carried by the group's `disabled` state and the line underneath.
-     */
     status: {
       default: {},
-      error: { slot: "border-(--field-border-error)" },
-      success: { slot: "border-(--field-border-success)" },
-      warning: { slot: "border-(--field-border-warning)" },
-      disabled: {},
-      readOnly: {},
-      loading: {},
+      error: { slot: "border-status-danger" },
+      // The design system draws only the error border; dev parity paints all three statuses.
+      success: { slot: "border-status-success" },
+      warning: { slot: "border-status-warning" },
     },
-    isDisabled: { true: { label: "text-text-subtle" }, false: {} },
+    isSoldOut: { true: { slot: "line-through" } },
+    isLegendHidden: { true: { legend: "sr-only" } },
   },
-  defaultVariants: { status: "default", isDisabled: false },
+  defaultVariants: { status: "default", isSoldOut: false, isLegendHidden: false },
 });
 
-/**
- * Fixed column counts have to be static classes — Tailwind scans source text, so a computed
- * `grid-cols-${n}` would never be generated. `auto` reflows at a 96px minimum on any width.
- */
-const COLUMNS = {
-  auto: "grid-cols-[repeat(auto-fit,minmax(min(6rem,100%),1fr))]",
+/** Full literal classes, so Tailwind finds them. `undefined` columns auto-fit instead. */
+const COLUMN_CLASS = {
   2: "grid-cols-2",
   3: "grid-cols-3",
   4: "grid-cols-4",
@@ -59,99 +44,139 @@ const COLUMNS = {
   6: "grid-cols-6",
 } as const;
 
-export interface Slot {
-  /** The value reported when this slot is picked. */
+export interface SlotOption {
   value: string;
-  /** What the reader sees: "7:30pm", "ASAP", "4 guests". */
   label: string;
-  /** A quieter second line — "12 min", "2 tables left". */
-  note?: string;
-  /** Sold out or already past. Struck through and unpickable, never hidden. */
-  isDisabled?: boolean;
+  /** A second line, e.g. "12 min". */
+  note?: string | undefined;
+  /** Sold out: struck through, not hidden. */
+  isDisabled?: boolean | undefined;
 }
 
-export interface SlotPickerProps extends Omit<
-  RadioGroupPrimitive.RadioGroupProps,
-  "children" | "orientation"
-> {
-  /** The choices. A bare string is its own value and label — `"7:30pm"`. */
-  slots: (Slot | string)[];
-  /** The question above the grid, in sentence case: "Pickup time". */
-  label?: string | undefined;
-  /** A fixed column count. Omit it and the grid auto-fits at a 96px minimum. */
-  columns?: 2 | 3 | 4 | 5 | 6 | undefined;
-  /** The shared form status. `disabled` disables every slot as well. */
+export interface SlotPickerProps
+  extends Omit<BaseProps<"fieldset">, "onChange" | "defaultValue">, DesignFieldChrome {
+  /** The radios' shared name — what a native form posts. */
+  name: string;
+  legend: ReactNode;
+  isLegendHidden?: boolean | undefined;
+  slots: SlotOption[];
+  /**
+   * The picked slot. Controlled use needs `onValueChange`; without a handler `value` is only the
+   * starting pick (like `defaultValue`), so React never renders read-only radios.
+   */
+  value?: string | undefined;
+  defaultValue?: string | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
+  /** Fixed column count; omit to auto-fit at a 96px minimum. */
+  columns?: keyof typeof COLUMN_CLASS | undefined;
+  /** Border and glyph colour. A status needs a `message`: never a colour without words. */
   status?: FieldStatus | undefined;
-  /** The sentence explaining a non-default status. It replaces the hint. */
-  message?: string | undefined;
-  /** Neutral helper text under the grid — "Slots open 30 minutes ahead.", say. */
-  hint?: string | undefined;
+  /**
+   * The line under the slots: on the default status a neutral hint ("Slots open 30 minutes
+   * ahead."), with a status its message and glyph ("Pick a slot to continue.").
+   */
+  message?: ReactNode;
 }
 
-/** A bare string is its own value and label; a `Slot` spells both out. */
-function toSlot(slot: Slot | string): Slot {
-  return typeof slot === "string" ? { value: slot, label: slot } : slot;
-}
-
-/**
- * Pickup and table-booking time slots — a radio group wearing chips. It reflows at any width and
- * sold-out slots stay visible, struck through, so the reader can see what they missed.
- */
+/** Pickup and table-booking time slots: a grid of real radios that reflows at any width. */
 export function SlotPicker({
-  className,
+  name,
+  legend,
+  isLegendHidden = false,
   slots,
-  label,
+  value,
+  defaultValue,
+  onValueChange,
   columns,
   status = "default",
   message,
   hint,
-  disabled = false,
+  error,
+  success,
+  warning,
+  optional,
+  label,
+  sx,
+  className,
+  "aria-describedby": describedBy,
   ...props
 }: SlotPickerProps) {
-  const generatedId = useId();
-  const labelId = `${generatedId}-label`;
-  const messageId = `${generatedId}-description`;
-
-  const isDisabled = disabled || status === "disabled";
-  const hasDescription =
-    (message !== undefined && message !== "") || (hint !== undefined && hint !== "");
-  const styles = slotPicker({ status, isDisabled });
-
-  return (
-    <div className={styles.root({ class: className })}>
-      {label === undefined ? null : (
-        <span className={styles.label()} id={labelId}>
-          {label}
-        </span>
-      )}
-      <RadioGroupPrimitive.Root
-        aria-describedby={hasDescription ? messageId : undefined}
-        aria-invalid={status === "error" || undefined}
-        aria-labelledby={label === undefined ? undefined : labelId}
-        className={styles.grid({ class: COLUMNS[columns ?? "auto"] })}
-        disabled={isDisabled}
-        {...props}
-      >
-        {slots.map(toSlot).map((slot) => (
-          <RadioGroupPrimitive.Item
-            // Named explicitly: the label and the note are adjacent spans, so the name computed
-            // from the contents would run them together as "ASAP12 min".
-            aria-label={slot.note === undefined ? slot.label : `${slot.label}, ${slot.note}`}
-            className={styles.slot()}
-            disabled={slot.isDisabled ?? false}
-            key={slot.value}
-            value={slot.value}
+  const baseId = useId();
+  const messageId = `${baseId}-message`;
+  const isControlled = value !== undefined && onValueChange !== undefined;
+  const initialValue = value ?? defaultValue;
+  const chrome = { label: label ?? legend, hint, error, success, warning, optional };
+  const shouldWrap = hasDesignFieldChrome(chrome, { ignoreLabel: label === undefined });
+  return withDesignField(
+    chrome,
+    undefined,
+    status,
+    (wired) => {
+      const styles = slotPicker({
+        status: wired.status,
+        isLegendHidden: shouldWrap || isLegendHidden,
+      });
+      return (
+        <fieldset
+          {...props}
+          aria-describedby={joinIds(
+            describedBy,
+            wired["aria-describedby"] ??
+              (hasFieldMessage({ status: wired.status, message, hint }) ? messageId : undefined)
+          )}
+          className={styles.root({ className: withSx(sx, className) })}
+        >
+          <legend className={styles.legend()}>{legend}</legend>
+          <div
+            className={styles.grid({
+              className: columns === undefined ? "grid-cols-slot-picker" : COLUMN_CLASS[columns],
+            })}
           >
-            <span className={styles.slotLabel({ class: slot.isDisabled ? "line-through" : "" })}>
-              {slot.label}
-            </span>
-            {slot.note === undefined ? null : (
-              <span className={styles.slotNote()}>{slot.note}</span>
-            )}
-          </RadioGroupPrimitive.Item>
-        ))}
-      </RadioGroupPrimitive.Root>
-      <FieldMessage hint={hint} id={messageId} message={message} status={status} />
-    </div>
+            {slots.map((slot, index) => {
+              const labelId = `${baseId}-slot-${String(index)}`;
+              const noteId = `${baseId}-note-${String(index)}`;
+              return (
+                <label
+                  key={slot.value}
+                  data-surface="light"
+                  className={styles.slot({ isSoldOut: slot.isDisabled === true })}
+                >
+                  <input
+                    type="radio"
+                    name={name}
+                    value={slot.value}
+                    disabled={slot.isDisabled}
+                    aria-labelledby={labelId}
+                    aria-describedby={slot.note === undefined ? undefined : noteId}
+                    aria-invalid={wired.status === "error" ? true : undefined}
+                    {...(isControlled
+                      ? { checked: value === slot.value }
+                      : { defaultChecked: initialValue === slot.value })}
+                    onChange={
+                      onValueChange === undefined
+                        ? undefined
+                        : (event) => {
+                            onValueChange(event.currentTarget.value);
+                          }
+                    }
+                    className={styles.input()}
+                  />
+                  <span id={labelId}>{slot.label}</span>
+                  {slot.note === undefined ? null : (
+                    <span id={noteId} className={styles.note()}>
+                      {slot.note}
+                    </span>
+                  )}
+                </label>
+              );
+            })}
+          </div>
+          {shouldWrap ? null : (
+            <FieldMessage id={messageId} status={wired.status} message={message} hint={hint} />
+          )}
+        </fieldset>
+      );
+    },
+    { ignoreLabel: label === undefined }
   );
 }

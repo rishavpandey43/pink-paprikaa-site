@@ -1,144 +1,185 @@
 "use client";
 
-import type { LucideIcon } from "lucide-react";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-
-import { Check, Info, TriangleAlert, X } from "lucide-react";
-import { useEffect } from "react";
+import { X } from "lucide-react";
+import { Toast as RadixToast } from "radix-ui";
+import { useRef } from "react";
 
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { Icon } from "../../atoms/icon/icon";
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { TextButton } from "../../atoms/text-button/text-button";
+import { componentVariants } from "../../lib/component-variants";
+import {
+  NOTIFICATION_ICON,
+  NOTIFICATION_SURFACE,
+  type NotificationProps,
+} from "../../lib/notification";
+import { withSx } from "../../lib/sx";
+import { useControllableState } from "../../lib/use-controllable-state";
+import { useFocusReturn } from "../../lib/use-focus-return";
+
+/** The design system's auto-hide delay. */
+const SNACKBAR_DURATION = 3200;
+
+/** No F8 hotkey: the app's ToastProvider owns it. */
+const NO_HOTKEY: string[] = [];
 
 const snackbar = componentVariants({
   slots: {
-    /**
-     * The anchor spans the gutter rather than centring with a transform: `animate-pp-rise` already
-     * owns `transform`, and a `-translate-x-1/2` on the same element would be overwritten mid-entrance.
-     */
-    root: "absolute z-50 flex inset-x-6",
-    bar: [
-      "flex w-full max-w-105 items-center gap-3 rounded-3 py-3 pr-3.5 pl-4 shadow-elevation3",
-      // Raw type classes rather than the `Text` atom: the fill sets one ink for the whole bar and
-      // every part inherits it, whereas `Text` always emits a tone colour of its own.
-      "font-body font-medium text-body2 leading-body2",
-      "animate-pp-rise",
-    ],
-    message: "min-w-0 flex-1 text-pretty",
-    action: [
-      "-my-2 inline-flex shrink-0 items-center rounded-6 border-0 bg-transparent px-2",
-      "min-h-(--layout-hit-min) cursor-pointer",
-      "font-display font-bold text-overline uppercase leading-overline tracking-overline",
-      "transition-[background-color,transform] duration-(--duration-instant) ease-out",
-      "hover:bg-glass-white active:scale-(--motion-press-scale)",
-    ],
-    /** Pulls the 44px hit target back into the bar's padding so it keeps its 13px rhythm. */
-    dismiss: "-my-2 -mr-1 shrink-0",
+    anchor: "pointer-events-none inset-x-6 z-toast m-0 flex list-none p-0",
+    root: "pointer-events-auto flex w-full max-w-snackbar min-w-0 toast-swipe-y animate-sheet-in items-center gap-3 rounded-md py-3.25 pr-3.5 pl-4 text-text-body shadow-3",
+    message: "min-w-0 flex-1 font-body text-snackbar font-medium text-pretty",
+    // Hit areas (dev parity): the action is 44px tall (`min-h-hit`, margin pulled into the 13px
+    // padding by `-my-3`); the 24px dismiss takes taps over 40px through `before:-inset-2`.
+    action: "-my-3 -mr-2 shrink-0",
+    // Margin only — IconButton xs owns the glyph size and expanded hit area.
+    dismiss: "-mr-1 shrink-0",
   },
   variants: {
-    /** `brand` is the pink flood with white ink — the brand's signature pairing. */
-    tone: {
-      ink: { bar: "bg-surface-inverse text-text-on-inverse", action: "text-pink-300" },
-      brand: { bar: "bg-brand-primary text-text-on-brand", action: "text-current" },
-      success: { bar: "bg-status-success text-text-on-inverse", action: "text-current" },
-      danger: { bar: "bg-status-danger text-text-on-inverse", action: "text-current" },
+    isContained: {
+      /** Inside the nearest positioned ancestor (AppShell, or a `relative` wrapper). */
+      true: { anchor: "absolute" },
+      /** The window edge. */
+      false: { anchor: "fixed" },
     },
     position: {
-      "bottom-center": { root: "bottom-6 justify-center" },
-      "bottom-left": { root: "bottom-6 justify-start" },
-      "bottom-right": { root: "bottom-6 justify-end" },
-      "top-center": { root: "top-6 justify-center" },
-      "top-right": { root: "top-6 justify-end" },
+      "bottom-center": { anchor: "bottom-6 justify-center" },
+      "bottom-left": { anchor: "bottom-6 justify-start" },
+      "bottom-right": { anchor: "bottom-6 justify-end" },
+      "top-center": { anchor: "top-6 justify-center" },
+      "top-right": { anchor: "top-6 justify-end" },
+    },
+    color: {
+      neutral: { root: "bg-surface-inverse" },
+      brand: { root: "bg-surface-brand" },
+      success: { root: "bg-snackbar-success-bg" },
+      danger: { root: "bg-status-danger" },
     },
   },
-  defaultVariants: { tone: "ink", position: "bottom-center" },
+  compoundVariants: [
+    {
+      isContained: false,
+      position: ["bottom-center", "bottom-left", "bottom-right"],
+      class: { anchor: "bottom-dock-clearance md:bottom-6" },
+    },
+  ],
+  defaultVariants: { isContained: true, position: "bottom-center", color: "neutral" },
 });
 
-/** The glyph each tone opens with when the caller does not name one. */
-const TONE_ICON = {
-  ink: Info,
-  brand: Check,
-  success: Check,
-  danger: TriangleAlert,
-} as const;
+type SnackbarPosition =
+  "bottom-center" | "bottom-left" | "bottom-right" | "top-center" | "top-right";
 
-export interface SnackbarProps
-  extends Omit<ComponentPropsWithoutRef<"div">, "color">, VariantProps<typeof snackbar> {
-  /** Mount it. Kept a prop rather than left to the caller so the auto-hide timer can key off it. */
-  isOpen?: boolean | undefined;
-  /** One short sentence — "Chilli Paneer removed." */
-  children?: ReactNode | undefined;
-  /** Override the tone's glyph. A Lucide component, imported by name. */
-  icon?: LucideIcon | undefined;
-  /** The text action's label, Title Case — the component sets it in caps, the copy does not. */
-  action?: string | undefined;
-  /** Runs when the action is pressed. Without it the action label is not rendered. */
-  onAction?: (() => void) | undefined;
-  /** Pass a handler to show the dismiss control and arm the auto-hide. */
-  onClose?: (() => void) | undefined;
-  /** Auto-hide delay in milliseconds. `0` keeps the bar up; it needs `onClose` either way. */
-  duration?: number | undefined;
+/** Swipe towards the edge the bar is anchored to. */
+const SWIPE_DIRECTION: Readonly<Record<SnackbarPosition, "up" | "down">> = {
+  "bottom-center": "down",
+  "bottom-left": "down",
+  "bottom-right": "down",
+  "top-center": "up",
+  "top-right": "up",
+};
+
+/** Toast's props minus `isPop` (contract §5), plus where the bar sits. */
+export interface SnackbarProps extends NotificationProps {
+  position?: SnackbarPosition | undefined;
+  /** Anchor to the nearest positioned ancestor (default); `false` pins the bar to the window edge. */
+  isContained?: boolean | undefined;
 }
 
 /**
- * The anchored confirmation bar for something already done that may need an escape hatch — a code
- * copied, an item removed, a payment to retry. It is squared, carries a text action and a dismiss,
- * and is never shown at the same time as a `Toast`.
- *
- * It positions itself `absolute`, so the nearest positioned ancestor anchors it: give the wrapper
- * `relative`, or override to `fixed` through `className`.
+ * Anchored confirmation bar for a completed action that may need an escape hatch — copying a code,
+ * undoing a removal, retrying a failure. A squared bar with an optional text action and a dismiss;
+ * auto-hides after 3.2s. Never show a Snackbar and a Toast at once.
  */
 export function Snackbar({
-  className,
-  isOpen = true,
-  children,
-  tone,
-  position,
+  open,
+  defaultOpen,
+  onOpenChange,
+  color = "neutral",
   icon,
   action,
-  onAction,
-  onClose,
-  duration = 3200,
+  duration = SNACKBAR_DURATION,
+  position = "bottom-center",
+  isContained = true,
+  sx,
+  className,
+  children,
+  ref,
+  onFocus,
+  onBlur,
   ...props
 }: SnackbarProps) {
-  useEffect(() => {
-    if (!isOpen || duration <= 0 || onClose === undefined) return undefined;
-    const timer = setTimeout(onClose, duration);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [isOpen, duration, onClose]);
+  const [isOpen, setIsOpen] = useControllableState({
+    value: open,
+    defaultValue: defaultOpen ?? true,
+    onChange: onOpenChange,
+  });
+  const styles = snackbar({ color, position, isContained });
+  const viewportRef = useRef<HTMLOListElement>(null);
+  const { returnFocus, focusProps } = useFocusReturn(isOpen);
+
+  // R82: on close Radix parks focus on its viewport, which unmounts with the bar and drops focus
+  // to <body>. When focus is inside the bar, hand it back to what had it before the bar opened.
+  function handleOpenChange(next: boolean): void {
+    if (!next && viewportRef.current?.contains(document.activeElement) === true) returnFocus();
+    setIsOpen(next);
+  }
 
   if (!isOpen) return null;
 
-  const slots = snackbar({ tone, position });
-  const ground = tone ?? "ink";
-  const Glyph = icon ?? TONE_ICON[ground];
-  // Severity picks the live region: a failure interrupts, a confirmation waits its turn.
-  const role = tone === "danger" ? "alert" : "status";
-
   return (
-    <div className={slots.root({ className })} {...props}>
-      <div className={slots.bar()} role={role}>
-        <Icon icon={Glyph} size="md" />
-        <span className={slots.message()}>{children}</span>
-        {action === undefined || onAction === undefined ? null : (
-          <button className={slots.action()} onClick={onAction} type="button">
-            {action}
-          </button>
+    <RadixToast.Provider duration={duration} swipeDirection={SWIPE_DIRECTION[position]}>
+      <RadixToast.Root
+        {...props}
+        ref={ref}
+        open={isOpen}
+        onOpenChange={handleOpenChange}
+        // Severity picks the politeness (dev parity): a failure interrupts, a confirmation waits.
+        type={color === "danger" ? "foreground" : "background"}
+        data-surface={NOTIFICATION_SURFACE[color]}
+        className={styles.root({ className: withSx(sx, className) })}
+        onFocus={(event) => {
+          focusProps.onFocus();
+          onFocus?.(event);
+        }}
+        onBlur={(event) => {
+          focusProps.onBlur(event);
+          onBlur?.(event);
+        }}
+      >
+        <Icon icon={icon ?? NOTIFICATION_ICON[color]} size="md" />
+        <RadixToast.Description className={styles.message()}>{children}</RadixToast.Description>
+        {action === undefined ? null : (
+          <RadixToast.Action asChild altText={action.altText}>
+            <TextButton
+              type="button"
+              size="sm"
+              isCaps
+              color="brand"
+              disabled={action.disabled === true}
+              onClick={action.onClick}
+              className={styles.action()}
+            >
+              {action.label}
+            </TextButton>
+          </RadixToast.Action>
         )}
-        {onClose === undefined ? null : (
-          <IconButton
-            className={slots.dismiss()}
-            icon={X}
-            label="Dismiss"
-            on="brand"
-            onClick={onClose}
-            size="sm"
-            variant="ghost"
-          />
+        {onOpenChange === undefined ? null : (
+          <RadixToast.Close asChild>
+            <IconButton
+              icon={X}
+              label="Dismiss"
+              size="xs"
+              variant="tint"
+              className={styles.dismiss()}
+            />
+          </RadixToast.Close>
         )}
-      </div>
-    </div>
+      </RadixToast.Root>
+      <RadixToast.Viewport
+        ref={viewportRef}
+        label="Messages"
+        hotkey={NO_HOTKEY}
+        className={styles.anchor()}
+      />
+    </RadixToast.Provider>
   );
 }

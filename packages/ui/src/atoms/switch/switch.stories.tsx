@@ -1,73 +1,116 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
 
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Switch } from "./switch";
 
-// `meta` is annotated rather than `satisfies`-inferred: under pnpm's isolated node_modules,
-// declaration emit for an inferred decorator type reaches for Storybook/Radix internals it
-// cannot name from here (TS2883). The annotation keeps the emitted type nameable.
-const meta: Meta<typeof Switch> = {
+const CHOICE_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+  "disabled",
+] as const satisfies readonly StoryForceState[];
+
+const meta = {
   title: "Atoms/Switch",
   component: Switch,
   args: { label: "Order updates" },
+  render: (args) => (
+    <div className="w-full max-w-text-measure-prose">
+      <Switch {...args} />
+    </div>
+  ),
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "A toggle for settings that take effect the moment they move — never inside a " +
-          "save-on-submit form, where a `Checkbox` is the honest control. Label sits left and " +
-          "the 46 x 28 track right, so a column of switches lines its knobs up on one edge.",
+          "Toggle for settings that take effect immediately — never inside a save-on-submit form. The label sits left and the control right, so a column of switches aligns. 46×28 track, 22px knob (26 on press), 220ms slide. Disabled fades the row at 50% opacity (IX). `isLabelHidden` keeps the label as the accessible name when the row around it already shows one. There is no on-brand skin: keep it off the brand (pink) ground.",
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <div className="w-full max-w-96">
-        <Story />
-      </div>
-    ),
-  ],
-};
+} satisfies Meta<typeof Switch>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-export const On: Story = { args: { defaultChecked: true } };
-
-export const WithDescription: Story = {
-  args: { label: "Jain preferences", description: "Hides onion and garlic." },
+/** Forced rest → hover → press → focus → disabled (card interaction row). */
+export const Interaction: Story = {
+  parameters: { pseudo: storyStatesPseudo(CHOICE_STATES) },
+  render: () => (
+    <div className="w-full max-w-text-measure-prose">
+      <StatesRow
+        states={CHOICE_STATES}
+        render={(state) => <Switch label="Order updates" {...storyStateControlProps(state)} />}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover label");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Switch Interaction: #cell-hover label missing");
+    }
+    await expect(hover).toHaveClass("hover:bg-state-hover");
+  },
 };
 
-export const States: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <Switch {...args} label="Off" />
-      <Switch {...args} defaultChecked label="On" />
-      <Switch
-        {...args}
-        description="Delivery starts later this year."
-        disabled
-        label="Delivery updates"
-      />
+export const OnAndOff: Story = {
+  name: "on / off",
+  render: () => (
+    <div className="grid w-full max-w-text-measure-prose gap-4">
+      <Switch label="Order updates" defaultChecked />
+      <Switch label="Marketing texts" />
     </div>
   ),
 };
 
+export const Description: Story = {
+  name: "description",
+  args: { label: "Jain preferences", description: "Hides onion and garlic.", defaultChecked: true },
+};
+
+export const Disabled: Story = {
+  name: "disabled",
+  args: { label: "Delivery updates", description: "Delivery starts in 2027.", disabled: true },
+};
+
+export const LabelHidden: Story = {
+  name: "isLabelHidden",
+  args: { label: "Order updates", isLabelHidden: true, defaultChecked: true },
+};
+
 /** The real shape: a preferences panel where every row takes effect immediately. */
 export const PreferencesPanel: Story = {
+  name: "preferences panel",
   render: () => (
-    <div className="flex flex-col gap-5 rounded-4 border border-border-subtle p-5">
+    <div className="grid w-full max-w-text-measure-prose gap-5 rounded-lg border border-border-subtle p-5">
       <Switch
-        defaultChecked
-        description="Order confirmations and pickup times."
         label="Order updates"
+        description="Order confirmations and pickup times."
+        defaultChecked
       />
-      <Switch description="Offers and new dishes, at most once a week." label="Marketing texts" />
-      <Switch defaultChecked description="Hides onion and garlic." label="Jain preferences" />
-      <Switch description="Delivery starts later this year." disabled label="Delivery updates" />
+      <Switch label="Marketing texts" description="Offers and new dishes, at most once a week." />
+      <Switch label="Jain preferences" description="Hides onion and garlic." defaultChecked />
+      <Switch label="Delivery updates" description="Delivery starts in 2027." disabled />
     </div>
+  ),
+};
+
+/** The brand ground is left out on purpose (no on-brand skin). */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: () => (
+    <OnSurfaces grounds={["page", "alt", "ink", "soft"]}>
+      <Switch label="Jain preferences" description="Hides onion and garlic." defaultChecked />
+    </OnSurfaces>
   ),
 };

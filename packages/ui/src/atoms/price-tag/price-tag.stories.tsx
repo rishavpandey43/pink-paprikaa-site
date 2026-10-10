@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { PriceTag } from "./price-tag";
 
 const meta = {
@@ -10,80 +11,84 @@ const meta = {
     docs: {
       description: {
         component:
-          "The only correct way to print a price: rupee sign with no space, Indian digit " +
-          "grouping, no decimals on whole rupees, en-dash ranges, and a struck original when " +
-          "something is discounted. Never hand-write a price string.",
+          'The only correct way to render a price: `₹` with no space, no decimals on whole rupees, Indian digit grouping, an en-dash range (`to`), the original struck through (`was`). `color="inverse"` on pink or ink panels — though `neutral` already follows the surface. `size="canvas"` (56px) prints a price on a 1080px artboard. Never hand-write a price string. A struck price must be higher than the price, and a range must run upwards: anything else throws. The size sits on the tag and the parts are relative to it, so one text class also scales the whole price.',
       },
     },
   },
 } satisfies Meta<typeof PriceTag>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-/** Whole rupees never carry decimals, and thousands group the Indian way. */
 export const Amounts: Story = {
-  render: (args) => (
+  name: "amount",
+  render: () => (
     <div className="flex flex-wrap items-baseline gap-6">
-      <PriceTag {...args} amount={90} />
-      <PriceTag {...args} amount={280} />
-      <PriceTag {...args} amount={1240} />
-      <PriceTag {...args} amount={125000} />
+      <PriceTag amount={280} />
+      <PriceTag amount={1240} />
+      <PriceTag amount={125000} />
+      <PriceTag amount={90} />
     </div>
   ),
 };
 
-/** A discount keeps both numbers on one baseline — live price first, original struck through. */
-export const Discounted: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-baseline gap-6">
-      <PriceTag {...args} amount={240} was={320} />
-      <PriceTag {...args} amount={149} size="lg" was={199} />
-    </div>
-  ),
-};
+export const Was: Story = { name: "was", args: { amount: 240, was: 320 } };
 
-/** A range is an en dash, never a hyphen and never the word "to". */
-export const Range: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-baseline gap-6">
-      <PriceTag {...args} amount={180} size="sm" to={320} />
-      <PriceTag {...args} amount={180} to={320} />
-      <PriceTag {...args} amount={180} size="lg" to={320} />
-    </div>
-  ),
-};
+export const Range: Story = { name: "to", args: { amount: 180, to: 320 } };
 
-/** 14 / 20 / 25px — menu row, card, item page. */
 export const Sizes: Story = {
-  render: (args) => (
+  name: "size",
+  render: () => (
     <div className="flex flex-wrap items-baseline gap-6">
-      <PriceTag {...args} size="sm" />
-      <PriceTag {...args} size="md" />
-      <PriceTag {...args} size="lg" />
+      <PriceTag amount={280} size="sm" />
+      <PriceTag amount={280} size="md" />
+      <PriceTag amount={280} size="lg" />
     </div>
   ),
 };
 
-export const Tones: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-baseline gap-6">
-      <PriceTag {...args} tone="ink" was={320} />
-      <PriceTag {...args} tone="brand" was={320} />
+export const Colors: Story = {
+  name: "color",
+  render: () => (
+    <div className="grid gap-4">
+      <div className="flex flex-wrap items-baseline gap-6">
+        <PriceTag amount={280} was={320} color="neutral" />
+        <PriceTag amount={280} was={320} color="brand" />
+      </div>
+      <div
+        data-surface="brand"
+        className="flex flex-wrap items-baseline gap-6 rounded-lg bg-surface-brand p-4"
+      >
+        <PriceTag amount={280} color="inverse" size="lg" />
+        <PriceTag amount={240} was={320} color="inverse" />
+      </div>
     </div>
   ),
 };
 
-/** On a flooded pink panel the ink tones vanish, so the price flips to white. */
-export const OnBrand: Story = {
-  globals: { backgrounds: { value: "brand" } },
-  render: (args) => (
-    <div className="flex flex-wrap items-baseline gap-6 rounded-4 bg-surface-brand p-8">
-      <PriceTag {...args} size="lg" tone="inverse" />
-      <PriceTag {...args} amount={240} tone="inverse" was={320} />
+/** FeedArtboards.jsx DishLaunchPost: the price on a 1080px board. View at the xl viewport. */
+export const Canvas: Story = {
+  name: "size canvas (artwork)",
+  render: () => (
+    <div className="flex flex-wrap items-baseline gap-10">
+      <PriceTag amount={220} size="canvas" />
+      <PriceTag amount={220} was={280} size="canvas" />
+      <PriceTag amount={180} to={320} size="canvas" />
     </div>
+  ),
+};
+
+export const Sx: Story = {
+  render: () => <PriceTag amount={280} was={320} sx={{ mt: 4, gap: 4 }} />,
+};
+
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: () => (
+    <OnSurfaces>
+      <PriceTag amount={240} was={320} />
+    </OnSurfaces>
   ),
 };

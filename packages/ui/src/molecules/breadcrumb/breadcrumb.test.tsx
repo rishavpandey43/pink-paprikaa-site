@@ -1,90 +1,99 @@
 import { render, screen, within } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
+import type { LinkAsProps } from "../../lib/link-as";
 import { Breadcrumb, type BreadcrumbItem } from "./breadcrumb";
 
-const TRAIL: BreadcrumbItem[] = [
+const MENU_TRAIL: BreadcrumbItem[] = [
   { label: "Home", href: "/" },
   { label: "Menu", href: "/menu" },
   { label: "Small Plates" },
 ];
 
-describe("Breadcrumb", () => {
-  it("renders a named landmark holding an ordered list", () => {
-    render(<Breadcrumb items={TRAIL} />);
+function RouterLink({ href, className, children }: LinkAsProps) {
+  return (
+    <a href={href} className={className} data-router="">
+      {children}
+    </a>
+  );
+}
 
+describe("Breadcrumb", () => {
+  it("is a named navigation landmark with an ordered trail", () => {
+    render(<Breadcrumb items={MENU_TRAIL} />);
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
-    expect(within(nav).getByRole("list")).toBeInTheDocument();
     expect(within(nav).getAllByRole("listitem")).toHaveLength(3);
   });
 
-  it("links every crumb except the current page", () => {
-    render(<Breadcrumb items={TRAIL} />);
-
+  it("links every crumb but the current page, which it marks", () => {
+    render(<Breadcrumb items={MENU_TRAIL} />);
     expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: "Menu" })).toHaveAttribute("href", "/menu");
     expect(screen.queryByRole("link", { name: "Small Plates" })).not.toBeInTheDocument();
-  });
-
-  it("marks the last crumb as the current page", () => {
-    render(<Breadcrumb items={TRAIL} />);
-
     expect(screen.getByText("Small Plates")).toHaveAttribute("aria-current", "page");
   });
 
-  it("keeps the last crumb as text even when it carries an href", () => {
+  it("marks the last crumb current even when it has an href", () => {
     render(
       <Breadcrumb
         items={[
           { label: "Home", href: "/" },
-          { label: "Outlets", href: "/o" },
+          { label: "Outlets", href: "/outlets" },
         ]}
       />
     );
-
     expect(screen.queryByRole("link", { name: "Outlets" })).not.toBeInTheDocument();
     expect(screen.getByText("Outlets")).toHaveAttribute("aria-current", "page");
   });
 
-  it("renders a crumb without an href as plain text mid-trail", () => {
+  it("writes a middle crumb without an href as plain text, never a dead link", () => {
     render(
       <Breadcrumb
-        items={[{ label: "Home", href: "/" }, { label: "Company" }, { label: "Press" }]}
+        items={[{ label: "Home", href: "/" }, { label: "Company" }, { label: "Franchise" }]}
       />
     );
-
     expect(screen.queryByRole("link", { name: "Company" })).not.toBeInTheDocument();
     expect(screen.getByText("Company")).not.toHaveAttribute("aria-current");
   });
 
-  it("draws a separator between crumbs but not after the last", () => {
-    const { container } = render(<Breadcrumb items={TRAIL} />);
-
-    expect(container.querySelectorAll("svg")).toHaveLength(2);
+  it("separates crumbs with chevrons hidden from assistive tech", () => {
+    const { container } = render(<Breadcrumb items={MENU_TRAIL} />);
+    const chevrons = container.querySelectorAll("svg.lucide-chevron-right");
+    expect(chevrons).toHaveLength(2);
+    for (const chevron of chevrons) expect(chevron.closest("[aria-hidden='true']")).not.toBeNull();
   });
 
-  it("flips to the on-brand colourway", () => {
-    render(<Breadcrumb items={TRAIL} tone="inverse" />);
-
-    expect(screen.getByText("Small Plates")).toHaveClass("text-text-on-brand");
+  it("renders links through linkAs, so an app can pass its router link", () => {
+    const { container } = render(<Breadcrumb items={MENU_TRAIL} linkAs={RouterLink} />);
+    expect(container.querySelectorAll("a[data-router]")).toHaveLength(2);
+    expect(screen.getByRole("link", { name: "Menu" })).toHaveClass("text-text-muted");
   });
 
-  it("takes a different accessible name", () => {
-    render(<Breadcrumb items={TRAIL} label="Menu trail" />);
-
-    expect(screen.getByRole("navigation", { name: "Menu trail" })).toBeInTheDocument();
+  it("takes another name for its landmark", () => {
+    render(<Breadcrumb items={MENU_TRAIL} aria-label="You are here" />);
+    expect(screen.getByRole("navigation", { name: "You are here" })).toBeInTheDocument();
   });
 
-  it("merges a caller className", () => {
-    render(<Breadcrumb className="max-w-96" items={TRAIL} />);
-
+  it("merges a caller className and keeps its own", () => {
+    render(<Breadcrumb items={MENU_TRAIL} className="max-w-96" />);
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
-    expect(nav).toHaveClass("max-w-96");
-    expect(nav).toHaveClass("w-full");
+    expect(nav).toHaveClass("max-w-96", "min-w-0");
   });
 
   it("has no accessibility violations", async () => {
-    const { container } = render(<Breadcrumb items={TRAIL} />);
+    const { container } = render(<Breadcrumb items={MENU_TRAIL} />);
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <Breadcrumb
+        items={[{ label: "Home", href: "/" }, { label: "Menu" }]}
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });

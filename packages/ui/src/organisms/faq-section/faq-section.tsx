@@ -1,85 +1,81 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ReactNode } from "react";
 
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import type { HeadingLevel } from "../../lib/heading";
+import { withSx } from "../../lib/sx";
 import { Accordion, type AccordionItem } from "../../molecules/accordion/accordion";
-import {
-  SectionHeader,
-  type SectionHeaderProps,
-} from "../../molecules/section-header/section-header";
+import { SectionHeader } from "../../molecules/section-header/section-header";
 
 const faqSection = componentVariants({
   slots: {
-    root: [
-      "mx-auto w-full max-w-(--layout-container-max)",
-      "px-(--layout-gutter-fluid) py-(--layout-section-y-fluid)",
-    ],
-    // Heading left, questions right, stacking below roughly 720px. `min(320px,100%)` is what makes
-    // the stack happen at all — a bare `1fr` track would keep both columns down to 360px.
-    grid: [
-      "grid items-start gap-[clamp(28px,4vw,56px)]",
-      "grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))]",
-    ],
+    root: "section-y",
+    inner: "container-page grid items-start gap-faq-section-gap md:grid-cols-2",
+    lead: "flex min-w-0 flex-col gap-6 lg:sticky lg:top-faq-section-sticky",
   },
 });
 
-/**
- * The level the questions take under the section heading. Headings must never skip a level, so the
- * questions always sit exactly one below whatever the section itself is.
- */
-const QUESTION_LEVEL = { 2: 3, 3: 4 } as const;
-
-export interface FaqSectionProps extends Omit<
-  ComponentPropsWithoutRef<"section">,
-  "children" | "title"
-> {
-  /** ALL CAPS eyebrow naming the section — "Questions", "Franchise". */
-  overline?: string | undefined;
-  /** The section heading. */
+export interface FaqSectionProps extends Omit<BaseProps<"section">, "title"> {
+  overline?: ReactNode;
   title: ReactNode;
-  /** One-sentence lede under the heading. */
-  lede?: string | undefined;
-  /** The questions, in the order a guest would ask them. Answers are one or two short sentences. */
+  lede?: ReactNode;
+  /** One or two short sentences per answer. The first opens by default. */
   items: AccordionItem[];
-  /** Lets several answers stay open at once. Off by default: one answer, one focus. */
-  isMultiple?: boolean | undefined;
   /**
-   * Questions open on first render. Defaults to the first one — it is the answer most guests came
-   * for, and an all-closed FAQ reads as a wall of chevrons. Pass `[]` to open none.
+   * The `value`s of the answers open on arrival (default: the first; `[]` for none). Name more
+   * than one only with `isMultiple`: a single-open group keeps one answer open.
    */
   defaultOpen?: string[] | undefined;
-  /** Where the section heading sits in the document outline. The questions follow one below. */
-  headingLevel?: 2 | 3 | undefined;
+  /** Allow several answers open at once. */
+  isMultiple?: boolean | undefined;
+  /** Beside the heading, sticky at lg and up — e.g. the handoff's "Still have a question?" card. */
+  aside?: ReactNode;
+  /** The title's level; each question is a heading one level below it (h6 at most). */
+  headingLevel?: HeadingLevel | undefined;
 }
 
+const QUESTION_LEVEL: Readonly<Record<HeadingLevel, HeadingLevel>> = {
+  1: 2,
+  2: 3,
+  3: 4,
+  4: 5,
+  5: 6,
+  6: 6,
+};
+
+/** Two-column FAQ — heading (and aside) left, native accordion right, stacking below lg. */
 export function FaqSection({
-  className,
-  defaultOpen,
-  headingLevel = 2,
-  isMultiple = false,
-  items,
-  lede,
   overline,
   title,
+  lede,
+  items,
+  defaultOpen,
+  isMultiple = false,
+  aside,
+  headingLevel = 2,
+  sx,
+  className,
   ...props
 }: FaqSectionProps) {
-  const parts = faqSection();
-  const first = items[0];
-  const open = defaultOpen ?? (first === undefined ? [] : [first.value ?? first.question]);
-
-  // `exactOptionalPropertyTypes` forbids handing an optional prop an explicit `undefined`.
-  const headerProps: Pick<SectionHeaderProps, "lede" | "overline"> = {};
-  if (overline !== undefined) headerProps.overline = overline;
-  if (lede !== undefined) headerProps.lede = lede;
-
+  const slots = faqSection();
   return (
-    <section className={parts.root({ className })} {...props}>
-      <div className={parts.grid()}>
-        <SectionHeader headingLevel={headingLevel} title={title} {...headerProps} />
+    <section className={slots.root({ className: withSx(sx, className) })} {...props}>
+      <div className={slots.inner()}>
+        <div className={slots.lead()}>
+          <SectionHeader
+            overline={overline}
+            title={title}
+            lede={lede}
+            headingLevel={headingLevel}
+          />
+          {aside}
+        </div>
         <Accordion
-          defaultOpen={open}
-          headingLevel={QUESTION_LEVEL[headingLevel]}
-          isMultiple={isMultiple}
           items={items}
+          // Organism keeps "first open" when omitted; Accordion molecule defaults to none (design).
+          defaultOpen={defaultOpen ?? (items[0] === undefined ? [] : [items[0].value])}
+          isMultiple={isMultiple}
+          headingLevel={QUESTION_LEVEL[headingLevel]}
         />
       </div>
     </section>

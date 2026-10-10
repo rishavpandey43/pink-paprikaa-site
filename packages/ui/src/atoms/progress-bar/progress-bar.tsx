@@ -1,125 +1,113 @@
-"use client";
-
-import type { ComponentPropsWithoutRef } from "react";
-
-import { Progress } from "radix-ui";
 import { useId } from "react";
 
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import type { BasePropsWithColor } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
+/**
+ * A continuous bar is one track segment holding a fill; a stamp bar is N segments, the earned
+ * ones holding a full fill. One shape, one set of colours, both modes.
+ */
 const progressBar = componentVariants({
   slots: {
-    root: "grid w-full gap-2",
-    label: "font-body text-caption",
-    track: "flex w-full items-stretch rounded-6",
-    /** One loyalty stamp. Equal flex share, so six stamps fit 360px without wrapping. */
-    segment: "flex-1 rounded-6 transition-colors duration-(--duration-base) ease-out",
-    indicator: "h-full rounded-6 transition-[width] duration-(--duration-slow) ease-out",
+    root: "grid gap-2",
+    label: "font-body text-progress-label text-text-muted",
+    track: "flex w-full gap-1.25",
+    segment: "flex-1 overflow-hidden rounded-pill",
+    bar: "block h-full rounded-pill transition-all duration-slow ease-out",
+    stamp:
+      "block size-full rounded-pill transition-opacity duration-base ease-out starting:opacity-0",
   },
   variants: {
-    /**
-     * `brand` is the default pink-on-soft-pink pair. `mint` marks a finished or healthy state.
-     * `inverse` is the only one that works on a flooded pink or ink panel.
-     */
-    tone: {
-      brand: { label: "text-text-muted", track: "bg-brand-soft", indicator: "bg-brand-primary" },
-      mint: { label: "text-text-muted", track: "bg-mint-soft", indicator: "bg-mint" },
-      inverse: {
-        label: "text-text-on-brand",
-        track: "bg-glass-white",
-        indicator: "bg-surface-card",
-      },
+    color: {
+      brand: { segment: "bg-pink-200", bar: "bg-pink-500", stamp: "bg-pink-500" },
+      success: { segment: "bg-pink-200", bar: "bg-mint", stamp: "bg-mint" },
+      inverse: { segment: "bg-white-alpha-28", bar: "bg-ink-000", stamp: "bg-ink-000" },
     },
-    size: { sm: { track: "h-1-5" }, md: { track: "h-2" }, lg: { track: "h-3" } },
-    /** Derived from `segments`, not passed: a segmented track gaps, a continuous one clips. */
-    variant: {
-      continuous: { track: "overflow-hidden" },
-      segmented: { track: "gap-1 bg-transparent" },
+    size: {
+      sm: { track: "h-progress-sm" },
+      md: { track: "h-progress-md" },
     },
-    isOn: { true: {}, false: {} },
+    isLabelHidden: { true: { label: "sr-only" } },
   },
-  compoundVariants: [
-    { tone: "brand", isOn: true, class: { segment: "bg-brand-primary" } },
-    { tone: "brand", isOn: false, class: { segment: "bg-brand-soft" } },
-    { tone: "mint", isOn: true, class: { segment: "bg-mint" } },
-    { tone: "mint", isOn: false, class: { segment: "bg-mint-soft" } },
-    { tone: "inverse", isOn: true, class: { segment: "bg-surface-card" } },
-    { tone: "inverse", isOn: false, class: { segment: "bg-glass-white" } },
-  ],
-  defaultVariants: { tone: "brand", size: "md", variant: "continuous", isOn: false },
+  defaultVariants: { color: "brand", size: "md", isLabelHidden: false },
 });
 
-export interface ProgressBarProps
-  extends
-    Omit<ComponentPropsWithoutRef<"div">, "children">,
-    Omit<VariantProps<typeof progressBar>, "variant" | "isOn"> {
-  /** How far along. Against `max` for a continuous bar; a stamp count when `segments` is set. */
-  value?: number | undefined;
-  /** The top of the continuous scale. Ignored when `segments` is set — the count becomes the max. */
+export interface ProgressBarProps extends BasePropsWithColor<"div"> {
+  /** Progress so far — or, with `segments`, the number of stamps earned. */
+  value: number;
+  /** = 100. Ignored with `segments`. */
   max?: number | undefined;
-  /**
-   * Draw the track as N discrete stamps instead of one continuous bar. Segmented is the loyalty
-   * pattern; continuous is for checkout steps and uploads.
-   */
+  /** Draw N discrete stamps (the loyalty pattern) instead of a continuous bar. */
   segments?: number | undefined;
-  /**
-   * Visible caption above the track. It also names the bar for assistive tech — without it, pass
-   * an `aria-label` instead, or the bar reaches a screen reader unnamed.
-   */
-  label?: string | undefined;
+  /** The progressbar's accessible name; visible unless `isLabelHidden`. */
+  label: string;
+  /** `inverse` on pink or ink panels. = "brand" */
+  color?: "brand" | "success" | "inverse" | undefined;
+  /** sm 6px (inside a LoyaltyCard) · md 8px. = "md" */
+  size?: "sm" | "md" | undefined;
+  /** Hides the label visually; it stays the accessible name. */
+  isLabelHidden?: boolean | undefined;
 }
 
+/** Loyalty stamps and checkout/upload progress: pink-200 track, pink-500 fill. */
 export function ProgressBar({
-  className,
-  tone,
-  size,
-  value = 0,
+  value,
   max = 100,
   segments,
   label,
+  color,
+  size,
+  isLabelHidden,
+  sx,
+  className,
   ...props
 }: ProgressBarProps) {
   const labelId = useId();
-  const isSegmented = segments !== undefined;
-  const scale = isSegmented ? Math.max(1, Math.round(segments)) : Math.max(1, max);
-  const safeValue = Math.min(scale, Math.max(0, value));
-  const {
-    root,
-    label: labelText,
-    track,
-    segment,
-    indicator,
-  } = progressBar({
-    tone,
-    size,
-    variant: isSegmented ? "segmented" : "continuous",
-  });
+  const total = segments ?? max;
+  if (
+    !Number.isFinite(value) ||
+    !(total > 0) ||
+    (segments !== undefined && !Number.isInteger(segments))
+  ) {
+    throw new RangeError(
+      `ProgressBar: needs a finite value, a max above 0 and whole segments, got ${String(value)} of ${String(total)}`
+    );
+  }
+  const current = Math.min(Math.max(value, 0), total);
+  const styles = progressBar({ color, size, isLabelHidden });
 
   return (
-    <div className={root({ className })}>
-      {label === undefined ? null : (
-        <span className={labelText()} id={labelId}>
-          {label}
-        </span>
-      )}
-      <Progress.Root
-        aria-labelledby={label === undefined ? undefined : labelId}
-        className={track()}
-        max={scale}
-        value={safeValue}
-        {...props}
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
+      <span id={labelId} className={styles.label()}>
+        {label}
+      </span>
+      <div
+        role="progressbar"
+        aria-labelledby={labelId}
+        aria-valuemin={0}
+        aria-valuemax={total}
+        aria-valuenow={current}
+        aria-valuetext={
+          segments === undefined ? undefined : `${String(current)} of ${String(segments)}`
+        }
+        className={styles.track()}
       >
-        {isSegmented ? (
-          Array.from({ length: scale }, (_, index) => (
-            <span className={segment({ isOn: index < safeValue })} key={index} />
-          ))
+        {segments === undefined ? (
+          <span className={styles.segment()}>
+            <span
+              className={styles.bar()}
+              style={{ width: `${String((current / total) * 100)}%` }}
+            />
+          </span>
         ) : (
-          <Progress.Indicator
-            className={indicator()}
-            style={{ width: `${((safeValue / scale) * 100).toFixed(3)}%` }}
-          />
+          Array.from({ length: segments }, (_, index) => (
+            <span key={index} className={styles.segment()}>
+              {index < current ? <span className={styles.stamp()} /> : null}
+            </span>
+          ))
         )}
-      </Progress.Root>
+      </div>
     </div>
   );
 }

@@ -1,84 +1,99 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Heart } from "lucide-react";
+import { expect } from "storybook/test";
 
-import { Leaf, Star, UtensilsCrossed } from "lucide-react";
-
+import { groundOf } from "../../lib/story-paint";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { Stat } from "./stat";
 
 const meta = {
   title: "Molecules/Stat",
   component: Stat,
+  args: { value: "18", label: "spices ground in-house, daily" },
   parameters: {
     docs: {
       description: {
         component:
-          "One big, checkable fact. The number is fluid-clamped Poppins in the brand's heaviest " +
-          "cut, so it never overflows a narrow column. Use at most three or four in a row — and " +
-          "never invent a number: every value below is a fact the kitchen can stand behind.",
+          "A single big fact — outlet counts, spices ground, years open. The number is fluid-clamped Poppins 800, so it never overflows a narrow column; `color` colours it (neutral ink, brand, or white `inverse` on a dark band) while the label and sub follow the surface. Use at most 3–4 in a row and never invent numbers.",
       },
     },
   },
-  args: { value: "100%", label: "vegetarian kitchen" },
-  argTypes: { icon: { control: false } },
 } satisfies Meta<typeof Stat>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-/** The sub line carries the detail behind the number. */
-export const WithSub: Story = {
-  args: {
-    value: "7",
-    label: "sections on the menu",
-    sub: "North Indian, Chinese, momos, chaat, sandwiches, drinks and desserts",
-  },
-};
-
-export const WithIcon: Story = {
-  args: { value: "4.6", label: "average guest rating", icon: Star, tone: "brand" },
-};
-
-export const Tones: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-start gap-10">
-      <Stat {...args} icon={Leaf} tone="ink" />
-      <Stat {...args} icon={Leaf} tone="brand" />
+/** Card row "default". */
+export const Default: Story = {
+  render: () => (
+    <div className="flex flex-wrap gap-10">
+      <Stat value="18" label="spices ground in-house, daily" />
+      <Stat value="100%" label="vegetarian kitchen" />
     </div>
   ),
 };
 
-/** `inverse` on a flooded ink panel — the ink tones vanish there. */
-export const OnInk: Story = {
-  globals: { backgrounds: { value: "inverse" } },
-  args: { tone: "inverse", align: "center" },
+/** Card row "icon + brand". */
+export const IconBrand: Story = {
+  args: { value: "4.6", label: "average guest rating", icon: Heart, color: "brand" },
+};
+
+/** Card row "inverse + center", on an ink field. */
+export const InverseCentre: Story = {
+  args: { value: "2025", label: "the year we started", color: "inverse", align: "center" },
   render: (args) => (
-    <div className="rounded-5 bg-surface-inverse p-8">
+    <div data-surface="ink" className="rounded-lg bg-surface-inverse p-6">
       <Stat {...args} />
     </div>
   ),
 };
 
-/** Three across, the most a row should ever carry. Each column holds its own alignment. */
+/** Dev parity: the sub line carries the detail behind the number. */
+export const WithSub: Story = {
+  args: { value: "100%", label: "vegetarian kitchen", sub: "No meat, no egg, ever." },
+};
+
+/** Dev parity: three across, the most a row should carry; one column each below 480px. */
 export const Row: Story = {
-  parameters: { layout: "padded" },
-  render: (args) => (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-8">
-      <Stat {...args} icon={Leaf} label="vegetarian kitchen" value="100%" />
-      <Stat {...args} icon={UtensilsCrossed} label="sections on the menu" value="7" />
-      <Stat {...args} icon={Star} label="average guest rating" value="4.6" />
+  render: () => (
+    <div className="grid gap-8 sm:grid-cols-3">
+      <Stat value="100%" label="vegetarian kitchen" />
+      <Stat value="18" label="spices ground in-house, daily" />
+      <Stat value="2025" label="the year we started" />
     </div>
   ),
 };
 
-/** Centred stats sit under a centred `SectionHeader`. */
-export const Centred: Story = {
-  args: { align: "center", value: "7", label: "sections on the menu" },
+/** Dev parity: at 360px the fluid number steps down rather than pushing the column open. */
+export const Narrow: Story = {
+  args: { value: "4.6", label: "average guest rating", sub: "Across every ordering channel" },
+  decorators: [
+    (Story) => (
+      <div className="w-80 max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
 };
 
-/** At 360px the fluid number steps down rather than pushing the column open. */
-export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
-  args: { value: "4.6", label: "average guest rating", sub: "Across every ordering channel" },
+/** The neutral and brand colors on every field: the glyph turns white on pink (R89). */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  args: { value: "4.6", label: "average guest rating", icon: Heart },
+  render: (args) => (
+    <OnSurfaces>
+      <Stat {...args} color="neutral" />
+      <Stat {...args} color="brand" />
+    </OnSurfaces>
+  ),
+  play: async ({ canvasElement }) => {
+    const glyphs = [...canvasElement.querySelectorAll("svg.lucide-heart")];
+    // Two colors on each of the 5 grounds.
+    await expect(glyphs).toHaveLength(10);
+    for (const glyph of glyphs) {
+      await expect(getComputedStyle(glyph).color).not.toBe(groundOf(glyph));
+    }
+  },
 };

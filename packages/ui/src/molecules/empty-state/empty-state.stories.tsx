@@ -1,86 +1,88 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Search, ShoppingBag } from "lucide-react";
+import { expect } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
+import { groundOf } from "../../lib/story-paint";
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { EmptyState } from "./empty-state";
 
 const meta = {
   title: "Molecules/EmptyState",
   component: EmptyState,
-  argTypes: { icon: { control: false } },
+  args: {
+    variant: "symbol",
+    title: "Nothing here yet.",
+    body: "Let's fix that.",
+    action: <Button>Browse the Menu</Button>,
+  },
   parameters: {
-    layout: "padded",
     docs: {
       description: {
         component:
-          "The nothing-here state — an empty cart, a search that matched nothing, a first-time " +
-          "order list. Two short sentences, never apologetic, and exactly one action.",
+          'Empty cart, no search results, no orders yet. Copy is two short sentences and never apologetic — the title says what is missing, the body what to do next. Exactly one action, never two. `variant="symbol"` uses the brand diamond (the warmer option); otherwise a Lucide glyph (default Utensils). `headingLevel` (default 3) fits the page\'s outline.',
       },
     },
   },
 } satisfies Meta<typeof EmptyState>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+/** Card row "symbol". */
+export const Playground: Story = {};
 
-/** The brand diamond is the warmer of the two marks, and the default for an empty cart. */
-export const Symbol: Story = {
-  args: {
-    hasSymbol: true,
-    action: <Button icon={ShoppingBag}>Browse the Menu</Button>,
-  },
-};
-
-/** A Lucide glyph at 32px when the state is about a specific thing rather than the brand. */
+/** Card row "icon". */
 export const WithIcon: Story = {
   args: {
+    variant: "icon",
     icon: Search,
     title: "Nothing matches that yet.",
     body: "Try another category.",
+    action: undefined,
   },
 };
 
-/** `lg` is for a full page; `md` sits inside a card or a panel. */
-export const Sizes: Story = {
+/** Card row `size="lg"`. */
+export const Large: Story = {
+  args: {
+    size: "lg",
+    title: "No orders yet.",
+    body: "Your first order will show up here.",
+    action: undefined,
+  },
+};
+
+/** Dev parity: in place — inside a cart panel, with the single action that fills it. */
+export const InCart: Story = {
+  args: {
+    title: "Your cart is empty.",
+    body: "Add something from the menu and it will show up here.",
+    action: <Button icon={ShoppingBag}>Browse the Menu</Button>,
+  },
   render: (args) => (
-    <div className="flex flex-col gap-6">
-      <div className="rounded-4 bg-surface-card">
-        <EmptyState
-          {...args}
-          hasSymbol
-          size="md"
-          title="No orders yet."
-          body="Your first one is a tap away."
-        />
-      </div>
-      <div className="rounded-4 bg-surface-card">
-        <EmptyState
-          {...args}
-          hasSymbol
-          size="lg"
-          title="No orders yet."
-          body="Your first one is a tap away."
-        />
-      </div>
+    <div className="max-w-90 rounded-lg border border-border-subtle bg-surface-card">
+      <EmptyState {...args} />
     </div>
   ),
 };
 
-/** In place: inside a cart panel, with the single action that fills it. */
-export const InCart: Story = {
+/** On every field: the symbol and the glyph turn white on pink, where pink would vanish (R89). */
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  args: { action: undefined },
   render: (args) => (
-    <div className="max-w-90 rounded-4 border border-border-subtle bg-surface-card">
-      <EmptyState
-        {...args}
-        action={<Button icon={ShoppingBag}>Browse the Menu</Button>}
-        body="Add something from the menu and it will show up here."
-        hasSymbol
-        title="Your cart is empty."
-      />
-    </div>
+    <OnSurfaces>
+      <EmptyState {...args} size="md" />
+      <EmptyState {...args} variant="icon" size="md" />
+    </OnSurfaces>
   ),
+  play: async ({ canvasElement }) => {
+    const marks = [...canvasElement.querySelectorAll(".mask-symbol, svg.lucide")];
+    // A symbol and a glyph on each of the 5 grounds.
+    await expect(marks).toHaveLength(10);
+    for (const mark of marks) {
+      await expect(getComputedStyle(mark).color).not.toBe(groundOf(mark));
+    }
+  },
 };

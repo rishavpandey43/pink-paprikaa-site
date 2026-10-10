@@ -1,140 +1,137 @@
-import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
-
 import { Clock, MapPin } from "lucide-react";
+import { createElement, type ReactNode } from "react";
 
 import { Card } from "../../atoms/card/card";
 import { Icon } from "../../atoms/icon/icon";
 import { ImageSlot } from "../../atoms/image-slot/image-slot";
 import { StatusDot } from "../../atoms/status-dot/status-dot";
-import { Text } from "../../atoms/text/text";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
+import type { LinkAs } from "../../lib/link-as";
+import { STRETCHED_LINK } from "../../lib/stretched-link";
+import { withSx } from "../../lib/sx";
+import type { MenuItemImage } from "../menu-item-row/menu-item-row";
+
+type OutletStatus = "open" | "busy" | "closed";
+
+/** Status in plain words (design-system OutletCard); `statusLabel` overrides. */
+const STATUS_WORD: Readonly<Record<OutletStatus, string>> = {
+  open: "Open now",
+  busy: "Busy",
+  closed: "Closed",
+};
 
 const outletCard = componentVariants({
   slots: {
-    // `relative` anchors the stretched link below; `h-full` lets a row of cards in the locator grid
-    // share one height instead of stepping down as addresses get shorter.
-    root: "relative flex h-full flex-col",
-    body: "flex min-w-0 flex-1 flex-col gap-2.5 p-5",
-    // Wraps rather than truncates: at 360px the status mark drops under a long outlet name.
-    header: "flex min-w-0 flex-wrap items-start justify-between gap-3",
-    heading: "flex min-w-0 flex-col gap-1",
-    /**
-     * The whole card is the link's hit area. The anchor stays a real, focusable, keyboard-reachable
-     * element in the accessibility tree — which a click handler hung on the card would not be.
-     */
-    link: "after:absolute after:inset-0 after:content-['']",
-    detail: "flex min-w-0 items-start gap-2 text-text-muted",
-    // The glyph sits on the first line's cap height rather than centred on a wrapped block.
+    // h-full lets a locator row of cards share one height; the stretched link's keyboard ring goes
+    // round the whole card (lib/stretched-link).
+    root: ["flex h-full flex-col", STRETCHED_LINK.card],
+    body: "grid gap-2.5 p-4.5",
+    top: "flex flex-wrap items-start justify-between gap-3",
+    titles: "min-w-0",
+    city: "m-0 max-w-none font-display text-overline text-text-brand uppercase",
+    name: "mt-1 font-display text-h4 text-text-heading",
+    // Stretched link: the ::after covers the whole card, so the card clicks through to the outlet.
+    link: STRETCHED_LINK.link,
+    detail: "m-0 flex max-w-none items-start gap-2 text-body-sm text-text-muted not-italic",
     detailIcon: "mt-0.5",
-    // `z-1` keeps the action clickable above the stretched link's overlay.
-    action: "relative z-1 mt-1",
+    // Above the stretched link's overlay, so Directions stays its own target.
+    action: "relative z-raised mt-1",
   },
 });
 
-/** What each state is called when the caller does not write the line itself. */
-const STATUS_LABEL = { open: "Open now", busy: "Busy", closed: "Closed" } as const;
-
-export interface OutletCardProps extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
-  /**
-   * Draws the photograph above the details. Turn it off for the compact list row — the picker
-   * inside a sheet, where four outlets have to fit above the fold.
-   */
-  hasImage?: boolean | undefined;
-  /** The outlet, named the way people say it out loud — "Sector 57", not "Store 004". */
+export interface OutletCardProps extends BaseProps<"article"> {
   name: string;
-  /**
-   * The element the outlet name renders as. A heading by default, so the locator reads as a
-   * document outline; drop to `"p"` inside something that already owns the heading level.
-   */
-  nameAs?: ElementType | undefined;
-  /** The city above the name, set as an overline. */
   city?: string | undefined;
-  /** Street address, as a person would repeat it to a driver. */
   address?: string | undefined;
-  /** Trading hours, 12-hour and lowercase: `8am – 11:30pm`. */
+  /** 12-hour lowercase with an en dash: "8am – 11:30pm". */
   hours?: string | undefined;
-  /** Trading state. It is a `StatusDot` and never a coloured pill. */
-  status?: "open" | "busy" | "closed" | undefined;
-  /** Overrides the state text — "Open till 11:30pm", "Closed for Holi". */
+  status?: OutletStatus | undefined;
+  /** Replaces the status word ("Open now" / "Busy" / "Closed"). */
   statusLabel?: string | undefined;
-  /** The outlet photograph. Leave it off and the labelled placeholder holds the space. */
-  image?: string | undefined;
-  /** What the photograph shows. Leave it empty when the outlet name already says it. */
-  imageAlt?: string | undefined;
-  /** What photography this card is waiting for, named as a crop a photographer can act on. */
+  image?: MenuItemImage | undefined;
   imageLabel?: string | undefined;
-  /** The outlet's own page. Passing it turns the whole card into one link and adds the hover lift. */
-  href?: string | undefined;
-  /** A secondary control under the details — Directions, Call. It sits above the stretched link. */
+  /** `false` gives the compact list form without imagery. */
+  hasImage?: boolean | undefined;
   action?: ReactNode | undefined;
+  /** The outlet's page. The name becomes a link covering the card, which then lifts on hover. */
+  href?: string | undefined;
+  linkAs?: LinkAs | undefined;
+  headingLevel?: HeadingLevel | undefined;
 }
 
+/** One café location — the website locator and the app outlet picker. Status is a StatusDot. */
 export function OutletCard({
   name,
-  nameAs = "h3",
   city,
   address,
   hours,
   status = "open",
   statusLabel,
   image,
-  imageAlt = "",
   imageLabel = "Outlet interior 16:9",
-  href,
-  action,
   hasImage = true,
+  action,
+  href,
+  linkAs: LinkComponent = "a",
+  headingLevel = 3,
+  sx,
   className,
   ...props
 }: OutletCardProps) {
-  const slots = outletCard();
+  const styles = outletCard();
+
   return (
     <Card
-      className={slots.root({ className })}
-      isInteractive={href !== undefined}
+      asChild
       padding="none"
-      {...props}
+      isInteractive={href !== undefined}
+      className={styles.root({ className: withSx(sx, className) })}
     >
-      {hasImage ? (
-        <ImageSlot alt={imageAlt} label={imageLabel} radius="none" ratio="16:9" src={image} />
-      ) : null}
-      <div className={slots.body()}>
-        <div className={slots.header()}>
-          <div className={slots.heading()}>
-            {city === undefined ? null : (
-              <Text tone="brand" variant="overline">
-                {city}
-              </Text>
-            )}
-            <Text as={nameAs} variant="subtitle1">
-              {href === undefined ? (
-                name
-              ) : (
-                <a className={slots.link()} href={href}>
-                  {name}
-                </a>
+      <article {...props}>
+        {hasImage ? (
+          <ImageSlot ratio="16:9" radius="none" {...(image ?? { label: imageLabel })} />
+        ) : null}
+        <div className={styles.body()}>
+          <div className={styles.top()}>
+            <div className={styles.titles()}>
+              {city ? <p className={styles.city()}>{city}</p> : null}
+              {/* createElement, not `const Heading = headingTag(…)` (R83): the React Compiler lint reads
+                  a capitalised call result as a component created during render. */}
+              {createElement(
+                headingTag(headingLevel),
+                {
+                  className: styles.name(),
+                  "data-stretched-link": href === undefined ? undefined : "",
+                },
+                href === undefined ? (
+                  name
+                ) : (
+                  <LinkComponent href={href} className={styles.link()}>
+                    {name}
+                  </LinkComponent>
+                )
               )}
-            </Text>
+            </div>
+            <StatusDot status={status} label={statusLabel ?? STATUS_WORD[status]} />
           </div>
-          <StatusDot label={statusLabel ?? STATUS_LABEL[status]} size="sm" tone={status} />
-        </div>
-        {address === undefined ? null : (
-          <p className={slots.detail()}>
-            <Icon className={slots.detailIcon()} icon={MapPin} size="sm" />
-            <Text as="span" tone="muted" variant="body2">
+          {address ? (
+            <address className={styles.detail()}>
+              <Icon icon={MapPin} size="sm" className={styles.detailIcon()} />
               {address}
-            </Text>
-          </p>
-        )}
-        {hours === undefined ? null : (
-          <p className={slots.detail()}>
-            <Icon className={slots.detailIcon()} icon={Clock} size="sm" />
-            <Text as="span" tone="muted" variant="body2">
+            </address>
+          ) : null}
+          {hours ? (
+            <p className={styles.detail()}>
+              <Icon icon={Clock} size="sm" className={styles.detailIcon()} />
               {hours}
-            </Text>
-          </p>
-        )}
-        {action === undefined ? null : <div className={slots.action()}>{action}</div>}
-      </div>
+            </p>
+          ) : null}
+          {isShown(action) ? <div className={styles.action()}>{action}</div> : null}
+        </div>
+      </article>
     </Card>
   );
 }

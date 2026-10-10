@@ -1,128 +1,223 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, within } from "storybook/test";
 
-import { Text } from "../text/text";
+import {
+  StatesRow,
+  type StoryForceState,
+  storyStateControlProps,
+  storyStatesPseudo,
+} from "../../lib/story-states";
 import { Card } from "./card";
+
+function Inner({ title, detail }: { title: string; detail: string }) {
+  return (
+    <>
+      <h4 className="m-0">{title}</h4>
+      <p className="mt-1.5 mb-0 font-body text-caption text-text-subtle">{detail}</p>
+    </>
+  );
+}
+
+const CARD_STATES = [
+  "rest",
+  "hover",
+  "press",
+  "focus",
+] as const satisfies readonly StoryForceState[];
 
 const meta = {
   title: "Atoms/Card",
   component: Card,
+  args: {
+    variant: "default",
+    padding: "md",
+    className: "w-50",
+    children: <Inner title="Sector 57" detail="8am – 11:30pm" />,
+  },
   parameters: {
-    layout: "padded",
     docs: {
       description: {
         component:
-          "The surface every block of content sits on. `default` is the white workhorse; " +
-          "`feature` and `brand` carry a promotion; `ink` is footer weight; `quiet` recedes. " +
-          "`isInteractive` styles the hover lift only — put the real link inside the card.",
+          'The surface every block of content sits on. `default` white + 1px subtle border + shadow-1; `feature` light pink, 24px radius, no shadow; `quiet` sunken grey; `surface="brand"` floods it pink and `surface="ink"` makes it dark, footer-style. Each skin sets `data-surface`, so content inside follows its field — a white card inside a pink section is a light island, with no colour props. Use `padding="none"` when the card starts with an image; `isInteractive` adds the −2px hover lift; `asChild` makes the whole card a link (R142 — never `div role=button`). No card ever has a coloured left border.',
       },
     },
   },
 } satisfies Meta<typeof Card>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-/**
- * The same outlet card on each skin.
- *
- * `on="brand"` is not just a colour swap: a `brand` card floods #EE2C68, where white type only
- * clears WCAG as *large* text (4.04:1 against the 3:1 threshold). The heading is `h3` and safe on
- * any skin, but the supporting line has to step up from `body2` to `subtitle1` bold — 20px, the
- * smallest step on the ramp that counts as large. On white, tint and ink it stays `body2`.
- */
-function Outlet({ on }: { on: "light" | "brand" | "ink" }) {
-  const isInverse = on !== "light";
-  return (
-    <>
-      <Text tone={isInverse ? "inverse" : "heading"} variant="h3">
-        Sector 57, Gurgaon
-      </Text>
-      <Text
-        className="mt-1-5"
-        tone={isInverse ? "inverse" : "muted"}
-        variant={on === "brand" ? "subtitle1" : "body2"}
-      >
-        MKM Market · 8am – 11:30pm
-      </Text>
-    </>
-  );
-}
+export const Playground: Story = {};
+
+/** Interactive card as a real link — rest / hover / press / focus (no disabled; IX: —). */
+export const States: Story = {
+  parameters: { pseudo: storyStatesPseudo(CARD_STATES) },
+  render: () => (
+    <StatesRow
+      states={CARD_STATES}
+      render={(state) => (
+        <Card asChild isInteractive className="w-50" {...storyStateControlProps(state)}>
+          <a href="/outlets/sector-57">
+            <Inner title="Sector 57" detail="8am – 11:30pm" />
+          </a>
+        </Card>
+      )}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const hover = canvasElement.querySelector("#cell-hover a");
+    if (!(hover instanceof HTMLElement)) {
+      throw new Error("Card States: #cell-hover link missing");
+    }
+    await expect(hover).toHaveClass("hover:lift", "active:press-scale-card");
+  },
+};
 
 export const Default: Story = {
-  render: (args) => (
-    <Card {...args} className="max-w-80">
-      <Outlet on="light" />
-    </Card>
-  ),
-};
-
-export const Skins: Story = {
-  render: (args) => (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-4">
-      <Card {...args} variant="default">
-        <Outlet on="light" />
+  name: 'variant="default" · isInteractive',
+  render: () => (
+    <div className="flex flex-wrap items-start gap-3">
+      <Card className="w-50">
+        <Inner title="Sector 57" detail="8am – 11:30pm" />
       </Card>
-      <Card {...args} variant="feature">
-        <Outlet on="light" />
-      </Card>
-      <Card {...args} variant="brand">
-        <Outlet on="brand" />
-      </Card>
-      <Card {...args} variant="ink">
-        <Outlet on="ink" />
-      </Card>
-      <Card {...args} variant="quiet">
-        <Outlet on="light" />
+      <Card isInteractive className="w-50">
+        <Inner title="isInteractive" detail="hovers −2px to shadow-3" />
       </Card>
     </div>
   ),
 };
 
-/** 16 / 20 / 28px, plus `none` for a card that starts with an image. */
-export const Padding: Story = {
-  render: (args) => (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-4">
-      <Card {...args} padding="sm">
-        <Text variant="body2">padding sm</Text>
+export const FeatureQuiet: Story = {
+  name: 'variant="feature" · "quiet"',
+  render: () => (
+    <div className="flex flex-wrap items-start gap-3">
+      <Card variant="feature" className="w-50">
+        <Inner title="feature" detail="no border, no shadow" />
       </Card>
-      <Card {...args} padding="md">
-        <Text variant="body2">padding md</Text>
-      </Card>
-      <Card {...args} padding="lg">
-        <Text variant="body2">padding lg</Text>
+      <Card variant="quiet" className="w-50">
+        <Inner title="quiet" detail="ink-100" />
       </Card>
     </div>
   ),
 };
 
-/** Hovering lifts the card 2px onto `shadow-elevation3`. The link inside owns the interaction. */
-export const Interactive: Story = {
-  render: (args) => (
-    <Card {...args} isInteractive className="max-w-80">
-      <Text variant="h3">
-        <a className="text-text-link" href="/menu">
-          See Full Menu
-        </a>
-      </Text>
-      <Text className="mt-1-5" tone="muted" variant="body2">
-        Momos, chaat and North Indian plates · ₹180–₹320
-      </Text>
-    </Card>
+export const BrandInk: Story = {
+  name: 'surface="brand" · "ink"',
+  render: () => (
+    <div className="flex flex-wrap items-start gap-3">
+      <Card surface="brand" className="w-50">
+        <Inner title="brand" detail="flooded pink" />
+      </Card>
+      <Card surface="ink" className="w-50">
+        <Inner title="ink" detail="footer surfaces" />
+      </Card>
+    </div>
   ),
 };
 
-/** `padding="none"` lets the image sit flush to the corners. */
-export const MediaCard: Story = {
-  render: (args) => (
-    <Card {...args} className="max-w-80" padding="none">
-      <div className="aspect-[4/3] w-full bg-surface-brand-soft" />
-      <div className="p-5">
-        <Text variant="h3">Paneer Tikka Masala</Text>
-        <Text className="mt-1-5" tone="muted" variant="body2">
-          ₹280 · 100% vegetarian kitchen
-        </Text>
+export const PaddingNone: Story = {
+  name: 'padding="none"',
+  render: () => (
+    <Card padding="none" className="w-50">
+      <div className="h-14 bg-surface-brand-soft" />
+      <div className="p-3.5">
+        <Inner title="media" detail="image sits flush" />
       </div>
     </Card>
   ),
+};
+
+export const Paddings: Story = {
+  name: 'padding="sm" · "md" · "lg"',
+  render: () => (
+    <div className="flex flex-wrap items-start gap-3">
+      {(["sm", "md", "lg"] as const).map((padding) => (
+        <Card key={padding} padding={padding} className="w-50">
+          <Inner title={`padding ${padding}`} detail="16 / 20 / 28px" />
+        </Card>
+      ))}
+    </div>
+  ),
+};
+
+export const AsChild: Story = {
+  name: "asChild (a link)",
+  render: () => (
+    <Card asChild isInteractive className="w-50">
+      <a href="/outlets/sector-57">
+        <Inner title="Sector 57" detail="Booth No. 67P, MKM Market" />
+      </a>
+    </Card>
+  ),
+};
+
+/** The other interactive pattern: the lift is styling only, and the real link inside owns the click. */
+export const InteractiveWithLink: Story = {
+  name: "isInteractive with a nested link",
+  render: () => (
+    <Card isInteractive className="w-60">
+      <h4 className="m-0">
+        <a href="/menu">See Full Menu</a>
+      </h4>
+      <p className="mt-1.5 mb-0 font-body text-caption text-text-subtle">
+        Momos, chaat and North Indian plates · ₹180–₹320
+      </p>
+    </Card>
+  ),
+};
+
+export const LightIsland: Story = {
+  name: "light island inside a brand field",
+  render: () => (
+    <div data-surface="brand" className="rounded-xl bg-surface-brand p-6">
+      <Card className="w-60">
+        <h4 className="m-0">Sector 57</h4>
+        <p data-testid="island-copy" className="m-0 font-body text-caption">
+          8am – 11:30pm
+        </p>
+      </Card>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const copy = within(canvasElement).getByTestId("island-copy");
+    const card = copy.parentElement;
+    await expect(getComputedStyle(copy).color).toBe("rgb(43, 31, 37)");
+    await expect(card === null ? "" : getComputedStyle(card).backgroundColor).toBe(
+      "rgb(255, 255, 255)"
+    );
+  },
+};
+
+/** A non-light surface nested in another resolves to the base values plus its own overrides. */
+export const SoftInsideBrand: Story = {
+  name: "soft card inside a brand field",
+  render: () => (
+    <div className="grid gap-3">
+      <div data-surface="brand" className="rounded-xl bg-surface-brand p-6">
+        <Card variant="feature" className="w-60">
+          <p data-testid="nested-copy" className="m-0 font-body text-caption">
+            8am – 11:30pm
+          </p>
+          <span data-testid="nested-focus" className="text-focus">
+            focus
+          </span>
+        </Card>
+      </div>
+      <div data-surface="light" className="p-6">
+        <p data-testid="base-copy" className="m-0 font-body text-caption">
+          8am – 11:30pm
+        </p>
+        <span data-testid="base-focus" className="text-focus">
+          focus
+        </span>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const color = (id: string) => getComputedStyle(canvas.getByTestId(id)).color;
+    await expect(color("nested-copy")).toBe(color("base-copy"));
+    await expect(color("nested-focus")).toBe(color("base-focus"));
+    await expect(color("nested-copy")).not.toBe("rgb(255, 255, 255)");
+  },
 };

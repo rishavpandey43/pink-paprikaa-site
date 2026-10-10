@@ -1,123 +1,135 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
-import { Bell, CreditCard, Gift, MapPin, Trash2 } from "lucide-react";
+import { Bell, CreditCard, Gift, LogOut, MapPin, Receipt, Trash2 } from "lucide-react";
+import { expect, fn } from "storybook/test";
 
 import { Badge } from "../../atoms/badge/badge";
+import { Switch } from "../../atoms/switch/switch";
 import { ListRow } from "./list-row";
 
 const meta = {
   title: "Molecules/ListRow",
   component: ListRow,
+  args: { icon: MapPin, title: "Default outlet", value: "Sector 57", hasChevron: true },
+  render: (args) => (
+    <ListRow {...args} asChild>
+      <a href="#outlet">{/* ListRow renders its content here */}</a>
+    </ListRow>
+  ),
   parameters: {
-    layout: "padded",
     docs: {
       description: {
         component:
-          "The settings, account and detail row. Rows are hairline separated — never a stack of " +
-          "cards — and hold a 44px hit target. Give it an `onClick` and it renders a real " +
-          "`<button>`, so keyboard and focus come for free; a row that carries its own control " +
-          "must not also be clickable.",
+          "Settings, account and detail rows in the app. Rows are hairline separated — never a stack of cards — and at least 44px tall. `asChild` renders the whole row into a link or button (it gets the classes and the pink-50 hover); a row with a `trailing` control (Switch) stays a plain row. `isDanger` for destructive rows. The glyph, value and chevron follow the surface.",
       },
     },
   },
-  args: { title: "Default outlet" },
-  argTypes: { icon: { control: false }, leading: { control: false }, trailing: { control: false } },
 } satisfies Meta<typeof ListRow>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = { args: { icon: MapPin, value: "Sector 57" } };
+/** Card row "value + chevron" — a link row. */
+export const Playground: Story = {};
 
-/** The navigating row: a value on the right and a chevron saying there is more behind it. */
-export const WithValueAndChevron: Story = {
-  args: { icon: MapPin, value: "Sector 57", hasChevron: true, onClick: () => undefined },
+/** Card row "trailing control". */
+export const TrailingControl: Story = {
+  args: { icon: Bell, title: "Order updates", value: undefined, hasChevron: false },
+  render: (args) => (
+    <ListRow {...args} trailing={<Switch label="Order updates" isLabelHidden defaultChecked />} />
+  ),
 };
 
+/** Card row "description". */
 export const WithDescription: Story = {
   args: {
     icon: CreditCard,
     title: "Payment methods",
-    description: "UPI, cards and cash at the counter.",
-    hasChevron: true,
-    onClick: () => undefined,
+    description: "UPI, cards and Paprikaa credit.",
+    value: undefined,
   },
 };
 
-/** A trailing element states the row's current value without turning it into a second control. */
-export const WithTrailing: Story = {
-  args: {
-    icon: Gift,
-    title: "Loyalty",
-    trailing: <Badge tone="soft">4 of 6</Badge>,
-    hasChevron: true,
-    onClick: () => undefined,
-  },
+/** Card row "trailing badge". */
+export const TrailingBadge: Story = {
+  args: { icon: Gift, title: "Loyalty", value: undefined },
+  render: (args) => (
+    <ListRow {...args} trailing={<Badge color="brand">4 of 6</Badge>} asChild>
+      <a href="#loyalty">{/* ListRow renders its content here */}</a>
+    </ListRow>
+  ),
 };
 
-/** Destructive rows colour the glyph and the title, and nothing else. */
+/** Card row "danger" — an action row rendered into a button. */
 export const Danger: Story = {
   args: {
     icon: Trash2,
     title: "Delete my account",
+    value: undefined,
     isDanger: true,
-    hasChevron: true,
     hasDivider: false,
-    onClick: () => undefined,
+  },
+  render: (args) => (
+    <ListRow {...args} asChild>
+      <button type="button" onClick={fn()} />
+    </ListRow>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    const row = canvas.getByRole("button", { name: /Delete my account/ });
+    await userEvent.tab();
+    await expect(row).toHaveFocus();
   },
 };
 
-/** A group: hairlines between the rows, none under the last one. */
-export const Group: Story = {
-  render: (args) => (
-    <div className="max-w-120">
+/** The app kit's account list. */
+export const AccountList: Story = {
+  render: () => (
+    <div className="grid">
+      <ListRow asChild icon={MapPin} title="Default outlet" value="Sector 57" hasChevron>
+        <a href="#outlet">{/* ListRow renders its content here */}</a>
+      </ListRow>
       <ListRow
-        {...args}
+        asChild
+        icon={Receipt}
+        title="Order history"
+        description="Your past orders"
         hasChevron
-        icon={MapPin}
-        onClick={() => undefined}
-        title="Default outlet"
-        value="Sector 57"
-      />
+      >
+        <a href="#orders">{/* ListRow renders its content here */}</a>
+      </ListRow>
+      <ListRow asChild icon={CreditCard} title="Payment methods" value="UPI" hasChevron>
+        <a href="#payments">{/* ListRow renders its content here */}</a>
+      </ListRow>
       <ListRow
-        {...args}
-        hasChevron
         icon={Bell}
-        onClick={() => undefined}
         title="Order updates"
-        value="On"
+        trailing={<Switch label="Order updates" isLabelHidden defaultChecked />}
       />
-      <ListRow
-        {...args}
-        description="UPI, cards and cash at the counter."
-        hasChevron
-        icon={CreditCard}
-        onClick={() => undefined}
-        title="Payment methods"
-      />
-      <ListRow
-        {...args}
-        hasChevron
-        hasDivider={false}
-        icon={Trash2}
-        isDanger
-        onClick={() => undefined}
-        title="Delete my account"
-      />
+      <ListRow asChild icon={LogOut} title="Sign out" isDanger hasDivider={false}>
+        <button type="button" onClick={fn()} />
+      </ListRow>
     </div>
   ),
+  // Real layout: the flex row blockifies title and value, so Chromium names the link with a space
+  // between them (jsdom, without layout, runs them together).
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("link", { name: "Default outlet Sector 57" })).toHaveAttribute(
+      "href",
+      "#outlet"
+    );
+  },
 };
 
-/** At 360px the title clamps and the value keeps its place — the row never wraps. */
+/** Dev parity: at 360px the description clamps and the value keeps its place. */
 export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
   args: {
-    icon: MapPin,
     title: "Default outlet for pickup orders",
     description: "MKM Market, Sector 57, Gurgaon.",
-    value: "Sector 57",
-    hasChevron: true,
-    onClick: () => undefined,
   },
+  decorators: [
+    (Story) => (
+      <div className="w-80 max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
 };

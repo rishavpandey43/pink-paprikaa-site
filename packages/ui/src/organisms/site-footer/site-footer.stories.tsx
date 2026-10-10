@@ -1,92 +1,211 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { CreditCard, Mail, MessageCircle, Phone } from "lucide-react";
+import { expect } from "storybook/test";
 
-import { SiteFooter } from "./site-footer";
+import { Badge } from "../../atoms/badge/badge";
+import { DietMark } from "../../atoms/diet-mark/diet-mark";
+import { Logo } from "../../atoms/logo/logo";
+import { Typography } from "../../atoms/typography/typography";
+import { ringClippers } from "../../lib/story-ring";
+import { BRAND, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
+import { type FooterColumn, type FooterSocialLink, SiteFooter } from "./site-footer";
+
+/** The design system card's columns (its sample information architecture). */
+const DS_COLUMNS: FooterColumn[] = [
+  {
+    heading: "Eat",
+    items: [
+      { label: "Full Menu", href: "#menu" },
+      { label: "Small Plates", href: "#small-plates" },
+      { label: "Chai & Coffee", href: "#chai" },
+      { label: "Sweets", href: "#sweets" },
+    ],
+  },
+  {
+    heading: "Visit",
+    items: [
+      { label: "Outlets", href: "#outlets" },
+      { label: "Book a Table", href: "#book" },
+      { label: "Private Dining", href: "#private-dining" },
+    ],
+  },
+  {
+    heading: "Company",
+    items: [
+      { label: "Our Story", href: "#about" },
+      { label: "Careers", href: "#careers" },
+    ],
+  },
+];
+
+/** The handoff footer's columns, with the brand facts from story-fixtures. */
+const HANDOFF_COLUMNS: FooterColumn[] = [
+  {
+    heading: "Eat with us",
+    items: [
+      { label: "Homely Meals", href: "#homely-meals" },
+      { label: "This week’s menu", href: "#this-week" },
+      { label: "Catering & Bulk Orders", href: "#catering" },
+      { label: "Office & PG Lunch", href: "#office-lunch" },
+      { label: "Restaurant Menu", href: "#menu" },
+    ],
+  },
+  {
+    heading: "Talk to us",
+    items: [
+      { label: `WhatsApp ${BRAND.phoneDisplay}`, href: BRAND.whatsappHref, icon: MessageCircle },
+      { label: `Call ${BRAND.phoneDisplay}`, href: BRAND.phoneHref, icon: Phone },
+      { label: BRAND.email, href: BRAND.emailHref, icon: Mail },
+      { label: "About us", href: "#about" },
+      { label: "Contact & directions", href: "#contact" },
+    ],
+  },
+  {
+    heading: "Kitchen & restaurant",
+    items: [
+      { label: BRAND.address },
+      { label: BRAND.hours },
+      { label: BRAND.payments, icon: CreditCard },
+      { label: `Instagram ${BRAND.instagramHandle}`, href: BRAND.instagramHref },
+    ],
+  },
+];
+
+const SOCIAL: FooterSocialLink[] = [
+  { network: "instagram", href: BRAND.instagramHref, label: "Pink Paprikaa on Instagram" },
+  { network: "youtube", href: BRAND.youtubeHref, label: "Pink Paprikaa on YouTube" },
+  { network: "linkedin", href: BRAND.linkedinHref, label: "Pink Paprikaa on LinkedIn" },
+];
 
 const meta = {
   title: "Organisms/SiteFooter",
   component: SiteFooter,
+  args: {
+    surface: "brand",
+    columns: DS_COLUMNS,
+    brand: (
+      <>
+        <Logo color="inverse" className="w-65" />
+        <Typography variant="body-sm" color="muted">
+          Chai at 8am, chilli paneer at midnight. One kitchen in Sector 57, Gurgaon.
+        </Typography>
+        <div className="flex flex-col gap-1">
+          <Typography as="span" variant="body-sm">
+            {BRAND.website}
+          </Typography>
+          <Typography as="span" variant="body-sm">
+            {BRAND.phoneDisplay}
+          </Typography>
+          <Typography as="span" variant="body-sm">
+            {BRAND.email}
+          </Typography>
+        </div>
+      </>
+    ),
+    social: SOCIAL,
+    legal: (
+      <>
+        <span>{BRAND.copyright}</span>
+        <span>{BRAND.fssai}</span>
+      </>
+    ),
+    policies: [
+      { label: "Privacy", href: "#privacy" },
+      { label: "Terms", href: "#terms" },
+      { label: "Refunds", href: "#refunds" },
+    ],
+  },
   parameters: {
     layout: "fullscreen",
     docs: {
       description: {
         component:
-          "The flooded-pink footer: white lockup, the standing claim said once and plainly, " +
-          "three link columns that auto-fit down to one, and the legal band. The FSSAI licence " +
-          "line is not decoration — an Indian food business is legally required to display it.",
+          "The site footer — a flooded field (pink in the design system, ink with the faint diamond in the handoff), brand block, link columns, social links and the legal bar. It renders exactly what it is given: the FSSAI licence line (legally required on Indian food sites), GSTIN and © come from the app's brand facts. Columns auto-fit and collapse to one on mobile. Pass `hasDockClearance` on pages with an ActionDock.",
       },
     },
   },
-  globals: { backgrounds: { value: "page" } },
 } satisfies Meta<typeof SiteFooter>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+/** Tab through every link in DOM order: each takes focus with a visible ring nothing clips. */
+const proveRingsWhole: Story["play"] = async ({ canvas, userEvent }) => {
+  for (const link of canvas.getAllByRole("link")) {
+    await userEvent.tab();
+    await expect(link).toHaveFocus();
+    await expect(link.matches(":focus-visible")).toBe(true);
+    await expect(ringClippers(link)).toEqual([]);
+  }
+};
 
-/** Four columns still fit; a fifth belongs on a page, not in the footer. */
+export const Playground: Story = {};
+
+/** Card row: the full design-system footer (brand surface). */
+export const DesignSystemPink: Story = { play: proveRingsWhole };
+
+/** Handoff PPFooter — ink, faint diamond, contact rows with icons, dock clearance. */
+export const HandoffInk: Story = {
+  args: {
+    surface: "ink",
+    columns: HANDOFF_COLUMNS,
+    brand: (
+      <>
+        <Logo color="inverse" className="w-50" />
+        <Badge color="success">
+          <DietMark size="sm" />
+          100% Pure Veg Kitchen
+        </Badge>
+        <Typography as="span" variant="mono" color="muted">
+          {BRAND.fssai}
+        </Typography>
+      </>
+    ),
+    social: [],
+    legal: (
+      <>
+        <span>{BRAND.copyright}</span>
+        <span>{BRAND.gstin}</span>
+      </>
+    ),
+    policies: [
+      { label: "Privacy Policy", href: "#privacy" },
+      { label: "Terms of Service", href: "#terms" },
+      { label: "Refund & Cancellation", href: "#refunds" },
+      { label: "Delivery Policy", href: "#delivery" },
+    ],
+    hasDockClearance: true,
+  },
+  play: proveRingsWhole,
+};
+
+/** Only columns given — nothing else appears (no default facts). */
+export const ColumnsOnly: Story = {
+  args: {
+    brand: undefined,
+    social: [],
+    legal: undefined,
+    policies: [],
+    columns: HANDOFF_COLUMNS.slice(0, 1),
+  },
+};
+
+/** Four link columns still fit; a fifth belongs on a page, not in the footer. */
 export const FourColumns: Story = {
   args: {
     columns: [
-      {
-        heading: "Eat",
-        links: [
-          { label: "Full Menu", href: "/menu" },
-          { label: "Small Plates", href: "/menu#small-plates" },
-          { label: "Sweets", href: "/menu#sweets" },
-        ],
-      },
-      {
-        heading: "Visit",
-        links: [
-          { label: "Outlets", href: "/outlets" },
-          { label: "Book a Table", href: "/book" },
-        ],
-      },
-      {
-        heading: "Company",
-        links: [
-          { label: "Our Story", href: "/about" },
-          { label: "Franchise", href: "/franchise" },
-          { label: "Careers", href: "/careers" },
-        ],
-      },
+      ...DS_COLUMNS,
       {
         heading: "Help",
-        links: [
-          { label: "Contact", href: "/contact" },
-          { label: "Order Support", href: "/support" },
+        items: [
+          { label: "Contact & directions", href: "#contact" },
+          { label: "Delivery Policy", href: "#delivery" },
         ],
       },
     ],
   },
 };
 
-/** One column, for a single-page site that has nowhere else to send anyone yet. */
-export const OneColumn: Story = {
-  args: {
-    columns: [
-      {
-        heading: "Eat",
-        links: [
-          { label: "Full Menu", href: "/menu" },
-          { label: "Outlets", href: "/outlets" },
-        ],
-      },
-    ],
-  },
-};
-
-/** Caller copy: the blurb and the claim both travel, the licence line does not move. */
-export const OwnCopy: Story = {
-  args: {
-    blurb: "Breakfast from 8am, chilli paneer until close. Cooked to order, every order.",
-    statement: "100% vegetarian kitchen.",
-  },
-};
-
-/** The columns collapse to one track and the legal band wraps rather than clipping. */
-export const Smallest: Story = {
-  globals: { viewport: { value: "floor360" }, backgrounds: { value: "page" } },
-};
+export const Mobile: Story = { ...HandoffInk, globals: VIEWPORT_360 };
+export const Tablet: Story = { ...HandoffInk, globals: VIEWPORT_768 };
+export const Desktop: Story = { ...HandoffInk, globals: VIEWPORT_1280 };

@@ -1,143 +1,213 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { createRef } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { SearchField } from "./search-field";
 
-const NAME = "Search the menu";
-
 describe("SearchField", () => {
-  it("renders a named search box with a dish-shaped placeholder", () => {
-    render(<SearchField />);
-    const control = screen.getByRole("searchbox", { name: NAME });
-    expect(control).toHaveAttribute("type", "search");
-    expect(control).toHaveAttribute("placeholder", "Search chai, paneer, kulfi");
-  });
-
-  it("takes the caller's accessible name", () => {
-    render(<SearchField label="Search outlets" />);
-    expect(screen.getByRole("searchbox", { name: "Search outlets" })).toBeInTheDocument();
-  });
-
-  it("passes what is typed to onChange", async () => {
-    const handleChange = vi.fn();
-    render(<SearchField onChange={handleChange} />);
-
-    await userEvent.type(screen.getByRole("searchbox", { name: NAME }), "kul");
-
-    expect(handleChange).toHaveBeenCalledTimes(3);
-  });
-
-  it("offers a clear button only once there is a query", () => {
-    const handleClear = vi.fn();
-    const { rerender } = render(<SearchField onClear={handleClear} onChange={vi.fn()} value="" />);
-    expect(screen.queryByRole("button", { name: "Clear Search" })).not.toBeInTheDocument();
-
-    rerender(<SearchField onClear={handleClear} onChange={vi.fn()} value="paneer" />);
-    expect(screen.getByRole("button", { name: "Clear Search" })).toBeInTheDocument();
-  });
-
-  it("calls onClear when the clear button is pressed", async () => {
-    const handleClear = vi.fn();
-    render(<SearchField onClear={handleClear} onChange={vi.fn()} value="paneer" />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Clear Search" }));
-
-    expect(handleClear).toHaveBeenCalledOnce();
-  });
-
-  it("hides the clear button while results are loading", () => {
-    render(<SearchField onClear={vi.fn()} onChange={vi.fn()} status="loading" value="kulfi" />);
-    expect(screen.queryByRole("button", { name: "Clear Search" })).not.toBeInTheDocument();
+  it("is a named, empty search box in a pill-shaped light field", () => {
+    render(<SearchField label="Search the menu" />);
+    const box = screen.getByRole("searchbox", { name: "Search the menu" });
+    expect(box).toHaveValue("");
+    expect(box.parentElement).toHaveClass("rounded-pill", "px-4");
+    expect(box.parentElement).toHaveAttribute("data-surface", "light");
   });
 
   it.each([
-    ["sm", "h-10"],
-    ["md", "h-(--field-h)"],
-  ] as const)("renders the %s size at its fixed height", (size, expected) => {
-    render(<SearchField size={size} />);
-    expect(screen.getByRole("searchbox").parentElement).toHaveClass(expected);
+    ["sm", "h-field-sm"],
+    ["md", "h-field-md"],
+  ] as const)("renders the %s size at its fixed height", (size, height) => {
+    render(<SearchField label="Search the menu" size={size} />);
+    expect(screen.getByRole("searchbox").parentElement).toHaveClass(height);
   });
 
-  it.each([
-    ["error", "border-(--field-border-error)"],
-    ["success", "border-(--field-border-success)"],
-    ["warning", "border-(--field-border-warning)"],
-  ] as const)("raises the %s border to 2px and hangs its glyph", (status, expected) => {
-    const { container } = render(<SearchField message="Nothing matches that." status={status} />);
-    const control = screen.getByRole("searchbox").parentElement;
-    expect(control).toHaveClass(expected);
-    expect(control).toHaveClass("border-2");
-    // The search glass, the trailing status glyph and the same glyph beside the message.
-    expect(container.querySelectorAll("svg")).toHaveLength(3);
+  it("keeps and reports what is typed when uncontrolled", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<SearchField label="Search the menu" onValueChange={onValueChange} />);
+    await user.type(screen.getByRole("searchbox"), "paneer");
+    expect(screen.getByRole("searchbox")).toHaveValue("paneer");
+    expect(onValueChange).toHaveBeenLastCalledWith("paneer");
   });
 
-  it("marks itself invalid only on the error status", () => {
-    const { rerender } = render(<SearchField message="Nothing matches that." status="error" />);
-    expect(screen.getByRole("searchbox")).toHaveAttribute("aria-invalid", "true");
-
-    rerender(<SearchField message="Nothing matches that." status="warning" />);
-    expect(screen.getByRole("searchbox")).not.toHaveAttribute("aria-invalid");
+  it("shows the caller's value when controlled and only reports keystrokes", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<SearchField label="Search the menu" value="chai" onValueChange={onValueChange} />);
+    await user.type(screen.getByRole("searchbox"), "s");
+    expect(onValueChange).toHaveBeenCalledWith("chais");
+    expect(screen.getByRole("searchbox")).toHaveValue("chai");
   });
 
-  it("replaces the hint with the status message", () => {
+  it("offers a clear button only when there is something to clear", async () => {
+    const user = userEvent.setup();
+    render(<SearchField label="Search the menu" />);
+    expect(screen.queryByRole("button", { name: "Clear search" })).not.toBeInTheDocument();
+    await user.type(screen.getByRole("searchbox"), "kulfi");
+    const clear = screen.getByRole("button", { name: "Clear search" });
+    // A 24px glyph button with a 40px hit area (dev parity; spec §5.5 floor is 24px).
+    expect(clear).toHaveClass("size-icon-button-xs", "before:-inset-2");
+  });
+
+  it("names the clear button by clearLabel", () => {
+    render(
+      <SearchField label="Search the menu" defaultValue="paneer" clearLabel="Clear dish search" />
+    );
+    expect(screen.getByRole("button", { name: "Clear dish search" })).toBeInTheDocument();
+  });
+
+  it("clears, reports, notifies onClear and puts focus back in the box", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const onClear = vi.fn();
     render(
       <SearchField
-        hint="34 dishes match."
-        message="Nothing matches that. Try another dish."
-        status="warning"
+        label="Search the menu"
+        defaultValue="paneer"
+        onValueChange={onValueChange}
+        onClear={onClear}
       />
     );
-    expect(screen.getByText("Nothing matches that. Try another dish.")).toBeInTheDocument();
-    expect(screen.queryByText("34 dishes match.")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Clear search" }));
+    const box = screen.getByRole("searchbox");
+    expect(box).toHaveValue("");
+    expect(box).toHaveFocus();
+    expect(onValueChange).toHaveBeenCalledWith("");
+    expect(onClear).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("button", { name: "Clear search" })).not.toBeInTheDocument();
   });
 
-  it("describes the control with whatever line is showing", () => {
-    render(<SearchField hint="34 dishes match." />);
-    const control = screen.getByRole("searchbox");
-    const describedBy = control.getAttribute("aria-describedby");
-    expect(describedBy).not.toBeNull();
-    expect(screen.getByText("34 dishes match.")).toHaveAttribute("id", describedBy);
+  it("is busy, pulses the brand mark and offers no clear button while results load", () => {
+    const { container } = render(
+      <SearchField label="Search the menu" defaultValue="kulfi" isLoading />
+    );
+    expect(screen.getByRole("searchbox")).toHaveAttribute("aria-busy", "true");
+    expect(container.querySelector('[class*="animate-mark-pulse"]')).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Clear search" })).not.toBeInTheDocument();
   });
 
-  it("takes no typing and keeps a real grey fill when the status is disabled", async () => {
-    const handleChange = vi.fn();
-    render(<SearchField onChange={handleChange} status="disabled" />);
-
-    const control = screen.getByRole("searchbox", { name: NAME });
-    await userEvent.type(control, "paneer");
-
-    expect(control).toBeDisabled();
-    expect(handleChange).not.toHaveBeenCalled();
-    expect(control.parentElement).toHaveClass("bg-(--field-bg-disabled)");
-    expect(control.parentElement?.className).not.toMatch(/opacity-/);
+  it("turns the hint into a status message with its glyph, and marks an error invalid", () => {
+    const { container, rerender } = render(
+      <SearchField
+        label="Search the menu"
+        defaultValue="pizza"
+        status="warning"
+        hint="Nothing matches that. Try another dish."
+      />
+    );
+    const box = screen.getByRole("searchbox");
+    expect(box).toHaveAccessibleDescription("Nothing matches that. Try another dish.");
+    expect(box).not.toHaveAttribute("aria-invalid");
+    expect(container.querySelectorAll("p svg")).toHaveLength(1);
+    // The box raises its border to 2px and hangs the status glyph: glass, glyph and clear X.
+    expect(box.parentElement).toHaveClass("border-2", "border-status-warning");
+    expect(box.parentElement?.querySelectorAll("svg")).toHaveLength(3);
+    rerender(
+      <SearchField
+        label="Search the menu"
+        defaultValue="pizza"
+        status="error"
+        hint="Search is down. Try again."
+      />
+    );
+    expect(screen.getByRole("searchbox")).toHaveAttribute("aria-invalid", "true");
   });
 
-  it("hangs the pulsing diamond on the trailing edge while loading", () => {
-    const { container } = render(<SearchField onChange={vi.fn()} status="loading" value="kulfi" />);
-    expect(container.querySelector(".animate-pp-pulse")).toBeInTheDocument();
+  it("keeps a caller's own aria-invalid at the default status", () => {
+    render(<SearchField label="Search the menu" aria-invalid="true" />);
+    expect(screen.getByRole("searchbox")).toHaveAttribute("aria-invalid", "true");
   });
 
-  it("merges a caller className", () => {
-    const { container } = render(<SearchField className="gap-4" />);
+  it("keeps a caller's own aria-describedby beside the hint", () => {
+    render(
+      <>
+        <p id="scope">Searches the Sector 57 menu.</p>
+        <SearchField label="Search the menu" aria-describedby="scope" hint="Try a dish name." />
+      </>
+    );
+    expect(screen.getByRole("searchbox")).toHaveAccessibleDescription(
+      "Searches the Sector 57 menu. Try a dish name."
+    );
+  });
+
+  it("takes no typing and never offers to clear a disabled box, greyed by a fill, not opacity", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <SearchField
+        label="Search the menu"
+        defaultValue="chai"
+        disabled
+        onValueChange={onValueChange}
+      />
+    );
+    const box = screen.getByRole("searchbox");
+    await user.type(box, "paneer");
+    expect(box).toBeDisabled();
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(box.parentElement?.className).not.toMatch(/opacity-/);
+    expect(screen.queryByRole("button", { name: "Clear search" })).not.toBeInTheDocument();
+  });
+
+  it("never offers to clear a read-only box", () => {
+    render(<SearchField label="Search the menu" defaultValue="chai" readOnly />);
+    expect(screen.getByRole("searchbox")).toHaveAttribute("readonly");
+    expect(screen.queryByRole("button", { name: "Clear search" })).not.toBeInTheDocument();
+  });
+
+  it("merges a caller className over its own gap", () => {
+    const { container } = render(<SearchField label="Search the menu" className="gap-4" />);
     expect(container.firstElementChild).toHaveClass("gap-4");
-    expect(container.firstElementChild).not.toHaveClass("gap-1-5");
+    expect(container.firstElementChild).not.toHaveClass("gap-1.5");
   });
 
-  it("has no accessibility violations", async () => {
+  it("forwards ref, name and onBlur for react-hook-form's Controller", async () => {
+    const user = userEvent.setup();
+    const ref = createRef<HTMLInputElement>();
+    const onBlur = vi.fn();
+    render(<SearchField label="Search the menu" name="q" ref={ref} onBlur={onBlur} />);
+    const box = screen.getByRole("searchbox");
+    expect(ref.current).toBe(box);
+    expect(box).toHaveAttribute("name", "q");
+    await user.click(box);
+    await user.tab();
+    expect(onBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it("has no accessibility violations empty or with a value and a hint", async () => {
     const { container } = render(
       <>
-        <SearchField onChange={vi.fn()} onClear={vi.fn()} value="paneer" />
+        <SearchField label="Search the menu" />
         <SearchField
           label="Search outlets"
-          message="Nothing matches that. Try another dish."
-          onChange={vi.fn()}
+          size="sm"
+          defaultValue="pizza"
           status="warning"
-          value="pizza"
+          hint="Nothing matches that."
         />
-        <SearchField label="Search unavailable" size="sm" status="disabled" />
+        <SearchField label="Search unavailable" size="sm" disabled />
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its outermost element, and keeps native props and ref on the input", () => {
+    const ref = createRef<HTMLInputElement>();
+    const { container } = render(
+      <SearchField
+        ref={ref}
+        label="Search the menu"
+        id="menu-search"
+        data-section="menu"
+        sx={{ mt: 4 }}
+      />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4");
+    const input = screen.getByRole("searchbox");
+    expect(input).toHaveAttribute("id", "menu-search");
+    expect(input).toHaveAttribute("data-section", "menu");
+    expect(ref.current).toBe(input);
   });
 });

@@ -1,73 +1,79 @@
-"use client";
+import type { BaseProps } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
+import { SymbolMark } from "../../lib/symbol-mark";
 
-import type { ComponentPropsWithoutRef } from "react";
+export interface DividerProps extends BaseProps<"div"> {
+  /** line = hairline · diamond = the brand's section break. */
+  variant?: "line" | "diamond" | undefined;
+  /** Centred uppercase label; also the separator's accessible name. */
+  label?: string | undefined;
+  /** vertical draws a plain rule (label and diamond are horizontal-only). */
+  orientation?: "horizontal" | "vertical" | undefined;
+}
 
-import { Separator } from "radix-ui";
-
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
-import { SYMBOL_PATHS, SYMBOL_VIEW_BOX } from "../logo/logo-paths";
-import { Text } from "../text/text";
+type Layout = "rule" | "vertical" | "labelled" | "diamond";
 
 const divider = componentVariants({
   slots: {
-    root: "flex w-full items-center gap-3",
-    // `min-w-0` so a long label can never push the rules out of the row.
-    rule: "h-px w-full min-w-0 flex-1 border-0",
-    mark: "block size-4 shrink-0",
-    caption: "shrink-0",
+    root: "",
+    line: "h-px flex-1 bg-border-subtle",
+    label: "shrink-0 font-display text-overline text-text-subtle uppercase",
+    mark: "size-divider-mark shrink-0 text-divider-mark opacity-90",
   },
   variants: {
-    /** On a flooded pink or ink panel the hairline becomes a translucent white. */
-    on: {
-      light: { rule: "bg-border-subtle", mark: "text-text-brand" },
-      brand: { rule: "bg-text-on-brand/30", mark: "text-text-on-brand" },
+    layout: {
+      rule: { root: "h-px w-full bg-border-subtle" },
+      vertical: { root: "w-px self-stretch bg-border-subtle" },
+      labelled: { root: "flex items-center gap-3.5" },
+      diamond: { root: "flex items-center gap-3" },
     },
   },
-  defaultVariants: { on: "light" },
 });
 
-export interface DividerProps
-  extends ComponentPropsWithoutRef<"div">, VariantProps<typeof divider> {
-  /**
-   * `line` is the hairline that separates menu rows — use it instead of wrapping every row in its
-   * own card. `diamond` is the brand's section break.
-   */
-  variant?: "diamond" | "line" | undefined;
-  /** Centres an ALL CAPS overline in the rule. Ignored by the `diamond` variant. */
-  label?: string | undefined;
+function layoutOf(
+  variant: DividerProps["variant"],
+  label: string | undefined,
+  orientation: DividerProps["orientation"]
+): Layout {
+  if (orientation === "vertical") return "vertical";
+  if (variant === "diamond") return "diamond";
+  return label === undefined ? "rule" : "labelled";
 }
 
-export function Divider({ className, label, on, variant = "line", ...props }: DividerProps) {
-  const { caption, mark, root, rule } = divider({ on });
-
-  // A bare rule carries the separator semantics itself; the composed variants below wrap their
-  // rules in a plain row, because a `separator` role hides everything inside it from assistive
-  // tech — which would silence the label.
-  if (variant === "line" && label === undefined) {
-    return <Separator.Root className={rule({ class: className })} {...props} />;
-  }
-
+/** Hairline rule. `diamond` inserts the brand mark as a section break. */
+export function Divider({
+  variant = "line",
+  label,
+  orientation = "horizontal",
+  sx,
+  className,
+  ...props
+}: DividerProps) {
+  // A blank label names nothing: treat it as no label (parity with StatusDot, R48).
+  const name = label?.trim() === "" ? undefined : label;
+  const layout = layoutOf(variant, name, orientation);
+  const slots = divider({ layout });
+  const hasOrnament = layout === "labelled" || layout === "diamond";
   return (
-    <div className={root({ class: className })} {...props}>
-      <Separator.Root className={rule()} decorative />
-      {variant === "diamond" ? (
-        <svg
-          aria-hidden
-          className={mark()}
-          fill="currentColor"
-          viewBox={SYMBOL_VIEW_BOX}
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {SYMBOL_PATHS.map((d) => (
-            <path d={d} key={d} />
-          ))}
-        </svg>
-      ) : (
-        <Text className={caption()} tone={on === "brand" ? "onBrand" : "subtle"} variant="overline">
-          {label}
-        </Text>
-      )}
-      <Separator.Root className={rule()} decorative />
+    <div
+      role="separator"
+      aria-orientation={orientation === "vertical" ? "vertical" : undefined}
+      aria-label={name}
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      {hasOrnament ? (
+        <>
+          <span className={slots.line()} />
+          {layout === "diamond" ? (
+            <SymbolMark className={slots.mark()} />
+          ) : (
+            <span className={slots.label()}>{name}</span>
+          )}
+          <span className={slots.line()} />
+        </>
+      ) : null}
     </div>
   );
 }

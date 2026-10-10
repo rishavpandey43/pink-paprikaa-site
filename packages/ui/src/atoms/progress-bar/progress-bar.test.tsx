@@ -1,108 +1,119 @@
 import { render, screen } from "@testing-library/react";
+import { renderToString } from "react-dom/server";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { ProgressBar } from "./progress-bar";
 
-/** The stamps inside a segmented track, in document order. */
-function segmentsOf(): Element[] {
-  return [...screen.getByRole("progressbar").children];
-}
-
 describe("ProgressBar", () => {
-  it("exposes the score against the scale", () => {
-    render(<ProgressBar label="Uploading your photo" max={100} value={70} />);
-    const node = screen.getByRole("progressbar", { name: "Uploading your photo" });
-
-    expect(node).toHaveAttribute("aria-valuenow", "70");
-    expect(node).toHaveAttribute("aria-valuemax", "100");
+  it("shows loyalty stamps: one segment per stamp, the earned ones filled", () => {
+    render(<ProgressBar label="3 more visits and chai's on us" segments={6} value={3} />);
+    const bar = screen.getByRole("progressbar", { name: "3 more visits and chai's on us" });
+    expect(bar).toHaveAttribute("aria-valuemin", "0");
+    expect(bar).toHaveAttribute("aria-valuemax", "6");
+    expect(bar).toHaveAttribute("aria-valuenow", "3");
+    expect(bar).toHaveAttribute("aria-valuetext", "3 of 6");
+    expect(bar.children).toHaveLength(6);
+    expect([...bar.children].filter((segment) => segment.childElementCount > 0)).toHaveLength(3);
   });
 
-  it("takes its accessible name from the visible label", () => {
-    render(<ProgressBar label="Order being packed" value={40} />);
-
-    expect(screen.getByText("Order being packed")).toBeInTheDocument();
-    expect(screen.getByRole("progressbar", { name: "Order being packed" })).toBeInTheDocument();
+  it("fills a continuous bar to the value's share of max", () => {
+    render(<ProgressBar label="Checkout" value={70} />);
+    const bar = screen.getByRole("progressbar", { name: "Checkout" });
+    expect(bar).toHaveAttribute("aria-valuemax", "100");
+    expect(bar).toHaveAttribute("aria-valuenow", "70");
+    expect(bar).not.toHaveAttribute("aria-valuetext");
+    expect(bar.querySelector("[style]")).toHaveAttribute("style", "width: 70%;");
   });
 
-  it("accepts an aria-label when there is no visible caption", () => {
-    render(<ProgressBar aria-label="Checkout progress" value={25} />);
-    expect(screen.getByRole("progressbar", { name: "Checkout progress" })).toBeInTheDocument();
+  it.each([
+    [140, "100", "width: 100%;"],
+    [-20, "0", "width: 0%;"],
+  ])("clamps %d into the track", (value, now, width) => {
+    render(<ProgressBar label="Checkout" value={value} />);
+    const bar = screen.getByRole("progressbar");
+    expect(bar).toHaveAttribute("aria-valuenow", now);
+    expect(bar.querySelector("[style]")).toHaveAttribute("style", width);
   });
 
-  it("fills the continuous track by real percentage", () => {
-    render(<ProgressBar aria-label="Upload" max={200} value={50} />);
-    const indicator = screen.getByRole("progressbar").firstElementChild;
+  it.each([Number.NaN, Number.POSITIVE_INFINITY])(
+    "rejects the value %d it cannot draw",
+    (value) => {
+      expect(() => renderToString(<ProgressBar label="Checkout" value={value} />)).toThrow(
+        RangeError
+      );
+    }
+  );
 
-    expect(indicator).toHaveStyle({ width: "25.000%" });
+  it("rejects a max it cannot divide by", () => {
+    expect(() => renderToString(<ProgressBar label="Checkout" value={0} max={0} />)).toThrow(
+      RangeError
+    );
   });
 
-  it("clamps a value that overshoots the scale", () => {
-    render(<ProgressBar aria-label="Upload" max={100} value={140} />);
-    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "100");
+  it("rejects a segment count that is not a whole number", () => {
+    expect(() => renderToString(<ProgressBar label="Visits" value={1} segments={2.5} />)).toThrow(
+      RangeError
+    );
   });
 
-  it("draws one stamp per segment and turns on only the earned ones", () => {
-    render(<ProgressBar aria-label="Loyalty" segments={6} value={3} />);
-    const stamps = segmentsOf();
-
-    expect(stamps).toHaveLength(6);
-    expect(stamps.filter((stamp) => stamp.classList.contains("bg-brand-primary"))).toHaveLength(3);
-    expect(stamps.filter((stamp) => stamp.classList.contains("bg-brand-soft"))).toHaveLength(3);
+  it("fills by the real share of any max", () => {
+    render(<ProgressBar label="Upload" value={50} max={200} />);
+    const bar = screen.getByRole("progressbar");
+    expect(bar).toHaveAttribute("aria-valuemax", "200");
+    expect(bar.querySelector("[style]")).toHaveAttribute("style", "width: 25%;");
   });
 
   it("makes the segment count the scale, ignoring max", () => {
-    render(<ProgressBar aria-label="Loyalty" max={100} segments={6} value={4} />);
-    const node = screen.getByRole("progressbar");
-
-    expect(node).toHaveAttribute("aria-valuemax", "6");
-    expect(node).toHaveAttribute("aria-valuenow", "4");
+    render(<ProgressBar label="Visits" max={100} segments={6} value={4} />);
+    const bar = screen.getByRole("progressbar");
+    expect(bar).toHaveAttribute("aria-valuemax", "6");
+    expect(bar).toHaveAttribute("aria-valuenow", "4");
   });
 
-  it("gaps a segmented track and clips a continuous one", () => {
-    const { rerender } = render(<ProgressBar aria-label="Loyalty" segments={4} value={2} />);
-    expect(screen.getByRole("progressbar")).toHaveClass("gap-1");
+  it("merges a caller className onto the root, replacing a conflicting class", () => {
+    const { container } = render(<ProgressBar label="Upload" value={50} className="gap-6" />);
+    expect(container.firstElementChild).toHaveClass("gap-6");
+    expect(container.firstElementChild).not.toHaveClass("gap-2");
+  });
 
-    rerender(<ProgressBar aria-label="Upload" value={50} />);
-    expect(screen.getByRole("progressbar")).toHaveClass("overflow-hidden");
+  it("sx lands on the root and beats its own gap", () => {
+    const { container } = render(<ProgressBar label="Upload" value={50} sx={{ gap: 6, mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("gap-6", "mt-4");
+    expect(container.firstElementChild).not.toHaveClass("gap-2");
+  });
+
+  it("can hide its label visually and keep the name", () => {
+    render(<ProgressBar label="Upload" value={45} isLabelHidden />);
+    expect(screen.getByText("Upload")).toHaveClass("sr-only");
+    expect(screen.getByRole("progressbar", { name: "Upload" })).toBeInTheDocument();
   });
 
   it.each([
-    ["brand", "bg-brand-primary"],
-    ["mint", "bg-mint"],
-    ["inverse", "bg-surface-card"],
-  ] as const)("fills the %s tone with its own colour", (tone, expected) => {
-    render(<ProgressBar aria-label="Upload" tone={tone} value={50} />);
-    expect(screen.getByRole("progressbar").firstElementChild).toHaveClass(expected);
+    ["brand", "bg-pink-200", "bg-pink-500"],
+    ["success", "bg-pink-200", "bg-mint"],
+    ["inverse", "bg-white-alpha-28", "bg-ink-000"],
+  ] as const)("paints color %s: %s track, %s fill", (color, track, fill) => {
+    render(<ProgressBar label="Visits" segments={2} value={1} color={color} />);
+    const [earned] = screen.getByRole("progressbar").children;
+    expect(earned).toHaveClass(track);
+    expect(earned?.firstElementChild).toHaveClass(fill);
   });
 
   it.each([
-    ["sm", "h-1-5"],
-    ["md", "h-2"],
-    ["lg", "h-3"],
-  ] as const)("renders the %s size at its fixed track height", (size, expected) => {
-    render(<ProgressBar aria-label="Upload" size={size} value={50} />);
-    expect(screen.getByRole("progressbar")).toHaveClass(expected);
+    ["sm", "h-progress-sm"],
+    ["md", "h-progress-md"],
+  ] as const)("renders size %s at %s", (size, height) => {
+    render(<ProgressBar label="Visits" value={1} size={size} />);
+    expect(screen.getByRole("progressbar")).toHaveClass(height);
   });
 
-  it("puts the inverse label on the on-brand text colour", () => {
-    render(<ProgressBar label="Four stamps in" tone="inverse" value={50} />);
-    expect(screen.getByText("Four stamps in")).toHaveClass("text-text-on-brand");
-  });
-
-  it("merges a caller className", () => {
-    const { container } = render(<ProgressBar aria-label="Upload" className="gap-6" value={50} />);
-    const node = container.firstElementChild;
-
-    expect(node).toHaveClass("gap-6");
-    expect(node).not.toHaveClass("gap-2");
-  });
-
-  it("has no accessibility violations", async () => {
+  it("has no accessibility violations as stamps, continuous and a hidden-label mint bar", async () => {
     const { container } = render(
       <>
-        <ProgressBar label="Three more visits and chai is on us" segments={6} value={3} />
+        <ProgressBar label="3 more visits and chai's on us" segments={6} value={3} />
         <ProgressBar label="Uploading your photo" value={70} />
-        <ProgressBar aria-label="Kitchen prep" tone="mint" value={45} />
+        <ProgressBar label="Kitchen prep" value={45} color="success" isLabelHidden />
       </>
     );
     await expectNoA11yViolations(container);

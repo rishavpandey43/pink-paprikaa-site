@@ -1,90 +1,87 @@
-import type { ComponentPropsWithoutRef } from "react";
-
 import { ChevronRight } from "lucide-react";
 
 import { Icon } from "../../atoms/icon/icon";
 import { Link } from "../../atoms/link/link";
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import type { BaseProps } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import type { LinkAs } from "../../lib/link-as";
+import { withSx } from "../../lib/sx";
 
 const breadcrumb = componentVariants({
   slots: {
-    root: "w-full min-w-0",
-    // Wraps rather than clips: "Apply for a 2027 city" must never be truncated to nonsense.
-    list: "flex flex-wrap items-center gap-x-2 gap-y-1 p-0 list-none",
-    crumb: "flex min-w-0 items-center gap-2",
-    separator: "shrink-0",
-    label: "min-w-0 font-body text-body2",
-    current: "min-w-0 font-body font-medium text-body2",
+    root: "min-w-0",
+    list: "m-0 flex list-none flex-wrap items-center gap-2 p-0",
+    item: "flex min-w-0 items-center gap-2",
+    text: "text-breadcrumb text-text-muted",
+    current: "text-breadcrumb font-medium text-text-heading",
+    chevron: "text-breadcrumb-chevron",
   },
-  variants: {
-    /** `inverse` is the only one that reads on a brand band, an ink band or a dark photograph. */
-    tone: {
-      light: {
-        separator: "text-ink-400",
-        label: "text-text-muted",
-        current: "text-text-heading",
-      },
-      inverse: {
-        separator: "text-text-on-brand",
-        label: "text-text-on-brand",
-        current: "text-text-on-brand",
-      },
-    },
-  },
-  defaultVariants: { tone: "light" },
 });
 
-/** Which `Link` colourway each tone pairs with — the trail's links are quiet, never blue. */
-const LINK_VARIANT = { light: "subtle", inverse: "inverse" } as const;
-
 export interface BreadcrumbItem {
-  /** The page name as it reads in the trail — Title Case, no path fragments. */
   label: string;
-  /** Where the crumb goes. Leave it off and the crumb renders as plain text. */
-  href?: string;
+  /** Omit for plain text; the last item is always the current page. */
+  href?: string | undefined;
 }
 
-export interface BreadcrumbProps
-  extends Omit<ComponentPropsWithoutRef<"nav">, "children">, VariantProps<typeof breadcrumb> {
-  /**
-   * The trail from the site root to the current page. The last entry is always the current page —
-   * it renders as text with `aria-current="page"` even if it carries an `href`.
-   */
+export interface BreadcrumbProps extends BaseProps<"nav"> {
   items: BreadcrumbItem[];
-  /** Names the trail for assistive tech. Change it only when a page carries two trails. */
-  label?: string | undefined;
+  /** The link component for each crumb (default `"a"`; pass `next/link` in an app). */
+  linkAs?: LinkAs | undefined;
 }
 
+/**
+ * Path trail for website sub-pages (menu category, outlet, careers) — not used in the app.
+ * Chevron separators, muted links, the current page in heading ink at 500 weight. Follows the
+ * surface: on pink or ink fields every colour turns light.
+ */
 export function Breadcrumb({
-  className,
   items,
-  label = "Breadcrumb",
-  tone,
+  linkAs: LinkComponent = "a",
+  "aria-label": ariaLabel = "Breadcrumb",
+  sx,
+  className,
   ...props
 }: BreadcrumbProps) {
-  const slots = breadcrumb({ tone });
-  const linkVariant = LINK_VARIANT[tone ?? "light"];
+  const styles = breadcrumb();
+  const lastIndex = items.length - 1;
 
   return (
-    <nav aria-label={label} className={slots.root({ class: className })} {...props}>
-      <ol className={slots.list()}>
+    <nav
+      aria-label={ariaLabel}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      <ol className={styles.list()}>
         {items.map((item, index) => {
-          const isLast = index === items.length - 1;
-          return (
-            <li className={slots.crumb()} key={item.label}>
-              {isLast || item.href === undefined ? (
-                <span
-                  aria-current={isLast ? "page" : undefined}
-                  className={isLast ? slots.current() : slots.label()}
-                >
-                  {item.label}
-                </span>
-              ) : (
-                <Link href={item.href} size="sm" variant={linkVariant}>
+          const isCurrent = index === lastIndex;
+          let crumb;
+          if (isCurrent) {
+            crumb = (
+              <span aria-current="page" className={styles.current()}>
+                {item.label}
+              </span>
+            );
+          } else if (item.href === undefined) {
+            crumb = <span className={styles.text()}>{item.label}</span>;
+          } else {
+            crumb =
+              LinkComponent === "a" ? (
+                <Link href={item.href} color="muted" underline="hover" variant="link-sm">
                   {item.label}
                 </Link>
+              ) : (
+                <Link asChild color="muted" underline="hover" variant="link-sm">
+                  <LinkComponent href={item.href}>{item.label}</LinkComponent>
+                </Link>
+              );
+          }
+          return (
+            <li key={`${String(index)}-${item.label}`} className={styles.item()}>
+              {crumb}
+              {isCurrent ? null : (
+                <Icon icon={ChevronRight} size="xs" className={styles.chevron()} />
               )}
-              {isLast ? null : <Icon className={slots.separator()} icon={ChevronRight} size="xs" />}
             </li>
           );
         })}

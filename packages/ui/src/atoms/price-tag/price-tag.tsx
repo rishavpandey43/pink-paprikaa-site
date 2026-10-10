@@ -1,71 +1,71 @@
-import type { ComponentPropsWithoutRef } from "react";
+import { formatRupeeRange, formatRupees } from "@pink-paprikaa-web/utils";
 
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import type { BasePropsWithColor } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { assertStruckAbove, StruckPrice } from "../../lib/struck-price";
+import { withSx } from "../../lib/sx";
 
+/** Size on the tag, amount and struck price in em — one class scales the whole price. */
 const priceTag = componentVariants({
   slots: {
-    // Baseline alignment, not centre: the struck original must sit on the same line as the price.
     root: "inline-flex flex-wrap items-baseline gap-2",
-    // Raw type classes rather than the `Text` atom: a price is display-face and bold at *every*
-    // size, and no single step of the ramp carries that pairing at 14px (`body2` is body-face).
-    amount: "font-display font-bold tracking-subtitle1",
-    original: "font-body line-through",
+    amount: "font-display text-price-amount font-bold",
+    was: "font-body text-price-was",
   },
   variants: {
-    /** 14 / 20 / 25px. `sm` is the menu row, `md` the card, `lg` the item page and the cart bar. */
     size: {
-      sm: { amount: "text-body2", original: "text-caption" },
-      md: { amount: "text-subtitle1", original: "text-body2" },
-      lg: { amount: "text-h3", original: "text-body1" },
+      sm: { root: "text-price-sm" },
+      md: { root: "text-price-md" },
+      lg: { root: "text-price-lg" },
+      canvas: { root: "text-price-canvas" },
     },
-    /** `inverse` on a flooded pink or ink panel — the ink tones vanish there. */
-    tone: {
-      ink: { amount: "text-text-heading", original: "text-text-subtle" },
-      brand: { amount: "text-text-link", original: "text-text-subtle" },
-      inverse: { amount: "text-text-on-inverse", original: "text-glass-white" },
+    color: {
+      neutral: { amount: "text-text-heading" },
+      brand: { amount: "text-text-brand" },
+      inverse: { amount: "text-text-on-inverse" },
     },
   },
-  defaultVariants: { size: "md", tone: "ink" },
+  defaultVariants: { size: "md", color: "neutral" },
 });
 
-/**
- * The one correct way to print a price here: rupee sign with no space, Indian digit grouping, and
- * no decimals on a whole-rupee amount. Never hand-write a price string.
- */
-function formatRupees(value: number): string {
-  return `₹${value.toLocaleString("en-IN", {
-    maximumFractionDigits: Number.isInteger(value) ? 0 : 2,
-  })}`;
-}
-
-export interface PriceTagProps
-  extends Omit<ComponentPropsWithoutRef<"span">, "children">, VariantProps<typeof priceTag> {
-  /** The price to print, in rupees. */
+export interface PriceTagProps extends BasePropsWithColor<"span"> {
+  /** Whole rupees. */
   amount: number;
-  // `| undefined` is explicit on every optional below: the workspace sets
-  // `exactOptionalPropertyTypes`, under which `prop?: T` REJECTS an explicitly-passed
-  // `undefined`. Without it a consumer cannot forward its own optional straight through
-  // (`<Thing src={item.photo} />` fails when `photo` is `string | undefined`).
-  /** Upper bound of a range — prints `₹180–₹320` with an en dash. */
-  to?: number | undefined;
-  /** The pre-discount price, printed struck through after the live one. */
+  /** The original price, struck through. Must be higher than the price it replaces. */
   was?: number | undefined;
+  /** Upper bound: renders "₹180–₹320". Must not be below `amount`. */
+  to?: number | undefined;
+  /** sm 14 · md 17 · lg 22px · canvas 56px (1080px artboards); a text class also scales the tag. = "md" */
+  size?: "sm" | "md" | "lg" | "canvas" | undefined;
+  /** `inverse` on pink or ink panels (`neutral` already follows the surface). = "neutral" */
+  color?: "neutral" | "brand" | "inverse" | undefined;
 }
 
-export function PriceTag({ amount, to, was, className, size, tone, ...props }: PriceTagProps) {
-  const parts = priceTag({ size, tone });
+/**
+ * The only correct way to print a price: `₹` with no space, no decimals, Indian grouping, an
+ * en-dash range, the original struck through. A struck price that is not higher, or a range that
+ * runs backwards, would mislead a guest — both throw instead of rendering.
+ */
+export function PriceTag({
+  amount,
+  was,
+  to,
+  size = "md",
+  color = "neutral",
+  sx,
+  className,
+  ...props
+}: PriceTagProps) {
+  assertStruckAbove("PriceTag", was, to ?? amount);
+  const styles = priceTag({ size, color });
+
   return (
-    <span className={parts.root({ className })} {...props}>
-      <span className={parts.amount()}>
-        {to === undefined ? formatRupees(amount) : `${formatRupees(amount)}–${formatRupees(to)}`}
+    <span className={styles.root({ className: withSx(sx, className) })} {...props}>
+      <span className={styles.amount()}>
+        {to === undefined ? formatRupees(amount) : formatRupeeRange(amount, to)}
       </span>
       {was === undefined ? null : (
-        <>
-          {/* A strikethrough is a visual cue only, so the relationship is said out loud too. The
-              prefix sits outside the `<s>` so the struck price stays one uninterrupted string. */}
-          <span className="sr-only">Was</span>
-          <s className={parts.original()}>{formatRupees(was)}</s>
-        </>
+        <StruckPrice className={styles.was()}>{formatRupees(was)}</StruckPrice>
       )}
     </span>
   );

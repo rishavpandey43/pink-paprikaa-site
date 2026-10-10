@@ -1,252 +1,186 @@
-"use client";
-
-import type { ComponentPropsWithoutRef } from "react";
-
-import { Check, Copy } from "lucide-react";
-import { useEffect, useState } from "react";
-
-import { Icon } from "../../atoms/icon/icon";
 import { Logo } from "../../atoms/logo/logo";
-import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import type { BaseProps } from "../../lib/common-props";
+import { SURFACE_DATA } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
+import { CouponCopyButton } from "./coupon-copy-button";
 
 const couponTicket = componentVariants({
   slots: {
-    /**
-     * Stacked below 480px and side by side above it. A voucher that keeps its 70/30 split at 360px
-     * leaves the stub about 100px wide, which a monospaced code overruns.
-     */
-    root: "relative flex w-full flex-col overflow-hidden rounded-5 shadow-elevation3 sm:flex-row",
-    body: "min-w-0 flex-1",
-    /**
-     * Raw type classes rather than the `Text` atom: the ticket runs from a 300px MPU to a 1080px
-     * canvas, and no step of the screen ramp spans both ends. Face and weight stay the display
-     * ramp's — only the size steps.
-     */
-    headline: "m-0 font-display font-extrabold text-balance tracking-display2",
-    terms: "m-0 max-w-[44ch] font-body leading-body2",
-    /**
-     * The perforation. Zero-height stacked, zero-width side by side, so the two notches —
-     * positioned from its own corners — land exactly on the ticket's edges and are half-clipped
-     * by the root's `overflow-hidden`.
-     */
-    perforation:
-      "relative h-0 shrink-0 self-stretch border-t-2 border-dashed sm:h-auto sm:w-0 sm:border-t-0 sm:border-l-2",
-    notch: "absolute size-8 rounded-6",
-    stub: "relative flex min-h-(--layout-hit-min) shrink-0 items-center justify-center p-6",
-    /** The diamond pattern behind the stub — the one texture the brand has. */
-    stubPattern: "absolute inset-0 transition-colors duration-(--duration-fast) ease-out",
-    stubContent:
-      "relative grid justify-items-center gap-2 text-center transition-transform duration-(--duration-instant) ease-out",
-    stubLabel: "font-display font-bold uppercase leading-overline tracking-overline",
-    code: "font-mono font-bold break-words tracking-mono",
-    hint: "inline-flex items-center gap-1-5 font-body",
+    root: "relative flex w-full items-stretch overflow-hidden rounded-xl text-text-heading shadow-3",
+    main: "min-w-0 flex-1",
+    logo: "w-auto",
+    headline: "mb-0 max-w-none font-display text-balance",
+    terms: "mb-0 max-w-text-measure-narrow text-text-muted",
+    // The perforation sits exactly between main and stub, whatever the ticket's width. Split, it is
+    // a zero-width column with notches on the top and bottom edges; stacked (md below `sm`), a
+    // zero-height row with notches on the two side edges. The size variants set which.
+    perforation: "relative shrink-0",
+    rule: "absolute border-dashed border-border-default",
+    notchStart: "absolute top-0 left-0 size-coupon-ticket-notch -translate-1/2 rounded-pill",
+    notchEnd: "absolute size-coupon-ticket-notch rounded-pill",
+    stub: "grid shrink-0 place-items-center p-5 text-center",
+    stubInner: "grid justify-items-center gap-2",
+    stubLabel: "font-display text-text-muted uppercase",
+    code: "font-mono wrap-anywhere text-text-brand",
+    hint: "inline-flex items-center gap-1.5 text-text-muted",
   },
   variants: {
-    /** `brand` is the flooded pink voucher; `light` is the one that prints without eating ink. */
-    tone: {
+    surface: {
       brand: {
-        root: "bg-brand-primary text-text-on-brand",
-        perforation: "border-glass-white",
-        // Softened so the fine print sits behind the headline rather than competing with it.
-        terms: "text-text-on-brand/80",
+        root: "bg-surface-brand",
+        // Closest token to design's 8% white on brand (white-alpha.10).
+        stub: "bg-white-alpha-10",
         code: "text-text-on-brand",
       },
-      light: {
-        root: "border border-border-subtle bg-surface-card text-text-heading",
-        perforation: "border-border-default",
-        terms: "text-text-muted",
-        code: "text-text-link",
-      },
+      page: { root: "border border-border-default bg-surface-card", stub: "bg-surface-page-alt" },
     },
-    /** `md` is the screen and DM voucher; `lg` is the 1080px artboard. */
     size: {
       md: {
-        root: "max-w-160",
-        body: "p-6 sm:p-7",
-        headline: "mt-4 text-h1",
-        terms: "mt-3 text-body2",
-        stub: "sm:w-[32%] sm:min-w-42",
+        // Stacked below `sm`: split at 360px the stub would be too narrow for a mono code.
+        root: "max-w-coupon-ticket-md flex-col sm:flex-row",
+        perforation: "h-0 sm:h-auto sm:w-0",
+        rule: "inset-x-4.5 -top-px border-t-2 sm:inset-x-auto sm:inset-y-4.5 sm:-left-px sm:border-t-0 sm:border-l-2",
+        notchEnd:
+          "top-0 right-0 translate-x-1/2 -translate-y-1/2 sm:top-auto sm:right-auto sm:bottom-0 sm:left-0 sm:-translate-x-1/2 sm:translate-y-1/2",
+        main: "p-6",
+        logo: "h-10",
+        headline: "mt-4 text-coupon-ticket-headline-md",
+        terms: "mt-3 text-body-sm",
+        // The stub's corners follow the ticket's, so its inset focus ring is not cut by the clip.
+        stub: "rounded-b-xl sm:w-coupon-ticket-stub-md sm:rounded-tr-xl sm:rounded-bl-none",
         stubLabel: "text-overline",
-        code: "text-h3",
+        code: "text-coupon-ticket-code-md",
         hint: "text-caption",
       },
       lg: {
-        root: "max-w-270",
-        body: "p-8 sm:p-12",
-        headline: "mt-6 text-display2",
-        terms: "mt-5 text-subtitle1",
-        stub: "sm:w-[32%] sm:min-w-70",
-        stubLabel: "text-subtitle2",
-        code: "text-canvas-body",
-        hint: "text-subtitle2",
+        // Artwork is scaled, never reflowed: always split, whatever the viewport.
+        root: "max-w-coupon-ticket-lg",
+        perforation: "w-0",
+        rule: "inset-y-4.5 -left-px border-l-2",
+        notchEnd: "bottom-0 left-0 -translate-x-1/2 translate-y-1/2",
+        main: "p-10",
+        logo: "h-17",
+        headline: "mt-7 text-coupon-ticket-headline-lg",
+        terms: "mt-5 text-body-lg",
+        stub: "w-coupon-ticket-stub-lg rounded-r-xl",
+        stubLabel: "text-coupon-ticket-stub-label-lg",
+        code: "text-coupon-ticket-code-lg",
+        hint: "text-body-sm",
       },
     },
-    /** The colour of the two punched notches — match whatever the ticket sits on. */
-    position: {
-      page: { notch: "bg-surface-page" },
-      tint: { notch: "bg-surface-page-alt" },
-      sunken: { notch: "bg-surface-sunken" },
+    notch: {
+      page: { notchStart: "bg-surface-page", notchEnd: "bg-surface-page" },
+      tint: { notchStart: "bg-surface-page-alt", notchEnd: "bg-surface-page-alt" },
+      sunken: { notchStart: "bg-surface-sunken", notchEnd: "bg-surface-sunken" },
+      brand: { notchStart: "bg-surface-brand", notchEnd: "bg-surface-brand" },
     },
-    /**
-     * Whether the stub is a copy button. Set it false on print artwork and inside an artboard,
-     * where nothing is tappable.
-     */
+    // Press = the system's scale (Button's treatment). The root clips (it cuts the notches), and the
+    // stub runs flush to its edges, so the focus ring is drawn inset.
     isCopyable: {
-      true: { stub: "group cursor-pointer" },
+      true: {
+        stub: "cursor-pointer transition-control hover:bg-state-hover-on-color focus-visible:-outline-offset-6 active:bg-state-press-on-color",
+      },
       false: {},
     },
   },
   compoundVariants: [
-    // Press is a scale *and* a darkening, together (state contract). The darkening lands on the
-    // pattern rather than the button, because the pattern is what paints the stub's ground.
     {
+      surface: "page",
       isCopyable: true,
-      tone: "brand",
       class: {
-        stubPattern: "group-hover:bg-brand-primary-hover group-active:bg-brand-primary-active",
-        stubContent: "group-active:scale-(--motion-press-scale)",
+        stub: "hover:bg-pink-100 active:bg-pink-200",
       },
     },
     {
+      surface: "brand",
       isCopyable: true,
-      tone: "light",
       class: {
-        stubPattern: "group-hover:bg-pink-200 group-active:bg-pink-300",
-        stubContent: "group-active:scale-(--motion-press-scale)",
+        stub: "focus-visible:outline-ink-000",
       },
     },
   ],
-  defaultVariants: { tone: "brand", size: "md", position: "page", isCopyable: true },
 });
 
-/** How long the stub's own "Copied" flash stays up. Reinforcement, not the confirmation. */
-const COPIED_FLASH_MS = 1800;
-
-/** The wordmark size each ticket size pairs with. */
-const LOGO_SIZE = { md: "sm", lg: "md" } as const;
-
-/** The pattern tile each ticket size pairs with, in px. */
-const TILE = { md: 44, lg: 72 } as const;
-
-/** The `PatternField` tone each ticket skin pairs with. */
-const PATTERN_TONE = { brand: "brand", light: "soft" } as const;
-
-export interface CouponTicketProps
-  extends
-    Omit<ComponentPropsWithoutRef<"div">, "children" | "onCopy">,
-    VariantProps<typeof couponTicket> {
-  /** The promo code, uppercase. It sets in Space Mono and is what the copy button writes out. */
+export interface CouponTicketProps extends Omit<BaseProps<"div">, "onCopy"> {
+  /** Uppercase promo code, set in Space Mono. */
   code: string;
-  /** The offer in eight words or fewer. */
+  /** Eight words at most. */
   headline: string;
-  /** Terms in full sentences. Always state the expiry. */
-  terms?: string | undefined;
-  /**
-   * Fires with the copied code. Pair it with a `Snackbar` — the stub's own flash is
-   * reinforcement, and a guest who has already looked away needs the toast.
-   */
+  /** Full sentences; always state the expiry. */
+  terms: string;
+  surface?: "brand" | "page" | undefined;
+  /** md = 560px (screens), lg = 900px (artwork). The ticket never exceeds its container. */
+  size?: "md" | "lg" | undefined;
+  /** Colour of the punched notches — match the ground behind the ticket. */
+  notch?: "page" | "tint" | "sunken" | "brand" | undefined;
+  /** The stub copies the code. `false` for print and PostFrame artboards. */
+  isCopyable?: boolean | undefined;
+  /** Fires with the code once the clipboard accepted it — pair it with a Snackbar. */
   onCopy?: ((code: string) => void) | undefined;
+  codeLabel?: string | undefined;
+  copyHint?: string | undefined;
+  copiedLabel?: string | undefined;
 }
 
+/** Perforated voucher for stories, DMs, table cards and print handouts. */
 export function CouponTicket({
-  className,
   code,
   headline,
+  terms,
+  surface = "brand",
+  size = "md",
+  notch = "page",
   isCopyable = true,
   onCopy,
-  position,
-  size = "md",
-  terms,
-  tone = "brand",
+  codeLabel = "Use code",
+  copyHint = "Tap to copy",
+  copiedLabel = "Copied",
+  sx,
+  className,
   ...props
 }: CouponTicketProps) {
-  const [isCopied, setIsCopied] = useState(false);
-  const parts = couponTicket({ isCopyable, position, size, tone });
-
-  useEffect(() => {
-    if (!isCopied) return undefined;
-    const timer = setTimeout(() => {
-      setIsCopied(false);
-    }, COPIED_FLASH_MS);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [isCopied]);
-
-  function handleCopy(): void {
-    try {
-      // The clipboard is best-effort: an insecure context has no `navigator.clipboard` at all, and
-      // a browser may refuse the write. Either way the code stays legible on the stub, so the
-      // flash below is still honest.
-      void navigator.clipboard.writeText(code).catch(() => undefined);
-    } catch {
-      // Deliberately silent — see above.
-    }
-    setIsCopied(true);
-    onCopy?.(code);
-  }
-
-  const stubGround = (
-    <PatternField
-      aria-hidden
-      className={parts.stubPattern()}
-      tile={TILE[size]}
-      tone={PATTERN_TONE[tone]}
-    />
-  );
-
-  const stubContent = (
-    <div className={parts.stubContent()}>
-      <span className={parts.stubLabel()}>{isCopied ? "Copied" : "Use code"}</span>
-      <span className={parts.code()}>{code}</span>
-      {isCopyable ? (
-        <span className={parts.hint()}>
-          <Icon icon={isCopied ? Check : Copy} size="sm" />
-          {isCopied ? "Copied" : "Tap to copy"}
-        </span>
-      ) : null}
-    </div>
-  );
+  const styles = couponTicket({ surface, size, notch, isCopyable });
 
   return (
-    <div className={parts.root({ className })} {...props}>
-      <div className={parts.body()}>
-        <Logo label="" size={LOGO_SIZE[size]} tone={tone === "brand" ? "white" : "brand"} />
-        <p className={parts.headline()}>{headline}</p>
-        {terms === undefined ? null : <p className={parts.terms()}>{terms}</p>}
+    <div
+      data-surface={SURFACE_DATA[surface]}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      <div className={styles.main()}>
+        <Logo color={surface === "brand" ? "inverse" : "brand"} className={styles.logo()} />
+        <p className={styles.headline()}>{headline}</p>
+        <p className={styles.terms()}>{terms}</p>
       </div>
-
-      <span aria-hidden className={parts.perforation()}>
-        <span className={parts.notch({ class: "-top-4 -left-4" })} />
-        <span
-          className={parts.notch({
-            class: "-top-4 -right-4 sm:top-auto sm:right-auto sm:-bottom-4 sm:-left-4",
-          })}
-        />
-      </span>
-
+      <div aria-hidden="true" className={styles.perforation()}>
+        <span className={styles.rule()} />
+        <span className={styles.notchStart()} />
+        <span className={styles.notchEnd()} />
+      </div>
       {isCopyable ? (
-        <button
-          aria-label={`Copy code ${code}`}
-          className={parts.stub()}
-          onClick={handleCopy}
-          type="button"
-        >
-          {stubGround}
-          {stubContent}
-        </button>
+        <CouponCopyButton
+          code={code}
+          codeLabel={codeLabel}
+          copyHint={copyHint}
+          copiedLabel={copiedLabel}
+          classNames={{
+            root: styles.stub(),
+            inner: styles.stubInner(),
+            label: styles.stubLabel(),
+            code: styles.code(),
+            hint: styles.hint(),
+          }}
+          onCopy={onCopy}
+        />
       ) : (
-        <div className={parts.stub()}>
-          {stubGround}
-          {stubContent}
+        <div className={styles.stub()}>
+          <div className={styles.stubInner()}>
+            <span className={styles.stubLabel()}>{codeLabel}</span>
+            <span className={styles.code()}>{code}</span>
+          </div>
         </div>
       )}
-
-      {/* The flash is visual; this is what a screen reader hears when the code lands. */}
-      <span aria-live="polite" className="sr-only">
-        {isCopied ? `Code ${code} copied.` : ""}
-      </span>
     </div>
   );
 }

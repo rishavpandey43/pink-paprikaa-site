@@ -1,105 +1,132 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MapPin, MessageCircle } from "lucide-react";
 
 import { Button } from "../../atoms/button/button";
+import { BRAND, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
 import { CtaBand } from "./cta-band";
 
 const meta = {
   title: "Organisms/CtaBand",
   component: CtaBand,
   args: {
-    overline: "Franchise",
-    title: "Bring Pink Paprikaa to your city",
-    body: "One kitchen playbook, one supply list, one menu. Applications open for 2027.",
+    overline: "Taste it first",
+    title: "If you order, the tasting is free.",
+    body: "Take one Dawat as a trial at the normal per-head rate. You only pay if you decide not to go ahead.",
     action: (
-      <Button iconAfter={ArrowRight} on="brand" size="lg">
-        Apply to Franchise
+      <Button asChild size="lg" icon={MessageCircle}>
+        <a href={BRAND.whatsappHref}>Book a trial Dawat</a>
       </Button>
     ),
   },
-  argTypes: { action: { control: false }, title: { control: "text" } },
   parameters: {
     layout: "fullscreen",
     docs: {
       description: {
         component:
-          "The band that closes a page — franchise, hiring, the app. One per page, never two, and " +
-          "one action inside it: the band exists to ask for a single thing. It floods edge to edge " +
-          "and carries the tiled diamond automatically, so the ground it sits on is the page's " +
-          "second colour and its last.",
+          'The band that closes a page — franchise, newsletter, a free tasting. One per page, never two. Copy left and action right (`align="split"`) or stacked and centred. Carries the tiled diamond (`pattern`; `faint` is the handoff\'s 4% ink band). The surface sets the ground, so buttons inside take no colour props.',
       },
     },
   },
 } satisfies Meta<typeof CtaBand>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-/** Ink is the default close: the darkest thing on the page, at the very bottom of it. */
-export const Default: Story = {};
+export const Playground: Story = {};
 
-/** Copy left, action on the heading's baseline edge. It wraps before the title can be squeezed. */
-export const Split: Story = {
-  args: { align: "split" },
-};
-
-/** Centred for a band with no competing content around it — the action stacks underneath. */
-export const Centred: Story = {
-  globals: { backgrounds: { value: "brand" } },
+/** Card row: `surface="ink"` split. */
+export const InkSplit: Story = {
   args: {
-    align: "center",
-    tone: "brand",
-    overline: "Order Online",
-    title: "Order before you leave the house",
-    body: "Delivery through Swiggy and Zomato, or call the counter and pick it up on your way.",
+    surface: "ink",
+    align: "split",
+    overline: "Catering",
+    title: "Feeding thirty people? It has to be right the first time.",
+    body: "Tell us the date and headcount. We take it from there.",
     action: (
-      <Button on="brand" size="lg">
-        Order Now
+      <Button asChild size="lg" iconAfter={ArrowRight}>
+        <a href="#dawat-builder">Build your Dawat</a>
       </Button>
     ),
   },
 };
 
-/** The three grounds. `ink` closes a page, `brand` shouts, `soft` asks quietly. */
-export const Tones: Story = {
-  render: (args) => (
-    <div>
-      <CtaBand {...args} tone="ink" />
-      <CtaBand
-        {...args}
-        overline="Order Online"
-        title="Order before you leave the house"
-        tone="brand"
-      />
-      <CtaBand
-        {...args}
-        action={
-          <Button size="lg" variant="secondary">
-            See Openings
-          </Button>
-        }
-        body="Cooks, counter staff and one kitchen manager. Sector 57, Gurgaon."
-        overline="Careers"
-        title="We are hiring in Gurgaon"
-        tone="soft"
-      />
-    </div>
-  ),
+/** Card row: `surface="brand"` centred. */
+export const BrandCentred: Story = {
+  args: {
+    surface: "brand",
+    align: "center",
+    overline: "Office & PG lunch",
+    title: "₹99 / ₹119 a meal for your team",
+    body: undefined,
+    action: (
+      <Button asChild variant="inverse" size="lg" icon={MessageCircle}>
+        <a href={BRAND.whatsappHref}>Get a free office tasting</a>
+      </Button>
+    ),
+  },
 };
 
-/** With no overline and no body copy the heading carries the band on its own. */
-export const HeadingOnly: Story = {
-  render: ({ action }) => <CtaBand action={action} title="Bring Pink Paprikaa to your city" />,
+/** Card row: `surface="soft"` split. */
+export const SoftSplit: Story = {
+  args: {
+    surface: "soft",
+    overline: "Homely Meals",
+    title: "Home-style food, delivered every day.",
+    body: "Pure veg lunch and dinner from our restaurant kitchen in MKM Market, Sector 57.",
+    action: (
+      <Button asChild variant="secondary" size="lg">
+        <a href="#plans">See plans</a>
+      </Button>
+    ),
+  },
 };
 
-/** Some bands only announce — no action, no ask. Rare, but the layout holds. */
-export const WithoutAction: Story = {
-  args: { action: undefined },
+/** Handoff Home — the office strip: brand, split, two actions. */
+export const HandoffOfficeStrip: Story = {
+  args: {
+    surface: "brand",
+    overline: "Office & PG lunch",
+    title: "₹99 / ₹119 a meal for your team",
+    body: "20+ meals at one address · fixed slot · one GST invoice a month",
+    action: (
+      <>
+        <Button asChild variant="inverse" size="lg" icon={MessageCircle}>
+          <a href={BRAND.whatsappHref}>Get a free office tasting</a>
+        </Button>
+        <Button asChild variant="secondary" size="lg">
+          <a href="#office-lunch">Details</a>
+        </Button>
+      </>
+    ),
+  },
 };
 
-/** At 360px the action drops onto its own line and the heading steps down with the fluid ramp. */
-export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
+/** Handoff Catering — "Taste first": ink with the faint 4% diamond. */
+export const HandoffTasteFirst: Story = {
+  args: {
+    surface: "ink",
+    pattern: "faint",
+    action: (
+      <>
+        <Button asChild size="lg" icon={MessageCircle}>
+          <a href={BRAND.whatsappHref}>Book a trial Dawat</a>
+        </Button>
+        <Button asChild variant="secondary" size="lg" icon={MapPin}>
+          <a href={BRAND.directionsHref}>Eat at the restaurant</a>
+        </Button>
+      </>
+    ),
+  },
 };
+
+export const WithoutPattern: Story = { args: { pattern: "none" } };
+
+/** No overline and no body — the heading carries the band on its own. */
+export const HeadingOnly: Story = { args: { overline: undefined, body: undefined } };
+
+/** A band that only announces — no action. Rare, but the layout holds. */
+export const WithoutAction: Story = { args: { action: undefined } };
+
+export const Mobile: Story = { ...HandoffOfficeStrip, globals: VIEWPORT_360 };
+export const Tablet: Story = { ...HandoffOfficeStrip, globals: VIEWPORT_768 };
+export const Desktop: Story = { ...HandoffOfficeStrip, globals: VIEWPORT_1280 };

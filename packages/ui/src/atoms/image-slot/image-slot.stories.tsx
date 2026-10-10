@@ -1,116 +1,99 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { Text } from "../text/text";
+import symbolPink from "../../assets/brand/symbol-pink.svg";
 import { ImageSlot } from "./image-slot";
 
 const meta = {
   title: "Atoms/ImageSlot",
   component: ImageSlot,
-  args: { label: "Dish photo 4:3, warm, close-cropped" },
-  parameters: { layout: "padded" },
+  args: { label: "Hero 4:5 — warm, close-cropped", ratio: "4:5", className: "w-60" },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Every image in the system. Until real photography lands, it renders a labelled pink placeholder that names the crop needed — always give a specific `label` ("Dish photo" says nothing; "Kitchen portrait 3:4" is what a photographer can act on). With `src` it renders a lazy `<img>` with its intrinsic `width`/`height` inside the same aspect box, so a missing photo never collapses a layout. `isFill` for full-bleed panels; pass a `<picture>` as children for the image pipeline.',
+      },
+    },
+  },
 } satisfies Meta<typeof ImageSlot>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: (args) => (
-    <div className="w-60">
-      <ImageSlot {...args} />
-    </div>
-  ),
-};
+export const Playground: Story = {};
 
-/** The box holds its crop open whether or not a photograph exists, so nothing around it reflows. */
 export const Ratios: Story = {
-  render: (args) => (
+  name: "ratio",
+  render: () => (
     <div className="flex flex-wrap items-start gap-3">
-      <div className="w-24">
-        <ImageSlot {...args} label="1:1" ratio="square" />
-      </div>
-      <div className="w-30">
-        <ImageSlot {...args} label="4:3" ratio="4:3" />
-      </div>
-      <div className="w-20">
-        <ImageSlot {...args} label="3:4" ratio="3:4" />
-      </div>
-      <div className="w-20">
-        <ImageSlot {...args} label="4:5" ratio="4:5" />
-      </div>
-      <div className="w-38">
-        <ImageSlot {...args} label="16:9" ratio="16:9" />
-      </div>
-      <div className="w-38">
-        <ImageSlot {...args} label="21:9" ratio="wide" />
-      </div>
+      <ImageSlot ratio="square" label="1:1" className="w-24" />
+      <ImageSlot ratio="4:3" label="4:3" className="w-30" />
+      <ImageSlot ratio="3:4" label="3:4" className="w-20" />
+      <ImageSlot ratio="4:5" label="4:5" className="w-20" />
+      <ImageSlot ratio="16:9" label="16:9" className="w-37.5" />
+      <ImageSlot ratio="16:10" label="16:10" className="w-37.5" />
+      <ImageSlot ratio="wide" label="21:9" className="w-37.5" />
     </div>
   ),
 };
 
-/** `soft` on white, `strong` on a pink-tinted section, `ink` on a dark panel. */
-export const Tones: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-start gap-3">
-      <div className="w-30">
-        <ImageSlot {...args} label="soft" tone="soft" />
-      </div>
-      <div className="w-30">
-        <ImageSlot {...args} label="strong" tone="strong" />
-      </div>
-      <div className="w-30">
-        <ImageSlot {...args} label="ink" tone="ink" />
-      </div>
+export const Variants: Story = {
+  name: 'variant="soft" · "strong" · "neutral"',
+  render: () => (
+    <div className="flex items-start gap-3">
+      <ImageSlot variant="soft" label="soft" className="w-30" />
+      <ImageSlot variant="strong" label="strong" className="w-30" />
+      <ImageSlot variant="neutral" label="neutral" className="w-30" />
     </div>
   ),
 };
 
-/** Thumbnails round at 10px, cards at 16px, full-bleed panels at 24px. */
+export const Label: Story = {
+  name: "label (name the real crop)",
+  render: () => (
+    <ImageSlot
+      ratio="16:9"
+      label="Hero 16:9 — warm, close-cropped, steam visible"
+      className="max-w-75"
+    />
+  ),
+};
+
+export const Photo: Story = {
+  name: "src (a real image)",
+  render: () => (
+    <ImageSlot
+      src={symbolPink}
+      alt="The Pink Paprikaa diamond symbol"
+      width={358}
+      height={358}
+      ratio="square"
+      variant="neutral"
+      className="w-40"
+    />
+  ),
+};
+
+export const Fill: Story = {
+  name: "isFill",
+  render: () => (
+    <div className="h-40 w-72">
+      <ImageSlot isFill radius="xl" label="Full-bleed panel — fills its parent" />
+    </div>
+  ),
+};
+
 export const Radii: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-start gap-3">
-      <div className="w-30">
-        <ImageSlot {...args} label="none" radius="none" />
-      </div>
-      <div className="w-30">
-        <ImageSlot {...args} label="thumb" radius="thumb" />
-      </div>
-      <div className="w-30">
-        <ImageSlot {...args} label="card" radius="card" />
-      </div>
-      <div className="w-30">
-        <ImageSlot {...args} label="sheet" radius="sheet" />
-      </div>
+  name: "radius",
+  render: () => (
+    <div className="flex items-start gap-3">
+      {(["none", "md", "lg", "xl"] as const).map((radius) => (
+        <ImageSlot key={radius} radius={radius} label={radius} className="w-30" />
+      ))}
     </div>
   ),
 };
 
-/**
- * No brand photography exists yet, so every slot names the crop it is waiting for. "Dish photo" is
- * the fallback; a real brief is what a photographer can act on.
- */
-export const NamingTheCrop: Story = {
-  render: (args) => (
-    <div className="flex max-w-100 flex-col gap-4">
-      <ImageSlot {...args} label="Hero 16:9, steam visible, shot at the pass" ratio="16:9" />
-      <ImageSlot {...args} label="Counter portrait 3:4, morning light" ratio="3:4" />
-    </div>
-  ),
-};
-
-/** `isFullHeight` drops the ratio and takes the parent's height instead — for full-bleed panels. */
-export const FullHeight: Story = {
-  render: (args) => (
-    <div className="flex h-60 w-full max-w-100 gap-3">
-      <div className="flex-1">
-        <ImageSlot {...args} isFullHeight label="Full-bleed panel, any height" />
-      </div>
-      <div className="flex flex-1 flex-col justify-center gap-2">
-        <Text variant="h3">Dine in at Sector 57</Text>
-        <Text variant="body2" tone="muted">
-          The AC dining room sits behind the front counter, open through the day.
-        </Text>
-      </div>
-    </div>
-  ),
+export const Sx: Story = {
+  render: () => <ImageSlot label="Dish 4:3" sx={{ radius: "xl", mt: 4 }} className="w-40" />,
 };

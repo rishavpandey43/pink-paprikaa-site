@@ -1,76 +1,135 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Building2 } from "lucide-react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Alert } from "./alert";
 
 describe("Alert", () => {
-  it("renders its message in a polite live region", () => {
-    render(<Alert>Pickup is running 25 minutes today.</Alert>);
-    expect(screen.getByRole("status")).toHaveTextContent("Pickup is running 25 minutes today.");
+  it("is a polite status message with its title and body", () => {
+    render(<Alert title="Kitchen is busy">Pickup is running 25 minutes today.</Alert>);
+    const alert = screen.getByRole("status");
+    expect(alert).toHaveTextContent("Kitchen is busy");
+    expect(alert).toHaveTextContent("Pickup is running 25 minutes today.");
   });
 
-  it("renders the title above the message", () => {
-    render(<Alert title="Kitchen is busy">Pickup is running 25 minutes today.</Alert>);
-    const node = screen.getByRole("status");
-    expect(node).toHaveTextContent("Kitchen is busy");
-    expect(node).toHaveTextContent("Pickup is running 25 minutes today.");
+  it("interrupts for danger", () => {
+    render(
+      <Alert color="danger" title="That card didn't go through">
+        Try another card or pay by UPI.
+      </Alert>
+    );
+    expect(screen.getByRole("alert")).toHaveTextContent("That card didn't go through");
   });
 
   it.each([
-    ["info", "bg-status-info-soft"],
-    ["success", "bg-status-success-soft"],
-    ["warning", "bg-status-warning-soft"],
-    ["danger", "bg-status-danger-soft"],
-    ["brand", "bg-brand-soft"],
-  ] as const)("fills the %s tone with its soft ground", (tone, expected) => {
-    render(<Alert tone={tone}>We now take UPI at every counter.</Alert>);
-    expect(screen.getByRole("status")).toHaveClass(expected);
-  });
+    ["info", "lucide-info", "text-text-info", "bg-status-info-soft"],
+    ["success", "lucide-check", "text-text-success", "bg-status-success-soft"],
+    ["warning", "lucide-triangle-alert", "text-text-warning", "bg-status-warning-soft"],
+    ["danger", "lucide-circle-alert", "text-text-danger", "bg-status-danger-soft"],
+    ["brand", "lucide-megaphone", "text-pink-800", "bg-surface-brand-soft"],
+    ["neutral", "lucide-info", "text-text-heading", "bg-surface-sunken"],
+  ] as const)(
+    "paints the %s color with its glyph and soft ground",
+    (color, glyph, colour, fill) => {
+      const { container } = render(<Alert color={color}>Message.</Alert>);
+      expect(container.firstElementChild).toHaveClass(colour, fill);
+      expect(container.querySelector(`svg.${glyph}`)).toBeInTheDocument();
+    }
+  );
 
   it("carries a full border rather than a coloured left edge", () => {
-    render(<Alert tone="danger">Try another card or pay by UPI.</Alert>);
-    const node = screen.getByRole("status");
-    expect(node).toHaveClass("border");
-    expect(node).toHaveClass("border-status-danger");
+    const { container } = render(<Alert color="danger">Try another card or pay by UPI.</Alert>);
+    expect(container.firstElementChild).toHaveClass("border", "border-status-danger");
+    expect(container.firstElementChild).not.toHaveClass("border-l-4");
   });
 
-  it("renders a single action under the message", () => {
+  it("merges a caller className over its own radius", () => {
+    const { container } = render(<Alert className="rounded-lg">We now take UPI.</Alert>);
+    expect(container.firstElementChild).toHaveClass("rounded-lg");
+    expect(container.firstElementChild).not.toHaveClass("rounded-md");
+  });
+
+  it("takes a glyph of its own", () => {
+    const { container } = render(
+      <Alert color="neutral" icon={Building2}>
+        Ordering for a PG, hostel or office of 20+? Talk to us about group pricing.
+      </Alert>
+    );
+    expect(container.querySelector("svg.lucide-building-2")).toBeInTheDocument();
+  });
+
+  it("renders its action slot under the message", () => {
     render(
-      <Alert action={<button type="button">See the Menu</button>} title="New in Sector 57">
+      <Alert
+        color="brand"
+        title="New in Sector 57"
+        action={<button type="button">See the Menu</button>}
+      >
         Doors open Friday, 8am.
       </Alert>
     );
     expect(screen.getByRole("button", { name: "See the Menu" })).toBeInTheDocument();
   });
 
-  it("shows no dismiss control without a handler", () => {
-    render(<Alert>Try another card or pay by UPI.</Alert>);
+  it.each([null, false, ""])("draws no action wrapper for a %j action", (action) => {
+    render(<Alert action={action}>Doors open Friday, 8am.</Alert>);
+    // The body holds the content and nothing after it.
+    const content = screen.getByText("Doors open Friday, 8am.");
+    expect(content.parentElement?.children).toHaveLength(1);
+  });
+
+  it("mounts a fresh node when a status turns into an alert", () => {
+    const { rerender } = render(<Alert color="warning">Card machine is slow today.</Alert>);
+    const status = screen.getByRole("status");
+    rerender(<Alert color="danger">Card machine is down. Pay by UPI.</Alert>);
+    const alert = screen.getByRole("alert");
+    expect(alert).not.toBe(status);
+    expect(status).not.toBeInTheDocument();
+  });
+
+  it("offers a dismiss button only when onDismiss is given", async () => {
+    const user = userEvent.setup();
+    const onDismiss = vi.fn();
+    const { rerender } = render(<Alert>We now take UPI at every counter.</Alert>);
     expect(screen.queryByRole("button", { name: "Dismiss" })).not.toBeInTheDocument();
+    rerender(<Alert onDismiss={onDismiss}>We now take UPI at every counter.</Alert>);
+    const dismiss = screen.getByRole("button", { name: "Dismiss" });
+    // A 24px glyph button with a 40px hit area (dev parity; spec §5.5 floor is 24px).
+    expect(dismiss).toHaveClass("size-icon-button-xs", "before:-inset-2");
+    await user.click(dismiss);
+    expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
-  it("calls onDismiss when the dismiss control is pressed", async () => {
-    const handleDismiss = vi.fn();
-    render(<Alert onDismiss={handleDismiss}>We now take UPI at every counter.</Alert>);
-
-    await userEvent.click(screen.getByRole("button", { name: "Dismiss" }));
-
-    expect(handleDismiss).toHaveBeenCalledOnce();
-  });
-
-  it("merges a caller className", () => {
-    render(<Alert className="rounded-1">We now take UPI at every counter.</Alert>);
-    const node = screen.getByRole("status");
-    expect(node).toHaveClass("rounded-1");
-    expect(node).not.toHaveClass("rounded-3");
-  });
-
-  it("has no accessibility violations", async () => {
+  it("is a light island, so its action and links keep light skins on a dark field", () => {
     const { container } = render(
-      <Alert onDismiss={vi.fn()} title="Kitchen is busy" tone="warning">
-        Pickup is running 25 minutes today.
+      <Alert color="warning">Full setup and service starts at 50 guests.</Alert>
+    );
+    expect(container.firstElementChild).toHaveAttribute("data-surface", "light");
+  });
+
+  it("has no accessibility violations with a title, an action and a dismiss", async () => {
+    const { container } = render(
+      <Alert
+        color="brand"
+        title="New in Sector 57"
+        action={<button type="button">See the Menu</button>}
+        onDismiss={vi.fn()}
+      >
+        Doors open Friday, 8am.
       </Alert>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, beating a default class and keeping className", () => {
+    const { container } = render(
+      <Alert sx={{ py: 2, mt: 4 }} className="italic">
+        Message.
+      </Alert>
+    );
+    expect(container.firstElementChild).toHaveClass("py-2", "mt-4", "italic");
+    expect(container.firstElementChild).not.toHaveClass("py-3.5");
   });
 });

@@ -1,212 +1,286 @@
 "use client";
 
-import type { LucideIcon } from "lucide-react";
-import type { AriaAttributes } from "react";
+import { ChevronDown } from "lucide-react";
+import type { ChangeEventHandler, KeyboardEvent, ReactNode, Ref } from "react";
+import { useCallback, useId, useRef, useState } from "react";
 
-import {
-  Check,
-  ChevronDown,
-  ChevronUp,
-  CircleAlert,
-  CircleCheck,
-  Lock,
-  TriangleAlert,
-} from "lucide-react";
-import { Select as SelectPrimitive } from "radix-ui";
+import type { SxProp } from "../../lib/common-props";
+import type { DesignFieldChrome } from "../../lib/design-field";
+import { withDesignField } from "../../lib/design-field";
+import { FieldControl } from "../../lib/field-control";
+import type { FieldStatus } from "../../lib/field-status";
+import { commitNativeSelectValue, HiddenNativeSelect } from "../../lib/hidden-native-select";
+import { ListboxPopover } from "../../lib/listbox-popover";
+import { type MenuItemData, MenuPanel } from "../../lib/menu-panel";
+import type { SheetMode } from "../../lib/popover-shell";
+import { useAsSheet } from "../../lib/popover-shell";
+import { withSx } from "../../lib/sx";
+import { useListbox } from "../../lib/use-listbox";
+import type { IconComponent } from "../icon/icon";
 
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
-import { Icon } from "../icon/icon";
-
-const select = componentVariants({
-  slots: {
-    trigger: [
-      "group flex w-full min-w-0 items-center gap-2.5 rounded-3 outline-none",
-      "border border-(--field-border-default) bg-(--field-bg-default) text-(--field-fg-default)",
-      "font-body transition-[border-color,box-shadow,background-color]",
-      "duration-(--duration-fast) ease-out",
-      "focus-visible:border-2 focus-visible:border-(--field-border-focus)",
-      "focus-visible:shadow-focus-ring",
-      "data-[placeholder]:text-(--field-fg-placeholder)",
-    ],
-    value: "min-w-0 flex-1 truncate text-left",
-    leadingIcon: "text-text-subtle group-focus-visible:text-text-brand",
-    content: [
-      "z-50 overflow-hidden rounded-3 border border-border-subtle bg-surface-card",
-      "shadow-elevation3",
-    ],
-    viewport: "max-h-72 p-1",
-    item: [
-      "relative flex cursor-pointer items-center gap-2 rounded-2 py-2 pr-8 pl-3",
-      "font-body text-body2 text-text-body outline-none select-none",
-      "data-[highlighted]:bg-brand-tint data-[highlighted]:text-text-link",
-      "data-[state=checked]:font-medium",
-      "data-[disabled]:cursor-not-allowed data-[disabled]:text-text-subtle",
-    ],
-    itemIndicator: "absolute right-3 text-text-brand",
-    scrollButton: "flex h-6 items-center justify-center text-text-subtle",
-  },
-  variants: {
-    /** 40 / 48 / 56px — the same fixed heights as `Input`, so the two line up in a form. */
-    size: {
-      sm: { trigger: "h-10 px-3 text-body2" },
-      md: { trigger: "h-(--field-h) px-3.5 text-body1" },
-      lg: { trigger: "h-14 px-4 text-body1" },
-    },
-    /** Border colour only — the message that explains it belongs to the `Field` molecule. */
-    status: {
-      default: {},
-      error: {
-        trigger:
-          "border-2 border-(--field-border-error) focus-visible:border-(--field-border-error)",
-        leadingIcon: "text-status-danger group-focus-visible:text-status-danger",
-      },
-      success: {
-        trigger:
-          "border-2 border-(--field-border-success) focus-visible:border-(--field-border-success)",
-        leadingIcon: "text-status-success group-focus-visible:text-status-success",
-      },
-      warning: {
-        trigger:
-          "border-2 border-(--field-border-warning) focus-visible:border-(--field-border-warning)",
-        leadingIcon: "text-status-warning group-focus-visible:text-status-warning",
-      },
-    },
-    isDisabled: {
-      true: {
-        trigger: [
-          "cursor-not-allowed border border-border-subtle bg-(--field-bg-disabled)",
-          "text-(--field-fg-disabled)",
-        ],
-        leadingIcon: "text-(--field-fg-disabled)",
-      },
-      false: {},
-    },
-    isReadOnly: { true: { trigger: "cursor-default bg-(--field-bg-readonly)" }, false: {} },
-  },
-  defaultVariants: { size: "md", status: "default", isDisabled: false, isReadOnly: false },
-});
-
-/** The glyph each status hangs where the chevron normally sits. */
-const STATUS_ICON = {
-  default: undefined,
-  error: CircleAlert,
-  success: CircleCheck,
-  warning: TriangleAlert,
-} as const;
-
-const STATUS_ICON_TONE = {
-  default: "text-text-subtle",
-  error: "text-status-danger",
-  success: "text-status-success",
-  warning: "text-status-warning",
-} as const;
-
-/** A choice in the list. Pass a bare string when the value and the label are the same word. */
 export interface SelectOption {
   value: string;
   label: string;
-  disabled?: boolean;
+  description?: string | undefined;
+  isDisabled?: boolean | undefined;
 }
 
-type SelectVariants = Omit<VariantProps<typeof select>, "isDisabled" | "isReadOnly">;
-
-export interface SelectProps
-  extends
-    Omit<SelectPrimitive.SelectProps, "children">,
-    Pick<AriaAttributes, "aria-label" | "aria-labelledby">,
-    SelectVariants {
-  /** The list. Strings become their own labels; objects can carry a different label or disable a row. */
-  options?: (SelectOption | string)[] | undefined;
-  /** What the trigger reads before anything is chosen. */
+export interface SelectProps extends SxProp, DesignFieldChrome {
+  options: SelectOption[];
+  value?: string | undefined;
+  defaultValue?: string | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
+  /** Lands on the hidden native select for `{...register()}`. */
+  onChange?: ChangeEventHandler<HTMLSelectElement> | undefined;
+  onBlur?: ChangeEventHandler<HTMLSelectElement> | undefined;
+  name?: string | undefined;
   placeholder?: string | undefined;
-  /** Lucide glyph pinned to the leading edge of the trigger. */
-  icon?: LucideIcon | undefined;
-  /** Locked but readable — sunken fill and a lock glyph, and the list will not open. */
-  isReadOnly?: boolean | undefined;
-  /** Merged onto the trigger, so a caller can widen or re-space the closed control. */
-  className?: string | undefined;
-  /** Merged onto the popover, for a wider or shorter list. */
-  contentClassName?: string | undefined;
-  /** Id of the trigger — what a `Field` label points its `htmlFor` at. */
+  size?: "sm" | "md" | "lg" | undefined;
+  status?: FieldStatus | undefined;
+  icon?: IconComponent | undefined;
+  readOnly?: boolean | undefined;
+  disabled?: boolean | undefined;
+  required?: boolean | undefined;
+  open?: boolean | undefined;
+  defaultOpen?: boolean | undefined;
+  onOpenChange?: ((open: boolean) => void) | undefined;
+  sheet?: SheetMode | undefined;
+  portalContainer?: HTMLElement | null | undefined;
   id?: string | undefined;
+  className?: string | undefined;
+  "aria-label"?: string | undefined;
+  "aria-labelledby"?: string | undefined;
+  "aria-describedby"?: string | undefined;
+  /** Hidden native select ref — `{...register()}` attaches here. */
+  ref?: Ref<HTMLSelectElement> | undefined;
 }
 
-/** Strings and `{ value, label }` pairs both land here, so the render loop stays one shape. */
-function toOption(option: SelectOption | string): SelectOption {
-  return typeof option === "string" ? { value: option, label: option } : option;
+function toMenuItems(options: SelectOption[]): MenuItemData[] {
+  return options.map((option) => ({
+    value: option.value,
+    label: option.label,
+    description: option.description,
+    disabled: option.isDisabled,
+  }));
 }
 
+/**
+ * Combobox trigger + MenuPanel listbox (never the browser popup). Closed look matches Input via
+ * FieldControl; open list uses the Task 6 panel (brand diamond, sheet ≤640). A hidden native
+ * `<select>` in lib keeps `{...register("x")}` and FormData posts working.
+ */
 export function Select({
-  options = [],
-  placeholder = "Choose one",
-  icon,
+  options,
+  value: valueProp,
+  defaultValue,
+  onValueChange,
+  onChange,
+  onBlur,
+  name,
+  placeholder,
   size = "md",
   status = "default",
+  icon,
+  readOnly = false,
   disabled = false,
-  isReadOnly = false,
-  className,
-  contentClassName,
+  required = false,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  sheet = "auto",
+  portalContainer = null,
   id,
+  label,
+  hint,
+  error,
+  success,
+  warning,
+  optional,
   "aria-label": ariaLabel,
-  "aria-labelledby": ariaLabelledBy,
-  ...props
+  "aria-labelledby": ariaLabelledby,
+  "aria-describedby": ariaDescribedby,
+  ref,
+  sx,
+  className,
 }: SelectProps) {
-  const slots = select({ size, status, isDisabled: disabled, isReadOnly });
-  const statusIcon = STATUS_ICON[status];
-  const iconSize = size === "sm" ? "sm" : "md";
+  const listId = useId();
+  const autoId = useId();
+  const triggerId = id ?? autoId;
+  const hiddenRef = useRef<HTMLSelectElement | null>(null);
+  const setHiddenRef = useCallback(
+    (node: HTMLSelectElement | null) => {
+      hiddenRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref && typeof ref === "object") {
+        (ref as { current: HTMLSelectElement | null }).current = node;
+      }
+    },
+    [ref]
+  );
 
-  return (
-    <SelectPrimitive.Root disabled={disabled || isReadOnly} {...props}>
-      <SelectPrimitive.Trigger
-        aria-invalid={status === "error" || undefined}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        className={slots.trigger({ class: className })}
-        id={id}
+  const firstEnabled = options.find((option) => !option.isDisabled)?.value ?? "";
+  const [isUncontrolledValue, setIsUncontrolledValue] = useState(
+    defaultValue ?? (placeholder !== undefined ? "" : firstEnabled)
+  );
+  const isValueControlled = valueProp !== undefined;
+  const value = isValueControlled ? valueProp : isUncontrolledValue;
+
+  const [isUncontrolledOpen, setIsUncontrolledOpen] = useState(defaultOpen);
+  const isOpenControlled = openProp !== undefined;
+  const isOpen = isOpenControlled ? openProp : isUncontrolledOpen;
+  const setIsOpen = useCallback(
+    (next: boolean) => {
+      if (!isOpenControlled) setIsUncontrolledOpen(next);
+      onOpenChange?.(next);
+    },
+    [isOpenControlled, onOpenChange]
+  );
+
+  const isLocked = disabled || readOnly;
+  const isSheet = useAsSheet(isOpen ? sheet : false);
+  const items = toMenuItems(options);
+  const { activeIndex, move, toStart, toEnd, typeahead, resetActive } = useListbox(
+    items.map((item) => ({
+      ...item,
+      text: typeof item.label === "string" ? item.label : item.value,
+    }))
+  );
+
+  const chosen = options.find((option) => option.value === value);
+  const triggerLabel: ReactNode = chosen === undefined ? (placeholder ?? "\u00a0") : chosen.label;
+
+  const commit = useCallback(
+    (next: string) => {
+      if (!isValueControlled) setIsUncontrolledValue(next);
+      onValueChange?.(next);
+      commitNativeSelectValue(hiddenRef.current, next, onChange);
+      setIsOpen(false);
+    },
+    [isValueControlled, onChange, onValueChange, setIsOpen]
+  );
+
+  const onTriggerKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (isLocked) return;
+    if (!isOpen && ["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
+      event.preventDefault();
+      setIsOpen(true);
+      const preferred = options.findIndex((option) => option.value === value);
+      resetActive(preferred > -1 ? preferred : undefined);
+      return;
+    }
+    if (!isOpen) return;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      move(1);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      move(-1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      toStart();
+    } else if (event.key === "End") {
+      event.preventDefault();
+      toEnd();
+    } else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      const item = items[activeIndex];
+      if (item !== undefined && !item.disabled) commit(item.value);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      setIsOpen(false);
+    } else if (event.key === "Tab") {
+      setIsOpen(false);
+    } else {
+      typeahead(event.key);
+    }
+  };
+
+  return withDesignField(
+    { label, hint, error, success, warning, optional },
+    id,
+    status,
+    (wired) => (
+      <FieldControl
+        control="select"
+        size={size}
+        status={wired.status}
+        icon={icon}
+        isReadOnly={readOnly && !disabled}
+        affordance={ChevronDown}
+        isExpanded={isOpen && status === "default" && !readOnly}
+        className={withSx(sx, className)}
       >
-        {icon ? <Icon className={slots.leadingIcon()} icon={icon} size={iconSize} /> : null}
-        <SelectPrimitive.Value className={slots.value()} placeholder={placeholder} />
-        <SelectPrimitive.Icon className="flex shrink-0 items-center">
-          {isReadOnly && !statusIcon ? (
-            <Icon className="text-text-subtle" icon={Lock} size="sm" />
-          ) : (
-            <Icon
-              className={STATUS_ICON_TONE[status]}
-              icon={statusIcon ?? ChevronDown}
-              size={iconSize}
+        {(controlClassName) => (
+          <>
+            <ListboxPopover
+              open={isOpen}
+              onOpenChange={(next) => {
+                if (isLocked && next) return;
+                setIsOpen(next);
+                if (next) {
+                  const preferred = options.findIndex((option) => option.value === value);
+                  resetActive(preferred > -1 ? preferred : undefined);
+                }
+              }}
+              sheet={sheet}
+              portalContainer={portalContainer}
+              title={ariaLabel ?? placeholder}
+              aria-label={ariaLabel ?? "Options"}
+              trigger={
+                <button
+                  id={wired.id === "" ? triggerId : wired.id}
+                  type="button"
+                  role="combobox"
+                  disabled={disabled}
+                  aria-haspopup="listbox"
+                  aria-expanded={isOpen}
+                  aria-controls={listId}
+                  aria-required={required || wired["aria-required"] ? true : undefined}
+                  aria-invalid={
+                    wired.status === "error" || wired["aria-invalid"] ? true : undefined
+                  }
+                  aria-readonly={readOnly || undefined}
+                  aria-label={ariaLabel}
+                  aria-labelledby={ariaLabelledby}
+                  aria-describedby={wired["aria-describedby"] ?? ariaDescribedby}
+                  className={`${controlClassName}${chosen === undefined ? "text-text-subtle" : ""}`}
+                  onKeyDown={onTriggerKeyDown}
+                  onClick={() => {
+                    if (!isLocked) setIsOpen(!isOpen);
+                  }}
+                >
+                  <span className="truncate">{triggerLabel}</span>
+                </button>
+              }
+            >
+              <MenuPanel
+                id={listId}
+                role="listbox"
+                aria-label={ariaLabel ?? placeholder ?? "Options"}
+                items={items}
+                value={value}
+                isSheet={isSheet}
+                activeIndex={activeIndex}
+                onSelect={(item) => {
+                  commit(item.value);
+                }}
+              />
+            </ListboxPopover>
+            <HiddenNativeSelect
+              selectRef={setHiddenRef}
+              name={readOnly && !disabled ? undefined : name}
+              value={value}
+              options={options}
+              disabled={disabled || readOnly}
+              onChange={onChange}
+              onBlur={onBlur}
             />
-          )}
-        </SelectPrimitive.Icon>
-      </SelectPrimitive.Trigger>
-      <SelectPrimitive.Portal>
-        <SelectPrimitive.Content
-          className={slots.content({ class: contentClassName })}
-          position="popper"
-          sideOffset={6}
-        >
-          <SelectPrimitive.ScrollUpButton className={slots.scrollButton()}>
-            <Icon icon={ChevronUp} size="sm" />
-          </SelectPrimitive.ScrollUpButton>
-          <SelectPrimitive.Viewport className={slots.viewport()}>
-            {options.map(toOption).map((option) => (
-              <SelectPrimitive.Item
-                className={slots.item()}
-                disabled={option.disabled ?? false}
-                key={option.value}
-                value={option.value}
-              >
-                <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>
-                <SelectPrimitive.ItemIndicator className={slots.itemIndicator()}>
-                  <Icon icon={Check} size="sm" />
-                </SelectPrimitive.ItemIndicator>
-              </SelectPrimitive.Item>
-            ))}
-          </SelectPrimitive.Viewport>
-          <SelectPrimitive.ScrollDownButton className={slots.scrollButton()}>
-            <Icon icon={ChevronDown} size="sm" />
-          </SelectPrimitive.ScrollDownButton>
-        </SelectPrimitive.Content>
-      </SelectPrimitive.Portal>
-    </SelectPrimitive.Root>
+            {readOnly && !disabled && name !== undefined && value !== "" ? (
+              <input type="hidden" name={name} value={value} />
+            ) : null}
+          </>
+        )}
+      </FieldControl>
+    )
   );
 }

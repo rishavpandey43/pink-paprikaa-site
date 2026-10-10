@@ -1,101 +1,129 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { User } from "lucide-react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Avatar } from "./avatar";
 
-/**
- * jsdom never fetches, so Radix's preload probe reports the image as still loading and the
- * fallback stays up. Stubbing the two properties it reads is what "the photo arrived" looks like.
- */
-function stubLoadedImages(): void {
-  vi.spyOn(HTMLImageElement.prototype, "complete", "get").mockReturnValue(true);
-  vi.spyOn(HTMLImageElement.prototype, "naturalWidth", "get").mockReturnValue(240);
-}
-
 describe("Avatar", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("falls back to two initials when there is no photo", () => {
+  it("shows two initials on pink-100 and is an image named by the person", () => {
     render(<Avatar name="Aditi Rao" />);
-    expect(screen.getByText("AR")).toBeInTheDocument();
-  });
-
-  it("uses a single initial for a single-word name", () => {
-    render(<Avatar name="Kabir" />);
-    expect(screen.getByText("K")).toBeInTheDocument();
-  });
-
-  it("stops at two initials for a three-word name", () => {
-    render(<Avatar name="Meera S Iyer" />);
-    expect(screen.getByText("MS")).toBeInTheDocument();
-  });
-
-  it("shows the photo, named by the guest, once it has loaded", async () => {
-    stubLoadedImages();
-    render(<Avatar name="Aditi Rao" src="/images/guests/aditi-rao.jpg" />);
-
-    expect(await screen.findByRole("img", { name: "Aditi Rao" })).toHaveAttribute(
-      "src",
-      "/images/guests/aditi-rao.jpg"
+    const avatar = screen.getByRole("img", { name: "Aditi Rao" });
+    expect(avatar).toHaveTextContent("AR");
+    expect(avatar).not.toHaveAttribute("title");
+    expect(avatar).toHaveClass(
+      "bg-pink-100",
+      "text-pink-700",
+      "font-display",
+      "rounded-pill",
+      "overflow-hidden",
+      "size-avatar-md",
+      "text-avatar-md"
     );
   });
 
-  it("keeps the initials up while the photo has not loaded", () => {
-    render(<Avatar name="Aditi Rao" src="/images/guests/aditi-rao.jpg" />);
-
-    expect(screen.getByText("AR")).toBeInTheDocument();
-    expect(screen.queryByRole("img")).not.toBeInTheDocument();
-  });
-
-  it("renders a glyph instead of initials when one is given", () => {
-    const { container } = render(<Avatar icon={User} name="Aditi Rao" />);
-
-    expect(container.querySelector("svg")).toBeInTheDocument();
-    expect(screen.queryByText("AR")).not.toBeInTheDocument();
+  it("shows a Tooltip on focus when tooltip is given — never a title bubble", async () => {
+    const user = userEvent.setup();
+    render(<Avatar name="Aditi Rao" tooltip="Host" />);
+    const avatar = screen.getByRole("img", { name: "Aditi Rao" });
+    expect(avatar).not.toHaveAttribute("title");
+    expect(avatar).toHaveAttribute("tabindex", "0");
+    await user.tab();
+    expect(avatar).toHaveFocus();
+    expect(await screen.findByRole("tooltip", { name: "Host" })).toBeVisible();
   });
 
   it.each([
-    ["xs", "size-6"],
-    ["sm", "size-8"],
-    ["md", "size-10"],
-    ["lg", "size-14"],
-    ["xl", "size-20"],
-  ] as const)("renders the %s size at its fixed diameter", (size, expected) => {
-    const { container } = render(<Avatar name="Aditi Rao" size={size} />);
-    expect(container.firstElementChild).toHaveClass(expected);
+    ["Kabir", "K"],
+    ["Meera S Iyer", "MS"],
+    ["  aditi   rao  ", "AR"],
+    ["प्रिया शर्मा", "पश"],
+  ] as const)("derives the initials of %j as %s", (name, initials) => {
+    render(<Avatar name={name} />);
+    expect(screen.getByRole("img")).toHaveTextContent(initials);
   });
 
-  it("draws the signed-in halo as an offset ring, not a border", () => {
-    const { container } = render(<Avatar hasRing name="Aditi Rao" />);
-    const node = container.firstElementChild;
-
-    expect(node).toHaveClass("ring-2");
-    expect(node).toHaveClass("ring-offset-2");
-    expect(node?.className).not.toMatch(/border-/);
+  it("layers a photo over the initials, which stay as the fallback while it loads or if it fails", () => {
+    render(<Avatar name="Aditi Rao" src="/guests/aditi.jpg" />);
+    const avatar = screen.getByRole("img", { name: "Aditi Rao" });
+    const photo = avatar.querySelector("img");
+    expect(photo).toHaveAttribute("src", "/guests/aditi.jpg");
+    expect(photo).toHaveAttribute("alt", "");
+    expect(photo).toHaveClass("absolute", "inset-0", "size-full", "object-cover");
+    expect(avatar).toHaveClass("relative");
+    expect(avatar).toHaveTextContent("AR");
   });
 
-  it("stays circular by default", () => {
-    const { container } = render(<Avatar name="Aditi Rao" />);
-    expect(container.firstElementChild).toHaveClass("rounded-6");
+  it("draws the glyph instead of initials when both are given, still named by the person", () => {
+    render(<Avatar name="Aditi Rao" icon={User} />);
+    const avatar = screen.getByRole("img", { name: "Aditi Rao" });
+    expect(avatar.querySelector("svg")).not.toBeNull();
+    expect(avatar).not.toHaveTextContent("AR");
   });
 
-  it("merges a caller className", () => {
-    const { container } = render(<Avatar className="rounded-1" name="Aditi Rao" />);
-    const node = container.firstElementChild;
+  it("lets a consumer className replace its radius, and never selects its initials", () => {
+    render(<Avatar name="Aditi Rao" className="rounded-md" />);
+    const avatar = screen.getByRole("img");
+    expect(avatar).toHaveClass("rounded-md", "select-none");
+    expect(avatar).not.toHaveClass("rounded-pill");
+  });
 
-    expect(node).toHaveClass("rounded-1");
-    expect(node).not.toHaveClass("rounded-6");
+  it("draws a glyph at half its size in place of initials", () => {
+    const { container } = render(<Avatar icon={User} size="lg" />);
+    const glyph = container.firstElementChild?.firstElementChild;
+    expect(glyph).toHaveClass("size-1/2");
+    expect(glyph).not.toHaveClass("size-icon-lg");
+    expect(glyph?.querySelector("svg")).toHaveAttribute("stroke-width", "1.75");
+  });
+
+  it("uses the heavy 2px stroke on the small sizes", () => {
+    const { container } = render(<Avatar icon={User} size="xs" />);
+    expect(container.querySelector("svg")).toHaveAttribute("stroke-width", "2");
+  });
+
+  it.each([
+    ["xs", "size-avatar-xs", "text-avatar-xs"],
+    ["sm", "size-avatar-sm", "text-avatar-sm"],
+    ["md", "size-avatar-md", "text-avatar-md"],
+    ["lg", "size-avatar-lg", "text-avatar-lg"],
+    ["xl", "size-avatar-xl", "text-avatar-xl"],
+  ] as const)("sizes %s with %s and %s", (size, box, type) => {
+    render(<Avatar name="Aditi Rao" size={size} />);
+    expect(screen.getByRole("img")).toHaveClass(box, type);
+  });
+
+  it("marks the signed-in guest with the pink ring", () => {
+    render(<Avatar name="Aditi Rao" hasRing />);
+    expect(screen.getByRole("img")).toHaveClass("shadow-avatar-ring");
+  });
+
+  it("is decorative when it has no name (Review Focus 2)", () => {
+    const { container } = render(<Avatar icon={User} />);
+    expect(container.firstElementChild).toHaveAttribute("aria-hidden", "true");
+    expect(container.firstElementChild).not.toHaveAttribute("role");
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("treats a blank name as no name", () => {
+    const { container } = render(<Avatar name="   " />);
+    expect(container.firstElementChild).toHaveAttribute("aria-hidden", "true");
+    expect(container.firstElementChild).toBeEmptyDOMElement();
+  });
+
+  it("sx lands on the avatar and beats its own overflow", () => {
+    render(<Avatar name="Aditi Rao" sx={{ overflow: "visible", ms: 2 }} />);
+    const avatar = screen.getByRole("img", { name: "Aditi Rao" });
+    expect(avatar).toHaveClass("overflow-visible", "ms-2");
+    expect(avatar).not.toHaveClass("overflow-hidden");
   });
 
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
-        <Avatar name="Aditi Rao" />
-        <Avatar hasRing name="Kabir Sethi" size="lg" />
-        <Avatar icon={User} size="sm" />
+        <Avatar name="Aditi Rao" hasRing />
+        <Avatar name="Kabir" src="/guests/kabir.jpg" />
+        <Avatar icon={User} />
       </>
     );
     await expectNoA11yViolations(container);

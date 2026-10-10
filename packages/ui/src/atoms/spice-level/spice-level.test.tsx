@@ -1,12 +1,28 @@
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { SpiceLevel } from "./spice-level";
 
 describe("SpiceLevel", () => {
-  it("announces the mild level by default", () => {
-    render(<SpiceLevel />);
-    expect(screen.getByRole("img", { name: "Spice level: Mild" })).toBeInTheDocument();
+  it("is one image named with the level", () => {
+    render(<SpiceLevel level={3} />);
+    expect(screen.getByRole("img", { name: "Spice level 3 of 4" })).toBeInTheDocument();
+  });
+
+  it("fills the first diamonds with the level's heat colour and leaves the rest ink-200", () => {
+    const { container } = render(<SpiceLevel level={3} />);
+    expect(container.querySelectorAll(".rotate-45.bg-heat-3")).toHaveLength(3);
+    expect(container.querySelectorAll(".rotate-45.bg-ink-200")).toHaveLength(1);
+  });
+
+  it.each([
+    [1, "bg-heat-1"],
+    [2, "bg-heat-2"],
+    [4, "bg-heat-4"],
+  ] as const)("colours level %d with %s — the heat ramp, mint to pink", (level, heat) => {
+    const { container } = render(<SpiceLevel level={level} />);
+    expect(container.querySelectorAll(`.rotate-45.${heat}`)).toHaveLength(level);
   });
 
   it.each([
@@ -14,77 +30,50 @@ describe("SpiceLevel", () => {
     [2, "Medium"],
     [3, "Hot"],
     [4, "Extra Hot"],
-  ] as const)("names level %i as %s", (level, expected) => {
-    render(<SpiceLevel level={level} />);
-    expect(screen.getByRole("img", { name: `Spice level: ${expected}` })).toBeInTheDocument();
+  ] as const)("names level %d %s with hasLabel, as an uppercase overline", (level, label) => {
+    render(<SpiceLevel level={level} hasLabel />);
+    expect(screen.getByText(label)).toHaveClass("uppercase", "text-overline", "text-text-muted");
   });
 
-  it("always renders the whole four-diamond scale", () => {
+  it("shows no label by default", () => {
     render(<SpiceLevel level={2} />);
-    expect(screen.getByRole("img").children).toHaveLength(4);
-  });
-
-  it("shortens the scale when max is lowered", () => {
-    render(<SpiceLevel level={2} max={2} />);
-    expect(screen.getByRole("img").children).toHaveLength(2);
+    expect(screen.queryByText("Medium")).not.toBeInTheDocument();
   });
 
   it.each([
-    [1, "bg-heat-1"],
-    [2, "bg-heat-2"],
-    [3, "bg-heat-3"],
-    [4, "bg-heat-4"],
-  ] as const)("fills every lit diamond with the level %i colour", (level, expected) => {
-    render(<SpiceLevel level={level} />);
-    const diamonds = [...screen.getByRole("img").children];
-    expect(diamonds.slice(0, level).every((node) => node.classList.contains(expected))).toBe(true);
-    // The neutral base must be *replaced*, not appended — two backgrounds would leave the colour
-    // to stylesheet order.
-    expect(diamonds[0]).not.toHaveClass("bg-ink-200");
+    ["sm", "size-brand-diamond-12"],
+    ["md", "size-brand-diamond-14"],
+    ["lg", "size-brand-diamond-20"],
+  ] as const)("draws size %s diamonds at %s", (size, diamond) => {
+    const { container } = render(<SpiceLevel level={2} size={size} />);
+    expect(container.querySelectorAll(`.${diamond}`)).toHaveLength(4);
   });
 
-  it("leaves the diamonds above the level on the neutral ramp", () => {
-    render(<SpiceLevel level={2} />);
-    const diamonds = [...screen.getByRole("img").children];
-    expect(diamonds[2]).toHaveClass("bg-ink-200");
-    expect(diamonds[2]).not.toHaveClass("bg-heat-2");
+  it("carries a white mark on a filled diamond and a pink one on an empty diamond", () => {
+    const { container } = render(<SpiceLevel level={1} />);
+    expect(container.querySelector(".bg-heat-1 > .mask-symbol")).toHaveClass("text-ink-000");
+    expect(container.querySelector(".bg-ink-200 > .mask-symbol")).toHaveClass("text-pink-500");
   });
 
-  it("prints the heat name without announcing it twice", () => {
-    render(<SpiceLevel hasLabel level={4} />);
-    expect(screen.getByText("Extra Hot")).toHaveAttribute("aria-hidden", "true");
-    expect(screen.getByRole("img", { name: "Spice level: Extra Hot" })).toBeInTheDocument();
-  });
-
-  it("hides the heat name unless it is asked for", () => {
-    render(<SpiceLevel level={4} />);
-    expect(screen.queryByText("Extra Hot")).not.toBeInTheDocument();
-  });
-
-  it.each([
-    ["xs", "size-2.5"],
-    ["sm", "size-3.5"],
-    ["md", "size-5"],
-    ["lg", "size-7"],
-  ] as const)("sizes the diamonds at %s", (size, expected) => {
-    render(<SpiceLevel size={size} />);
-    expect(screen.getByRole("img").firstElementChild).toHaveClass(expected);
-  });
-
-  it("merges a caller className", () => {
-    render(<SpiceLevel className="gap-6" />);
-    const node = screen.getByRole("img").parentElement;
-    expect(node).toHaveClass("gap-6");
-    expect(node).not.toHaveClass("gap-2");
+  it("merges a caller className onto the root, replacing a conflicting class", () => {
+    render(<SpiceLevel level={2} className="gap-6" />);
+    const spice = screen.getByRole("img");
+    expect(spice).toHaveClass("gap-6");
+    expect(spice).not.toHaveClass("gap-2");
   });
 
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
         <SpiceLevel level={1} />
-        <SpiceLevel hasLabel level={3} />
+        <SpiceLevel level={4} hasLabel />
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(<SpiceLevel level={2} sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
   });
 });

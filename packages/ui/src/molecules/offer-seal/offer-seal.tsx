@@ -1,109 +1,123 @@
-import type { ComponentPropsWithoutRef } from "react";
-
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import type { BasePropsWithColor } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
 
 const offerSeal = componentVariants({
   slots: {
-    // A rotated square — the brand's diamond, at badge scale. Never a circular starburst, never a
-    // gradient: the seal is one flat fill and nothing else.
-    root: "grid shrink-0 rotate-45 place-items-center shadow-elevation3",
-    // Counter-rotated so the number stays upright inside the diamond.
-    content: "grid -rotate-45 place-items-center gap-0-5 text-center",
-    /**
-     * Raw type classes rather than the `Text` atom: the seal spans a 128px badge to a 280px canvas
-     * mark, and no single step of the screen ramp covers both ends of that. The face and weight
-     * are the display ramp's, only the size steps.
-     */
-    value: "font-display font-extrabold leading-display1 tracking-display1",
-    label: "font-display font-bold uppercase leading-overline tracking-overline",
-    note: "font-body leading-caption",
+    root: "grid size-offer-seal shrink-0 rotate-45 place-items-center rounded-offer-seal shadow-3",
+    content: "grid -rotate-45 gap-0.5 text-center",
+    value: "font-display text-offer-seal-value",
+    label: "font-display text-offer-seal-label uppercase",
+    note: "font-body text-offer-seal-note",
   },
   variants: {
-    /** Three flat fills. `turmeric` is the only one that is not pink, for a non-price offer. */
-    tone: {
-      light: {
-        root: "bg-surface-card",
-        value: "text-text-link",
-        label: "text-text-link",
-        note: "text-text-muted",
-      },
-      brand: {
-        root: "bg-brand-primary",
-        value: "text-text-on-brand",
-        label: "text-text-on-brand",
-        note: "text-text-on-brand/80",
-      },
-      turmeric: {
-        root: "bg-turmeric",
-        value: "text-text-heading",
-        label: "text-text-heading",
-        note: "text-text-body",
-      },
-    },
-    /** Diagonal 128 / 192 / 280px. `lg` is the canvas mark; `sm` fits a 300px MPU. */
     size: {
-      sm: {
-        root: "size-32 rounded-4",
-        value: "text-h1",
-        label: "text-overline",
-        note: "text-overline",
-      },
-      md: {
-        root: "size-48 rounded-5",
-        value: "text-display2",
-        label: "text-overline",
-        note: "text-caption",
-      },
-      lg: {
-        root: "size-70 rounded-5",
-        value: "text-canvas-h2",
-        label: "text-canvas-overline",
-        note: "text-subtitle2",
-      },
+      sm: { root: "text-offer-seal-sm" },
+      md: { root: "text-offer-seal-md" },
+      lg: { root: "text-offer-seal-lg" },
+      xl: { root: "text-offer-seal-xl" },
     },
-    /**
-     * Hangs the seal off a corner of the nearest positioned ancestor. The offset is an 18% self
-     * translate rather than a pixel bleed, so it is clamped by construction — the number reaches
-     * about 32% of the diagonal from the centre, and anything past 18% would clip it.
-     */
-    position: {
-      none: {},
-      topLeft: { root: "absolute top-0 left-0 -translate-x-[18%] -translate-y-[18%]" },
-      topRight: { root: "absolute top-0 right-0 translate-x-[18%] -translate-y-[18%]" },
-      bottomLeft: { root: "absolute bottom-0 left-0 -translate-x-[18%] translate-y-[18%]" },
-      bottomRight: { root: "absolute right-0 bottom-0 translate-x-[18%] translate-y-[18%]" },
+    color: {
+      neutral: { root: "bg-ink-000 text-pink-600" },
+      brand: { root: "bg-pink-500 text-ink-000" },
+      accent: { root: "bg-turmeric text-ink-900" },
     },
+    // In flow, a margin reserves the rotated tips' overhang (~0.15 × side; rotate-45 is not
+    // layout), so neighbours and a 360px page never meet a tip. A bleeding seal overhangs on purpose.
+    bleed: {
+      none: { root: "m-offer-seal-clear" },
+      sm: { root: "absolute" },
+      md: { root: "absolute" },
+    },
+    corner: { "top-right": {}, "top-left": {}, "bottom-right": {}, "bottom-left": {} },
   },
-  defaultVariants: { tone: "light", size: "md", position: "none" },
+  // Bleed is a fraction of the seal's own side. The counter-rotated value reaches 0.32 × side from
+  // the centre, so an offset past 0.18 × side clips it (design-system readme §4b): the only steps
+  // are 1/12 and 1/6, which is the design system's clamp made a compile-time guarantee.
+  compoundVariants: [
+    {
+      bleed: "sm",
+      corner: "top-right",
+      class: { root: "top-0 right-0 translate-x-1/12 -translate-y-1/12" },
+    },
+    {
+      bleed: "sm",
+      corner: "top-left",
+      class: { root: "top-0 left-0 -translate-x-1/12 -translate-y-1/12" },
+    },
+    {
+      bleed: "sm",
+      corner: "bottom-right",
+      class: { root: "right-0 bottom-0 translate-x-1/12 translate-y-1/12" },
+    },
+    {
+      bleed: "sm",
+      corner: "bottom-left",
+      class: { root: "bottom-0 left-0 -translate-x-1/12 translate-y-1/12" },
+    },
+    {
+      bleed: "md",
+      corner: "top-right",
+      class: { root: "top-0 right-0 translate-x-1/6 -translate-y-1/6" },
+    },
+    {
+      bleed: "md",
+      corner: "top-left",
+      class: { root: "top-0 left-0 -translate-x-1/6 -translate-y-1/6" },
+    },
+    {
+      bleed: "md",
+      corner: "bottom-right",
+      class: { root: "right-0 bottom-0 translate-x-1/6 translate-y-1/6" },
+    },
+    {
+      bleed: "md",
+      corner: "bottom-left",
+      class: { root: "bottom-0 left-0 -translate-x-1/6 translate-y-1/6" },
+    },
+  ],
 });
 
-export interface OfferSealProps
-  extends Omit<ComponentPropsWithoutRef<"div">, "children">, VariantProps<typeof offerSeal> {
-  /** The number, and the loudest thing on the artboard — "50%", "₹99", "1+1". */
+export interface OfferSealProps extends BasePropsWithColor<"div"> {
+  /** The number — "50%", "₹99" (format with formatRupees), "1+1". */
   value: string;
-  /** One short word under it, set as an overline: "Off", "Only", "Free". */
+  /** Short word under it, e.g. "Off" (rendered uppercase). */
   label?: string | undefined;
-  /** A line of small print under the label — a deadline, or what the offer applies to. */
+  /** Small print under the label. Not rendered at `sm`, where it would print at ~7px. */
   note?: string | undefined;
+  /**
+   * Side: sm 110 · md 156 (handoff hero) · lg 260 (1080 canvases) · xl 360px. In flow the seal
+   * also reserves 0.15 × side on every edge for its tips, so on a 360px page use `sm` or `md`.
+   */
+  size?: "sm" | "md" | "lg" | "xl" | undefined;
+  /** `neutral` is the white seal, `accent` the turmeric one. */
+  color?: "neutral" | "brand" | "accent" | undefined;
+  /** Where the seal hangs off its container when it bleeds. */
+  corner?: "top-right" | "top-left" | "bottom-right" | "bottom-left" | undefined;
+  /** How far past the corner: 1/12 or 1/6 of the side. The container needs `relative`. */
+  bleed?: "none" | "sm" | "md" | undefined;
 }
 
+/** Offer badge for posts, stories and banners — a rotated brand diamond, never a starburst. */
 export function OfferSeal({
-  className,
+  value,
   label,
   note,
-  position,
-  size,
-  tone,
-  value,
+  size = "lg",
+  color = "neutral",
+  corner = "top-right",
+  bleed = "none",
+  sx,
+  className,
   ...props
 }: OfferSealProps) {
-  const parts = offerSeal({ position, size, tone });
+  const styles = offerSeal({ size, color, corner, bleed });
   return (
-    <div className={parts.root({ className })} {...props}>
-      <div className={parts.content()}>
-        <span className={parts.value()}>{value}</span>
-        {label === undefined ? null : <span className={parts.label()}>{label}</span>}
-        {note === undefined ? null : <span className={parts.note()}>{note}</span>}
+    <div className={styles.root({ className: withSx(sx, className) })} {...props}>
+      <div className={styles.content()}>
+        <span className={styles.value()}>{value}</span>
+        {label ? <span className={styles.label()}>{label}</span> : null}
+        {note && size !== "sm" ? <span className={styles.note()}>{note}</span> : null}
       </div>
     </div>
   );

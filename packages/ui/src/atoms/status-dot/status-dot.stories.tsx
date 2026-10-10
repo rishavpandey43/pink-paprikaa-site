@@ -5,73 +5,73 @@ import { StatusDot } from "./status-dot";
 const meta = {
   title: "Atoms/StatusDot",
   component: StatusDot,
-  args: { tone: "open", label: "Open till 11:30pm" },
+  args: { status: "open", label: "Open till 11:30pm", size: "sm" },
   parameters: {
     docs: {
       description: {
         component:
-          "Outlet open/closed state and live order state. A rotated diamond, not a circle — the " +
-          "brand shape carries all the way down. `isPulsing` is for live orders only; a dot with " +
-          "no visible label announces its tone's own name, so colour never carries meaning alone.",
+          'Outlet open/closed state and live order state. A rotated diamond with the brand mark inside, not a circle — the brand shape carries all the way down. `isPulsing` is for live orders only (and stops under reduced motion). State is never colour alone: give a `label`, or a bare dot is announced by its status ("Open"), which `aria-label` can override.',
       },
     },
   },
 } satisfies Meta<typeof StatusDot>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-export const Tones: Story = {
-  render: (args) => (
-    <div className="flex flex-col items-start gap-3">
-      <StatusDot {...args} label="Open till 11:30pm" tone="open" />
-      <StatusDot {...args} label="Kitchen is busy" tone="busy" />
-      <StatusDot {...args} label="Opens 9am" tone="closed" />
-      <StatusDot {...args} label="Not taking orders" tone="danger" />
+export const Statuses: Story = {
+  name: "status",
+  render: () => (
+    <div className="grid gap-2.5">
+      <StatusDot status="open" label="Open till 11:30pm" />
+      <StatusDot status="busy" label="Kitchen is busy" />
+      <StatusDot status="closed" label="Opens 9am" />
+      <StatusDot status="danger" label="Not taking orders" />
     </div>
   ),
 };
 
-/** The throb is reserved for live orders — never for a static open/closed mark. */
-export const Live: Story = {
-  render: (args) => <StatusDot {...args} isPulsing label="On the tandoor" tone="live" />,
-};
-
-/** 10 / 14 / 18px. */
 export const Sizes: Story = {
-  render: (args) => (
+  name: "size",
+  render: () => (
     <div className="flex flex-wrap items-center gap-4">
-      <StatusDot {...args} label="Extra small" size="xs" />
-      <StatusDot {...args} label="Small" size="sm" />
-      <StatusDot {...args} label="Medium" size="md" />
-      <StatusDot {...args} label="Large" size="lg" />
+      <StatusDot size="sm" label="Small (14px)" />
+      <StatusDot size="md" label="Medium (16px)" />
     </div>
   ),
 };
 
-/** Without a visible label the dot keeps an accessible name of its own. */
+export const Pulse: Story = {
+  name: "isPulsing",
+  args: { status: "live", label: "On the tandoor", isPulsing: true },
+};
+
 export const Bare: Story = {
+  name: 'bare (size="md", no label)',
   render: () => (
-    <div className="flex flex-wrap items-center gap-4">
-      <StatusDot size="lg" tone="open" />
-      <StatusDot size="lg" tone="busy" />
-      <StatusDot size="lg" tone="closed" />
-      <StatusDot size="lg" tone="danger" />
+    <div className="flex items-center gap-3">
+      <StatusDot status="open" size="md" />
+      <StatusDot status="busy" size="md" />
+      <StatusDot status="closed" size="md" />
+      <StatusDot status="danger" size="md" />
     </div>
   ),
 };
 
-/** In context: the outlet strip that sits under the header. */
+/** In context: the outlet strip under the header. */
 export const OutletStrip: Story = {
-  parameters: { layout: "padded" },
+  name: "in context: outlet strip",
   render: () => (
-    <div className="flex flex-col items-start gap-3 rounded-4 bg-surface-sunken p-4">
-      <StatusDot label="Sector 57 — open till 11:30pm" tone="open" />
-      <StatusDot label="MKM Market — kitchen is busy" tone="busy" />
-      <StatusDot isPulsing label="Your order is on the tandoor" tone="live" />
+    <div className="grid justify-items-start gap-3 rounded-lg bg-surface-sunken p-4">
+      <StatusDot status="open" label="Sector 57 — open till 11:30pm" />
+      <StatusDot status="busy" label="Kitchen is busy — about 25 minutes" />
+      <StatusDot status="live" label="Your order is on the tandoor" isPulsing />
     </div>
   ),
+};
+
+export const Sx: Story = {
+  args: { label: "Open till 11:30pm", sx: { gap: 4, mt: 4 } },
 };

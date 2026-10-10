@@ -1,108 +1,137 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
-import { Pagination } from "./pagination";
+import { expectNoA11yViolations } from "#vitest.setup";
 
-const getPageHref = (page: number) => `/press?page=${String(page)}`;
+import type { LinkAsProps } from "../../lib/link-as";
+import { PageButton, Pagination } from "./pagination";
+
+const hrefFor = (page: number) => `/press?page=${String(page)}`;
+
+function pageNames(): string[] {
+  return within(screen.getByRole("navigation"))
+    .getAllByRole("link")
+    .map((link) => link.textContent);
+}
+
+function RouterLink({ href, className, children, "aria-current": ariaCurrent }: LinkAsProps) {
+  return (
+    <a href={href} className={className} aria-current={ariaCurrent} data-router="">
+      {children}
+    </a>
+  );
+}
 
 describe("Pagination", () => {
-  it("renders a named landmark holding an ordered list", () => {
-    render(<Pagination getPageHref={getPageHref} page={2} pages={3} />);
-
+  it("is a navigation landmark named Pagination, holding an ordered list", () => {
+    const { container } = render(<Pagination page={4} pages={12} getPageHref={hrefFor} />);
     expect(screen.getByRole("navigation", { name: "Pagination" })).toBeInTheDocument();
-    expect(screen.getByRole("list")).toBeInTheDocument();
+    expect(container.querySelector("nav > ol")).toBeInTheDocument();
   });
 
-  it("renders every page as a real link with its own href", () => {
-    render(<Pagination getPageHref={getPageHref} page={2} pages={3} />);
-
-    expect(screen.getByRole("link", { name: "Page 1" })).toHaveAttribute("href", "/press?page=1");
-    expect(screen.getByRole("link", { name: "Page 3" })).toHaveAttribute("href", "/press?page=3");
-  });
-
-  it("floods the current page and marks it for assistive tech", () => {
-    render(<Pagination getPageHref={getPageHref} page={2} pages={3} />);
-
-    const current = screen.getByRole("link", { name: "Page 2" });
-    expect(current).toHaveAttribute("aria-current", "page");
-    expect(current).toHaveClass("bg-brand-primary");
-  });
-
-  it("collapses the pages past one either side of the current one", () => {
-    render(<Pagination getPageHref={getPageHref} page={6} pages={12} />);
-
-    expect(screen.getByRole("link", { name: "Page 1" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Page 5" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Page 7" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Page 12" })).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Page 3" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Page 9" })).not.toBeInTheDocument();
-  });
-
-  it("offers no previous link on the first page and no next link on the last", () => {
-    const { rerender } = render(<Pagination getPageHref={getPageHref} page={1} pages={5} />);
-    expect(screen.queryByRole("link", { name: "Previous page" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Next page" })).toHaveAttribute(
-      "href",
-      "/press?page=2"
+  it("merges a caller className and keeps its own", () => {
+    render(<Pagination page={1} pages={3} getPageHref={hrefFor} className="max-w-96" />);
+    expect(screen.getByRole("navigation", { name: "Pagination" })).toHaveClass(
+      "max-w-96",
+      "min-w-0"
     );
+  });
 
-    rerender(<Pagination getPageHref={getPageHref} page={5} pages={5} />);
-    expect(screen.queryByRole("link", { name: "Next page" })).not.toBeInTheDocument();
+  it("shows the first, the last and one either side of the current page, with gaps between", () => {
+    const { container } = render(<Pagination page={4} pages={12} getPageHref={hrefFor} />);
+    expect(pageNames()).toEqual([
+      "Previous page",
+      "Page 1",
+      "Page 3",
+      "Page 4",
+      "Page 5",
+      "Page 12",
+      "Next page",
+    ]);
+    expect(container.querySelectorAll("li[aria-hidden='true']")).toHaveLength(2);
+  });
+
+  it("links each page by the href it is given and marks the current one", () => {
+    render(<Pagination page={4} pages={12} getPageHref={hrefFor} />);
+    expect(screen.getByRole("link", { name: "Page 5" })).toHaveAttribute("href", "/press?page=5");
+    const current = screen.getByRole("link", { name: "Page 4" });
+    expect(current).toHaveAttribute("aria-current", "page");
+    expect(current).toHaveClass("bg-surface-brand");
     expect(screen.getByRole("link", { name: "Previous page" })).toHaveAttribute(
       "href",
-      "/press?page=4"
+      "/press?page=3"
+    );
+    expect(screen.getByRole("link", { name: "Next page" })).toHaveAttribute(
+      "href",
+      "/press?page=5"
     );
   });
 
-  it("reports the page a guest asked for", async () => {
-    const handlePageChange = vi.fn();
-    render(
-      <Pagination getPageHref={getPageHref} onPageChange={handlePageChange} page={2} pages={5} />
+  it("has no previous link on the first page and no next link on the last", () => {
+    const { rerender } = render(<Pagination page={1} pages={5} getPageHref={hrefFor} />);
+    expect(screen.queryByRole("link", { name: "Previous page" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Next page" })).toBeInTheDocument();
+    rerender(<Pagination page={5} pages={5} getPageHref={hrefFor} />);
+    expect(screen.queryByRole("link", { name: "Next page" })).not.toBeInTheDocument();
+  });
+
+  it("shows every page when there are three", () => {
+    render(<Pagination page={2} pages={3} getPageHref={hrefFor} />);
+    expect(pageNames()).toEqual(["Previous page", "Page 1", "Page 2", "Page 3", "Next page"]);
+  });
+
+  it("keeps an out-of-range page inside the list", () => {
+    render(<Pagination page={40} pages={12} getPageHref={hrefFor} />);
+    expect(screen.getByRole("link", { name: "Page 12" })).toHaveAttribute("aria-current", "page");
+  });
+
+  it("renders nothing for a single page", () => {
+    const { container } = render(<Pagination page={1} pages={1} getPageHref={hrefFor} />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("renders page links through linkAs", () => {
+    const { container } = render(
+      <Pagination page={2} pages={3} getPageHref={hrefFor} linkAs={RouterLink} />
     );
-
-    await userEvent.click(screen.getByRole("link", { name: "Page 3" }));
-
-    expect(handlePageChange).toHaveBeenCalledOnce();
-    expect(handlePageChange.mock.calls[0]?.[0]).toBe(3);
-  });
-
-  it("reaches the next page from the keyboard", async () => {
-    const handlePageChange = vi.fn();
-    render(
-      <Pagination getPageHref={getPageHref} onPageChange={handlePageChange} page={1} pages={3} />
-    );
-
-    screen.getByRole("link", { name: "Next page" }).focus();
-    await userEvent.keyboard("{Enter}");
-
-    expect(handlePageChange.mock.calls[0]?.[0]).toBe(2);
-  });
-
-  it("keeps a single page pager inert at both ends", () => {
-    render(<Pagination getPageHref={getPageHref} page={1} pages={1} />);
-
-    expect(screen.getAllByRole("link")).toHaveLength(1);
-    expect(screen.getByRole("link", { name: "Page 1" })).toHaveAttribute("aria-current", "page");
-  });
-
-  it("clamps a page number outside the range", () => {
-    render(<Pagination getPageHref={getPageHref} page={99} pages={4} />);
-
-    expect(screen.getByRole("link", { name: "Page 4" })).toHaveAttribute("aria-current", "page");
-  });
-
-  it("merges a caller className", () => {
-    render(<Pagination className="max-w-96" getPageHref={getPageHref} page={1} pages={3} />);
-
-    const nav = screen.getByRole("navigation", { name: "Pagination" });
-    expect(nav).toHaveClass("max-w-96");
-    expect(nav).toHaveClass("w-full");
+    expect(container.querySelectorAll("a[data-router]")).toHaveLength(5);
+    expect(screen.getByRole("link", { name: "Page 2" })).toHaveAttribute("aria-current", "page");
   });
 
   it("has no accessibility violations", async () => {
-    const { container } = render(<Pagination getPageHref={getPageHref} page={4} pages={12} />);
+    const { container } = render(<Pagination page={4} pages={12} getPageHref={hrefFor} />);
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <Pagination
+        page={1}
+        pages={3}
+        getPageHref={(page) => `/menu/${String(page)}`}
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
+  });
+
+  it("supports client paging via onPageChange", async () => {
+    const user = userEvent.setup();
+    const onPageChange = vi.fn();
+    render(<Pagination page={2} pages={5} onPageChange={onPageChange} />);
+    await user.click(screen.getByRole("button", { name: "Page 3" }));
+    expect(onPageChange).toHaveBeenCalledWith(3);
+  });
+
+  it("exports PageButton with idle, current and inert states", () => {
+    const { rerender } = render(<PageButton state="idle">2</PageButton>);
+    expect(screen.getByRole("button", { name: "2" })).toHaveClass("hover:border-pink-300");
+    rerender(
+      <PageButton state="current" disabled>
+        2
+      </PageButton>
+    );
+    expect(screen.getByRole("button", { name: "2" })).toHaveClass("bg-surface-brand");
   });
 });

@@ -1,185 +1,205 @@
 "use client";
 
-import type { ChangeEvent, ComponentPropsWithoutRef, KeyboardEvent } from "react";
+import type { ReactNode, Ref } from "react";
+import { useId, useState } from "react";
 
-import { useId, useRef, useState } from "react";
-
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
-import { FieldMessage, type FieldStatus } from "../field/field";
+import type { DesignFieldChrome } from "../../lib/design-field";
+import { withDesignField } from "../../lib/design-field";
+import { fieldControlVariants } from "../../lib/field-control";
+import { FieldMessage, hasFieldMessage } from "../../lib/field-message";
+import type { FieldStatus } from "../../lib/field-status";
+import { withSx } from "../../lib/sx";
+import { useControllableState } from "../../lib/use-controllable-state";
 
 const otpInput = componentVariants({
   slots: {
-    root: "grid min-w-0 gap-2",
-    // Wraps to a second row rather than overflowing — six 48px cells do not fit 360px.
-    row: "flex flex-wrap gap-2.5",
+    root: "grid gap-2",
+    field: "relative w-fit max-w-full",
+    cells: "flex flex-wrap gap-2.5",
+    /** Layered over the shared field box (Plan 2b): a 48×56 cell with a centred mono digit. */
+    cell: "w-12 justify-center px-0 font-mono text-otp-digit text-text-heading",
+    input:
+      "absolute inset-0 size-full cursor-text appearance-none border-0 bg-transparent p-0 text-body text-transparent caret-transparent outline-hidden selection:bg-transparent disabled:cursor-not-allowed",
   },
-});
-
-const otpCell = componentVariants({
-  base: [
-    "h-14 w-12 shrink-0 rounded-3 text-center font-mono text-subtitle1 text-text-heading",
-    "border border-(--field-border-default) bg-(--field-bg-default) outline-none",
-    "transition-[border-color,box-shadow] duration-(--duration-fast) ease-out",
-    "focus:border-2 focus:border-(--field-border-focus) focus:shadow-focus-ring",
-    // Disabled is a real grey fill, never a reduced opacity (state contract).
-    "disabled:cursor-not-allowed disabled:border-border-subtle",
-    "disabled:bg-(--field-bg-disabled) disabled:text-(--field-fg-disabled)",
-  ],
   variants: {
-    /** The shared form-status system, borrowed whole from `Field`. */
-    status: {
-      default: "",
-      error: "border-2 border-(--field-border-error) focus:border-(--field-border-error)",
-      success: "border-2 border-(--field-border-success) focus:border-(--field-border-success)",
-      warning: "border-2 border-(--field-border-warning) focus:border-(--field-border-warning)",
-      disabled: "",
-      readOnly: "bg-(--field-bg-readonly)",
-      loading: "",
+    state: {
+      empty: {},
+      filled: { cell: "border-2" },
+      active: { cell: "border-2 bg-surface-page-alt shadow-focus-ring" },
     },
-    /** A cell with a digit in it takes the 2px brand border, so progress is visible at a glance. */
-    isFilled: { true: "border-2 border-brand-primary", false: "" },
+    // The box's status borders come from fieldControlVariants; this only gates the compound below.
+    status: { default: {}, error: {}, success: {}, warning: {} },
+    // The cells are skins with no control inside, so the box's `has-[>:is(input,…):disabled]`
+    // paint never reaches them: disabled reproduces it whole.
+    isDisabled: {
+      true: { cell: "cursor-not-allowed border-border-subtle bg-ink-100 text-ink-400" },
+    },
   },
   compoundVariants: [
-    // A status colour outranks the filled border — the whole code is wrong, not this one cell.
-    { isFilled: true, status: "error", class: "border-(--field-border-error)" },
-    { isFilled: true, status: "success", class: "border-(--field-border-success)" },
-    { isFilled: true, status: "warning", class: "border-(--field-border-warning)" },
+    {
+      status: "default",
+      isDisabled: false,
+      state: ["filled", "active"],
+      class: { cell: "border-border-brand" },
+    },
+    {
+      status: "error",
+      isDisabled: false,
+      state: "active",
+      class: { cell: "shadow-field-ring-danger" },
+    },
+    {
+      status: "success",
+      isDisabled: false,
+      state: "active",
+      class: { cell: "shadow-field-ring-success" },
+    },
+    {
+      status: "warning",
+      isDisabled: false,
+      state: "active",
+      class: { cell: "shadow-field-ring-warning" },
+    },
   ],
-  defaultVariants: { status: "default", isFilled: false },
+  defaultVariants: { state: "empty", status: "default", isDisabled: false },
 });
 
-const EMPTY_CELL = " ";
+type CellState = "empty" | "filled" | "active";
 
-export interface OtpInputProps extends Omit<
-  ComponentPropsWithoutRef<"div">,
-  "defaultValue" | "onChange"
-> {
-  /** How many digits the code has. Four for a quick re-verify, six for a fresh sign-in. */
+/** The wrapper takes the div's native props; the code field keeps `ref`, `name`, `disabled`, `onBlur`. */
+export interface OtpInputProps
+  extends
+    Omit<
+      BaseProps<"div">,
+      "ref" | "onBlur" | "defaultValue" | "children" | "aria-describedby" | "aria-invalid"
+    >,
+    DesignFieldChrome {
+  /** Accessible name of the code field, e.g. "Login code". */
+  label: string;
   length?: 4 | 6 | undefined;
-  /** The code so far. Pass it with `onChange` to drive the cells from your own state. */
   value?: string | undefined;
-  /** The code to start from when the component keeps its own state. */
   defaultValue?: string | undefined;
-  /** The shared form status. `disabled` and `readOnly` drive the cells' own attributes. */
+  onValueChange?: ((value: string) => void) | undefined;
+  onBlur?: (() => void) | undefined;
+  /** Border and glyph colour. A status needs a `message`: never a colour without words. */
   status?: FieldStatus | undefined;
-  /** The sentence explaining a non-default status. It replaces the hint. */
-  message?: string | undefined;
-  /** Neutral helper text under the cells — "The code lasts 10 minutes.", say. */
-  hint?: string | undefined;
-  /** Accessible name for the group of cells. */
-  label?: string | undefined;
-  /** Called with the whole code — not the single digit — every time a cell changes. */
-  onChange?: ((value: string) => void) | undefined;
+  /**
+   * The line under the cells: on the default status a neutral hint ("The code lasts 10
+   * minutes."), with a status its message and glyph ("Verified. Signing you in.").
+   */
+  message?: ReactNode;
+  disabled?: boolean | undefined;
+  name?: string | undefined;
+  /** The code field — react-hook-form's Controller focuses it on error. */
+  ref?: Ref<HTMLInputElement> | undefined;
 }
 
 /**
- * The mobile sign-in code, one cell per digit. Typing walks forward, Backspace walks back, and a
- * pasted code fills the cells from wherever it lands.
+ * The mobile-OTP code — the app's only sign-in. One real input behind decorative cells: SMS
+ * autofill, paste, Backspace and selection are the platform's, and assistive tech meets one field.
+ * Filled cells take a 2px pink border; the cells wrap to a second row rather than overflow at 360px.
  */
 export function OtpInput({
-  className,
+  label,
   length = 6,
   value,
-  defaultValue = "",
+  defaultValue,
+  onValueChange,
+  onBlur,
   status = "default",
   message,
   hint,
-  label = "One-time code",
-  onChange,
+  error,
+  success,
+  warning,
+  optional,
+  disabled = false,
+  name,
+  sx,
+  className,
+  ref,
   ...props
 }: OtpInputProps) {
-  const generatedId = useId();
-  const messageId = `${generatedId}-description`;
-  const [internalValue, setInternalValue] = useState(defaultValue);
-  const cellsRef = useRef<(HTMLInputElement | null)[]>([]);
+  const [code, setCode] = useControllableState({
+    value,
+    defaultValue: defaultValue ?? "",
+    onChange: onValueChange,
+  });
+  const [isFocused, setIsFocused] = useState(false);
+  const messageId = `${useId()}-message`;
+  const styles = otpInput({ status, isDisabled: disabled });
+  const box = fieldControlVariants({ size: "lg", status });
+  const activeIndex = isFocused ? Math.min(code.length, length - 1) : -1;
 
-  const current = value ?? internalValue;
-  const isDisabled = status === "disabled";
-  const isReadOnly = status === "readOnly";
-  const hasDescription =
-    (message !== undefined && message !== "") || (hint !== undefined && hint !== "");
-  const slots = otpInput();
+  function stateOf(index: number): CellState {
+    if (index === activeIndex) return "active";
+    return index < code.length ? "filled" : "empty";
+  }
 
-  const digitAt = (index: number) => (current[index] ?? EMPTY_CELL).trim();
-
-  const commit = (next: string) => {
-    if (value === undefined) {
-      setInternalValue(next);
-    }
-    onChange?.(next);
-  };
-
-  const focusCell = (index: number) => {
-    cellsRef.current[Math.min(Math.max(index, 0), length - 1)]?.focus();
-  };
-
-  const handleChange = (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
-    const digits = event.target.value.replace(/\D/g, "");
-    const cells = Array.from({ length }, (_, cell) => current[cell] ?? EMPTY_CELL);
-
-    if (digits === "") {
-      cells[index] = EMPTY_CELL;
-      commit(cells.join("").trimEnd());
-      return;
-    }
-
-    // One typed digit lands here; a pasted code spills forward across the cells that follow.
-    Array.from(digits).forEach((digit, offset) => {
-      if (index + offset < length) {
-        cells[index + offset] = digit;
-      }
-    });
-    commit(cells.join("").trimEnd());
-    focusCell(index + digits.length);
-  };
-
-  const handleKeyDown = (index: number) => (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Backspace" && digitAt(index) === "" && index > 0) {
-      event.preventDefault();
-      const cells = Array.from({ length }, (_, cell) => current[cell] ?? EMPTY_CELL);
-      cells[index - 1] = EMPTY_CELL;
-      commit(cells.join("").trimEnd());
-      focusCell(index - 1);
-    }
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      focusCell(index - 1);
-    }
-    if (event.key === "ArrowRight") {
-      event.preventDefault();
-      focusCell(index + 1);
-    }
-  };
-
-  return (
-    <div className={slots.root({ class: className })} {...props}>
-      <div
-        aria-describedby={hasDescription ? messageId : undefined}
-        aria-label={label}
-        className={slots.row()}
-        role="group"
-      >
-        {Array.from({ length }, (_, index) => (
+  const chrome = { label, hint, error, success, warning, optional };
+  return withDesignField(
+    chrome,
+    undefined,
+    status,
+    (wired) => (
+      <div {...props} className={styles.root({ className: withSx(sx, className) })}>
+        <div className={styles.field()}>
+          <div aria-hidden="true" data-surface="light" className={styles.cells()}>
+            {Array.from({ length }, (_, index) => {
+              const state = stateOf(index);
+              return (
+                <span
+                  key={index}
+                  data-state={state}
+                  className={box.root({ className: styles.cell({ state }) })}
+                >
+                  {code[index]}
+                </span>
+              );
+            })}
+          </div>
           <input
-            aria-invalid={status === "error" || undefined}
-            aria-label={`Digit ${String(index + 1)} of ${String(length)}`}
-            autoComplete={index === 0 ? "one-time-code" : "off"}
-            className={otpCell({ status, isFilled: digitAt(index) !== "" })}
-            disabled={isDisabled}
-            inputMode="numeric"
-            key={index}
-            onChange={handleChange(index)}
-            onKeyDown={handleKeyDown(index)}
-            readOnly={isReadOnly}
-            ref={(node) => {
-              cellsRef.current[index] = node;
-            }}
+            ref={ref}
+            id={wired.id === "" ? undefined : wired.id}
             type="text"
-            value={digitAt(index)}
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            pattern="[0-9]*"
+            aria-label={label}
+            aria-describedby={
+              wired["aria-describedby"] ??
+              (hasFieldMessage({ status: wired.status, message, hint }) ? messageId : undefined)
+            }
+            aria-invalid={wired.status === "error" || wired["aria-invalid"] ? true : undefined}
+            name={name}
+            value={code}
+            disabled={disabled}
+            onChange={(event) => {
+              setCode(event.currentTarget.value.replace(/\D/g, "").slice(0, length));
+            }}
+            onFocus={() => {
+              setIsFocused(true);
+            }}
+            // The caret is transparent and the cells show only "the next one", so pin the caret to
+            // the end: an arrow key or a tap can never move the insertion point out of sight.
+            onSelect={(event) => {
+              const end = event.currentTarget.value.length;
+              event.currentTarget.setSelectionRange(end, end);
+            }}
+            onBlur={() => {
+              setIsFocused(false);
+              onBlur?.();
+            }}
+            className={styles.input()}
           />
-        ))}
+        </div>
+        {wired.id === "" ? (
+          <FieldMessage id={messageId} status={wired.status} message={message} hint={hint} />
+        ) : null}
       </div>
-      <FieldMessage hint={hint} id={messageId} message={message} status={status} />
-    </div>
+    ),
+    { ignoreLabel: true }
   );
 }

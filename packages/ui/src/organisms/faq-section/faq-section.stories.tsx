@@ -1,45 +1,99 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { MessageCircle, Phone } from "lucide-react";
+import { expect } from "storybook/test";
 
-import { type AccordionItem } from "../../molecules/accordion/accordion";
+import { Button } from "../../atoms/button/button";
+import { Card } from "../../atoms/card/card";
+import { Logo } from "../../atoms/logo/logo";
+import { StatusDot } from "../../atoms/status-dot/status-dot";
+import { Typography } from "../../atoms/typography/typography";
+import type { AccordionItem } from "../../molecules/accordion/accordion";
+import { BRAND, VIEWPORT_1280, VIEWPORT_360, VIEWPORT_768 } from "../story-fixtures";
 import { FaqSection } from "./faq-section";
 
-const ITEMS: AccordionItem[] = [
+/** Handoff Home FAQ (rates.js values filled in). */
+const FAQ: AccordionItem[] = [
   {
-    question: "Is everything vegetarian?",
+    value: "delivery",
+    question: "Where do you deliver?",
     answer:
-      "Yes — 100% vegetarian kitchen. A few bakes contain egg and are marked on the menu, so a " +
-      "pure-veg table can order around them.",
+      "Free delivery within 3 km of Sector 57. Further away, we agree the charge with you on WhatsApp. Catering delivery is free up to 8 km.",
   },
   {
-    question: "Do you deliver?",
-    answer: "Through Swiggy and Zomato across Sector 57 and the sectors either side of it.",
+    value: "pause",
+    question: "Can I pause or skip a day?",
+    answer: "Yes. Tell us by 9pm the day before. Skipped meals move to the end of your plan.",
   },
   {
-    question: "Can I book a table?",
+    value: "customise",
+    question: "Can I customise my meals?",
+    answer: "Yes — spice level, Jain, no onion-garlic, fewer rotis. Set it once and we remember.",
+  },
+  {
+    value: "gst",
+    question: "Do I get a GST bill?",
+    answer: "Yes, for every meal plan, every catering order and every office order.",
+  },
+  {
+    value: "trial",
+    question: "Can I try it before I commit?",
     answer:
-      "Up to six guests online. For a larger group, call the outlet and we will hold the corner " +
-      "table.",
+      "Yes. Start with a trial: 5 meals on any days within a week — Classic ₹650, Everyday ₹600. No lock-in after that.",
   },
   {
-    question: "What does a meal for two cost?",
-    answer: "Around ₹400 for two at the front stall, ₹600–₹800 for a full dine-in spread.",
+    value: "veg",
+    question: "Is it really pure vegetarian?",
+    answer:
+      "One kitchen, pure vegetarian, no exceptions. No egg, no meat, ever. We are a pure-veg restaurant, not a mixed kitchen.",
   },
 ];
 
-const FRANCHISE: AccordionItem[] = [
-  {
-    question: "What does a franchise cost to open?",
-    answer: "It depends on the format and the site. We share the full sheet after the first call.",
-  },
-  {
-    question: "Do you help with the kitchen build?",
-    answer: "Yes — equipment list, layout and the supplier contacts are part of the playbook.",
-  },
-  {
-    question: "How long does an outlet take to open?",
-    answer: "Roughly four months from signed site to first service, if the site is ready.",
-  },
+const QUICK_QUESTIONS = [
+  "Do you deliver to my area?",
+  "Can I pause for a week?",
+  "Do you cater parties?",
 ];
+
+/** The handoff FaqBlock's help card — page-specific content, composed here only for the story. */
+function HelpCard() {
+  return (
+    <Card>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <Logo variant="symbol" color="badge" isDecorative className="w-11" />
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <Typography as="span" weight="bold" className="font-display">
+              Still have a question?
+            </Typography>
+            <StatusDot status="open" label="A real person replies, 8am – 11:30pm" />
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Typography as="span" variant="overline" color="muted">
+            Tap to ask on WhatsApp
+          </Typography>
+          <div className="flex flex-wrap gap-2">
+            {QUICK_QUESTIONS.map((question) => (
+              <Button key={question} asChild variant="secondary" size="sm" icon={MessageCircle}>
+                <a href={`${BRAND.whatsappHref}?text=${encodeURIComponent(question)}`}>
+                  {question}
+                </a>
+              </Button>
+            ))}
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <Button asChild isFullWidth icon={MessageCircle}>
+            <a href={BRAND.whatsappHref}>WhatsApp</a>
+          </Button>
+          <Button asChild isFullWidth variant="secondary" icon={Phone}>
+            <a href={BRAND.phoneHref}>Call</a>
+          </Button>
+        </div>
+      </div>
+    </Card>
+  );
+}
 
 const meta = {
   title: "Organisms/FaqSection",
@@ -47,63 +101,70 @@ const meta = {
   args: {
     overline: "Questions",
     title: "The things people ask",
-    lede: "Everything guests ask us at the counter, answered once.",
-    items: ITEMS,
+    lede: "Everything guests ask us at the counter.",
+    items: FAQ,
   },
-  argTypes: { items: { control: false }, title: { control: "text" } },
   parameters: {
     layout: "fullscreen",
     docs: {
       description: {
         component:
-          "Two columns — heading left, questions right — stacking to one on a narrow screen. The " +
-          "first answer opens on arrival, because the question at the top of the list is the one " +
-          "most guests came for. Answers are one or two short sentences; anything longer belongs " +
-          "on its own page.",
+          "Two-column FAQ — heading left, accordion right, stacking below lg. The first answer opens by default; answers are one or two short sentences. `aside` sits under the heading and the whole column sticks at lg (the handoff's help card). Native `<details name>`: zero JS, find-in-page works, answers are in the HTML.",
       },
     },
   },
 } satisfies Meta<typeof FaqSection>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
+export const Playground: Story = {};
+
+/** Card row: the two-column FAQ. */
 export const Default: Story = {};
 
-/** With no lede the heading sits alone in the left column and the answers carry the section. */
-export const WithoutLede: Story = {
-  render: ({ items }) => (
-    <FaqSection items={items} overline="Questions" title="The things people ask" />
-  ),
-};
-
-/** Open a different question when the traffic says another one is the real first question. */
-export const SecondOpen: Story = {
-  args: { defaultOpen: ["Do you deliver?"] },
-};
-
-/** Every row closed, for a long list a guest is meant to scan rather than read. */
-export const AllClosed: Story = {
-  args: { defaultOpen: [] },
-};
-
-/** Several answers at once, for lists that only make sense side by side. */
-export const Multiple: Story = {
+/** Handoff FaqBlock — sticky heading column with the help card. */
+export const HandoffWithAside: Story = {
   args: {
-    isMultiple: true,
-    defaultOpen: ["Is everything vegetarian?", "Do you deliver?"],
+    title: "Before you order",
+    lede: "The things people ask us most. Anything else, just message us.",
+    aside: <HelpCard />,
+    className: "bg-surface-page-alt",
   },
 };
 
-/** Under a page section that already owns an `h2`, drop the section — the questions follow. */
-export const HeadingLevels: Story = {
-  render: () => (
-    <FaqSection headingLevel={3} items={FRANCHISE} overline="Franchise" title="Before you apply" />
-  ),
+export const Multiple: Story = { args: { isMultiple: true } };
+
+/** A page that links to one answer opens that one instead of the first. */
+export const SecondOpen: Story = {
+  args: { defaultOpen: ["pause"] },
+  play: async ({ canvas, canvasElement }) => {
+    await expect(canvasElement.querySelectorAll("details[open]")).toHaveLength(1);
+    await expect(canvas.getByText("Can I pause or skip a day?").closest("details")).toHaveAttribute(
+      "open"
+    );
+  },
 };
 
-/** At 360px the two columns stack and the questions keep their 44px hit target. */
-export const Narrow: Story = {
-  globals: { viewport: { value: "floor360" } },
+export const AllClosed: Story = {
+  args: { defaultOpen: [] },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelectorAll("details[open]")).toHaveLength(0);
+  },
 };
+
+/** No lede: the heading sits alone in its column and the answers carry the section. */
+export const WithoutLede: Story = { args: { lede: undefined } };
+
+/** Under a page section that already owns the h2, the FAQ steps down a level. */
+export const HeadingLevel3: Story = {
+  args: { headingLevel: 3, overline: "Homely Meals", title: "Plans and delivery" },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("heading", { level: 3 })).toHaveTextContent("Plans and delivery");
+    await expect(canvas.getAllByRole("heading", { level: 4 })).toHaveLength(FAQ.length);
+  },
+};
+
+export const Mobile: Story = { ...HandoffWithAside, globals: VIEWPORT_360 };
+export const Tablet: Story = { ...HandoffWithAside, globals: VIEWPORT_768 };
+export const Desktop: Story = { ...HandoffWithAside, globals: VIEWPORT_1280 };

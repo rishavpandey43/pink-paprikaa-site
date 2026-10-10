@@ -1,182 +1,390 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
+import { Phone } from "lucide-react";
 import { useState } from "react";
+import { expect, screen, waitFor, within } from "storybook/test";
 
 import { Button } from "../../atoms/button/button";
+import { Checkbox } from "../../atoms/checkbox/checkbox";
 import { Input } from "../../atoms/input/input";
 import { Select } from "../../atoms/select/select";
+import { ringClippers } from "../../lib/story-ring";
 import { Field } from "../../molecules/field/field";
-import { Dialog, type DialogProps } from "./dialog";
+import { VIEWPORT_360 } from "../story-fixtures";
+import { Dialog, type DialogProps, Drawer } from "./dialog";
+
+/**
+ * Radix hides the page behind an open dialog while trapping focus; `aria-hidden-focus` misreads
+ * it. A story's `rules` replace the preview's list, so `color-contrast` (owned by the token
+ * contrast policy) is switched off again here.
+ */
+const OPEN_DIALOG_A11Y = {
+  a11y: {
+    config: {
+      rules: [
+        { id: "color-contrast", enabled: false },
+        { id: "aria-hidden-focus", enabled: false },
+      ],
+    },
+  },
+};
+
+const BOOKING_FORM = (
+  <div className="grid gap-3">
+    <Field label="Outlet">
+      {(control) => (
+        <Select {...control} options={[{ value: "sector-57", label: "Sector 57, Gurgaon" }]} />
+      )}
+    </Field>
+    <Field label="Mobile number">
+      {(control) => <Input {...control} type="tel" icon={Phone} placeholder="98765 43210" />}
+    </Field>
+  </div>
+);
 
 const meta = {
   title: "Organisms/Dialog",
   component: Dialog,
   args: {
-    title: "Remove this item?",
-    children: "Chilli Paneer will come off your order.",
-  },
-  argTypes: {
-    children: { control: false },
-    container: { control: false },
-    footer: { control: false },
-    trigger: { control: false },
+    trigger: <Button>Book a table</Button>,
+    title: "Book a table",
+    children: BOOKING_FORM,
+    footer: (
+      <>
+        <Button variant="ghost" size="sm">
+          Cancel
+        </Button>
+        <Button size="sm">Hold My Table</Button>
+      </>
+    ),
   },
   parameters: {
-    layout: "centered",
     docs: {
+      story: { inline: false, height: "480px" },
       description: {
         component:
-          "The modal for a decision that has to be made now: a 24px card on a 56% ink scrim, " +
-          "with the focus trap, Escape handling and scroll lock all coming from Radix. Reach for " +
-          '`variant="sheet"` on a phone screen, where a centred box leaves the thumb nowhere to land.',
+          'A decision that must be made now. `variant="modal"` is centred (24px radius, shadow-4, 56% ink scrim); `variant="sheet"` is the app\'s bottom sheet with a grab handle and top corners only. Focus is trapped, Escape and the scrim close it, focus returns to the trigger (or, without one, to what had focus when it opened — Safari and Firefox on macOS do not focus a clicked button, so pass a `trigger` where a pointer open must get focus back), the page cannot scroll. `portalContainer` renders it inside a positioned frame (AppShell\'s overlay slot) instead of the page body.',
       },
     },
   },
 } satisfies Meta<typeof Dialog>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-/** Opened from its own trigger — the shape a real page uses. */
-export const Default: Story = {
-  args: {
-    trigger: <Button variant="secondary">Remove Item</Button>,
-    footer: (
-      <>
-        <Button variant="ghost">Keep It</Button>
-        <Button>Remove</Button>
-      </>
-    ),
-  },
+/** The panel fades and slides in (`animate-sheet-in`): wait for it to land before measuring. */
+async function settle(dialog: HTMLElement) {
+  await Promise.all(dialog.getAnimations().map((animation) => animation.finished));
+  return dialog;
+}
+
+/**
+ * The panel clips (`overflow-hidden`) and its body scrolls (`overflow-y-auto`), so the padding must
+ * hold every focus ring whole: tab round the trapped focus — close button, fields (whose ring is
+ * the field box's), footer buttons — and prove nothing cuts any of them.
+ */
+function proveRingsWhole(stops: number): NonNullable<Story["play"]> {
+  return async ({ userEvent }) => {
+    const dialog = await settle(await screen.findByRole("dialog"));
+    const seen = new Set<Element>();
+    for (let step = 0; step <= stops; step += 1) {
+      await userEvent.tab();
+      const active = document.activeElement;
+      if (!(active instanceof HTMLElement) || seen.has(active)) break;
+      seen.add(active);
+      await expect(dialog).toContainElement(active);
+      // Select's combobox is a button; the focus ring lives on FieldControl (focus-within).
+      const ring = active.matches("input, select, textarea, button[role='combobox']")
+        ? active.parentElement
+        : active;
+      if (ring === null) throw new Error("a field control outside its field box");
+      await expect(ringClippers(ring)).toEqual([]);
+    }
+    await expect(seen.size).toBe(stops);
+  };
+}
+
+export const Playground: Story = {};
+
+/** Card row: centred modal. */
+export const CentredModal: Story = {
+  args: { defaultOpen: true, size: "sm" },
+  parameters: OPEN_DIALOG_A11Y,
+  play: proveRingsWhole(5),
 };
 
-/** The bottom sheet: full width, a grab handle, and only its top corners rounded. */
+/** Card row: sheet. */
 export const Sheet: Story = {
   args: {
+    defaultOpen: true,
     variant: "sheet",
-    trigger: <Button variant="secondary">Open Sheet</Button>,
+    title: "Remove this item?",
+    children: "Chilli Paneer will come off your order.",
     footer: (
       <>
-        <Button variant="ghost">Keep It</Button>
-        <Button>Remove</Button>
+        <Button variant="ghost" size="sm">
+          Keep It
+        </Button>
+        <Button size="sm">Remove</Button>
       </>
     ),
   },
+  parameters: OPEN_DIALOG_A11Y,
+  play: proveRingsWhole(3),
 };
 
-/** A description sits under the title and is wired as the dialog's accessible description. */
-export const WithDescription: Story = {
-  args: {
-    title: "Hold your table?",
-    description: "We keep it for 15 minutes past the slot.",
-    children: "Sector 57 seats 24 people, so weekend evenings go quickly.",
-    trigger: <Button variant="secondary">Book a Table</Button>,
-    footer: (
-      <>
-        <Button variant="ghost">Cancel</Button>
-        <Button>Hold My Table</Button>
-      </>
-    ),
-  },
+export const Large: Story = {
+  args: { defaultOpen: true, size: "lg", description: "We hold a table for 15 minutes." },
+  parameters: OPEN_DIALOG_A11Y,
 };
 
-/** A form body. The dialog scrolls its own middle, so the footer never leaves the screen. */
-export const WithForm: Story = {
-  args: {
-    title: "Book a table",
-    size: "sm",
-    trigger: <Button variant="secondary">Book a Table</Button>,
-    children: (
-      <div className="grid gap-4">
-        <Field htmlFor="dialog-outlet" label="Outlet">
-          <Select id="dialog-outlet" options={["Sector 57", "MKM Market"]} />
-        </Field>
-        <Field htmlFor="dialog-mobile" label="Mobile number">
-          <Input id="dialog-mobile" placeholder="98765 43210" />
-        </Field>
-      </div>
-    ),
-    footer: (
-      <>
-        <Button variant="ghost">Cancel</Button>
-        <Button>Hold My Table</Button>
-      </>
-    ),
-  },
-};
-
-/** 328 / 460 / 640px. Each is capped at the viewport, so none of them overflow 360px. */
-export const Sizes: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Dialog {...args} size="sm" trigger={<Button variant="secondary">Small</Button>} />
-      <Dialog {...args} size="md" trigger={<Button variant="secondary">Medium</Button>} />
-      <Dialog {...args} size="lg" trigger={<Button variant="secondary">Large</Button>} />
-    </div>
-  ),
-};
-
-/** No close glyph: the guest has to answer rather than dismiss. */
-export const MustBeAnswered: Story = {
-  args: {
-    hasCloseButton: false,
-    title: "Clear your order?",
-    children: "All four items come off. This cannot be undone.",
-    trigger: <Button variant="secondary">Clear Order</Button>,
-    footer: (
-      <>
-        <Button variant="ghost">Keep My Order</Button>
-        <Button>Clear It</Button>
-      </>
-    ),
+/** Keyboard: open from the trigger, Escape closes, focus returns. */
+export const KeyboardFlow: Story = {
+  play: async ({ canvas, userEvent }) => {
+    const trigger = canvas.getByRole("button", { name: "Book a table" });
+    await userEvent.click(trigger);
+    await expect(
+      await settle(await screen.findByRole("dialog", { name: "Book a table" }))
+    ).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    await expect(trigger).toHaveFocus();
   },
 };
 
 /**
- * Inside a phone frame the dialog anchors to the frame, not the viewport — `position="container"`
- * plus the same element as `container`. Both are needed; one without the other misplaces it.
+ * A decision that must be answered: no close button, and the caller keeps the dialog open when
+ * Escape or the scrim ask to close (it passes no `onOpenChange`), so the footer's buttons are the
+ * only way out.
  */
-function AnchoredSheet(args: DialogProps) {
-  const [frame, setFrame] = useState<HTMLDivElement | null>(null);
+function MustBeAnsweredDialog(args: DialogProps) {
+  const [isOpen, setIsOpen] = useState(true);
+  return (
+    <Dialog
+      {...args}
+      open={isOpen}
+      hasCloseButton={false}
+      footer={
+        <>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
+            Keep It
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
+            Remove
+          </Button>
+        </>
+      }
+    />
+  );
+}
 
+export const MustBeAnswered: Story = {
+  args: {
+    trigger: undefined,
+    title: "Remove this item?",
+    children: "Chilli Paneer will come off your order.",
+  },
+  parameters: OPEN_DIALOG_A11Y,
+  render: (args) => <MustBeAnsweredDialog {...args} />,
+  play: async ({ userEvent }) => {
+    const dialog = await settle(await screen.findByRole("dialog", { name: "Remove this item?" }));
+    await expect(within(dialog).queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
+    await expect(screen.getByRole("dialog", { name: "Remove this item?" })).toBeVisible();
+    // A click outside the panel lands on the scrim; it cannot close the dialog either.
+    const scrim = document.querySelector<HTMLElement>(".bg-surface-overlay");
+    if (scrim === null) throw new Error("no scrim");
+    await userEvent.click(scrim);
+    await expect(screen.getByRole("dialog", { name: "Remove this item?" })).toBeVisible();
+    await userEvent.click(within(dialog).getByRole("button", { name: "Keep It" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  },
+};
+
+/**
+ * The sheet inside a phone frame: the frame is `portalContainer`, and its `contain-layout` (as
+ * AppShell's frame has) makes it the containing block for the fixed scrim, so the sheet anchors to
+ * the frame, not the viewport.
+ */
+function FramedSheet(args: DialogProps) {
+  const [frame, setFrame] = useState<HTMLDivElement | null>(null);
   return (
     <div
-      className="relative h-75 w-60 overflow-hidden rounded-4 border border-border-subtle bg-surface-page-alt"
       ref={setFrame}
+      className="relative h-165 w-90 overflow-hidden rounded-lg border border-border-subtle bg-surface-page-alt contain-layout"
     >
-      <Dialog {...args} container={frame} isDefaultOpen position="container" variant="sheet" />
+      {frame === null ? null : <Dialog {...args} portalContainer={frame} />}
     </div>
   );
 }
 
 export const InsideAPhoneFrame: Story = {
-  render: (args) => (
-    <AnchoredSheet
-      {...args}
-      footer={
-        <>
-          <Button size="sm" variant="ghost">
-            Keep It
-          </Button>
-          <Button size="sm">Remove</Button>
-        </>
-      }
-    />
-  ),
-};
-
-/** The smallest supported viewport. The card keeps a 20px gutter on both sides. */
-export const Smallest: Story = {
-  globals: { viewport: { value: "floor360" } },
   args: {
-    isDefaultOpen: true,
+    defaultOpen: true,
+    variant: "sheet",
     title: "Remove this item?",
+    children: "Chilli Paneer will come off your order.",
     footer: (
       <>
-        <Button variant="ghost">Keep It</Button>
-        <Button>Remove</Button>
+        <Button variant="ghost" size="sm">
+          Keep It
+        </Button>
+        <Button size="sm">Remove</Button>
       </>
     ),
+  },
+  parameters: OPEN_DIALOG_A11Y,
+  render: (args) => <FramedSheet {...args} />,
+  play: proveRingsWhole(3),
+};
+
+/** The smallest supported viewport: the modal keeps its gutter on both sides. */
+export const Mobile: Story = {
+  args: { defaultOpen: true },
+  globals: VIEWPORT_360,
+  parameters: OPEN_DIALOG_A11Y,
+  play: proveRingsWhole(5),
+};
+
+const DRAWER_A11Y = OPEN_DIALOG_A11Y;
+
+const FILTER_OPTIONS = ["Jain", "No onion-garlic", "Gluten-free", "Under 30 minutes"];
+
+const FILTER_BODY = (
+  <div className="grid gap-3">
+    {FILTER_OPTIONS.map((option) => (
+      <Checkbox key={option} label={option} />
+    ))}
+  </div>
+);
+
+const FILTER_FOOTER = (
+  <>
+    <Button variant="ghost" size="sm">
+      Reset
+    </Button>
+    <Button size="sm">Apply</Button>
+  </>
+);
+
+/** Open, Escape closes, focus returns to the trigger that opened it. */
+const drawerKeyboardPlay: NonNullable<Story["play"]> = async ({ canvas, userEvent }) => {
+  const trigger = canvas.getByRole("button", { name: "Filters" });
+  await userEvent.click(trigger);
+  await settle(await screen.findByRole("dialog", { name: "Filters" }));
+  await userEvent.keyboard("{Escape}");
+  await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  await expect(trigger).toHaveFocus();
+};
+
+const drawerMeta = {
+  args: {
+    trigger: <Button>Filters</Button>,
+    title: "Filters",
+    children: FILTER_BODY,
+    footer: FILTER_FOOTER,
+  },
+  parameters: DRAWER_A11Y,
+} satisfies Partial<Story>;
+
+/** Full-height panel on the end edge: the default. */
+export const DrawerEnd: Story = {
+  ...drawerMeta,
+  render: (args) => <Drawer {...args} />,
+  play: drawerKeyboardPlay,
+};
+
+/** Start edge (left in LTR, right in RTL). */
+export const DrawerStart: Story = {
+  ...drawerMeta,
+  args: { ...drawerMeta.args, side: "start" },
+  render: (args) => <Drawer {...args} />,
+  play: drawerKeyboardPlay,
+};
+
+/** 320 / 400 / 480px max width; full width below that. */
+export const DrawerSizes: Story = {
+  ...drawerMeta,
+  render: (args) => (
+    <div className="flex gap-3">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <Drawer
+          key={size}
+          {...args}
+          size={size}
+          trigger={<Button variant="secondary">{`Drawer ${size}`}</Button>}
+        />
+      ))}
+    </div>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    const widths = { sm: 320, md: 400, lg: 480 } as const;
+    for (const [size, width] of Object.entries(widths)) {
+      await userEvent.click(canvas.getByRole("button", { name: `Drawer ${size}` }));
+      const dialog = await settle(await screen.findByRole("dialog", { name: "Filters" }));
+      await expect(dialog.getBoundingClientRect().width).toBeLessThanOrEqual(width);
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    }
+  },
+};
+
+/** Menu filters: veg categories as checkboxes, Reset and Apply in the footer. */
+export const DrawerWithFooter: Story = {
+  ...drawerMeta,
+  args: { ...drawerMeta.args, defaultOpen: true, description: "Narrow the menu to what you eat." },
+  render: (args) => <Drawer {...args} />,
+  play: async () => {
+    const dialog = await settle(await screen.findByRole("dialog", { name: "Filters" }));
+    await expect(within(dialog).getByRole("button", { name: "Apply" })).toBeVisible();
+    await expect(within(dialog).getAllByRole("checkbox")).toHaveLength(FILTER_OPTIONS.length);
+  },
+};
+
+/** The body scrolls; the header and the footer stay fixed. */
+export const DrawerLongContent: Story = {
+  ...drawerMeta,
+  args: {
+    ...drawerMeta.args,
+    defaultOpen: true,
+    children: (
+      <div className="grid gap-3">
+        {Array.from({ length: 40 }, (_, index) => (
+          <Checkbox key={index} label={`Veg dish ${String(index + 1)}`} />
+        ))}
+      </div>
+    ),
+  },
+  render: (args) => <Drawer {...args} />,
+  play: async () => {
+    const dialog = await settle(await screen.findByRole("dialog", { name: "Filters" }));
+    const body = dialog.querySelector<HTMLElement>(".overflow-y-auto");
+    if (body === null) throw new Error("no body");
+    await expect(body.scrollHeight).toBeGreaterThan(body.clientHeight);
+    await expect(within(dialog).getByRole("button", { name: "Apply" })).toBeVisible();
+    await expect(within(dialog).getByRole("heading", { name: "Filters" })).toBeVisible();
+  },
+};
+
+/** The smallest supported viewport: the drawer fills the width. */
+export const Drawer360: Story = {
+  ...drawerMeta,
+  args: { ...drawerMeta.args, defaultOpen: true },
+  globals: VIEWPORT_360,
+  render: (args) => <Drawer {...args} />,
+  play: async () => {
+    const dialog = await settle(await screen.findByRole("dialog", { name: "Filters" }));
+    await expect(dialog.getBoundingClientRect().width).toBeLessThanOrEqual(window.innerWidth);
+    await expect(dialog.getBoundingClientRect().left).toBeGreaterThanOrEqual(0);
   },
 };

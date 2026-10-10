@@ -1,128 +1,158 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ReactNode } from "react";
+
+import { formatRupees } from "@pink-paprikaa-web/utils";
 
 import { Badge } from "../../atoms/badge/badge";
-import { Button } from "../../atoms/button/button";
 import { Card } from "../../atoms/card/card";
 import { Divider } from "../../atoms/divider/divider";
 import { PatternField } from "../../atoms/pattern-field/pattern-field";
-import { PriceTag } from "../../atoms/price-tag/price-tag";
-import { Text } from "../../atoms/text/text";
+import { Typography } from "../../atoms/typography/typography";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { type HeadingLevel, headingTag } from "../../lib/heading";
+import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
 import { StepTracker, type TrackerStep } from "../../molecules/step-tracker/step-tracker";
 
 const orderTracker = componentVariants({
   slots: {
-    root: "flex w-full min-w-0 flex-col bg-surface-page",
-    /** The flooded pink header — the one brand-coloured panel on the screen. */
-    header: "shrink-0",
-    headerInner: "flex flex-col items-start gap-3 px-5 pt-4.5 pb-7.5",
-    /** Space Mono, so the order code can be read out over a counter without ambiguity. */
-    code: "mt-1-5",
-    body: "flex min-w-0 flex-col gap-3.5 px-5 py-5",
-    rule: "my-1-5",
-    paid: "flex min-w-0 items-center justify-between gap-3",
-    paidLabel: "min-w-0 truncate font-body text-body2 leading-body2 text-text-muted",
+    root: "flex flex-col",
+    header: "px-5 pt-4.5 pb-7.5",
+    status: "flex flex-col items-start gap-1.5",
+    title: "mt-1.5",
+    code: "mt-4.5 uppercase",
+    body: "grid gap-3.5 p-5",
+    divider: "my-1.5",
+    receipt: "flex justify-between gap-3",
+    total: "font-display",
   },
   variants: {
-    /** `flush` fills the app screen it is mounted in; `card` rounds and clips for a page. */
     variant: {
-      flush: {},
-      card: { root: "overflow-hidden rounded-4 border border-border-subtle" },
+      flush: { root: "min-h-0 flex-1 overflow-y-auto" },
+      card: {
+        root: "overflow-hidden rounded-xl border border-border-subtle bg-surface-card shadow-1",
+      },
     },
   },
   defaultVariants: { variant: "flush" },
 });
 
-/** The kitchen's three moments, in the brand's voice — never a system status string. */
-const DEFAULT_STEPS: TrackerStep[] = [
-  { label: "Order in", note: "Kitchen's on it." },
-  { label: "On the tandoor", note: "The paneer is charring." },
-  { label: "Ready for pickup", note: "Counter 2, ask for Pink Paprikaa." },
-];
-
 export interface OrderTrackerProps
-  extends Omit<ComponentPropsWithoutRef<"div">, "title">, VariantProps<typeof orderTracker> {
-  /** The steps the kitchen works through. A bare string is shorthand for a step with no note. */
-  steps?: (string | TrackerStep)[] | undefined;
-  /** Which step the order is on, counting from 0. The last one is what makes it "Ready". */
-  current?: number | undefined;
-  /** Order code, uppercase and without the hash — it is printed with one. */
-  code?: string | undefined;
-  /** The outlet handling it, in caps, matching the code line's treatment. */
+  extends BaseProps<"section">, Pick<VariantProps<typeof orderTracker>, "variant"> {
+  /**
+   * Brand-voice steps ("Kitchen's on it."), never system status. With none there is no heading
+   * and no step list; the badge, code and receipt still render.
+   */
+  steps: TrackerStep[];
+  /** Index of the current step; clamped to the steps given. */
+  current: number;
+  /** Order code, uppercase, without the hash. */
+  code: string;
+  /** The word before the code: "Order #PPK-4821". */
+  codeLabel?: string | undefined;
   outlet?: string | undefined;
-  /** Amount already paid, in whole rupees. */
   total?: number | undefined;
-  /** How it was paid, e.g. "UPI", "Card", "Cash". */
+  /** The payment method, e.g. "UPI" — the line reads "Paid · UPI". */
   payment?: string | undefined;
-  /** Fires from the one action at the foot. Leave it off and no button renders. */
-  onDone?: (() => void) | undefined;
-  /** Label for that action. Title Case. */
-  doneLabel?: string | undefined;
+  /** The word before the method. */
+  paymentLabel?: string | undefined;
+  /** The step list's accessible name. */
+  progressLabel?: string | undefined;
+  /** The status chip in the header. Omit to derive Preparing/Ready from the step index. */
+  badge?: ReactNode;
+  /** Labels for the derived badge when `badge` is unset. */
+  statusLabels?: { pending?: string | undefined; ready?: string | undefined } | undefined;
+  /** Usually one full-width secondary Button ("Back to Home"). */
+  action?: ReactNode;
+  headingLevel?: HeadingLevel | undefined;
 }
 
 /**
- * The screen a guest watches while the kitchen cooks: a flooded pink header carrying the moment
- * they are in, the vertical `StepTracker` under it, and what they paid. Step copy is the brand's
- * voice — "Kitchen's on it." — never a system status.
+ * The screen a guest watches while the kitchen cooks: a flooded-pink header announcing the
+ * current step (a polite live region, so updates are read out), the step tracker and the receipt.
  */
 export function OrderTracker({
+  steps,
+  current,
+  code,
+  codeLabel = "Order",
+  outlet,
+  total,
+  payment,
+  paymentLabel = "Paid",
+  progressLabel = "Order progress",
+  badge,
+  statusLabels,
+  action,
+  variant = "flush",
+  headingLevel = 2,
+  sx,
   className,
-  code = "PPK-4821",
-  current = 0,
-  doneLabel = "Back to Home",
-  onDone,
-  outlet = "SECTOR 57",
-  payment = "UPI",
-  steps = DEFAULT_STEPS,
-  total = 0,
-  variant,
   ...props
 }: OrderTrackerProps) {
   const slots = orderTracker({ variant });
-
   const index = steps.length === 0 ? 0 : Math.min(Math.max(current, 0), steps.length - 1);
-  const entry = steps[index];
-  const step = typeof entry === "string" ? { label: entry } : entry;
+  const step = steps[index];
+  const hasReceipt = payment !== undefined || total !== undefined;
   const isReady = steps.length > 0 && index === steps.length - 1;
-
+  const derivedBadge =
+    badge !== undefined ? (
+      badge
+    ) : steps.length === 0 ? null : (
+      <Badge color="neutral" variant="solid">
+        {isReady ? (statusLabels?.ready ?? "Ready") : (statusLabels?.pending ?? "Preparing")}
+      </Badge>
+    );
   return (
-    <div className={slots.root({ class: className })} {...props}>
-      <PatternField className={slots.header()} tile={58} tone="brand">
-        <div className={slots.headerInner()}>
-          <Badge tone="ink">{isReady ? "Ready" : "Preparing"}</Badge>
+    <section
+      data-surface={variant === "card" ? "light" : undefined}
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      <PatternField surface="brand" tile={56} className={slots.header()}>
+        <div role="status" className={slots.status()}>
+          {isShown(derivedBadge) ? derivedBadge : null}
           {step === undefined ? null : (
             <>
-              <Text as="h2" tone="onBrand" variant="h2">
+              <Typography as={headingTag(headingLevel)} variant="h2" className={slots.title()}>
                 {step.label}
-              </Text>
-              {step.note === undefined ? null : (
-                <Text as="p" tone="onBrand" variant="body1">
+              </Typography>
+              {step.note ? (
+                <Typography as="div" color="muted">
                   {step.note}
-                </Text>
-              )}
+                </Typography>
+              ) : null}
             </>
           )}
-          <Text as="p" className={slots.code()} tone="onBrand" variant="mono">
-            {`ORDER #${code} · ${outlet}`}
-          </Text>
         </div>
+        <Typography as="div" variant="mono" color="muted" className={slots.code()}>
+          {codeLabel} #{code}
+          {outlet ? ` · ${outlet}` : null}
+        </Typography>
       </PatternField>
-
       <div className={slots.body()}>
-        <StepTracker current={index} label="Order progress" steps={steps} />
-        <Divider className={slots.rule()} variant="diamond" />
-        <Card padding="sm" variant="quiet">
-          <div className={slots.paid()}>
-            <span className={slots.paidLabel()}>{`Paid · ${payment}`}</span>
-            <PriceTag amount={total} size="sm" />
-          </div>
-        </Card>
-        {onDone === undefined ? null : (
-          <Button isFullWidth onClick={onDone} variant="secondary">
-            {doneLabel}
-          </Button>
+        {step === undefined ? null : (
+          <>
+            <StepTracker steps={steps} current={index} aria-label={progressLabel} />
+            <Divider variant="diamond" className={slots.divider()} />
+          </>
         )}
+        {hasReceipt ? (
+          <Card variant="quiet" padding="sm">
+            <div className={slots.receipt()}>
+              <Typography as="span" variant="body-sm" color="muted">
+                {payment === undefined ? null : `${paymentLabel} · ${payment}`}
+              </Typography>
+              {total === undefined ? null : (
+                <Typography as="span" variant="body-sm" weight="bold" className={slots.total()}>
+                  {formatRupees(total)}
+                </Typography>
+              )}
+            </div>
+          </Card>
+        ) : null}
+        {action}
       </div>
-    </div>
+    </section>
   );
 }

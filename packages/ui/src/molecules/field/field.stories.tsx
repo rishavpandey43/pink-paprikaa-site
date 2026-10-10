@@ -1,154 +1,157 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
 import { Phone } from "lucide-react";
+import { expect } from "storybook/test";
 
 import { Input } from "../../atoms/input/input";
+import { Select } from "../../atoms/select/select";
+import { paint } from "../../lib/story-paint";
 import { Field } from "./field";
 
-// `meta` is annotated rather than `satisfies`-inferred: under pnpm's isolated node_modules,
-// declaration emit for an inferred decorator type reaches for Storybook/Radix internals it
-// cannot name from here (TS2883). The annotation keeps the emitted type nameable.
-const meta: Meta<typeof Field> = {
+const HEAT_LEVELS = [
+  { value: "1", label: "Mild" },
+  { value: "2", label: "Medium" },
+  { value: "3", label: "Hot" },
+  { value: "4", label: "Extra Hot" },
+];
+
+/** The label text's computed colour — the label is the `<label>` around it. */
+function labelColour(label: HTMLElement): string {
+  const element = label.closest("label");
+  if (element === null) throw new Error("the text sits in a <label>");
+  return getComputedStyle(element).color;
+}
+
+const meta = {
   title: "Molecules/Field",
   component: Field,
   args: {
     label: "Mobile number",
-    htmlFor: "mobile",
-    children: (
-      <Input
-        aria-describedby="mobile-description"
-        icon={Phone}
-        id="mobile"
-        placeholder="98765 43210"
-      />
-    ),
+    children: (control) => <Input {...control} type="tel" icon={Phone} placeholder="98765 43210" />,
   },
   parameters: {
-    layout: "padded",
     docs: {
       description: {
         component:
-          "Label, control and one line of hint-or-status. Wrap it around any control that does " +
-          "not carry its own label. It owns the status vocabulary the other form molecules " +
-          "share, and a status message always replaces the hint rather than crowding in beside it.",
+          "Label, bare control and hint or status message. Wrap any control that does not carry its own label — Input, Select, a custom widget. The control is wired by render prop: `children` receives `{ id, aria-describedby, aria-invalid, aria-required }` (each only when it applies) to spread onto it, so Field works in server components and with react-hook-form's `register()` spread after it. A status (`error`, `success`, `warning`) shows its glyph and replaces the hint with `message` — never a status colour without words; pass the same `status` to the control for its border. Mark the *optional* fields rather than starring the required ones. Group controls (SlotPicker, RadioGroup) carry their own legend and message; do not wrap them. A lone Checkbox (consent) takes its error message from Field: Field's label asks the question, the Checkbox's label answers it.",
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <div className="w-full max-w-md">
-        <Story />
-      </div>
-    ),
-  ],
-};
+} satisfies Meta<typeof Field>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-export const WithHint: Story = {
-  args: { hint: "We text your order code here." },
+/** Card row "stack + hint". */
+export const StackWithHint: Story = {
+  args: {
+    label: "How spicy?",
+    hint: "You can change this later.",
+    children: (control) => <Select {...control} options={HEAT_LEVELS} defaultValue="3" />,
+  },
 };
 
-/** Mark the few optional fields rather than starring the many required ones. */
-export const RequiredAndOptional: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-6">
-      <Field {...args} isRequired />
-      <Field {...args} htmlFor="notes" isOptional label="Notes for the kitchen">
-        <Input id="notes" isMultiline placeholder="Less oil, no onion" rows={3} />
-      </Field>
-    </div>
-  ),
+/** Card row "required" — `isRequired`. */
+export const Required: Story = {
+  args: {
+    label: "Mobile number",
+    isRequired: true,
+    children: (control) => <Input {...control} type="tel" icon={Phone} placeholder="98765 43210" />,
+  },
 };
 
-/** Every status carries a sentence — a colour on its own never says what went wrong. */
-export const Statuses: Story = {
-  render: (args) => (
-    <div className="flex flex-col gap-6">
-      <Field {...args} hint="We text your order code here." />
-      <Field {...args} message="Enter a 10-digit mobile number." status="error">
-        <Input aria-invalid defaultValue="98765" icon={Phone} id="mobile" status="error" />
-      </Field>
-      <Field
-        {...args}
-        htmlFor="promo"
-        label="Promo code"
-        message="PAPRIKAA50 applied — ₹150 off."
-        status="success"
-      >
-        <Input defaultValue="PAPRIKAA50" id="promo" status="success" />
-      </Field>
-      <Field
-        {...args}
-        htmlFor="slot"
-        label="Pickup time"
-        message="That slot is nearly full."
-        status="warning"
-      >
-        <Input defaultValue="7:30pm" id="slot" status="warning" />
-      </Field>
-      <Field
-        {...args}
-        htmlFor="code"
-        label="Promo code"
-        message="Checking that code."
-        status="loading"
-      >
-        <Input defaultValue="PAPRIKAA50" id="code" isLoading />
-      </Field>
-      <Field
-        {...args}
-        htmlFor="outlet"
-        label="Outlet"
-        message="Pickup only for now."
-        status="readOnly"
-      >
-        <Input defaultValue="Sector 57" id="outlet" readOnly />
-      </Field>
-      <Field
-        {...args}
-        htmlFor="table"
-        label="Table size"
-        message="Table booking opens at 11am."
-        status="disabled"
-      >
-        <Input disabled id="table" placeholder="Choose a table size" />
-      </Field>
-    </div>
-  ),
+/** Card row "error" — `status="error"` + `message`. */
+export const WithError: Story = {
+  args: {
+    label: "How spicy?",
+    status: "error",
+    message: "Pick a heat level.",
+    children: (control) => (
+      <Select
+        {...control}
+        options={HEAT_LEVELS}
+        placeholder="Pick one"
+        status="error"
+        defaultValue=""
+      />
+    ),
+  },
+  // The Select's disabled placeholder <option> must not mute the label (fold item 5): the label
+  // keeps the resting label colour, which a probe with the same class reads.
+  play: async ({ canvas, canvasElement }) => {
+    const probe = document.createElement("span");
+    probe.className = "text-text-body";
+    canvasElement.append(probe);
+    const resting = getComputedStyle(probe).color;
+    probe.remove();
+    await expect(labelColour(canvas.getByText("How spicy?"))).toBe(resting);
+  },
 };
 
-/** A 160px label column from 480px up; below that it stacks, so a 360px screen still works. */
-export const SideLayout: Story = {
-  args: { layout: "side", hint: "Pickup only for now." },
-  render: (args) => (
-    <div className="flex flex-col gap-6">
-      <Field {...args} />
-      <Field {...args} htmlFor="outlet" label="Outlet">
-        <Input defaultValue="Sector 57" id="outlet" />
-      </Field>
-    </div>
-  ),
+/** Card row "success" — `status="success"` + `message`. */
+export const WithSuccess: Story = {
+  args: {
+    label: "Promo code",
+    status: "success",
+    message: "PAPRIKAA50 applied.",
+    children: (control) => <Input {...control} defaultValue="PAPRIKAA50" status="success" />,
+  },
 };
 
-/** Around a bare control — a group of choices that carries no label of its own. */
-export const AroundABareControl: Story = {
+/** Warning — the handoff Dawat calculator's guest rule. */
+export const WithWarning: Story = {
+  args: {
+    label: "Guests",
+    status: "warning",
+    message: "Full setup and service starts at 50 guests.",
+    children: (control) => <Input {...control} type="number" defaultValue="30" status="warning" />,
+  },
+};
+
+/** `isOptional` — the design system's preferred marker. */
+export const Optional: Story = {
+  args: {
+    label: "Promo code",
+    isOptional: true,
+    children: (control) => <Input {...control} placeholder="PAPRIKAA50" />,
+  },
+};
+
+/** Card row `layout="side"` — `orientation="side"`: a 160px label column from 480px up; it stacks below. */
+export const Side: Story = {
+  args: {
+    label: "Outlet",
+    orientation: "side",
+    hint: "Pickup only for now.",
+    children: (control) => <Input {...control} defaultValue="Sector 57" />,
+  },
+};
+
+/** Dev parity: the control's own modes inside a Field — read-only, loading, disabled (label mutes). */
+export const ControlModes: Story = {
   render: () => (
-    <Field hint="You can change this on any dish later." label="How spicy?">
-      <div className="flex flex-wrap gap-2">
-        {["Mild", "Medium", "Hot", "Extra Hot"].map((level) => (
-          <span
-            className="rounded-6 border border-border-default px-4 py-2 font-display text-body2 font-bold text-text-body"
-            key={level}
-          >
-            {level}
-          </span>
-        ))}
-      </div>
-    </Field>
+    <div className="flex max-w-120 flex-col gap-6">
+      <Field label="Outlet" hint="Pickup only for now.">
+        {(control) => <Input {...control} defaultValue="Sector 57" readOnly />}
+      </Field>
+      <Field label="Promo code" hint="Checking that code.">
+        {(control) => <Input {...control} defaultValue="PAPRIKAA50" isLoading />}
+      </Field>
+      <Field label="Table size" hint="Table booking opens at 11am.">
+        {(control) => <Input {...control} disabled placeholder="Choose a table size" />}
+      </Field>
+      <Field label="Notes for the kitchen" isOptional>
+        {(control) => <Input {...control} isMultiline rows={3} placeholder="Less oil, no onion" />}
+      </Field>
+    </div>
   ),
+  // Only the disabled control mutes its label, to text-subtle; read-only and loading keep theirs.
+  play: async ({ canvas }) => {
+    const resting = labelColour(canvas.getByText("Outlet"));
+    await expect(labelColour(canvas.getByText("Promo code"))).toBe(resting);
+    const muted = canvas.getByText("Table size");
+    await expect(labelColour(muted)).not.toBe(resting);
+    await expect(labelColour(muted)).toBe(paint(muted, "color", "--color-text-subtle"));
+  },
 };

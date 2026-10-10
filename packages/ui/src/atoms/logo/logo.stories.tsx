@@ -1,78 +1,133 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { ReactNode } from "react";
 
 import { Logo } from "./logo";
 
 const meta = {
-  title: "Atoms/Logo",
+  title: "Brand/Logo",
   component: Logo,
+  args: { variant: "lockup", color: "brand" },
   parameters: {
     docs: {
       description: {
         component:
-          "The only sanctioned way to place the lockup or the diamond symbol. Size it with " +
-          "`size`, colour it with `tone` — never recolour, rotate, outline or add an effect to " +
-          "the mark itself.",
+          "The only correct way to place the brand mark — never rebuild, retype or recolour it. `lockup` is the official logo and the default almost everywhere: the tagline “India's First Desi Urban Café” is drawn artwork, never live type, and it tucks beside the “P” descender, so the lockup and the wordmark share one ~1.9:1 box. Use `wordmark` only below ~120px wide, where the tagline turns to mud; `symbol` is the square diamond mark for avatars, favicons, loaders and tight badges. Colors: `brand` on light surfaces, `inverse` on pink or ink, `badge` on its own pink plate. Minimum lockup width 200px (wordmark 140px). Clear space around any logo = the height of the “P”. Never apply a filter, shadow, outline, rotation or opacity to the mark, and never place the pink logo on anything darker than pink-100.",
       },
     },
   },
 } satisfies Meta<typeof Logo>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+/** A labelled cell, matching the card's rows: the prop that produces what sits above it. */
+function Specimen({ prop, children }: { prop: string; children: ReactNode }) {
+  return (
+    <div className="flex flex-col items-start gap-2">
+      {children}
+      <span className="font-mono text-mono text-text-muted">{prop}</span>
+    </div>
+  );
+}
 
-/** 28 / 40 / 56px tall. The lockup is about 1.9:1, so width follows the height. */
-export const Sizes: Story = {
+export const Playground: Story = {};
+
+/** Card rows "lockup", "wordmark" and "symbol": the three marks, side by side on white. */
+export const Variants: Story = {
   render: (args) => (
-    <div className="flex flex-wrap items-end gap-6">
-      <Logo {...args} size="sm" />
-      <Logo {...args} size="md" />
-      <Logo {...args} size="lg" />
+    <div className="flex flex-wrap items-end gap-8 bg-surface-page p-6">
+      <Specimen prop='variant="lockup"'>
+        <Logo {...args} variant="lockup" />
+      </Specimen>
+      <Specimen prop='variant="wordmark"'>
+        <Logo {...args} variant="wordmark" />
+      </Specimen>
+      <Specimen prop='variant="symbol"'>
+        <Logo {...args} variant="symbol" />
+      </Specimen>
     </div>
   ),
 };
 
-export const SymbolMark: Story = {
-  name: "Symbol",
-  render: (args) => (
-    <div className="flex flex-wrap items-end gap-6">
-      <Logo {...args} size="sm" variant="symbol" />
-      <Logo {...args} size="md" variant="symbol" />
-      <Logo {...args} size="lg" variant="symbol" />
+/** Card rows "white", "on ink" and "badge": each color on the only ground it belongs on. */
+export const Colors: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-end gap-8 bg-surface-page p-6">
+        <Specimen prop='color="brand"'>
+          <Logo color="brand" />
+        </Specimen>
+        <Specimen prop='color="brand" variant="symbol"'>
+          <Logo color="brand" variant="symbol" />
+        </Specimen>
+      </div>
+      <div
+        data-surface="brand"
+        className="flex flex-wrap items-end gap-8 rounded-lg bg-surface-brand p-6"
+      >
+        <Specimen prop='color="inverse" (on pink)'>
+          <Logo color="inverse" />
+        </Specimen>
+        <Specimen prop='color="inverse" variant="wordmark"'>
+          <Logo color="inverse" variant="wordmark" />
+        </Specimen>
+        <Specimen prop='color="inverse" variant="symbol"'>
+          <Logo color="inverse" variant="symbol" />
+        </Specimen>
+      </div>
+      <div
+        data-surface="ink"
+        className="flex flex-wrap items-end gap-8 rounded-lg bg-surface-inverse p-6"
+      >
+        <Specimen prop='color="inverse" (on ink)'>
+          <Logo color="inverse" />
+        </Specimen>
+      </div>
+      <div className="flex flex-wrap items-end gap-8 bg-surface-page p-6">
+        <Specimen prop='color="badge"'>
+          <Logo color="badge" className="w-40" />
+        </Specimen>
+        <Specimen prop='color="badge" variant="wordmark"'>
+          <Logo color="badge" variant="wordmark" className="w-40" />
+        </Specimen>
+        <Specimen prop='color="badge" variant="symbol"'>
+          <Logo color="badge" variant="symbol" className="w-18" />
+        </Specimen>
+      </div>
     </div>
   ),
 };
 
-/** On pink, ink or photography the mark flips to white. */
-export const OnBrand: Story = {
-  globals: { backgrounds: { value: "brand" } },
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-8 rounded-4 bg-surface-brand p-8">
-      <Logo {...args} tone="white" />
-      <Logo {...args} tone="white" variant="symbol" />
+/** Card row "min size": the default 240px lockup beside its 200px floor (`className="w-50"`). */
+export const ClearSpace: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-end gap-8 bg-surface-page p-6">
+      <Specimen prop="default (w-logo-lockup, 240px)">
+        <Logo />
+      </Specimen>
+      <Specimen prop='className="w-50" — the 200px minimum'>
+        <Logo className="w-50" />
+      </Specimen>
     </div>
   ),
 };
 
-/** The white mark on a pink plate — app icon, favicon, profile picture. */
-export const Badge: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-6">
-      <Logo {...args} tone="badge" variant="symbol" />
-      <Logo {...args} tone="badge" />
-    </div>
+/** Header sizing: set the height in horizontal chrome and let the width follow the artwork. */
+export const HeaderHeight: Story = {
+  render: () => (
+    <Specimen prop='className="h-10 w-auto" — in the 64px header row'>
+      <div className="flex h-header-compact items-center border-b-default border-border-subtle bg-surface-page px-6">
+        <Logo className="h-10 w-auto" />
+      </div>
+    </Specimen>
   ),
 };
 
-/** Inside a 72px header bar, beside the navigation. */
-export const InAHeader: Story = {
-  parameters: { layout: "fullscreen" },
-  render: (args) => (
-    <header className="flex h-(--layout-header-h) w-full items-center justify-between border-b border-border-subtle bg-surface-page px-6">
-      <Logo {...args} size="sm" />
-      <span className="font-body text-body2 text-text-muted">Sector 57, Gurgaon</span>
-    </header>
+/** `sx` sets spacing and width on the svg without a className. */
+export const Sx: Story = {
+  render: () => (
+    <Specimen prop='sx={{ w: "full", mt: 4 }}'>
+      <Logo sx={{ w: "full", mt: 4 }} />
+    </Specimen>
   ),
 };

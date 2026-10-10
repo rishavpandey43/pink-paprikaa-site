@@ -1,63 +1,51 @@
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { DietMark } from "./diet-mark";
 
 describe("DietMark", () => {
-  it("renders the vegetarian mark by default", () => {
+  it("is an image named Vegetarian", () => {
     render(<DietMark />);
     expect(screen.getByRole("img", { name: "Vegetarian" })).toBeInTheDocument();
   });
 
-  it("renders the turmeric mark for egg-containing bakes", () => {
-    render(<DietMark variant="egg" />);
-    expect(screen.getByRole("img", { name: "Contains egg" })).toHaveClass("border-turmeric");
+  it("draws the statutory square and dot in the veg green", () => {
+    const { container } = render(<DietMark />);
+    expect(screen.getByRole("img")).toHaveClass("text-veg");
+    expect(container.querySelector("rect")).toHaveAttribute("stroke", "currentColor");
+    expect(container.querySelector("rect")).toHaveAttribute("fill", "none");
+    expect(container.querySelector("circle")).toHaveAttribute("fill", "currentColor");
+    expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
 
   it.each([
-    ["veg", "border-status-success"],
-    ["egg", "border-turmeric"],
-  ] as const)("outlines the %s mark in its own colour", (variant, expected) => {
-    render(<DietMark variant={variant} />);
-    expect(screen.getByRole("img")).toHaveClass(expected);
-  });
-
-  it("fills the dot from the outline colour so a tone is set once", () => {
-    render(<DietMark />);
-    expect(screen.getByRole("img").firstElementChild).toHaveClass("bg-current");
-  });
-
-  it.each([
-    ["xs", "size-3.5", "size-1.5"],
-    ["sm", "size-4", "size-2"],
-    ["md", "size-5", "size-2.5"],
-    ["lg", "size-6", "size-3"],
-  ] as const)("scales the square and the dot together at %s", (size, square, dot) => {
+    ["sm", "size-diet-mark-sm"],
+    ["md", "size-diet-mark-md"],
+    ["lg", "size-diet-mark-lg"],
+  ] as const)("renders size %s at %s", (size, sizeClass) => {
     render(<DietMark size={size} />);
-    const node = screen.getByRole("img");
-    expect(node).toHaveClass(square);
-    expect(node.firstElementChild).toHaveClass(dot);
+    expect(screen.getByRole("img")).toHaveClass(sizeClass);
   });
 
-  it("accepts a caller-supplied accessible name", () => {
-    render(<DietMark label="Vegetarian dish" />);
-    expect(screen.getByRole("img", { name: "Vegetarian dish" })).toBeInTheDocument();
+  it("takes another label", () => {
+    render(<DietMark label="Pure vegetarian" />);
+    expect(screen.getByRole("img", { name: "Pure vegetarian" })).toBeInTheDocument();
   });
 
-  it("merges a caller className", () => {
-    render(<DietMark className="rounded-6" />);
-    const node = screen.getByRole("img");
-    expect(node).toHaveClass("rounded-6");
-    expect(node).not.toHaveClass("rounded-1");
+  it("merges a caller className, replacing a conflicting size", () => {
+    render(<DietMark className="size-6" />);
+    expect(screen.getByRole("img")).toHaveClass("size-6");
+    expect(screen.getByRole("img")).not.toHaveClass("size-diet-mark-md");
   });
 
   it("has no accessibility violations", async () => {
-    const { container } = render(
-      <>
-        <DietMark />
-        <DietMark variant="egg" />
-      </>
-    );
+    const { container } = render(<DietMark />);
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its outermost element", () => {
+    const { container } = render(<DietMark sx={{ mt: 4 }} />);
+    expect(container.firstElementChild).toHaveClass("mt-4");
   });
 });

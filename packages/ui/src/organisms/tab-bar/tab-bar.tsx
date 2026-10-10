@@ -1,129 +1,129 @@
-"use client";
-
-import type { LucideIcon } from "lucide-react";
-import type { ComponentPropsWithoutRef } from "react";
-
-import { useState } from "react";
-
-import { Icon } from "../../atoms/icon/icon";
+import { Icon, type IconComponent } from "../../atoms/icon/icon";
+import type { BaseProps } from "../../lib/common-props";
 import { componentVariants } from "../../lib/component-variants";
+import type { LinkAs } from "../../lib/link-as";
+import { withSx } from "../../lib/sx";
+
+export interface TabBarItem {
+  value: string;
+  label: string;
+  icon: IconComponent;
+  /** Badge count, e.g. cart items; 0 or omitted hides it. */
+  count?: number | undefined;
+  /** Makes the tab a link (rendered through `linkAs`); without it the tab is a button. */
+  href?: string | undefined;
+}
 
 const tabBar = componentVariants({
   slots: {
-    root: "w-full shrink-0 border-t border-border-subtle bg-surface-card",
-    // The bar is exactly 64px (`--layout-tabbar-h`) and never grows: it is chrome, and a taller
-    // one eats the screen the menu is meant to fill.
-    list: "m-0 flex h-(--layout-tabbar-h) w-full min-w-0 list-none p-0",
+    root: "h-tabbar border-t border-border-subtle bg-surface-card",
+    list: "flex h-full",
     item: "flex min-w-0 flex-1",
-    trigger: [
-      "grid h-full w-full min-w-0 min-h-(--layout-hit-min) cursor-pointer",
-      "place-items-center content-center gap-1 border-0 bg-transparent px-1",
-      "transition-colors duration-(--duration-fast) ease-out",
-      "not-disabled:active:scale-(--motion-press-scale)",
-      "not-disabled:active:duration-(--duration-instant)",
-    ],
-    /** Positions the count pill against the glyph rather than the whole destination. */
-    glyph: "relative inline-flex",
-    /** The waiting count, drawn as a pink pill on the glyph — decorative, announced below. */
-    count: [
-      "absolute -top-1 -right-2 grid h-4.5 min-w-4.5 place-items-center rounded-6 px-1",
-      "bg-brand-primary font-display font-bold text-overline leading-overline text-text-on-brand",
-    ],
-    label: "max-w-full truncate font-display text-overline leading-overline",
+    // The controls fill the bar edge to edge, so a ring drawn outside them is cut by the screen or
+    // a phone frame's clip: it is drawn inset.
+    // Rest ink-600 / active pink-600 (R137 AA); design ink-500/pink-500 fail 4.5:1 at 11px.
+    control:
+      "group flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-md px-1 font-display text-tab-bar-label text-text-subtle no-underline transition-colors duration-fast ease-out hover:text-ink-800 focus-visible:-outline-offset-4 active:text-pink-600",
+    glyph:
+      "relative grid h-7.5 w-14 place-items-center rounded-pill transition-control group-hover:bg-state-hover group-active:press-scale-icon group-active:bg-state-press",
+    label: "max-w-full truncate",
+    count:
+      "absolute -top-1 -right-2 grid h-tab-bar-count min-w-tab-bar-count place-items-center rounded-pill bg-surface-brand px-1 font-display text-tab-bar-count text-text-on-brand",
   },
   variants: {
-    /** Derived from `value`, never passed — the bar decides which destination it is on. */
     isActive: {
-      true: { trigger: "text-text-brand", label: "font-bold" },
-      false: { trigger: "text-text-muted not-disabled:hover:text-text-link", label: "font-medium" },
+      true: {
+        control: "font-bold text-text-brand hover:text-text-brand",
+        glyph: "bg-state-hover",
+      },
     },
   },
-  defaultVariants: { isActive: false },
 });
 
-export interface TabBarItem {
-  /** Stable id for the destination — what `value` and `onValueChange` speak in. */
-  value: string;
-  /** One word where possible: it sits under a 24px glyph in an 11.5px label. */
-  label: string;
-  /** The Lucide glyph itself, imported by name: `import { House } from "lucide-react"`. */
-  icon: LucideIcon;
-  /** A waiting count, e.g. items in the cart. Announced as "2 items" after the label. */
-  count?: number;
-}
-
-export interface TabBarProps extends Omit<ComponentPropsWithoutRef<"nav">, "onChange"> {
-  /** Four or five destinations, never more — six will not clear the 44px hit target at 360px. */
+export interface TabBarProps extends BaseProps<"nav"> {
+  /** Four or five destinations, never more. */
   items: TabBarItem[];
-  /** The destination in view. Pass it with `onValueChange` to drive the bar from the router. */
-  value?: string | undefined;
-  /** Where the bar starts when it keeps its own state. Defaults to the first destination. */
-  defaultValue?: string | undefined;
-  /** Fires with the destination the guest tapped, controlled or not. */
+  value: string;
+  /** Called by button tabs. Link tabs navigate instead. Only a client parent can pass it. */
   onValueChange?: ((value: string) => void) | undefined;
-  /** Names the bar for assistive tech. "Primary" unless the screen has two navigations. */
+  linkAs?: LinkAs | undefined;
+  /** The landmark's name. */
   label?: string | undefined;
 }
 
 /**
- * The ordering app's fixed bottom navigation: a 64px bar of four or five destinations, the one in
- * view in pink with a Poppins Bold label. It is a `<nav>` of links-as-buttons, not a tab list —
- * each destination is a page, so the active one carries `aria-current="page"`.
+ * The app's fixed 64px bottom navigation. The active destination is brand pink with a bold label;
+ * a count renders as a pink pill on the icon and is read out with the label ("Cart (2)").
  */
 export function TabBar({
-  className,
-  defaultValue,
   items,
-  label = "Primary",
-  onValueChange,
   value,
+  onValueChange,
+  linkAs: LinkComponent = "a",
+  label = "Primary",
+  sx,
+  className,
   ...props
 }: TabBarProps) {
-  const [internalValue, setInternalValue] = useState(defaultValue ?? items[0]?.value);
-  const current = value ?? internalValue;
-  const { list, root } = tabBar();
-
+  const slots = tabBar();
   return (
-    <nav aria-label={label} className={root({ class: className })} {...props}>
-      <ul className={list()}>
+    <nav
+      aria-label={label}
+      data-surface="light"
+      className={slots.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      <ul className={slots.list()}>
         {items.map((item) => {
-          const isActive = item.value === current;
-          const slots = tabBar({ isActive });
-
-          return (
-            <li className={slots.item()} key={item.value}>
-              <button
-                aria-current={isActive ? "page" : undefined}
-                className={slots.trigger()}
-                onClick={() => {
-                  if (value === undefined) {
-                    setInternalValue(item.value);
-                  }
-                  onValueChange?.(item.value);
-                }}
-                type="button"
-              >
-                <span className={slots.glyph()}>
-                  <Icon icon={item.icon} size="lg" />
-                  {item.count === undefined ? null : (
-                    <span aria-hidden className={slots.count()}>
-                      {item.count}
-                    </span>
-                  )}
-                </span>
-                <span className={slots.label()}>{item.label}</span>
-                {/*
-                 * The pill is decorative — the count is announced here instead, after the label,
-                 * so the destination reads "Cart, 2 items" rather than "2 Cart". The leading comma
-                 * is load-bearing: accessible-name computation concatenates sibling text with no
-                 * separator, so without it the name runs together as "Cart2 items".
-                 */}
-                {item.count === undefined ? null : (
-                  <span className="sr-only">
-                    {item.count === 1 ? ", 1 item" : `, ${String(item.count)} items`}
+          const isActive = item.value === value;
+          const control = slots.control({ isActive });
+          const hasCount = item.count !== undefined && item.count > 0;
+          const content = (
+            <>
+              <span className={slots.glyph({ isActive })}>
+                <Icon icon={item.icon} size="lg" />
+                {hasCount ? (
+                  <span aria-hidden className={slots.count()}>
+                    {item.count}
                   </span>
-                )}
-              </button>
+                ) : null}
+              </span>
+              <span className={slots.label()}>{item.label}</span>
+              {/* The space sits outside the span: a name drops a child's edge whitespace. */}
+              {hasCount ? (
+                <>
+                  {" "}
+                  <span className="sr-only">({item.count})</span>
+                </>
+              ) : null}
+            </>
+          );
+          return (
+            <li key={item.value} className={slots.item()}>
+              {item.href === undefined ? (
+                <button
+                  type="button"
+                  aria-current={isActive ? "page" : undefined}
+                  className={control}
+                  onClick={
+                    onValueChange === undefined
+                      ? undefined
+                      : () => {
+                          onValueChange(item.value);
+                        }
+                  }
+                >
+                  {content}
+                </button>
+              ) : (
+                <LinkComponent
+                  href={item.href}
+                  aria-current={isActive ? "page" : undefined}
+                  className={control}
+                >
+                  {content}
+                </LinkComponent>
+              )}
             </li>
           );
         })}

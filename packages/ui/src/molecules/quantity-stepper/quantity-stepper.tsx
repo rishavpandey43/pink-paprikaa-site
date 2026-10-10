@@ -1,124 +1,251 @@
 "use client";
 
-import type { ComponentPropsWithoutRef } from "react";
-
 import { Minus, Plus } from "lucide-react";
+import type { KeyboardEvent, Ref } from "react";
 import { useState } from "react";
 
 import { Icon } from "../../atoms/icon/icon";
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import type { BaseProps } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
+import { useControllableState } from "../../lib/use-controllable-state";
 
 const quantityStepper = componentVariants({
   slots: {
-    root: "inline-flex shrink-0 items-center rounded-6 border border-border-brand-soft bg-brand-tint",
-    button: [
-      "grid shrink-0 place-items-center rounded-6 border-0 bg-transparent p-0 text-text-brand",
-      "transition-[background-color,color,transform] duration-(--duration-fast) ease-out",
-      "not-disabled:hover:bg-brand-soft",
-      "not-disabled:active:scale-(--motion-press-scale) not-disabled:active:duration-(--duration-instant)",
-      // Disabled is a real grey glyph, never a reduced opacity (state contract).
-      "disabled:cursor-not-allowed disabled:text-(--button-fg-disabled)",
-    ],
-    count: "text-center font-display font-bold text-text-heading tabular-nums",
+    root: "inline-flex items-center rounded-pill border border-border-brand-soft bg-surface-page-alt",
+    button:
+      "grid shrink-0 place-items-center rounded-pill text-text-brand transition-control not-disabled:not-aria-disabled:hover:bg-surface-brand-soft not-disabled:not-aria-disabled:hover:text-pink-700 focus-visible:-outline-offset-2 not-disabled:not-aria-disabled:active:press-scale-stepper not-disabled:not-aria-disabled:active:bg-pink-200 disabled:cursor-not-allowed disabled:text-ink-300 aria-disabled:cursor-not-allowed aria-disabled:text-ink-300",
+    count:
+      "min-w-quantity-stepper-count rounded-xs border-0 bg-transparent p-0 text-center font-display font-bold text-text-heading tabular-nums disabled:text-ink-400",
   },
   variants: {
-    /**
-     * 36 / 44px — the same fixed heights `Button` uses for `sm` and `md`. `md` is the default
-     * because it clears the 44px hit-target floor; reach for `sm` only in a dense desktop row.
-     */
     size: {
-      sm: { button: "size-(--button-h-sm)", count: "min-w-6 text-body2" },
-      md: { button: "size-(--button-h-md)", count: "min-w-7 text-body1" },
+      sm: { button: "size-8", count: "text-body-sm" },
+      md: { button: "size-10", count: "text-body" },
     },
   },
   defaultVariants: { size: "md" },
 });
 
-/** The glyph size each stepper size pairs with — 16px in sm, 20px in md. */
-const ICON_SIZE = { sm: "sm", md: "md" } as const;
-
-export interface QuantityStepperProps
-  extends
-    Omit<ComponentPropsWithoutRef<"div">, "defaultValue" | "onChange">,
-    VariantProps<typeof quantityStepper> {
-  /** The current count. Pass it with `onChange` to drive the stepper from cart state. */
+/** The group takes the div's native props; the number field keeps `id`, `ref`, `name`, `aria-required`, `disabled`, `onBlur` and the aria it is described by. */
+export interface QuantityStepperProps extends Omit<
+  BaseProps<"div">,
+  | "ref"
+  | "id"
+  | "onBlur"
+  | "defaultValue"
+  | "children"
+  | "aria-describedby"
+  | "aria-invalid"
+  | "aria-label"
+  | "role"
+> {
+  /** Accessible name of the stepper and its number field, e.g. "Guests". */
+  label: string;
   value?: number | undefined;
-  /** The count to start from when the stepper keeps its own state. */
   defaultValue?: number | undefined;
-  /** `0` where reaching zero removes the line item, `1` where it must not. */
+  onValueChange?: ((value: number) => void) | undefined;
+  onBlur?: (() => void) | undefined;
+  /**
+   * Lowest value (default 0 — reaching it removes a cart line; use 1 where it should not). The
+   * parent owns that removal, so it also owns focus: the stepper unmounts with the line, so move
+   * focus to the next line or the cart heading, or it drops to `<body>`.
+   */
   min?: number | undefined;
-  /** The per-order cap for this dish. Both buttons stop at their end of the range. */
   max?: number | undefined;
-  /** Called with the new count whenever either button lands inside the range. */
-  onChange?: ((value: number) => void) | undefined;
-  /** Accessible name for the group. Name the dish where you can: "Paneer Tikka quantity". */
-  label?: string | undefined;
-  /** Accessible name for the minus button. */
+  step?: number | undefined;
+  size?: "sm" | "md" | undefined;
+  /** Name of the − button (default "Remove one", or "Remove 5" for `step={5}`) — name the dish in a cart. */
   decrementLabel?: string | undefined;
-  /** Accessible name for the plus button. */
+  /** Name of the + button (default "Add one", or "Add 5" for `step={5}`). */
   incrementLabel?: string | undefined;
+  name?: string | undefined;
+  disabled?: boolean | undefined;
+  /** Field's control id — the wrapping `<label htmlFor>` points here. */
+  id?: string | undefined;
+  "aria-describedby"?: string | undefined;
+  "aria-invalid"?: true | undefined;
+  required?: true | undefined;
+  /** The number field — react-hook-form's Controller focuses it on error. */
+  ref?: Ref<HTMLInputElement> | undefined;
 }
 
-/**
- * The minus/plus count used in cart rows, on item detail and beside add-ons. A pill on the brand
- * tint with a hairline border; the count itself is Poppins Bold so it reads at a glance.
- */
+interface Bounds {
+  min: number;
+  max: number;
+  step: number;
+}
+
+/** Snap to the nearest step counted from `min`, then keep inside `[min, max]`. */
+function toAllowed(raw: number, { min, max, step }: Bounds): number {
+  const snapped = min + Math.round((raw - min) / step) * step;
+  const highest = max - ((max - min) % step);
+  return Math.max(min, Math.min(snapped, highest));
+}
+
+/** A blank label ("" or whitespace) counts as absent (R48), so a button never loses its name. */
+function orDefault(label: string | undefined, fallback: string): string {
+  return label === undefined || label.trim() === "" ? fallback : label;
+}
+
+/** −/+ quantity with typed entry: cart rows, item detail, calculator guest counts. */
 export function QuantityStepper({
-  className,
-  size = "md",
+  label,
   value,
-  defaultValue = 1,
+  defaultValue,
+  onValueChange,
+  onBlur,
   min = 0,
   max = 20,
-  onChange,
-  label = "Quantity",
-  decrementLabel = "Remove One",
-  incrementLabel = "Add One",
+  step = 1,
+  size = "md",
+  decrementLabel,
+  incrementLabel,
+  name,
+  disabled = false,
+  sx,
+  className,
+  id,
+  "aria-describedby": describedBy,
+  "aria-invalid": isInvalid,
+  required,
+  ref,
   ...props
 }: QuantityStepperProps) {
-  const [internalValue, setInternalValue] = useState(defaultValue);
-  const current = value ?? internalValue;
-  const slots = quantityStepper({ size });
-  const iconSize = ICON_SIZE[size];
+  const bounds: Bounds = { min, max, step };
+  const [quantity, setQuantity] = useControllableState({
+    value,
+    defaultValue: defaultValue ?? min,
+    onChange: onValueChange,
+  });
+  const [draft, setDraft] = useState<string | null>(null);
+  // A button press keeps focus on the button, so the new count is announced (dev parity); the
+  // spin button speaks for itself once focused, so focusing it clears the region.
+  const [hasStepped, setHasStepped] = useState(false);
+  const styles = quantityStepper({ size });
+  const stepName = step === 1 ? "one" : String(step);
+  // The ends of the range are aria-disabled, not disabled: a press that reaches min or max keeps
+  // focus on the button (a disabled button drops it to <body>). `disabled` still disables all.
+  const isAtMin = quantity <= min;
+  const isAtMax = quantity >= max;
 
-  const step = (delta: number) => {
-    const next = Math.min(max, Math.max(min, current + delta));
-    if (next === current) {
-      return;
+  /** What the field stands for right now: a typed draft that parses, else the value. */
+  function settled(): number {
+    return draft === null || draft === "" ? quantity : toAllowed(Number(draft), bounds);
+  }
+
+  function commit(next: number): void {
+    setDraft(null);
+    setQuantity(toAllowed(next, bounds));
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
+    switch (event.key) {
+      case "ArrowUp":
+        event.preventDefault();
+        commit(settled() + step);
+        break;
+      case "ArrowDown":
+        event.preventDefault();
+        commit(settled() - step);
+        break;
+      case "Home":
+        event.preventDefault();
+        commit(min);
+        break;
+      case "End":
+        event.preventDefault();
+        commit(max);
+        break;
+      case "Enter":
+        // First Enter commits the typed value; the next one is free to submit the form.
+        if (draft !== null) {
+          event.preventDefault();
+          commit(settled());
+        }
+        break;
+      case "Escape":
+        setDraft(null);
+        break;
+      default:
+        break;
     }
-    if (value === undefined) {
-      setInternalValue(next);
-    }
-    onChange?.(next);
-  };
+  }
+
+  function handleBlur(): void {
+    if (draft !== null) commit(settled());
+    onBlur?.();
+  }
+
+  function stepBy(delta: number): void {
+    commit(settled() + delta);
+    setHasStepped(true);
+  }
 
   return (
-    <div aria-label={label} className={slots.root({ class: className })} role="group" {...props}>
+    <div
+      data-surface="light"
+      {...props}
+      role="group"
+      aria-label={label}
+      className={styles.root({ className: withSx(sx, className) })}
+    >
       <button
-        aria-label={decrementLabel}
-        className={slots.button()}
-        disabled={current <= min}
-        onClick={() => {
-          step(-1);
-        }}
         type="button"
+        aria-label={orDefault(decrementLabel, `Remove ${stepName}`)}
+        aria-disabled={isAtMin ? true : undefined}
+        disabled={disabled}
+        onClick={() => {
+          if (!isAtMin) stepBy(-step);
+        }}
+        className={styles.button()}
       >
-        <Icon icon={Minus} size={iconSize} />
+        <Icon icon={Minus} size={size} />
       </button>
-      <span aria-live="polite" className={slots.count()}>
-        {current}
+      <input
+        ref={ref}
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        autoComplete="off"
+        role="spinbutton"
+        id={id}
+        aria-label={label}
+        aria-describedby={describedBy}
+        aria-invalid={isInvalid}
+        aria-valuenow={quantity}
+        aria-valuemin={min}
+        aria-valuemax={max}
+        name={name}
+        aria-required={required}
+        size={Math.max(2, String(max).length)}
+        value={draft ?? String(quantity)}
+        disabled={disabled}
+        onChange={(event) => {
+          setDraft(event.currentTarget.value.replace(/\D/g, ""));
+        }}
+        onKeyDown={handleKeyDown}
+        onFocus={() => {
+          setHasStepped(false);
+        }}
+        onBlur={handleBlur}
+        className={styles.count()}
+      />
+      <button
+        type="button"
+        aria-label={orDefault(incrementLabel, `Add ${stepName}`)}
+        aria-disabled={isAtMax ? true : undefined}
+        disabled={disabled}
+        onClick={() => {
+          if (!isAtMax) stepBy(step);
+        }}
+        className={styles.button()}
+      >
+        <Icon icon={Plus} size={size} />
+      </button>
+      <span role="status" className="sr-only">
+        {hasStepped ? String(quantity) : null}
       </span>
-      <button
-        aria-label={incrementLabel}
-        className={slots.button()}
-        disabled={current >= max}
-        onClick={() => {
-          step(1);
-        }}
-        type="button"
-      >
-        <Icon icon={Plus} size={iconSize} />
-      </button>
     </div>
   );
 }

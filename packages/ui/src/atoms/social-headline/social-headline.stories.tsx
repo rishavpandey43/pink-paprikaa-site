@@ -1,135 +1,106 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { ReactNode } from "react";
 
+import { OnSurfaces } from "../../lib/story-surfaces";
 import { SocialHeadline } from "./social-headline";
 
 const meta = {
   title: "Atoms/SocialHeadline",
   component: SocialHeadline,
-  args: { children: "Masala Cold Brew" },
+  args: { children: "Chai first, decisions later.", variant: "hero", measure: "default" },
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "Type for marketing canvases, sized in canvas pixels rather than screen ones — a 1080px " +
-          "artboard set in `text-h1` reads as fine print. Keep headlines to six words or fewer so " +
-          "balanced wrapping has something to work with.",
+          "Type for marketing canvases — sized in canvas pixels, wrapped with `text-wrap: balance`. Never use screen `text-*` sizes on a 1080 canvas — they render as fine print. Keep headlines ≤ 6 words so `balance` can do its job. Colour follows the artboard's surface (PatternField and PostFrame set it); `measure` caps the line: tight 12ch · default 18ch · wide 30ch.",
       },
     },
   },
 } satisfies Meta<typeof SocialHeadline>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
-/** Canvas type is huge by design, so the specimens below are shown at half scale. */
-function Artboard({ children, className }: { children: ReactNode; className: string }) {
-  return (
-    <div className={className}>
-      <div className="w-[200%] origin-top-left scale-50">{children}</div>
-    </div>
-  );
-}
+export const Playground: Story = {};
 
-export const Default: Story = {
-  render: (args) => (
-    <Artboard className="h-30 overflow-hidden">
-      <SocialHeadline {...args} on="light" />
-    </Artboard>
+export const Overline: Story = {
+  name: 'variant="overline"',
+  args: { variant: "overline", className: "text-text-brand", children: "Tonight Only" },
+};
+
+export const Hero: Story = {
+  name: 'variant="hero"',
+  args: { variant: "hero", children: "Chai first, decisions later." },
+};
+
+export const H1H2: Story = {
+  name: 'variant="h1" · "h2"',
+  render: () => (
+    <div className="grid gap-4">
+      <SocialHeadline variant="h1">Masala Cold Brew</SocialHeadline>
+      <SocialHeadline variant="h2" as="h3">
+        One kitchen. One grinder.
+      </SocialHeadline>
+    </div>
   ),
 };
 
-export const Ramp: Story = {
-  render: (args) => (
-    <Artboard className="h-110 overflow-hidden">
-      <SocialHeadline {...args} on="light" size="overline">
-        Tonight Only
+export const BodyCaption: Story = {
+  name: 'variant="body" · "caption"',
+  render: () => (
+    <div className="grid gap-4">
+      <SocialHeadline variant="body" measure="wide">
+        Cold brew, jaggery, cardamom.
       </SocialHeadline>
-      <SocialHeadline {...args} measure="narrow" on="light" size="hero">
-        Chai first, decisions later.
-      </SocialHeadline>
-      <SocialHeadline {...args} on="light" size="h1">
-        Masala Cold Brew
-      </SocialHeadline>
-      <SocialHeadline {...args} on="light" size="h2">
-        One kitchen, six counters.
-      </SocialHeadline>
-      <SocialHeadline {...args} on="light" size="body">
-        Cold brew, jaggery, cardamom · ₹180
-      </SocialHeadline>
-      <SocialHeadline {...args} on="light" size="caption">
+      <SocialHeadline variant="caption" measure="wide">
         Sector 57, Gurgaon · 8am – 11:30pm
       </SocialHeadline>
-    </Artboard>
-  ),
-};
-
-/** The four grounds a canvas is allowed to sit on. */
-export const Grounds: Story = {
-  render: (args) => (
-    <div className="grid gap-4">
-      <Artboard className="h-[130px] overflow-hidden bg-surface-brand p-6">
-        <SocialHeadline {...args} on="brand" size="h2">
-          Flooded pink
-        </SocialHeadline>
-        <SocialHeadline {...args} on="brand" size="caption">
-          Running text steps back to 88% white.
-        </SocialHeadline>
-      </Artboard>
-      <Artboard className="h-20 overflow-hidden bg-surface-inverse p-6">
-        <SocialHeadline {...args} on="ink" size="h2">
-          Flooded ink
-        </SocialHeadline>
-      </Artboard>
-      <Artboard className="h-20 overflow-hidden bg-surface-brand-soft p-6">
-        <SocialHeadline {...args} on="soft" size="h2">
-          Soft pink
-        </SocialHeadline>
-      </Artboard>
-      <Artboard className="h-20 overflow-hidden bg-surface-card p-6">
-        <SocialHeadline {...args} on="light" size="h2">
-          White
-        </SocialHeadline>
-      </Artboard>
     </div>
   ),
 };
 
 export const Alignment: Story = {
-  render: (args) => (
-    <Artboard className="h-55 overflow-hidden">
-      <SocialHeadline {...args} align="start" on="light" size="h2">
+  name: "align",
+  render: () => (
+    <div className="grid gap-4">
+      <SocialHeadline variant="h2" align="start">
         Start
       </SocialHeadline>
-      <SocialHeadline {...args} align="center" on="light" size="h2">
+      <SocialHeadline variant="h2" align="center">
         Center
       </SocialHeadline>
-      <SocialHeadline {...args} align="end" on="light" size="h2">
+      <SocialHeadline variant="h2" align="end">
         End
       </SocialHeadline>
-    </Artboard>
-  ),
-};
-
-/** A whole 1080 x 1080 post, shown at half scale — how the ramp is actually used. */
-export const OnACanvas: Story = {
-  globals: { backgrounds: { value: "brand" } },
-  parameters: { layout: "fullscreen" },
-  render: (args) => (
-    <div className="size-[540px] overflow-hidden">
-      <div className="h-(--canvas-post-h) w-(--canvas-post-w) origin-top-left scale-50 bg-surface-brand p-(--canvas-pad)">
-        <SocialHeadline {...args} size="overline">
-          Tonight Only
-        </SocialHeadline>
-        <SocialHeadline {...args} className="mt-8" measure="narrow" size="hero">
-          Chai first, decisions later.
-        </SocialHeadline>
-        <SocialHeadline {...args} className="mt-8" size="body">
-          Kadak chai and hot momos · ₹180–₹320
-        </SocialHeadline>
-      </div>
     </div>
   ),
 };
+
+/** A whole post as the ramp is really used, at true canvas pixels (72px canvas padding). */
+export const OnACanvas: Story = {
+  name: "on a canvas (a whole post)",
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <div data-surface="brand" className="grid gap-8 bg-surface-brand p-18">
+      <SocialHeadline variant="overline">Tonight Only</SocialHeadline>
+      <SocialHeadline variant="hero" measure="tight">
+        Chai first, decisions later.
+      </SocialHeadline>
+      <SocialHeadline variant="body" measure="wide">
+        Kadak chai and hot momos · ₹180–₹320
+      </SocialHeadline>
+    </div>
+  ),
+};
+
+export const OnSurfacesStory: Story = {
+  name: "OnSurfaces",
+  render: () => (
+    <OnSurfaces>
+      <SocialHeadline variant="overline">Tonight Only</SocialHeadline>
+      <SocialHeadline variant="body">Cold brew, jaggery, cardamom.</SocialHeadline>
+    </OnSurfaces>
+  ),
+};
+
+export const Sx: Story = { args: { sx: { mt: 4, textAlign: "center" } } };

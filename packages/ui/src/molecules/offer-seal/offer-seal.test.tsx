@@ -1,92 +1,117 @@
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { OfferSeal } from "./offer-seal";
 
-describe("OfferSeal", () => {
-  it("prints the value, the label and the note", () => {
-    render(<OfferSeal label="Off" note="till 11:30pm" value="50%" />);
+const CORNERS = ["top-right", "top-left", "bottom-right", "bottom-left"] as const;
 
+/** The seal's outward offset per axis, read from its `translate-{x,y}-a/b` classes. */
+function bleedFractions(seal: Element | null): number[] {
+  const classes = seal?.getAttribute("class") ?? "";
+  return [...classes.matchAll(/translate-[xy]-(\d+)\/(\d+)/g)].map(
+    (match) => Number(match[1]) / Number(match[2])
+  );
+}
+
+describe("OfferSeal", () => {
+  it("reads as the value, the label and the note", () => {
+    render(<OfferSeal value="50%" label="Off" note="till 11:30pm" />);
     expect(screen.getByText("50%")).toBeInTheDocument();
     expect(screen.getByText("Off")).toBeInTheDocument();
     expect(screen.getByText("till 11:30pm")).toBeInTheDocument();
   });
 
   it("renders the value alone when there is nothing else to say", () => {
-    render(<OfferSeal value="1+1" />);
+    const { container } = render(<OfferSeal value="1+1" />);
+    expect(container.firstElementChild).toHaveTextContent(/^1\+1$/);
+  });
 
-    expect(screen.getByText("1+1")).toBeInTheDocument();
+  it("is a rotated diamond, never a circle, with the text counter-rotated upright", () => {
+    const { container } = render(<OfferSeal value="1+1" label="Free" />);
+    expect(container.firstElementChild).toHaveClass("rotate-45", "rounded-offer-seal");
+    expect(screen.getByText("1+1").parentElement).toHaveClass("-rotate-45");
+  });
+
+  it.each([
+    ["sm", "text-offer-seal-sm"],
+    ["md", "text-offer-seal-md"],
+    ["lg", "text-offer-seal-lg"],
+    ["xl", "text-offer-seal-xl"],
+  ] as const)("scales the whole seal from one size step (%s)", (size, sizeClass) => {
+    const { container } = render(<OfferSeal value="50%" size={size} />);
+    expect(container.firstElementChild).toHaveClass(sizeClass, "size-offer-seal");
+  });
+
+  it.each([
+    ["neutral", "bg-ink-000", "text-pink-600"],
+    ["brand", "bg-pink-500", "text-ink-000"],
+    ["accent", "bg-turmeric", "text-ink-900"],
+  ] as const)("paints the %s color", (color, background, text) => {
+    const { container } = render(<OfferSeal value="50%" color={color} />);
+    expect(container.firstElementChild).toHaveClass(background, text);
+    // One flat fill — never a gradient, never a starburst.
+    expect(container.firstElementChild?.getAttribute("class")).not.toMatch(/gradient/);
+  });
+
+  it("sits in flow when it does not bleed", () => {
+    const { container } = render(<OfferSeal value="50%" />);
+    expect(container.firstElementChild).not.toHaveClass("absolute");
+    expect(bleedFractions(container.firstElementChild)).toEqual([]);
+  });
+
+  it("reserves room for its rotated tips in flow, but not when it bleeds", () => {
+    // A rotated square's tips overhang its layout box by ~0.15 × side; rotate-45 is not layout.
+    const { container, rerender } = render(<OfferSeal value="50%" />);
+    expect(container.firstElementChild).toHaveClass("m-offer-seal-clear");
+    rerender(<OfferSeal value="50%" bleed="md" />);
+    expect(container.firstElementChild).not.toHaveClass("m-offer-seal-clear");
+  });
+
+  it("drops the note at sm, where it would print below a legible size", () => {
+    render(<OfferSeal value="50%" label="Off" note="till 11:30pm" size="sm" />);
+    expect(screen.getByText("Off")).toBeInTheDocument();
     expect(screen.queryByText("till 11:30pm")).not.toBeInTheDocument();
   });
 
-  it("prints a rupee value as written, with no space and no decimals", () => {
-    render(<OfferSeal label="Only" value="₹99" />);
-    expect(screen.getByText("₹99")).toBeInTheDocument();
-  });
+  it.each(CORNERS)(
+    "never bleeds a corner further than 0.18 × its side (%s) — the value reaches 0.32 × side from the centre",
+    (corner) => {
+      for (const bleed of ["sm", "md"] as const) {
+        const { container, unmount } = render(
+          <OfferSeal value="50%" label="Off" corner={corner} bleed={bleed} />
+        );
+        const fractions = bleedFractions(container.firstElementChild);
+        expect(container.firstElementChild).toHaveClass("absolute");
+        expect(fractions).toHaveLength(2);
+        for (const fraction of fractions) expect(fraction).toBeLessThanOrEqual(0.18);
+        unmount();
+      }
+    }
+  );
 
-  it("rotates the diamond and counter-rotates its text so the number stays upright", () => {
-    const { container } = render(<OfferSeal value="50%" />);
-    const root = container.firstElementChild;
-
-    expect(root).toHaveClass("rotate-45");
-    expect(root?.firstElementChild).toHaveClass("-rotate-45");
-  });
-
-  it.each([
-    ["light", "bg-surface-card"],
-    ["brand", "bg-brand-primary"],
-    ["turmeric", "bg-turmeric"],
-  ] as const)("fills the %s tone flat, with no gradient", (tone, expected) => {
-    const { container } = render(<OfferSeal tone={tone} value="50%" />);
-    const root = container.firstElementChild;
-
-    expect(root).toHaveClass(expected);
-    expect(root?.className).not.toMatch(/gradient/);
-  });
-
-  it.each([
-    ["sm", "size-32"],
-    ["md", "size-48"],
-    ["lg", "size-70"],
-  ] as const)("renders the %s seal at its fixed diagonal", (size, expected) => {
-    const { container } = render(<OfferSeal size={size} value="50%" />);
-    expect(container.firstElementChild).toHaveClass(expected);
-  });
-
-  it("sits in the flow until a corner is asked for", () => {
-    const { container } = render(<OfferSeal value="50%" />);
-    expect(container.firstElementChild).not.toHaveClass("absolute");
-  });
-
-  it.each([
-    ["topLeft", "-translate-x-[18%]"],
-    ["topRight", "translate-x-[18%]"],
-    ["bottomLeft", "translate-y-[18%]"],
-    ["bottomRight", "translate-y-[18%]"],
-  ] as const)("hangs off the %s corner by a clamped self offset", (position, expected) => {
-    const { container } = render(<OfferSeal position={position} value="50%" />);
-    const root = container.firstElementChild;
-
-    expect(root).toHaveClass("absolute");
-    expect(root).toHaveClass(expected);
-  });
-
-  it("merges a caller className", () => {
-    const { container } = render(<OfferSeal className="rounded-1" value="50%" />);
-    const node = container.firstElementChild;
-
-    expect(node).toHaveClass("rounded-1");
-    expect(node).not.toHaveClass("rounded-5");
+  it("lets a caller className replace its own shadow", () => {
+    const { container } = render(<OfferSeal value="50%" className="shadow-2" />);
+    expect(container.firstElementChild).toHaveClass("shadow-2");
+    expect(container.firstElementChild).not.toHaveClass("shadow-3");
   });
 
   it("has no accessibility violations", async () => {
     const { container } = render(
       <>
-        <OfferSeal label="Off" note="till 11:30pm" value="50%" />
-        <OfferSeal label="Only" tone="brand" value="₹99" />
-        <OfferSeal label="Free" size="sm" tone="turmeric" value="1+1" />
+        <OfferSeal value="₹130" label="Launch" color="brand" size="md" />
+        <OfferSeal value="50%" label="Off" note="till 11:30pm" color="neutral" size="lg" />
+        <OfferSeal value="1+1" label="Free" color="accent" size="sm" />
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, beating a default class and keeping className", () => {
+    const { container } = render(
+      <OfferSeal value="50%" sx={{ shadow: 1, mt: 2 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("shadow-1", "mt-2", "italic");
+    expect(container.firstElementChild).not.toHaveClass("shadow-3");
   });
 });

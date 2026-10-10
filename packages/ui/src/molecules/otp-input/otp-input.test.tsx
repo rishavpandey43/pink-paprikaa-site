@@ -1,174 +1,254 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { createRef } from "react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { OtpInput } from "./otp-input";
 
-/** Cells are queried by their accessible name, which is stable and one-based. */
-const cell = (index: number, length = 4) =>
-  screen.getByRole("textbox", { name: `Digit ${String(index + 1)} of ${String(length)}` });
+function cells(container: HTMLElement): Element[] {
+  return [...container.querySelectorAll("[data-state]")];
+}
+
+function cellDigits(container: HTMLElement): string[] {
+  return cells(container).map((cell) => cell.textContent);
+}
 
 describe("OtpInput", () => {
-  it("renders six named cells inside a named group by default", () => {
-    render(<OtpInput />);
-    expect(screen.getByRole("group", { name: "One-time code" })).toBeInTheDocument();
-    expect(screen.getAllByRole("textbox")).toHaveLength(6);
-    expect(cell(0, 6)).toBeInTheDocument();
+  it("is one labelled code field that phones can autofill", () => {
+    const { container } = render(<OtpInput label="Login code" />);
+    const input = screen.getByRole("textbox", { name: "Login code" });
+    expect(input).toHaveAttribute("autocomplete", "one-time-code");
+    expect(input).toHaveAttribute("inputmode", "numeric");
+    expect(input).not.toHaveAttribute("maxlength");
+    expect(cellDigits(container)).toEqual(["", "", "", "", "", ""]);
   });
 
-  it("renders a four-digit code when asked", () => {
-    render(<OtpInput length={4} />);
-    expect(screen.getAllByRole("textbox")).toHaveLength(4);
+  it("fills the cells in order as digits are typed, and reports the code", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const { container } = render(<OtpInput label="Login code" onValueChange={onValueChange} />);
+    await user.type(screen.getByRole("textbox"), "482");
+    expect(cellDigits(container)).toEqual(["4", "8", "2", "", "", ""]);
+    expect(onValueChange).toHaveBeenLastCalledWith("482");
   });
 
-  it("shows one digit per cell", () => {
-    render(<OtpInput length={4} value="482" />);
-    expect(cell(0)).toHaveValue("4");
-    expect(cell(1)).toHaveValue("8");
-    expect(cell(2)).toHaveValue("2");
-    expect(cell(3)).toHaveValue("");
+  it("fills every cell from a pasted code, ignoring spaces and dashes", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const { container } = render(<OtpInput label="Login code" onValueChange={onValueChange} />);
+    const input = screen.getByRole("textbox");
+    await user.click(input);
+    await user.paste("48-21 93");
+    expect(input).toHaveValue("482193");
+    expect(cellDigits(container)).toEqual(["4", "8", "2", "1", "9", "3"]);
+    expect(onValueChange).toHaveBeenLastCalledWith("482193");
   });
 
-  it("reports the whole code, not the single digit, and walks forward", async () => {
-    const handleChange = vi.fn();
-    render(<OtpInput length={4} onChange={handleChange} value="48" />);
-
-    await userEvent.type(cell(2), "2");
-
-    expect(handleChange).toHaveBeenCalledWith("482");
-    expect(cell(3)).toHaveFocus();
+  it("drops digits past the code length from a paste", async () => {
+    const user = userEvent.setup();
+    render(<OtpInput label="Login code" length={4} />);
+    const input = screen.getByRole("textbox");
+    await user.click(input);
+    await user.paste("4821 93");
+    expect(input).toHaveValue("4821");
   });
 
-  it("keeps its own code when uncontrolled", async () => {
-    render(<OtpInput length={4} />);
-
-    await userEvent.type(cell(0), "4");
-
-    expect(cell(0)).toHaveValue("4");
-    expect(cell(1)).toHaveFocus();
+  it("ignores letters and symbols typed into the field", async () => {
+    const user = userEvent.setup();
+    render(<OtpInput label="Login code" />);
+    const input = screen.getByRole("textbox");
+    await user.type(input, "4a8$");
+    expect(input).toHaveValue("48");
   });
 
-  it("spills a pasted code across the cells that follow", async () => {
-    const handleChange = vi.fn();
-    render(<OtpInput length={4} onChange={handleChange} value="" />);
-
-    await userEvent.click(cell(0));
-    await userEvent.paste("4821");
-
-    expect(handleChange).toHaveBeenCalledWith("4821");
+  it("deletes back across the cells with Backspace", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<OtpInput label="Login code" length={4} />);
+    await user.type(screen.getByRole("textbox"), "4821{Backspace}{Backspace}");
+    expect(cellDigits(container)).toEqual(["4", "8", "", ""]);
   });
 
-  it("ignores anything that is not a digit", async () => {
-    const handleChange = vi.fn();
-    render(<OtpInput length={4} onChange={handleChange} value="" />);
-
-    await userEvent.type(cell(0), "a");
-
-    expect(handleChange).toHaveBeenCalledWith("");
+  it("marks the next empty cell active only while the field has focus", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<OtpInput label="Login code" length={4} />);
+    await user.type(screen.getByRole("textbox"), "48");
+    expect(cells(container).map((cell) => cell.getAttribute("data-state"))).toEqual([
+      "filled",
+      "filled",
+      "active",
+      "empty",
+    ]);
+    await user.tab();
+    expect(cells(container).map((cell) => cell.getAttribute("data-state"))).toEqual([
+      "filled",
+      "filled",
+      "empty",
+      "empty",
+    ]);
   });
 
-  it("walks back to the previous cell on Backspace in an empty one", async () => {
-    const handleChange = vi.fn();
-    render(<OtpInput length={4} onChange={handleChange} value="48" />);
-
-    await userEvent.click(cell(2));
-    await userEvent.keyboard("{Backspace}");
-
-    expect(handleChange).toHaveBeenCalledWith("4");
-    expect(cell(1)).toHaveFocus();
+  it("shows the caller's code when controlled and only reports input", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<OtpInput label="Login code" value="12" onValueChange={onValueChange} />);
+    await user.type(screen.getByRole("textbox"), "3");
+    expect(onValueChange).toHaveBeenCalledWith("123");
+    expect(screen.getByRole("textbox")).toHaveValue("12");
   });
 
-  it("moves between cells with the arrow keys", async () => {
-    render(<OtpInput length={4} value="4821" />);
-
-    await userEvent.click(cell(2));
-    await userEvent.keyboard("{ArrowLeft}");
-    expect(cell(1)).toHaveFocus();
-
-    await userEvent.keyboard("{ArrowRight}");
-    expect(cell(2)).toHaveFocus();
-  });
-
-  it("gives a filled cell the brand border and leaves an empty one thin", () => {
-    render(<OtpInput length={4} value="4" />);
-    expect(cell(0)).toHaveClass("border-brand-primary");
-    expect(cell(1)).not.toHaveClass("border-brand-primary");
-  });
-
-  it.each([
-    ["error", "border-(--field-border-error)"],
-    ["success", "border-(--field-border-success)"],
-    ["warning", "border-(--field-border-warning)"],
-  ] as const)("outranks the filled border with the %s status", (status, expected) => {
-    render(<OtpInput length={4} message="Check that code." status={status} value="4821" />);
-    expect(cell(0)).toHaveClass(expected);
-    expect(cell(0)).not.toHaveClass("border-brand-primary");
-  });
-
-  it("marks every cell invalid only on the error status", () => {
+  it("describes the field with its status message and marks only an error invalid", () => {
     const { rerender } = render(
-      <OtpInput length={4} message="That code has expired." status="error" value="1234" />
-    );
-    expect(cell(0)).toHaveAttribute("aria-invalid", "true");
-
-    rerender(<OtpInput length={4} message="Verified." status="success" value="1234" />);
-    expect(cell(0)).not.toHaveAttribute("aria-invalid");
-  });
-
-  it("replaces the hint with the status message", () => {
-    render(
       <OtpInput
-        hint="The code lasts 10 minutes."
+        label="Login code"
         length={4}
-        message="That code has expired. Send a new one?"
+        defaultValue="1234"
         status="error"
-        value="1234"
+        message="That code has expired. Send a new one?"
       />
     );
-    expect(screen.getByRole("alert")).toHaveTextContent("That code has expired.");
-    expect(screen.queryByText("The code lasts 10 minutes.")).not.toBeInTheDocument();
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveAccessibleDescription("That code has expired. Send a new one?");
+    rerender(
+      <OtpInput
+        label="Login code"
+        length={4}
+        defaultValue="4821"
+        status="success"
+        message="Verified. Signing you in."
+      />
+    );
+    expect(screen.getByRole("textbox")).not.toHaveAttribute("aria-invalid");
+    expect(screen.getByRole("textbox")).toHaveAccessibleDescription("Verified. Signing you in.");
   });
 
-  it("takes no typing and keeps a real grey fill when disabled", async () => {
-    const handleChange = vi.fn();
-    render(<OtpInput length={4} onChange={handleChange} status="disabled" value="48" />);
-
-    await userEvent.type(cell(2), "2");
-
-    expect(cell(2)).toBeDisabled();
-    expect(handleChange).not.toHaveBeenCalled();
-    expect(cell(0)).toHaveClass("disabled:bg-(--field-bg-disabled)");
-    expect(cell(0).className).not.toMatch(/opacity-/);
+  it("renders four cells for a four-digit code", () => {
+    const { container } = render(<OtpInput label="Login code" length={4} />);
+    expect(cells(container)).toHaveLength(4);
   });
 
-  it("describes the group with whatever line is showing", () => {
-    render(<OtpInput hint="The code lasts 10 minutes." length={4} />);
-    const group = screen.getByRole("group", { name: "One-time code" });
-    const describedBy = group.getAttribute("aria-describedby");
-    expect(describedBy).not.toBeNull();
-    expect(screen.getByText("The code lasts 10 minutes.")).toHaveAttribute("id", describedBy);
+  it("gives a filled cell the brand border, and lets a status outrank it", () => {
+    const { container, rerender } = render(
+      <OtpInput label="Login code" length={4} defaultValue="4" />
+    );
+    const [first, second] = cells(container);
+    expect(first).toHaveClass("border-2", "border-border-brand");
+    expect(second).not.toHaveClass("border-border-brand");
+    // The whole code is wrong, not one cell: the status colour wins over the filled border.
+    rerender(
+      <OtpInput
+        label="Login code"
+        length={4}
+        defaultValue="4"
+        status="error"
+        message="That code has expired."
+      />
+    );
+    expect(cells(container)[0]).toHaveClass("border-status-danger");
+    expect(cells(container)[0]).not.toHaveClass("border-border-brand");
   });
 
-  it("merges a caller className", () => {
-    const { container } = render(<OtpInput className="gap-6" length={4} />);
+  it("shows a hint as its message on the default status, describing the field politely", () => {
+    render(<OtpInput label="Login code" message="The code lasts 10 minutes." />);
+    expect(screen.getByRole("textbox")).toHaveAccessibleDescription("The code lasts 10 minutes.");
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("merges a caller className over its own gap", () => {
+    const { container } = render(<OtpInput label="Login code" className="gap-6" />);
     expect(container.firstElementChild).toHaveClass("gap-6");
     expect(container.firstElementChild).not.toHaveClass("gap-2");
   });
 
-  it("has no accessibility violations", async () => {
+  it("keeps the invisible caret at the end, so a digit always lands in the next empty cell", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<OtpInput label="Login code" />);
+    const input = screen.getByRole("textbox");
+    await user.type(input, "48");
+    await user.keyboard("{ArrowLeft}{ArrowLeft}2");
+    expect(cellDigits(container)).toEqual(["4", "8", "2", "", "", ""]);
+  });
+
+  it("gives react-hook-form's Controller a name, onBlur and a focusable ref", async () => {
+    const user = userEvent.setup();
+    const ref = createRef<HTMLInputElement>();
+    const onBlur = vi.fn();
+    render(<OtpInput label="Login code" name="otp" ref={ref} onBlur={onBlur} />);
+    const input = screen.getByRole("textbox");
+    expect(ref.current).toBe(input);
+    expect(input).toHaveAttribute("name", "otp");
+    await user.click(input);
+    await user.tab();
+    expect(onBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it("takes no typing and greys every cell with a fill, never opacity, when disabled", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const { container } = render(
+      <OtpInput
+        label="Login code"
+        length={4}
+        defaultValue="48"
+        disabled
+        onValueChange={onValueChange}
+      />
+    );
+    const input = screen.getByRole("textbox");
+    await user.type(input, "2");
+    expect(input).toBeDisabled();
+    expect(onValueChange).not.toHaveBeenCalled();
+    for (const cell of cells(container)) {
+      expect(cell).toHaveClass(
+        "bg-ink-100",
+        "border-border-subtle",
+        "text-ink-400",
+        "cursor-not-allowed"
+      );
+      expect(cell).not.toHaveClass("border-border-brand");
+      expect(cell.className).not.toMatch(/opacity-/);
+    }
+  });
+
+  it("has no accessibility violations empty or in error", async () => {
     const { container } = render(
       <>
-        <OtpInput hint="The code lasts 10 minutes." length={4} value="482" />
+        <OtpInput label="Login code" />
         <OtpInput
-          label="Sign-in code"
+          label="Confirm code"
           length={4}
-          message="That code has expired. Send a new one?"
+          defaultValue="1234"
           status="error"
-          value="1234"
+          message="That code has expired. Send a new one?"
         />
-        <OtpInput label="Expired code" length={4} status="disabled" value="48" />
+        <OtpInput label="Expired code" length={4} defaultValue="48" disabled />
       </>
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("forwards id, data-* and aria-* to its wrapper, and takes sx there; ref stays on the code field", () => {
+    const ref = createRef<HTMLInputElement>();
+    const { container } = render(
+      <OtpInput
+        ref={ref}
+        label="Login code"
+        id="otp"
+        data-section="login"
+        sx={{ mt: 4 }}
+        className="italic"
+      />
+    );
+    const wrapper = container.firstElementChild;
+    expect(wrapper).toHaveAttribute("id", "otp");
+    expect(wrapper).toHaveAttribute("data-section", "login");
+    expect(wrapper).toHaveClass("mt-4", "italic");
+    expect(ref.current).toBe(screen.getByRole("textbox", { name: "Login code" }));
+  });
+
+  it("renders Field around itself when given a hint", () => {
+    render(<OtpInput label="Login code" hint="The code lasts 10 minutes." />);
+    expect(screen.getByText("The code lasts 10 minutes.")).toBeInTheDocument();
   });
 });

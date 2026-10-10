@@ -1,102 +1,134 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, within } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
+import type { TrackerStep } from "../../molecules/step-tracker/step-tracker";
 import { OrderTracker } from "./order-tracker";
 
+const STEPS: TrackerStep[] = [
+  { label: "Order in", note: "Kitchen's on it." },
+  { label: "On the tandoor", note: "Chilli paneer is charring." },
+  { label: "Ready for pickup", note: "Counter 2, ask for Paprikaa." },
+];
+
 describe("OrderTracker", () => {
-  it("leads with the moment the order is in", () => {
-    render(<OrderTracker current={0} total={1239} />);
-    expect(screen.getByRole("heading", { name: "Order in" })).toBeInTheDocument();
-    // Twice over: once in the pink header, once as the step's own note in the tracker.
-    expect(screen.getAllByText("Kitchen's on it.")).toHaveLength(2);
+  it("heads the screen with the current step and its note, in a live status region", () => {
+    render(<OrderTracker steps={STEPS} current={1} code="PPK-4821" />);
+    const status = screen.getByRole("status");
+    expect(
+      within(status).getByRole("heading", { level: 2, name: "On the tandoor" })
+    ).toBeInTheDocument();
+    expect(status).toHaveTextContent("Chilli paneer is charring.");
   });
 
-  it("moves the heading and the note as the kitchen works", () => {
-    render(<OrderTracker current={1} total={1239} />);
-    expect(screen.getByRole("heading", { name: "On the tandoor" })).toBeInTheDocument();
-    expect(screen.getAllByText("The paneer is charring.")).toHaveLength(2);
+  it("clamps a current index past the end to the last step", () => {
+    render(<OrderTracker steps={STEPS} current={7} code="PPK-4821" />);
+    expect(screen.getByRole("heading", { level: 2, name: "Ready for pickup" })).toBeInTheDocument();
   });
 
-  it("reads Preparing until the last step, then Ready", () => {
-    const { unmount } = render(<OrderTracker current={0} />);
-    expect(screen.getByText("Preparing")).toBeInTheDocument();
-    unmount();
-
-    render(<OrderTracker current={2} />);
-    expect(screen.getByText("Ready")).toBeInTheDocument();
+  it("clamps a negative current index to the first step", () => {
+    render(<OrderTracker steps={STEPS} current={-1} code="PPK-4821" />);
+    expect(screen.getByRole("heading", { level: 2, name: "Order in" })).toBeInTheDocument();
   });
 
-  it("clamps a step index past the end of the list", () => {
-    render(<OrderTracker current={9} />);
-    expect(screen.getByRole("heading", { name: "Ready for pickup" })).toBeInTheDocument();
+  it("renders no empty heading and no empty step list when there are no steps", async () => {
+    const { container } = render(
+      <OrderTracker steps={[]} current={0} code="PPK-4821" badge={<span>Preparing</span>} />
+    );
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+    expect(within(screen.getByRole("status")).getByText("Preparing")).toBeInTheDocument();
+    expect(screen.getByText("Order #PPK-4821")).toBeInTheDocument();
+    await expectNoA11yViolations(container);
   });
 
-  it("prints the order code and the outlet on one line", () => {
-    render(<OrderTracker code="PPK-9310" outlet="MKM MARKET" />);
-    expect(screen.getByText("ORDER #PPK-9310 · MKM MARKET")).toBeInTheDocument();
-  });
-
-  it("composes the step tracker, with the current step marked", () => {
-    render(<OrderTracker current={1} />);
-
+  it("marks the current step in the tracker, named Order progress", () => {
+    render(<OrderTracker steps={STEPS} current={1} code="PPK-4821" />);
     const tracker = screen.getByRole("list", { name: "Order progress" });
-    expect(tracker).toBeInTheDocument();
-
-    const steps = screen.getAllByRole("listitem");
-    expect(steps).toHaveLength(3);
-    expect(steps[1]).toHaveAttribute("aria-current", "step");
+    expect(
+      within(tracker).getByText("On the tandoor").closest('[aria-current="step"]')
+    ).not.toBeNull();
   });
 
-  it("takes its own steps, including bare strings", () => {
-    render(<OrderTracker current={0} steps={["Order in", "Out for delivery"]} />);
-
-    expect(screen.getAllByRole("listitem")).toHaveLength(2);
-    expect(screen.getByRole("heading", { name: "Order in" })).toBeInTheDocument();
+  it("takes the tracker's name from progressLabel", () => {
+    render(
+      <OrderTracker steps={STEPS} current={1} code="PPK-4821" progressLabel="Delivery progress" />
+    );
+    expect(screen.getByRole("list", { name: "Delivery progress" })).toBeInTheDocument();
   });
 
-  it("says what was paid and how", () => {
-    render(<OrderTracker payment="Card" total={1239} />);
+  it("prints the order code with its label and the outlet", () => {
+    render(<OrderTracker steps={STEPS} current={0} code="PPK-4821" outlet="Sector 57, Gurgaon" />);
+    expect(screen.getByText("Order #PPK-4821 · Sector 57, Gurgaon")).toBeInTheDocument();
+  });
 
-    expect(screen.getByText("Paid · Card")).toBeInTheDocument();
+  it("formats the total beside the payment line", () => {
+    render(<OrderTracker steps={STEPS} current={0} code="PPK-4821" total={1239} payment="UPI" />);
+    expect(screen.getByText("Paid · UPI")).toBeInTheDocument();
     expect(screen.getByText("₹1,239")).toBeInTheDocument();
   });
 
-  it("renders no action at all when there is nowhere to go", () => {
-    render(<OrderTracker />);
+  it("renders the badge and action slots", () => {
+    render(
+      <OrderTracker
+        steps={STEPS}
+        current={0}
+        code="PPK-4821"
+        badge={<span>Preparing</span>}
+        action={<a href="#home">Back to Home</a>}
+      />
+    );
+    expect(within(screen.getByRole("status")).getByText("Preparing")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Back to Home" })).toBeInTheDocument();
+  });
+
+  it("derives Preparing/Ready badges from the step when badge is omitted", () => {
+    const { rerender } = render(<OrderTracker steps={STEPS} current={0} code="PPK-4821" />);
+    expect(within(screen.getByRole("status")).getByText("Preparing")).toBeInTheDocument();
+    rerender(<OrderTracker steps={STEPS} current={STEPS.length - 1} code="PPK-4821" />);
+    expect(within(screen.getByRole("status")).getByText("Ready")).toBeInTheDocument();
+  });
+
+  it("renders no action when none is given", () => {
+    render(<OrderTracker steps={STEPS} current={0} code="PPK-4821" />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
-  });
-
-  it("calls onDone from its one action", async () => {
-    const handleDone = vi.fn();
-    render(<OrderTracker onDone={handleDone} />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Back to Home" }));
-
-    expect(handleDone).toHaveBeenCalledOnce();
-  });
-
-  it("takes a different label for that action", () => {
-    render(<OrderTracker doneLabel="See My Orders" onDone={vi.fn()} />);
-    expect(screen.getByRole("button", { name: "See My Orders" })).toBeInTheDocument();
-  });
-
-  it("rounds and clips itself in the card frame", () => {
-    const { container } = render(<OrderTracker variant="card" />);
-    expect(container.firstElementChild).toHaveClass("rounded-4");
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
   it("merges a caller className", () => {
-    const { container } = render(<OrderTracker className="bg-surface-sunken" />);
+    const { container } = render(
+      <OrderTracker steps={STEPS} current={0} code="PPK-4821" className="bg-surface-page" />
+    );
+    expect(container.firstElementChild).toHaveClass("flex", "bg-surface-page");
+  });
 
-    expect(container.firstElementChild).toHaveClass("bg-surface-sunken");
-    expect(container.firstElementChild).not.toHaveClass("bg-surface-page");
+  it("frames itself as a light card with variant=card", () => {
+    const { container } = render(
+      <OrderTracker steps={STEPS} current={0} code="PPK-4821" variant="card" />
+    );
+    expect(container.firstElementChild).toHaveAttribute("data-surface", "light");
+    expect(container.firstElementChild).toHaveClass("rounded-xl");
   });
 
   it("has no accessibility violations", async () => {
     const { container } = render(
-      <OrderTracker current={1} onDone={vi.fn()} payment="UPI" total={1239} />
+      <OrderTracker
+        steps={STEPS}
+        current={1}
+        code="PPK-4821"
+        outlet="Sector 57, Gurgaon"
+        total={1239}
+        payment="UPI"
+        badge={<span>Preparing</span>}
+      />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(
+      <OrderTracker steps={STEPS} current={1} code="PPK-4821" sx={{ mt: 4 }} className="italic" />
+    );
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });

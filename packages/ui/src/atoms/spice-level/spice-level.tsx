@@ -1,82 +1,77 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentProps } from "react";
 
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { BrandDiamond, type BrandDiamondSize } from "../../lib/brand-diamond";
+import type { SxProp } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { withSx } from "../../lib/sx";
+
+type Level = 1 | 2 | 3 | 4;
+type SpiceSize = "sm" | "md" | "lg";
+
+/** Plain heat names a guest already knows (readme §2: controls never carry a word to decode). */
+const SPICE_LABEL: Readonly<Record<Level, string>> = {
+  1: "Mild",
+  2: "Medium",
+  3: "Hot",
+  4: "Extra Hot",
+};
+
+/** Filled diamonds take the heat colour of the level: mint → turmeric → tandoor → pink. */
+const HEAT_FILL = { 1: "heat-1", 2: "heat-2", 3: "heat-3", 4: "heat-4" } as const;
+
+/** sm is the menu size (MenuItemRow, MenuItemCard); md the design system's default. */
+const DIAMOND_SIZE: Readonly<Record<SpiceSize, BrandDiamondSize>> = {
+  sm: "12px",
+  md: "14px",
+  lg: "20px",
+};
 
 const spiceLevel = componentVariants({
   slots: {
     root: "inline-flex items-center gap-2",
-    marks: "inline-flex items-center",
-    // A diamond is the brand's square mark turned 45°. Unfilled marks stay on the neutral ramp;
-    // the filled ones are recoloured by `HEAT` below.
-    mark: "shrink-0 rotate-45 rounded-1 bg-ink-200",
-    label: "font-display font-bold text-overline uppercase tracking-overline text-text-muted",
+    diamonds: "inline-flex items-center gap-1",
+    label: "font-display text-overline text-text-muted uppercase",
   },
-  variants: {
-    /** 10 / 14 / 20px per diamond. The gap grows with the mark so the row never reads as one blob. */
-    size: {
-      xs: { marks: "gap-1", mark: "size-2.5" },
-      sm: { marks: "gap-1-5", mark: "size-3.5" },
-      md: { marks: "gap-2", mark: "size-5" },
-      lg: { marks: "gap-3", mark: "size-7" },
-    },
-  },
-  defaultVariants: { size: "md" },
 });
 
-/**
- * The heat ramp: mint → turmeric → tandoor → pink, with the brand's Hinglish names. Every filled
- * diamond takes the colour of the *level*, not of its own position, so a level reads as one signal.
- *
- * The fill class is a lookup rather than a variant because it is keyed by a numeric level; the same
- * pattern as `Text`'s line-clamp table, and it merges over the base `bg-ink-200` through
- * `componentVariants`.
- */
-const HEAT = {
-  1: { label: "Mild", fill: "bg-heat-1" },
-  2: { label: "Medium", fill: "bg-heat-2" },
-  3: { label: "Hot", fill: "bg-heat-3" },
-  4: { label: "Extra Hot", fill: "bg-heat-4" },
-} as const;
-
-export interface SpiceLevelProps
-  extends Omit<ComponentPropsWithoutRef<"span">, "children">, VariantProps<typeof spiceLevel> {
-  /** 1 Mild · 2 Medium · 3 Hot · 4 Extra Hot. */
-  level?: 1 | 2 | 3 | 4 | undefined;
-  /** How many diamonds the scale shows. Four is the whole scale; lower it only in tight rows. */
-  max?: 1 | 2 | 3 | 4 | undefined;
-  /**
-   * Prints the heat name beside the diamonds in the overline style. Set it wherever the mark stands
-   * alone — colour on its own is never allowed to carry the meaning.
-   */
+export interface SpiceLevelProps extends ComponentProps<"span">, SxProp {
+  level: Level;
+  /** = 4 */
+  max?: 4 | undefined;
+  /** Show Mild / Medium / Hot / Extra Hot beside the diamonds. */
   hasLabel?: boolean | undefined;
+  /** sm 12 · md 14 · lg 20px diamonds. = "md" */
+  size?: SpiceSize | undefined;
 }
 
+/** Heat from the brand's diamond motif — the sanctioned alternative to a chilli emoji. */
 export function SpiceLevel({
-  className,
-  level = 1,
+  level,
   max = 4,
   hasLabel = false,
-  size,
+  size = "md",
+  sx,
+  className,
   ...props
 }: SpiceLevelProps) {
-  const { root, marks, mark, label } = spiceLevel({ size });
-  const heat = HEAT[level];
+  const styles = spiceLevel();
   return (
-    <span className={root({ className })} {...props}>
-      <span aria-label={`Spice level: ${heat.label}`} className={marks()} role="img">
+    <span
+      role="img"
+      aria-label={`Spice level ${String(level)} of ${String(max)}`}
+      className={styles.root({ className: withSx(sx, className) })}
+      {...props}
+    >
+      <span className={styles.diamonds()}>
         {Array.from({ length: max }, (_, index) => (
-          <span
-            className={mark({ className: index < level ? heat.fill : undefined })}
+          <BrandDiamond
             key={index}
+            size={DIAMOND_SIZE[size]}
+            fill={index < level ? HEAT_FILL[level] : "empty"}
           />
         ))}
       </span>
-      {/* The group above already announces the heat, so the printed name is not read twice. */}
-      {hasLabel ? (
-        <span aria-hidden="true" className={label()}>
-          {heat.label}
-        </span>
-      ) : null}
+      {hasLabel ? <span className={styles.label()}>{SPICE_LABEL[level]}</span> : null}
     </span>
   );
 }

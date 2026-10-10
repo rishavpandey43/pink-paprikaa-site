@@ -1,81 +1,78 @@
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { Spinner } from "./spinner";
 
+/** The brand mark (Plan 2a's SymbolMark) is the only `.mask-symbol` element. */
+const markIn = (root: HTMLElement) => root.querySelector(".mask-symbol");
+
 describe("Spinner", () => {
-  it("is hidden from assistive technology when it carries no label", () => {
-    const { container } = render(<Spinner />);
-    expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  it("is a status named Loading by default", () => {
+    render(<Spinner />);
+    expect(screen.getByRole("status", { name: "Loading" })).toBeInTheDocument();
   });
 
-  it("announces what is loading when labelled", () => {
-    render(<Spinner label="Adding to cart" />);
-    expect(screen.getByRole("status", { name: "Adding to cart" })).toBeInTheDocument();
+  it("takes its own label", () => {
+    render(<Spinner label="Finding your outlet" />);
+    expect(screen.getByRole("status", { name: "Finding your outlet" })).toBeInTheDocument();
   });
 
-  it("pulses the brand diamond rather than spinning a ring", () => {
-    const { container } = render(<Spinner />);
-    const svg = container.querySelector("svg");
-    expect(svg).toHaveClass("animate-pp-pulse");
-    // The mark is drawn from the brand symbol paths, so it is never an imported ring graphic.
-    expect(svg?.querySelectorAll("path").length).toBeGreaterThan(0);
+  it("takes no aria-label, which its aria-labelledby would silently outrank", () => {
+    // @ts-expect-error -- name the status with `label`
+    render(<Spinner aria-label="Finding your outlet" />);
+    expect(screen.getByRole("status", { name: "Loading" })).toBeInTheDocument();
   });
 
-  it("paints with currentColor so a tone is just a text colour", () => {
+  it("announces its label as live-region content, not only as a name", () => {
+    render(<Spinner label="Finding your outlet" />);
+    const status = screen.getByRole("status");
+    expect(status).not.toHaveAttribute("aria-label");
+    expect(status).toHaveTextContent("Finding your outlet");
+    expect(screen.getByText("Finding your outlet")).toHaveClass("sr-only");
+  });
+
+  it("draws the brand mark, pulsing only when motion is allowed", () => {
     const { container } = render(<Spinner />);
-    expect(container.querySelector("svg")).toHaveAttribute("fill", "currentColor");
+    const mark = markIn(container);
+    expect(mark).toHaveAttribute("aria-hidden", "true");
+    expect(mark).toHaveClass("motion-safe:animate-mark-pulse");
   });
 
   it.each([
-    ["xs", "size-4"],
-    ["sm", "size-5"],
-    ["md", "size-8"],
-    ["lg", "size-12"],
-    ["xl", "size-16"],
-  ] as const)("renders the %s size", (size, expected) => {
+    ["sm", "size-spinner-sm"],
+    ["md", "size-spinner-md"],
+    ["lg", "size-spinner-lg"],
+  ] as const)("renders size %s at %s", (size, sizeClass) => {
     const { container } = render(<Spinner size={size} />);
-    expect(container.querySelector("svg")).toHaveClass(expected);
-  });
-
-  it("defaults to 32px — a standalone loader, not an inline glyph", () => {
-    const { container } = render(<Spinner />);
-    expect(container.querySelector("svg")).toHaveClass("size-8");
+    expect(markIn(container)).toHaveClass(sizeClass);
   });
 
   it.each([
-    ["brand", "text-text-brand"],
-    ["muted", "text-text-muted"],
-    ["subtle", "text-text-subtle"],
-    ["onBrand", "text-text-on-brand"],
-    ["inverse", "text-text-on-inverse"],
-  ] as const)("renders the %s tone", (tone, expected) => {
-    const { container } = render(<Spinner tone={tone} />);
-    expect(container.querySelector("svg")).toHaveClass(expected);
+    ["brand", "text-pink-500"],
+    ["neutral", "text-ink-900"],
+    ["inverse", "text-ink-000"],
+  ] as const)("paints color %s with %s", (color, colour) => {
+    const { container } = render(<Spinner color={color} />);
+    expect(markIn(container)).toHaveClass(colour);
   });
 
-  it("defaults to the brand tone", () => {
-    const { container } = render(<Spinner />);
-    expect(container.querySelector("svg")).toHaveClass("text-text-brand");
+  it("merges a caller className onto the status, replacing a conflicting class", () => {
+    render(<Spinner className="flex" />);
+    const status = screen.getByRole("status");
+    expect(status).toHaveClass("flex");
+    expect(status).not.toHaveClass("inline-flex");
   });
 
-  it("inherits the surrounding colour when tone is current", () => {
-    const { container } = render(<Spinner tone="current" />);
-    const svg = container.querySelector("svg");
-    expect(svg).not.toHaveClass("text-text-brand");
-    expect(svg).toHaveAttribute("fill", "currentColor");
-  });
-
-  it("merges a caller className", () => {
-    const { container } = render(<Spinner className="size-6" size="md" />);
-    const svg = container.querySelector("svg");
-    expect(svg).toHaveClass("size-6");
-    expect(svg).not.toHaveClass("size-8");
+  it("sx lands on the status and beats its own display", () => {
+    render(<Spinner sx={{ display: "flex", mt: 4 }} />);
+    const status = screen.getByRole("status");
+    expect(status).toHaveClass("flex", "mt-4");
+    expect(status).not.toHaveClass("inline-flex");
   });
 
   it("has no accessibility violations", async () => {
-    const { container } = render(<Spinner label="Adding to cart" />);
+    const { container } = render(<Spinner label="Loading the menu" />);
     await expectNoA11yViolations(container);
   });
 });

@@ -1,102 +1,116 @@
 "use client";
 
-import type { LucideIcon } from "lucide-react";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-
 import { Leaf } from "lucide-react";
+import { ToggleGroup } from "radix-ui";
+import { type ReactNode, useState } from "react";
 
 import { Badge } from "../../atoms/badge/badge";
-import { Tag } from "../../atoms/tag/tag";
-import { componentVariants, type VariantProps } from "../../lib/component-variants";
+import { Icon, type IconComponent } from "../../atoms/icon/icon";
+import { tagVariants } from "../../atoms/tag/tag";
+import type { BaseProps } from "../../lib/common-props";
+import { componentVariants } from "../../lib/component-variants";
+import { isShown } from "../../lib/is-shown";
+import { withSx } from "../../lib/sx";
+
+export interface FilterOption {
+  value: string;
+  label: string;
+  icon?: IconComponent | undefined;
+}
+
+export interface FilterBarProps extends Omit<BaseProps<"div">, "defaultValue" | "children"> {
+  /** Accessible name of the radio group, e.g. "Menu category". */
+  label: string;
+  options: FilterOption[];
+  value?: string | undefined;
+  /** Uncontrolled starting filter. Default: the first option. */
+  defaultValue?: string | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
+  /**
+   * Wrap onto more rows (the website) instead of scrolling on one line (the app). The scrolling
+   * rail's `-m-1` (its chips' focus-ring room) reaches 4px past its box: its parent needs at least
+   * 4px of padding (a Container's gutter gives it), as Cluster's rail does, or it widens the page.
+   */
+  isWrapping?: boolean | undefined;
+  /** A static statement pinned after the filters, e.g. "100% Vegetarian". */
+  note?: ReactNode | undefined;
+  trailing?: ReactNode | undefined;
+}
 
 const filterBar = componentVariants({
   slots: {
     root: "flex items-center gap-2.5",
-    // Neither the statement badge nor the trailing control ever gets squeezed by a long rail.
+    group: "flex gap-2.5",
+    // Neither the statement badge nor the trailing control is squeezed by a long rail.
     note: "shrink-0",
     trailing: "shrink-0",
   },
   variants: {
-    /**
-     * Wrapping is the website rail — every category visible at once, no hidden right edge. The
-     * scrolling default is the app pattern; it keeps the rail one line tall on a phone, with
-     * `pb-1` reserving room for the scrollbar so the pills are not clipped.
-     */
     isWrapping: {
-      true: { root: "flex-wrap" },
-      false: { root: "flex-nowrap overflow-x-auto pb-1" },
+      true: { root: "flex-wrap", group: "flex-wrap" },
+      // The group scrolls, not the root, so the note and the trailing control stay pinned in view.
+      // A scroller clips its chips' focus rings: p-1 (with scroll-px-1 for a chip scrolled into
+      // view) gives the ring room, and -m-1 keeps the rail where it was.
+      false: {
+        root: "flex-nowrap",
+        group: "-m-1 min-w-0 scroll-px-1 flex-nowrap overflow-x-auto p-1 pb-2",
+      },
     },
   },
-  defaultVariants: { isWrapping: false },
 });
 
-/** A category with its own glyph. Plain strings are expanded into this shape. */
-export interface FilterOption {
-  /** The value handed back to `onChange`. */
-  value: string;
-  /** What the pill says, in Title Case. */
-  label: string;
-  /** Lucide glyph before the label. */
-  icon?: LucideIcon;
-}
-
-export interface FilterBarProps
-  extends
-    Omit<ComponentPropsWithoutRef<"div">, "children" | "onChange">,
-    VariantProps<typeof filterBar> {
-  /** The categories. A bare string is both the value and the label. */
-  options: (FilterOption | string)[];
-  /** The selected category. Exactly one option is selected at a time. */
-  value?: string | undefined;
-  /** Called with the option's `value` when a pill is pressed. */
-  onChange?: ((value: string) => void) | undefined;
-  /**
-   * Names the group for assistive tech — a rail of pills with no name is announced as a bare list
-   * of buttons. Say what is being filtered: "Filter the menu by category".
-   */
-  label?: string | undefined;
-  /** A standing statement pinned after the pills, not a filter: "100% Vegetarian Kitchen". */
-  note?: string | undefined;
-  /** A control pinned to the end of the rail — a sort select, a clear-all. */
-  trailing?: ReactNode | undefined;
-}
-
+/** Menu category rail. Exactly one filter is chosen at a time; the rail scrolls unless it wraps. */
 export function FilterBar({
+  label,
   options,
   value,
-  onChange,
-  label = "Filter by category",
+  defaultValue,
+  onValueChange,
+  isWrapping = false,
   note,
   trailing,
-  isWrapping,
+  sx,
   className,
   ...props
 }: FilterBarProps) {
-  const slots = filterBar({ isWrapping });
+  const [uncontrolledValue, setUncontrolledValue] = useState(
+    defaultValue ?? options[0]?.value ?? ""
+  );
+  const selected = value ?? uncontrolledValue;
+  const styles = filterBar({ isWrapping });
+
+  const handleValueChange = (next: string) => {
+    // Radix clears a single group when the chosen item is pressed again; a filter always has one.
+    if (next === "") return;
+    setUncontrolledValue(next);
+    onValueChange?.(next);
+  };
+
   return (
-    <div aria-label={label} className={slots.root({ className })} role="group" {...props}>
-      {options.map((option) => {
-        const item: FilterOption =
-          typeof option === "string" ? { value: option, label: option } : option;
-        return (
-          <Tag
-            icon={item.icon}
-            isSelected={item.value === value}
-            key={item.value}
-            onClick={() => {
-              onChange?.(item.value);
-            }}
-          >
-            {item.label}
-          </Tag>
-        );
-      })}
-      {note === undefined ? null : (
-        <Badge className={slots.note()} icon={Leaf} tone="success">
+    <div {...props} className={styles.root({ className: withSx(sx, className) })}>
+      <ToggleGroup.Root
+        type="single"
+        aria-label={label}
+        value={selected}
+        onValueChange={handleValueChange}
+        className={styles.group()}
+      >
+        {options.map((option) => {
+          const tag = tagVariants({ isSelected: option.value === selected, isInteractive: true });
+          return (
+            <ToggleGroup.Item key={option.value} value={option.value} className={tag.root()}>
+              {option.icon === undefined ? null : <Icon icon={option.icon} size="sm" />}
+              <span className={tag.label()}>{option.label}</span>
+            </ToggleGroup.Item>
+          );
+        })}
+      </ToggleGroup.Root>
+      {isShown(note) ? (
+        <Badge color="success" icon={Leaf} className={styles.note()}>
           {note}
         </Badge>
-      )}
-      {trailing === undefined ? null : <div className={slots.trailing()}>{trailing}</div>}
+      ) : null}
+      {isShown(trailing) ? <div className={styles.trailing()}>{trailing}</div> : null}
     </div>
   );
 }

@@ -1,114 +1,132 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { expectNoA11yViolations } from "../../../vitest.setup";
-import { Button } from "../../atoms/button/button";
+import { expectNoA11yViolations } from "#vitest.setup";
+
 import { CtaBand } from "./cta-band";
 
-const ACTION = (
-  <Button on="brand" size="lg">
-    Apply to Franchise
-  </Button>
-);
+const COPY = {
+  overline: "Taste it first",
+  title: "If you order, the tasting is free.",
+  body: "Take one Dawat as a trial at the normal per-head rate.",
+};
+
+const patternLayer = (container: HTMLElement) =>
+  container.querySelector('section > [aria-hidden="true"]');
 
 describe("CtaBand", () => {
-  it("renders the overline, heading and body copy", () => {
+  it("renders the overline, a level-2 title, the body and the action", () => {
+    render(<CtaBand {...COPY} action={<a href="#trial">Book a trial Dawat</a>} />);
+    expect(screen.getByRole("heading", { level: 2, name: COPY.title })).toBeInTheDocument();
+    expect(screen.getByText(COPY.overline)).toBeInTheDocument();
+    expect(screen.getByText(COPY.body)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Book a trial Dawat" })).toBeInTheDocument();
+  });
+
+  it("takes its heading level from headingLevel", () => {
+    render(<CtaBand title={COPY.title} headingLevel={3} />);
+    expect(screen.getByRole("heading", { level: 3, name: COPY.title })).toBeInTheDocument();
+  });
+
+  it("renders nothing but the title when nothing else is given — no default copy", () => {
+    const { container } = render(<CtaBand title={COPY.title} />);
+    expect(container.textContent).toBe(COPY.title);
+  });
+
+  it("renders no wrapper for an empty overline, body or action", () => {
+    const { container } = render(
+      <CtaBand title={COPY.title} overline="" body="" action="" pattern="none" />
+    );
+    const inner = container.querySelector("section > div");
+    expect(inner?.children).toHaveLength(1);
+    expect(inner?.firstElementChild?.children).toHaveLength(1);
+  });
+
+  it("renders the wrapper for a 0 overline, body or action — a number is content", () => {
+    const { container } = render(
+      <CtaBand title={COPY.title} overline={0} body={0} action={0} pattern="none" />
+    );
+    const inner = container.querySelector("section > div");
+    expect(inner?.children).toHaveLength(2);
+    expect(inner?.firstElementChild?.children).toHaveLength(3);
+  });
+
+  it("keeps the action clickable", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
     render(
       <CtaBand
-        body="Six outlets on one playbook. Applications open for 2027."
-        overline="Franchise"
-        title="Bring Pink Paprikaa to your city"
+        title={COPY.title}
+        action={
+          <button type="button" onClick={onClick}>
+            Book a trial Dawat
+          </button>
+        }
       />
     );
-
-    expect(screen.getByText("Franchise")).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { level: 2, name: "Bring Pink Paprikaa to your city" })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText("Six outlets on one playbook. Applications open for 2027.")
-    ).toBeInTheDocument();
-  });
-
-  it("renders the heading at the requested outline level", () => {
-    render(<CtaBand headingLevel={3} title="Bring Pink Paprikaa to your city" />);
-
-    expect(
-      screen.getByRole("heading", { level: 3, name: "Bring Pink Paprikaa to your city" })
-    ).toBeInTheDocument();
-  });
-
-  it("renders the action and keeps it clickable", async () => {
-    const handleClick = vi.fn();
-    render(
-      <CtaBand
-        action={<Button onClick={handleClick}>Apply to Franchise</Button>}
-        title="Bring Pink Paprikaa to your city"
-      />
-    );
-
-    await userEvent.click(screen.getByRole("button", { name: "Apply to Franchise" }));
-
-    expect(handleClick).toHaveBeenCalledOnce();
-  });
-
-  it("renders nothing extra when there is no action", () => {
-    render(<CtaBand title="Bring Pink Paprikaa to your city" />);
-
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Book a trial Dawat" }));
+    expect(onClick).toHaveBeenCalledOnce();
   });
 
   it.each([
     ["ink", "bg-surface-inverse"],
     ["brand", "bg-surface-brand"],
     ["soft", "bg-surface-brand-soft"],
-  ] as const)("floods the %s ground", (tone, expected) => {
-    const { container } = render(<CtaBand title="Bring Pink Paprikaa to your city" tone={tone} />);
-
-    expect(container.firstElementChild).toHaveClass(expected);
+  ] as const)("paints the %s field and sets its surface", (surfaceName, background) => {
+    const { container } = render(<CtaBand title={COPY.title} surface={surfaceName} />);
+    expect(container.firstElementChild).toHaveAttribute("data-surface", surfaceName);
+    expect(container.firstElementChild).toHaveClass(background);
   });
 
-  it("sits the action beside the heading when split", () => {
-    render(<CtaBand action={ACTION} align="split" title="Bring Pink Paprikaa to your city" />);
+  it("carries the tiled diamond by default and drops it with pattern=none", () => {
+    const { container, rerender } = render(<CtaBand title={COPY.title} />);
+    expect(patternLayer(container)).toBeInTheDocument();
+    rerender(<CtaBand title={COPY.title} pattern="none" />);
+    expect(patternLayer(container)).not.toBeInTheDocument();
+  });
 
-    expect(screen.getByRole("button", { name: "Apply to Franchise" }).parentElement).toHaveClass(
+  it("sits the action beside the copy with align=split (the default)", () => {
+    const { container } = render(
+      <CtaBand title={COPY.title} pattern="none" action={<a href="#trial">Book a trial Dawat</a>} />
+    );
+    expect(container.querySelector("section > div")).toHaveClass("justify-between");
+    expect(screen.getByRole("link", { name: "Book a trial Dawat" }).parentElement).toHaveClass(
       "shrink-0"
     );
   });
 
-  it("stacks the action under the heading when centred", () => {
-    render(<CtaBand action={ACTION} align="center" title="Bring Pink Paprikaa to your city" />);
-
-    expect(screen.getByRole("button", { name: "Apply to Franchise" }).parentElement).toHaveClass(
+  it("stacks and centres copy and action with align=center", () => {
+    const { container } = render(
+      <CtaBand
+        title={COPY.title}
+        align="center"
+        pattern="none"
+        action={<a href="#trial">Book a trial Dawat</a>}
+      />
+    );
+    expect(container.querySelector("section > div")).toHaveClass("flex-col", "text-center");
+    expect(screen.getByRole("link", { name: "Book a trial Dawat" }).parentElement).toHaveClass(
       "justify-center"
     );
   });
 
-  it("inverts the type on a flooded ground and keeps it dark on soft", () => {
-    const { rerender } = render(<CtaBand title="Order before you leave the house" tone="brand" />);
-    expect(screen.getByRole("heading", { level: 2 })).toHaveClass("text-text-on-brand");
-
-    rerender(<CtaBand title="Order before you leave the house" tone="soft" />);
-    expect(screen.getByRole("heading", { level: 2 })).toHaveClass("text-text-heading");
-  });
-
-  it("merges a caller className", () => {
-    const { container } = render(
-      <CtaBand className="rounded-5" title="Bring Pink Paprikaa to your city" />
-    );
-
-    expect(container.firstElementChild).toHaveClass("rounded-5");
+  it("merges a caller className over its own, and the diamond layer lets that ground show", () => {
+    const { container } = render(<CtaBand title={COPY.title} className="bg-surface-page-alt" />);
+    expect(container.firstElementChild).toHaveClass("bg-surface-page-alt");
+    expect(container.firstElementChild).not.toHaveClass("bg-surface-inverse");
+    expect(patternLayer(container)).toHaveClass("bg-transparent");
+    expect(patternLayer(container)).not.toHaveClass("bg-surface-inverse");
   });
 
   it("has no accessibility violations", async () => {
     const { container } = render(
-      <CtaBand
-        action={ACTION}
-        body="Six outlets on one playbook. Applications open for 2027."
-        overline="Franchise"
-        title="Bring Pink Paprikaa to your city"
-      />
+      <CtaBand {...COPY} surface="brand" action={<a href="#trial">Book a trial Dawat</a>} />
     );
     await expectNoA11yViolations(container);
+  });
+
+  it("takes sx on its root, merged with className", () => {
+    const { container } = render(<CtaBand title={COPY.title} sx={{ mt: 4 }} className="italic" />);
+    expect(container.firstElementChild).toHaveClass("mt-4", "italic");
   });
 });
